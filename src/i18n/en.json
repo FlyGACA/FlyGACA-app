@@ -1,0 +1,98 @@
+{
+  "common": {
+    "appName": "Fly GACA",
+    "switchLanguage": "Switch language",
+    "langToggleLabel": "ع",
+    "goPro": "Go Pro",
+    "search": "Search",
+    "loading": "Loading…",
+    "loadError": "Could not load this content. Verify your connection and try again.",
+    "skipToContent": "Skip to content",
+    "soon": "Coming soon"
+  },
+  "nav": {
+    "library": "Library",
+    "captainAdel": "Captain Adel",
+    "tools": "Tools",
+    "guides": "Guides",
+    "study": "Study",
+    "pricing": "Pricing",
+    "about": "About",
+    "account": "Account",
+    "home": "Fly GACA — home",
+    "primary": "Primary",
+    "menu": "Menu"
+  },
+  "home": {
+    "eyebrow": "Independent · Educational · Bilingual",
+    "title": "Every Saudi reg. One captain on the answer.",
+    "subtitle": "A fast, free reference library of Saudi civil-aviation regulations (GACAR), charts and study tools — with an AI flight instructor who cites the exact Part and section.",
+    "ctaLibrary": "Open the library",
+    "ctaTools": "Flight tools",
+    "ctaChat": "Ask Captain Adel",
+    "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication."
+  },
+  "tools": {
+    "title": "Flight tools",
+    "subtitle": "Quick, shareable calculators for everyday flying. Every result links to Captain Adel for an explanation grounded in GACAR.",
+    "open": "Open",
+    "items": {
+      "crosswind": {
+        "name": "Crosswind & headwind",
+        "blurb": "Resolve reported wind against the runway heading, with a wind-vector diagram."
+      },
+      "e6b": {
+        "name": "E6B flight computer",
+        "blurb": "True airspeed, wind triangle, and the everyday E6B conversions."
+      },
+      "density-altitude": {
+        "name": "Density altitude",
+        "blurb": "Pressure and density altitude from elevation, altimeter and temperature."
+      }
+    }
+  },
+  "crosswind": {
+    "title": "Crosswind & headwind",
+    "intro": "Resolve the reported wind into its crosswind and headwind components for a runway. The inputs ride the URL, so any setup is shareable.",
+    "runway": "Runway (designator or heading)",
+    "windDir": "Wind direction (°true)",
+    "windSpeed": "Wind speed (kt)",
+    "runwayHeading": "Runway heading",
+    "crosswind": "Crosswind",
+    "headwind": "Headwind",
+    "tailwind": "Tailwind",
+    "angle": "Wind angle",
+    "fromRight": "from the right →",
+    "fromLeft": "← from the left",
+    "negligible": "negligible",
+    "straightDown": "Wind straight down the runway.",
+    "offCentreline": "Wind {{deg}}° {{side}} of the runway centreline.",
+    "left": "left",
+    "right": "right"
+  },
+  "disclaimer": {
+    "strong": "Unofficial & educational.",
+    "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
+  },
+  "footer": {
+    "tagline": "Every Saudi reg. One captain on the answer. An independent educational reference for civil aviation in the Kingdom.",
+    "explore": "Explore",
+    "legal": "Legal",
+    "verify": "Verify",
+    "flightTools": "Flight tools",
+    "disclaimerLink": "Disclaimer",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Notice",
+    "gacaSite": "GACA official site ↗",
+    "gacaRules": "GACAR & AIP ↗",
+    "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية"
+  },
+  "calc": {
+    "copyLink": "Copy link to this setup",
+    "copied": "✓ Link copied",
+    "copyFailed": "Copy failed",
+    "tryExample": "Try an example",
+    "askAdel": "Ask Captain Adel to explain",
+    "shareNote": "The link carries your inputs — share it and the tool opens pre-filled."
+  }
+}

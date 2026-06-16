@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "tools": [
+    { "id": "crosswind", "route": "/tools/crosswind", "live": true },
+    { "id": "e6b", "route": "/tools/e6b", "live": false },
+    { "id": "density-altitude", "route": "/tools/density-altitude", "live": false }
+  ]
+}
