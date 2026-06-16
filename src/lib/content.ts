@@ -21,3 +21,27 @@ export interface ToolsManifest {
   version: number;
   tools: ToolEntry[];
 }
+
+export interface GacarCategory {
+  id: string;
+  label: string;
+}
+
+export interface GacarDocument {
+  part: string;
+  partNum: number;
+  title: string;
+  category: string;
+  slug: string;
+  pages: number;
+  outline?: string[];
+}
+
+export interface GacarIndex {
+  generated: string;
+  source: string;
+  sourceUrl: string;
+  count: number;
+  categories: GacarCategory[];
+  documents: GacarDocument[];
+}

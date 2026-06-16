@@ -48,6 +48,10 @@
       "density-altitude": {
         "name": "Density altitude",
         "blurb": "Pressure and density altitude from elevation, altimeter and temperature."
+      },
+      "tas": {
+        "name": "True airspeed",
+        "blurb": "CAS → TAS and Mach from the ISA standard atmosphere."
       }
     }
   },
@@ -70,9 +74,121 @@
     "left": "left",
     "right": "right"
   },
+  "densityAltitude": {
+    "title": "Density altitude",
+    "intro": "Pressure altitude, ISA deviation and density altitude from field elevation, the altimeter setting and the outside air temperature. A planning aid — performance figures come from the POH/AFM.",
+    "elevation": "Field elevation (ft)",
+    "qnh": "QNH (hPa)",
+    "oat": "OAT (°C)",
+    "pressureAltitude": "Pressure altitude",
+    "isaDev": "ISA deviation",
+    "densityAltitude": "Density altitude"
+  },
+  "tas": {
+    "title": "True airspeed",
+    "intro": "Convert calibrated airspeed to true airspeed and Mach via the ISA standard atmosphere, from CAS, pressure altitude and OAT.",
+    "cas": "CAS (kt)",
+    "pa": "Pressure altitude (ft)",
+    "oat": "OAT (°C)",
+    "trueAirspeed": "True airspeed",
+    "mach": "Mach",
+    "isaDev": "ISA deviation"
+  },
+  "chat": {
+    "title": "Captain Adel",
+    "status": "AI flight instructor · cites the GACAR",
+    "welcome": "Captain Adel — your AI study assistant, trained on the GACAR. Ask about any Saudi regulation and he cites the exact Part and section. He can be wrong — always verify against the official source.",
+    "placeholder": "Ask about any GACAR Part or section…",
+    "send": "Send",
+    "thinking": "Captain Adel is checking the GACAR…",
+    "notReady": "I couldn't reach my engine just now, Captain. The assistant backend isn't connected in this build. Verify any regulation against the official GACA source at gaca.gov.sa.",
+    "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source — not for operational use.",
+    "suggestions": {
+      "s1": "What are the VFR weather minima in controlled airspace?",
+      "s2": "What's required for a GACAR commercial pilot licence?",
+      "s3": "What are the fuel reserve requirements for a Part 121 flight?",
+      "s4": "What does GACAR Part 91 say about carry-on baggage?"
+    }
+  },
+  "library": {
+    "eyebrow": "Reference Library",
+    "title": "The Saudi aviation reference, in one place.",
+    "subtitle": "Every numbered GACAR Part, browsable and searchable. Our ingested copy — always verify against the official GACA publication.",
+    "searchPlaceholder": "Search regulations — 'Part 91', 'medical', 'operations'…",
+    "all": "All",
+    "part": "Part",
+    "pages": "pages",
+    "empty": "Nothing matches that search.",
+    "synced": "GACAR index generated {{date}}."
+  },
+  "document": {
+    "outline": "Outline",
+    "readerPending": "The in-app reader for this Part is being ported.",
+    "verifyAtGaca": "Read the official GACAR at gaca.gov.sa"
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
+  },
+  "legal": {
+    "updated": "An educational reference — not a legal document.",
+    "disclaimer": {
+      "title": "Disclaimer",
+      "intro": "Please read this before relying on anything you find here.",
+      "sections": [
+        { "h": "An independent educational tool", "p": "Fly GACA is privately built for study and reference. It carries no official status and is not affiliated with, endorsed by, or connected to GACA." },
+        { "h": "GACA is the authoritative source", "p": "Where Fly GACA shows a regulation it is pointing you to GACA's text. The official GACA publication always prevails over anything shown here." },
+        { "h": "For study and reference only — not for operational use", "p": "Nothing here is for flight planning, dispatch, navigation or maintenance sign-off. Use official, current sources for operations." },
+        { "h": "Aeronautical information, aerodromes and charts", "p": "Aerodrome and chart data follows the 28-day AIRAC cycle and may be out of date; it is illustrative and not for operational use." },
+        { "h": "No warranty of accuracy or completeness", "p": "The content is machine-extracted from GACA PDFs and provided “as is”, without warranty of accuracy, completeness or fitness for any purpose." },
+        { "h": "Captain Adel — the AI study assistant", "p": "Captain Adel is an educational AI that cites sources but can be wrong. Treat its answers as a study aid and verify against the official GACAR." }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "intro": "By using Fly GACA you agree to these terms. Contact us at i@flygaca.com.",
+      "sections": [
+        { "h": "What Fly GACA is", "p": "An independent educational platform and reference library for Saudi civil-aviation regulation. It is not affiliated with GACA." },
+        { "h": "Educational use only", "p": "You may not rely on Fly GACA for flight planning, operations, dispatch or any operational decision. Use official current sources." },
+        { "h": "Acceptable use", "p": "Do not use the service unlawfully, disrupt or scrape it, or misrepresent it as official or as carrying any regulatory status." },
+        { "h": "Intellectual property", "p": "Fly GACA owns its name, brand and design. The underlying regulatory documents belong to GACA and are shown for reference." },
+        { "h": "Third-party content and links", "p": "We link to external sites (including GACA) for verification but are not responsible for their content or availability." },
+        { "h": "No warranty & limitation of liability", "p": "The service is provided “as is” and “as available”. To the extent permitted by law, Fly GACA is not liable for any loss arising from its use or reliance on it." },
+        { "h": "Changes and governing law", "p": "We may change the service and these terms at any time; continued use means acceptance. These terms are governed by the laws of the Kingdom of Saudi Arabia." }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy Notice",
+      "intro": "How Fly GACA handles your data. Contact us at privacy@flygaca.com.",
+      "sections": [
+        { "h": "Who we are", "p": "Fly GACA operates flygaca.com as an independent educational reference. Reach us at privacy@flygaca.com." },
+        { "h": "What we collect", "p": "A waitlist email if you provide one, your chat questions to Captain Adel, and basic technical logs for security and reliability." },
+        { "h": "Why we use it", "p": "To run the service, answer your questions, and keep it secure — on the basis of your consent and our legitimate interest." },
+        { "h": "Where your data is stored", "p": "User questions are personal data and are processed in-Kingdom: Google Cloud in Dammam (me-central2), in line with the PDPL." },
+        { "h": "Sharing your data", "p": "We do not sell your data. We use processors (Firebase, Cloudflare) to operate the service, and disclose data only if required by law." },
+        { "h": "Your rights under the PDPL", "p": "You may ask to be informed about, access, correct or delete your data, and withdraw consent. Contact privacy@flygaca.com." },
+        { "h": "Cookies & retention", "p": "We use minimal local storage (such as your language choice) and privacy-friendly analytics. We keep data only as long as needed for the purposes above." }
+      ]
+    }
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "About Fly GACA",
+    "lead": "Every Saudi reg. One captain on the answer. Finding the right GACAR section should not be the hard part of flying in the Kingdom.",
+    "sections": [
+      { "h": "What Fly GACA is", "p": "A reference library of every numbered GACAR Part, topical handbooks, aerodromes and VFR charts — plus Captain Adel, an AI flight instructor that cites the exact section, and a set of flight tools and study material." },
+      { "h": "What it is not", "p": "It is not GACA and not official. It does not replace the GACAR, the AIP, the AFM or operator manuals, and nothing here is for operational use." },
+      { "h": "How it is built", "p": "A bilingual, RTL-aware Progressive Web App that works offline. Content is extracted from official GACA PDFs into a clean, searchable form that both full-text search and Captain Adel draw from." },
+      { "h": "Who it is for", "p": "Student pilots, instructors, cadets and licensed crew who actually use the regulations — in English and Arabic." },
+      { "h": "Source of truth", "p": "Wherever Fly GACA shows a regulation, it points to GACA. Always verify against the current official publication at gaca.gov.sa." }
+    ],
+    "contactTitle": "Contact",
+    "contacts": [
+      { "label": "General & corrections", "email": "i@flygaca.com" },
+      { "label": "Support & accounts", "email": "support@flygaca.com" },
+      { "label": "Schools & business", "email": "sales@flygaca.com" },
+      { "label": "Privacy & data protection", "email": "privacy@flygaca.com" }
+    ]
   },
   "footer": {
     "tagline": "Every Saudi reg. One captain on the answer. An independent educational reference for civil aviation in the Kingdom.",

@@ -29,6 +29,8 @@ export interface ChatRequest {
 export interface ChatResponse {
   answer: string;
   sources: ChatSource[];
+  /** Grounding verdict from the brain, when provided. */
+  kind?: 'grounded' | 'partial' | 'refusal' | 'na';
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? '/api';

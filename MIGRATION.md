@@ -18,23 +18,42 @@ intentionally **out of scope** (the app keeps calling the same `/api` backend).
 - **Reference vertical slice:** Home, Tools index (data-driven from `public/data/tools.json`),
   and the **Crosswind** tool end-to-end (pure `calc/crosswind.ts` + unit tests + diagram).
 
-## ⏳ Tools to port (~35) — repeat the Crosswind pattern
+## ✅ Batch 2 done
+
+- **Calculators:** Density altitude (`calc/isa.ts`) and True airspeed (`calc/tas.ts`), both pure +
+  unit-tested, built on the Crosswind pattern (`CalcShell` + `useUrlState`).
+- **Library:** index page (`pages/library/Library.tsx`) — data-driven from `gacar-index.json`
+  with category filter + search — and a per-Part `Document` page showing metadata + outline.
+- **Captain Adel chat** (`pages/chat/Chat.tsx`): message list, suggested prompts, `?q=` prefill +
+  auto-send, session id, sources rendering, graceful "engine not connected" fallback. Talks to
+  `/api/chat` via `lib/api` (JSON POST).
+- **Static pages:** About (`pages/About.tsx`) + Disclaimer / Terms / Privacy via a shared
+  `LegalPage` prose component driven by structured i18n content.
+
+## ⏳ Tools to port (~34) — repeat the Crosswind pattern
 
 `calc/*` math cores already isolated in the legacy repo make these the easiest first:
-- [ ] E6B (`tools-e6b.js`), TAS (`tools-tas.js`), density altitude (`isa-core.js`)
+- [ ] E6B (`tools-e6b.js`)
 - [ ] Holding (`holding-core.js`), AIRAC (`airac-core.js`), currency (`currency.js`)
 - [ ] Cloudbase, fuel, TOD/TSD, suntimes, units/conversion, performance, W&B, VFR, procsep
 - [ ] METAR/NOTAM decoders, AIP quiz, METAR drill, readback, ELP check, route planner
 - [ ] aerodromes, airspace, chart symbols, definitions, LOA, library/PDF readers
+- [x] TAS (`tools-tas.js`), density altitude (`isa-core.js`)
 
-## ⏳ Pages to port
+## ⏳ Pages to port / finish
 
-- [ ] Library (`library.html` + `gacar-index.json`, the document reader)
-- [ ] Captain Adel chat (`chat.html` — SSE streaming, sources/grounding badges) via `lib/api`
+- [x] Library index + per-Part metadata page (`gacar-index.json`)
+- [ ] Library: full in-app document reader (needs the `parts/` corpus copied + a reader view),
+      the other library tabs (aerodromes, airspace, charts, handbooks, reference), and the
+      lazy full-text search (`library-search.json`)
+- [x] Captain Adel chat (JSON POST)
+- [ ] Chat: **SSE token streaming**, grounding badges (grounded/partial/refusal), tool-chip
+      deep links, transcript persistence, App Check token header
+- [x] About; Legal: Disclaimer, Terms, Privacy
+- [ ] Legal: Safety; 404 is done, add offline page
 - [ ] Account / Pricing / Schools (billing via Stripe web + RevenueCat native)
 - [ ] Dashboard, Logbook (Firestore-backed), Settings, Search (Ctrl/Cmd-K)
 - [ ] Guides, Study (ground school, flashcards, checkride/exam), Paths
-- [ ] Legal: Disclaimer, Terms, Privacy, Safety; About; 404/offline
 
 ## ⏳ Wiring to complete
 
