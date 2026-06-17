@@ -89,6 +89,21 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
+## ⏳ Stage 3 — Firebase + billing (emulator-first)
+
+- **Batch 3a — foundation (done).** `src/lib/firebase.ts`: config-gated, lazy bootstrap of
+  App/Auth/Firestore (+ App Check) from `VITE_FIREBASE_*`. When unset (CI, preview, no-secret
+  contributors) every accessor resolves to `null` and the app stays **fully local-first** — and the
+  SDK is dynamic-`import()`ed, so `firebase/*` never enters the main bundle (290 kB, unchanged).
+  Dev `VITE_FIREBASE_EMULATOR=1` wires the Local Emulator Suite. Real `src/lib/auth.ts`:
+  `getIdToken()` (already consumed by chat), `onAuthChange`, Google/email sign-in + register,
+  `signOutUser` — all graceful no-ops when unconfigured. Unit-tested.
+- **Batch 3b — account → Firestore (next):** back `account.ts` with `users/{uid}` + `logbook/`
+  while keeping its `useSyncExternalStore` API + local cache; wire the Account page to real auth;
+  read `entitlement` to gate UI via the pure `isActive`.
+- **Batch 3c — billing (next):** `src/lib/billing.ts` (Stripe Checkout via `createCheckoutSession`;
+  native RevenueCat by `billingChannel()`); wire the Pricing CTA.
+
 ## ✅ Verticals — charts · PDF sheets · met-brief
 
 - **VFR charts** (`/library/charts`): the 13 GACA AIP visual (UVR) sheets as pan/zoom Leaflet image
