@@ -75,3 +75,45 @@ export interface DefinitionsIndex {
   count: number;
   terms: DefinitionTerm[];
 }
+
+export interface QuizQuestion {
+  q: string;
+  options: string[];
+  answer: number;
+  explain: string;
+}
+
+export interface QuizBank {
+  id: string;
+  title: string;
+  desc: string;
+  source: string;
+  questions: QuizQuestion[];
+}
+
+export interface QuizData {
+  exam: { title: string; questions: number; minutes: number; passMark: number };
+  banks: QuizBank[];
+}
+
+export interface GsLesson {
+  id: string;
+  title: string;
+  objective: string;
+  adel: string;
+  read?: { label: string; url: string };
+}
+
+export interface GsModule {
+  id: string;
+  title: string;
+  summary: string;
+  quiz?: string;
+  lessons: GsLesson[];
+}
+
+export interface GroundSchoolData {
+  title: string;
+  intro: string;
+  modules: GsModule[];
+}

@@ -51,6 +51,10 @@ import { FlightPlan } from './pages/tools/FlightPlan';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
+import { StudyHub } from './pages/study/StudyHub';
+import { Quiz } from './pages/study/Quiz';
+import { Flashcards } from './pages/study/Flashcards';
+import { GroundSchool } from './pages/study/GroundSchool';
 import { About } from './pages/About';
 import { DisclaimerPage, TermsPage, PrivacyPage } from './pages/legal/LegalPage';
 import { NotFound } from './pages/NotFound';
@@ -118,6 +122,10 @@ export const router = createBrowserRouter([
       { path: 'tools/definitions', element: <Definitions /> },
       { path: 'tools/route-planner', element: <RoutePlanner /> },
       { path: 'tools/flight-plan', element: <FlightPlan /> },
+      { path: 'study', element: <StudyHub /> },
+      { path: 'study/quiz', element: <Quiz /> },
+      { path: 'study/flashcards', element: <Flashcards /> },
+      { path: 'study/groundschool', element: <GroundSchool /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
