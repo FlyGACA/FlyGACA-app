@@ -315,6 +315,36 @@
     "hint": "Fill any two; the third is computed.",
     "formula": "distance = groundspeed × time ÷ 60. Leave one field blank to solve for it."
   },
+  "fuel": {
+    "fob": "Fuel on board",
+    "burn": "Fuel flow (per hour)",
+    "gs": "Groundspeed (kt)",
+    "endurance": "Endurance",
+    "range": "Range",
+    "sr": "Specific range",
+    "formula": "Endurance = fuel ÷ fuel flow. Range = endurance × groundspeed. Use one consistent fuel unit (L, kg or gal)."
+  },
+  "specificRange": {
+    "gs": "Groundspeed (kt)",
+    "burn": "Fuel flow (per hour)",
+    "sr": "Specific range",
+    "formula": "Specific range = groundspeed ÷ fuel flow = distance per unit of fuel. Higher is more efficient."
+  },
+  "weightBalance": {
+    "weight": "Weight",
+    "arm": "Arm",
+    "lemac": "LEMAC (arm)",
+    "mac": "MAC length",
+    "totalWeight": "Total weight",
+    "cg": "Centre of gravity",
+    "percentMac": "% MAC",
+    "empty": "Empty aircraft",
+    "front": "Front seats",
+    "rear": "Rear seats",
+    "baggage": "Baggage",
+    "fuelStation": "Fuel",
+    "formula": "CG = Σ(weight × arm) ÷ Σweight. %MAC = (CG − LEMAC) ÷ MAC × 100. Load the real arms and limits from the AFM/POH."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

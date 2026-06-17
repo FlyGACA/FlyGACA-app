@@ -21,6 +21,9 @@ import { OneInSixty } from './pages/tools/OneInSixty';
 import { Tsd } from './pages/tools/Tsd';
 import { TopOfDescent } from './pages/tools/TopOfDescent';
 import { DescentVdp } from './pages/tools/DescentVdp';
+import { Fuel } from './pages/tools/Fuel';
+import { SpecificRange } from './pages/tools/SpecificRange';
+import { WeightBalance } from './pages/tools/WeightBalance';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -61,6 +64,9 @@ export const router = createBrowserRouter([
       { path: 'tools/tsd', element: <Tsd /> },
       { path: 'tools/top-of-descent', element: <TopOfDescent /> },
       { path: 'tools/descent-vdp', element: <DescentVdp /> },
+      { path: 'tools/fuel', element: <Fuel /> },
+      { path: 'tools/specific-range', element: <SpecificRange /> },
+      { path: 'tools/weight-balance', element: <WeightBalance /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

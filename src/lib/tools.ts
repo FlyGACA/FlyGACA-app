@@ -122,12 +122,12 @@ export const TOOLS: ToolMeta[] = [
   t('flight-plan', 'navigation', 'soon', { keywords: ['icao fpl', 'filing'] }),
 
   // Fuel & weight
-  t('fuel', 'fuel-weight', 'soon', { keywords: ['burn', 'endurance', 'range'] }),
-  t('specific-range', 'fuel-weight', 'soon', {
+  t('fuel', 'fuel-weight', 'live', { keywords: ['burn', 'endurance', 'range'] }),
+  t('specific-range', 'fuel-weight', 'live', {
     badge: 'new',
     keywords: ['nm per kg', 'efficiency'],
   }),
-  t('weight-balance', 'fuel-weight', 'soon', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
+  t('weight-balance', 'fuel-weight', 'live', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
 
   // Time & cycles
   t('zulu-clock', 'time-cycles', 'soon', { badge: 'new', keywords: ['utc', 'ksa', 'local', 'z'] }),

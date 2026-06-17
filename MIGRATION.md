@@ -37,7 +37,13 @@ with AFM/POH disclaimer) + specs.
 
 **Batch 1.4 — Navigation & descent:** wind triangle, great-circle distance/bearing, 1-in-60
 (`calc/navigation.ts`); top-of-descent, descent/VDP (`calc/descent.ts`); time–speed–distance
-(`calc/tsd.ts`) + specs. **Now live: 19 tools.**
+(`calc/tsd.ts`) + specs.
+
+**Batch 1.5 — Fuel & weight:** fuel burn/endurance/range + specific range (`calc/fuel.ts`);
+weight & balance with %MAC (`calc/weightBalance.ts`) + specs. **Now live: 22 tools.**
+
+Remaining Stage 1: E6B hub, time & cycles (zulu clock, AIRAC, sun times), currency & validity,
+procedures (holding, procedural separation, VFR brief, LOA). Then Stage 2 (data/reference).
 
 ## ✅ Batch 2 done
 
