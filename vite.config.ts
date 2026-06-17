@@ -10,6 +10,19 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Split the stable framework libraries into their own long-cached
+        // chunks so the app chunk stays lean and a release only busts the
+        // app bundle, not React/router/i18n.
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-i18n': ['i18next', 'react-i18next'],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     VitePWA({
