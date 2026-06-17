@@ -51,6 +51,8 @@ import { FlightPlan } from './pages/tools/FlightPlan';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
+import { GuidesIndex } from './pages/guides/GuidesIndex';
+import { Guide } from './pages/guides/Guide';
 import { StudyHub } from './pages/study/StudyHub';
 import { Quiz } from './pages/study/Quiz';
 import { Flashcards } from './pages/study/Flashcards';
@@ -122,6 +124,8 @@ export const router = createBrowserRouter([
       { path: 'tools/definitions', element: <Definitions /> },
       { path: 'tools/route-planner', element: <RoutePlanner /> },
       { path: 'tools/flight-plan', element: <FlightPlan /> },
+      { path: 'guides', element: <GuidesIndex /> },
+      { path: 'guides/:slug', element: <Guide /> },
       { path: 'study', element: <StudyHub /> },
       { path: 'study/quiz', element: <Quiz /> },
       { path: 'study/flashcards', element: <Flashcards /> },

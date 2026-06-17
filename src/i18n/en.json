@@ -695,6 +695,124 @@
     "copied": "✓ Copied",
     "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel — this does not file a flight plan."
   },
+  "guides": {
+    "title": "Guides",
+    "subtitle": "Plain-English explainers for the Saudi licences, medicals, weather and airspace — each pointing you to the regulation and to Captain Adel for depth.",
+    "askAdel": "Learn more with Captain Adel",
+    "tools": "Related tools",
+    "items": {
+      "saudi-ppl-requirements": {
+        "name": "Saudi PPL requirements",
+        "blurb": "What it takes to earn a Private Pilot Licence under GACAR Part 61.",
+        "intro": "The Private Pilot Licence is the first step to flying for pleasure in the Kingdom. Here is the shape of the path under GACAR Part 61.",
+        "sections": [
+          { "h": "Eligibility", "p": "Be at least 17, hold a current Class 2 medical, and meet the English-language requirement." },
+          { "h": "Training & experience", "p": "Complete the required dual and solo hours with an approved instructor or ATO, including cross-country and night where required." },
+          { "h": "Examinations", "p": "Pass the theoretical-knowledge exams and the skill test with an authorized examiner." }
+        ],
+        "adel": "What are the requirements for a GACAR Part 61 Private Pilot Licence? Cite the section."
+      },
+      "saudi-cpl-requirements": {
+        "name": "Saudi CPL requirements",
+        "blurb": "The path from a PPL to a Commercial Pilot Licence.",
+        "intro": "The Commercial Pilot Licence lets you fly for hire. It builds on the PPL with more experience and stricter standards.",
+        "sections": [
+          { "h": "Prerequisites", "p": "Hold a PPL, a current Class 1 medical, and the required English level." },
+          { "h": "Experience", "p": "Build the total and specific hours (PIC, cross-country, night, instrument) required by Part 61." },
+          { "h": "Tests", "p": "Pass the CPL theory exams and the commercial skill test." }
+        ],
+        "adel": "What are the GACAR Part 61 requirements for a Commercial Pilot Licence?"
+      },
+      "saudi-instrument-rating": {
+        "name": "Saudi instrument rating",
+        "blurb": "Adding the rating that lets you fly in cloud.",
+        "intro": "An instrument rating permits flight in instrument meteorological conditions, under IFR.",
+        "sections": [
+          { "h": "Eligibility", "p": "Hold at least a PPL and a valid medical certificate." },
+          { "h": "Training", "p": "Complete instrument instruction and the required instrument time, including approaches." },
+          { "h": "Test", "p": "Pass the instrument theory and the instrument-rating skill test." }
+        ],
+        "adel": "What does GACAR Part 61 require for an instrument rating?"
+      },
+      "gaca-medical-class-1": {
+        "name": "GACA Class 1 medical",
+        "blurb": "The medical certificate professional pilots need.",
+        "intro": "A Class 1 medical certificate is required for commercial and airline flying.",
+        "sections": [
+          { "h": "Who needs it", "p": "Required to exercise commercial pilot privileges." },
+          { "h": "What is assessed", "p": "Vision, hearing, cardiovascular and general fitness, by an authorized aviation medical examiner." },
+          { "h": "Validity", "p": "Valid for a set period that shortens with age — confirm in GACAR Part 67." }
+        ],
+        "adel": "What does a GACA Class 1 medical assess and how long is it valid under Part 67?"
+      },
+      "foreign-license-conversion-to-gaca": {
+        "name": "Converting a foreign licence",
+        "blurb": "Bringing an overseas licence to GACA.",
+        "intro": "If you hold a licence from another authority, you can convert it to a GACA licence by meeting a few requirements.",
+        "sections": [
+          { "h": "Documents", "p": "A valid foreign licence, your logbook, a current medical and ID." },
+          { "h": "Assessments", "p": "An air-law exam, English proficiency, and a skill test as required." },
+          { "h": "Apply", "p": "Submit through GACA and confirm the current requirements before you start." }
+        ],
+        "adel": "What is the process to convert a foreign pilot licence to a GACA licence?"
+      },
+      "icao-english-saelpt": {
+        "name": "ICAO English & SAELPT",
+        "blurb": "The language proficiency requirement for radiotelephony.",
+        "intro": "Pilots must show they can communicate in English to a defined standard to use their licence on the radio.",
+        "sections": [
+          { "h": "Why it matters", "p": "ICAO operational level (Level 4) is required to exercise privileges using English radiotelephony." },
+          { "h": "The six skills", "p": "Pronunciation, structure, vocabulary, fluency, comprehension and interactions." },
+          { "h": "Validity", "p": "Level 4 is re-tested periodically; higher levels last longer." }
+        ],
+        "adel": "What is the ICAO English language proficiency requirement and how is it tested?"
+      },
+      "airspace-explained": {
+        "name": "Saudi airspace explained",
+        "blurb": "How airspace is classified and what each class means.",
+        "intro": "Airspace is divided into classes that decide who may fly there and the service they receive.",
+        "sections": [
+          { "h": "The classes", "p": "ICAO classes A–G define who may fly and the service provided." },
+          { "h": "Controlled vs uncontrolled", "p": "Clearances and separation apply in controlled airspace; uncontrolled airspace gives information only." },
+          { "h": "Find the rules", "p": "Check the VFR minima and the AIP for Saudi sector details." }
+        ],
+        "adel": "Explain the airspace classes used in Saudi Arabia and the rules in each."
+      },
+      "reading-metar-taf": {
+        "name": "Reading METAR & TAF",
+        "blurb": "Decode aviation weather reports and forecasts.",
+        "intro": "METARs and TAFs pack the weather into a compact code. Once you know the pattern they read quickly.",
+        "sections": [
+          { "h": "METAR", "p": "An observation of current conditions: wind, visibility, weather, cloud, temperature and pressure." },
+          { "h": "TAF", "p": "A forecast over a validity period, with FM, BECMG and TEMPO change groups." },
+          { "h": "Practice", "p": "Paste real reports into the decoders to read them in plain language." }
+        ],
+        "adel": "How do I read a METAR and a TAF?"
+      },
+      "decoding-notams": {
+        "name": "Decoding NOTAMs",
+        "blurb": "Make sense of NOTAMs and their Q-codes.",
+        "intro": "A NOTAM warns of something that affects a flight. Its fields and abbreviations follow a fixed pattern.",
+        "sections": [
+          { "h": "Structure", "p": "Fields A) aerodrome, B) start, C) end and E) the plain-language text." },
+          { "h": "The Q-code", "p": "A coded summary of the subject and condition (ICAO Doc 8126)." },
+          { "h": "Decode", "p": "Use the NOTAM decoder to expand the abbreviations." }
+        ],
+        "adel": "How do I read a NOTAM and what does its Q-code mean?"
+      },
+      "the-airac-cycle": {
+        "name": "The AIRAC cycle",
+        "blurb": "Why aeronautical data changes every 28 days.",
+        "intro": "Charts, procedures and navigation data update together on a fixed worldwide schedule called AIRAC.",
+        "sections": [
+          { "h": "The cycle", "p": "AIRAC effective dates are fixed worldwide, 28 days apart." },
+          { "h": "Why it matters", "p": "Everyone changes to the new data on the same date, so the system stays consistent." },
+          { "h": "Track it", "p": "Use the AIRAC tool for the current cycle and the countdown to the next." }
+        ],
+        "adel": "What is the AIRAC cycle and why is it 28 days?"
+      }
+    }
+  },
   "study": {
     "title": "Study",
     "subtitle": "Practice quizzes, flashcards and a full ground-school path for the Saudi licences. Practice questions authored from the GACAR — not actual exam questions; verify every answer against the official source.",
