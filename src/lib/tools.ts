@@ -117,7 +117,7 @@ export const TOOLS: ToolMeta[] = [
     keywords: ['track error', 'correction'],
   }),
   t('tsd', 'navigation', 'live', { keywords: ['time speed distance'] }),
-  t('e6b', 'navigation', 'soon', { keywords: ['flight computer', 'whiz wheel'] }),
+  t('e6b', 'navigation', 'live', { keywords: ['flight computer', 'whiz wheel'] }),
   t('route-planner', 'navigation', 'soon', { keywords: ['leg', 'eta', 'wind'] }),
   t('flight-plan', 'navigation', 'soon', { keywords: ['icao fpl', 'filing'] }),
 

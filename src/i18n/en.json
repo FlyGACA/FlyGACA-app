@@ -460,6 +460,12 @@
     "copied": "✓ Copied",
     "formula": "Fills a simple Letter of Authorization template you can copy and edit. Submit it through the proper GACA channel — this does not grant any authorization."
   },
+  "e6b": {
+    "tabsTas": "True airspeed",
+    "tabsWind": "Wind triangle",
+    "tabsTsd": "Time · speed · distance",
+    "formula": "The everyday E6B functions in one place — true airspeed, the wind triangle and time–speed–distance. Each is also available as a standalone tool."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

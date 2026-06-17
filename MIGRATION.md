@@ -50,8 +50,11 @@ sun times & civil twilight (`calc/sun.ts`, SunCalc algorithm). Added shared `Tex
 
 **Batch 1.8 — Procedures:** holding entry + timing/fuel (`calc/holding.ts`), longitudinal
 separation (`calc/separation.ts`), VFR self-brief checklist, LOA letter builder.
-**Now live: 32 tools.** Remaining Stage 1: E6B hub (composition). Then Stage 2 (data/reference:
-decoders, GACAR reg lookups, quick reference, directories, route/flight-plan).
+**Now live: 32 tools.**
+
+**E6B hub:** tabbed flight computer (true airspeed · wind triangle · time–speed–distance) composing
+the existing cores. **Stage 1 calculators complete — 33 tools live.** Remaining: Stage 2
+(data/reference — decoders, GACAR reg lookups, quick reference, directories, route/flight-plan).
 
 ## ✅ Batch 2 done
 

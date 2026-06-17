@@ -19,6 +19,7 @@ import { WindTriangle } from './pages/tools/WindTriangle';
 import { GreatCircle } from './pages/tools/GreatCircle';
 import { OneInSixty } from './pages/tools/OneInSixty';
 import { Tsd } from './pages/tools/Tsd';
+import { E6b } from './pages/tools/E6b';
 import { TopOfDescent } from './pages/tools/TopOfDescent';
 import { DescentVdp } from './pages/tools/DescentVdp';
 import { Fuel } from './pages/tools/Fuel';
@@ -72,6 +73,7 @@ export const router = createBrowserRouter([
       { path: 'tools/great-circle', element: <GreatCircle /> },
       { path: 'tools/one-in-sixty', element: <OneInSixty /> },
       { path: 'tools/tsd', element: <Tsd /> },
+      { path: 'tools/e6b', element: <E6b /> },
       { path: 'tools/top-of-descent', element: <TopOfDescent /> },
       { path: 'tools/descent-vdp', element: <DescentVdp /> },
       { path: 'tools/fuel', element: <Fuel /> },
