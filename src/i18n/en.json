@@ -1099,6 +1099,8 @@
     "billingNote": "Checkout opens when billing is connected.",
     "current": "Current plan",
     "goPro": "Go Pro",
+    "checkoutBusy": "Opening checkout…",
+    "checkoutError": "Couldn't start checkout. Please try again.",
     "contact": "Contact sales",
     "plans": {
       "free": {

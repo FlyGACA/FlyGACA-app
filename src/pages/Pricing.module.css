@@ -111,3 +111,9 @@
   color: var(--text-dim);
   margin: 0;
 }
+.error {
+  margin-block-start: var(--space-4);
+  text-align: center;
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}

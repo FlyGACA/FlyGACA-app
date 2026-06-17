@@ -89,7 +89,7 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
-## ⏳ Stage 3 — Firebase + billing (emulator-first)
+## ✅ Stage 3 — Firebase + billing (emulator-first)
 
 - **Batch 3a — foundation (done).** `src/lib/firebase.ts`: config-gated, lazy bootstrap of
   App/Auth/Firestore (+ App Check) from `VITE_FIREBASE_*`. When unset (CI, preview, no-secret
@@ -105,8 +105,16 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
   when configured (local form otherwise); the Dashboard shows the effective plan. `src/lib/sync.ts`
   pure mappers (never serialize the server-only `entitlement`) are unit-tested. The Firestore
   round-trip is verified against the emulator per `docs/RUNBOOK-firebase.md`.
-- **Batch 3c — billing (next):** `src/lib/billing.ts` (Stripe Checkout via `createCheckoutSession`;
-  native RevenueCat by `billingChannel()`); wire the Pricing CTA.
+- **Batch 3c — billing (done).** `src/lib/billing.ts`: web Pro checkout via the existing
+  `createCheckoutSession` Cloud Function (region `me-central2`) → Stripe-hosted page (requires a
+  signed-in user); native iOS routes to RevenueCat IAP via `billingChannel()` (the `native-billing`
+  branch, wired in the shell). `firebase.ts` gains a region-pinned `getFns()`. The Pricing Pro CTA
+  calls checkout when `canCheckout()` (configured + web), redirecting an unauthenticated visitor to
+  sign in; otherwise it stays disabled. Gated + unit-tested; emulator-verified per the runbook.
+
+  **Remaining for production:** inject real `VITE_FIREBASE_*` + reCAPTCHA/App-Check keys and Stripe
+  price IDs, enforce App Check on the Functions, deploy `firestore.rules`. Native RevenueCat IAP
+  purchase is wired when the `@revenuecat/purchases-capacitor` plugin is added to the iOS shell.
 
 ## ✅ Verticals — charts · PDF sheets · met-brief
 

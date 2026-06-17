@@ -14,8 +14,12 @@
 import type { FirebaseApp } from 'firebase/app';
 import type { Auth } from 'firebase/auth';
 import type { Firestore } from 'firebase/firestore';
+import type { Functions } from 'firebase/functions';
 
 const env = import.meta.env;
+
+/** Functions region — must match the deployed gateway (functions/region.js). */
+export const FUNCTIONS_REGION = 'me-central2';
 
 export const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY as string | undefined,
@@ -91,4 +95,18 @@ export function getDb(): Promise<Firestore | null> {
     return db;
   })();
   return dbPromise;
+}
+
+let fnsPromise: Promise<Functions | null> | null = null;
+export function getFns(): Promise<Functions | null> {
+  if (!isFirebaseConfigured()) return Promise.resolve(null);
+  fnsPromise ??= (async () => {
+    const app = await getApp();
+    if (!app) return null;
+    const { getFunctions, connectFunctionsEmulator } = await import('firebase/functions');
+    const fns = getFunctions(app, FUNCTIONS_REGION);
+    if (useEmulator()) connectFunctionsEmulator(fns, '127.0.0.1', 5001);
+    return fns;
+  })();
+  return fnsPromise;
 }

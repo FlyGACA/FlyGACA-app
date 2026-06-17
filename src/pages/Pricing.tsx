@@ -1,14 +1,36 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { usePageMeta } from '../lib/usePageMeta';
+import { canCheckout, startProCheckout } from '../lib/billing';
 import styles from './Pricing.module.css';
 
 export function Pricing() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   usePageMeta(t('meta.pricing'));
   const [annual, setAnnual] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const f = (base: string) => t(`${base}.features`, { returnObjects: true }) as unknown as string[];
+
+  async function goPro() {
+    setBusy(true);
+    setError('');
+    try {
+      await startProCheckout(annual ? 'annual' : 'monthly');
+    } catch (e) {
+      const code = e instanceof Error ? e.message : '';
+      if (code === 'sign-in-required') {
+        navigate('/account');
+        return;
+      }
+      setError(t('pricing.checkoutError'));
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <section className={`container ${styles.page}`}>
@@ -45,8 +67,10 @@ export function Pricing() {
           name={t('pricing.plans.pro.name')}
           price={annual ? t('pricing.plans.pro.priceYr') : t('pricing.plans.pro.priceMo')}
           features={f('pricing.plans.pro')}
-          cta={t('pricing.goPro')}
+          cta={busy ? t('pricing.checkoutBusy') : t('pricing.goPro')}
           highlight
+          ctaOnClick={canCheckout() ? () => void goPro() : undefined}
+          ctaDisabled={busy || !canCheckout()}
           note={`${t('pricing.indicative')} ${t('pricing.billingNote')}`}
         />
         <Plan
@@ -57,6 +81,12 @@ export function Pricing() {
           ctaHref="/schools"
         />
       </div>
+
+      {error && (
+        <p role="alert" className={styles.error}>
+          {error}
+        </p>
+      )}
 
       <Disclaimer compact />
     </section>
@@ -71,10 +101,21 @@ interface PlanProps {
   highlight?: boolean;
   ctaDisabled?: boolean;
   ctaHref?: string;
+  ctaOnClick?: () => void;
   note?: string;
 }
 
-function Plan({ name, price, features, cta, highlight, ctaDisabled, ctaHref, note }: PlanProps) {
+function Plan({
+  name,
+  price,
+  features,
+  cta,
+  highlight,
+  ctaDisabled,
+  ctaHref,
+  ctaOnClick,
+  note,
+}: PlanProps) {
   return (
     <div className={`${styles.plan} ${highlight ? styles.highlight : ''}`}>
       <h2 className={styles.planName}>{name}</h2>
@@ -89,7 +130,7 @@ function Plan({ name, price, features, cta, highlight, ctaDisabled, ctaHref, not
           {cta}
         </a>
       ) : (
-        <button type="button" className={styles.cta} disabled={ctaDisabled}>
+        <button type="button" className={styles.cta} disabled={ctaDisabled} onClick={ctaOnClick}>
           {cta}
         </button>
       )}
