@@ -163,10 +163,10 @@ export const TOOLS: ToolMeta[] = [
   t('flight-review', 'currency', 'live', { badge: 'new', keywords: ['ipc', 'bfr', 'due'] }),
 
   // Procedures & R/T
-  t('holding', 'procedures', 'soon', { keywords: ['entry', 'teardrop', 'parallel'] }),
-  t('procedural-separation', 'procedures', 'soon', { keywords: ['separation', 'minima'] }),
-  t('vfr-brief', 'procedures', 'soon', { keywords: ['checklist', 'preflight'] }),
-  t('loa', 'procedures', 'soon', { keywords: ['letter of authorization'] }),
+  t('holding', 'procedures', 'live', { keywords: ['entry', 'teardrop', 'parallel'] }),
+  t('procedural-separation', 'procedures', 'live', { keywords: ['separation', 'minima'] }),
+  t('vfr-brief', 'procedures', 'live', { keywords: ['checklist', 'preflight'] }),
+  t('loa', 'procedures', 'live', { keywords: ['letter of authorization'] }),
 
   // Quick reference
   t('transponder', 'reference', 'soon', {

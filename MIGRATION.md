@@ -44,10 +44,14 @@ weight & balance with %MAC (`calc/weightBalance.ts`) + specs.
 
 **Batch 1.6 — Time & cycles:** Zulu/KSA clock (`calc/zulu.ts`), AIRAC cycle (`calc/airac.ts`),
 sun times & civil twilight (`calc/sun.ts`, SunCalc algorithm). Added shared `TextField` primitive.
-**Now live: 25 tools.**
 
-Remaining Stage 1: E6B hub, time & cycles (zulu clock, AIRAC, sun times), currency & validity,
-procedures (holding, procedural separation, VFR brief, LOA). Then Stage 2 (data/reference).
+**Batch 1.7 — Currency & validity:** Part 61 currency, medical validity, flight review/IPC
+(`calc/recency.ts`; regulatory period is a user input + "confirm against the cited Part" note).
+
+**Batch 1.8 — Procedures:** holding entry + timing/fuel (`calc/holding.ts`), longitudinal
+separation (`calc/separation.ts`), VFR self-brief checklist, LOA letter builder.
+**Now live: 32 tools.** Remaining Stage 1: E6B hub (composition). Then Stage 2 (data/reference:
+decoders, GACAR reg lookups, quick reference, directories, route/flight-plan).
 
 ## ✅ Batch 2 done
 

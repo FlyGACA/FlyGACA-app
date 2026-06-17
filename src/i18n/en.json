@@ -404,6 +404,62 @@
     "nextDue": "Next due",
     "formula": "Next due = last completed + interval. GACAR sets the required interval and lookback for a flight review or instrument proficiency check — confirm against the rule."
   },
+  "holding": {
+    "inbound": "Inbound course (°)",
+    "heading": "Heading at the fix (°)",
+    "turns": "Turns",
+    "right": "Right (standard)",
+    "left": "Left",
+    "legMin": "Inbound leg (min)",
+    "burn": "Fuel flow (per hour)",
+    "laps": "Laps",
+    "entry": "Entry",
+    "lapMin": "Per lap",
+    "totalMin": "Total time",
+    "fuel": "Fuel",
+    "direct": "Direct",
+    "parallel": "Parallel",
+    "teardrop": "Teardrop",
+    "formula": "Entry sectors (standard right turns): Direct spans 180°, Parallel 110° and Teardrop 70° relative to the inbound course. A lap is two legs plus two 180° turns (~1 min each)."
+  },
+  "separation": {
+    "gsLead": "Lead groundspeed (kt)",
+    "gsFollow": "Following groundspeed (kt)",
+    "spacing": "Current spacing (NM)",
+    "closure": "Closure rate",
+    "status": "Trend",
+    "closing": "Closing",
+    "opening": "Opening",
+    "timeToZero": "Time to zero spacing",
+    "formula": "Closure = follower groundspeed − leader groundspeed. If closing, time to zero = spacing ÷ closure. ATC separation minima are set by procedure — this is the geometry only."
+  },
+  "vfrBrief": {
+    "progress": "{{done}} of {{total}} checked",
+    "items": [
+      "Weather — METAR, TAF and trend for departure, route and destination",
+      "NOTAMs for departure, en-route and destination",
+      "Fuel — required plus reserves, with a margin",
+      "Weight & balance within limits for the whole flight",
+      "Take-off and landing performance against the runways",
+      "Airspace — class, controlled zones, restricted and danger areas",
+      "Alternates and a diversion plan",
+      "Aircraft documents and serviceability",
+      "Personal fitness to fly (IMSAFE)",
+      "Charts current and the AIRAC cycle in date"
+    ],
+    "formula": "A structured self-brief. Tick each item before you go — it is a memory aid, not a substitute for the official requirements."
+  },
+  "loa": {
+    "name": "Pilot name",
+    "licence": "Licence number",
+    "aircraft": "Aircraft registration",
+    "purpose": "Purpose / authorization sought",
+    "date": "Date",
+    "output": "Draft letter",
+    "copy": "Copy text",
+    "copied": "✓ Copied",
+    "formula": "Fills a simple Letter of Authorization template you can copy and edit. Submit it through the proper GACA channel — this does not grant any authorization."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
