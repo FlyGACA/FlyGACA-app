@@ -63,4 +63,21 @@ tests/            Vitest specs
 - **RTL for free.** Use CSS logical properties (`margin-inline`, `inset-block-start`, …), never
   physical left/right.
 
+## CI & deploy
+
+- **CI** (`.github/workflows/ci.yml`) runs on every PR: `typecheck · lint · format:check ·
+  test · build`. (A Playwright `e2e` job is added in Stage 9.)
+- **Host: Firebase Hosting** (`firebase.json`, project `flygaca-app` in `.firebaserc`). The config
+  carries the SPA rewrite, the `/api/chat` + `/api/content` rewrites to the Cloud Functions
+  (`me-central2`), and the strict security headers + CSP. `firestore.rules` is ported verbatim
+  (per-user isolation; the `entitlement` field is server-only).
+
+```bash
+npm run serve          # build + firebase emulator (local hosting)
+npm run deploy         # build + deploy hosting
+npm run deploy:rules   # deploy Firestore rules
+```
+
+Copy `.env.example` → `.env.local` for `VITE_API_BASE` and (from Stage 3) the public Firebase config.
+
 See `MIGRATION.md` for what has been ported from the legacy site and what remains.

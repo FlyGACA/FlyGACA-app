@@ -1,0 +1,82 @@
+rules_version = '2';
+
+// Fly GACA — Firestore security rules.
+// Deploy with:  firebase deploy --only firestore:rules
+//
+// Phase 3 — pilot accounts. Strict per-user isolation: a signed-in pilot can
+// read and write only the document tree under their own users/{uid}. There is
+// no path by which one user can read another user's profile or logbook.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+    function isHours(v) {
+      return v is number && v >= 0 && v <= 100000;
+    }
+    // A profile write must always carry a sane email + displayName.
+    function validProfile() {
+      return request.resource.data.email is string
+        && request.resource.data.email.size() < 254
+        && (!('displayName' in request.resource.data)
+            || (request.resource.data.displayName is string
+                && request.resource.data.displayName.size() <= 120));
+    }
+    // The entitlement field (the pilot's plan) is written ONLY by Cloud
+    // Functions, which use the Admin SDK and bypass these rules. A client may
+    // never introduce or change it — so nobody can grant themselves a paid
+    // plan by writing to their own profile.
+    function entitlementUntouched() {
+      return ('entitlement' in request.resource.data)
+               == ('entitlement' in resource.data)
+        && (!('entitlement' in request.resource.data)
+            || request.resource.data.entitlement == resource.data.entitlement);
+    }
+
+    // Waitlist — anyone may submit their email; the list is never readable
+    // from the client, so addresses stay private.
+    match /waitlist/{entry} {
+      allow create: if request.resource.data.email is string
+                    && request.resource.data.email.size() > 3
+                    && request.resource.data.email.size() < 254;
+      allow read, update, delete: if false;
+    }
+
+    // A pilot's own account document.
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      // On create the client must NOT include an entitlement field at all.
+      allow create: if isOwner(uid)
+        && validProfile()
+        && !('entitlement' in request.resource.data);
+      // On update the entitlement must be byte-identical to what is stored,
+      // so a client merge can never add, remove or alter it.
+      allow update: if isOwner(uid)
+        && validProfile()
+        && entitlementUntouched();
+
+      // The pilot's logbook — one document per flight.
+      match /logbook/{entry} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.date is string
+          && request.resource.data.date.size() <= 12
+          && isHours(request.resource.data.total)
+          && (!('remarks' in request.resource.data)
+              || (request.resource.data.remarks is string
+                  && request.resource.data.remarks.size() <= 2000));
+      }
+    }
+
+    // Everything else stays denied. This also covers server-only collections
+    // such as `adelQuota` (Captain Adel's daily-quota counters), which only
+    // the Cloud Functions Admin SDK touches.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

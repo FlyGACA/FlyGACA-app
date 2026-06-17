@@ -15,7 +15,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "cap:sync": "npm run build && cap sync",
-    "cap:open": "cap open ios"
+    "cap:open": "cap open ios",
+    "serve": "npm run build && firebase emulators:start --only hosting",
+    "deploy": "npm run build && firebase deploy --only hosting",
+    "deploy:rules": "firebase deploy --only firestore:rules"
   },
   "dependencies": {
     "i18next": "^23.16.8",
