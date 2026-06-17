@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
+import { usePageMeta } from '../lib/usePageMeta';
 import styles from './legal/Prose.module.css';
 
 interface Section {
@@ -13,6 +14,7 @@ interface Contact {
 
 export function About() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.about'));
   const sections = t('about.sections', { returnObjects: true }) as unknown as Section[];
   const contacts = t('about.contacts', { returnObjects: true }) as unknown as Contact[];
 

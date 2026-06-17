@@ -2,6 +2,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { CORPUS, fetchJson, searchHref } from '../../lib/content';
 import type { CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
@@ -32,6 +33,7 @@ function highlight(text: string, needle: string) {
 
 export function Library() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.library'));
   const [kind, setKind] = useState<LibraryKind>('regulations');
   const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index);
   const [category, setCategory] = useState<string>('all');

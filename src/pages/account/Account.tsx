@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { TextField } from '../../components/calc/TextField';
 import { Disclaimer } from '../../components/Disclaimer';
 import { signIn, signOut, useAccount } from '../../lib/account';
+import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
 
 export function Account() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.account'));
   const { session, profile } = useAccount();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');

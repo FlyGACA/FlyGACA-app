@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
+import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './Study.module.css';
 
 const MODES = [
@@ -14,6 +15,7 @@ const MODES = [
 
 export function StudyHub() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.study'));
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>

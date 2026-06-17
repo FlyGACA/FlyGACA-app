@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
+import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './Prose.module.css';
 
 interface Section {
@@ -14,6 +15,7 @@ export function LegalPage({
   base: 'legal.disclaimer' | 'legal.terms' | 'legal.privacy';
 }) {
   const { t } = useTranslation();
+  usePageMeta(t(`${base}.title`));
   const sections = t(`${base}.sections`, { returnObjects: true }) as unknown as Section[];
 
   return (

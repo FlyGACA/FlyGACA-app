@@ -10,6 +10,7 @@ import {
   useAccount,
   type Flight,
 } from '../../lib/account';
+import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
 
 const BLANK: Omit<Flight, 'id'> = {
@@ -36,6 +37,7 @@ export function Logbook() {
 
 function Inner() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.logbook'));
   const { flights } = useAccount();
   const [draft, setDraft] = useState(BLANK);
   const [adding, setAdding] = useState(false);

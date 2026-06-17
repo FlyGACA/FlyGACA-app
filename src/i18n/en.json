@@ -1618,5 +1618,21 @@
     "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",
     "howItWorks": "How it works",
     "related": "Related tools"
+  },
+  "meta": {
+    "home": "Saudi Aviation Library",
+    "library": "Reference Library",
+    "chat": "Captain Adel — AI Flight Instructor",
+    "tools": "Flight Tools & Calculators",
+    "guides": "Guides",
+    "study": "Study & Exam Prep",
+    "pricing": "Pricing",
+    "schools": "For Flight Schools",
+    "about": "About",
+    "account": "Account",
+    "dashboard": "Dashboard",
+    "logbook": "Logbook",
+    "settings": "Settings",
+    "notFound": "Page not found"
   }
 }

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { sumHours, useAccount } from '../../lib/account';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { addMonths, parseISO } from '../../calc/recency';
 import styles from './account.module.css';
 
@@ -25,6 +26,7 @@ export function Dashboard() {
 
 function Inner() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.dashboard'));
   const { profile, flights } = useAccount();
 
   const medical = parseISO(profile.medicalExpiry);

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { sendChat, type ChatSource, type ChatTurn } from '../../lib/api';
 import { getIdToken } from '../../lib/auth';
 import { sessionId } from '../../lib/session';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Chat.module.css';
 
@@ -19,6 +20,7 @@ const SUGGESTIONS = ['s1', 's2', 's3', 's4'] as const;
 
 export function Chat() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.chat'));
   const [params, setParams] = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');

@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '../lib/usePageMeta';
 
 export function NotFound() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.notFound'));
   return (
     <section
       className="container-narrow"

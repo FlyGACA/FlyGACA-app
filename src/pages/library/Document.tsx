@@ -5,6 +5,7 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import { sanitizeHtml, tocFromHtml, useFetchText } from '../../lib/useFetchText';
 import { CORPUS } from '../../lib/content';
 import type { CorpusIndex, LibraryKind } from '../../lib/content';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Document.module.css';
 
@@ -22,6 +23,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const doc = index.data?.documents.find((d) => d.slug === slug);
   const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
   const [filter, setFilter] = useState('');
+  usePageMeta(doc?.title, doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined);
 
   const html = useMemo(() => (text ? sanitizeHtml(text) : ''), [text]);
   const toc = useMemo(() => (text ? tocFromHtml(text) : []), [text]);

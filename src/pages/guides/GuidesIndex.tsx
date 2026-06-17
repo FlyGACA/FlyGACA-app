@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { GUIDE_SLUGS } from './guides';
 import styles from './Guides.module.css';
 
 export function GuidesIndex() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.guides'));
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>

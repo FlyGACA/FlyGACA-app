@@ -3,6 +3,7 @@ import { RequireSession } from './RequireSession';
 import { TextField } from '../../components/calc/TextField';
 import { LangToggle } from '../../components/LangToggle';
 import { deleteAllData, saveProfile, useAccount } from '../../lib/account';
+import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
 
 export function Settings() {
@@ -15,6 +16,7 @@ export function Settings() {
 
 function Inner() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.settings'));
   const { profile } = useAccount();
 
   return (

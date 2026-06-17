@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
+import { usePageMeta } from '../lib/usePageMeta';
 import styles from './Pricing.module.css';
 
 export function Pricing() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.pricing'));
   const [annual, setAnnual] = useState(false);
   const f = (base: string) => t(`${base}.features`, { returnObjects: true }) as unknown as string[];
 

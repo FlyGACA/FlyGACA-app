@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
+import { usePageMeta } from '../lib/usePageMeta';
 import styles from './CalcShell.module.css';
 
 export interface RelatedTool {
@@ -44,6 +45,7 @@ export function CalcShell({
 }: CalcShellProps) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
+  usePageMeta(title, intro);
 
   async function copyLink() {
     try {

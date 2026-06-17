@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TOOLS, TOOL_CATEGORIES, type ToolMeta } from '../../lib/tools';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './ToolsIndex.module.css';
 
 export function ToolsIndex() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.tools'));
   const [query, setQuery] = useState('');
 
   const liveCount = TOOLS.filter((x) => x.status === 'live').length;
