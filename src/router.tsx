@@ -42,6 +42,7 @@ import { Metar } from './pages/tools/Metar';
 import { Taf } from './pages/tools/Taf';
 import { Notam } from './pages/tools/Notam';
 import { ChartSymbols } from './pages/tools/ChartSymbols';
+import { VfrMinima, Oxygen, FuelReserves, ConversionChecker } from './pages/tools/RegLookup';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -103,6 +104,10 @@ export const router = createBrowserRouter([
       { path: 'tools/taf', element: <Taf /> },
       { path: 'tools/notam', element: <Notam /> },
       { path: 'tools/chart-symbols', element: <ChartSymbols /> },
+      { path: 'tools/vfr-minima', element: <VfrMinima /> },
+      { path: 'tools/oxygen', element: <Oxygen /> },
+      { path: 'tools/fuel-reserves', element: <FuelReserves /> },
+      { path: 'tools/conversion-checker', element: <ConversionChecker /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

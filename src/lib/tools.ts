@@ -141,16 +141,16 @@ export const TOOLS: ToolMeta[] = [
   t('met-brief', 'weather', 'soon', { keywords: ['route', 'weather briefing'] }),
 
   // GACAR regulatory lookups
-  t('vfr-minima', 'gacar', 'soon', {
+  t('vfr-minima', 'gacar', 'live', {
     badge: 'new',
     keywords: ['visibility', 'cloud clearance', 'airspace'],
   }),
-  t('oxygen', 'gacar', 'soon', { badge: 'new', keywords: ['o2', 'altitude', 'part 91'] }),
-  t('fuel-reserves', 'gacar', 'soon', {
+  t('oxygen', 'gacar', 'live', { badge: 'new', keywords: ['o2', 'altitude', 'part 91'] }),
+  t('fuel-reserves', 'gacar', 'live', {
     badge: 'new',
     keywords: ['reserve', 'alternate', 'part 121'],
   }),
-  t('conversion-checker', 'gacar', 'soon', { keywords: ['foreign licence', 'convert'] }),
+  t('conversion-checker', 'gacar', 'live', { keywords: ['foreign licence', 'convert'] }),
 
   // Currency & validity
   t('part61-currency', 'currency', 'live', {

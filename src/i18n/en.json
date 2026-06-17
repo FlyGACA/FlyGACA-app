@@ -576,6 +576,61 @@
     ],
     "formula": "Common airspace and chart abbreviations. Always read the chart's own legend and the current AIP."
   },
+  "reg": {
+    "askAdel": "Ask Captain Adel for the GACAR figure",
+    "openLibrary": "Open the Library",
+    "detailCol": "Details"
+  },
+  "vfrMinima": {
+    "confirm": "ICAO Annex 2 standard VMC minima shown for reference — GACAR Part 91 may set local differences. Confirm the exact figure in Part 91.",
+    "bandCol": "Altitude band",
+    "visCol": "Flight visibility",
+    "cloudCol": "Distance from cloud",
+    "rows": [
+      { "band": "At or above FL100", "vis": "8 km", "cloud": "1500 m horizontal · 300 m (1000 ft) vertical" },
+      { "band": "Below FL100, above 3000 ft AMSL or 1000 ft AGL", "vis": "5 km", "cloud": "1500 m horizontal · 300 m (1000 ft) vertical" },
+      { "band": "At or below 3000 ft AMSL or 1000 ft AGL", "vis": "5 km", "cloud": "Clear of cloud and in sight of the surface" }
+    ],
+    "formula": "Visual meteorological conditions depend on the airspace and altitude. The values here are the ICAO standard; the authoritative figures are in GACAR Part 91."
+  },
+  "oxygen": {
+    "confirm": "Framework only — the exact cabin altitudes and times are set in GACAR Part 91. Confirm there before relying on it.",
+    "altCol": "Cabin pressure altitude",
+    "reqCol": "Requirement",
+    "rows": [
+      { "alt": "Above ~10,000 ft for an extended period", "req": "Supplemental oxygen for the flight crew" },
+      { "alt": "Above ~13,000 ft", "req": "Oxygen for the flight crew at all times" },
+      { "alt": "Sustained high cabin altitude", "req": "Oxygen provided for the passengers" }
+    ],
+    "formula": "Supplemental-oxygen requirements increase with cabin altitude and exposure time. The exact thresholds are in GACAR Part 91 — this shows the structure only."
+  },
+  "fuelReserves": {
+    "confirm": "These are the standard fuel components — the exact minima depend on the operation and are set in the applicable GACAR Part (91 / 121 / 135). Confirm there.",
+    "nameCol": "Component",
+    "descCol": "What it covers",
+    "rows": [
+      { "name": "Taxi fuel", "desc": "Start-up, taxi and APU before take-off." },
+      { "name": "Trip fuel", "desc": "Departure to destination — climb, cruise, descent and approach." },
+      { "name": "Contingency fuel", "desc": "Unforeseen factors (often a percentage of trip fuel)." },
+      { "name": "Alternate fuel", "desc": "Missed approach at destination to landing at the alternate." },
+      { "name": "Final reserve fuel", "desc": "A fixed holding reserve (e.g. 30 / 45 minutes)." },
+      { "name": "Additional / discretionary fuel", "desc": "As required by the operation or the commander." }
+    ],
+    "formula": "Plan fuel as the sum of these components. The minimum for each is set by the applicable GACAR operating Part — confirm the exact figures there."
+  },
+  "conversion": {
+    "confirm": "A general outline of the pathway — confirm the current requirements and forms with GACA.",
+    "stepCol": "Step",
+    "rows": [
+      { "title": "Eligibility & documents", "desc": "Valid foreign licence, logbook, ID and photos." },
+      { "title": "Medical", "desc": "Hold a current GACA-accepted medical certificate (Part 67)." },
+      { "title": "Theory", "desc": "Air-law and any required written examinations." },
+      { "title": "Skill test", "desc": "A proficiency check with an authorized examiner." },
+      { "title": "English proficiency", "desc": "Demonstrate the required ICAO English level." },
+      { "title": "Apply to GACA", "desc": "Submit the application and fees through GACA." }
+    ],
+    "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA — confirm before you start."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
