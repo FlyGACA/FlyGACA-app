@@ -175,8 +175,10 @@
   },
   "document": {
     "outline": "المحتويات",
-    "readerPending": "قارئ هذا الجزء داخل التطبيق قيد الإعداد.",
-    "verifyAtGaca": "اقرأ لوائح GACAR الرسمية على gaca.gov.sa"
+    "toc": "المحتويات",
+    "filterToc": "تصفية المحتويات",
+    "verifyAtGaca": "اقرأ لوائح GACAR الرسمية على gaca.gov.sa",
+    "verifyLine": "مُعاد إنتاجه للدراسة. تحقّق دائمًا من لوائح GACAR الرسمية على gaca.gov.sa."
   },
   "pressureAltitude": {
     "elevation": "ارتفاع المطار (قدم)",

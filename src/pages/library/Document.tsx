@@ -1,60 +1,96 @@
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
+import { sanitizeHtml, tocFromHtml, useFetchText } from '../../lib/useFetchText';
 import type { GacarIndex } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Document.module.css';
 
 export function Document() {
   const { t } = useTranslation();
+  const { hash } = useLocation();
   const { slug } = useParams<{ slug: string }>();
-  const { data, error, loading } = useFetchJson<GacarIndex>('/data/gacar-index.json');
+  const index = useFetchJson<GacarIndex>('/data/gacar-index.json');
+  const doc = index.data?.documents.find((d) => d.slug === slug);
+  const { text, error, loading } = useFetchText(`/data/parts/${slug}.html`);
+  const [filter, setFilter] = useState('');
 
-  const doc = data?.documents.find((d) => d.slug === slug);
-  const categoryLabel = data?.categories.find((c) => c.id === doc?.category)?.label;
+  const html = useMemo(() => (text ? sanitizeHtml(text) : ''), [text]);
+  const toc = useMemo(() => (text ? tocFromHtml(text) : []), [text]);
+  const filteredToc = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    return q ? toc.filter((e) => e.title.toLowerCase().includes(q)) : toc;
+  }, [toc, filter]);
+
+  // Scroll to the anchor once the content is in the DOM.
+  useEffect(() => {
+    if (!html) return;
+    const id = hash.replace(/^#/, '');
+    if (id) document.getElementById(id)?.scrollIntoView();
+  }, [html, hash]);
 
   return (
-    <article className={`container-narrow ${styles.page}`}>
+    <article className={`container ${styles.page}`}>
       <p className={styles.back}>
         <Link to="/library">← {t('library.title')}</Link>
       </p>
 
       {loading && <p>{t('common.loading')}</p>}
       {error && <p role="alert">{t('common.loadError')}</p>}
-      {data && !doc && <p role="alert">{t('common.loadError')}</p>}
 
-      {doc && (
+      {html && (
         <>
           <header className={styles.head}>
             <div className={styles.meta}>
-              <span className={styles.badge}>
-                {t('library.part')} {doc.part}
-              </span>
-              {categoryLabel && <span className={styles.cat}>{categoryLabel}</span>}
-              <span className={styles.pages}>
-                {doc.pages} {t('library.pages')}
-              </span>
+              {doc && (
+                <span className={styles.badge}>
+                  {t('library.part')} {doc.part}
+                </span>
+              )}
+              {doc && (
+                <span className={styles.pages}>
+                  {doc.pages} {t('library.pages')}
+                </span>
+              )}
             </div>
-            <h1>{doc.title}</h1>
+            {doc && <h1>{doc.title}</h1>}
+            <p className={styles.verify}>{t('document.verifyLine')}</p>
           </header>
 
-          {doc.outline && doc.outline.length > 0 && (
-            <section className={styles.outline}>
-              <h2>{t('document.outline')}</h2>
+          <div className={styles.layout}>
+            <nav className={styles.toc} aria-label={t('document.toc')}>
+              <input
+                className={styles.tocFilter}
+                type="search"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                placeholder={t('document.filterToc')}
+                aria-label={t('document.filterToc')}
+              />
               <ul>
-                {doc.outline.map((line, i) => (
-                  <li key={i}>{line}</li>
+                {filteredToc.map((e) => (
+                  <li key={e.id}>
+                    <a
+                      href={`#${e.id}`}
+                      onClick={() => {
+                        // Smooth-scroll without a full hash navigation jump.
+                        setTimeout(() => document.getElementById(e.id)?.scrollIntoView(), 0);
+                      }}
+                    >
+                      {e.title}
+                    </a>
+                  </li>
                 ))}
               </ul>
-            </section>
-          )}
+            </nav>
 
-          <p className={styles.verify}>
-            {t('document.readerPending')}{' '}
-            <a href={data?.sourceUrl} target="_blank" rel="noopener">
-              {t('document.verifyAtGaca')} ↗
-            </a>
-          </p>
+            <div
+              className={styles.content}
+              // Trusted, machine-extracted GACAR HTML from our own corpus; sanitized above.
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          </div>
 
           <Disclaimer />
         </>

@@ -175,8 +175,10 @@
   },
   "document": {
     "outline": "Outline",
-    "readerPending": "The in-app reader for this Part is being ported.",
-    "verifyAtGaca": "Read the official GACAR at gaca.gov.sa"
+    "toc": "Contents",
+    "filterToc": "Filter contents",
+    "verifyAtGaca": "Read the official GACAR at gaca.gov.sa",
+    "verifyLine": "Reproduced for study. Always verify against the official GACAR at gaca.gov.sa."
   },
   "pressureAltitude": {
     "elevation": "Field elevation (ft)",
