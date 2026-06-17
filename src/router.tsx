@@ -27,6 +27,9 @@ import { WeightBalance } from './pages/tools/WeightBalance';
 import { ZuluClock } from './pages/tools/ZuluClock';
 import { AiracCycle } from './pages/tools/AiracCycle';
 import { SunTimes } from './pages/tools/SunTimes';
+import { Part61Currency } from './pages/tools/Part61Currency';
+import { MedicalValidity } from './pages/tools/MedicalValidity';
+import { FlightReview } from './pages/tools/FlightReview';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -73,6 +76,9 @@ export const router = createBrowserRouter([
       { path: 'tools/zulu-clock', element: <ZuluClock /> },
       { path: 'tools/airac', element: <AiracCycle /> },
       { path: 'tools/sun-times', element: <SunTimes /> },
+      { path: 'tools/part61-currency', element: <Part61Currency /> },
+      { path: 'tools/medical-validity', element: <MedicalValidity /> },
+      { path: 'tools/flight-review', element: <FlightReview /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

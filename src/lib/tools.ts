@@ -153,14 +153,14 @@ export const TOOLS: ToolMeta[] = [
   t('conversion-checker', 'gacar', 'soon', { keywords: ['foreign licence', 'convert'] }),
 
   // Currency & validity
-  t('part61-currency', 'currency', 'soon', {
+  t('part61-currency', 'currency', 'live', {
     keywords: ['90 day', 'night', 'passenger', 'recency'],
   }),
-  t('medical-validity', 'currency', 'soon', {
+  t('medical-validity', 'currency', 'live', {
     badge: 'new',
     keywords: ['class 1', 'class 2', 'expiry'],
   }),
-  t('flight-review', 'currency', 'soon', { badge: 'new', keywords: ['ipc', 'bfr', 'due'] }),
+  t('flight-review', 'currency', 'live', { badge: 'new', keywords: ['ipc', 'bfr', 'due'] }),
 
   // Procedures & R/T
   t('holding', 'procedures', 'soon', { keywords: ['entry', 'teardrop', 'parallel'] }),

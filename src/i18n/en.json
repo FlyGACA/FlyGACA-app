@@ -378,6 +378,32 @@
     "noEvent": "The sun does not cross this angle on this date.",
     "formula": "Computed from the sun's position for the date and place. Civil twilight is the sun 6° below the horizon. Shown in UTC and KSA local (UTC+3)."
   },
+  "validity": {
+    "current": "Current",
+    "valid": "Valid",
+    "inDate": "In date",
+    "expired": "Expired",
+    "overdue": "Overdue",
+    "daysLeft": "Days remaining"
+  },
+  "part61Currency": {
+    "lastDate": "Last met the requirement (date)",
+    "window": "Recency window (days)",
+    "expiry": "Currency expires",
+    "formula": "Currency expires the recency window after the date you last completed the required recent experience (e.g. three take-offs and landings). GACAR Part 61 sets the exact period and conditions — confirm against Part 61."
+  },
+  "medicalValidity": {
+    "issueDate": "Examination date",
+    "months": "Validity (months)",
+    "expiry": "Expires",
+    "formula": "Expiry = examination date + validity. The validity period depends on the certificate class and your age under GACAR Part 67 — confirm the exact period against Part 67."
+  },
+  "flightReview": {
+    "lastDate": "Last completed (date)",
+    "months": "Interval (months)",
+    "nextDue": "Next due",
+    "formula": "Next due = last completed + interval. GACAR sets the required interval and lookback for a flight review or instrument proficiency check — confirm against the rule."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
