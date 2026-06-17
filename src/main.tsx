@@ -1,12 +1,16 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
+import { inject } from '@vercel/analytics';
 import './i18n';
 import './styles/tokens.css';
 import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
+
+// Initialize Vercel Web Analytics
+inject();
 
 const rootEl = document.getElementById('root');
 if (!rootEl) throw new Error('Root element #root not found');
