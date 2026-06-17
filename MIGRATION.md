@@ -58,10 +58,18 @@ the existing cores. **Stage 1 calculators complete — 33 tools live.** Remainin
 
 ## ✅ Stage 2 — Data & reference tools (in progress)
 
-**Quick reference:** unit converter (`calc/units.ts`, 7 measure categories), transponder/squawk
-codes, ICAO phonetic alphabet & Morse (`src/data/phonetic.ts`). **36 tools live.** Remaining Stage 2:
-chart symbols, decoders (METAR/TAF/NOTAM), GACAR reg lookups (VFR minima, oxygen, fuel reserves,
-conversion), directories (aerodromes, airspace, definitions), route planner / ICAO flight plan.
+- **Quick reference:** unit converter (`calc/units.ts`), transponder/squawk codes, ICAO phonetic
+  alphabet & Morse, chart symbols.
+- **Decoders:** METAR (`calc/metar.ts`) + TAF (`calc/taf.ts`) with a bilingual decode layer
+  (`lib/wxText.ts`); NOTAM field/abbreviation decoder (`calc/notam.ts`).
+- **GACAR reg lookups:** VFR minima, oxygen, fuel reserves, licence conversion — a shared
+  `RegLookup` with a "confirm against the cited Part" note + Library/Adel links (no fabricated figures).
+- **Directory:** aerodromes (`airports.json`), ICAO airspace classes, GACAR Part 1 glossary
+  (`definitions-index.json`, fetched at runtime).
+- **Planning:** route planner (great-circle legs from `airports.json`), ICAO flight-plan builder.
+
+**Stage 2 essentially complete — 49 of 50 tools live.** Only `met-brief` is deferred (it needs a
+live weather API + CSP, which belong to a later wiring/hardening stage). The full tool suite is done.
 
 ## ✅ Batch 2 done
 

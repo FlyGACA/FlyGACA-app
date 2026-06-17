@@ -118,8 +118,8 @@ export const TOOLS: ToolMeta[] = [
   }),
   t('tsd', 'navigation', 'live', { keywords: ['time speed distance'] }),
   t('e6b', 'navigation', 'live', { keywords: ['flight computer', 'whiz wheel'] }),
-  t('route-planner', 'navigation', 'soon', { keywords: ['leg', 'eta', 'wind'] }),
-  t('flight-plan', 'navigation', 'soon', { keywords: ['icao fpl', 'filing'] }),
+  t('route-planner', 'navigation', 'live', { keywords: ['leg', 'eta', 'wind'] }),
+  t('flight-plan', 'navigation', 'live', { keywords: ['icao fpl', 'filing'] }),
 
   // Fuel & weight
   t('fuel', 'fuel-weight', 'live', { keywords: ['burn', 'endurance', 'range'] }),

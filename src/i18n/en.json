@@ -662,6 +662,39 @@
     ],
     "formula": "The ICAO airspace classes and the service each provides. For Saudi sector boundaries and frequencies, consult the AIP-KSA."
   },
+  "routePlanner": {
+    "route": "Route (ICAO codes)",
+    "routeHint": "Space-separated aerodromes, e.g. OERK OEDF OEJN",
+    "gs": "Groundspeed (kt)",
+    "burn": "Fuel flow (per hour)",
+    "legCol": "Leg",
+    "distCol": "Distance",
+    "bearingCol": "Track",
+    "total": "Total distance",
+    "time": "Time",
+    "fuel": "Fuel",
+    "unknown": "Unknown aerodrome(s): {{codes}}",
+    "formula": "Great-circle legs between the aerodromes, with time and fuel from your groundspeed and fuel flow. Aerodrome data from the AIP-KSA — plan with current charts."
+  },
+  "flightPlan": {
+    "callsign": "Aircraft identification",
+    "type": "Aircraft type",
+    "wake": "Wake category",
+    "equip": "Equipment",
+    "dep": "Departure",
+    "depTime": "Off-block (UTC, hhmm)",
+    "speed": "Cruise speed",
+    "level": "Cruise level",
+    "route": "Route",
+    "dest": "Destination",
+    "eet": "Total EET (hhmm)",
+    "altn": "Alternate",
+    "remarks": "Remarks",
+    "output": "FPL message",
+    "copy": "Copy text",
+    "copied": "✓ Copied",
+    "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel — this does not file a flight plan."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

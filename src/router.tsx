@@ -46,6 +46,8 @@ import { VfrMinima, Oxygen, FuelReserves, ConversionChecker } from './pages/tool
 import { Aerodromes } from './pages/tools/Aerodromes';
 import { Airspace } from './pages/tools/Airspace';
 import { Definitions } from './pages/tools/Definitions';
+import { RoutePlanner } from './pages/tools/RoutePlanner';
+import { FlightPlan } from './pages/tools/FlightPlan';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -114,6 +116,8 @@ export const router = createBrowserRouter([
       { path: 'tools/aerodromes', element: <Aerodromes /> },
       { path: 'tools/airspace', element: <Airspace /> },
       { path: 'tools/definitions', element: <Definitions /> },
+      { path: 'tools/route-planner', element: <RoutePlanner /> },
+      { path: 'tools/flight-plan', element: <FlightPlan /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
