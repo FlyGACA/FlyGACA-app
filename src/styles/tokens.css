@@ -99,7 +99,13 @@
   /* --- Layout --- */
   --container: 1180px;
   --container-narrow: 760px;
-  --nav-h: 68px;
+  /* Safe-area insets are 0 on the web; the native shell overrides them on
+     <html class="is-native"> so the notch / home indicator are respected. The
+     sticky-header height folds in the top inset so every offset stays aligned. */
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+  --nav-content-h: 68px;
+  --nav-h: calc(var(--nav-content-h) + var(--safe-top));
 
   /* --- Motion --- */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);

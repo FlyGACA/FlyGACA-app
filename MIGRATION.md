@@ -89,6 +89,22 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
+## ✅ Stage 8 — Native Capacitor shell
+
+- **Real `native-bridge` adapter** (`src/lib/native-bridge.ts`): `initNative()` (called from
+  `main.tsx`) configures the status bar, hides the splash, marks `<html class="is-native">` and
+  wires the Android back button + deep links (`toAppPath()` → the SPA router). `nativeStore`
+  (Preferences), `share()` and `openExternal()` fall back to web APIs in a browser. Plugins load via
+  `import()` behind an `isNative()` guard, so the **web bundle only ships `@capacitor/core`** (the
+  plugin web stubs split into tiny on-demand chunks).
+- **Capacitor v6 plugins:** app, status-bar, splash-screen, keyboard, preferences, share, browser,
+  plus the ios/android platform packages. `capacitor.config.ts` sets the dark background, manual
+  splash hide and keyboard resize.
+- **Safe-area insets** (`src/styles/native.css`): the sticky-header height folds in the top inset
+  via `--nav-h`, and the footer/body respect the home indicator + landscape notch — all 0 on the
+  web. Unit tests cover the web fallbacks + deep-link parsing. See `docs/RUNBOOK-native.md` for
+  generating the `ios/`/`android/` projects on macOS.
+
 ## ✅ Stage 9 — E2E, a11y & SEO (in progress)
 
 - **Per-route titles + Open Graph** via `usePageMeta` (replacing the single static title), wired

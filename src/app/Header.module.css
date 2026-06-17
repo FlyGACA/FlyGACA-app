@@ -3,6 +3,8 @@
   inset-block-start: 0;
   z-index: 50;
   block-size: var(--nav-h);
+  /* Push the bar content below the status bar on native (0 on the web). */
+  padding-block-start: var(--safe-top);
   display: flex;
   align-items: center;
   background: color-mix(in srgb, var(--bg) 88%, transparent);
