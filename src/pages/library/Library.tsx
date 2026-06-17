@@ -1,10 +1,33 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
-import type { GacarIndex } from '../../lib/content';
+import { fetchJson, searchHref } from '../../lib/content';
+import type { GacarIndex, SearchEntry, SearchIndex } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Library.module.css';
+
+const MIN_QUERY = 3;
+const MAX_HITS = 80;
+
+/** Split text on a case-insensitive needle, wrapping matches in <mark>. */
+function highlight(text: string, needle: string) {
+  if (!needle) return text;
+  const lower = text.toLowerCase();
+  const n = needle.toLowerCase();
+  const out: (string | JSX.Element)[] = [];
+  let i = 0;
+  let hit = lower.indexOf(n);
+  let k = 0;
+  while (hit !== -1) {
+    if (hit > i) out.push(text.slice(i, hit));
+    out.push(<mark key={k++}>{text.slice(hit, hit + n.length)}</mark>);
+    i = hit + n.length;
+    hit = lower.indexOf(n, i);
+  }
+  if (i < text.length) out.push(text.slice(i));
+  return out;
+}
 
 export function Library() {
   const { t } = useTranslation();
@@ -12,14 +35,48 @@ export function Library() {
   const [category, setCategory] = useState<string>('all');
   const [query, setQuery] = useState('');
 
+  // Lazy full-text index — fetched once, the first time a query reaches MIN_QUERY chars.
+  const [entries, setEntries] = useState<SearchEntry[] | null>(null);
+  const [indexLoading, setIndexLoading] = useState(false);
+  const requested = useRef(false);
+
+  const q = query.trim();
+  const fullText = q.length >= MIN_QUERY;
+
+  useEffect(() => {
+    if (!fullText || requested.current) return;
+    requested.current = true;
+    setIndexLoading(true);
+    fetchJson<SearchIndex>('/data/library-search.json')
+      .then((idx) => setEntries(idx.entries))
+      .catch(() => setEntries([]))
+      .finally(() => setIndexLoading(false));
+  }, [fullText]);
+
   const docs = useMemo(() => {
     if (!data) return [];
-    const q = query.trim().toLowerCase();
+    const needle = q.toLowerCase();
     return data.documents
       .filter((d) => category === 'all' || d.category === category)
-      .filter((d) => !q || d.title.toLowerCase().includes(q) || `part ${d.part}`.includes(q))
+      .filter(
+        (d) =>
+          !needle || d.title.toLowerCase().includes(needle) || `part ${d.part}`.includes(needle),
+      )
       .sort((a, b) => a.partNum - b.partNum);
-  }, [data, category, query]);
+  }, [data, category, q]);
+
+  const hits = useMemo(() => {
+    if (!fullText || !entries) return [];
+    const needle = q.toLowerCase();
+    const out: SearchEntry[] = [];
+    for (const e of entries) {
+      if (e.d.toLowerCase().includes(needle) || (e.x ?? '').toLowerCase().includes(needle)) {
+        out.push(e);
+        if (out.length >= MAX_HITS) break;
+      }
+    }
+    return out;
+  }, [fullText, entries, q]);
 
   const categoryLabel = (id: string) => data?.categories.find((c) => c.id === id)?.label ?? id;
 
@@ -45,6 +102,7 @@ export function Library() {
               placeholder={t('library.searchPlaceholder')}
               aria-label={t('library.searchPlaceholder')}
             />
+            <p className={styles.searchHint}>{t('library.searchHint')}</p>
             <div className={styles.chips} role="tablist" aria-label={t('library.eyebrow')}>
               <button
                 type="button"
@@ -88,6 +146,48 @@ export function Library() {
                 </li>
               ))}
             </ul>
+          )}
+
+          {fullText && (
+            <section className={styles.results} aria-live="polite">
+              {indexLoading && !entries ? (
+                <p className={styles.resultsMeta}>{t('library.searching')}</p>
+              ) : hits.length === 0 ? (
+                <p className={styles.resultsMeta}>{t('library.noFullMatches', { q })}</p>
+              ) : (
+                <>
+                  <h2 className={styles.resultsHead}>{t('library.fullResults')}</h2>
+                  <p className={styles.resultsMeta}>
+                    {hits.length >= MAX_HITS
+                      ? t('library.moreHits', { max: MAX_HITS })
+                      : t('library.hitsCount', { count: hits.length })}
+                  </p>
+                  <ul className={styles.hitList}>
+                    {hits.map((e, i) => {
+                      const href = searchHref(e.u);
+                      const body = (
+                        <Fragment>
+                          <span className={styles.hitBadge}>{e.b}</span>
+                          <span className={styles.hitTitle}>{highlight(e.d, q)}</span>
+                          {e.x && <span className={styles.hitExcerpt}>{highlight(e.x, q)}</span>}
+                        </Fragment>
+                      );
+                      return (
+                        <li key={`${e.u}-${i}`}>
+                          {href ? (
+                            <Link to={href} className={styles.hit}>
+                              {body}
+                            </Link>
+                          ) : (
+                            <span className={styles.hit}>{body}</span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </section>
           )}
 
           <p className={styles.synced}>{t('library.synced', { date: data.generated })}</p>

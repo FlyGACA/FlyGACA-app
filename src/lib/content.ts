@@ -134,3 +134,34 @@ export interface ReadingPath {
 export interface PathsIndex {
   paths: ReadingPath[];
 }
+
+/**
+ * One hit in the lazy full-text search index (`/data/library-search.json`).
+ * `d` heading · `b` badge (e.g. "Part 61") · `u` legacy URL
+ * (`document.html?type=regulations&id=<slug>#<anchor>`) · `x` excerpt.
+ */
+export interface SearchEntry {
+  d: string;
+  b: string;
+  u: string;
+  x?: string;
+}
+
+export interface SearchIndex {
+  generated: string;
+  count: number;
+  scope: string;
+  entries: SearchEntry[];
+}
+
+/**
+ * Rewrite a legacy search-index URL to the app's Document-reader route.
+ * `document.html?type=regulations&id=part-61#sec-x` → `/library/part-61#sec-x`.
+ * Returns null for entries we can't yet route (non-regulations scopes).
+ */
+export function searchHref(u: string): string | null {
+  const id = /[?&]id=([^&#]+)/.exec(u)?.[1];
+  if (!id) return null;
+  const anchor = /#(.+)$/.exec(u)?.[1];
+  return `/library/${id}${anchor ? `#${anchor}` : ''}`;
+}
