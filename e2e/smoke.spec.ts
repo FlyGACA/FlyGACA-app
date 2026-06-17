@@ -13,6 +13,7 @@ const ROUTES = [
   '/library/handbook/surveillance',
   '/chat',
   '/study',
+  '/study/sheets',
   '/guides',
   '/guides/saudi-ppl-requirements',
   '/pricing',

@@ -11,6 +11,7 @@ const MODES = [
   { to: '/study/exam', key: 'exam' },
   { to: '/study/paths', key: 'paths' },
   { to: '/study/packs', key: 'packs' },
+  { to: '/study/sheets', key: 'sheets' },
 ] as const;
 
 export function StudyHub() {

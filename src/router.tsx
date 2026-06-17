@@ -64,6 +64,7 @@ import { GroundSchool } from './pages/study/GroundSchool';
 import { MockExam } from './pages/study/MockExam';
 import { Paths } from './pages/study/Paths';
 import { Packs } from './pages/study/Packs';
+import { StudySheets } from './pages/study/StudySheets';
 import { Account } from './pages/account/Account';
 import { Dashboard } from './pages/account/Dashboard';
 import { Logbook } from './pages/account/Logbook';
@@ -156,6 +157,7 @@ export const router = createBrowserRouter([
       { path: 'study/exam', element: <MockExam /> },
       { path: 'study/paths', element: <Paths /> },
       { path: 'study/packs', element: <Packs /> },
+      { path: 'study/sheets', element: <StudySheets /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'logbook', element: <Logbook /> },

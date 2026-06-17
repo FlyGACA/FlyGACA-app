@@ -320,6 +320,13 @@
       "s4": "What does GACAR Part 91 say about carry-on baggage?"
     }
   },
+  "sheets": {
+    "title": "Study Sheets",
+    "lead": "One-page PDF summaries for each Saudi licence and check. Study aids — always verify against the official GACAR.",
+    "open": "Open ↗",
+    "download": "Download",
+    "noInline": "Your browser can't display the PDF inline."
+  },
   "charts": {
     "title": "VFR Charts",
     "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy — always verify against the current official AIP.",
@@ -1443,6 +1450,8 @@
     "pathOpen": "Open",
     "packs": "Prep packs",
     "packsDesc": "Focused exam-prep bundles for Pro members.",
+    "sheets": "Study sheets",
+    "sheetsDesc": "Printable one-page PDF summaries for each licence and check.",
     "packPro": "Included with Pro",
     "packGo": "Go Pro to unlock",
     "packItems": [
@@ -1638,6 +1647,7 @@
     "home": "Saudi Aviation Library",
     "library": "Reference Library",
     "charts": "VFR Charts",
+    "sheets": "Study Sheets",
     "chat": "Captain Adel — AI Flight Instructor",
     "tools": "Flight Tools & Calculators",
     "guides": "Guides",
