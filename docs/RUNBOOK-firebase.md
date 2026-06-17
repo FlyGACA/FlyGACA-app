@@ -51,7 +51,11 @@ Then check:
 
 1. Put the real Firebase web config in the host's `VITE_FIREBASE_*` build env (public, non-secret) —
    the same values shipped in `.env.example`.
-2. Set `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` to enable App Check; enforce App Check on the Functions.
+2. Set `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` to enable App Check. The client then attaches its
+   token to gateway calls — `X-Firebase-AppCheck` on `/api/chat` (`src/lib/api.ts` via
+   `getAppCheckToken`), and `httpsCallable` auto-attaches it for `createCheckoutSession`. Once
+   tokens are observed flowing (App Check → Requests), enforce App Check on the Functions; see
+   `docs/APP-CHECK-BACKEND.md` for the backend (`FlyGACA/flygaca`) changes and rollout order.
 3. Deploy `firestore.rules` (`npm run deploy:rules`). Leave `VITE_FIREBASE_EMULATOR` unset.
 
 Stripe/RevenueCat billing is Batch 3c (`src/lib/billing.ts`).

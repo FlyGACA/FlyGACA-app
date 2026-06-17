@@ -5,6 +5,12 @@
  *
  * The /v1/chat contract (see the gateway↔brain CONTRACT):
  *   { message, history, product, provider, session } → { answer, sources[] }
+ *
+ * Requests carry the Firebase ID token (`Authorization: Bearer`) and, when App
+ * Check is active, the App Check token (`X-Firebase-AppCheck`) so the gateway can
+ * enforce it. Both are passed in by the caller (see `getAppCheckToken` in
+ * `lib/firebase`) to keep this module free of the Firebase SDK; when `/api/content`
+ * gets wired it should attach the same `appCheckToken`.
  */
 
 export interface ChatTurn {
@@ -75,13 +81,21 @@ function chatBody(req: ChatRequest): string {
   });
 }
 
-/** Sends a chat turn to the gateway (buffered). `authToken` is the Firebase ID token. */
-export async function sendChat(req: ChatRequest, authToken?: string): Promise<ChatResponse> {
+/**
+ * Sends a chat turn to the gateway (buffered). `authToken` is the Firebase ID
+ * token; `appCheckToken` is the App Check token (sent as `X-Firebase-AppCheck`).
+ */
+export async function sendChat(
+  req: ChatRequest,
+  authToken?: string,
+  appCheckToken?: string,
+): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
     },
     body: chatBody(req),
   });
@@ -125,6 +139,7 @@ export function drainSse(buffer: string): { events: StreamEvent[]; rest: string;
 export async function* sendChatStream(
   req: ChatRequest,
   authToken?: string,
+  appCheckToken?: string,
 ): AsyncGenerator<StreamEvent> {
   const res = await fetch(`${API_BASE}/chat?stream=1`, {
     method: 'POST',
@@ -132,6 +147,7 @@ export async function* sendChatStream(
       'Content-Type': 'application/json',
       Accept: 'text/event-stream',
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
     },
     body: chatBody(req),
   });
