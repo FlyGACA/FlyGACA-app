@@ -114,4 +114,22 @@
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur: 0.2s;
   --dur-slow: 0.4s;
+
+  /* --- Neon functional accents (active status / live data — bento dashboard) ---
+     Used only for accents, hairline borders, iconography and large status text on
+     the navy base; never for body copy. Falcon palette stays the base. */
+  --neon-green: #2bffb0; /* aviation-green: active / live / "ON" status */
+  --neon-cyan: #3fe0ff; /* electric cyan: data tracks, radar plot lines */
+  --bento-gutter: #08090b; /* near-black grid gutter, one step below --bg */
+  --bento-surface: #0c141c; /* bento tile face, between night and deep */
+
+  /* Neon glows (radial — hover illumination + radar trails) */
+  --glow-neon-green: radial-gradient(closest-side, rgba(43, 255, 176, 0.35), rgba(43, 255, 176, 0) 70%);
+  --glow-neon-cyan: radial-gradient(closest-side, rgba(63, 224, 255, 0.35), rgba(63, 224, 255, 0) 70%);
+
+  /* --- 2027 kinetic-entry motion --- */
+  --ease-entry: cubic-bezier(0.16, 1, 0.3, 1); /* ultra-premium dampened deceleration */
+  --dur-entry: 620ms; /* per-card scale + fade settle */
+  --dur-stagger: 70ms; /* delay step between bento items */
+  --lift-hover: 1.015; /* micro scale-lift on hover */
 }
