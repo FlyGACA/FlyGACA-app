@@ -7,8 +7,11 @@ first; injecting real keys is the only remaining production step.
 
 ## What's wired
 
-- `src/lib/firebase.ts` — config-gated, lazy bootstrap of App/Auth/Firestore (+ App Check). The SDK
-  is dynamic-`import()`ed, so `firebase/*` never enters the main bundle.
+- `src/lib/firebase.ts` — config-gated, lazy bootstrap of App/Auth/Firestore (+ App Check + GA4
+  Analytics). The SDK is dynamic-`import()`ed, so `firebase/*` never enters the main bundle. The
+  full public web config for `flygaca-app` ships as real values in `.env.example`;
+  `cp .env.example .env.local` initializes Firebase against the live project. Analytics is
+  browser-only and opt-in via `measurementId` (off under SSR, tests, and the emulator).
 - `src/lib/auth.ts` — `getIdToken` (sent to `/api/chat`), `onAuthChange`, Google/email sign-in,
   register, `signOutUser`.
 - `src/lib/account.ts` — on Firebase sign-in, adopts the uid and hydrates profile/logbook/entitlement
@@ -23,10 +26,10 @@ first; injecting real keys is the only remaining production step.
 Prereqs: Java 21+ and `firebase-tools` (`npm i -g firebase-tools`).
 
 ```bash
-# 1) Point the app at the emulators and give it the (test) web config.
+# 1) Point the app at the emulators. `.env.example` already carries the real
+#    public web config, so a copy is enough to turn Firebase on.
 cp .env.example .env.local
-#   set VITE_FIREBASE_API_KEY / PROJECT_ID / APP_ID (any non-empty test values)
-#   set VITE_FIREBASE_EMULATOR=1
+#   set VITE_FIREBASE_EMULATOR=1 (keys can stay as-is; the emulator stubs them)
 
 # 2) Start Auth + Firestore emulators (rules are applied from firestore.rules).
 firebase emulators:start --only auth,firestore
@@ -46,7 +49,8 @@ Then check:
 
 ## Going to production (final flip)
 
-1. Put the real Firebase web config in the host's `VITE_FIREBASE_*` build env (public, non-secret).
+1. Put the real Firebase web config in the host's `VITE_FIREBASE_*` build env (public, non-secret) —
+   the same values shipped in `.env.example`.
 2. Set `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` to enable App Check; enforce App Check on the Functions.
 3. Deploy `firestore.rules` (`npm run deploy:rules`). Leave `VITE_FIREBASE_EMULATOR` unset.
 
