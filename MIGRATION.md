@@ -89,6 +89,20 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
+## ✅ Stage 6 — Library completeness
+
+- **Full in-app document reader** (`pages/library/Document.tsx`): fetches the regulation HTML,
+  sanitizes it (defense-in-depth: strips script/style/iframe/handlers/`javascript:`), builds a
+  filterable sticky table of contents from the headings, and deep-links to section anchors.
+- **Lazy full-text search:** typing 3+ characters fetches `library-search.json` once and shows
+  in-text matches with the query highlighted, each linking into the reader at the exact section.
+- **All three corpora** are now browsable + readable behind one generic reader and a corpus
+  switcher — **GACAR Regulations** (74 Parts, `parts/`), **Reference Library** (205 docs,
+  `library/`) and **GACA Handbooks** (21 docs, `ebooks/`). `searchHref()` maps every legacy
+  `type`/`id` to its reader route, so all 46,369 indexed passages are clickable.
+
+**Remaining (deferred):** charts vertical (Leaflet) and the heavy ebook PDFs.
+
 ## ✅ Batch 2 done
 
 - **Calculators:** Density altitude (`calc/isa.ts`) and True airspeed (`calc/tas.ts`), both pure +
@@ -114,9 +128,8 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
 ## ⏳ Pages to port / finish
 
 - [x] Library index + per-Part metadata page (`gacar-index.json`)
-- [ ] Library: full in-app document reader (needs the `parts/` corpus copied + a reader view),
-      the other library tabs (aerodromes, airspace, charts, handbooks, reference), and the
-      lazy full-text search (`library-search.json`)
+- [x] Library: full in-app document reader (regulations + reference + handbooks), corpus tabs,
+      and lazy full-text search (`library-search.json`). Remaining: charts (Leaflet), ebook PDFs.
 - [x] Captain Adel chat (JSON POST)
 - [ ] Chat: **SSE token streaming**, grounding badges (grounded/partial/refusal), tool-chip
       deep links, transcript persistence, App Check token header
