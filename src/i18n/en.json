@@ -695,6 +695,47 @@
     "copied": "✓ Copied",
     "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel — this does not file a flight plan."
   },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "saveBadge": "2 months free",
+    "indicative": "Indicative pricing — confirmed at launch.",
+    "billingNote": "Checkout opens when billing is connected.",
+    "current": "Current plan",
+    "goPro": "Go Pro",
+    "contact": "Contact sales",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "SAR 0",
+        "features": ["The full regulatory library", "Every flight tool", "Captain Adel — limited daily questions", "Study quizzes & flashcards"]
+      },
+      "pro": {
+        "name": "Pro",
+        "priceMo": "SAR 29 / mo",
+        "priceYr": "SAR 290 / yr",
+        "features": ["Everything in Free", "Unlimited Captain Adel", "Ground school & mock exams", "Logbook export & offline access", "Priority updates"]
+      },
+      "school": {
+        "name": "Schools",
+        "price": "Custom",
+        "features": ["Seat licences for your students", "Admin dashboard", "Bulk onboarding", "Invoiced billing"]
+      }
+    }
+  },
+  "schools": {
+    "title": "Fly GACA for schools",
+    "subtitle": "Equip every student with the Saudi regulatory library, flight tools and Captain Adel.",
+    "sections": [
+      { "h": "Seat licences", "p": "Buy Pro access in bulk and assign it to your students and instructors." },
+      { "h": "Admin dashboard", "p": "Onboard cohorts, track usage and manage seats from one place." },
+      { "h": "Built for the syllabus", "p": "Ground school, quizzes and mock exams aligned to the GACAR." }
+    ],
+    "cta": "Contact sales",
+    "email": "sales@flygaca.com"
+  },
   "account": {
     "title": "Account",
     "signInTitle": "Sign in",

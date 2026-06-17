@@ -61,6 +61,8 @@ import { Account } from './pages/account/Account';
 import { Dashboard } from './pages/account/Dashboard';
 import { Logbook } from './pages/account/Logbook';
 import { Settings } from './pages/account/Settings';
+import { Pricing } from './pages/Pricing';
+import { Schools } from './pages/Schools';
 import { About } from './pages/About';
 import { DisclaimerPage, TermsPage, PrivacyPage } from './pages/legal/LegalPage';
 import { NotFound } from './pages/NotFound';
@@ -138,6 +140,8 @@ export const router = createBrowserRouter([
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'logbook', element: <Logbook /> },
       { path: 'settings', element: <Settings /> },
+      { path: 'pricing', element: <Pricing /> },
+      { path: 'schools', element: <Schools /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
