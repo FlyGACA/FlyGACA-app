@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { RouteFallback } from './RouteFallback';
@@ -22,6 +23,7 @@ export function Layout() {
         </Suspense>
       </main>
       <Footer />
+      <SpeedInsights />
     </>
   );
 }
