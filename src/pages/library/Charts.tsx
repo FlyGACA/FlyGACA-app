@@ -123,7 +123,9 @@ export function Charts() {
                 </a>
               )}
             </div>
-            <div className={styles.map} ref={mapEl} role="img" aria-label={active?.label} />
+            {/* Interactive map: role=group (not img) so its focusable zoom
+                controls aren't flagged as nested inside a leaf img role. */}
+            <div className={styles.map} ref={mapEl} role="group" aria-label={active?.label} />
           </div>
         </div>
       )}
