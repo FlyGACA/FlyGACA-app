@@ -320,7 +320,14 @@
       "s4": "What does GACAR Part 91 say about carry-on baggage?"
     }
   },
+  "charts": {
+    "title": "VFR Charts",
+    "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy — always verify against the current official AIP.",
+    "sheet": "Sheet",
+    "openImage": "Open full image ↗"
+  },
   "library": {
+    "viewCharts": "Browse VFR charts",
     "eyebrow": "Reference Library",
     "title": "The Saudi aviation reference, in one place.",
     "subtitle": "Every numbered GACAR Part, browsable and searchable. Our ingested copy — always verify against the official GACA publication.",
@@ -1630,6 +1637,7 @@
   "meta": {
     "home": "Saudi Aviation Library",
     "library": "Reference Library",
+    "charts": "VFR Charts",
     "chat": "Captain Adel — AI Flight Instructor",
     "tools": "Flight Tools & Calculators",
     "guides": "Guides",

@@ -89,6 +89,49 @@ export const CORPUS: Record<LibraryKind, CorpusMeta> = {
   handbook: { index: '/data/ebooks-index.json', dir: '/data/ebooks', base: '/library/handbook' },
 };
 
+export interface ChartDoc {
+  region: string;
+  variant: string;
+  date: string | null;
+  label: string;
+  slug: string;
+  image: string;
+  /** Native pixel dimensions, used to set the Leaflet image-overlay bounds. */
+  w: number;
+  h: number;
+}
+
+export interface ChartsIndex {
+  generated: string;
+  source: string;
+  sourceUrl: string;
+  count: number;
+  documents: ChartDoc[];
+}
+
+export interface PdfCategory {
+  id: string;
+  label: string;
+}
+
+export interface PdfDoc {
+  title: string;
+  slug: string;
+  category: string;
+  /** 'reader' docs open in the Library reader; otherwise a deployed PDF file. */
+  kind?: 'reader' | 'file';
+  file?: string;
+  link?: string;
+  available?: boolean;
+  note?: string;
+}
+
+export interface PdfsIndex {
+  generated: string;
+  categories: PdfCategory[];
+  documents: PdfDoc[];
+}
+
 export interface Airport {
   icao: string;
   iata: string;

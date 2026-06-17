@@ -7,6 +7,7 @@ const ROUTES = [
   '/tools/crosswind',
   '/tools/e6b',
   '/library',
+  '/library/charts',
   '/library/part-1',
   '/library/reference/ac-68-1-basicmed',
   '/library/handbook/surveillance',

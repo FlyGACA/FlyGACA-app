@@ -96,6 +96,9 @@ export function Library() {
         <p className={styles.eyebrow}>{t('library.eyebrow')}</p>
         <h1>{t('library.title')}</h1>
         <p className={styles.subtitle}>{t('library.subtitle')}</p>
+        <Link className={styles.chartsLink} to="/library/charts">
+          {t('library.viewCharts')} →
+        </Link>
       </header>
 
       <div className={styles.tabs} role="tablist" aria-label={t('library.browse')}>

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
@@ -50,6 +51,9 @@ import { RoutePlanner } from './pages/tools/RoutePlanner';
 import { FlightPlan } from './pages/tools/FlightPlan';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
+
+// Charts pull in Leaflet (+ its CSS) — lazy-loaded so neither enters the main bundle.
+const Charts = lazy(() => import('./pages/library/Charts').then((m) => ({ default: m.Charts })));
 import { Chat } from './pages/chat/Chat';
 import { GuidesIndex } from './pages/guides/GuidesIndex';
 import { Guide } from './pages/guides/Guide';
@@ -81,6 +85,14 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'library', element: <Library /> },
+      {
+        path: 'library/charts',
+        element: (
+          <Suspense fallback={null}>
+            <Charts />
+          </Suspense>
+        ),
+      },
       { path: 'library/reference/:slug', element: <Document kind="reference" /> },
       { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },

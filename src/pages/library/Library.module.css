@@ -6,6 +6,13 @@
   max-inline-size: 60ch;
   margin-block-end: var(--space-6);
 }
+.chartsLink {
+  display: inline-block;
+  margin-block-start: var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--link);
+}
 .eyebrow {
   font-size: var(--fs-xs);
   text-transform: uppercase;
