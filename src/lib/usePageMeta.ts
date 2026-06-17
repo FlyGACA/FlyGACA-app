@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import i18n from '../i18n';
+import { OG_IMAGE, canonicalUrl, hreflangAlternates, ogLocale } from './seo';
 
 const SUFFIX = 'Fly GACA';
 const DEFAULT_TITLE = 'Fly GACA — Saudi Aviation Library';
@@ -15,21 +17,49 @@ function setMeta(selector: string, attr: 'name' | 'property', key: string, conte
   el.setAttribute('content', content);
 }
 
+function setLink(rel: string, href: string, hreflang?: string) {
+  const sel = hreflang ? `link[rel="alternate"][hreflang="${hreflang}"]` : `link[rel="${rel}"]`;
+  let el = document.head.querySelector<HTMLLinkElement>(sel);
+  if (!el) {
+    el = document.createElement('link');
+    el.setAttribute('rel', rel);
+    if (hreflang) el.setAttribute('hreflang', hreflang);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('href', href);
+}
+
 /**
- * Single-source head manager for the SPA. Each route sets its own document
- * title and description (the legacy static pages each had their own); we mirror
- * the title into the Open Graph tags and restore the defaults on unmount so a
- * route that doesn't set meta never inherits a stale title.
+ * Single-source head manager for the SPA. Each route sets its own title +
+ * description; we mirror those into Open Graph, and emit the canonical URL,
+ * hreflang alternates and locale for the current path/language. Re-runs when
+ * the language changes so og:locale + hreflang stay correct.
  */
 export function usePageMeta(title?: string, description?: string) {
   useEffect(() => {
-    const fullTitle = title ? `${title} — ${SUFFIX}` : DEFAULT_TITLE;
-    const desc = description ?? DEFAULT_DESC;
-    document.title = fullTitle;
-    setMeta('meta[name="description"]', 'name', 'description', desc);
-    setMeta('meta[property="og:title"]', 'property', 'og:title', fullTitle);
-    setMeta('meta[property="og:description"]', 'property', 'og:description', desc);
+    function apply() {
+      const fullTitle = title ? `${title} — ${SUFFIX}` : DEFAULT_TITLE;
+      const desc = description ?? DEFAULT_DESC;
+      const path = window.location.pathname;
+      const canonical = canonicalUrl(path);
+
+      document.title = fullTitle;
+      setMeta('meta[name="description"]', 'name', 'description', desc);
+      setMeta('meta[property="og:title"]', 'property', 'og:title', fullTitle);
+      setMeta('meta[property="og:description"]', 'property', 'og:description', desc);
+      setMeta('meta[property="og:type"]', 'property', 'og:type', 'website');
+      setMeta('meta[property="og:url"]', 'property', 'og:url', canonical);
+      setMeta('meta[property="og:image"]', 'property', 'og:image', OG_IMAGE);
+      setMeta('meta[property="og:locale"]', 'property', 'og:locale', ogLocale(i18n.language));
+
+      setLink('canonical', canonical);
+      for (const alt of hreflangAlternates(path)) setLink('alternate', alt.href, alt.hreflang);
+    }
+
+    apply();
+    i18n.on('languageChanged', apply);
     return () => {
+      i18n.off('languageChanged', apply);
       document.title = DEFAULT_TITLE;
       setMeta('meta[name="description"]', 'name', 'description', DEFAULT_DESC);
       setMeta('meta[property="og:title"]', 'property', 'og:title', DEFAULT_TITLE);

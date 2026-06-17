@@ -8,8 +8,10 @@ export type Lang = (typeof LANGS)[number];
 
 const STORAGE_KEY = 'flygaca:lang';
 
-/** Picks the initial language: stored choice → browser hint → English. */
+/** Picks the initial language: ?lang= → stored choice → browser hint → English. */
 function initialLang(): Lang {
+  const param = new URLSearchParams(window.location.search).get('lang');
+  if (param === 'en' || param === 'ar') return param;
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'en' || stored === 'ar') return stored;
   return navigator.language?.startsWith('ar') ? 'ar' : 'en';
