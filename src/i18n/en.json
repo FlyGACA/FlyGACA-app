@@ -466,6 +466,37 @@
     "tabsTsd": "Time · speed · distance",
     "formula": "The everyday E6B functions in one place — true airspeed, the wind triangle and time–speed–distance. Each is also available as a standalone tool."
   },
+  "unitsTool": {
+    "value": "Value",
+    "from": "From",
+    "formula": "Pick a category and a source unit; the value converts to every unit in that category. Temperature uses the °C / °F / K relations.",
+    "cat": {
+      "length": "Length",
+      "speed": "Speed",
+      "altitude": "Altitude",
+      "pressure": "Pressure",
+      "mass": "Mass",
+      "volume": "Volume",
+      "temperature": "Temperature"
+    }
+  },
+  "transponder": {
+    "filter": "Filter codes",
+    "codeCol": "Code",
+    "meaningCol": "Meaning",
+    "codes": [
+      { "code": "7500", "meaning": "Unlawful interference (hijack)" },
+      { "code": "7600", "meaning": "Radio communication failure" },
+      { "code": "7700", "meaning": "General emergency" },
+      { "code": "7000", "meaning": "VFR conspicuity (ICAO)" },
+      { "code": "2000", "meaning": "IFR, entering from an area with no code assigned" }
+    ],
+    "formula": "Standard transponder (squawk) codes. The emergency codes 7500 / 7600 / 7700 are universal — set them only when the situation applies."
+  },
+  "phonetic": {
+    "filter": "Filter (letter, word or digit)",
+    "formula": "The ICAO/NATO spelling alphabet with International Morse code."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

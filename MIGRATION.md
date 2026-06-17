@@ -54,7 +54,14 @@ separation (`calc/separation.ts`), VFR self-brief checklist, LOA letter builder.
 
 **E6B hub:** tabbed flight computer (true airspeed · wind triangle · time–speed–distance) composing
 the existing cores. **Stage 1 calculators complete — 33 tools live.** Remaining: Stage 2
-(data/reference — decoders, GACAR reg lookups, quick reference, directories, route/flight-plan).
+(data/reference).
+
+## ✅ Stage 2 — Data & reference tools (in progress)
+
+**Quick reference:** unit converter (`calc/units.ts`, 7 measure categories), transponder/squawk
+codes, ICAO phonetic alphabet & Morse (`src/data/phonetic.ts`). **36 tools live.** Remaining Stage 2:
+chart symbols, decoders (METAR/TAF/NOTAM), GACAR reg lookups (VFR minima, oxygen, fuel reserves,
+conversion), directories (aerodromes, airspace, definitions), route planner / ICAO flight plan.
 
 ## ✅ Batch 2 done
 

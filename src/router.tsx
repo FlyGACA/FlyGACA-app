@@ -35,6 +35,9 @@ import { Holding } from './pages/tools/Holding';
 import { ProceduralSeparation } from './pages/tools/ProceduralSeparation';
 import { VfrBrief } from './pages/tools/VfrBrief';
 import { Loa } from './pages/tools/Loa';
+import { Units } from './pages/tools/Units';
+import { Transponder } from './pages/tools/Transponder';
+import { Phonetic } from './pages/tools/Phonetic';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -89,6 +92,9 @@ export const router = createBrowserRouter([
       { path: 'tools/procedural-separation', element: <ProceduralSeparation /> },
       { path: 'tools/vfr-brief', element: <VfrBrief /> },
       { path: 'tools/loa', element: <Loa /> },
+      { path: 'tools/units', element: <Units /> },
+      { path: 'tools/transponder', element: <Transponder /> },
+      { path: 'tools/phonetic', element: <Phonetic /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

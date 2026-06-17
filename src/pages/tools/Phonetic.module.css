@@ -1,0 +1,32 @@
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.symbol {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  color: var(--accent-bright);
+}
+.word {
+  font-weight: var(--fw-semibold);
+}
+.morse {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+}

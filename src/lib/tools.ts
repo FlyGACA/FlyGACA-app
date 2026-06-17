@@ -169,15 +169,15 @@ export const TOOLS: ToolMeta[] = [
   t('loa', 'procedures', 'live', { keywords: ['letter of authorization'] }),
 
   // Quick reference
-  t('transponder', 'reference', 'soon', {
+  t('transponder', 'reference', 'live', {
     badge: 'new',
     keywords: ['squawk', '7500', '7600', '7700'],
   }),
-  t('phonetic', 'reference', 'soon', {
+  t('phonetic', 'reference', 'live', {
     badge: 'new',
     keywords: ['alphabet', 'morse', 'alpha bravo'],
   }),
-  t('units', 'reference', 'soon', { keywords: ['converter', 'feet', 'metres', 'knots'] }),
+  t('units', 'reference', 'live', { keywords: ['converter', 'feet', 'metres', 'knots'] }),
   t('chart-symbols', 'reference', 'soon', { keywords: ['legend', 'vfr chart'] }),
 
   // Directory & glossary
