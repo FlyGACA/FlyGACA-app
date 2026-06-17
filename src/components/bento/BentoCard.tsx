@@ -41,13 +41,7 @@ const toneClass: Record<BentoTone, string> = {
  * on the GPU; `useReducedMotion` flattens entry and hover to honour the user's
  * OS preference (belt-and-braces with the global prefers-reduced-motion reset).
  */
-export function BentoCard({
-  span = 'md',
-  tone = 'default',
-  to,
-  label,
-  children,
-}: BentoCardProps) {
+export function BentoCard({ span = 'md', tone = 'default', to, label, children }: BentoCardProps) {
   const reduce = useReducedMotion();
   const glow = useCardGlow<HTMLDivElement & HTMLAnchorElement>();
 

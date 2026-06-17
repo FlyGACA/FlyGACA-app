@@ -167,17 +167,16 @@ export function RadarWidget() {
       <p className={shared.eyebrow}>{t('home.dashboard.radar.eyebrow')}</p>
       <div className={styles.scope}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
-        {/* An interactive data node with an elastic, spring tooltip. */}
+        {/* A decorative data node with an elastic, spring tooltip on hover. It is
+            part of the concept visual (hidden from the a11y tree) so it never
+            becomes interactive content nested inside the card's link. */}
         <motion.span
           className={styles.node}
-          tabIndex={0}
+          aria-hidden="true"
           whileHover={reduce ? undefined : { scale: 1.4 }}
-          whileFocus={reduce ? undefined : { scale: 1.4 }}
           transition={{ type: 'spring', stiffness: 500, damping: 18 }}
         >
-          <span className={styles.tooltip} role="tooltip">
-            {t('home.dashboard.radar.node')}
-          </span>
+          <span className={styles.tooltip}>{t('home.dashboard.radar.node')}</span>
         </motion.span>
       </div>
       <p className={styles.concept}>{t('home.dashboard.radar.concept')}</p>

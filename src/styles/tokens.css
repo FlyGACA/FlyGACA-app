@@ -124,8 +124,16 @@
   --bento-surface: #0c141c; /* bento tile face, between night and deep */
 
   /* Neon glows (radial — hover illumination + radar trails) */
-  --glow-neon-green: radial-gradient(closest-side, rgba(43, 255, 176, 0.35), rgba(43, 255, 176, 0) 70%);
-  --glow-neon-cyan: radial-gradient(closest-side, rgba(63, 224, 255, 0.35), rgba(63, 224, 255, 0) 70%);
+  --glow-neon-green: radial-gradient(
+    closest-side,
+    rgba(43, 255, 176, 0.35),
+    rgba(43, 255, 176, 0) 70%
+  );
+  --glow-neon-cyan: radial-gradient(
+    closest-side,
+    rgba(63, 224, 255, 0.35),
+    rgba(63, 224, 255, 0) 70%
+  );
 
   /* --- 2027 kinetic-entry motion --- */
   --ease-entry: cubic-bezier(0.16, 1, 0.3, 1); /* ultra-premium dampened deceleration */

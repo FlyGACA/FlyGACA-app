@@ -20,9 +20,7 @@ export function BentoGrid({ children, label }: BentoGridProps) {
   const container: Variants = {
     hidden: {},
     show: {
-      transition: reduce
-        ? { staggerChildren: 0 }
-        : { staggerChildren: 0.07, delayChildren: 0.05 },
+      transition: reduce ? { staggerChildren: 0 } : { staggerChildren: 0.07, delayChildren: 0.05 },
     },
   };
 
