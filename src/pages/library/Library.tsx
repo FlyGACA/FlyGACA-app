@@ -128,7 +128,7 @@ export function Library() {
               aria-label={t('library.searchPlaceholder')}
             />
             <p className={styles.searchHint}>{t('library.searchHint')}</p>
-            <div className={styles.chips} role="tablist" aria-label={t('library.eyebrow')}>
+            <div className={styles.chips} role="group" aria-label={t('library.eyebrow')}>
               <button
                 type="button"
                 className={`${styles.chip} ${category === 'all' ? styles.chipActive : ''}`}
