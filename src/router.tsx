@@ -57,6 +57,10 @@ import { StudyHub } from './pages/study/StudyHub';
 import { Quiz } from './pages/study/Quiz';
 import { Flashcards } from './pages/study/Flashcards';
 import { GroundSchool } from './pages/study/GroundSchool';
+import { Account } from './pages/account/Account';
+import { Dashboard } from './pages/account/Dashboard';
+import { Logbook } from './pages/account/Logbook';
+import { Settings } from './pages/account/Settings';
 import { About } from './pages/About';
 import { DisclaimerPage, TermsPage, PrivacyPage } from './pages/legal/LegalPage';
 import { NotFound } from './pages/NotFound';
@@ -130,6 +134,10 @@ export const router = createBrowserRouter([
       { path: 'study/quiz', element: <Quiz /> },
       { path: 'study/flashcards', element: <Flashcards /> },
       { path: 'study/groundschool', element: <GroundSchool /> },
+      { path: 'account', element: <Account /> },
+      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'logbook', element: <Logbook /> },
+      { path: 'settings', element: <Settings /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
