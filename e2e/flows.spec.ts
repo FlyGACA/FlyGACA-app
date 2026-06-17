@@ -56,3 +56,42 @@ test('chat renders a streamed answer, grounding badge and source', async ({ page
   await expect(page.getByRole('status')).toContainText('Grounded');
   await expect(page.getByText('§91.155')).toBeVisible();
 });
+
+test('account local sign-in and sign-out round-trip', async ({ page }) => {
+  await page.goto('/account');
+  await page.getByLabel('Email').fill('pilot@example.com');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  // Signed-in view exposes a sign-out control.
+  const signOut = page.getByRole('button', { name: 'Sign out' });
+  await expect(signOut).toBeVisible();
+  await signOut.click();
+  // Back to the sign-in form.
+  await expect(page.getByLabel('Email')).toBeVisible();
+});
+
+test('pricing Go-Pro stays disabled when billing is not configured', async ({ page }) => {
+  await page.goto('/pricing');
+  await expect(page.getByRole('button', { name: 'Go Pro' })).toBeDisabled();
+});
+
+test('VFR charts render a Leaflet image overlay', async ({ page }) => {
+  await page.goto('/library/charts');
+  await expect(page.locator('h1').first()).toBeVisible();
+  // The lazy Leaflet map mounts and lays an image overlay for the active sheet.
+  await expect(page.locator('.leaflet-container')).toBeVisible();
+  await expect(page.locator('img.leaflet-image-layer').first()).toBeVisible();
+});
+
+test('study sheets embed a PDF', async ({ page }) => {
+  await page.goto('/study/sheets');
+  await expect(page.locator('h1').first()).toBeVisible();
+  const embed = page.locator('object[type="application/pdf"]');
+  await expect(embed).toHaveAttribute('data', /\.pdf$/);
+});
+
+test('met-brief builds official-source links for a route', async ({ page }) => {
+  await page.goto('/tools/met-brief');
+  await page.getByRole('textbox').first().fill('OERK OEJN');
+  await expect(page.getByText('OERK')).toBeVisible();
+  await expect(page.getByRole('link', { name: /METAR/ }).first()).toBeVisible();
+});

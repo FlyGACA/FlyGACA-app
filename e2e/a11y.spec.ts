@@ -2,7 +2,16 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 /** No serious/critical accessibility violations on the highest-traffic pages. */
-const PAGES = ['/', '/tools/crosswind', '/library', '/chat'];
+const PAGES = [
+  '/',
+  '/tools/crosswind',
+  '/library',
+  '/chat',
+  '/pricing',
+  '/account',
+  '/library/charts',
+  '/study/sheets',
+];
 
 for (const path of PAGES) {
   test(`a11y: ${path}`, async ({ page }) => {

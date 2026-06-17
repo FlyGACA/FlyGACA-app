@@ -71,7 +71,12 @@ export function StudySheets() {
               )}
             </div>
             {activeSrc && (
-              <object className={styles.embed} data={activeSrc} type="application/pdf">
+              <object
+                className={styles.embed}
+                data={activeSrc}
+                type="application/pdf"
+                aria-label={active?.title}
+              >
                 <p className={styles.fallback}>
                   {t('sheets.noInline')}{' '}
                   <a href={activeSrc} target="_blank" rel="noopener">
