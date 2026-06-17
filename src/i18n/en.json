@@ -497,6 +497,41 @@
     "filter": "Filter (letter, word or digit)",
     "formula": "The ICAO/NATO spelling alphabet with International Morse code."
   },
+  "wx": {
+    "raw": "Raw report",
+    "paste": "Paste a raw report",
+    "station": "Station",
+    "time": "Time",
+    "wind": "Wind",
+    "visibility": "Visibility",
+    "clouds": "Clouds",
+    "weather": "Weather",
+    "temp": "Temperature",
+    "dew": "Dew point",
+    "qnh": "QNH",
+    "altimeter": "Altimeter",
+    "cavok": "CAVOK — ceiling and visibility OK",
+    "none": "—",
+    "calm": "calm",
+    "vrb": "variable direction",
+    "atKt": "{{dir}}° at {{spd}} kt",
+    "gusting": ", gusting {{g}} kt",
+    "variableBetween": " (variable {{from}}°–{{to}}°)",
+    "tenKm": "10 km or more",
+    "metres": "{{m}} m",
+    "ft": "{{ft}} ft",
+    "period": "Period",
+    "prob": "Probability {{p}}%",
+    "cover": { "FEW": "few", "SCT": "scattered", "BKN": "broken", "OVC": "overcast", "VV": "vertical visibility" },
+    "code": {
+      "+": "heavy ", "-": "light ", "VC": "nearby ", "MI": "shallow ", "BC": "patches of ",
+      "SH": "showers of ", "TS": "thunderstorm ", "FZ": "freezing ", "BL": "blowing ", "DR": "drifting ",
+      "PR": "partial ", "DZ": "drizzle", "RA": "rain", "SN": "snow", "SG": "snow grains", "PL": "ice pellets",
+      "GR": "hail", "GS": "small hail", "IC": "ice crystals", "UP": "unknown precipitation", "BR": "mist",
+      "FG": "fog", "FU": "smoke", "VA": "volcanic ash", "DU": "dust", "SA": "sand", "HZ": "haze",
+      "PO": "dust whirls", "SQ": "squall", "FC": "funnel cloud", "SS": "sandstorm", "DS": "duststorm", "PY": "spray"
+    }
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

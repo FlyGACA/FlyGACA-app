@@ -38,6 +38,8 @@ import { Loa } from './pages/tools/Loa';
 import { Units } from './pages/tools/Units';
 import { Transponder } from './pages/tools/Transponder';
 import { Phonetic } from './pages/tools/Phonetic';
+import { Metar } from './pages/tools/Metar';
+import { Taf } from './pages/tools/Taf';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -95,6 +97,8 @@ export const router = createBrowserRouter([
       { path: 'tools/units', element: <Units /> },
       { path: 'tools/transponder', element: <Transponder /> },
       { path: 'tools/phonetic', element: <Phonetic /> },
+      { path: 'tools/metar', element: <Metar /> },
+      { path: 'tools/taf', element: <Taf /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

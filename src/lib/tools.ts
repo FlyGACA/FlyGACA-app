@@ -135,8 +135,8 @@ export const TOOLS: ToolMeta[] = [
   t('sun-times', 'time-cycles', 'live', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
 
   // Weather & decoding
-  t('metar', 'weather', 'soon', { keywords: ['decode', 'observation'] }),
-  t('taf', 'weather', 'soon', { badge: 'new', keywords: ['forecast', 'decode'] }),
+  t('metar', 'weather', 'live', { keywords: ['decode', 'observation'] }),
+  t('taf', 'weather', 'live', { badge: 'new', keywords: ['forecast', 'decode'] }),
   t('notam', 'weather', 'soon', { keywords: ['q code', 'decode'] }),
   t('met-brief', 'weather', 'soon', { keywords: ['route', 'weather briefing'] }),
 
