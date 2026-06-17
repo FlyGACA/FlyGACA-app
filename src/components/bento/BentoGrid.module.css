@@ -4,7 +4,11 @@
   grid-auto-rows: minmax(160px, auto);
   gap: var(--space-4);
   padding: var(--space-5);
-  background: var(--bento-gutter);
+  /* Ambient corner glows over the near-black gutter give the grid spatial depth. */
+  background:
+    var(--glow-neon-cyan) 0% 0% / 46% 56% no-repeat,
+    var(--glow-teal) 100% 100% / 52% 62% no-repeat,
+    var(--bento-gutter);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
 }

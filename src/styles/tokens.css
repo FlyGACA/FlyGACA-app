@@ -140,4 +140,9 @@
   --dur-entry: 620ms; /* per-card scale + fade settle */
   --dur-stagger: 70ms; /* delay step between bento items */
   --lift-hover: 1.015; /* micro scale-lift on hover */
+
+  /* --- Translucent finishes (token-derived — never a raw colour) --- */
+  --sheen-top: color-mix(in srgb, var(--text) 6%, transparent); /* glassy top highlight */
+  --glow-stat-cyan: 0 0 22px color-mix(in srgb, var(--neon-cyan) 40%, transparent);
+  --glow-stat-green: 0 0 22px color-mix(in srgb, var(--neon-green) 40%, transparent);
 }

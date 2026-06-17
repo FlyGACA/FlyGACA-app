@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
 import { useFetchJson } from '../../../lib/useFetchJson';
 import { type QuizData } from '../../../lib/content';
+import { StatValue } from './StatValue';
 import shared from './widgets.module.css';
 
 /** Study hub — size of the question bank, links to the study section. */
@@ -17,7 +18,7 @@ export function StudyWidget() {
         <div className={shared.skeleton} />
       ) : (
         <div className={shared.statRow}>
-          <span className={shared.stat}>{questions}</span>
+          <StatValue value={questions} className={shared.stat} />
           <span className={shared.unit}>{t('home.dashboard.study.questions')}</span>
         </div>
       )}

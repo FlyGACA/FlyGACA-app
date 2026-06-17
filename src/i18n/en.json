@@ -33,6 +33,7 @@
     "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication.",
     "dashboard": {
       "region": "Fly GACA dashboard",
+      "overview": "Operations overview",
       "radar": {
         "eyebrow": "Charts · Radar",
         "title": "Aeronautical charts",

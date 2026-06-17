@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
 import { useFetchJson } from '../../../lib/useFetchJson';
 import { CORPUS, type GacarIndex } from '../../../lib/content';
+import { StatValue } from './StatValue';
 import shared from './widgets.module.css';
 
 /** GACAR regulatory stream — live count of Parts and category streams. */
@@ -20,7 +21,7 @@ export function RegStreamWidget() {
         <div className={shared.skeleton} />
       ) : (
         <div className={shared.statRow}>
-          <span className={`${shared.stat} ${shared.statGreen}`}>{data.count}</span>
+          <StatValue value={data.count} className={`${shared.stat} ${shared.statGreen}`} />
           <span className={shared.unit}>
             {t('home.dashboard.reg.streams', { count: data.categories.length })}
           </span>

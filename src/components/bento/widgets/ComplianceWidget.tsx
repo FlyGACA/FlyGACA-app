@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
 import { useFetchJson } from '../../../lib/useFetchJson';
 import { CORPUS, type CorpusIndex } from '../../../lib/content';
+import { StatValue } from './StatValue';
 import shared from './widgets.module.css';
 
 /** Reference library — GACA guidance, FAA/ICAO and safety material, reproduced for study. */
@@ -17,7 +18,7 @@ export function ComplianceWidget() {
         <div className={shared.skeleton} />
       ) : (
         <div className={shared.statRow}>
-          <span className={`${shared.stat} ${shared.statCyan}`}>{data.count}</span>
+          <StatValue value={data.count} className={`${shared.stat} ${shared.statCyan}`} />
           <span className={shared.unit}>
             {t('home.dashboard.compliance.docs', { count: data.categories.length })}
           </span>

@@ -3,6 +3,7 @@
   text-align: center;
   background:
     var(--glow-teal) center -120px / 700px 700px no-repeat,
+    var(--glow-neon-cyan) 86% 130% / 44% 60% no-repeat,
     var(--bg);
 }
 

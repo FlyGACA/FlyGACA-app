@@ -6,6 +6,7 @@ import { ComplianceWidget } from './widgets/ComplianceWidget';
 import { ToolsWidget } from './widgets/ToolsWidget';
 import { StudyWidget } from './widgets/StudyWidget';
 import { AdelWidget } from './widgets/AdelWidget';
+import styles from './HomeDashboard.module.css';
 
 /**
  * The bento dashboard for the home page. Bundled as its own lazy chunk (with
@@ -15,13 +16,19 @@ import { AdelWidget } from './widgets/AdelWidget';
 export default function HomeDashboard() {
   const { t } = useTranslation();
   return (
-    <BentoGrid label={t('home.dashboard.region')}>
-      <RadarWidget />
-      <RegStreamWidget />
-      <ComplianceWidget />
-      <ToolsWidget />
-      <StudyWidget />
-      <AdelWidget />
-    </BentoGrid>
+    <div className={styles.wrap}>
+      <header className={styles.head}>
+        <p className={styles.eyebrow}>{t('home.dashboard.overview')}</p>
+        <span className={styles.rule} aria-hidden="true" />
+      </header>
+      <BentoGrid label={t('home.dashboard.region')}>
+        <RadarWidget />
+        <RegStreamWidget />
+        <ComplianceWidget />
+        <ToolsWidget />
+        <StudyWidget />
+        <AdelWidget />
+      </BentoGrid>
+    </div>
   );
 }

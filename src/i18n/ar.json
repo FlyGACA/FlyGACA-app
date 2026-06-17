@@ -33,6 +33,7 @@
     "notAffiliated": "غير تابعة لـ GACA. تحقّق دائمًا من أحدث منشور رسمي صادر عن GACA.",
     "dashboard": {
       "region": "لوحة معلومات Fly GACA",
+      "overview": "نظرة عامة على العمليات",
       "radar": {
         "eyebrow": "الخرائط · الرادار",
         "title": "الخرائط الملاحية",

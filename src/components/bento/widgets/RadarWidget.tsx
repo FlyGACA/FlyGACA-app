@@ -80,6 +80,17 @@ export function RadarWidget() {
       ctx.moveTo(cx, cy - maxR);
       ctx.lineTo(cx, cy + maxR);
       ctx.stroke();
+
+      // Bearing ticks around the perimeter (every 30°, longer on the cardinals)
+      ctx.globalAlpha = 0.6;
+      for (let a = 0; a < 360; a += 30) {
+        const rad = (a * Math.PI) / 180;
+        const inner = a % 90 === 0 ? maxR - 10 : maxR - 5;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(rad) * inner, cy + Math.sin(rad) * inner);
+        ctx.lineTo(cx + Math.cos(rad) * maxR, cy + Math.sin(rad) * maxR);
+        ctx.stroke();
+      }
       ctx.globalAlpha = 1;
 
       // Sweep wedge with a fading trailing gradient
@@ -129,7 +140,13 @@ export function RadarWidget() {
           ctx.stroke();
         }
       }
+
+      // Centre hub
       ctx.globalAlpha = 1;
+      ctx.fillStyle = cyan;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
+      ctx.fill();
     };
 
     resize();
