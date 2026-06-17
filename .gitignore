@@ -6,6 +6,9 @@ dist/
 dev-dist/
 *.tsbuildinfo
 
+# Coverage reports
+coverage/
+
 # Playwright
 test-results/
 playwright-report/
