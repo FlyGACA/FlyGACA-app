@@ -1,0 +1,79 @@
+name: Deploy (Firebase Hosting + rules)
+
+# Canonical production deploy (see docs/RUNBOOK-deploy.md). Runs after CI-style
+# build on push to main, or on demand via "Run workflow". Authenticates with a
+# Google service account — add the JSON as the FIREBASE_SERVICE_ACCOUNT secret
+# (Project Settings → Service accounts → Generate new private key). The VITE_*
+# web config is public (mirrors .env.example); only the service account is secret.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_rules:
+        description: 'Also deploy firestore.rules'
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-firebase
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: build · deploy hosting${{ github.event_name != 'workflow_dispatch' && ' + rules' || '' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Real public web config for flygaca-app (Auth/Firestore/Analytics/App Check).
+      - name: Provide build env
+        run: cp .env.example .env.local
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SITE_URL: https://flygaca.com
+          # Optional: set to enable App Check (see docs/APP-CHECK-BACKEND.md).
+          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY }}
+
+      - name: Bundle budget
+        run: npm run check:bundle
+
+      - name: Authenticate to Firebase
+        run: |
+          if [ -z "${FIREBASE_SERVICE_ACCOUNT}" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set — add it in repo Settings → Secrets → Actions."
+            exit 1
+          fi
+          printf '%s' "${FIREBASE_SERVICE_ACCOUNT}" > "${RUNNER_TEMP}/firebase-sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${RUNNER_TEMP}/firebase-sa.json" >> "${GITHUB_ENV}"
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Deploy
+        run: |
+          # On push to main: hosting + rules. On manual run: honor the input.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
+            TARGETS="hosting"
+          else
+            TARGETS="hosting,firestore:rules"
+          fi
+          echo "Deploying: ${TARGETS}"
+          npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
+
+      - name: Clean up credentials
+        if: always()
+        run: rm -f "${RUNNER_TEMP}/firebase-sa.json"

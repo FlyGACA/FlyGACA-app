@@ -32,7 +32,17 @@ npm run build && npm run check:bundle
 npx playwright install --with-deps chromium && npm run test:e2e
 ```
 
-## Firebase Hosting (canonical) — `firebase login` first
+## Firebase Hosting (canonical)
+
+**Automated (preferred):** `.github/workflows/deploy.yml` builds and deploys hosting +
+`firestore.rules` on every push to `main`, and on demand via Actions → **Deploy** → *Run
+workflow*. It authenticates with a service account — add the JSON key as the repo secret
+**`FIREBASE_SERVICE_ACCOUNT`** (Firebase console → Project Settings → Service accounts →
+*Generate new private key*). Optionally add **`VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`** to enable
+App Check at build time (see `APP-CHECK-BACKEND.md`). The `VITE_FIREBASE_*` web config is public
+and comes from `.env.example` at build time.
+
+**Manual (`firebase login` first):**
 
 ```bash
 npm run build
