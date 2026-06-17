@@ -38,7 +38,7 @@ export function Logbook() {
 function Inner() {
   const { t } = useTranslation();
   usePageMeta(t('meta.logbook'));
-  const { flights } = useAccount();
+  const { flights, syncError } = useAccount();
   const [draft, setDraft] = useState(BLANK);
   const [adding, setAdding] = useState(false);
   const set = (k: keyof typeof BLANK, v: string) => setDraft((d) => ({ ...d, [k]: v }));
@@ -78,6 +78,12 @@ function Inner() {
       <header className={styles.head}>
         <h1>{t('account.logbook')}</h1>
       </header>
+
+      {syncError && (
+        <p className={styles.syncNotice} role="status">
+          {t('account.syncError')}
+        </p>
+      )}
 
       <div className={styles.actions}>
         <button

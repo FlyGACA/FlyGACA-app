@@ -173,3 +173,15 @@
 .del:hover {
   color: #e5534b;
 }
+
+/* Local-ahead-of-server warning when a Firestore write-through fails. */
+.syncNotice {
+  margin: 0;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}

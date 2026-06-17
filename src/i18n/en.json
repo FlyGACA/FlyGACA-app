@@ -1221,7 +1221,8 @@
     "data": "Your data",
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
-    "deleteConfirm": "Delete your profile and all logbook entries on this device?"
+    "deleteConfirm": "Delete your profile and all logbook entries on this device?",
+    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit."
   },
   "guides": {
     "title": "Guides",
