@@ -1,0 +1,59 @@
+.scope {
+  position: relative;
+  flex: 1;
+  inline-size: 100%;
+  min-block-size: 220px;
+  margin-block: var(--space-3);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background:
+    var(--glow-neon-cyan) center / 120% 120% no-repeat,
+    radial-gradient(circle at 50% 50%, var(--surface) 0%, var(--bento-surface) 70%);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Interactive data node, parked over the scope. Logical inset so it mirrors. */
+.node {
+  position: absolute;
+  inset-block-start: 34%;
+  inset-inline-start: 62%;
+  inline-size: 12px;
+  block-size: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--neon-cyan);
+  box-shadow: 0 0 10px 1px var(--neon-cyan);
+}
+
+.tooltip {
+  position: absolute;
+  inset-block-end: calc(100% + 8px);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-bright);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.node:hover .tooltip {
+  opacity: 1;
+}
+
+.concept {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  font-style: italic;
+}

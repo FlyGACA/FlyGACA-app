@@ -30,7 +30,47 @@
     "ctaLibrary": "Open the library",
     "ctaTools": "Flight tools",
     "ctaChat": "Ask Captain Adel",
-    "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication."
+    "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication.",
+    "dashboard": {
+      "region": "Fly GACA dashboard",
+      "overview": "Operations overview",
+      "radar": {
+        "eyebrow": "Charts · Radar",
+        "title": "Aeronautical charts",
+        "node": "Aerodrome chart",
+        "concept": "Concept visual — not live flight tracking.",
+        "cta": "Browse charts"
+      },
+      "reg": {
+        "live": "Live",
+        "heading": "GACAR regulations",
+        "streams": "across {{count}} streams",
+        "cta": "Open the library"
+      },
+      "compliance": {
+        "eyebrow": "Reference library",
+        "heading": "Guidance & standards",
+        "docs": "docs · {{count}} categories",
+        "cta": "Open reference"
+      },
+      "tools": {
+        "eyebrow": "Flight planning",
+        "heading": "Flight tools",
+        "live": "live calculators",
+        "cta": "All tools"
+      },
+      "study": {
+        "eyebrow": "Study",
+        "questions": "practice questions",
+        "cta": "Start studying"
+      },
+      "adel": {
+        "status": "Online",
+        "heading": "Captain Adel",
+        "desc": "Ask anything — he cites the exact Part and section.",
+        "cta": "Ask Captain Adel"
+      }
+    }
   },
   "tools": {
     "title": "Flight tools",
