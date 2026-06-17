@@ -233,6 +233,37 @@
     "rule": "Rule of thumb",
     "formula": "A rate-one turn is 3°/s. Bank = atan(V × 0.0524 ÷ g); radius = V ÷ 0.0524. Rule of thumb: bank ≈ TAS/10 + 7."
   },
+  "windTable": {
+    "windDir": "Wind direction (°)",
+    "windSpeed": "Wind speed (kt)",
+    "runways": "Runways",
+    "runwaysHint": "Comma or slash separated, e.g. 16L/34R, 07",
+    "runwayCol": "Runway",
+    "headingCol": "Heading",
+    "crosswindCol": "Crosswind",
+    "headwindCol": "Head/tailwind",
+    "empty": "Enter wind and at least one runway.",
+    "formula": "Each runway is resolved against the reported wind: crosswind = speed × sin(angle), headwind = speed × cos(angle)."
+  },
+  "hydroplaning": {
+    "pressure": "Tyre pressure (psi)",
+    "speed": "Hydroplaning speed",
+    "kmh": "{{kmh}} km/h",
+    "formula": "Dynamic hydroplaning speed ≈ 9 × √(tyre pressure) kt for a rotating tyre. Onset also depends on water depth, tyre wear and surface texture."
+  },
+  "runwayPerf": {
+    "book": "Book distance (m)",
+    "da": "Density altitude (ft)",
+    "slope": "Upslope (%)",
+    "safety": "Safety factor (%)",
+    "available": "Runway available (m)",
+    "required": "Required distance",
+    "margin": "Margin",
+    "factor": "Applied factor",
+    "adequate": "Runway adequate",
+    "short": "Runway too short",
+    "formula": "Required = book × (1 + 10% per 1000 ft DA) × (1 + 5% per 1% upslope) × (1 + safety factor). These are conservative rules of thumb — the authoritative figures are the AFM/POH and your operator's data."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

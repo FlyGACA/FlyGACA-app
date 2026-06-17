@@ -29,7 +29,11 @@ Tools hub (13 categories, ~50 tools shown with live/soon + "new" badges); shared
 altimeter QNH↔QFE, cloud base (`calc/altimetry.ts`, `calc/cloud.ts` + specs).
 
 **Batch 1.2 — Speed, climb & turns:** Mach↔TAS (`calc/speed.ts`), climb gradient
-(`calc/climb.ts`), standard-rate turn (`calc/turn.ts`) + specs. **Now live: 10 tools.**
+(`calc/climb.ts`), standard-rate turn (`calc/turn.ts`) + specs.
+
+**Batch 1.3 — Wind & runway:** all-runways wind table (`calc/windTable.ts`), hydroplaning speed
+(`calc/hydroplaning.ts`), takeoff/landing runway margin (`calc/runwayPerf.ts`, rule-of-thumb factors
+with AFM/POH disclaimer) + specs. **Now live: 13 tools.**
 
 ## ✅ Batch 2 done
 

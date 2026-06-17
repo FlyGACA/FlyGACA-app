@@ -12,6 +12,9 @@ import { CloudBase } from './pages/tools/CloudBase';
 import { Mach } from './pages/tools/Mach';
 import { ClimbGradient } from './pages/tools/ClimbGradient';
 import { StandardRateTurn } from './pages/tools/StandardRateTurn';
+import { WindTable } from './pages/tools/WindTable';
+import { Hydroplaning } from './pages/tools/Hydroplaning';
+import { TakeoffLanding } from './pages/tools/TakeoffLanding';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -43,6 +46,9 @@ export const router = createBrowserRouter([
       { path: 'tools/mach', element: <Mach /> },
       { path: 'tools/climb-gradient', element: <ClimbGradient /> },
       { path: 'tools/standard-rate-turn', element: <StandardRateTurn /> },
+      { path: 'tools/wind-table', element: <WindTable /> },
+      { path: 'tools/hydroplaning', element: <Hydroplaning /> },
+      { path: 'tools/takeoff-landing', element: <TakeoffLanding /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

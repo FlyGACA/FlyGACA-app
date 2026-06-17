@@ -65,12 +65,12 @@ const t = (
 export const TOOLS: ToolMeta[] = [
   // Wind & runway
   t('crosswind', 'wind-runway', 'live', { keywords: ['xwind', 'headwind', 'runway'] }),
-  t('wind-table', 'wind-runway', 'soon', { badge: 'new', keywords: ['all runways', 'components'] }),
-  t('hydroplaning', 'wind-runway', 'soon', {
+  t('wind-table', 'wind-runway', 'live', { badge: 'new', keywords: ['all runways', 'components'] }),
+  t('hydroplaning', 'wind-runway', 'live', {
     badge: 'new',
     keywords: ['aquaplaning', 'tyre', 'tire'],
   }),
-  t('takeoff-landing', 'wind-runway', 'soon', {
+  t('takeoff-landing', 'wind-runway', 'live', {
     keywords: ['tora', 'lda', 'distance', 'performance'],
   }),
 
