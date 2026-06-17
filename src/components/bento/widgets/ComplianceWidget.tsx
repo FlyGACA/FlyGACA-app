@@ -10,12 +10,7 @@ export function ComplianceWidget() {
   const { data, loading } = useFetchJson<CorpusIndex>(CORPUS.reference.index);
 
   return (
-    <BentoCard
-      span="md"
-      tone="cyan"
-      to="/library/reference"
-      label={t('home.dashboard.compliance.cta')}
-    >
+    <BentoCard span="md" tone="cyan" to="/library" label={t('home.dashboard.compliance.cta')}>
       <p className={shared.eyebrow}>{t('home.dashboard.compliance.eyebrow')}</p>
       <p className={shared.heading}>{t('home.dashboard.compliance.heading')}</p>
       {loading || !data ? (

@@ -48,8 +48,7 @@
   transition: opacity var(--dur) var(--ease);
 }
 
-.node:hover .tooltip,
-.node:focus-visible .tooltip {
+.node:hover .tooltip {
   opacity: 1;
 }
 

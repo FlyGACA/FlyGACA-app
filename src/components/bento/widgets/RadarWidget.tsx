@@ -123,6 +123,7 @@ export function RadarWidget() {
         ctx.fill();
         if (lit > 0.05) {
           ctx.globalAlpha = lit * 0.4;
+          ctx.strokeStyle = green;
           ctx.beginPath();
           ctx.arc(bx, by, r + 5, 0, Math.PI * 2);
           ctx.stroke();
