@@ -15,6 +15,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "cap:sync": "npm run build && cap sync",
     "cap:open": "cap open ios",
     "serve": "npm run build && firebase emulators:start --only hosting",
@@ -29,9 +30,11 @@
     "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@capacitor/cli": "^6.2.0",
     "@capacitor/core": "^6.2.0",
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.61.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^18.3.17",

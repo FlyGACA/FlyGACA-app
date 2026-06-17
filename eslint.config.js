@@ -23,4 +23,10 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
+  {
+    // Node-side files: Playwright E2E and config files run under Node, not the
+    // browser, so expose Node globals (process, etc.).
+    files: ['e2e/**/*.ts', 'playwright.config.ts', '*.config.ts'],
+    languageOptions: { globals: globals.node },
+  },
 );

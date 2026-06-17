@@ -89,6 +89,20 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
+## ✅ Stage 9 — E2E, a11y & SEO (in progress)
+
+- **Per-route titles + Open Graph** via `usePageMeta` (replacing the single static title), wired
+  through `CalcShell`, the Document reader and every top-level/account/legal page.
+- **Generated `sitemap.xml` + `robots.txt`** (`scripts/build-sitemap.mjs`, run before `vite build`)
+  from the route table + content indexes; private routes excluded.
+- **Playwright E2E** (`e2e/`): a smoke spec (every key route loads, renders an `<h1>`, sets its
+  title), critical-flow specs (crosswind compute, library full-text search → reader, EN→AR/RTL
+  toggle, chat graceful-degrade) and an **axe a11y** spec (no serious/critical WCAG 2 A/AA
+  violations on the top pages). New `e2e` CI job builds, previews and runs them on Chromium.
+- **Vendor chunk split** clears the bundle-size warning (app chunk ~265 kB).
+
+**Remaining:** Lighthouse perf budget, more flow coverage, and the production cutover.
+
 ## ✅ Stage 6 — Library completeness
 
 - **Full in-app document reader** (`pages/library/Document.tsx`): fetches the regulation HTML,

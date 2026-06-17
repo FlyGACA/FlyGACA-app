@@ -6,6 +6,12 @@ dist/
 dev-dist/
 *.tsbuildinfo
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+/playwright/.cache/
+
 # Capacitor native build artifacts
 ios/App/Pods/
 ios/App/build/

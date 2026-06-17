@@ -38,4 +38,29 @@ jobs:
       - name: Build
         run: npm run build
 
-      # An `e2e` job (Playwright) is added in Stage 9 once the specs land.
+  e2e:
+    name: e2e · a11y (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E + a11y (builds + previews dist)
+        run: npm run test:e2e
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
