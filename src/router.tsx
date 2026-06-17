@@ -15,6 +15,12 @@ import { StandardRateTurn } from './pages/tools/StandardRateTurn';
 import { WindTable } from './pages/tools/WindTable';
 import { Hydroplaning } from './pages/tools/Hydroplaning';
 import { TakeoffLanding } from './pages/tools/TakeoffLanding';
+import { WindTriangle } from './pages/tools/WindTriangle';
+import { GreatCircle } from './pages/tools/GreatCircle';
+import { OneInSixty } from './pages/tools/OneInSixty';
+import { Tsd } from './pages/tools/Tsd';
+import { TopOfDescent } from './pages/tools/TopOfDescent';
+import { DescentVdp } from './pages/tools/DescentVdp';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -49,6 +55,12 @@ export const router = createBrowserRouter([
       { path: 'tools/wind-table', element: <WindTable /> },
       { path: 'tools/hydroplaning', element: <Hydroplaning /> },
       { path: 'tools/takeoff-landing', element: <TakeoffLanding /> },
+      { path: 'tools/wind-triangle', element: <WindTriangle /> },
+      { path: 'tools/great-circle', element: <GreatCircle /> },
+      { path: 'tools/one-in-sixty', element: <OneInSixty /> },
+      { path: 'tools/tsd', element: <Tsd /> },
+      { path: 'tools/top-of-descent', element: <TopOfDescent /> },
+      { path: 'tools/descent-vdp', element: <DescentVdp /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

@@ -264,6 +264,57 @@
     "short": "Runway too short",
     "formula": "Required = book × (1 + 10% per 1000 ft DA) × (1 + 5% per 1% upslope) × (1 + safety factor). These are conservative rules of thumb — the authoritative figures are the AFM/POH and your operator's data."
   },
+  "windTriangle": {
+    "course": "Desired course (°)",
+    "tas": "True airspeed (kt)",
+    "windDir": "Wind direction (°)",
+    "windSpeed": "Wind speed (kt)",
+    "wca": "Wind-correction angle",
+    "heading": "Heading to fly",
+    "gs": "Groundspeed",
+    "formula": "WCA = asin(wind × sin(wind − course) ÷ TAS). Heading = course + WCA; groundspeed = TAS·cos(WCA) − wind·cos(wind − course)."
+  },
+  "greatCircle": {
+    "lat1": "From latitude (°)",
+    "lon1": "From longitude (°)",
+    "lat2": "To latitude (°)",
+    "lon2": "To longitude (°)",
+    "distance": "Distance",
+    "bearing": "Initial bearing",
+    "hint": "Decimal degrees; south/west negative. OERK 24.96, 46.70 · OEJN 21.68, 39.16.",
+    "formula": "Haversine great-circle distance on a 3440 NM-radius Earth, with the initial true bearing."
+  },
+  "oneInSixty": {
+    "flown": "Distance flown (NM)",
+    "off": "Distance off track (NM)",
+    "toGo": "Distance to go (NM)",
+    "error": "Track error",
+    "correction": "Total correction",
+    "formula": "Track error ≈ (off-track ÷ flown) × 60. Closing angle ≈ (off-track ÷ to-go) × 60. Total = track error + closing."
+  },
+  "tod": {
+    "alt": "Height to lose (ft)",
+    "angle": "Descent angle (°)",
+    "gs": "Groundspeed (kt)",
+    "distance": "Start descent at",
+    "rod": "Rate of descent",
+    "formula": "Gradient = tan(angle) × 6076 ft/NM. Distance = height ÷ gradient; rate = gradient × groundspeed ÷ 60 ft/min."
+  },
+  "vdp": {
+    "hat": "Height above touchdown (ft)",
+    "angle": "Descent angle (°)",
+    "gs": "Groundspeed (kt)",
+    "distance": "VDP before threshold",
+    "rod": "Rate of descent",
+    "formula": "VDP distance = HAT ÷ (tan(angle) × 6076). Below the VDP a normal descent to the runway is possible."
+  },
+  "tsd": {
+    "gs": "Groundspeed (kt)",
+    "distance": "Distance (NM)",
+    "time": "Time (min)",
+    "hint": "Fill any two; the third is computed.",
+    "formula": "distance = groundspeed × time ÷ 60. Leave one field blank to solve for it."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

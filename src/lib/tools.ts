@@ -93,8 +93,8 @@ export const TOOLS: ToolMeta[] = [
     badge: 'new',
     keywords: ['ft/nm', 'fpm', 'sid', 'percent'],
   }),
-  t('top-of-descent', 'climb-descent', 'soon', { keywords: ['tod', 'descent point'] }),
-  t('descent-vdp', 'climb-descent', 'soon', {
+  t('top-of-descent', 'climb-descent', 'live', { keywords: ['tod', 'descent point'] }),
+  t('descent-vdp', 'climb-descent', 'live', {
     badge: 'new',
     keywords: ['rate', 'vdp', 'glidepath'],
   }),
@@ -104,19 +104,19 @@ export const TOOLS: ToolMeta[] = [
   }),
 
   // Navigation & planning
-  t('wind-triangle', 'navigation', 'soon', {
+  t('wind-triangle', 'navigation', 'live', {
     badge: 'new',
     keywords: ['heading', 'groundspeed', 'wca'],
   }),
-  t('great-circle', 'navigation', 'soon', {
+  t('great-circle', 'navigation', 'live', {
     badge: 'new',
     keywords: ['distance', 'bearing', 'gc'],
   }),
-  t('one-in-sixty', 'navigation', 'soon', {
+  t('one-in-sixty', 'navigation', 'live', {
     badge: 'new',
     keywords: ['track error', 'correction'],
   }),
-  t('tsd', 'navigation', 'soon', { keywords: ['time speed distance'] }),
+  t('tsd', 'navigation', 'live', { keywords: ['time speed distance'] }),
   t('e6b', 'navigation', 'soon', { keywords: ['flight computer', 'whiz wheel'] }),
   t('route-planner', 'navigation', 'soon', { keywords: ['leg', 'eta', 'wind'] }),
   t('flight-plan', 'navigation', 'soon', { keywords: ['icao fpl', 'filing'] }),

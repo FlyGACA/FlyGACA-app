@@ -33,7 +33,11 @@ altimeter QNH↔QFE, cloud base (`calc/altimetry.ts`, `calc/cloud.ts` + specs).
 
 **Batch 1.3 — Wind & runway:** all-runways wind table (`calc/windTable.ts`), hydroplaning speed
 (`calc/hydroplaning.ts`), takeoff/landing runway margin (`calc/runwayPerf.ts`, rule-of-thumb factors
-with AFM/POH disclaimer) + specs. **Now live: 13 tools.**
+with AFM/POH disclaimer) + specs.
+
+**Batch 1.4 — Navigation & descent:** wind triangle, great-circle distance/bearing, 1-in-60
+(`calc/navigation.ts`); top-of-descent, descent/VDP (`calc/descent.ts`); time–speed–distance
+(`calc/tsd.ts`) + specs. **Now live: 19 tools.**
 
 ## ✅ Batch 2 done
 
