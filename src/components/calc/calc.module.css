@@ -78,6 +78,30 @@
   color: var(--text-muted);
 }
 
+.seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+}
+.segBtn {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.segBtn:hover {
+  color: var(--text);
+}
+.segActive {
+  background: var(--brand);
+  color: var(--text-on-brand);
+}
+
 .headline dd {
   color: var(--accent-bright);
 }

@@ -206,6 +206,33 @@
     "spread": "spread {{spread}} °C",
     "formula": "Convective cloud base ≈ (temperature − dew point) × 400 ft. A rough estimate for cumuliform cloud only."
   },
+  "mach": {
+    "convert": "Convert",
+    "toMach": "TAS → Mach",
+    "toTas": "Mach → TAS",
+    "tas": "True airspeed (kt)",
+    "mach": "Mach number",
+    "oat": "OAT (°C)",
+    "outMach": "Mach",
+    "outTas": "True airspeed",
+    "lss": "Speed of sound",
+    "formula": "Speed of sound a = 38.97 × √(OAT + 273.15) kt. Mach = TAS ÷ a."
+  },
+  "climb": {
+    "gradient": "Climb gradient (ft/NM)",
+    "gs": "Groundspeed (kt)",
+    "percent": "Gradient",
+    "angle": "Angle",
+    "fpm": "Required rate",
+    "formula": "Percent = ft/NM ÷ 60.76. Angle = atan(ft/NM ÷ 6076). Rate = ft/NM × groundspeed ÷ 60 ft/min."
+  },
+  "turn": {
+    "tas": "True airspeed (kt)",
+    "bank": "Bank angle",
+    "radius": "Turn radius",
+    "rule": "Rule of thumb",
+    "formula": "A rate-one turn is 3°/s. Bank = atan(V × 0.0524 ÷ g); radius = V ÷ 0.0524. Rule of thumb: bank ≈ TAS/10 + 7."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

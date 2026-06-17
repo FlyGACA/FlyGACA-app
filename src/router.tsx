@@ -9,6 +9,9 @@ import { PressureAltitude } from './pages/tools/PressureAltitude';
 import { Isa } from './pages/tools/Isa';
 import { Altimeter } from './pages/tools/Altimeter';
 import { CloudBase } from './pages/tools/CloudBase';
+import { Mach } from './pages/tools/Mach';
+import { ClimbGradient } from './pages/tools/ClimbGradient';
+import { StandardRateTurn } from './pages/tools/StandardRateTurn';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -37,6 +40,9 @@ export const router = createBrowserRouter([
       { path: 'tools/isa', element: <Isa /> },
       { path: 'tools/altimeter', element: <Altimeter /> },
       { path: 'tools/cloud-base', element: <CloudBase /> },
+      { path: 'tools/mach', element: <Mach /> },
+      { path: 'tools/climb-gradient', element: <ClimbGradient /> },
+      { path: 'tools/standard-rate-turn', element: <StandardRateTurn /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

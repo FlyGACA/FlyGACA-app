@@ -86,10 +86,10 @@ export const TOOLS: ToolMeta[] = [
 
   // Speed
   t('tas', 'speed', 'live', { keywords: ['true airspeed', 'cas', 'mach'] }),
-  t('mach', 'speed', 'soon', { badge: 'new', keywords: ['speed of sound', 'tas'] }),
+  t('mach', 'speed', 'live', { badge: 'new', keywords: ['speed of sound', 'tas'] }),
 
   // Climb, descent & turns
-  t('climb-gradient', 'climb-descent', 'soon', {
+  t('climb-gradient', 'climb-descent', 'live', {
     badge: 'new',
     keywords: ['ft/nm', 'fpm', 'sid', 'percent'],
   }),
@@ -98,7 +98,7 @@ export const TOOLS: ToolMeta[] = [
     badge: 'new',
     keywords: ['rate', 'vdp', 'glidepath'],
   }),
-  t('standard-rate-turn', 'climb-descent', 'soon', {
+  t('standard-rate-turn', 'climb-descent', 'live', {
     badge: 'new',
     keywords: ['rate one', 'bank', 'radius'],
   }),

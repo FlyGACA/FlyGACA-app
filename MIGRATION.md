@@ -26,7 +26,10 @@ Tools hub (13 categories, ~50 tools shown with live/soon + "new" badges); shared
 ("How it works" explainer + related-tool chips + category eyebrow). Registry integrity test added.
 
 **Batch 1.1 — Atmosphere & altitude:** pressure altitude / flight level, ISA temp & deviation,
-altimeter QNH↔QFE, cloud base (`calc/altimetry.ts`, `calc/cloud.ts` + specs). Now live: 7 tools.
+altimeter QNH↔QFE, cloud base (`calc/altimetry.ts`, `calc/cloud.ts` + specs).
+
+**Batch 1.2 — Speed, climb & turns:** Mach↔TAS (`calc/speed.ts`), climb gradient
+(`calc/climb.ts`), standard-rate turn (`calc/turn.ts`) + specs. **Now live: 10 tools.**
 
 ## ✅ Batch 2 done
 
