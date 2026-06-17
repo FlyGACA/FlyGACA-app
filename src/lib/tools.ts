@@ -138,7 +138,7 @@ export const TOOLS: ToolMeta[] = [
   t('metar', 'weather', 'live', { keywords: ['decode', 'observation'] }),
   t('taf', 'weather', 'live', { badge: 'new', keywords: ['forecast', 'decode'] }),
   t('notam', 'weather', 'live', { keywords: ['q code', 'decode'] }),
-  t('met-brief', 'weather', 'soon', { keywords: ['route', 'weather briefing'] }),
+  t('met-brief', 'weather', 'live', { keywords: ['route', 'weather briefing'] }),
 
   // GACAR regulatory lookups
   t('vfr-minima', 'gacar', 'live', {

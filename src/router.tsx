@@ -42,6 +42,7 @@ import { Phonetic } from './pages/tools/Phonetic';
 import { Metar } from './pages/tools/Metar';
 import { Taf } from './pages/tools/Taf';
 import { Notam } from './pages/tools/Notam';
+import { MetBrief } from './pages/tools/MetBrief';
 import { ChartSymbols } from './pages/tools/ChartSymbols';
 import { VfrMinima, Oxygen, FuelReserves, ConversionChecker } from './pages/tools/RegLookup';
 import { Aerodromes } from './pages/tools/Aerodromes';
@@ -138,6 +139,7 @@ export const router = createBrowserRouter([
       { path: 'tools/metar', element: <Metar /> },
       { path: 'tools/taf', element: <Taf /> },
       { path: 'tools/notam', element: <Notam /> },
+      { path: 'tools/met-brief', element: <MetBrief /> },
       { path: 'tools/chart-symbols', element: <ChartSymbols /> },
       { path: 'tools/vfr-minima', element: <VfrMinima /> },
       { path: 'tools/oxygen', element: <Oxygen /> },

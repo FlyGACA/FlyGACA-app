@@ -89,6 +89,18 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
+## ✅ Verticals — charts · PDF sheets · met-brief
+
+- **VFR charts** (`/library/charts`): the 13 GACA AIP visual (UVR) sheets as pan/zoom Leaflet image
+  overlays (`CRS.Simple`, local images only → no CSP change), grouped by region with a variant
+  switcher and shareable `?chart=`. **Leaflet is `React.lazy`-loaded** (~153 kB chunk) — never in the
+  main bundle. Linked from the Library header.
+- **PDF study sheets** (`/study/sheets`): the deployed one-page study PDFs rendered inline via a
+  native `<object>` embed (no PDF library), with open/download and `?doc=`. New Study mode tile.
+- **met-brief** (`/tools/met-brief`): the last `soon` tool, now **live**. A route *briefing builder*
+  that links each aerodrome to the official source (aviationweather.gov) + our own decoders — it
+  never fabricates weather, so no new CSP origin. **All 54 catalog tools are now live.**
+
 ## ✅ Stage 7 — Captain Adel chat completeness
 
 - **SSE streaming client** (`src/lib/api.ts`): `sendChatStream()` POSTs `/api/chat?stream=1` and

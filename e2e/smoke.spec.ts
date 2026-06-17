@@ -6,6 +6,7 @@ const ROUTES = [
   '/tools',
   '/tools/crosswind',
   '/tools/e6b',
+  '/tools/met-brief',
   '/library',
   '/library/charts',
   '/library/part-1',

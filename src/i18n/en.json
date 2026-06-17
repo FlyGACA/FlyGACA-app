@@ -1044,6 +1044,18 @@
     ],
     "formula": "The ICAO airspace classes and the service each provides. For Saudi sector boundaries and frequencies, consult the AIP-KSA."
   },
+  "metBrief": {
+    "routeLabel": "Route (ICAO codes)",
+    "routeHint": "Space-separated aerodromes, e.g. OERK OEJN OEDF",
+    "empty": "Enter a route to build the briefing.",
+    "unknown": "Not in our directory:",
+    "metar": "METAR (official) ↗",
+    "taf": "TAF (official) ↗",
+    "decodeMetar": "Decode in our tool ↗",
+    "note": "This builds a route briefing by linking to the official source for each aerodrome — it never invents weather. Always read the actual METAR/TAF/NOTAM and verify against the official GACA/AIP source before flight.",
+    "adel": "Help me read the weather for a flight along {{route}} — what should I check before departure?",
+    "sourceNote": "Live observations and forecasts come from aviationweather.gov (NOAA). Not for operational use — verify against the official GACA source."
+  },
   "routePlanner": {
     "route": "Route (ICAO codes)",
     "routeHint": "Space-separated aerodromes, e.g. OERK OEDF OEJN",
