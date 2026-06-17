@@ -1,0 +1,5 @@
+# Cloudflare Pages SPA fallback (copied verbatim into dist/ by Vite; also honored
+# by Netlify alongside netlify.toml). The /api/* proxy is handled by the Pages
+# Function in functions/api/[[path]].ts — _redirects can't proxy external origins
+# on Cloudflare, and Functions take precedence over this fallback for /api/*.
+/*    /index.html    200
