@@ -12,7 +12,7 @@ import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path). */
 function chartSrc(doc: ChartDoc): string {
-  return `/data/charts/${doc.slug}.jpg`;
+  return `/${doc.image.replace(/^assets\//, '')}`;
 }
 
 export function Charts() {
@@ -40,10 +40,13 @@ export function Charts() {
   const overlayRef = useRef<L.ImageOverlay | null>(null);
 
   // Create the Leaflet map once the (data-gated) container is in the DOM.
-  // Depends on docs.length so it runs after the index loads and the map div
-  // renders — not just on the first, container-less mount.
+  // Keyed on a readiness boolean (not docs.length): the container appears when
+  // the index first loads, and we must not tear down + rebuild the map on a
+  // later count change — that would drop the overlay (which only re-adds on
+  // `active`), leaving a blank canvas.
+  const ready = docs.length > 0;
   useEffect(() => {
-    if (!mapEl.current || mapRef.current) return;
+    if (!ready || !mapEl.current || mapRef.current) return;
     const map = L.map(mapEl.current, {
       crs: L.CRS.Simple,
       minZoom: -4,
@@ -57,7 +60,7 @@ export function Charts() {
       mapRef.current = null;
       overlayRef.current = null;
     };
-  }, [docs.length]);
+  }, [ready]);
 
   // Swap the image overlay whenever the active chart changes.
   useEffect(() => {
