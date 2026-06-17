@@ -3,17 +3,24 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { sanitizeHtml, tocFromHtml, useFetchText } from '../../lib/useFetchText';
-import type { GacarIndex } from '../../lib/content';
+import { CORPUS } from '../../lib/content';
+import type { CorpusIndex, LibraryKind } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Document.module.css';
 
-export function Document() {
+interface DocumentProps {
+  /** Which corpus this reader is mounted for. Defaults to GACAR regulations. */
+  kind?: LibraryKind;
+}
+
+export function Document({ kind = 'regulations' }: DocumentProps) {
   const { t } = useTranslation();
   const { hash } = useLocation();
   const { slug } = useParams<{ slug: string }>();
-  const index = useFetchJson<GacarIndex>('/data/gacar-index.json');
+  const corpus = CORPUS[kind];
+  const index = useFetchJson<CorpusIndex>(corpus.index);
   const doc = index.data?.documents.find((d) => d.slug === slug);
-  const { text, error, loading } = useFetchText(`/data/parts/${slug}.html`);
+  const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
   const [filter, setFilter] = useState('');
 
   const html = useMemo(() => (text ? sanitizeHtml(text) : ''), [text]);
@@ -30,6 +37,14 @@ export function Document() {
     if (id) document.getElementById(id)?.scrollIntoView();
   }, [html, hash]);
 
+  // The eyebrow badge: "Part 91" for regulations, the corpus badge otherwise.
+  const badge = doc?.part ? `${t('library.part')} ${doc.part}` : doc?.badge;
+  const count = doc?.pages
+    ? `${doc.pages} ${t('library.pages')}`
+    : doc?.sections
+      ? `${doc.sections} ${t('document.sections')}`
+      : null;
+
   return (
     <article className={`container ${styles.page}`}>
       <p className={styles.back}>
@@ -43,16 +58,8 @@ export function Document() {
         <>
           <header className={styles.head}>
             <div className={styles.meta}>
-              {doc && (
-                <span className={styles.badge}>
-                  {t('library.part')} {doc.part}
-                </span>
-              )}
-              {doc && (
-                <span className={styles.pages}>
-                  {doc.pages} {t('library.pages')}
-                </span>
-              )}
+              {badge && <span className={styles.badge}>{badge}</span>}
+              {count && <span className={styles.pages}>{count}</span>}
             </div>
             {doc && <h1>{doc.title}</h1>}
             <p className={styles.verify}>{t('document.verifyLine')}</p>

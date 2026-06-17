@@ -46,6 +46,49 @@ export interface GacarIndex {
   documents: GacarDocument[];
 }
 
+/**
+ * The three browsable/readable corpora behind the Library. They share the
+ * GACAR index shape (`{ categories, documents }`); a corpus doc carries either
+ * Part metadata (regulations) or a `badge` + `sections` (reference/handbooks).
+ */
+export type LibraryKind = 'regulations' | 'reference' | 'handbook';
+
+export interface CorpusDoc {
+  slug: string;
+  title: string;
+  category: string;
+  part?: string;
+  partNum?: number;
+  pages?: number;
+  badge?: string;
+  sections?: number;
+  outline?: string[];
+}
+
+export interface CorpusIndex {
+  generated: string;
+  count: number;
+  categories: GacarCategory[];
+  documents: CorpusDoc[];
+}
+
+export interface CorpusMeta {
+  index: string;
+  dir: string;
+  base: string;
+}
+
+/** Where each corpus's index, HTML, and reader route live. */
+export const CORPUS: Record<LibraryKind, CorpusMeta> = {
+  regulations: { index: '/data/gacar-index.json', dir: '/data/parts', base: '/library' },
+  reference: {
+    index: '/data/reference-index.json',
+    dir: '/data/library',
+    base: '/library/reference',
+  },
+  handbook: { index: '/data/ebooks-index.json', dir: '/data/ebooks', base: '/library/handbook' },
+};
+
 export interface Airport {
   icao: string;
   iata: string;
@@ -154,14 +197,22 @@ export interface SearchIndex {
   entries: SearchEntry[];
 }
 
+const SEARCH_TYPE_TO_KIND: Record<string, LibraryKind> = {
+  regulations: 'regulations',
+  reference: 'reference',
+  handbooks: 'handbook',
+};
+
 /**
  * Rewrite a legacy search-index URL to the app's Document-reader route.
- * `document.html?type=regulations&id=part-61#sec-x` → `/library/part-61#sec-x`.
- * Returns null for entries we can't yet route (non-regulations scopes).
+ * `document.html?type=reference&id=ac-68-1#sec-x` → `/library/reference/ac-68-1#sec-x`.
+ * Returns null for entries we can't route.
  */
 export function searchHref(u: string): string | null {
+  const type = /[?&]type=([^&#]+)/.exec(u)?.[1];
   const id = /[?&]id=([^&#]+)/.exec(u)?.[1];
-  if (!id) return null;
+  const kind = type ? SEARCH_TYPE_TO_KIND[type] : undefined;
+  if (!id || !kind) return null;
   const anchor = /#(.+)$/.exec(u)?.[1];
-  return `/library/${id}${anchor ? `#${anchor}` : ''}`;
+  return `${CORPUS[kind].base}/${id}${anchor ? `#${anchor}` : ''}`;
 }

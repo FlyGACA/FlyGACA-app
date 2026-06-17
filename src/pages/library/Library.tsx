@@ -2,13 +2,14 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
-import { fetchJson, searchHref } from '../../lib/content';
-import type { GacarIndex, SearchEntry, SearchIndex } from '../../lib/content';
+import { CORPUS, fetchJson, searchHref } from '../../lib/content';
+import type { CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Library.module.css';
 
 const MIN_QUERY = 3;
 const MAX_HITS = 80;
+const KINDS: LibraryKind[] = ['regulations', 'reference', 'handbook'];
 
 /** Split text on a case-insensitive needle, wrapping matches in <mark>. */
 function highlight(text: string, needle: string) {
@@ -31,9 +32,13 @@ function highlight(text: string, needle: string) {
 
 export function Library() {
   const { t } = useTranslation();
-  const { data, error, loading } = useFetchJson<GacarIndex>('/data/gacar-index.json');
+  const [kind, setKind] = useState<LibraryKind>('regulations');
+  const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index);
   const [category, setCategory] = useState<string>('all');
   const [query, setQuery] = useState('');
+
+  // Reset the category filter whenever the corpus changes.
+  useEffect(() => setCategory('all'), [kind]);
 
   // Lazy full-text index — fetched once, the first time a query reaches MIN_QUERY chars.
   const [entries, setEntries] = useState<SearchEntry[] | null>(null);
@@ -60,9 +65,12 @@ export function Library() {
       .filter((d) => category === 'all' || d.category === category)
       .filter(
         (d) =>
-          !needle || d.title.toLowerCase().includes(needle) || `part ${d.part}`.includes(needle),
+          !needle ||
+          d.title.toLowerCase().includes(needle) ||
+          (d.part ? `part ${d.part}`.includes(needle) : false) ||
+          (d.badge ? d.badge.toLowerCase().includes(needle) : false),
       )
-      .sort((a, b) => a.partNum - b.partNum);
+      .sort((a, b) => (a.partNum ?? 0) - (b.partNum ?? 0) || a.title.localeCompare(b.title));
   }, [data, category, q]);
 
   const hits = useMemo(() => {
@@ -87,6 +95,21 @@ export function Library() {
         <h1>{t('library.title')}</h1>
         <p className={styles.subtitle}>{t('library.subtitle')}</p>
       </header>
+
+      <div className={styles.tabs} role="tablist" aria-label={t('library.browse')}>
+        {KINDS.map((k) => (
+          <button
+            key={k}
+            type="button"
+            role="tab"
+            aria-selected={kind === k}
+            className={`${styles.tab} ${kind === k ? styles.tabActive : ''}`}
+            onClick={() => setKind(k)}
+          >
+            {t(`library.kind.${k}`)}
+          </button>
+        ))}
+      </div>
 
       {loading && <p>{t('common.loading')}</p>}
       {error && <p role="alert">{t('common.loadError')}</p>}
@@ -133,14 +156,18 @@ export function Library() {
             <ul className={styles.grid}>
               {docs.map((d) => (
                 <li key={d.slug}>
-                  <Link to={`/library/${d.slug}`} className={styles.card}>
+                  <Link to={`${CORPUS[kind].base}/${d.slug}`} className={styles.card}>
                     <span className={styles.badge}>
-                      {t('library.part')} {d.part}
+                      {d.part ? `${t('library.part')} ${d.part}` : d.badge}
                     </span>
                     <span className={styles.cat}>{categoryLabel(d.category)}</span>
                     <span className={styles.cardTitle}>{d.title}</span>
                     <span className={styles.pages}>
-                      {d.pages} {t('library.pages')}
+                      {d.pages
+                        ? `${d.pages} ${t('library.pages')}`
+                        : d.sections
+                          ? `${d.sections} ${t('document.sections')}`
+                          : ''}
                     </span>
                   </Link>
                 </li>

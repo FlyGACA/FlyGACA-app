@@ -81,6 +81,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'library', element: <Library /> },
+      { path: 'library/reference/:slug', element: <Document kind="reference" /> },
+      { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },
       { path: 'chat', element: <Chat /> },
       { path: 'tools', element: <ToolsIndex /> },

@@ -21,6 +21,31 @@
   color: var(--text-muted);
 }
 
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-block-end: var(--space-5);
+  border-block-end: 1px solid var(--border);
+}
+.tab {
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-block-end: 2px solid transparent;
+  margin-block-end: -1px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+}
+.tab:hover {
+  color: var(--text);
+}
+.tabActive {
+  color: var(--accent-bright);
+  border-block-end-color: var(--brand);
+}
+
 .controls {
   display: flex;
   flex-direction: column;

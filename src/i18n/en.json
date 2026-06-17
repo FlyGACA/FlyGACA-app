@@ -327,14 +327,21 @@
     "fullResults": "In-text matches",
     "hitsCount": "{{count}} passage(s) match.",
     "moreHits": "Showing the first {{max}} passages — refine your search to narrow them.",
-    "noFullMatches": "No passages match “{{q}}”."
+    "noFullMatches": "No passages match “{{q}}”.",
+    "browse": "Browse by collection",
+    "kind": {
+      "regulations": "GACAR Regulations",
+      "reference": "Reference Library",
+      "handbook": "GACA Handbooks"
+    }
   },
   "document": {
     "outline": "Outline",
     "toc": "Contents",
     "filterToc": "Filter contents",
     "verifyAtGaca": "Read the official GACAR at gaca.gov.sa",
-    "verifyLine": "Reproduced for study. Always verify against the official GACAR at gaca.gov.sa."
+    "verifyLine": "Reproduced for study. Always verify against the official GACAR at gaca.gov.sa.",
+    "sections": "sections"
   },
   "pressureAltitude": {
     "elevation": "Field elevation (ft)",
