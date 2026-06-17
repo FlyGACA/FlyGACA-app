@@ -1,0 +1,46 @@
+.hero {
+  padding-block: var(--space-12) var(--space-8);
+  text-align: center;
+  background:
+    var(--glow-teal) center -120px / 700px 700px no-repeat,
+    var(--bg);
+}
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-bright);
+  font-weight: var(--fw-semibold);
+}
+
+.title {
+  margin-block-start: var(--space-4);
+  font-size: var(--fs-display);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin-block: var(--space-5) auto;
+  max-inline-size: 56ch;
+  margin-inline: auto;
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+}
+
+.ctas {
+  margin-block-start: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.notice {
+  margin-block-start: var(--space-6);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}

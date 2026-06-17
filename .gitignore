@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dev-dist/
+*.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+/playwright/.cache/
+
+# Capacitor native build artifacts
+ios/App/Pods/
+ios/App/build/
+android/.gradle/
+android/app/build/
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+*.local
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Logs
+npm-debug.log*
+*.log
