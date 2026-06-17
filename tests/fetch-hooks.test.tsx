@@ -1,0 +1,72 @@
+import { describe, expect, it, vi, afterEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
+import { useFetchJson } from '../src/lib/useFetchJson';
+import { useFetchText } from '../src/lib/useFetchText';
+
+// The runtime content loaders. They share a loading→data / loading→error shape
+// and abort on unmount; we drive them against a stubbed global fetch.
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+const okJson = (body: unknown) =>
+  ({ ok: true, status: 200, json: () => Promise.resolve(body) }) as unknown as Response;
+const okText = (body: string) =>
+  ({ ok: true, status: 200, text: () => Promise.resolve(body) }) as unknown as Response;
+const notFound = () =>
+  ({ ok: false, status: 404, statusText: 'Not Found' }) as unknown as Response;
+
+describe('useFetchJson', () => {
+  it('resolves to data and clears loading', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okJson({ tools: [] })));
+    const { result } = renderHook(() => useFetchJson<{ tools: unknown[] }>('/data/tools.json'));
+    expect(result.current.loading).toBe(true);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.data).toEqual({ tools: [] });
+    expect(result.current.error).toBeNull();
+  });
+
+  it('surfaces a non-ok response as an error', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(notFound()));
+    const { result } = renderHook(() => useFetchJson('/data/missing.json'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.data).toBeNull();
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.error?.message).toMatch(/404/);
+  });
+
+  it('refetches when the path changes', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(okJson({ id: 'a' }))
+      .mockResolvedValueOnce(okJson({ id: 'b' }));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result, rerender } = renderHook(({ p }) => useFetchJson<{ id: string }>(p), {
+      initialProps: { p: '/data/a.json' },
+    });
+    await waitFor(() => expect(result.current.data).toEqual({ id: 'a' }));
+    rerender({ p: '/data/b.json' });
+    await waitFor(() => expect(result.current.data).toEqual({ id: 'b' }));
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('useFetchText', () => {
+  it('resolves to text and clears loading', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okText('<p>hi</p>')));
+    const { result } = renderHook(() => useFetchText('/data/page.html'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.text).toBe('<p>hi</p>');
+    expect(result.current.error).toBeNull();
+  });
+
+  it('errors with the status when the response is not ok', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(notFound()));
+    const { result } = renderHook(() => useFetchText('/data/gone.html'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.text).toBeNull();
+    expect(result.current.error?.message).toMatch(/404/);
+  });
+});
