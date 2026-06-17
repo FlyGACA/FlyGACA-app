@@ -181,9 +181,9 @@ export const TOOLS: ToolMeta[] = [
   t('chart-symbols', 'reference', 'live', { keywords: ['legend', 'vfr chart'] }),
 
   // Directory & glossary
-  t('aerodromes', 'directory', 'soon', { keywords: ['airport', 'icao', 'oerk', 'oejn'] }),
-  t('airspace', 'directory', 'soon', { keywords: ['frequency', 'acc', 'tma', 'ctr'] }),
-  t('definitions', 'directory', 'soon', { keywords: ['glossary', 'part 1', 'terms'] }),
+  t('aerodromes', 'directory', 'live', { keywords: ['airport', 'icao', 'oerk', 'oejn'] }),
+  t('airspace', 'directory', 'live', { keywords: ['frequency', 'acc', 'tma', 'ctr'] }),
+  t('definitions', 'directory', 'live', { keywords: ['glossary', 'part 1', 'terms'] }),
 ];
 
 export const liveTools = () => TOOLS.filter((x) => x.status === 'live');

@@ -45,3 +45,33 @@ export interface GacarIndex {
   categories: GacarCategory[];
   documents: GacarDocument[];
 }
+
+export interface Airport {
+  icao: string;
+  iata: string;
+  name_en: string;
+  name_ar: string;
+  city_en: string;
+  city_ar: string;
+  lat: number;
+  lon: number;
+  elev_ft: number;
+  rwys: { id: string }[];
+  freqs: { l: string; v: string }[];
+}
+
+export interface AirportsIndex {
+  count: number;
+  airports: Airport[];
+}
+
+export interface DefinitionTerm {
+  term: string;
+  def: string;
+  url: string;
+}
+
+export interface DefinitionsIndex {
+  count: number;
+  terms: DefinitionTerm[];
+}

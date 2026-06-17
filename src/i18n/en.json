@@ -631,6 +631,37 @@
     ],
     "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA — confirm before you start."
   },
+  "aerodromesTool": {
+    "search": "Search by ICAO, name or city",
+    "runways": "Runways",
+    "freqs": "Frequencies",
+    "elevation": "Elevation",
+    "empty": "No aerodromes match that search.",
+    "count": "{{n}} Saudi aerodromes",
+    "formula": "Aerodrome data derived from the AIP-KSA. Not for operational use — always use the current AIP and NOTAMs."
+  },
+  "definitionsTool": {
+    "search": "Search the GACAR Part 1 glossary",
+    "min": "Type at least two letters to search.",
+    "count": "{{n}} terms",
+    "results": "{{n}} matches",
+    "openPart": "Open Part 1",
+    "none": "No terms match that search."
+  },
+  "airspace": {
+    "classCol": "Class",
+    "rulesCol": "Rules & service",
+    "rows": [
+      { "cls": "A", "rules": "IFR only. ATC clearance required; separation provided to all." },
+      { "cls": "B", "rules": "IFR and VFR. Clearance required; separation provided to all." },
+      { "cls": "C", "rules": "IFR and VFR. Clearance required; IFR separated from IFR and VFR; VFR receive traffic information." },
+      { "cls": "D", "rules": "IFR and VFR. Clearance required; IFR separated from IFR; traffic information to VFR." },
+      { "cls": "E", "rules": "IFR and VFR. IFR clearance and separation from IFR; VFR need no clearance." },
+      { "cls": "F", "rules": "IFR and VFR. IFR receive an advisory service where available." },
+      { "cls": "G", "rules": "Uncontrolled. Flight information service only." }
+    ],
+    "formula": "The ICAO airspace classes and the service each provides. For Saudi sector boundaries and frequencies, consult the AIP-KSA."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

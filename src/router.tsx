@@ -43,6 +43,9 @@ import { Taf } from './pages/tools/Taf';
 import { Notam } from './pages/tools/Notam';
 import { ChartSymbols } from './pages/tools/ChartSymbols';
 import { VfrMinima, Oxygen, FuelReserves, ConversionChecker } from './pages/tools/RegLookup';
+import { Aerodromes } from './pages/tools/Aerodromes';
+import { Airspace } from './pages/tools/Airspace';
+import { Definitions } from './pages/tools/Definitions';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -108,6 +111,9 @@ export const router = createBrowserRouter([
       { path: 'tools/oxygen', element: <Oxygen /> },
       { path: 'tools/fuel-reserves', element: <FuelReserves /> },
       { path: 'tools/conversion-checker', element: <ConversionChecker /> },
+      { path: 'tools/aerodromes', element: <Aerodromes /> },
+      { path: 'tools/airspace', element: <Airspace /> },
+      { path: 'tools/definitions', element: <Definitions /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
