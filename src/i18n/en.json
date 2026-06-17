@@ -1051,7 +1051,6 @@
     "unknown": "Not in our directory:",
     "metar": "METAR (official) ↗",
     "taf": "TAF (official) ↗",
-    "decodeMetar": "Decode in our tool ↗",
     "note": "This builds a route briefing by linking to the official source for each aerodrome — it never invents weather. Always read the actual METAR/TAF/NOTAM and verify against the official GACA/AIP source before flight.",
     "adel": "Help me read the weather for a flight along {{route}} — what should I check before departure?",
     "sourceNote": "Live observations and forecasts come from aviationweather.gov (NOAA). Not for operational use — verify against the official GACA source."
@@ -1221,7 +1220,8 @@
     "data": "Your data",
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
-    "deleteConfirm": "Delete your profile and all logbook entries on this device?"
+    "deleteConfirm": "Delete your profile and all logbook entries on this device?",
+    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit."
   },
   "guides": {
     "title": "Guides",

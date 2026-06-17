@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import i18n from '../i18n';
 import { OG_IMAGE, canonicalUrl, hreflangAlternates, ogLocale } from './seo';
 
@@ -36,11 +37,12 @@ function setLink(rel: string, href: string, hreflang?: string) {
  * the language changes so og:locale + hreflang stay correct.
  */
 export function usePageMeta(title?: string, description?: string) {
+  const { pathname } = useLocation();
   useEffect(() => {
     function apply() {
       const fullTitle = title ? `${title} — ${SUFFIX}` : DEFAULT_TITLE;
       const desc = description ?? DEFAULT_DESC;
-      const path = window.location.pathname;
+      const path = pathname;
       const canonical = canonicalUrl(path);
 
       document.title = fullTitle;
@@ -65,5 +67,5 @@ export function usePageMeta(title?: string, description?: string) {
       setMeta('meta[property="og:title"]', 'property', 'og:title', DEFAULT_TITLE);
       setMeta('meta[property="og:description"]', 'property', 'og:description', DEFAULT_DESC);
     };
-  }, [title, description]);
+  }, [title, description, pathname]);
 }

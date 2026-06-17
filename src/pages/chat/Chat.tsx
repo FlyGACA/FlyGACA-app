@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { sendChatStream, type ChatSource, type ChatTurn, type GroundingKind } from '../../lib/api';
 import { getIdToken } from '../../lib/auth';
+import { getAppCheckToken } from '../../lib/firebase';
 import { sessionId } from '../../lib/session';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
@@ -70,8 +71,15 @@ export function Chat() {
       });
 
     try {
-      const token = (await getIdToken()) ?? undefined;
-      for await (const ev of sendChatStream({ message: q, history, session: sessionId() }, token)) {
+      const [token, appCheckToken] = await Promise.all([
+        getIdToken().then((t) => t ?? undefined),
+        getAppCheckToken().then((t) => t ?? undefined),
+      ]);
+      for await (const ev of sendChatStream(
+        { message: q, history, session: sessionId() },
+        token,
+        appCheckToken,
+      )) {
         if (ev.type === 'token') {
           patchLast((m) => ({ ...m, text: (m.pending ? '' : m.text) + ev.delta, pending: false }));
         } else if (ev.type === 'reset') {

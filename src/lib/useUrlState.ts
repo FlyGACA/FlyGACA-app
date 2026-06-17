@@ -20,9 +20,12 @@ export function useUrlState<T extends Record<string, string>>(
   });
 
   useEffect(() => {
-    const params = new URLSearchParams();
+    // Start from the live query so params we don't own (e.g. ?lang= used by
+    // i18n/SEO) survive; only set/clear our own keys.
+    const params = new URLSearchParams(window.location.search);
     for (const [key, value] of Object.entries(state)) {
       if (value !== '') params.set(key, value);
+      else params.delete(key);
     }
     const q = params.toString();
     window.history.replaceState(null, '', window.location.pathname + (q ? `?${q}` : ''));

@@ -83,9 +83,6 @@ export function MetBrief() {
                   <a href={tafUrl(icao)} target="_blank" rel="noopener">
                     {t('metBrief.taf')}
                   </a>
-                  <a href={`/tools/metar?raw=`} target="_blank" rel="noopener">
-                    {t('metBrief.decodeMetar')}
-                  </a>
                 </div>
               </li>
             );

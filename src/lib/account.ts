@@ -44,6 +44,8 @@ interface State {
   flights: Flight[];
   /** Server-written; read-only, used only to gate UI. */
   entitlement: Entitlement | null;
+  /** True when the last Firestore write-through failed — local is ahead of server. */
+  syncError: boolean;
 }
 
 const K = {
@@ -76,6 +78,7 @@ let state: State = {
   profile: readJson(K.profile, DEFAULT_PROFILE),
   flights: readJson(K.logbook, [] as Flight[]),
   entitlement: null,
+  syncError: false,
 };
 
 const listeners = new Set<() => void>();
@@ -107,24 +110,36 @@ export function signIn(email: string, name: string): void {
 
 export function signOut(): void {
   void import('./auth').then(({ signOutUser }) => signOutUser());
-  commit({ ...state, session: null, uid: null, entitlement: null });
+  commit({ ...state, session: null, uid: null, entitlement: null, syncError: false });
+}
+
+/**
+ * Outcome handlers for best-effort Firestore write-through: clear/raise the
+ * `syncError` flag so the UI can warn that local data is ahead of the server,
+ * instead of silently swallowing the failure.
+ */
+function onSyncOk(): void {
+  if (state.syncError) commit({ ...state, syncError: false });
+}
+function onSyncFail(): void {
+  if (!state.syncError) commit({ ...state, syncError: true });
 }
 
 export function saveProfile(patch: Partial<Profile>): void {
   const profile = { ...state.profile, ...patch };
   commit({ ...state, profile });
-  if (state.uid) void saveProfileDoc(state.uid, profile).catch(() => {});
+  if (state.uid) void saveProfileDoc(state.uid, profile).then(onSyncOk, onSyncFail);
 }
 
 export function addFlight(f: Omit<Flight, 'id'>): void {
   const flight: Flight = { ...f, id: crypto.randomUUID() };
   commit({ ...state, flights: [flight, ...state.flights] });
-  if (state.uid) void addFlightDoc(state.uid, flight).catch(() => {});
+  if (state.uid) void addFlightDoc(state.uid, flight).then(onSyncOk, onSyncFail);
 }
 
 export function deleteFlight(id: string): void {
   commit({ ...state, flights: state.flights.filter((x) => x.id !== id) });
-  if (state.uid) void deleteFlightDoc(state.uid, id).catch(() => {});
+  if (state.uid) void deleteFlightDoc(state.uid, id).then(onSyncOk, onSyncFail);
 }
 
 export function exportAll(): string {
@@ -179,19 +194,23 @@ function connectAuth(): void {
       });
       try {
         const loaded = await loadAccount(user.uid);
-        if (loaded) {
+        // The Firestore round-trip can outlive the session: if the user signed
+        // out or switched accounts while it was in flight, do NOT re-apply this
+        // user's profile/entitlement onto the now-different session.
+        if (loaded && state.uid === user.uid) {
           commit({
             ...state,
             profile: { ...state.profile, ...loaded.profile },
             flights: loaded.flights.length ? loaded.flights : state.flights,
             entitlement: loaded.entitlement,
+            syncError: false,
           });
         }
       } catch {
         /* offline / rules — keep the local cache */
       }
     } else if (state.uid) {
-      commit({ ...state, session: null, uid: null, entitlement: null });
+      commit({ ...state, session: null, uid: null, entitlement: null, syncError: false });
     }
   });
 }
