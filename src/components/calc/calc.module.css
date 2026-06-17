@@ -105,6 +105,11 @@
 .headline dd {
   color: var(--accent-bright);
 }
+
+.hint {
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+}
 .good dd {
   color: var(--accent);
 }

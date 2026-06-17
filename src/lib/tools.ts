@@ -130,9 +130,9 @@ export const TOOLS: ToolMeta[] = [
   t('weight-balance', 'fuel-weight', 'live', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
 
   // Time & cycles
-  t('zulu-clock', 'time-cycles', 'soon', { badge: 'new', keywords: ['utc', 'ksa', 'local', 'z'] }),
-  t('airac', 'time-cycles', 'soon', { keywords: ['cycle', '28 day', 'effective'] }),
-  t('sun-times', 'time-cycles', 'soon', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
+  t('zulu-clock', 'time-cycles', 'live', { badge: 'new', keywords: ['utc', 'ksa', 'local', 'z'] }),
+  t('airac', 'time-cycles', 'live', { keywords: ['cycle', '28 day', 'effective'] }),
+  t('sun-times', 'time-cycles', 'live', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
 
   // Weather & decoding
   t('metar', 'weather', 'soon', { keywords: ['decode', 'observation'] }),

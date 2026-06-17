@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { NumberField } from '../../components/calc/NumberField';
+import { TextField } from '../../components/calc/TextField';
 import { FieldGrid } from '../../components/calc/Grids';
 import { useUrlState } from '../../lib/useUrlState';
 import { parseRunways, windTable } from '../../calc/windTable';
@@ -39,31 +40,13 @@ export function WindTable() {
           unit="kt"
           placeholder="18"
         />
-        <label
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--space-2)',
-            fontSize: 'var(--fs-sm)',
-            color: 'var(--text-muted)',
-          }}
-        >
-          <span>{t('windTable.runways')}</span>
-          <input
-            value={inputs.rwys}
-            onChange={(e) => set('rwys', e.target.value)}
-            placeholder="16L/34R, 07/25"
-            style={{
-              padding: 'var(--space-3)',
-              border: '1px solid var(--border-bright)',
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--surface)',
-              color: 'var(--text)',
-              font: 'inherit',
-            }}
-          />
-          <small style={{ color: 'var(--text-dim)' }}>{t('windTable.runwaysHint')}</small>
-        </label>
+        <TextField
+          label={t('windTable.runways')}
+          value={inputs.rwys}
+          onChange={(v) => set('rwys', v)}
+          placeholder="16L/34R, 07/25"
+          hint={t('windTable.runwaysHint')}
+        />
       </FieldGrid>
 
       {rows.length === 0 ? (

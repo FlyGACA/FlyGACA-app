@@ -345,6 +345,39 @@
     "fuelStation": "Fuel",
     "formula": "CG = Σ(weight × arm) ÷ Σweight. %MAC = (CG − LEMAC) ÷ MAC × 100. Load the real arms and limits from the AFM/POH."
   },
+  "zulu": {
+    "convert": "Direction",
+    "utcToKsa": "UTC → KSA",
+    "ksaToUtc": "KSA → UTC",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "result": "Converted time",
+    "nextDay": "(next day)",
+    "prevDay": "(previous day)",
+    "formula": "Saudi Arabia is UTC+3 (Arabia Standard Time), with no daylight saving."
+  },
+  "airac": {
+    "date": "Date (YYYY-MM-DD, optional)",
+    "current": "Current cycle",
+    "effective": "Effective",
+    "next": "Next cycle",
+    "daysToNext": "Days to next",
+    "formula": "AIRAC cycles are 28 days. Effective dates are fixed worldwide; the identifier is the 2-digit year plus the cycle number within that year."
+  },
+  "sunTimes": {
+    "lat": "Latitude (°)",
+    "lon": "Longitude (°)",
+    "date": "Date (YYYY-MM-DD)",
+    "hint": "South/west negative. OERK 24.71, 46.68.",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "dawn": "Civil dawn",
+    "dusk": "Civil dusk",
+    "utc": "UTC",
+    "localKsa": "KSA",
+    "noEvent": "The sun does not cross this angle on this date.",
+    "formula": "Computed from the sun's position for the date and place. Civil twilight is the sun 6° below the horizon. Shown in UTC and KSA local (UTC+3)."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."

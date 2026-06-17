@@ -24,6 +24,9 @@ import { DescentVdp } from './pages/tools/DescentVdp';
 import { Fuel } from './pages/tools/Fuel';
 import { SpecificRange } from './pages/tools/SpecificRange';
 import { WeightBalance } from './pages/tools/WeightBalance';
+import { ZuluClock } from './pages/tools/ZuluClock';
+import { AiracCycle } from './pages/tools/AiracCycle';
+import { SunTimes } from './pages/tools/SunTimes';
 import { Library } from './pages/library/Library';
 import { Document } from './pages/library/Document';
 import { Chat } from './pages/chat/Chat';
@@ -67,6 +70,9 @@ export const router = createBrowserRouter([
       { path: 'tools/fuel', element: <Fuel /> },
       { path: 'tools/specific-range', element: <SpecificRange /> },
       { path: 'tools/weight-balance', element: <WeightBalance /> },
+      { path: 'tools/zulu-clock', element: <ZuluClock /> },
+      { path: 'tools/airac', element: <AiracCycle /> },
+      { path: 'tools/sun-times', element: <SunTimes /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

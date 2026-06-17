@@ -40,7 +40,11 @@ with AFM/POH disclaimer) + specs.
 (`calc/tsd.ts`) + specs.
 
 **Batch 1.5 — Fuel & weight:** fuel burn/endurance/range + specific range (`calc/fuel.ts`);
-weight & balance with %MAC (`calc/weightBalance.ts`) + specs. **Now live: 22 tools.**
+weight & balance with %MAC (`calc/weightBalance.ts`) + specs.
+
+**Batch 1.6 — Time & cycles:** Zulu/KSA clock (`calc/zulu.ts`), AIRAC cycle (`calc/airac.ts`),
+sun times & civil twilight (`calc/sun.ts`, SunCalc algorithm). Added shared `TextField` primitive.
+**Now live: 25 tools.**
 
 Remaining Stage 1: E6B hub, time & cycles (zulu clock, AIRAC, sun times), currency & validity,
 procedures (holding, procedural separation, VFR brief, LOA). Then Stage 2 (data/reference).
