@@ -35,3 +35,24 @@ test('chat degrades gracefully when the backend is not connected', async ({ page
   // No backend in the preview build → the assistant returns the not-ready notice.
   await expect(page.getByText(/backend isn't connected/i)).toBeVisible();
 });
+
+test('chat renders a streamed answer, grounding badge and source', async ({ page }) => {
+  // Mock the SSE endpoint with a token stream + a grounded final event.
+  await page.route('**/api/chat**', async (route) => {
+    const body =
+      'data: {"type":"token","delta":"VFR minima "}\n' +
+      'data: {"type":"token","delta":"apply here."}\n' +
+      'data: {"type":"final","answer":"VFR minima apply here.","kind":"grounded",' +
+      '"sources":[{"citation":"§91.155","url":"/library/part-91#sec-91-155",' +
+      '"verbatim":"Minimum flight visibility…"}]}\n' +
+      'data: [DONE]\n';
+    await route.fulfill({ status: 200, contentType: 'text/event-stream', body });
+  });
+  await page.goto('/chat');
+  await page.getByRole('textbox').first().fill('VFR minima?');
+  await page.getByRole('button', { name: 'Send' }).click();
+
+  await expect(page.getByText('VFR minima apply here.')).toBeVisible();
+  await expect(page.getByRole('status')).toContainText('Grounded');
+  await expect(page.getByText('§91.155')).toBeVisible();
+});

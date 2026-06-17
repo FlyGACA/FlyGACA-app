@@ -15,6 +15,7 @@
   --falcon-sage: #8fc9a8; /* secondary accent, success */
   --sage-bright: #b5ddc2; /* highlight, focus ring */
   --falcon-gold: #c8a04a; /* heritage accent — used sparingly */
+  --falcon-clay: #cf6b52; /* warm clay — caution / "hold" states */
   --ivory: #f5f2ed; /* light reading surface */
 
   /* --- Semantic surfaces --- */
@@ -38,6 +39,8 @@
   --accent-bright: var(--sage-bright);
   --gold: var(--falcon-gold);
   --success: var(--falcon-sage);
+  --warning: var(--falcon-gold); /* partial / mixed grounding */
+  --danger: var(--falcon-clay); /* refusal / "hold — not grounded" */
   --focus: var(--sage-bright);
 
   /* --- The brand gradient: teal -> sage (wordmark GACA, hairlines) --- */

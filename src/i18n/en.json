@@ -305,6 +305,14 @@
     "thinking": "Captain Adel is checking the GACAR…",
     "notReady": "I couldn't reach my engine just now, Captain. The assistant backend isn't connected in this build. Verify any regulation against the official GACA source at gaca.gov.sa.",
     "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source — not for operational use.",
+    "clear": "Clear chat",
+    "sourcesLabel": "Sources",
+    "open": "Open ↗",
+    "grounding": {
+      "grounded": "Grounded",
+      "partial": "Partially grounded",
+      "refusal": "Hold — not grounded"
+    },
     "suggestions": {
       "s1": "What are the VFR weather minima in controlled airspace?",
       "s2": "What's required for a GACAR commercial pilot licence?",

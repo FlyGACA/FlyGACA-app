@@ -89,6 +89,24 @@ standing in for the Stage 3 Firebase service layer — same component API will m
 (Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
 native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
 
+## ✅ Stage 7 — Captain Adel chat completeness
+
+- **SSE streaming client** (`src/lib/api.ts`): `sendChatStream()` POSTs `/api/chat?stream=1` and
+  yields `token`/`reset`/`final`/`error` events; a pure, unit-tested `drainSse()` implements the
+  legacy line protocol (`data:` frames, `[DONE]` sentinel, partial-frame carry-over). Buffered JSON
+  is the automatic fallback when the gateway doesn't stream. `sendChat()` retained.
+- **Streaming UI** (`src/pages/chat/Chat.tsx`): tokens append to a live bubble with a blinking caret
+  (reduced-motion aware); `reset` clears, `final` settles the answer + verdict + sources. Graceful
+  "engine not connected" path preserved.
+- **Grounding badge** (`src/components/chat/GroundingBadge.tsx`): bilingual grounded / partially
+  grounded / hold-not-grounded, with the `§refusalClass` shown LTR via `<bdi>`; new `--warning`/
+  `--danger` Falcon tokens. `na`/unknown renders nothing.
+- **Sources + verbatim**: citation chips; rows with a passage expand via a native `<details>`
+  (corpus version shown). **Transcript persistence** in `localStorage` (`flygaca:adel-transcript`)
+  with a Clear action. Auth token already forwarded for Stage 3.
+- Unit tests for the SSE parser; an e2e flow asserts a streamed mock renders tokens + a grounded
+  badge + a source. CSP already permits same-origin SSE — no `firebase.json` change.
+
 ## ✅ Stage 8 — Native Capacitor shell
 
 - **Real `native-bridge` adapter** (`src/lib/native-bridge.ts`): `initNative()` (called from
