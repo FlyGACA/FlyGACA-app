@@ -5,23 +5,43 @@ import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
 import styles from './CalcShell.module.css';
 
+export interface RelatedTool {
+  to: string;
+  label: string;
+}
+
 interface CalcShellProps {
   title: string;
   intro?: string;
+  /** Small category eyebrow above the title. */
+  category?: string;
   /** Inputs / outputs of the calculator. */
   children: ReactNode;
   /** Applies a worked example to the inputs (the "Try an example" button). */
   onExample?: () => void;
   /** Returns the Ask-Adel prompt, or null/undefined to hide the action. */
   adelPrompt?: () => string | null | undefined;
+  /** Optional "How it works" explainer, shown in a collapsible. */
+  formula?: ReactNode;
+  /** Related tools shown as chips at the foot of the page. */
+  related?: RelatedTool[];
 }
 
 /**
- * The shared frame for every calculator tool: title, intro, the tool body, the
- * action row (copy link · try an example · ask Captain Adel) and the disclaimer.
- * Replaces the legacy FGCalc.mountActions helper.
+ * The shared frame for every calculator tool: category eyebrow, title, intro,
+ * the tool body, the action row (copy link · try an example · ask Captain Adel),
+ * an optional "How it works" explainer, related-tool chips and the disclaimer.
  */
-export function CalcShell({ title, intro, children, onExample, adelPrompt }: CalcShellProps) {
+export function CalcShell({
+  title,
+  intro,
+  category,
+  children,
+  onExample,
+  adelPrompt,
+  formula,
+  related,
+}: CalcShellProps) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
 
@@ -47,6 +67,7 @@ export function CalcShell({ title, intro, children, onExample, adelPrompt }: Cal
   return (
     <article className={`container-narrow ${styles.shell}`}>
       <header className={styles.head}>
+        {category && <p className={styles.eyebrow}>{category}</p>}
         <h1>{title}</h1>
         {intro && <p className={styles.intro}>{intro}</p>}
       </header>
@@ -69,6 +90,24 @@ export function CalcShell({ title, intro, children, onExample, adelPrompt }: Cal
         )}
         <span className={styles.note}>{t('calc.shareNote')}</span>
       </div>
+
+      {formula && (
+        <details className={styles.formula}>
+          <summary>{t('calc.howItWorks')}</summary>
+          <div className={styles.formulaBody}>{formula}</div>
+        </details>
+      )}
+
+      {related && related.length > 0 && (
+        <nav className={styles.related} aria-label={t('calc.related')}>
+          <span className={styles.relatedLabel}>{t('calc.related')}</span>
+          {related.map((r) => (
+            <Link key={r.to} to={r.to} className={styles.relatedChip}>
+              {r.label}
+            </Link>
+          ))}
+        </nav>
+      )}
 
       <Disclaimer compact />
     </article>

@@ -18,6 +18,16 @@ intentionally **out of scope** (the app keeps calling the same `/api` backend).
 - **Reference vertical slice:** Home, Tools index (data-driven from `public/data/tools.json`),
   and the **Crosswind** tool end-to-end (pure `calc/crosswind.ts` + unit tests + diagram).
 
+## ✅ Stage 1 — Expanded tools suite (in progress)
+
+**Platform (Batch 1.0):** typed tool registry (`src/lib/tools.ts`) driving a grouped, searchable
+Tools hub (13 categories, ~50 tools shown with live/soon + "new" badges); shared calc primitives
+(`src/components/calc/{NumberField,ResultStat,Grids}`); `useNumericInputs` hook; `CalcShell` v2
+("How it works" explainer + related-tool chips + category eyebrow). Registry integrity test added.
+
+**Batch 1.1 — Atmosphere & altitude:** pressure altitude / flight level, ISA temp & deviation,
+altimeter QNH↔QFE, cloud base (`calc/altimetry.ts`, `calc/cloud.ts` + specs). Now live: 7 tools.
+
 ## ✅ Batch 2 done
 
 - **Calculators:** Density altitude (`calc/isa.ts`) and True airspeed (`calc/tas.ts`), both pure +

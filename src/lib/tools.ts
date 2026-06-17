@@ -1,0 +1,190 @@
+/**
+ * The flight-tools registry — the single source of truth for the catalog.
+ * Names/blurbs/category labels are resolved from i18n by id (so they stay
+ * bilingual); this file holds only structure (route, category, status, search
+ * keywords). Flip `status` to 'live' as each tool ships, and add its route to
+ * src/router.tsx.
+ */
+
+export type ToolCategoryId =
+  | 'wind-runway'
+  | 'atmosphere'
+  | 'speed'
+  | 'climb-descent'
+  | 'navigation'
+  | 'fuel-weight'
+  | 'time-cycles'
+  | 'weather'
+  | 'gacar'
+  | 'currency'
+  | 'procedures'
+  | 'reference'
+  | 'directory';
+
+export interface ToolMeta {
+  id: string;
+  route: string;
+  category: ToolCategoryId;
+  status: 'live' | 'soon';
+  badge?: 'new';
+  /** Language-neutral search hints (abbreviations, alt names). */
+  keywords?: string[];
+}
+
+/** Display order of the categories in the hub. */
+export const TOOL_CATEGORIES: ToolCategoryId[] = [
+  'wind-runway',
+  'atmosphere',
+  'speed',
+  'climb-descent',
+  'navigation',
+  'fuel-weight',
+  'time-cycles',
+  'weather',
+  'gacar',
+  'currency',
+  'procedures',
+  'reference',
+  'directory',
+];
+
+const t = (
+  id: string,
+  category: ToolCategoryId,
+  status: 'live' | 'soon',
+  opts: { badge?: 'new'; keywords?: string[]; route?: string } = {},
+): ToolMeta => ({
+  id,
+  route: opts.route ?? `/tools/${id}`,
+  category,
+  status,
+  badge: opts.badge,
+  keywords: opts.keywords,
+});
+
+export const TOOLS: ToolMeta[] = [
+  // Wind & runway
+  t('crosswind', 'wind-runway', 'live', { keywords: ['xwind', 'headwind', 'runway'] }),
+  t('wind-table', 'wind-runway', 'soon', { badge: 'new', keywords: ['all runways', 'components'] }),
+  t('hydroplaning', 'wind-runway', 'soon', {
+    badge: 'new',
+    keywords: ['aquaplaning', 'tyre', 'tire'],
+  }),
+  t('takeoff-landing', 'wind-runway', 'soon', {
+    keywords: ['tora', 'lda', 'distance', 'performance'],
+  }),
+
+  // Atmosphere & altitude
+  t('density-altitude', 'atmosphere', 'live', { keywords: ['da', 'pa', 'isa'] }),
+  t('pressure-altitude', 'atmosphere', 'live', {
+    badge: 'new',
+    keywords: ['pa', 'flight level', 'fl'],
+  }),
+  t('isa', 'atmosphere', 'live', { badge: 'new', keywords: ['standard atmosphere', 'deviation'] }),
+  t('altimeter', 'atmosphere', 'live', { badge: 'new', keywords: ['qnh', 'qfe', 'setting'] }),
+  t('cloud-base', 'atmosphere', 'live', { keywords: ['dew point', 'spread', 'lcl'] }),
+
+  // Speed
+  t('tas', 'speed', 'live', { keywords: ['true airspeed', 'cas', 'mach'] }),
+  t('mach', 'speed', 'soon', { badge: 'new', keywords: ['speed of sound', 'tas'] }),
+
+  // Climb, descent & turns
+  t('climb-gradient', 'climb-descent', 'soon', {
+    badge: 'new',
+    keywords: ['ft/nm', 'fpm', 'sid', 'percent'],
+  }),
+  t('top-of-descent', 'climb-descent', 'soon', { keywords: ['tod', 'descent point'] }),
+  t('descent-vdp', 'climb-descent', 'soon', {
+    badge: 'new',
+    keywords: ['rate', 'vdp', 'glidepath'],
+  }),
+  t('standard-rate-turn', 'climb-descent', 'soon', {
+    badge: 'new',
+    keywords: ['rate one', 'bank', 'radius'],
+  }),
+
+  // Navigation & planning
+  t('wind-triangle', 'navigation', 'soon', {
+    badge: 'new',
+    keywords: ['heading', 'groundspeed', 'wca'],
+  }),
+  t('great-circle', 'navigation', 'soon', {
+    badge: 'new',
+    keywords: ['distance', 'bearing', 'gc'],
+  }),
+  t('one-in-sixty', 'navigation', 'soon', {
+    badge: 'new',
+    keywords: ['track error', 'correction'],
+  }),
+  t('tsd', 'navigation', 'soon', { keywords: ['time speed distance'] }),
+  t('e6b', 'navigation', 'soon', { keywords: ['flight computer', 'whiz wheel'] }),
+  t('route-planner', 'navigation', 'soon', { keywords: ['leg', 'eta', 'wind'] }),
+  t('flight-plan', 'navigation', 'soon', { keywords: ['icao fpl', 'filing'] }),
+
+  // Fuel & weight
+  t('fuel', 'fuel-weight', 'soon', { keywords: ['burn', 'endurance', 'range'] }),
+  t('specific-range', 'fuel-weight', 'soon', {
+    badge: 'new',
+    keywords: ['nm per kg', 'efficiency'],
+  }),
+  t('weight-balance', 'fuel-weight', 'soon', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
+
+  // Time & cycles
+  t('zulu-clock', 'time-cycles', 'soon', { badge: 'new', keywords: ['utc', 'ksa', 'local', 'z'] }),
+  t('airac', 'time-cycles', 'soon', { keywords: ['cycle', '28 day', 'effective'] }),
+  t('sun-times', 'time-cycles', 'soon', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
+
+  // Weather & decoding
+  t('metar', 'weather', 'soon', { keywords: ['decode', 'observation'] }),
+  t('taf', 'weather', 'soon', { badge: 'new', keywords: ['forecast', 'decode'] }),
+  t('notam', 'weather', 'soon', { keywords: ['q code', 'decode'] }),
+  t('met-brief', 'weather', 'soon', { keywords: ['route', 'weather briefing'] }),
+
+  // GACAR regulatory lookups
+  t('vfr-minima', 'gacar', 'soon', {
+    badge: 'new',
+    keywords: ['visibility', 'cloud clearance', 'airspace'],
+  }),
+  t('oxygen', 'gacar', 'soon', { badge: 'new', keywords: ['o2', 'altitude', 'part 91'] }),
+  t('fuel-reserves', 'gacar', 'soon', {
+    badge: 'new',
+    keywords: ['reserve', 'alternate', 'part 121'],
+  }),
+  t('conversion-checker', 'gacar', 'soon', { keywords: ['foreign licence', 'convert'] }),
+
+  // Currency & validity
+  t('part61-currency', 'currency', 'soon', {
+    keywords: ['90 day', 'night', 'passenger', 'recency'],
+  }),
+  t('medical-validity', 'currency', 'soon', {
+    badge: 'new',
+    keywords: ['class 1', 'class 2', 'expiry'],
+  }),
+  t('flight-review', 'currency', 'soon', { badge: 'new', keywords: ['ipc', 'bfr', 'due'] }),
+
+  // Procedures & R/T
+  t('holding', 'procedures', 'soon', { keywords: ['entry', 'teardrop', 'parallel'] }),
+  t('procedural-separation', 'procedures', 'soon', { keywords: ['separation', 'minima'] }),
+  t('vfr-brief', 'procedures', 'soon', { keywords: ['checklist', 'preflight'] }),
+  t('loa', 'procedures', 'soon', { keywords: ['letter of authorization'] }),
+
+  // Quick reference
+  t('transponder', 'reference', 'soon', {
+    badge: 'new',
+    keywords: ['squawk', '7500', '7600', '7700'],
+  }),
+  t('phonetic', 'reference', 'soon', {
+    badge: 'new',
+    keywords: ['alphabet', 'morse', 'alpha bravo'],
+  }),
+  t('units', 'reference', 'soon', { keywords: ['converter', 'feet', 'metres', 'knots'] }),
+  t('chart-symbols', 'reference', 'soon', { keywords: ['legend', 'vfr chart'] }),
+
+  // Directory & glossary
+  t('aerodromes', 'directory', 'soon', { keywords: ['airport', 'icao', 'oerk', 'oejn'] }),
+  t('airspace', 'directory', 'soon', { keywords: ['frequency', 'acc', 'tma', 'ctr'] }),
+  t('definitions', 'directory', 'soon', { keywords: ['glossary', 'part 1', 'terms'] }),
+];
+
+export const liveTools = () => TOOLS.filter((x) => x.status === 'live');
+export const toolsByCategory = (c: ToolCategoryId) => TOOLS.filter((x) => x.category === c);

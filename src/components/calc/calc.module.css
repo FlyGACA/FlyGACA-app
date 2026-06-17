@@ -1,0 +1,89 @@
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+
+.outputGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.inputRow {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  overflow: hidden;
+}
+.inputRow:focus-within {
+  border-color: var(--brand-hover);
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  padding: var(--space-3);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.input:focus {
+  outline: none;
+}
+
+.unit {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-3);
+  background: var(--surface-raised);
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.stat dt {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.stat dd {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+.sub {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+}
+
+.headline dd {
+  color: var(--accent-bright);
+}
+.good dd {
+  color: var(--accent);
+}
+.bad dd {
+  color: #e5534b;
+}

@@ -34,25 +34,77 @@
   },
   "tools": {
     "title": "Flight tools",
-    "subtitle": "Quick, shareable calculators for everyday flying. Every result links to Captain Adel for an explanation grounded in GACAR.",
+    "subtitle": "A growing suite of fast, shareable calculators and references for everyday flying. Every result links to Captain Adel for an explanation grounded in GACAR.",
     "open": "Open",
+    "new": "New",
+    "empty": "No tools match that search.",
+    "searchPlaceholder": "Search {{count}}+ tools — wind, fuel, currency…",
+    "categories": {
+      "wind-runway": "Wind & runway",
+      "atmosphere": "Atmosphere & altitude",
+      "speed": "Speed",
+      "climb-descent": "Climb, descent & turns",
+      "navigation": "Navigation & planning",
+      "fuel-weight": "Fuel & weight",
+      "time-cycles": "Time & cycles",
+      "weather": "Weather & decoding",
+      "gacar": "GACAR reference",
+      "currency": "Currency & validity",
+      "procedures": "Procedures & R/T",
+      "reference": "Quick reference",
+      "directory": "Directory & glossary"
+    },
     "items": {
-      "crosswind": {
-        "name": "Crosswind & headwind",
-        "blurb": "Resolve reported wind against the runway heading, with a wind-vector diagram."
-      },
-      "e6b": {
-        "name": "E6B flight computer",
-        "blurb": "True airspeed, wind triangle, and the everyday E6B conversions."
-      },
-      "density-altitude": {
-        "name": "Density altitude",
-        "blurb": "Pressure and density altitude from elevation, altimeter and temperature."
-      },
-      "tas": {
-        "name": "True airspeed",
-        "blurb": "CAS → TAS and Mach from the ISA standard atmosphere."
-      }
+      "crosswind": { "name": "Crosswind & headwind", "blurb": "Resolve reported wind against the runway heading, with a wind-vector diagram." },
+      "wind-table": { "name": "All-runways wind table", "blurb": "Crosswind and headwind for every runway at an airport at a glance." },
+      "hydroplaning": { "name": "Hydroplaning speed", "blurb": "Dynamic hydroplaning speed from tyre pressure." },
+      "takeoff-landing": { "name": "Takeoff & landing distance", "blurb": "Runway required vs available, adjusted for wind, slope and surface." },
+      "density-altitude": { "name": "Density altitude", "blurb": "Pressure and density altitude from elevation, altimeter and temperature." },
+      "pressure-altitude": { "name": "Pressure altitude & FL", "blurb": "Pressure altitude and flight level from elevation and altimeter setting." },
+      "isa": { "name": "ISA temperature & deviation", "blurb": "Standard temperature at altitude and how far the day is from ISA." },
+      "altimeter": { "name": "Altimeter QNH ↔ QFE", "blurb": "Convert between QNH, QFE and pressure altitude for a field elevation." },
+      "cloud-base": { "name": "Cloud base estimate", "blurb": "Convective cloud base from the temperature–dew point spread." },
+      "tas": { "name": "True airspeed", "blurb": "CAS → TAS and Mach from the ISA standard atmosphere." },
+      "mach": { "name": "Mach ↔ TAS", "blurb": "Mach number, true airspeed and the local speed of sound at altitude." },
+      "climb-gradient": { "name": "Climb gradient", "blurb": "Convert between ft/NM, feet-per-minute, percent and degrees for any speed." },
+      "top-of-descent": { "name": "Top of descent", "blurb": "Where to start down for a target altitude, distance and descent angle." },
+      "descent-vdp": { "name": "Descent rate & VDP", "blurb": "Required rate of descent on a glidepath and the visual descent point." },
+      "standard-rate-turn": { "name": "Standard-rate turn", "blurb": "Bank angle and turn radius for a rate-one turn at any speed." },
+      "wind-triangle": { "name": "Wind triangle", "blurb": "Heading, wind-correction angle and groundspeed from wind and course." },
+      "great-circle": { "name": "Great-circle distance", "blurb": "Distance and initial bearing between two points or aerodromes." },
+      "one-in-sixty": { "name": "1-in-60 track error", "blurb": "Track error and the heading correction to regain course." },
+      "tsd": { "name": "Time, speed & distance", "blurb": "Solve for any of time, groundspeed or distance." },
+      "e6b": { "name": "E6B flight computer", "blurb": "True airspeed, wind triangle and the everyday E6B conversions." },
+      "route-planner": { "name": "Route planner", "blurb": "Build legs with distance, heading and wind for an ETA and fuel." },
+      "flight-plan": { "name": "ICAO flight plan", "blurb": "Assemble and format an ICAO flight-plan (FPL) message." },
+      "fuel": { "name": "Fuel burn & endurance", "blurb": "Burn rate, endurance and range from fuel on board and consumption." },
+      "specific-range": { "name": "Specific range", "blurb": "Nautical miles per unit of fuel for cruise efficiency." },
+      "weight-balance": { "name": "Weight & balance", "blurb": "Loaded weight, moment, centre of gravity and %MAC against the envelope." },
+      "zulu-clock": { "name": "Zulu / KSA clock", "blurb": "Convert between UTC (Zulu) and Saudi local time." },
+      "airac": { "name": "AIRAC cycle", "blurb": "Current AIRAC cycle, its effective dates and the countdown to the next." },
+      "sun-times": { "name": "Sun times & twilight", "blurb": "Sunrise, sunset and civil twilight for night-flying limits." },
+      "metar": { "name": "METAR decoder", "blurb": "Decode a raw METAR into plain bilingual language." },
+      "taf": { "name": "TAF decoder", "blurb": "Decode a TAF forecast into readable periods and changes." },
+      "notam": { "name": "NOTAM decoder", "blurb": "Expand ICAO NOTAM Q-codes and abbreviations." },
+      "met-brief": { "name": "Met briefing", "blurb": "Pull a route weather picture from departure to destination." },
+      "vfr-minima": { "name": "VFR weather minima", "blurb": "Visibility and cloud-clearance minima by airspace under GACAR." },
+      "oxygen": { "name": "Oxygen requirements", "blurb": "Crew and passenger oxygen rules by cabin altitude and time." },
+      "fuel-reserves": { "name": "Fuel reserve requirements", "blurb": "Minimum trip, contingency and reserve fuel under GACAR." },
+      "conversion-checker": { "name": "Licence conversion", "blurb": "Check the pathway to convert a foreign licence to GACA." },
+      "part61-currency": { "name": "Part 61 currency", "blurb": "90-day, night and passenger-carrying recency at a glance." },
+      "medical-validity": { "name": "Medical validity", "blurb": "When a Class 1 or Class 2 medical certificate expires." },
+      "flight-review": { "name": "Flight review / IPC", "blurb": "Track when a flight review or instrument proficiency check is due." },
+      "holding": { "name": "Holding pattern", "blurb": "Entry type, leg timing and fuel for a holding pattern." },
+      "procedural-separation": { "name": "Procedural separation", "blurb": "Minimum separation between aircraft without radar." },
+      "vfr-brief": { "name": "VFR brief checklist", "blurb": "A structured self-brief for a VFR departure." },
+      "loa": { "name": "LOA builder", "blurb": "Draft a Letter of Authorization for review." },
+      "transponder": { "name": "Transponder codes", "blurb": "Standard squawk codes and the emergency 7500 / 7600 / 7700." },
+      "phonetic": { "name": "Phonetic & Morse", "blurb": "The ICAO phonetic alphabet with Morse and pronunciation." },
+      "units": { "name": "Unit converter", "blurb": "Convert distance, altitude, speed, pressure, temperature and weight." },
+      "chart-symbols": { "name": "Chart symbols", "blurb": "Decode the symbols on VFR and instrument charts." },
+      "aerodromes": { "name": "Aerodromes", "blurb": "Search aerodromes for runways, frequencies and services." },
+      "airspace": { "name": "Airspace & frequencies", "blurb": "Sectors, control areas and their frequencies." },
+      "definitions": { "name": "Definitions", "blurb": "The GACAR Part 1 glossary, searchable and bilingual." }
     }
   },
   "crosswind": {
@@ -125,6 +177,34 @@
     "outline": "Outline",
     "readerPending": "The in-app reader for this Part is being ported.",
     "verifyAtGaca": "Read the official GACAR at gaca.gov.sa"
+  },
+  "pressureAltitude": {
+    "elevation": "Field elevation (ft)",
+    "qnh": "QNH (hPa)",
+    "pa": "Pressure altitude",
+    "fl": "Flight level",
+    "formula": "Pressure altitude = elevation + (1013.25 − QNH) × 27.3 ft. The flight level is that pressure altitude in hundreds of feet."
+  },
+  "isaTool": {
+    "pa": "Pressure altitude (ft)",
+    "oat": "OAT (°C)",
+    "temp": "ISA temperature",
+    "dev": "ISA deviation",
+    "formula": "ISA temperature = 15 °C − 1.98 °C per 1000 ft. The deviation is OAT minus that standard temperature."
+  },
+  "altimeter": {
+    "qnh": "QNH (hPa)",
+    "elevation": "Field elevation (ft)",
+    "qfe": "QFE",
+    "pa": "Pressure altitude",
+    "formula": "QFE = QNH − elevation ÷ 27.3 hPa. Set QNH and the altimeter reads field elevation; set QFE and it reads zero on the ground."
+  },
+  "cloudBase": {
+    "temp": "Temperature (°C)",
+    "dew": "Dew point (°C)",
+    "base": "Cloud base (AGL)",
+    "spread": "spread {{spread}} °C",
+    "formula": "Convective cloud base ≈ (temperature − dew point) × 400 ft. A rough estimate for cumuliform cloud only."
   },
   "disclaimer": {
     "strong": "Unofficial & educational.",
@@ -209,6 +289,8 @@
     "copyFailed": "Copy failed",
     "tryExample": "Try an example",
     "askAdel": "Ask Captain Adel to explain",
-    "shareNote": "The link carries your inputs — share it and the tool opens pre-filled."
+    "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",
+    "howItWorks": "How it works",
+    "related": "Related tools"
   }
 }
