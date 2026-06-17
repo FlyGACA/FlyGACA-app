@@ -137,7 +137,7 @@ export const TOOLS: ToolMeta[] = [
   // Weather & decoding
   t('metar', 'weather', 'live', { keywords: ['decode', 'observation'] }),
   t('taf', 'weather', 'live', { badge: 'new', keywords: ['forecast', 'decode'] }),
-  t('notam', 'weather', 'soon', { keywords: ['q code', 'decode'] }),
+  t('notam', 'weather', 'live', { keywords: ['q code', 'decode'] }),
   t('met-brief', 'weather', 'soon', { keywords: ['route', 'weather briefing'] }),
 
   // GACAR regulatory lookups
@@ -178,7 +178,7 @@ export const TOOLS: ToolMeta[] = [
     keywords: ['alphabet', 'morse', 'alpha bravo'],
   }),
   t('units', 'reference', 'live', { keywords: ['converter', 'feet', 'metres', 'knots'] }),
-  t('chart-symbols', 'reference', 'soon', { keywords: ['legend', 'vfr chart'] }),
+  t('chart-symbols', 'reference', 'live', { keywords: ['legend', 'vfr chart'] }),
 
   // Directory & glossary
   t('aerodromes', 'directory', 'soon', { keywords: ['airport', 'icao', 'oerk', 'oejn'] }),

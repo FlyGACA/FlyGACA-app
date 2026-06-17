@@ -532,6 +532,50 @@
       "PO": "dust whirls", "SQ": "squall", "FC": "funnel cloud", "SS": "sandstorm", "DS": "duststorm", "PY": "spray"
     }
   },
+  "notam": {
+    "paste": "Paste a NOTAM",
+    "id": "NOTAM",
+    "aerodrome": "Aerodrome",
+    "from": "From",
+    "to": "To",
+    "text": "Text",
+    "qcode": "Q-code",
+    "glossary": "Abbreviations",
+    "qnote": "Q-code shown verbatim (ICAO Doc 8126).",
+    "abbr": {
+      "RWY": "runway", "TWY": "taxiway", "CLSD": "closed", "U/S": "unserviceable",
+      "WIP": "work in progress", "AVBL": "available", "BTN": "between", "MAINT": "maintenance",
+      "AD": "aerodrome", "APN": "apron", "ACFT": "aircraft", "OBST": "obstacle", "LGT": "lighting",
+      "UNL": "unlimited", "PSN": "position", "PERM": "permanent", "TEMPO": "temporary",
+      "SFC": "surface", "AMSL": "above mean sea level", "AGL": "above ground level",
+      "DLY": "daily", "EXC": "except", "DUE": "due to", "ILS": "instrument landing system"
+    }
+  },
+  "chartSymbols": {
+    "filter": "Filter symbols",
+    "symbolCol": "Symbol",
+    "meaningCol": "Meaning",
+    "items": [
+      { "symbol": "CTR", "meaning": "Control zone — controlled airspace around an aerodrome from the surface" },
+      { "symbol": "TMA", "meaning": "Terminal control area" },
+      { "symbol": "CTA", "meaning": "Control area" },
+      { "symbol": "FIR", "meaning": "Flight information region" },
+      { "symbol": "P", "meaning": "Prohibited area — flight is not permitted" },
+      { "symbol": "R", "meaning": "Restricted area — flight restricted by stated conditions" },
+      { "symbol": "D", "meaning": "Danger area — hazards may exist at stated times" },
+      { "symbol": "VOR", "meaning": "VHF omnidirectional range" },
+      { "symbol": "DME", "meaning": "Distance measuring equipment" },
+      { "symbol": "NDB", "meaning": "Non-directional radio beacon" },
+      { "symbol": "VORTAC", "meaning": "Co-located VOR and TACAN" },
+      { "symbol": "ILS", "meaning": "Instrument landing system" },
+      { "symbol": "OBST", "meaning": "Obstacle — elevation shown in feet AMSL" },
+      { "symbol": "MSA", "meaning": "Minimum sector altitude" },
+      { "symbol": "MEA", "meaning": "Minimum en-route altitude" },
+      { "symbol": "MOCA", "meaning": "Minimum obstacle clearance altitude" },
+      { "symbol": "TWR", "meaning": "Aerodrome control tower" }
+    ],
+    "formula": "Common airspace and chart abbreviations. Always read the chart's own legend and the current AIP."
+  },
   "disclaimer": {
     "strong": "Unofficial & educational.",
     "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
