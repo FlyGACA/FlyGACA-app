@@ -116,6 +116,25 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
   price IDs, enforce App Check on the Functions, deploy `firestore.rules`. Native RevenueCat IAP
   purchase is wired when the `@revenuecat/purchases-capacitor` plugin is added to the iOS shell.
 
+## ✅ Stage 9 — Hardening & cutover
+
+- **Route-level code-splitting (9a):** every page except Home is `React.lazy` (typed `lazyNamed`
+  helper) under a single `Suspense` boundary in `Layout`. The app shell dropped **300 → 155 kB**
+  (91 → 53 kB gzip); eager JS (entry + vendors) is ~134 kB gzip. `scripts/check-bundle.mjs` enforces
+  a 160 kB-gzip initial-JS budget as a CI step.
+- **SEO finish (9b):** `usePageMeta` emits canonical, `og:url/type/image/locale` and hreflang
+  alternates (en/ar via `?lang=` + x-default); `src/lib/seo.ts` pure helpers (unit-tested); `i18n`
+  honours `?lang=`; `index.html` has baseline OG/twitter tags. (`sitemap.xml`/`robots.txt` already
+  generated at build.)
+- **E2E + a11y (9c):** new flows for account sign-in, pricing, charts, study sheets, met-brief; axe
+  WCAG2 A/AA extended to `/pricing`, `/account`, `/library/charts`, `/study/sheets`.
+- **Cutover (9d):** `docs/RUNBOOK-cutover.md` — parity checklist, the production secret flip, preview
+  channel → prod smoke, DNS switch, rollback (legacy host retained). Content-QA: Disclaimer is
+  site-wide (Footer + CalcShell + explicit) and no fabricated GACAR figures ship.
+
+**The rebuild is feature-complete and parity-ready — the only remaining gate is the production
+secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) before DNS cutover.**
+
 ## ✅ Verticals — charts · PDF sheets · met-brief
 
 - **VFR charts** (`/library/charts`): the 13 GACA AIP visual (UVR) sheets as pan/zoom Leaflet image

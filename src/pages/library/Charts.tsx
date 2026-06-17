@@ -39,7 +39,9 @@ export function Charts() {
   const mapRef = useRef<L.Map | null>(null);
   const overlayRef = useRef<L.ImageOverlay | null>(null);
 
-  // Create the Leaflet map once the container is mounted.
+  // Create the Leaflet map once the (data-gated) container is in the DOM.
+  // Depends on docs.length so it runs after the index loads and the map div
+  // renders — not just on the first, container-less mount.
   useEffect(() => {
     if (!mapEl.current || mapRef.current) return;
     const map = L.map(mapEl.current, {
@@ -55,7 +57,7 @@ export function Charts() {
       mapRef.current = null;
       overlayRef.current = null;
     };
-  }, []);
+  }, [docs.length]);
 
   // Swap the image overlay whenever the active chart changes.
   useEffect(() => {

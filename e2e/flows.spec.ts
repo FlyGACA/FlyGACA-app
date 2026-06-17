@@ -92,6 +92,6 @@ test('study sheets embed a PDF', async ({ page }) => {
 test('met-brief builds official-source links for a route', async ({ page }) => {
   await page.goto('/tools/met-brief');
   await page.getByRole('textbox').first().fill('OERK OEJN');
-  await expect(page.getByText('OERK')).toBeVisible();
+  await expect(page.getByText('OERK', { exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: /METAR/ }).first()).toBeVisible();
 });

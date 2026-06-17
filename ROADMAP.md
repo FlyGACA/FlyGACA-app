@@ -5,6 +5,14 @@ TypeScript/React/Vite app. Frontend only — the Firebase Functions gateway and 
 brain are unchanged; the app calls the same `/api/chat`, `/api/content`, and Firebase project
 (`flygaca-app`, `me-central2`). Day-to-day progress is tracked in [`MIGRATION.md`](./MIGRATION.md).
 
+## Status — rebuild complete (parity-ready)
+
+All stages are implemented and CI-green on PR #1: 0–2 (infra + 54 tools), 3 (Firebase + billing,
+emulator-first), 4–5 (account · study), 6 (library + charts + PDF sheets), 7 (chat streaming),
+8 (native Capacitor), 9 (code-splitting · SEO · E2E/a11y · cutover runbook). The only remaining gate
+before DNS cutover is the **production secret flip** (Firebase config · App Check · Stripe price IDs ·
+deploy rules) — see `docs/RUNBOOK-cutover.md`. Live progress detail in `MIGRATION.md`.
+
 ## Decisions
 
 - **Cutover: parity-first** — reach full feature parity before the new app replaces flygaca.com.
