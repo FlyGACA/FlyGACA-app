@@ -38,6 +38,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Bundle budget
+        run: npm run check:bundle
+
   e2e:
     name: e2e · a11y (Playwright)
     runs-on: ubuntu-latest

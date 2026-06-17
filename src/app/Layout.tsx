@@ -1,10 +1,13 @@
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { RouteFallback } from './RouteFallback';
 
 /** The shared chrome: header + routed page + footer. Replaces the legacy
- *  build-chrome.js stamper — the chrome is now a component, never copied. */
+ *  build-chrome.js stamper — the chrome is now a component, never copied.
+ *  The Suspense boundary covers lazily code-split route chunks. */
 export function Layout() {
   const { t } = useTranslation();
   return (
@@ -14,7 +17,9 @@ export function Layout() {
       </a>
       <Header />
       <main id="main">
-        <Outlet />
+        <Suspense fallback={<RouteFallback />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
     </>

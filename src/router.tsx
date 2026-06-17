@@ -1,80 +1,116 @@
-import { lazy, Suspense } from 'react';
+import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
-import { ToolsIndex } from './pages/tools/ToolsIndex';
-import { Crosswind } from './pages/tools/Crosswind';
-import { DensityAltitude } from './pages/tools/DensityAltitude';
-import { Tas } from './pages/tools/Tas';
-import { PressureAltitude } from './pages/tools/PressureAltitude';
-import { Isa } from './pages/tools/Isa';
-import { Altimeter } from './pages/tools/Altimeter';
-import { CloudBase } from './pages/tools/CloudBase';
-import { Mach } from './pages/tools/Mach';
-import { ClimbGradient } from './pages/tools/ClimbGradient';
-import { StandardRateTurn } from './pages/tools/StandardRateTurn';
-import { WindTable } from './pages/tools/WindTable';
-import { Hydroplaning } from './pages/tools/Hydroplaning';
-import { TakeoffLanding } from './pages/tools/TakeoffLanding';
-import { WindTriangle } from './pages/tools/WindTriangle';
-import { GreatCircle } from './pages/tools/GreatCircle';
-import { OneInSixty } from './pages/tools/OneInSixty';
-import { Tsd } from './pages/tools/Tsd';
-import { E6b } from './pages/tools/E6b';
-import { TopOfDescent } from './pages/tools/TopOfDescent';
-import { DescentVdp } from './pages/tools/DescentVdp';
-import { Fuel } from './pages/tools/Fuel';
-import { SpecificRange } from './pages/tools/SpecificRange';
-import { WeightBalance } from './pages/tools/WeightBalance';
-import { ZuluClock } from './pages/tools/ZuluClock';
-import { AiracCycle } from './pages/tools/AiracCycle';
-import { SunTimes } from './pages/tools/SunTimes';
-import { Part61Currency } from './pages/tools/Part61Currency';
-import { MedicalValidity } from './pages/tools/MedicalValidity';
-import { FlightReview } from './pages/tools/FlightReview';
-import { Holding } from './pages/tools/Holding';
-import { ProceduralSeparation } from './pages/tools/ProceduralSeparation';
-import { VfrBrief } from './pages/tools/VfrBrief';
-import { Loa } from './pages/tools/Loa';
-import { Units } from './pages/tools/Units';
-import { Transponder } from './pages/tools/Transponder';
-import { Phonetic } from './pages/tools/Phonetic';
-import { Metar } from './pages/tools/Metar';
-import { Taf } from './pages/tools/Taf';
-import { Notam } from './pages/tools/Notam';
-import { MetBrief } from './pages/tools/MetBrief';
-import { ChartSymbols } from './pages/tools/ChartSymbols';
-import { VfrMinima, Oxygen, FuelReserves, ConversionChecker } from './pages/tools/RegLookup';
-import { Aerodromes } from './pages/tools/Aerodromes';
-import { Airspace } from './pages/tools/Airspace';
-import { Definitions } from './pages/tools/Definitions';
-import { RoutePlanner } from './pages/tools/RoutePlanner';
-import { FlightPlan } from './pages/tools/FlightPlan';
-import { Library } from './pages/library/Library';
-import { Document } from './pages/library/Document';
 
-// Charts pull in Leaflet (+ its CSS) — lazy-loaded so neither enters the main bundle.
-const Charts = lazy(() => import('./pages/library/Charts').then((m) => ({ default: m.Charts })));
-import { Chat } from './pages/chat/Chat';
-import { GuidesIndex } from './pages/guides/GuidesIndex';
-import { Guide } from './pages/guides/Guide';
-import { StudyHub } from './pages/study/StudyHub';
-import { Quiz } from './pages/study/Quiz';
-import { Flashcards } from './pages/study/Flashcards';
-import { GroundSchool } from './pages/study/GroundSchool';
-import { MockExam } from './pages/study/MockExam';
-import { Paths } from './pages/study/Paths';
-import { Packs } from './pages/study/Packs';
-import { StudySheets } from './pages/study/StudySheets';
-import { Account } from './pages/account/Account';
-import { Dashboard } from './pages/account/Dashboard';
-import { Logbook } from './pages/account/Logbook';
-import { Settings } from './pages/account/Settings';
-import { Pricing } from './pages/Pricing';
-import { Schools } from './pages/Schools';
-import { About } from './pages/About';
-import { DisclaimerPage, TermsPage, PrivacyPage } from './pages/legal/LegalPage';
-import { NotFound } from './pages/NotFound';
+/**
+ * Lazy a named export into a route component. Every page except Home is
+ * code-split; the Layout's Suspense boundary renders the fallback while a
+ * route chunk loads. Vite groups co-located pages into per-section chunks,
+ * so the initial bundle carries only Home + the shared chrome.
+ */
+function lazyNamed<M, K extends keyof M>(loader: () => Promise<M>, key: K) {
+  return lazy(() => loader().then((m) => ({ default: m[key] as ComponentType })));
+}
+
+// Library
+const Library = lazyNamed(() => import('./pages/library/Library'), 'Library');
+const Document = lazyNamed(() => import('./pages/library/Document'), 'Document') as ComponentType<{
+  kind?: 'reference' | 'handbook';
+}>;
+const Charts = lazyNamed(() => import('./pages/library/Charts'), 'Charts');
+const Chat = lazyNamed(() => import('./pages/chat/Chat'), 'Chat');
+
+// Tools
+const ToolsIndex = lazyNamed(() => import('./pages/tools/ToolsIndex'), 'ToolsIndex');
+const Crosswind = lazyNamed(() => import('./pages/tools/Crosswind'), 'Crosswind');
+const DensityAltitude = lazyNamed(() => import('./pages/tools/DensityAltitude'), 'DensityAltitude');
+const Tas = lazyNamed(() => import('./pages/tools/Tas'), 'Tas');
+const PressureAltitude = lazyNamed(
+  () => import('./pages/tools/PressureAltitude'),
+  'PressureAltitude',
+);
+const Isa = lazyNamed(() => import('./pages/tools/Isa'), 'Isa');
+const Altimeter = lazyNamed(() => import('./pages/tools/Altimeter'), 'Altimeter');
+const CloudBase = lazyNamed(() => import('./pages/tools/CloudBase'), 'CloudBase');
+const Mach = lazyNamed(() => import('./pages/tools/Mach'), 'Mach');
+const ClimbGradient = lazyNamed(() => import('./pages/tools/ClimbGradient'), 'ClimbGradient');
+const StandardRateTurn = lazyNamed(
+  () => import('./pages/tools/StandardRateTurn'),
+  'StandardRateTurn',
+);
+const WindTable = lazyNamed(() => import('./pages/tools/WindTable'), 'WindTable');
+const Hydroplaning = lazyNamed(() => import('./pages/tools/Hydroplaning'), 'Hydroplaning');
+const TakeoffLanding = lazyNamed(() => import('./pages/tools/TakeoffLanding'), 'TakeoffLanding');
+const WindTriangle = lazyNamed(() => import('./pages/tools/WindTriangle'), 'WindTriangle');
+const GreatCircle = lazyNamed(() => import('./pages/tools/GreatCircle'), 'GreatCircle');
+const OneInSixty = lazyNamed(() => import('./pages/tools/OneInSixty'), 'OneInSixty');
+const Tsd = lazyNamed(() => import('./pages/tools/Tsd'), 'Tsd');
+const E6b = lazyNamed(() => import('./pages/tools/E6b'), 'E6b');
+const TopOfDescent = lazyNamed(() => import('./pages/tools/TopOfDescent'), 'TopOfDescent');
+const DescentVdp = lazyNamed(() => import('./pages/tools/DescentVdp'), 'DescentVdp');
+const Fuel = lazyNamed(() => import('./pages/tools/Fuel'), 'Fuel');
+const SpecificRange = lazyNamed(() => import('./pages/tools/SpecificRange'), 'SpecificRange');
+const WeightBalance = lazyNamed(() => import('./pages/tools/WeightBalance'), 'WeightBalance');
+const ZuluClock = lazyNamed(() => import('./pages/tools/ZuluClock'), 'ZuluClock');
+const AiracCycle = lazyNamed(() => import('./pages/tools/AiracCycle'), 'AiracCycle');
+const SunTimes = lazyNamed(() => import('./pages/tools/SunTimes'), 'SunTimes');
+const Part61Currency = lazyNamed(() => import('./pages/tools/Part61Currency'), 'Part61Currency');
+const MedicalValidity = lazyNamed(() => import('./pages/tools/MedicalValidity'), 'MedicalValidity');
+const FlightReview = lazyNamed(() => import('./pages/tools/FlightReview'), 'FlightReview');
+const Holding = lazyNamed(() => import('./pages/tools/Holding'), 'Holding');
+const ProceduralSeparation = lazyNamed(
+  () => import('./pages/tools/ProceduralSeparation'),
+  'ProceduralSeparation',
+);
+const VfrBrief = lazyNamed(() => import('./pages/tools/VfrBrief'), 'VfrBrief');
+const Loa = lazyNamed(() => import('./pages/tools/Loa'), 'Loa');
+const Units = lazyNamed(() => import('./pages/tools/Units'), 'Units');
+const Transponder = lazyNamed(() => import('./pages/tools/Transponder'), 'Transponder');
+const Phonetic = lazyNamed(() => import('./pages/tools/Phonetic'), 'Phonetic');
+const Metar = lazyNamed(() => import('./pages/tools/Metar'), 'Metar');
+const Taf = lazyNamed(() => import('./pages/tools/Taf'), 'Taf');
+const Notam = lazyNamed(() => import('./pages/tools/Notam'), 'Notam');
+const MetBrief = lazyNamed(() => import('./pages/tools/MetBrief'), 'MetBrief');
+const ChartSymbols = lazyNamed(() => import('./pages/tools/ChartSymbols'), 'ChartSymbols');
+const VfrMinima = lazyNamed(() => import('./pages/tools/RegLookup'), 'VfrMinima');
+const Oxygen = lazyNamed(() => import('./pages/tools/RegLookup'), 'Oxygen');
+const FuelReserves = lazyNamed(() => import('./pages/tools/RegLookup'), 'FuelReserves');
+const ConversionChecker = lazyNamed(() => import('./pages/tools/RegLookup'), 'ConversionChecker');
+const Aerodromes = lazyNamed(() => import('./pages/tools/Aerodromes'), 'Aerodromes');
+const Airspace = lazyNamed(() => import('./pages/tools/Airspace'), 'Airspace');
+const Definitions = lazyNamed(() => import('./pages/tools/Definitions'), 'Definitions');
+const RoutePlanner = lazyNamed(() => import('./pages/tools/RoutePlanner'), 'RoutePlanner');
+const FlightPlan = lazyNamed(() => import('./pages/tools/FlightPlan'), 'FlightPlan');
+
+// Guides
+const GuidesIndex = lazyNamed(() => import('./pages/guides/GuidesIndex'), 'GuidesIndex');
+const Guide = lazyNamed(() => import('./pages/guides/Guide'), 'Guide');
+
+// Study
+const StudyHub = lazyNamed(() => import('./pages/study/StudyHub'), 'StudyHub');
+const Quiz = lazyNamed(() => import('./pages/study/Quiz'), 'Quiz');
+const Flashcards = lazyNamed(() => import('./pages/study/Flashcards'), 'Flashcards');
+const GroundSchool = lazyNamed(() => import('./pages/study/GroundSchool'), 'GroundSchool');
+const MockExam = lazyNamed(() => import('./pages/study/MockExam'), 'MockExam');
+const Paths = lazyNamed(() => import('./pages/study/Paths'), 'Paths');
+const Packs = lazyNamed(() => import('./pages/study/Packs'), 'Packs');
+const StudySheets = lazyNamed(() => import('./pages/study/StudySheets'), 'StudySheets');
+
+// Account
+const Account = lazyNamed(() => import('./pages/account/Account'), 'Account');
+const Dashboard = lazyNamed(() => import('./pages/account/Dashboard'), 'Dashboard');
+const Logbook = lazyNamed(() => import('./pages/account/Logbook'), 'Logbook');
+const Settings = lazyNamed(() => import('./pages/account/Settings'), 'Settings');
+
+// Marketing / legal
+const Pricing = lazyNamed(() => import('./pages/Pricing'), 'Pricing');
+const Schools = lazyNamed(() => import('./pages/Schools'), 'Schools');
+const About = lazyNamed(() => import('./pages/About'), 'About');
+const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
+const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
+const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
+const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
 
 /**
  * Route table for the app. Each page lives under src/pages/. As more pages are
@@ -87,14 +123,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'library', element: <Library /> },
-      {
-        path: 'library/charts',
-        element: (
-          <Suspense fallback={null}>
-            <Charts />
-          </Suspense>
-        ),
-      },
+      { path: 'library/charts', element: <Charts /> },
       { path: 'library/reference/:slug', element: <Document kind="reference" /> },
       { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },
