@@ -71,6 +71,24 @@ the existing cores. **Stage 1 calculators complete — 33 tools live.** Remainin
 **Stage 2 essentially complete — 49 of 50 tools live.** Only `met-brief` is deferred (it needs a
 live weather API + CSP, which belong to a later wiring/hardening stage). The full tool suite is done.
 
+## ✅ Stage 4 — Account & commerce (local-first)
+
+Built on a local-first account layer (`src/lib/account.ts`, localStorage via useSyncExternalStore)
+standing in for the Stage 3 Firebase service layer — same component API will map onto Firestore:
+- Account (email sign-in/out), Dashboard (medical & flight-review validity, total hours), Logbook
+  (add/delete flights, column totals, JSON export), Settings (profile, language, delete-all-data).
+- Pricing (Free/Pro/Schools, monthly↔annual; checkout stubbed until billing) and Schools (B2B).
+
+## ✅ Stage 5 — Study & guides (client-side)
+
+- Study hub, quizzes + flashcards (`quiz.json`), ground school (`groundschool.json`), mock exam
+  (timed, pass-mark), reading paths (`paths-index.json`), prep packs (Pro-gated teaser).
+- 10 bilingual guide articles (`/guides`) linking to the regulation, the tools and Captain Adel.
+
+**Remaining (needs the Stage 3 backend or later stages):** real Firebase Auth/Firestore + billing
+(Stage 3), full Library document reader + heavy assets (Stage 6), Chat SSE streaming (Stage 7),
+native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `met-brief`.
+
 ## ✅ Batch 2 done
 
 - **Calculators:** Density altitude (`calc/isa.ts`) and True airspeed (`calc/tas.ts`), both pure +

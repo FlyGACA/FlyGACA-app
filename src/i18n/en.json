@@ -940,7 +940,26 @@
     "gsRead": "Read the regulation",
     "gsDone": "Done",
     "gsLessons": "{{n}} lessons",
-    "gsProgress": "{{done}} of {{total}} done"
+    "gsProgress": "{{done}} of {{total}} done",
+    "exam": "Mock exam",
+    "examDesc": "A timed 25-question test drawn from every topic.",
+    "examStart": "Start exam",
+    "examTimeLeft": "Time left",
+    "examPassed": "Passed",
+    "examFailed": "Below the pass mark",
+    "examPassMark": "Pass mark: {{n}}%",
+    "paths": "Reading paths",
+    "pathsDesc": "Guided routes through the library, step by step.",
+    "pathOpen": "Open",
+    "packs": "Prep packs",
+    "packsDesc": "Focused exam-prep bundles for Pro members.",
+    "packPro": "Included with Pro",
+    "packGo": "Go Pro to unlock",
+    "packItems": [
+      { "name": "AIP pack", "desc": "Aeronautical information for Saudi aerodromes and airspace." },
+      { "name": "ELP pack", "desc": "English language proficiency (SAELPT) practice." },
+      { "name": "Conversion pack", "desc": "Foreign-to-GACA licence conversion prep." }
+    ]
   },
   "disclaimer": {
     "strong": "Unofficial & educational.",

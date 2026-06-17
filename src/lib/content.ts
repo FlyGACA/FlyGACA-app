@@ -117,3 +117,20 @@ export interface GroundSchoolData {
   intro: string;
   modules: GsModule[];
 }
+
+export interface PathStep {
+  label: string;
+  note: string;
+  url: string;
+}
+
+export interface ReadingPath {
+  id: string;
+  title: string;
+  desc: string;
+  steps: PathStep[];
+}
+
+export interface PathsIndex {
+  paths: ReadingPath[];
+}

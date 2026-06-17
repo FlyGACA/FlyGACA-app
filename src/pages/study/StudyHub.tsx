@@ -7,6 +7,9 @@ const MODES = [
   { to: '/study/quiz', key: 'quiz' },
   { to: '/study/flashcards', key: 'flashcards' },
   { to: '/study/groundschool', key: 'groundschool' },
+  { to: '/study/exam', key: 'exam' },
+  { to: '/study/paths', key: 'paths' },
+  { to: '/study/packs', key: 'packs' },
 ] as const;
 
 export function StudyHub() {
