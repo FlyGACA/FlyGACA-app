@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { sumHours, useAccount } from '../../lib/account';
+import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { addMonths, parseISO } from '../../calc/recency';
 import styles from './account.module.css';
@@ -27,7 +28,8 @@ export function Dashboard() {
 function Inner() {
   const { t } = useTranslation();
   usePageMeta(t('meta.dashboard'));
-  const { profile, flights } = useAccount();
+  const { profile, flights, entitlement } = useAccount();
+  const plan = effectivePlan(entitlement);
 
   const medical = parseISO(profile.medicalExpiry);
   const lastReview = parseISO(profile.lastFlightReview);
@@ -55,6 +57,9 @@ function Inner() {
         <h1>{t('account.dashboard')}</h1>
         <p className={styles.sub}>
           {t('account.signedInAs', { name: profile.displayName || profile.email })}
+          <span className={styles.planBadge} data-plan={plan}>
+            {t(`account.plan.${plan}`)}
+          </span>
         </p>
       </header>
 

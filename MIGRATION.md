@@ -98,9 +98,13 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
   Dev `VITE_FIREBASE_EMULATOR=1` wires the Local Emulator Suite. Real `src/lib/auth.ts`:
   `getIdToken()` (already consumed by chat), `onAuthChange`, Google/email sign-in + register,
   `signOutUser` — all graceful no-ops when unconfigured. Unit-tested.
-- **Batch 3b — account → Firestore (next):** back `account.ts` with `users/{uid}` + `logbook/`
-  while keeping its `useSyncExternalStore` API + local cache; wire the Account page to real auth;
-  read `entitlement` to gate UI via the pure `isActive`.
+- **Batch 3b — account → Firestore (done).** `account.ts` gains a uid + entitlement and, on Firebase
+  sign-in, hydrates profile/logbook/entitlement from `users/{uid}` (+ `logbook/`) and write-throughs
+  mutations — keeping its `useSyncExternalStore` API and the localStorage offline cache; all guarded
+  so it's inert (pure local-first) when unconfigured. The Account page shows real Google/email sign-in
+  when configured (local form otherwise); the Dashboard shows the effective plan. `src/lib/sync.ts`
+  pure mappers (never serialize the server-only `entitlement`) are unit-tested. The Firestore
+  round-trip is verified against the emulator per `docs/RUNBOOK-firebase.md`.
 - **Batch 3c — billing (next):** `src/lib/billing.ts` (Stripe Checkout via `createCheckoutSession`;
   native RevenueCat by `billingChannel()`); wire the Pricing CTA.
 

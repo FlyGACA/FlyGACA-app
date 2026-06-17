@@ -7,6 +7,9 @@
  * Exposed via useSyncExternalStore so components re-render on any change.
  */
 import { useSyncExternalStore } from 'react';
+import type { Entitlement } from './entitlements';
+import { isAuthAvailable, onAuthChange } from './auth';
+import { loadAccount, saveProfileDoc, addFlightDoc, deleteFlightDoc } from './sync';
 
 export interface Profile {
   email: string;
@@ -35,8 +38,12 @@ export interface Flight {
 
 interface State {
   session: string | null;
+  /** Firebase uid when signed in through Firebase; null for a local session. */
+  uid: string | null;
   profile: Profile;
   flights: Flight[];
+  /** Server-written; read-only, used only to gate UI. */
+  entitlement: Entitlement | null;
 }
 
 const K = {
@@ -65,8 +72,10 @@ function readJson<T>(key: string, fallback: T): T {
 
 let state: State = {
   session: localStorage.getItem(K.session),
+  uid: null,
   profile: readJson(K.profile, DEFAULT_PROFILE),
   flights: readJson(K.logbook, [] as Flight[]),
+  entitlement: null,
 };
 
 const listeners = new Set<() => void>();
@@ -97,20 +106,25 @@ export function signIn(email: string, name: string): void {
 }
 
 export function signOut(): void {
-  commit({ ...state, session: null });
+  void import('./auth').then(({ signOutUser }) => signOutUser());
+  commit({ ...state, session: null, uid: null, entitlement: null });
 }
 
 export function saveProfile(patch: Partial<Profile>): void {
-  commit({ ...state, profile: { ...state.profile, ...patch } });
+  const profile = { ...state.profile, ...patch };
+  commit({ ...state, profile });
+  if (state.uid) void saveProfileDoc(state.uid, profile).catch(() => {});
 }
 
 export function addFlight(f: Omit<Flight, 'id'>): void {
   const flight: Flight = { ...f, id: crypto.randomUUID() };
   commit({ ...state, flights: [flight, ...state.flights] });
+  if (state.uid) void addFlightDoc(state.uid, flight).catch(() => {});
 }
 
 export function deleteFlight(id: string): void {
   commit({ ...state, flights: state.flights.filter((x) => x.id !== id) });
+  if (state.uid) void deleteFlightDoc(state.uid, id).catch(() => {});
 }
 
 export function exportAll(): string {
@@ -142,3 +156,44 @@ export function useAccount(): State {
 export function sumHours(flights: Flight[], key: keyof Flight): number {
   return flights.reduce((s, f) => s + (parseFloat(String(f[key])) || 0), 0);
 }
+
+/**
+ * Bind the store to Firebase auth — only when Firebase is configured. A signed-in
+ * user adopts their uid, then hydrates profile/logbook/entitlement from Firestore
+ * (server data wins, falling back to the local cache); sign-out clears the
+ * Firebase session. When Firebase is off this never runs, so the store stays
+ * purely local-first.
+ */
+function connectAuth(): void {
+  void onAuthChange(async (user) => {
+    if (user) {
+      commit({
+        ...state,
+        session: user.email ?? user.uid,
+        uid: user.uid,
+        profile: {
+          ...state.profile,
+          email: user.email ?? state.profile.email,
+          displayName: user.displayName ?? state.profile.displayName,
+        },
+      });
+      try {
+        const loaded = await loadAccount(user.uid);
+        if (loaded) {
+          commit({
+            ...state,
+            profile: { ...state.profile, ...loaded.profile },
+            flights: loaded.flights.length ? loaded.flights : state.flights,
+            entitlement: loaded.entitlement,
+          });
+        }
+      } catch {
+        /* offline / rules — keep the local cache */
+      }
+    } else if (state.uid) {
+      commit({ ...state, session: null, uid: null, entitlement: null });
+    }
+  });
+}
+
+if (isAuthAvailable()) connectAuth();
