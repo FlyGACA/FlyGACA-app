@@ -16,6 +16,14 @@ const PAGES = [
 for (const path of PAGES) {
   test(`a11y: ${path}`, async ({ page }) => {
     await page.goto(path);
+    // Audit the resting UI, not a transient animation frame. The stagger-grid
+    // entry fade-up briefly lowers card opacity, which axe catches as a
+    // color-contrast failure mid-fade. Force the settled state (mirrors the
+    // app's own prefers-reduced-motion rules) so the audit is deterministic.
+    await page.addStyleTag({
+      content:
+        '*,*::before,*::after{animation:none!important;transition:none!important}.stagger-grid>*,.page-enter{opacity:1!important;translate:none!important}',
+    });
     await expect(page.locator('h1').first()).toBeVisible();
 
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();

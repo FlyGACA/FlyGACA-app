@@ -27,7 +27,9 @@ export function StudyHub() {
         {MODES.map((m) => (
           <li key={m.key}>
             <Link to={m.to} className={styles.mode}>
-              <span className={styles.modeIcon} aria-hidden="true">{m.icon}</span>
+              <span className={styles.modeIcon} aria-hidden="true">
+                {m.icon}
+              </span>
               <h2>{t(`study.${m.key}`)}</h2>
               <p>{t(`study.${m.key}Desc`)}</p>
             </Link>

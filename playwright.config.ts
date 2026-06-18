@@ -17,6 +17,10 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
+    // Audit the settled UI: entry animations (stagger-grid fade-up) transiently
+    // dim text below contrast mid-flight, which is exactly what reduced-motion
+    // users skip. axe should evaluate the resting state, not an animation frame.
+    reducedMotion: 'reduce',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {

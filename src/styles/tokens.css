@@ -61,7 +61,8 @@
 
   /* --- Typography --- */
   --font-sans: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
+  --font-body:
+    'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
   --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Fluid type scale */
@@ -178,4 +179,3 @@
   --glow-stat-cyan: 0 0 22px color-mix(in srgb, var(--neon-cyan) 40%, transparent);
   --glow-stat-green: 0 0 22px color-mix(in srgb, var(--neon-green) 40%, transparent);
 }
-
