@@ -119,6 +119,12 @@ button {
 .btn:active {
   transform: scale(0.97);
 }
+/* Sage focus ring (Design System §07) — keyboard navigation only. */
+.btn:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent);
+}
 .btn:disabled,
 .btn[aria-disabled='true'] {
   opacity: 0.45;
@@ -132,6 +138,32 @@ button {
 }
 .btn-primary:hover {
   background: var(--brand-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+/* Outline / secondary — teal border that fills on hover (Design System §07). */
+.btn-secondary {
+  background: transparent;
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+.btn-secondary:hover {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+/* Heritage accent — used sparingly for a single highlighted action. */
+.btn-gold {
+  background: var(--gold);
+  color: var(--falcon-night);
+}
+.btn-gold:hover {
+  background: var(--falcon-gold-soft);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
 }
 
 .btn-ghost {

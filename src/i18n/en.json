@@ -8,7 +8,8 @@
     "loading": "Loading…",
     "loadError": "Could not load this content. Verify your connection and try again.",
     "skipToContent": "Skip to content",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "open": "Open"
   },
   "nav": {
     "library": "Library",
@@ -403,6 +404,7 @@
     "moreHits": "Showing the first {{max}} passages — refine your search to narrow them.",
     "noFullMatches": "No passages match “{{q}}”.",
     "browse": "Browse by collection",
+    "docsCount": "{{count}} document(s)",
     "kind": {
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
