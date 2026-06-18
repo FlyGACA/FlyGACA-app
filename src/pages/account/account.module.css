@@ -231,7 +231,9 @@
   min-block-size: 36px;
   min-inline-size: 36px;
   border-radius: var(--radius-sm);
-  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .del:hover {
   color: var(--color-error);

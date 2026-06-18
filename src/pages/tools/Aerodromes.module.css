@@ -71,7 +71,9 @@
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   background: color-mix(in srgb, var(--brand) 6%, var(--surface));
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 .freq:hover {
   background: color-mix(in srgb, var(--brand) 12%, var(--surface));

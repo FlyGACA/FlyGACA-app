@@ -37,8 +37,15 @@
   animation: online-pulse 2.5s ease-in-out infinite;
 }
 @keyframes online-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--neon-green); }
-  50%       { opacity: 0.7; box-shadow: 0 0 14px var(--neon-green); }
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 6px var(--neon-green);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 14px var(--neon-green);
+  }
 }
 
 .clear {
@@ -199,13 +206,27 @@
   background: var(--brand-hover);
   animation: dot-bounce 1.3s ease-in-out infinite;
 }
-.thinkingDots span:nth-child(1) { animation-delay: 0s; }
-.thinkingDots span:nth-child(2) { animation-delay: 0.18s; }
-.thinkingDots span:nth-child(3) { animation-delay: 0.36s; }
+.thinkingDots span:nth-child(1) {
+  animation-delay: 0s;
+}
+.thinkingDots span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.thinkingDots span:nth-child(3) {
+  animation-delay: 0.36s;
+}
 
 @keyframes dot-bounce {
-  0%, 60%, 100% { transform: translateY(0);    opacity: 0.35; }
-  30%            { transform: translateY(-7px); opacity: 1; }
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-7px);
+    opacity: 1;
+  }
 }
 
 /* Streaming cursor — a soft blink while tokens arrive. */
@@ -219,7 +240,9 @@
   animation: caret-blink 1s steps(2, start) infinite;
 }
 @keyframes caret-blink {
-  to { visibility: hidden; }
+  to {
+    visibility: hidden;
+  }
 }
 
 /* ── Source citations ── */
@@ -251,7 +274,9 @@
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-sm);
   background: var(--surface);
-  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .srcRow:hover {
   border-color: var(--brand-hover);

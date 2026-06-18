@@ -5,7 +5,11 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, GsLesson } from '../../lib/content';
 import { adelLink } from '../../lib/adel';
 import { Disclaimer } from '../../components/Disclaimer';
+import { SectionHeader } from '../../components/SectionHeader';
 import styles from './GroundSchool.module.css';
+
+/** Per-module accent — cycles the Falcon hues from the design-token map. */
+const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 /** Legacy "document.html?type=regulations&id=part-61#x" → "/library/part-61". */
 function readHref(url: string | undefined): string | null {
@@ -37,19 +41,28 @@ export function GroundSchool() {
             <h1>{data.title}</h1>
             <p className={styles.intro}>{data.intro}</p>
           </header>
-          {data.modules.map((m) => {
+          {data.modules.map((m, i) => {
             const done = m.lessons.filter((l) => isDone(l.id)).length;
             return (
               <section key={m.id} className={styles.module}>
-                <h2 className={styles.moduleTitle}>{m.title}</h2>
+                <SectionHeader
+                  title={m.title}
+                  tone={CAT_TOKENS[i % CAT_TOKENS.length]}
+                  count={t('study.gsProgress', { done, total: m.lessons.length })}
+                />
                 <p className={styles.summary}>{m.summary}</p>
-                <p className={styles.progress}>
-                  {t('study.gsProgress', { done, total: m.lessons.length })}
-                </p>
-                <div className={styles.progressBar} role="progressbar" aria-valuenow={done} aria-valuemin={0} aria-valuemax={m.lessons.length}>
+                <div
+                  className={styles.progressBar}
+                  role="progressbar"
+                  aria-valuenow={done}
+                  aria-valuemin={0}
+                  aria-valuemax={m.lessons.length}
+                >
                   <div
                     className={styles.progressFill}
-                    style={{ inlineSize: `${m.lessons.length > 0 ? Math.round((done / m.lessons.length) * 100) : 0}%` }}
+                    style={{
+                      inlineSize: `${m.lessons.length > 0 ? Math.round((done / m.lessons.length) * 100) : 0}%`,
+                    }}
                   />
                 </div>
                 <ul className={styles.lessons}>

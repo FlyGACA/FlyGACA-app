@@ -76,6 +76,8 @@
 }
 
 .card {
+  position: relative;
+  overflow: hidden;
   border: var(--clay-border);
   border-radius: var(--clay-radius);
   background: var(--surface);
@@ -87,6 +89,18 @@
 .card:hover {
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-2px);
+}
+/* Left category accent bar — matches the Library cards (Design System §09). */
+.catBar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  background: var(--cat-color, var(--brand));
+  transition: inline-size var(--dur) var(--ease);
+}
+.card:hover .catBar {
+  inline-size: 6px;
 }
 
 .pending {
