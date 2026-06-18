@@ -48,11 +48,10 @@
         "open": "Browse the library"
       },
       "radar": {
-        "eyebrow": "Charts · Radar",
-        "title": "Aeronautical charts",
-        "node": "Aerodrome chart",
-        "concept": "Concept visual — not live flight tracking.",
-        "cta": "Browse charts"
+        "eyebrow": "Coverage · GACAR",
+        "title": "Regulatory coverage",
+        "concept": "{{parts}} GACAR Parts across {{domains}} domains",
+        "cta": "Open the regulations"
       },
       "reg": {
         "live": "Live",
