@@ -1,0 +1,72 @@
+.prose {
+  padding-block: var(--space-8);
+}
+
+.prose header {
+  margin-block-end: var(--space-6);
+}
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-bright);
+  font-weight: var(--fw-semibold);
+}
+
+.updated {
+  margin-block-start: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.lead {
+  font-size: var(--fs-lg);
+  color: var(--text-muted);
+  margin-block-end: var(--space-6);
+}
+
+.prose section {
+  margin-block-end: var(--space-6);
+}
+
+.prose h2 {
+  font-size: var(--fs-h3);
+  margin-block-end: var(--space-2);
+  padding-inline-start: var(--space-3);
+  border-inline-start: 3px solid color-mix(in srgb, var(--brand) 50%, transparent);
+}
+
+.prose p {
+  color: var(--text-muted);
+}
+
+.contacts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+.contacts li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.contacts li:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
+}
+.contacts span {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}

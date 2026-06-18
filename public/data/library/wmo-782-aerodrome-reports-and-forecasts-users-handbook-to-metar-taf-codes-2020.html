@@ -1,0 +1,1752 @@
+<p id="c0">WMO-No. 782WMO-No. 782For more information, please contact:</p>
+<p>World Meteorological Organization</p>
+<p>7 bis , avenue de la Paix – P.O. Box 2300 – CH 1211 Geneva 2 – Switzerland</p>
+<p>Strategic Communications Office</p>
+<p>Tel.: +41 (0) 22 730 87 40/83 14 – Fax: +41 (0) 22 730 80 27</p>
+<p>Email: communications@wmo.int</p>
+<p>public.wmo.int</p>
+<p>Aerodrome Reports and Forecasts – A Users’ Handbook to the CodesAerodrome</p>
+<p>Reports</p>
+<p>and Forecasts</p>
+<p>A Users’ Handbook to the CodesJN 20644</p>
+<p>WEATHER  CLIMATE  WATER</p>
+<p>Aerodrome Reports and</p>
+<p>Forecasts</p>
+<p>A Users’ Handbook to the Codes</p>
+<p>2020 edition</p>
+<p>WMO-No. 782WEATHER  CLIMATE  WATER</p>
+<p>WMO-No. 782</p>
+<p>© World Meteorological Organization, 2020</p>
+<p>The right of publication in print, electronic and any other form and in any language</p>
+<p>is reserved by WMO. Short extracts from WMO publications may be reproduced</p>
+<p>without authorization, provided that the complete source is clearly indicated. Editorial</p>
+<p>correspondence and requests to publish, reproduce or translate this publication in part</p>
+<p>or in whole should be addressed to:</p>
+<p>Chair, Publications Board</p>
+<p>World Meteorological Organization (WMO)</p>
+<p>7 bis, avenue de la Paix Tel.: +41 (0) 22 730 84 03</p>
+<p>P.O. Box 2300 Fax: +41 (0) 22 730 81 17</p>
+<p>CH-1211 Geneva 2, Switzerland Email: publications@wmo.int</p>
+<p>ISBN 978-92-63-10782-4</p>
+<p>NOTE</p>
+<p>The designations employed in WMO publications and the presentation of material in</p>
+<p>this publication do not imply the expression of any opinion whatsoever on the part of</p>
+<p>WMO concerning the legal status of any country, territory, city or area, or of its authorities,</p>
+<p>or concerning the delimitation of its frontiers or boundaries.</p>
+<p>The mention of specific companies or products does not imply that they are endorsed</p>
+<p>or recommended by WMO in preference to others of a similar nature which are not</p>
+<p>mentioned or advertised .</p>
+<p>FOREWORD</p>
+<p id="c1">This booklet is a simple guide to the aeronautical meteorological codes, METAR,</p>
+<p>SPECI  and TAF , applicable as of 5 November 2020, updated as a result of the</p>
+<p>alignment of the Technical Regulations (WMO-No. 49), Volume II – Meteorological</p>
+<p>Service for International Air Navigation, Parts I and II, with Amendment 79 to</p>
+<p>Annex 3 to the Convention on International Civil Aviation. It is aimed at a wide</p>
+<p>range of users such as pilots, flight dispatchers, air traffic control staff and</p>
+<p>meteorological observers at smaller aerodromes where sophisticated automated</p>
+<p>instruments are not available. Although the readers of this handbook may not</p>
+<p>be professional meteorologists, it is assumed that they have some formal</p>
+<p>meteorological training.</p>
+<p>The handbook answers basic questions on the preparation of meteorological</p>
+<p>reports and forecasts, such as:</p>
+<p>– The information to be included;</p>
+<p>– The order to be used;</p>
+<p>– How the information is to be encoded and decoded.</p>
+<p>At the end of the booklet, explanations of weather phenomena significant to</p>
+<p>aviation are provided. For more details on the codes, the relevant sections of</p>
+<p>the WMO Manual on Codes (WMO-No. 306) on METAR, SPECI  and TAF  should</p>
+<p>be consulted.</p>
+<p>METAR  and SPECI are still being encoded mainly based on human weather</p>
+<p>observations. Although instruments are increasingly being used, the observer</p>
+<p>continues to play a major and important part in ensuring that prepared weather</p>
+<p>reports satisfy the stated requirements. Nevertheless, certain limitations should</p>
+<p>be understood. For instance, when visibility is 10 km or more, the observer at</p>
+<p id="c2">the usual observing site, even at larger airports, should be able to see and report</p>
+<p>clouds over a wide area, including some distance on the approach. If visibility</p>
+<p>is, for instance, only 2 000 m, the field of vision is greatly reduced and patches</p>
+<p>of low cloud on the approach may not be seen or so reported.</p>
+<p>Aerodrome forecasts, in TREND  and TAF  forms, are not intended to provide</p>
+<p>detailed descriptions of the weather during the forecast period. The first part</p>
+<p>of the TAF  gives the forecaster’s assessment of the most likely forecast values at</p>
+<p>the start of the forecast period. Any changes that take place during the forecast</p>
+<p>period are indicated only if the changes are significant. Significant changes are</p>
+<p>defined as a result of full discussions with the International Civil Aviation</p>
+<p>Organization (ICAO) and the aviation users.</p>
+<p>PART A</p>
+<p>AVIATION WEATHER REPORTS – METAR AND SPECI</p>
+<p>METAR  is the name of the code for an aerodrome routine weather report. A</p>
+<p>METAR  is issued at hourly or half-hourly intervals.</p>
+<p>SPECI  is the name of the code for an aerodrome special weather report. A</p>
+<p>SPECI  can be issued at any time when certain criteria are met (see</p>
+<p>Technical Regulations  (WMO-No. 49), Volume II, Part II, Appendix 3,</p>
+<p>section 2.3).</p>
+<p>Both METAR  and SPECI  have the same code form and both may have a TREND</p>
+<p>forecast appended (see Part B (page 29)).</p>
+<p>METAR  or SPECI  contains the following information in the order shown:</p>
+<p>IDENTIFICATION GROUPS</p>
+<p>SURFACE WIND</p>
+<p>PREVAILING VISIBILITY</p>
+<p>RUNWAY VISUAL RANGE  (if available)</p>
+<p>PRESENT WEATHER</p>
+<p>CLOUD  (or vertical visibility if appropriate)</p>
+<p id="c3">AIR AND DEWPOINT TEMPERATURE</p>
+<p>PRESSURE – QNH</p>
+<p>SUPPLEMENTARY INFORMATION</p>
+<p>MISSING ELEMENTS</p>
+<p>Notes:</p>
+<p>1. The code word CAVOK  is used to replace the visibility, present weather and cloud</p>
+<p>groups when the three following conditions are simultaneously met:</p>
+<p>– Visibility is 10 km or more;</p>
+<p>– There is no cloud below 1 500 m (5 000 ft) or below the highest minimum</p>
+<p>sector altitude, whichever is greater, and no cumulonimbus;</p>
+<p>– There is no significant weather phenomenon as contained in Code table 4678</p>
+<p>(reproduced on page 13) of the Manual on Codes  (WMO-No. 306), Volume I.1,</p>
+<p>Part A – Alphanumeric codes, section C.</p>
+<p>2. At the end of a METAR  or SPECI , a remarks section starting with the code word RMK</p>
+<p>may be appended. This section contains information required by a national authority</p>
+<p>and, as such, this information is not disseminated internationally.</p>
+<p>CODE FORMAT</p>
+<p>METAR</p>
+<p>or COR    CCCC   YYGGgg Z   NIL   AUTO</p>
+<p>SPECI</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z</p>
+<p>1. IDENTIFICATION GROUPS</p>
+<p>This section will have three parts:</p>
+<p>– The report code name ( METAR  or SPECI ).</p>
+<p>– The ICAO location indicator of the reporting station, for example, LUDO .</p>
+<p>– The day of the month and the time of observation in hours and minutes</p>
+<p>UTC (coordinated universal time), followed by the letter Z .</p>
+<p>Notes:</p>
+<p>1. The code words COR  and NIL  are inserted after the code name and the time group,</p>
+<p>respectively, as appropriate.</p>
+<p>2. The code word AUTO  is inserted when the report contains a fully automated</p>
+<p>observation, that is without human intervention.</p>
+<p>The encode on the opposite page reads:</p>
+<p id="c4">Aerodrome special report at LUDO  on 21 of the month at 10 h and 25 min UTC,</p>
+<p>being the time of occurrence of the change.</p>
+<p>CODE FORMAT</p>
+<p>dddff Gfmfm  KT</p>
+<p>dndndnVdxdxdx   or</p>
+<p>MPS</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>2. SURFACE WIND</p>
+<p>Normally, there will be a five-figure group to indicate the 10-min mean wind</p>
+<p>followed by an abbreviation to indicate the wind speed units used, where KT</p>
+<p>denotes knots and MPS  denotes metres per second. The first three figures</p>
+<p>indicate the wind direction, and the last two the wind speed.</p>
+<p>Examples: 31015KT</p>
+<p>27006MPS</p>
+<p>The surface wind direction and speed shall be reported in steps of 10° true and</p>
+<p>1 kt, respectively. Any observed value which does not fit the reporting scale in</p>
+<p>use shall be rounded to the nearest step in the scale.</p>
+<p>Additionally, if, during the 10 min preceding the observation, the maximum</p>
+<p>gust speed has exceeded the mean speed by 10 kt (5 m s–1) or more, this gust</p>
+<p>will be reported by inserting the letter G followed by the gust speed directly</p>
+<p>after the mean speed.</p>
+<p>Example:  31015G27KT</p>
+<p>If, during the 10 min immediately preceding the observation, the wind direction</p>
+<p>has varied by 60° or more but less than 180° and the mean wind speed is 3 kt</p>
+<p>(2 m s–1) or more, the two extreme directions should be indicated in clockwise</p>
+<p>order, with the letter V inserted between the two directions.</p>
+<p>Example:  31015G27KT    280V350</p>
+<p>Notes:</p>
+<p>1. The wind reported should be the mean over the 10 min preceding the observation.</p>
+<p>If during this period there has been a marked discontinuity lasting at least 2 min,</p>
+<p id="c5">the mean values should be assessed over the period after the discontinuity. A marked</p>
+<p>discontinuity occurs when there is a wind direction change of 30° or more with a</p>
+<p>wind speed of 10 kt (5 m s–1) or more, before or after the change, or a wind speed</p>
+<p>change of 10 kt (5 m s–1) or more.</p>
+<p>2. The averaging period for measuring variations from the mean wind speed (gusts)</p>
+<p>should be 3 s.</p>
+<p>This page intentionally left blank.</p>
+<p>Special cases</p>
+<p>Variable : The wind direction is encoded as VRB  only if one of the following</p>
+<p>conditions is met:</p>
+<p>(a) The wind speed is less than 3 kt (2 m s–1).</p>
+<p>Example:  VRB02KT</p>
+<p>(b) The wind speed is higher and wind direction is varying by 180° or more</p>
+<p>and a single direction is impossible to determine, for example when a</p>
+<p>thunderstorm is over the aerodrome.</p>
+<p>Example:  VRB28KT</p>
+<p>Calm : When a wind speed is less than 1 kt (0.5 m s–1), the group is encoded as</p>
+<p>00000 followed by the abbreviation for the wind speed units.</p>
+<p>Example:  00000KT</p>
+<p>Speeds of 100 kt (50 m s–1) or more : The wind speed shall be preceded by the</p>
+<p>letter indicator P and reported as P99 KT  (P49 MPS ).</p>
+<p>Example:  240P99KT</p>
+<p>CODE FORMAT</p>
+<p>V V V V</p>
+<p>or VNVNVNVNDv</p>
+<p>CAVOK</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW</p>
+<p>3. VISIBILITY</p>
+<p>The group V V V V shall be used to report prevailing visibility. When horizontal</p>
+<p>visibility is not the same in different directions, and when visibility is fluctuating</p>
+<p>rapidly and the prevailing visibility cannot be determined, the group V V V V shall</p>
+<p>be used to report the lowest visibility.</p>
+<p>Example: Prevailing visibility of 4 000 m is encoded as 4000 .</p>
+<p id="c6">When visibility sensors are used in such a manner that no directional variations</p>
+<p>can be given, the abbreviation NDV  shall be appended to the visibility reported.</p>
+<p>The reporting scales of visibility are as follows:</p>
+<p>(a) In steps of 50 m if V V V V is less than 800 m;</p>
+<p>(b) In steps of 100 m if V V V V is 800 m or more, but less than 5 km;</p>
+<p>(c) In steps of 1 000 m if V V V V is 5 km or more, but less than 10 km;</p>
+<p>(d) As 10 km when visibility is 10 km or more.</p>
+<p>Directional variation in visibility  VNVNVNVNDv</p>
+<p>When the visibility is not the same in different directions and when the minimum</p>
+<p>visibility is different from the prevailing visibility, and less than 1 500 m  or less</p>
+<p>than 50 per cent of the prevailing visibility, the group VNVNVNVNDv shall also be</p>
+<p>used to report the minimum visibility and its general direction.</p>
+<p>Example:   1400SW  means that the minimum visibility equals 1 400 m with</p>
+<p>SW as its general direction.</p>
+<p>If the minimum visibility is observed in more than one direction, then Dv shall</p>
+<p>represent the most operationally significant direction.</p>
+<p>Exception</p>
+<p>When the minimum visibility is less than 1 500 m and the visibility in another</p>
+<p>direction is more than 5 000 m, the maximum visibility and its direction should</p>
+<p>also be reported.</p>
+<p>Example:   1400SW 6000N  (1 400 m to the south-west and 6 km to the north)</p>
+<p>If the maximum visibility is observed in more than one direction, then the most</p>
+<p>operationally significant direction is reported.</p>
+<p>CODE FORMAT</p>
+<p>RDRDR/VRVRVRVRi</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW   R24/P2000</p>
+<p>4. RUNWAY VISUAL RANGE</p>
+<p id="c7">Where the runway visual range (RVR) can be determined and when it is reported,</p>
+<p>the group starts with the letter R followed by the runway designator DRDR</p>
+<p>and / followed by the RVR in metres. Up to a maximum of four groups may be</p>
+<p>reported.</p>
+<p>Example:  R24/1100   (runway visual range on runway 24, 1 100 m)</p>
+<p>Special cases</p>
+<p>When the RVR is assessed to be more than 2 000 m, it should be reported as</p>
+<p>P2000 .</p>
+<p>Examples: R24/P2000   (runway visual range on runway 24, greater than</p>
+<p>2 000 m)</p>
+<p>R24/1800   (prevailing visibility less than 1 500 m, RVR assessed</p>
+<p>to be 1 800 m)</p>
+<p>When the RVR is below the minimum value that can be assessed, the RVR should</p>
+<p>be reported as M  followed by the appropriate minimum value that can be</p>
+<p>assessed.</p>
+<p>Example:  R24/M0150   (runway visual range on runway 24, less than 150 m)</p>
+<p>The reporting scales of RVR are as follows:</p>
+<p>(a) Increments of 25 m, if RVR is less than 400 m;</p>
+<p>(b) Increments of 50 m, if RVR is between 400 and 800 m;</p>
+<p>(c) Increments of 100 m, if RVR is more than 800 m.</p>
+<p>Observed values are rounded down to the nearest lower step of the scale.</p>
+<p>Note:  For commercial operations many users consider runway visual range to be the</p>
+<p>most important and critical information. Therefore, where there is the required</p>
+<p>instrumentation capable of assessing and displaying 1-, 2-, 5- and 10-min mean values,</p>
+<p>the variations and the tendency of the change are required. The tendency is indicated</p>
+<p>by i, as follows:</p>
+<p>(a) i = U when the runway visual range has increased during the 10 min preceding the</p>
+<p>observation;</p>
+<p>(b) i = D when the runway visual range has decreased;</p>
+<p id="c8">(c) i = N indicates no distinct change in runway visual range;</p>
+<p>(d) When it is not possible to determine a tendency, i is omitted.</p>
+<p>CODE FORMAT</p>
+<p>w’w’</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW   R24/P2000   +SHRA</p>
+<p>5. PRESENT WEATHER</p>
+<p>Code table 4678 ( Manual on Codes , WMO-No. 306)</p>
+<p>QUALIFIER WEATHER PHENOMENA</p>
+<p>Intensity or</p>
+<p>proximityDescriptor Precipitation Obscuration Other</p>
+<p>– Light</p>
+<p>Moderate</p>
+<p>(no</p>
+<p>qualifier)</p>
+<p>+  Heavy</p>
+<p>(well-</p>
+<p>developed</p>
+<p>in the case</p>
+<p>of dust/</p>
+<p>sand whirls</p>
+<p>(dust</p>
+<p>devils)</p>
+<p>and funnel</p>
+<p>clouds)</p>
+<p>VC  In the</p>
+<p>vicinityMI Shallow</p>
+<p>BC Patches</p>
+<p>PR  Partial</p>
+<p>(covering</p>
+<p>part of the</p>
+<p>aerodrome)</p>
+<p>DR Low drifting</p>
+<p>BL Blowing</p>
+<p>SH Shower(s)</p>
+<p>TS  Thunder-</p>
+<p>storm</p>
+<p>FZ  Freezing</p>
+<p>(super-</p>
+<p>cooled)DZ Drizzle</p>
+<p>RA Rain</p>
+<p>SN Snow</p>
+<p>SG  Snow</p>
+<p>grains</p>
+<p>PL Ice pellets</p>
+<p>GR Hail</p>
+<p>GS  Small</p>
+<p>hail and/</p>
+<p>or snow</p>
+<p>pellets</p>
+<p>UP   Unknown</p>
+<p>precipi-</p>
+<p>tationBR Mist</p>
+<p>FG Fog</p>
+<p>FU Smoke</p>
+<p>VA  Volcanic</p>
+<p>ash</p>
+<p>DU  Wide-</p>
+<p>spread</p>
+<p>dust</p>
+<p>SA Sand</p>
+<p>HZ HazePO  Dust/sand</p>
+<p>whirls (dust</p>
+<p>devils</p>
+<p>SQ Squalls</p>
+<p>FC  Funnel</p>
+<p>cloud(s)</p>
+<p>(tornado or</p>
+<p>waterspout)</p>
+<p>SS Sandstorm</p>
+<p>DS Duststorm</p>
+<p>Once it has been decided there is a weather phenomenon to be reported, the</p>
+<p>present weather is encoded by considering each column in the table above.</p>
+<p>Example: There is rain:  RA</p>
+<p>It is heavy:  +</p>
+<p>It is a shower:  SH</p>
+<p>The encode becomes +SHRA .</p>
+<p>If more than one weather phenomenon is observed, separate groups will be</p>
+<p>encoded. However, for more than one form of precipitation, these forms of</p>
+<p>precipitations will be combined in a single group with the dominant type of</p>
+<p>precipitation being reported first.</p>
+<p>Example:   Moderate rain and snow with snow as the dominant precipitation</p>
+<p id="c9">should be encoded as:</p>
+<p>SNRA</p>
+<p>This page intentionally left blank.</p>
+<p>There are a few restrictions on the weather phenomena, the most significant</p>
+<p>being:</p>
+<p>– Intensity is reported only with precipitation (including showers and</p>
+<p>thunderstorms with precipitation), duststorms or sandstorms.</p>
+<p>– Smoke, haze, widespread dust and sand (except drifting sand) are reported</p>
+<p>only when visibility has been reduced to 5 000 m or less.</p>
+<p>– Mist is reported when visibility is reduced by water droplets to 1 000 to</p>
+<p>5 000 m.</p>
+<p>– Fog is reported when visibility is reduced by water droplets to less than</p>
+<p>1 000 m.</p>
+<p>– Hail ( GR) should be used only when the diameter of the largest hailstones</p>
+<p>observed is 5 mm or more. GS  shall be used in all other cases.</p>
+<p>– VC denotes between 8 and 16 km of the aerodrome reference point.</p>
+<p>Notes:</p>
+<p>1. When visibility is 5 000 m or less, one of the phenomena FU, HZ, DU, SA and BR  is</p>
+<p>reported in the METAR/SPECI .</p>
+<p>2. When visibility is above 5 km, the phenomena FU, HZ, DU, SA and BR are not present</p>
+<p>by definition and are therefore not reported. For instance, if visibility is 5 000 m, it</p>
+<p>will be encoded as 5000 together with the phenomena FU, HZ, DU, SA  and BR ,</p>
+<p>causing this reduction in visibility.</p>
+<p>3. Whereas if visibility is 5 001 to 5 999 m this is still encoded as 5 000 (rounded down</p>
+<p>to the nearest 1 000 m) in the METAR/SPECI , but the phenomena FU, HZ, DU, SA</p>
+<p>and BR  will not appear.</p>
+<p>4. The qualifier TS  shall be used whenever thunder is heard or lightning detected at</p>
+<p>the aerodrome within the 10-min period preceding the observation.</p>
+<p id="c10">5. The descriptor SH  (showers) cannot be associated with ice pellets ( PL).</p>
+<p>6. When an automatic observing system is used and when the type of precipitation</p>
+<p>cannot be identified by this system, the abbreviation REUP  shall be used for recent</p>
+<p>unknown precipitation.</p>
+<p>7. When an automatic observing system is used and when showers ( SH) cannot be</p>
+<p>determined with a method that takes account of the presence of convective cloud,</p>
+<p>the precipitation should not be characterized by SH.</p>
+<p>CODE FORMAT</p>
+<p>NsNsNshshshs</p>
+<p>or</p>
+<p>V Vhshshs</p>
+<p>or</p>
+<p>NSC</p>
+<p>or</p>
+<p>NCD</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW   R24/P2000   +SHRA   FEW005</p>
+<p>FEW010CB   SCT018   BKN025</p>
+<p>6. CLOUD  or VERTICAL VISIBILITY</p>
+<p>Cloud groups consist of six characters under normal circumstances. The first</p>
+<p>three indicate cloud amount with:</p>
+<p>1/8 to 2/8 being reported as FEW (few)</p>
+<p>3/8 to 4/8 being reported as SCT  (scattered)</p>
+<p>5/8 to 7/8 being reported as BKN  (broken) and</p>
+<p>8/8 being reported as OVC  (overcast)</p>
+<p>The last three characters indicate the height of the base of the cloud in units of</p>
+<p>30 m (100 ft) up to 3 000 m (10 000 ft) and in steps of 300 m (1 000 ft) above.</p>
+<p>Example:  3/8 of stratocumulus with a base of 1 850 ft will be encoded as:</p>
+<p>SCT018</p>
+<p>Note: The cloud base is rounded down, in this case to 1 800 ft.</p>
+<p>Cloud type</p>
+<p>Types of clouds other than significant convective clouds are not identified.</p>
+<p>Significant convective clouds are:</p>
+<p>– Cumulonimbus indicated by CB ;</p>
+<p>– Cumulus congestus of great vertical extent indicated by TCU .</p>
+<p>The contraction TCU , taken from “ Towering CUmulus”, is an ICAO abbreviation</p>
+<p id="c11">used to describe this type of cloud.</p>
+<p>Reported cloud groups</p>
+<p>The cloud group can be repeated to report different layers or masses of cloud,</p>
+<p>but the number of groups should not normally exceed three. The following</p>
+<p>criteria should be followed when selecting the cloud layers to be reported:</p>
+<p>– The lowest individual layer (mass) of any amount;</p>
+<p>– The next individual layer of more than 2/8;</p>
+<p>– The next higher layer of more than 4/8.</p>
+<p>In addition : Significant convective clouds ( CB or TCU ) should be reported if</p>
+<p>not already reported in one of the three groups above.</p>
+<p>Example: If there were 1/8 stratus at 500 ft,</p>
+<p>2/8 cumulonimbus at 1 000 ft,</p>
+<p>3/8 cumulus at 1 800 ft,</p>
+<p>5/8 stratocumulus at 2 500 ft,</p>
+<p>the reported cloud would be:</p>
+<p>FEW005 FEW010CB SCT018 BKN025</p>
+<p>At mountain stations, when cloud base is below station level, the cloud group</p>
+<p>should read NsNsNs///.</p>
+<p>Example:  SC T///,   FEW///CB</p>
+<p>Notes:</p>
+<p>1. The cloud groups are reported in ascending order of height.</p>
+<p>2. When there are no clouds below 1 500 m (5 000 ft) or below the highest minimum</p>
+<p>sector altitude, whichever is greater, no restriction to vertical visibility and the</p>
+<p>abbreviation CAVOK  is not appropriate, the abbreviation NSC  (Nil Significant Cloud)</p>
+<p>is used.</p>
+<p>3. When cumulonimbus ( CB) and T owering CUmulus ( TCU ) have a common cloud</p>
+<p>base, the type of cloud is reported as CB  and the amount of cloud is encoded as the</p>
+<p>sum of CB  and TCU  amounts at that cloud base.</p>
+<p>4. When an automatic observing system is used and the cloud type cannot be observed</p>
+<p>by that system, the code type in each cloud group shall be replaced by /// . If no</p>
+<p id="c12">clouds are detected by that system, the abbreviation NCD  shall be used.</p>
+<p>Vertical visibility</p>
+<p>When the sky is obscured and cloud details cannot be assessed but information</p>
+<p>on vertical visibility is available, the cloud group should be replaced by a five-</p>
+<p>character group, the first two characters being V  V followed by the vertical</p>
+<p>visibility in units of 30 m or 100 ft, as for cloud base. When the sky is obscured</p>
+<p>but the vertical visibility cannot be assessed, the group will read V  V///.</p>
+<p>Example:  V V003 (vertical visibility 300 ft)</p>
+<p>CAVOK</p>
+<p>The code word CAVOK  shall be used when the following conditions occur</p>
+<p>simultaneously at the time of the observation:</p>
+<p>(a) Visibility is 10 km or more;</p>
+<p>(b) No cloud below 1 500 m (5 000 ft) or below the higher minimum sector</p>
+<p>altitude, whichever is greater, and no CB;</p>
+<p>(c) No significant weather phenomena as indicated in Code table 4678</p>
+<p>(reproduced on page 13) of the Manual on Codes (WMO-No. 306),</p>
+<p>Volume I.1, Part A – Alphanumeric codes, section C.</p>
+<p>CODE FORMAT</p>
+<p>T’T’/T’dT’d</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW   R24/P2000   +SHRA   FEW005</p>
+<p>FEW010CB   SCT018   BKN025   10/03</p>
+<p>7.  AIR AND DEWPOINT TEMPERATURE</p>
+<p>The observed air temperature and dewpoint temperature, each as two figures</p>
+<p>rounded to the nearest whole degree Celsius, should be reported as follows:</p>
+<p>Temperatures below 0 °C will be preceded by M to indicate “minus”.</p>
+<p>Example: –9.5 °C is reported as M09 .</p>
+<p>Note:  Air temperature and dewpoint values of 0.5° will be rounded up to the higher</p>
+<p>whole degree.</p>
+<p>Example: Air temperature: 9.5 °C</p>
+<p id="c13">Dewpoint temperature: 3.3 °C</p>
+<p>Will be reported as: 10/03</p>
+<p>CODE FORMAT</p>
+<p>QPHPHPHPH</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW   R24/P2000   +SHRA   FEW005</p>
+<p>FEW010CB   SCT018   BKN025   10/03   Q0995</p>
+<p>8. PRESSURE – QNH</p>
+<p>The last group of the main part of the report should indicate the QNH rounded</p>
+<p>down to the nearest whole hectopascal. The group starts with the letter Q</p>
+<p>followed by four figures.</p>
+<p>Example: A QNH of 995.6 hPa is reported as:</p>
+<p>Q0995</p>
+<p>Note: In some countries, inches of mercury are used as the unit of QNH. In this case,</p>
+<p>the indicator will be A (instead of Q ).</p>
+<p>Example: A QNH of 30.05 in is reported as:</p>
+<p>A3005</p>
+<p>CODE FORMAT</p>
+<p>WS R DRDR ( WTsTs/SS’)</p>
+<p>REw’w’ or or (RDRDR/ERCReReRBRBR)</p>
+<p>WS ALL RWY ( WTsTs/HHsHsHs)</p>
+<p>ENCODE SO FAR</p>
+<p>SPECI   LUDO   211025Z   31015G27KT   280V350</p>
+<p>4000   1400SW   R24/P2000   +SHRA   FEW005</p>
+<p>FEW010CB   SCT018   BKN025   10/03   Q0995</p>
+<p>RERA   WS   R24   W19/S4   24451293</p>
+<p>9. SUPPLEMENTARY INFORMATION</p>
+<p>For international dissemination, this section is used to report:</p>
+<p>– Recent weather phenomena of operational significance;</p>
+<p>– Information on wind shear in the lower layers;</p>
+<p>– Other information only in accordance with regional air navigation</p>
+<p>agreements, including:</p>
+<p>• Sea-surface temperature and the state of the sea or significant wave</p>
+<p>height;</p>
+<p>• State of the runway.</p>
+<p>Recent weather</p>
+<p>Using the indicator letters RE , information on recent weather shall be reported,</p>
+<p>up to a maximum of three groups using the abbreviations given in section 5, if</p>
+<p>the following weather phenomena were observed during the previous hour, or</p>
+<p id="c14">since the last observation, but not at the time of observation. The time of</p>
+<p>observation is taken to cover the previous 10 min.</p>
+<p>– Freezing (FZ) precipitation</p>
+<p>– Moderate or heavy precipitation (including showers – SH)</p>
+<p>– Moderate or heavy ice pellets (PL), hail (GR), small hail and/or snow pellets</p>
+<p>(GS)</p>
+<p>– Blowing (BL) snow</p>
+<p>– Sandstorm or duststorm (SS or DS)</p>
+<p>– Thunderstorm (TS)</p>
+<p>– Funnel cloud(s) (tornado or waterspout – FC)</p>
+<p>– Volcanic ash (VA)</p>
+<p>No intensity of significant recent weather phenomena shall be indicated.</p>
+<p>Example:  Heavy rain 20 min before the time of observation, with moderate</p>
+<p>rain at the time of observation, is coded as:</p>
+<p>RERA</p>
+<p>Note:  When an automatic observing system is used and when the type of precipitation</p>
+<p>cannot be identified by this system, the abbreviation REUP  shall be used for recent</p>
+<p>unknown precipitation.</p>
+<p>Wind shear</p>
+<p>Where local circumstances so warrant, information on the existence of wind</p>
+<p>shear significant to aircraft operations along the take-off or approach paths in</p>
+<p>the lowest 500 m (1 600 ft) should be reported using the following groups, as</p>
+<p>necessary:</p>
+<p>WS R DRDR</p>
+<p>WS ALL RWY</p>
+<p>where DRDR is the runway designator.</p>
+<p>WS R24 indicates that wind shear has been reported in either the take-off or</p>
+<p>landing zones, or both, of runway 24.</p>
+<p>Sea-surface temperature and the state of the sea or significant wave</p>
+<p>height</p>
+<p>Information on sea-surface temperature and the state of the sea or significant</p>
+<p>wave height shall be given using the following group:</p>
+<p>(WTsTs/SS’) or ( WTsTs/HHsHsHs)</p>
+<p>where:</p>
+<p>– W is a letter indicator for the temperature of the sea surface;</p>
+<p id="c15">– TsTs is the sea-surface temperature coded or decoded as indicated in Part A,</p>
+<p>section 7 (page 21);</p>
+<p>– SS’ is the state of the sea as indicated in Code table 3700 where S  is the</p>
+<p>letter designator and S’  is the state of the water surface;</p>
+<p>– HHsHsHs is the significant wave height where H is the letter indicator and</p>
+<p>HsHsHsis the significant wave height in decimetres.</p>
+<p>Example: Sea-surface temperature: 18.7 °C</p>
+<p>State of the sea:   Moderate</p>
+<p>W19/S4</p>
+<p>State of the runway</p>
+<p>The runway state group is expected to be included in METAR  and SPECI  as</p>
+<p>received from airport managers.</p>
+<p>Information on the state of the runway shall be given using the following group:</p>
+<p>(RDRDR/ERCReReRBRBR)</p>
+<p>where:</p>
+<p>– DRDR is the runway designator reported in accordance with the relevant</p>
+<p>regional ICAO air navigation plan;</p>
+<p>– ER is the runway deposit (Code table 0919);</p>
+<p>– CR is the extent of the runway contaminated (Code table 0519);</p>
+<p>– eReR is the depth of the deposit (Code table 1079);</p>
+<p>– BRBR is the estimated surface friction (Code table 0366).</p>
+<p>Example:  30 per cent of runway 24 is covered with dry snow with a depth</p>
+<p>of 12 mm and leading to a medium braking action:</p>
+<p>DRDR =  24</p>
+<p>ER =  4</p>
+<p>CR =  5</p>
+<p>eReR = 12</p>
+<p>BRBR =  93</p>
+<p>24/451293</p>
+<p>Note: The state of the runway shall not be included as supplementary information</p>
+<p>in METAR  and SPECI  as of 3 November 2021.</p>
+<p>COMPLETE CODE FORMAT</p>
+<p>METAR</p>
+<p>or COR    CCCC   YYGGgg Z   NIL   AUTO</p>
+<p>SPECI</p>
+<p>KT  ordddff Gfmfm MPS  dndndnVdxdxdx</p>
+<p>V V V V</p>
+<p>or    VNVNVNVNDv RDRDR/VRVRVRVRi</p>
+<p>CAVOK</p>
+<p>NsNsNshshshs</p>
+<p>or</p>
+<p>V Vhshshs T’T’/T’dT’d QPHPHPHPH</p>
+<p>w’w’  or</p>
+<p>NSC</p>
+<p>or</p>
+<p>NCD</p>
+<p>WS R DRDR ( WTsTs/SS’)</p>
+<p>REw’w’ or or (RDRDR/ERCReReRBRBR)</p>
+<p id="c16">WS ALL RWY ( WTsTs/HHsHsHs)</p>
+<p>10. MISSING ELEMENTS</p>
+<p>If a meteorological element in METAR or SPECI is temporarily missing, or its</p>
+<p>value considered temporarily as incorrect, it is replaced by a solidus (/) for each</p>
+<p>missing digit.</p>
+<p>Examples: Surface wind: ///KT</p>
+<p>270//K T</p>
+<p>//////K T</p>
+<p>Visibility:  ////</p>
+<p>Runway visual range:  R24/////</p>
+<p>Note: In this RVR example, four solidi (////) are appended to the “R24/” designator.</p>
+<p>Present weather:  //</p>
+<p>Cloud:  BKN//////</p>
+<p>///018CB</p>
+<p>//////CB</p>
+<p>//////TCU</p>
+<p>V V///</p>
+<p>/////////</p>
+<p>Note:  In the first and last cloud examples, the cloud type (CB or TCU) that is missing</p>
+<p>has been replaced by three solidi (///) at the end of the cloud group.</p>
+<p>Air and dewpoint temperature: ///03</p>
+<p>10///</p>
+<p>/////</p>
+<p>Note: In the first temperature example, two solidi (//) precede the “/03” dewpoint</p>
+<p>temperature. In the second temperature example, two solidi (//) follow the “10/” air</p>
+<p>temperature. In the third temperature example, air temperature and dewpoint</p>
+<p>temperature are both missing (// and // either side of /).</p>
+<p>Pressure – QNH: Q////</p>
+<p>Supplementary information:  RE//</p>
+<p>W///S4</p>
+<p>W17/H///</p>
+<p>PART B</p>
+<p>TREND FORECASTS</p>
+<p>TREND  forecasts are appended to a METAR  or SPECI . The forecaster should</p>
+<p>ensure that the encoding of the forecasts follows the agreed international</p>
+<p>standard practices. The decoding of these forecasts is carried out by a variety</p>
+<p>of people: pilots, air traffic services staff, operations personnel and meteorologists.</p>
+<p>Consequently, this guidance is aimed at decoding. However, in order to</p>
+<p>overcome any confusion, the encoder may find it useful to note how the user</p>
+<p>interprets the forecast.</p>
+<p id="c17">A first and very important point is that the information contained in the TREND</p>
+<p>is a forecast covering a period of 2 h from the time of observation, and this</p>
+<p>information is the forecaster’s best estimate of its likely occurrence. The</p>
+<p>atmosphere is not homogeneous and sizeable variations in the visibility and</p>
+<p>cloud base occur naturally. For instance:</p>
+<p>– With visibilities of less than 1 000 m, changes of 30 per cent or more in a</p>
+<p>period of 4 min occur on a significant number of occasions (5–10 per cent).</p>
+<p>– With runway visual range in the range 360–1 100 m, changes at the rate</p>
+<p>of 100 m/min can occur.</p>
+<p>– Cloud base changes of 45 m (150 ft) in 1 min and/or over a horizontal</p>
+<p>distance of 1.6 km occur on a significant number of occasions.</p>
+<p>The forecast times of occurrence are also the forecaster’s best estimate.</p>
+<p>Statistically, differences between forecast and actual times of 30 min will occur</p>
+<p>on a significant number of occasions.</p>
+<p>A TREND  forecast consists of a concise statement of expected significant changes</p>
+<p>in the meteorological conditions at the aerodrome to be appended to a routine</p>
+<p>or special report ( METAR , SPECI ). The period of validity of a TREND  forecast is</p>
+<p>2 h from the time of the report, and this report forms an integral part of the</p>
+<p>forecast. The TREND  forecast indicates significant changes in respect of one or</p>
+<p>more of the elements: surface wind, prevailing visibility, weather and cloud.</p>
+<p>Only those elements for which a significant change is expected are included.</p>
+<p>When no significant change is expected to occur, this is indicated by the</p>
+<p>abbreviation NOSIG .</p>
+<p id="c18">This page intentionally left blank.</p>
+<p>Notes:</p>
+<p>1. In the case of significant changes in respect of cloud, all cloud groups, including</p>
+<p>layers or masses not expected to change, are indicated.</p>
+<p>2. In the case of significant changes in visibility, the phenomenon causing the reduction</p>
+<p>of visibility is indicated.</p>
+<p>3. The units and scales used in TREND  shall be the same as those used in the report</p>
+<p>to which it is appended.</p>
+<p>CODE FORMAT</p>
+<p>(T T T T T</p>
+<p>or</p>
+<p>NOSIG )</p>
+<p>Example: BECMG FM 1100</p>
+<p>Decode:  Becoming from 1100 UTC</p>
+<p>ENCODE SO FAR</p>
+<p>BECMG   FM1100</p>
+<p>1. CHANGE INDICATORS</p>
+<p>When a significant change is expected in one or several of the observed elements</p>
+<p>(surface wind, prevailing visibility, weather, clouds or vertical visibility), one of</p>
+<p>the following change indicators is used for T T T T :</p>
+<p>BECMG    or   TEMPO</p>
+<p>The time group, GGgg , preceded without a space by one of the letter indicators</p>
+<p>FM (from), TL  (until) or AT  (at) is used as appropriate.</p>
+<p>Example:  TEMPO FM1030</p>
+<p>BECMG</p>
+<p>The change indicator BECMG  is used to describe expected changes which reach</p>
+<p>or pass specified values at a regular or irregular rate. The period during which,</p>
+<p>or the time at which, the change is forecast to occur is indicated using the</p>
+<p>abbreviations FM , TL or AT , as appropriate.</p>
+<p>(a) When a change is forecast both to begin and end within the TREND  forecast</p>
+<p>period, the beginning and end of change are indicated by using the</p>
+<p>abbreviations FM and TL , respectively, with the associated time groups,</p>
+<p>for example, for a TREND  forecast period from 1000 to 1200 UTC in the</p>
+<p>form:</p>
+<p>BECMG FM1030 TL1130</p>
+<p id="c19">(b) When the change is forecast to start at the beginning of the TREND  period</p>
+<p>but to be completed before the end of that period, only the abbreviation</p>
+<p>TL and its associated time group is used to indicate the end of the change.</p>
+<p>Example:   The prevailing visibility at observation time is 6 km and is expected</p>
+<p>to decrease, becoming 3 000 m in mist until 1100 UTC.</p>
+<p>BECMG TL1100 3000 BR</p>
+<p>(c) When the change is forecast to begin during the TREND  forecast period</p>
+<p>and to be completed at the end of that period, the abbreviation FM and</p>
+<p>its associated time group is used to indicate the beginning of the change.</p>
+<p>For example:</p>
+<p>BECMG FM1100</p>
+<p>(d) When the change is forecast to occur at a specific time during the TREND</p>
+<p>forecast period, the abbreviation AT  followed by the associated time group</p>
+<p>is used to indicate the time of the change. For example:</p>
+<p>BECMG AT1100</p>
+<p>(e) When the change is forecast to start at the beginning of the TREND  forecast</p>
+<p>period and to be completed by the end of that period, or when the change</p>
+<p>is forecast to occur within the TREND  period but the time is uncertain, the</p>
+<p>abbreviations FM, TL or AT  and their associated time groups are omitted</p>
+<p>and the change indicator BECMG  is used.</p>
+<p>(f) When changes are forecast to take place at midnight UTC, the time is</p>
+<p>indicated as follows:</p>
+<p>(i) By 0000 when associated with FM and AT ;</p>
+<p>(ii) By 2400 when associated with TL .</p>
+<p>TEMPO</p>
+<p>The change group TEMPO  is used to describe forecast temporary fluctuations</p>
+<p>in the meteorological conditions which reach or pass specified values and last</p>
+<p id="c20">for a period of less than 1 h in each instance and in total for less than half of the</p>
+<p>forecast period during which the fluctuations are forecast to occur. The period</p>
+<p>during which the temporary fluctuations are expected to occur is indicated by</p>
+<p>using the abbreviations FM and/or TL , as appropriate, followed by a time group.</p>
+<p>(a) When the period of temporary fluctuations is forecast to begin and end</p>
+<p>within the TREND  forecast period, the beginning and end are indicated</p>
+<p>by using the abbreviations FM and TL , respectively, with their associated</p>
+<p>time groups, for example, for a TREND  forecast period from 1000 to</p>
+<p>1200 UTC, in the form:</p>
+<p>TEMPO FM1030 TL1130</p>
+<p>(b) When the period of temporary fluctuations is forecast to start at the</p>
+<p>beginning of the TREND  period but to finish before the end of that period,</p>
+<p>only TL and its time group is used to indicate the end of the fluctuations.</p>
+<p>For example:</p>
+<p>TEMPO TL1130</p>
+<p>(c) When the period of temporary fluctuations is forecast to begin during the</p>
+<p>TREND  period and to continue throughout the remainder of the period,</p>
+<p>the abbreviation FM and its associated time group only is used to indicate</p>
+<p>the beginning of the fluctuations. For example:</p>
+<p>TEMPO FM1030</p>
+<p>(d) When the period of the temporary fluctuations is forecast to start at the</p>
+<p>beginning of the TREND  period and to continue throughout the remainder</p>
+<p>of that period, the change indicator TEMPO  is used alone.</p>
+<p>NOSIG</p>
+<p>When no significant changes are forecast to occur during the TREND  forecast</p>
+<p>period, the change indicator groups are omitted and the abbreviation NOSIG</p>
+<p>is used instead.</p>
+<p id="c21">Following the change indicator groups, only the group(s) referring to the</p>
+<p>element(s) which is/are forecast to change significantly is/are included. However,</p>
+<p>in the case of clouds, if a significant change is expected, all cloud groups</p>
+<p>including any significant layer(s) or masses not expected to change are given.</p>
+<p>Note:  The indicator PROB  shall not be used in TREND  forecasts.</p>
+<p>CODE FORMAT</p>
+<p>dddff Gfmfm  KT  or</p>
+<p>MPS</p>
+<p>Example:  25035G50KT</p>
+<p>Decode: Forecast surface wind 250° 35 kt with gusts to 50 kt</p>
+<p>ENCODE SO FAR</p>
+<p>BECMG   FM1100   25035G50KT</p>
+<p>2. SURFACE WIND</p>
+<p>TREND  indicates changes in the surface wind which involve either:</p>
+<p>(a) A change in the mean wind direction of 60° or more, the mean speed before</p>
+<p>and/or after the change being 10 kt (5 m s–1) or more;</p>
+<p>(b) A change in the mean wind speed of 10 kt (5 m s–1) or more;</p>
+<p>(c) A change of wind through values of operational significance. These values</p>
+<p>are established following consultation between the air traffic services</p>
+<p>authority, the meteorological authority and the operators concerned.</p>
+<p>Example:  An expected increase in the wind speed to 35 kt with a maximum</p>
+<p>gust of 50 kt sometime during the TREND  period is indicated by:</p>
+<p>BECMG 25035G50KT</p>
+<p>CODE FORMAT</p>
+<p>V V V V</p>
+<p>or</p>
+<p>CAVOK</p>
+<p>Example:  6000</p>
+<p>Decode: Forecast visibility 6 km</p>
+<p>ENCODE SO FAR</p>
+<p>BECMG   FM1100   25035G50KT   6000</p>
+<p>3. VISIBILITY</p>
+<p>Change indicators are used when the prevailing visibility is expected:</p>
+<p>(a) To improve and change to or pass through one or more of the following</p>
+<p>values: 150, 350, 600, 800, 1 500 and 3 000 m;</p>
+<p id="c22">(b) To deteriorate and pass through one or more of the following values: 150,</p>
+<p>350, 600, 800, 1 500 and 3 000 m. Depending upon the number of lights</p>
+<p>conducted in accordance with the visual flight rules, an additional value</p>
+<p>of 5 000 m may be added to the list.</p>
+<p>Example:   Temporary reductions throughout the TREND  forecast period of</p>
+<p>the prevailing visibility to 740 m in fog is rounded down to 700 m</p>
+<p>and indicated by:</p>
+<p>TEMPO 0700</p>
+<p>CODE FORMAT</p>
+<p>w’w’</p>
+<p>or</p>
+<p>NSW</p>
+<p>Example:  NSW</p>
+<p>Decode: No significant weather</p>
+<p>ENCODE SO FAR</p>
+<p>BECMG   FM1100   25035G50KT   6000   NSW</p>
+<p>4. WEATHER PHENOMENA</p>
+<p>Significant forecast weather, using the abbreviations as indicated in Part A,</p>
+<p>section 5 (page 13), is restricted to the onset, cessation or change in intensity</p>
+<p>of the following weather phenomena:</p>
+<p>– Freezing (FZ) precipitation;</p>
+<p>– Freezing fog;</p>
+<p>– Moderate or heavy precipitation (including showers – SH);</p>
+<p>– Low drifting (DR) dust, sand or snow;</p>
+<p>– Blowing (BL) dust, sand or snow;</p>
+<p>– Duststorm (DS);</p>
+<p>– Sandstorm (SS);</p>
+<p>– Thunderstorm (TS);</p>
+<p>– Squall (SQ);</p>
+<p>– Funnel cloud (tornado or waterspout – FC);</p>
+<p>– Other weather phenomena given in Code table 4678 (see page 13) which</p>
+<p>are expected to cause a significant change in visibility.</p>
+<p>To indicate the end of the occurrence of significant weather phenomena, the</p>
+<p>abbreviation NSW  (Nil Significant W eather) replaces the group w’w’ .</p>
+<p>Example:   For a TREND  forecast period 0300 and 0500, a thunderstorm with</p>
+<p>rain expected between 0300 and 0430 UTC is indicated by:</p>
+<p>TEMPO   TL0430   TSRA</p>
+<p>The cessation of significant weather at 1630 UTC is indicated by:</p>
+<p>BECMG   AT1630   NSW</p>
+<p>CODE FORMAT</p>
+<p id="c23">NsNsNshshshs</p>
+<p>or</p>
+<p>V Vhshshs</p>
+<p>or</p>
+<p>NSC</p>
+<p>ENCODE SO FAR</p>
+<p>BECMG   FM1100   25035G50KT   6000   NSW   NSC</p>
+<p>5. CLOUD  or V ERTICAL VISIBILITY</p>
+<p>Significant changes in cloud are indicated when one or more of the following</p>
+<p>four conditions are expected:</p>
+<p>(a) The height of the base of a cloud layer of BKN  or OVC  extent is below or</p>
+<p>expected to fall below 450 m (1 500 ft) and is forecast to change to or pass</p>
+<p>any one of the following values: 30, 60, 90, 150, 300 and 450 m (100, 200,</p>
+<p>300, 500, 1 000 and 1 500 ft).</p>
+<p>Example:  A forecast of a lowering of the cloud base to 500 ft starting at the</p>
+<p>beginning of the TREND  period and ending by 1130 UTC is</p>
+<p>indicated by:</p>
+<p>BECMG   TL1130   OVC005</p>
+<p>(b) The height of the base of the cloud layer is below, or is expected to fall</p>
+<p>below, 450 m (1 500 ft), and the cloud amount is forecast to change from:</p>
+<p>SCT  or FEW increasing to BKN  or OVC</p>
+<p>or</p>
+<p>BKN  or OVC  decreasing to SCT  or FEW</p>
+<p>Example:   A forecast of a rapid increase in stratus cloud at 1130 UTC from</p>
+<p>SCT  to OVC  is indicated by:</p>
+<p>BECMG   AT1130   OVC010</p>
+<p>(c) The sky is expected to remain or become obscured, vertical visibility</p>
+<p>observations are available, and the forecast indicates changes in vertical</p>
+<p>visibility to, or passing, any one of the following values: 30, 60 or 150 m</p>
+<p>(100, 200 or 500 ft).</p>
+<p>(d) No significant change in the clouds is expected during the period of the</p>
+<p>TREND , the cloud groups are not repeated and therefore no cloud details</p>
+<p>are given.</p>
+<p>To indicate a change to no cloud below 1 500 m (5 000 ft) or the highest minimum</p>
+<p id="c24">sector altitude, whichever is the greater, and when no CB  are forecast, and CAVOK</p>
+<p>is not appropriate, the abbreviation NSC  (Nil Significant Cloud) replaces the cloud</p>
+<p>and vertical visibility groups.</p>
+<p>Criteria for indicating changes in the TREND  forecast, based on local aerodrome</p>
+<p>operating minima, additional to those specified above, shall be used only when</p>
+<p>these criteria have been agreed by the meteorological authority and the</p>
+<p>operator(s) concerned.</p>
+<p>COMPLETE CODE FORMAT</p>
+<p>(T T T T T   T TGGgg   dddff Gfmfm KT</p>
+<p>or    or</p>
+<p>NOSIG)     MPS</p>
+<p>NsNsNshshshs</p>
+<p>V V V V w’w’ or</p>
+<p>or or  VVhshshs ( RMK... )</p>
+<p>CAVOK  NSW  or</p>
+<p>NSC</p>
+<p>Complete example:</p>
+<p>BECMG   FM1100  25035G50KT   6000   NSW   NSC</p>
+<p>DECODE</p>
+<p>Becoming after 1100 UTC, surface wind 250° 35 kt, gusts to 50 kt,</p>
+<p>visibility 6 km, nil significant weather and nil significant cloud</p>
+<p>PART C</p>
+<p>AERODROME FORECASTS – TAFs</p>
+<p>Aerodrome forecasts ( TAFs) are complete descriptions of the meteorological</p>
+<p>elements expected at and over the aerodrome throughout the whole of the</p>
+<p>forecast period, including any changes considered to be significant to aircraft</p>
+<p>operations.</p>
+<p>TAFs are prepared by professional staff who, using the latest available regulations,</p>
+<p>ensure that internationally agreed practices are followed. The decoding of these</p>
+<p>forecasts is carried out by people of various disciplines and many will not have</p>
+<p>easy access to these regulations. Consequently, this guidance is aimed at</p>
+<p>decoders, although it may also be of interest to encoders.</p>
+<p>As with the TREND  forecast, it should be appreciated that, owing to the variability</p>
+<p id="c25">of meteorological elements in space and time and to limitations of forecasting</p>
+<p>techniques and the definitions of some of the elements, the specific value of any</p>
+<p>element given in the forecast should be understood to be the most probable value</p>
+<p>that the element is likely to assume during the period of the forecast.</p>
+<p>TAFs describe the forecast prevailing conditions at an aerodrome and cover a</p>
+<p>period of not less than 6 h and not longer than 30 h. The period of validity of</p>
+<p>TAFs produced by meteorological offices should be determined by regional air</p>
+<p>navigation agreement. Routine TAF s valid for less than 12 h should be issued</p>
+<p>every 3 h, and those valid for 12 h up to 30 h every 6 h.</p>
+<p>Amendments are issued as and when necessary. It is assumed that a later TAF</p>
+<p>automatically amends and updates the ones issued previously, and not more</p>
+<p>than one TAF  is valid at an aerodrome at any given time.</p>
+<p>TAFs are issued separately from the METAR  or SPECI  and do not refer to any</p>
+<p>specific report. However, the preparation, amendment and cancellation, as</p>
+<p>necessary, of the TAF  depend, among others, upon receipt of the METAR  or</p>
+<p>SPECI  of that aerodrome.</p>
+<p>Aerodrome forecasts contain specific information presented in a fixed order.</p>
+<p>The information and order are as follows:</p>
+<p>IDENTIFICATION GROUPS</p>
+<p>SURFACE WIND</p>
+<p>PREVAILING VISIBILITY</p>
+<p>This page intentionally left blank.</p>
+<p>WEATHER</p>
+<p>CLOUD  (or vertical visibility, if appropriate)</p>
+<p>EXPECTED SIGNIFICANT CHANGES</p>
+<p>Notes:</p>
+<p>1. CAVOK  is used to replace the visibility, weather and cloud groups when the following</p>
+<p>three conditions are simultaneously met:</p>
+<p id="c26">– Visibility is 10 km or more;</p>
+<p>– There is no cloud below 1 500 m (5 000 ft) or below the highest minimum</p>
+<p>sector altitude, whichever is greater, and no cumulonimbus;</p>
+<p>– There are no significant weather phenomena (see Code table 4678 on page 13).</p>
+<p>2. The forecast period of the TAF  may be divided into two or more self-contained parts</p>
+<p>by using the indicator FMYYGGgg , where FM  is the abbreviation of “from” and</p>
+<p>YYGGgg  is the date and time in UTC. A complete description of the prevailing</p>
+<p>conditions is given at the beginning of the forecast or the self-contained parts</p>
+<p>designated FMYYGGgg . Forecast significant changes to these conditions are</p>
+<p>indicated as necessary.</p>
+<p>CODE FORMAT</p>
+<p>TAF</p>
+<p>or</p>
+<p>TAF AMD      CCCC   YYGGgg Z   NIL   Y1Y1G1G1/Y2Y2G2G2   CNL</p>
+<p>or</p>
+<p>TAF COR</p>
+<p>Example 1: TAF   LUDO   130530Z   1307/1316</p>
+<p>Decode:   Aerodrome forecast for LUDO international airport, time of origin</p>
+<p>0530 UTC on the 13th, forecast valid for the period 0700 to</p>
+<p>1600 UTC on the 13th</p>
+<p>Example 2: TAF   AMD   LUDO   161500Z  1606/1712   CNL</p>
+<p>Decode:   Amended TAF for LUDO international airport issued on the 16th</p>
+<p>of the month at 1500 UTC cancelling the previously issued TAF</p>
+<p>valid from 0600 UTC on the 16th to 1200 UTC on the 17th of the</p>
+<p>month</p>
+<p>1. IDENTIFICATION GROUPS</p>
+<p>This section contains eight parts, as follows:</p>
+<p>– The aerodrome forecast code name ( TAF) included at the beginning of an</p>
+<p>individual aerodrome forecast and at the beginning of a bulletin consisting</p>
+<p>of one or more aerodrome forecasts;</p>
+<p>– The code word AMD  if the TAF  is amended;</p>
+<p>– The code word COR  if the TAF  is corrected;</p>
+<p id="c27">– The ICAO location indicator of the aerodrome to which the forecast refers;</p>
+<p>– The date and time of issue of the forecast;</p>
+<p>– The code word NIL  if the TAF  is missing;</p>
+<p>– The period covered by the forecast;</p>
+<p>– The code word CNL  if the TAF  is cancelled.</p>
+<p>CODE FORMAT</p>
+<p>dddff Gfmfm  KT</p>
+<p>or</p>
+<p>MPS</p>
+<p>Example:  31015KT</p>
+<p>Decode: Forecast surface wind 310° at 15 kt</p>
+<p>ENCODE SO FAR</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT</p>
+<p>2. SURFACE WIND</p>
+<p>Normally this is a five-figure group followed by an abbreviation to indicate the</p>
+<p>wind speed units used. The first three figures indicate the wind direction from</p>
+<p>true north, and the last two the mean wind speed.</p>
+<p>Example:  31015KT</p>
+<p>Additionally, if the wind is expected to be gusty and the maximum gust speed</p>
+<p>likely to exceed the mean speed by 10 kt (5 m s–1) or more, this gust must be</p>
+<p>indicated using the letter G directly after the mean speed, followed by the gust</p>
+<p>speed.</p>
+<p>Example:  31015G27KT</p>
+<p>The encode VRB  is used only when the mean wind speed is less than 3 kt</p>
+<p>(2 m s–1). VRB  for higher wind speeds shall be used only when the variation of</p>
+<p>wind direction is 180° or more, or when it is impossible to forecast a single wind</p>
+<p>direction, for example during a thunderstorm.</p>
+<p>When a wind speed of 100 kt or more is forecast, it should be indicated as P99KT .</p>
+<p>Example:  310P99KT</p>
+<p>CODE FORMAT</p>
+<p>V V V V</p>
+<p>or</p>
+<p>CAVOK</p>
+<p>Example:  8000</p>
+<p>Decode:  Visibility 8 km</p>
+<p>ENCODE SO FAR</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT   8000</p>
+<p>3. VISIBILITY</p>
+<p>Forecast prevailing visibility is encoded as a four-figure group. As with the</p>
+<p id="c28">METAR  code, the figures are the expected values in metres, except that 9999</p>
+<p>indicates a prevailing visibility of 10 km or greater.</p>
+<p>Example:  A forecast prevailing visibility of 8 km is indicated as 8000.</p>
+<p>When the prevailing visibility cannot be forecast, the lowest forecast visibility</p>
+<p>shall be used.</p>
+<p>CODE FORMAT</p>
+<p>w’w’</p>
+<p>or</p>
+<p>NSW</p>
+<p>Example:  SHRA</p>
+<p>Decode:  Moderate rain shower</p>
+<p>ENCODE SO FAR</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT   8000   SHRA</p>
+<p>4.  WEATHER</p>
+<p>Forecast weather, using the appropriate abbreviations given in Code table 4678</p>
+<p>(see page 13), is restricted to the occurrence of one or more, up to a maximum</p>
+<p>of three, of the following weather phenomena, together with their characteristics,</p>
+<p>which are deemed significant to aircraft operations:</p>
+<p>– Freezing (FZ) precipitation;</p>
+<p>– Freezing fog;</p>
+<p>– Moderate or heavy precipitation (including showers – SH);</p>
+<p>– Low drifting (DR) dust, sand or snow;</p>
+<p>– Blowing (BL) dust, sand or snow;</p>
+<p>– Duststorm (DS);</p>
+<p>– Sandstorm (SS);</p>
+<p>– Thunderstorm (TS);</p>
+<p>– Squall (SQ);</p>
+<p>– Funnel cloud (tornado or waterspout – FC);</p>
+<p>– Other weather phenomena given in Code table 4678 which are expected</p>
+<p>to cause a significant change in visibility.</p>
+<p>Example:  SHRA      (moderate rain shower)</p>
+<p>If no significant weather, as defined above, is expected to occur, the group is</p>
+<p>omitted. However, after a change group, if the weather ceases to be significant,</p>
+<p>the weather group w’w’  is replaced by NSW  (abbreviation for Nil Significant</p>
+<p>Weather).</p>
+<p>CODE FORMAT</p>
+<p>NsNsNshshshs</p>
+<p>or</p>
+<p>V Vhshshs</p>
+<p>or</p>
+<p>NSC</p>
+<p>Example: FEW005   FEW010CB   SCT018   BKN025</p>
+<p>Decode: 1/8 to 2/8 cloud with base 500 ft</p>
+<p id="c29">1/8 to 2/8 cumulonimbus with base 1 000 ft</p>
+<p>3/8 to 4/8 cloud with base 1 800 ft</p>
+<p>5/8 to 7/8 cloud with base 2 500 ft</p>
+<p>ENCODE SO FAR</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT   8000</p>
+<p>SHRA   FEW005   FEW010CB   SCT018   BKN025</p>
+<p>5. CLOUD ( or VERTICAL VISIBILITY)</p>
+<p>Cloud information is presented in the same format as in the METAR . The group</p>
+<p>usually consists of six characters, the first three indicating the expected cloud</p>
+<p>amount, using the following abbreviations:</p>
+<p>FEW – Few – 1/8 to 2/8</p>
+<p>SCT  – Scattered – 3/8 to 4/8</p>
+<p>BKN  – Broken – 5/8 to 7/8</p>
+<p>OVC  – Overcast – 8/8</p>
+<p>The last three figures indicate the expected height of the base of the cloud, in</p>
+<p>units of 30 m (100 ft).</p>
+<p>Only the cloud type cumulonimbus ( CB) is indicated.</p>
+<p>Examples: 1. 4/8 stratus at 1 000 ft is coded as:</p>
+<p>SCT010</p>
+<p>2. 7/8 cumulonimbus at 1 000 ft is coded as:</p>
+<p>BKN010CB</p>
+<p>When the forecaster expects more than one layer or mass of cloud, additional</p>
+<p>cloud groups are given in accordance with the following:</p>
+<p>– The lowest individual layer of any amount;</p>
+<p>– The next individual layer covering more than 2/8;</p>
+<p>– The next individual layer covering more than 4/8, additionally;</p>
+<p>– Cumulonimbus cloud ( CB) when forecast, if not already in one of the groups</p>
+<p>above.</p>
+<p>Normally, the number of groups will not exceed three, except that cumulonimbus</p>
+<p>will always be included if forecast.</p>
+<p>The cloud groups are in the order of lower to higher levels of cloud base.</p>
+<p>Example: The forecast is for 1/8 stratus at 500 ft</p>
+<p>2/8 cumulonimbus at 1 000 ft</p>
+<p>3/8 cumulus at 1 800 ft</p>
+<p>5/8 stratocumulus at 2 500 ft</p>
+<p>which would be encoded as:</p>
+<p id="c30">FEW005   FEW010CB   SCT018   BKN025</p>
+<p>When the sky is expected to be obscured and information on vertical visibility</p>
+<p>is available, the cloud group is replaced by V V hshshs, where the last three figures</p>
+<p>for hshshs indicate the vertical visibility in units of 30 m (100 ft).</p>
+<p>In some regions cloud information is limited to cloud of operational significance.</p>
+<p>This is considered to be cloud below 1 500 m (5 000 ft) or the highest minimum</p>
+<p>sector altitude, whichever is the greater, and cumulonimbus, whenever forecast.</p>
+<p>Therefore, when no cumulonimbus or clouds below 5 000 ft or below the highest</p>
+<p>minimum sector altitude, whichever is the greater, are forecast and CAVOK  is</p>
+<p>not appropriate, NSC  (Nil Significant C loud) is used.</p>
+<p>Example:   When the prevailing visibility is expected to be 8 km and</p>
+<p>altocumulus and cirrus clouds are forecast above 10 000 ft, the</p>
+<p>cloud group would be replaced by NSC . If the prevailing visibility</p>
+<p>is expected to be 10 km or more with the same cloud conditions,</p>
+<p>then CAVOK  should be used.</p>
+<p>6. EXPECTED SIGNIFICANT CHANGES</p>
+<p>Changes in the prevailing meteorological conditions which are considered</p>
+<p>significant, and which therefore need to be indicated in the aerodrome forecast</p>
+<p>(and also the thresholds for deciding if the TAF should be amended), are as follows.</p>
+<p>Surface wind</p>
+<p>When the surface wind is forecast to change through operationally significant</p>
+<p>values. These values vary from one aerodrome to another and are agreed upon</p>
+<p>following discussions between the meteorological authority, the appropriate</p>
+<p>air traffic services authority and operators.</p>
+<p>Visibility</p>
+<p id="c31">When the surface prevailing visibility is forecast to improve and change to, or</p>
+<p>pass through, one or more of the following values, or when that visibility is</p>
+<p>forecast to deteriorate and pass through one or more of the following values:</p>
+<p>150, 350, 600, 800, 1 500 and 3 000 m</p>
+<p>Depending upon the number of flights conducted in accordance with visual</p>
+<p>flight rules, an additional value of 5 000 m may be added.</p>
+<p>Weather</p>
+<p>When any of the weather phenomena listed in Part C, section 4 (page 55), is forecast</p>
+<p>to begin, end or change in intensity. If significant weather as indicated in the main</p>
+<p>body of the TAF message is forecast to end, after the change group, the w’w’  group</p>
+<p>is replaced by NSW , the abbreviation for N il Significant Weather.</p>
+<p>Example:   TAF   LUDO   130530Z   1307/1316   31015KT   8000   RA   SCT006</p>
+<p>BKN012   BECMG   1312/1314   NSW   SCT025</p>
+<p>Cloud height</p>
+<p>When the height of the base of the lowest layer or mass of cloud covering 5/8</p>
+<p>or more ( BKN  or OVC ) is forecast to lift and change to, or pass through, one or</p>
+<p>more of the following values or to lower and pass through one or more of the</p>
+<p>following values:</p>
+<p>30, 60, 150 or 300 m (or 100, 200, 500 or 1 000 ft)</p>
+<p>This page intentionally left blank.</p>
+<p>Depending upon the number of flights conducted in accordance with visual</p>
+<p>flight rules, an additional value of 450 m (1 500 ft) may be added.</p>
+<p>Cloud amount</p>
+<p>When the amount of a cloud layer or mass of cloud below 450 m (1 500 ft) is</p>
+<p>forecast to change</p>
+<p>– from SCT  or FEW , increasing to BKN  or OVC</p>
+<p>or</p>
+<p>– from BKN  or OVC , decreasing to SCT  or FEW .</p>
+<p id="c32">When cumulonimbus clouds are expected to develop or dissipate.</p>
+<p>When vertical visibility is forecast to improve and change to, or pass through,</p>
+<p>one or more of the following values, or to deteriorate and pass through one or</p>
+<p>more of the following values:</p>
+<p>30, 60, 150 or 300 m (100, 200, 500 or 1 000 ft)</p>
+<p>CAVOK</p>
+<p>When conditions are forecast to change to CAVOK , or CAVOK conditions will</p>
+<p>cease (conditions requiring CAVOK  are found under Part A, section 6 (page</p>
+<p>17)).</p>
+<p>CODE FORMAT</p>
+<p>TTTTT      YYGG/YeYeGeGe</p>
+<p>or</p>
+<p>TTYYGGgg</p>
+<p>Example: TEMPO   1311/1316   4000   +SHRA</p>
+<p>Decode:  Temporarily between 1100 and 1600 UTC visibility 4 000 m and</p>
+<p>heavy rain showers</p>
+<p>ENCODE SO FAR</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT   8000</p>
+<p>SHRA   FEW005   FEW010CB   SCT018   BKN025</p>
+<p>TEMPO   1311/1316   4000   +SHRA</p>
+<p>7. INDICATION OF SIGNIFICANT CHANGES</p>
+<p>(a) When one set of prevailing weather conditions is expected to change</p>
+<p>significantly and more or less completely to a different set of conditions,</p>
+<p>the time indicator group FMYYGGgg  (where FM is the abbreviation for</p>
+<p>“f rom”, YY is the date and GGgg  is the time in hours and minutes UTC) is</p>
+<p>used to indicate the beginning of a self-contained part of the forecast. All</p>
+<p>conditions given before this group are superseded by conditions indicated</p>
+<p>after the group.</p>
+<p>Example:   TAF   LUDO   130530Z   1307/1316   27015KT   6000  NSC</p>
+<p>FM131215   27017KT   4000   BKN010</p>
+<p>(b) The groups BECMG YYGG/YeYeGeGe indicate a regular or irregular change</p>
+<p>to the forecast meteorological conditions expected at an unspecified time</p>
+<p id="c33">within the period YYGG  to YeYeGeGe. This period will normally not exceed</p>
+<p>2 h but will never be more than 4 h.</p>
+<p>The change indicator is followed by groups describing only the</p>
+<p>meteorological elements which are forecast to change significantly.</p>
+<p>However, in the case of significant changes in cloud, all the cloud groups</p>
+<p>as set out in Part C, section 5 (page 57), including layers or masses not</p>
+<p>expected to change, should be indicated.</p>
+<p>Unless a further set of change groups is used, the conditions given after</p>
+<p>BECMG YYGG/YeYeGeGe are expected to prevail from the date and time</p>
+<p>YeYeGeGe to the end of the forecast period.</p>
+<p>Example:   TAF   LUDO  130530Z  1307/1316   27015KT   6000  NSC</p>
+<p>BECMG   1310/1312   4000   BKN010</p>
+<p>Meaning</p>
+<p>The forecast conditions start to change at 1000 UTC and the prevailing conditions</p>
+<p>for the period 1200 to 1600 UTC are expected to be:</p>
+<p>Surface wind:  270° at 15 kt</p>
+<p>Visibility:  4 000 m</p>
+<p>Weather:  None significant to operations</p>
+<p>Cloud: 5/8 to 7/8 with a base of 1 000 ft</p>
+<p>This page intentionally left blank.</p>
+<p>(c) The groups TEMPO YYGG/YeYeGeGe indicate temporary fluctuations in</p>
+<p>the forecast meteorological conditions which may occur at any time during</p>
+<p>the period YYGG  to YeYeGeGe. The meteorological conditions following</p>
+<p>these groups are expected to last less than 1 h in each instance and in</p>
+<p>aggregate less than half the period indicated by YYGG/YeYeGeGe.</p>
+<p>CODE FORMAT</p>
+<p>TTTTT     YYGG/YeYeGeGe</p>
+<p>PROB C2C2    YYGG/YeYeGeGe or</p>
+<p>TTYYGGgg</p>
+<p>Example:  PROB30   TEMPO   1314/1316   TSRA   SCT005   BKN010CB</p>
+<p>Decode:   Moderate probability temporarily on the 13th between 1400 and</p>
+<p id="c34">1600 UTC of thunderstorm with moderate rain and 1/8 to 4/8</p>
+<p>cloud at 500 ft and 5/8 to 7/8 cumulonimbus at 1 000 ft</p>
+<p>ENCODE SO FAR</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT   8000</p>
+<p>SHRA   FEW005   FEW010CB   SCT018   BKN025</p>
+<p>TEMPO   1311/1416   4000   +SHRA   PROB30</p>
+<p>TEMPO   1314/1316   TSRA   SCT005   BKN010CB</p>
+<p>Note: If a temporary fluctuation persists longer than 1 h or in aggregate more than</p>
+<p>half the forecast period, these conditions would be the predominant ones and the change</p>
+<p>indicator  BECMG  should be used.</p>
+<p>(d) When the confidence in forecasting alternative values is not high, yet the</p>
+<p>forecast element being considered is significant to aircraft operations, the</p>
+<p>groups PROBC2C2 YYGG/YeYeGeGe are used. C2C2 indicates the percentage</p>
+<p>probability of occurrence, with only the values 30 or 40 per cent being</p>
+<p>used. The PROB  group is always followed by a time group YYGG/YeYeGeGe</p>
+<p>(example 1) or a change group and a time group TTTTT YYGG/YeYeGeGe</p>
+<p>(example 2).</p>
+<p>Example 1:</p>
+<p>TAF  LUDO 132030Z 1322/1407 27003KT 4000 SCT008 BECMG</p>
+<p>1403/1405 1500 BR BKN004 PROB30 1405/1407 0800 FG</p>
+<p>This indicates that the visibility will fall to 1 500 m by 0500 UTC on the 14th</p>
+<p>with a moderate probability of fog with a visibility of 800 m between 0500</p>
+<p>and 0700 UTC on the same day (14th).</p>
+<p>Example 2:</p>
+<p>TAF  LUDO 130530Z 1307/1316 27015KT 9999 SCT015 TEMPO</p>
+<p>1311/1316 4000 +SHRA BKN010CB PROB30 TEMPO 1314/1316 TSRA</p>
+<p>This indicates that, on the 13th, heavy showers of rain are likely after</p>
+<p>1100 UTC with a moderate probability of a thunderstorm with moderate</p>
+<p>rain after 1400 UTC.</p>
+<p id="c35">Note: It is assumed that, if the probability of an occurrence is 50 per cent or greater,</p>
+<p>confidence is high and the alternative values are indicated using BECMG, TEMPO or FM,</p>
+<p>as appropriate. When the probability of occurrence is less than 30 per cent, it is not</p>
+<p>considered significant from an operational point of view and the associated phenomena</p>
+<p>are therefore not mentioned.</p>
+<p>TEMPO , which means that the fluctuations will occur for less than half of the</p>
+<p>time, should not be confused with a probability of 30 or 40 per cent. With</p>
+<p>TEMPO , the forecaster is confident that the temporary fluctuations will take</p>
+<p>place; with PROB30  there is only a moderate probability that they will occur.</p>
+<p>(e) The number of change and probability groups should be kept to a minimum</p>
+<p>and should not normally exceed five groups.</p>
+<p>Amendments</p>
+<p>When an aerodrome forecast TAF  requires amendment in accordance with</p>
+<p>Part C, section 6 (page 59), the amended forecast is indicated by inserting AMD</p>
+<p>after TAF in the identifier, and this new forecast covers the remaining validity</p>
+<p>period of the original TAF .</p>
+<p>Example:  TAF AMD LUDO 130820Z 1308/1316 . . .</p>
+<p>Note: The time of issue of this TAF AMD  is 0820 UTC but the forecast is valid from</p>
+<p>0800 to 1600 UTC.</p>
+<p>Regional code forms:</p>
+<p>Forecast maximum (TXTFTF/YFYFGFGFZ   TN TFTF/YFYFGFGFZ)</p>
+<p>and minimum</p>
+<p>temperatures</p>
+<p>This group is used only if agreed regionally and is included here for the sake of</p>
+<p>completeness. A full description of this code can be found in the Manual on Codes</p>
+<p>(WMO-No. 306).</p>
+<p>Only meteorological offices determined by regional air navigation agreement</p>
+<p id="c36">shall issue 30-h TAF s.</p>
+<p>COMPLETE CODE FORMAT</p>
+<p>TAF</p>
+<p>or   NIL  KT</p>
+<p>TAF AMD  CCCC  YYGGgg Z or dddff Gfmfm or</p>
+<p>or   Y1Y1G1G1/Y2Y2G2G2 or MPS</p>
+<p>TAF COR    CNL</p>
+<p>NsNsNshshshs</p>
+<p>V V V V w’w’ or VVhshshs</p>
+<p>or   or NSC</p>
+<p>CAVOK</p>
+<p>(TXTFTF/YFYFGFGF Z   TN TFTF/YFYFGFGFZ)</p>
+<p>PROB C2C2 or</p>
+<p>PROB C2C2 T T T T T YYGG/YeYeGeGe  KT V V V V</p>
+<p>or TTTTT   dddff Gfmfm or</p>
+<p>or   MPS or</p>
+<p>T TYYGGgg</p>
+<p>CAVOK</p>
+<p>w’w’  NsNsNshshshs</p>
+<p>or or VVhshshs</p>
+<p>NSW  or NSC</p>
+<p>Complete example:</p>
+<p>TAF   LUDO   130530Z   1307/1316   31015KT   8000   SHRA   FEW005</p>
+<p>FEW010CB   SCT018   BKN025   TEMPO   1311/1316   4000   +SHRA</p>
+<p>PROB30   TEMPO   1314/1316   TSRA   SCT005   BKN010CB</p>
+<p>DECODE</p>
+<p>Aerodrome forecast for LUDO international airport, time of origin</p>
+<p>0530 UTC on the 13th, valid for the period 0700 on the 13th to</p>
+<p>1600  UTC on the 13th. Surface wind 310° 15 kt, visibility 8 km,</p>
+<p>moderate rain shower, cloud 1/8 to 2/8 base 500 ft, 1/8 to 2/8</p>
+<p>cumulonimbus base 1 000 ft, 3/8 to 4/8 base 1 800 ft, 5/8 to 7/8 base</p>
+<p>2 500 ft. Temporarily between 1100 and 1600 UTC same day, visibility</p>
+<p>4 000 m in heavy rain showers, with a moderate probability temporarily</p>
+<p>between 1400 and 1600 UTC of a thunderstorm with moderate rain,</p>
+<p>cloud 3/8 to 4/8 base 500 ft and 5/8 to 7/8 cumulonimbus base 1 000 ft</p>
+<p>EXPLANATION OF WEATHER PHENOMENA</p>
+<p>SIGNIFICANT TO AVIATION</p>
+<p>1. Drizzle (DZ)</p>
+<p>Fairly uniform precipitation in very fine drops of water with a diameter of less</p>
+<p>than 0.5 mm. The impact of drizzle droplets falling on a water surface is</p>
+<p>imperceptible, but continuous drizzle may produce a runoff from roofs and</p>
+<p>runway surfaces. The drops can only reach the ground without evaporating if</p>
+<p id="c37">they fall from very low clouds. Generally, the heavier the drizzle, the lower the</p>
+<p>cloud base. Visibility is inversely related to both the intensity of precipitation</p>
+<p>and the number of droplets. Light drizzle corresponds to negligible runoff from</p>
+<p>roofs; heavy drizzle to a rate of accumulation greater than 1 mm/h.</p>
+<p>2. Rain (RA)</p>
+<p>Precipitation of liquid water droplets of appreciable size (greater than 0.5 mm).</p>
+<p>Raindrops form in quite deep clouds where there is vertical motion capable of</p>
+<p>supporting sizeable water droplets. The heavier the rain, the deeper the clouds</p>
+<p>producing it. Intermittent rain of moderate or heavy intensity indicates that cells</p>
+<p>with locally strong updraughts are present.</p>
+<p>3. Snow (SN)</p>
+<p>Solid precipitation of single or agglomerated ice crystals falling from a cloud.</p>
+<p>At very low temperatures, snowflakes are small and their structure simple. At</p>
+<p>temperatures close to freezing point, the individual flakes may be composed of</p>
+<p>a large number of ice crystals (predominantly star-shaped) and the flakes may</p>
+<p>have a diameter greater than 25 mm.</p>
+<p>4. Snow grains (SG)</p>
+<p>The frozen equivalent of drizzle. They are very small and opaque white particles</p>
+<p>of ice which fall from stratiform clouds. These particles are fairly flat or elongated</p>
+<p>and their diameter is generally less than 1 mm.</p>
+<p>5. Ice pellets (PL)</p>
+<p>Transparent or translucent ice particles that cannot be crushed easily and have</p>
+<p>a diameter of 5 mm or less. They are formed from freezing raindrops or largely</p>
+<p>melted snowflakes which can indicate that at higher levels freezing rain may be</p>
+<p id="c38">present, with the danger of severe icing after take-off or during descent/ landing.</p>
+<p>Ice pellets may occur before or after freezing rain.</p>
+<p>6. Hail (GR)</p>
+<p>Transparent or partly or completely opaque pieces of ice (hailstones) with a</p>
+<p>diameter generally between 5 mm and 50 mm. Very large stones weighing 1 kg</p>
+<p>or more have been observed.</p>
+<p>7. Small hail and/or snow pellets (GS)</p>
+<p>The abbreviation GS is used to report two different types of precipitation:</p>
+<p>(a) Small hail</p>
+<p>Translucent ice particles with a diameter up to 5 mm which, when falling</p>
+<p>on hard ground, bounce with an audible sound. Small hail consists of snow</p>
+<p>pellets totally or partially encased in a layer of ice and is an intermediate</p>
+<p>stage between snow pellets and hailstones.</p>
+<p>(b) Snow pellets</p>
+<p>White, opaque and approximately round ice particles, often falling together</p>
+<p>with snow at a temperature near 0 °C. Snow pellets normally have a</p>
+<p>diameter of 2 mm to 5 mm, are crisp and easily crushed and rebound when</p>
+<p>falling on a hard surface.</p>
+<p>8. Mist (BR)</p>
+<p>The suspension of microscopic water droplets or wet hygroscopic particles in</p>
+<p>the air, reducing horizontal visibility to 1 000 to 5 000 m. The relative humidity</p>
+<p>is greater than 95 per cent.</p>
+<p>Note:  [concerning 7 and 8] Large cumulonimbus clouds are the main “factories”</p>
+<p>where hail is produced in the atmosphere. Great cloud depth and extremely vigorous</p>
+<p>updraughts within the cloud are necessary to support these pieces of ice long enough</p>
+<p>for them to grow. Some of the hail is blown out of the side or top of the cloud before it</p>
+<p>has completely formed, leading to reports of snow pellets.</p>
+<p>9. Fog (FG)</p>
+<p id="c39">The suspension in the air of very small water droplets, which reduces horizontal</p>
+<p>visibility to less than 1 000 m.</p>
+<p>10. Smoke (FU)</p>
+<p>The suspension in the air of small particles produced by combustion, which</p>
+<p>reduces horizontal visibility to 5 000 m or less. It should be noted that smoke</p>
+<p>may be reported with a horizontal visibility of less than 1 000 m, if there are no</p>
+<p>suspended water droplets and the relative humidity is not greater than about</p>
+<p>90 per cent.</p>
+<p>11. Volcanic ash (VA)</p>
+<p>Atmospheric dust or particles varying considerably in size, originating from</p>
+<p>active volcanoes. The small particles often penetrate the stratosphere and remain</p>
+<p>suspended for a long period. Larger particles remain within the troposphere</p>
+<p>and can be carried by the wind to different regions of the Earth. Scavenging by</p>
+<p>rainfall and gravity eventually leads to the removal of volcanic ash from the</p>
+<p>atmosphere. Larger particles, or a concentration of smaller ones, can considerably</p>
+<p>damage aircraft, including their engines.</p>
+<p>12. Widespread dust (DU)</p>
+<p>The reduction of horizontal visibility to 5 000 m or less caused by the suspension</p>
+<p>in the air of small particles of dust raised from the ground.</p>
+<p>13. Sand (SA)</p>
+<p>The reduction of horizontal visibility to 5 000 m or less caused by the suspension</p>
+<p>in the air of small particles of sand raised from the ground.</p>
+<p>14. Haze (HZ)</p>
+<p>The suspension in the air of extremely small dry particles invisible to the naked</p>
+<p>eye and sufficiently numerous to give the air an opalescent appearance with a</p>
+<p>reduction in horizontal visibility to 5 000 m or less.</p>
+<p>15. Dust/sand whirls (dust devils) (PO)</p>
+<p id="c40">A rapidly rotating column of air over a dry and dusty or sandy ground carrying</p>
+<p>dust and other light material picked up from the ground. Dust or sand whirls</p>
+<p>are of a few metres in diameter. Normally in the vertical, they extend no higher</p>
+<p>than 200 to 300 ft, but in very hot desert regions they may reach 2 000 ft.</p>
+<p>16. Squall (SQ)</p>
+<p>A strong wind that rises suddenly, generally lasting for at least 1 min. It is</p>
+<p>distinguished from a gust by its longer duration. The sudden increase in wind</p>
+<p>speed is at least 16 kt (8 m s–1), the speed rising to 22 kt (11 m s–1) or more and</p>
+<p>lasting at least 1 min. Squalls are often associated with large cumulonimbus</p>
+<p>clouds and violent convective activity, extending some kilometres horizontally</p>
+<p>and several thousands of feet vertically.</p>
+<p>17. Funnel cloud(s) (tornado or waterspout) (FC)</p>
+<p>A phenomenon consisting of an often violent whirlwind, indicated by the</p>
+<p>presence of a cloud column or funnel-shaped cloud, extending downwards</p>
+<p>from the base of cumulonimbus cloud but not necessarily reaching the ground.</p>
+<p>The diameter can vary from a few metres to some hundreds of metres. A well-</p>
+<p>developed funnel cloud is called a tornado if over land and a waterspout if over</p>
+<p>water. The most violent tornado can have associated wind speeds of up to about</p>
+<p>300 kt (150 m s–1).</p>
+<p>18. Sandstorm (SS)</p>
+<p>An ensemble of particles of sand energetically lifted by a strong and turbulent</p>
+<p>wind. The forward portion of the sandstorm may have the appearance of a wide</p>
+<p>and high wall. The height to which sand is raised will increase with increasing</p>
+<p>wind speed and instability.</p>
+<p>19. Duststorm (DS)</p>
+<p id="c41">Particles of dust energetically lifted by a strong and turbulent wind. Dust storms</p>
+<p>are usually associated with hot, dry and windy conditions, especially just ahead</p>
+<p>of vigorous cold fronts that can be cloud free. Dust particles typically have a</p>
+<p>diameter of less than 0.08 mm and consequently can be lifted to far greater</p>
+<p>heights than sand.</p>
+<p>20. Shallow (MI)</p>
+<p>This descriptor is used only with FG (fog) when the observed horizontal visibility</p>
+<p>is 1 000 m or more, but, when between the ground and 2 m above the ground</p>
+<p>(the assumed eye level of the observer), there is a layer in which the apparent</p>
+<p>visibility is less than 1 000 m. Operationally, MIFG may cause problems because</p>
+<p>runway markings and lights may be concealed.</p>
+<p>21. Patches (BC)</p>
+<p>This descriptor is used only with fog (FG) and indicates that there are fog patches</p>
+<p>randomly covering the aerodrome. Hence, although the horizontal visibility as</p>
+<p>reported in the METAR/SPECI  is 1 000 m or more, the observer can see areas</p>
+<p>where the apparent visibility is less than 1 000 m.</p>
+<p>22. Partial (covering part of the aerodrome) (PR)</p>
+<p>This descriptor is used only with fog (FG) and indicates that a substantial part</p>
+<p>of the aerodrome is covered by fog, while the remainder is clear.</p>
+<p>23. Low drifting (DR)</p>
+<p>This descriptor indicates that dust, sand or snow has been raised by the wind to a</p>
+<p>height of less than 2 m (the assumed eye level of the observer).</p>
+<p>24. Blowing (BL)</p>
+<p>This indicates that dust, sand or snow has been raised by the wind to a height</p>
+<p>greater than 2 m and that consequently horizontal visibility has been reduced.</p>
+<p>25. Shower(s) (SH)</p>
+<p id="c42">Precipitation, often short-lived and heavy, falling from convective clouds. A</p>
+<p>shower is characterized by the suddenness with which it starts and stops, and</p>
+<p>generally by large and rapid changes in precipitation intensity.</p>
+<p>26. Thunderstorm (TS)</p>
+<p>One or more sudden electrical discharges, manifested by a flash of light</p>
+<p>(lightning) and a sharp or rumbling sound (thunder). Thunderstorms are</p>
+<p>associated with convective clouds (cumulonimbus) and are usually accompanied</p>
+<p>by precipitation. The associated cumulonimbus has vertical updraughts that</p>
+<p>may reach 30 m s–1 in the more vigorous cells. Downdraughts also occur,</p>
+<p>especially in the later stages of development, with speeds of about half of those</p>
+<p>for updraughts.</p>
+<p>27. Freezing (supercooled) (FZ)</p>
+<p>This descriptor is used only with fog (FG), drizzle (DZ) or rain (RA) when the</p>
+<p>waterdrop temperature is below 0 °C (supercooled). On impact with the ground</p>
+<p>or an aircraft, the drops of supercooled water form a mixture of water and clear</p>
+<p>ice. Freezing fog normally deposits rime, rarely clear ice.</p>
+<p>28. Precipitation intensity criteria</p>
+<p>(a) Drizzle Light:  rate &lt; 0.1 mm h–1</p>
+<p>Moderate: 0.1 ≤ rate &lt; 0.5 mm h–1</p>
+<p>Heavy: rate ≥ 0.5 mm h–1</p>
+<p>(b) Rain Light:  rate &lt; 2.5 mm h–1</p>
+<p>(including Moderate:  2.5 ≤ rate &lt; 10.0 mm h–1</p>
+<p>showers) Heavy: rate ≥ 10.0 mm h–1</p>
+<p>(c) Snow Light:   rate &lt; 1.0 mm h–1 (water equivalent)</p>
+<p>(including Moderate:  1.0 ≤ rate &lt; 5.0 mm h–1 (water equivalent)</p>
+<p>showers) Heavy:  rate ≥ 5.0 mm h–1 (water equivalent)</p>
+<p>Note:  Great care must be taken when interpreting observations of light snow without</p>
+<p id="c43">understanding the potential hazard to aircraft operations. The accumulation of snow on</p>
+<p>aircraft prior to take-off represents a significant safety hazard because of possible loss of</p>
+<p>lift and increasing drag during take-off. The accumulation of as little as 0.8 mm of snow</p>
+<p>or ice on the upper wing surface can result in a loss of lift and therefore endanger flight</p>
+<p>safety.</p>
+<p>Replaced  when</p>
+<p>automatic system is</p>
+<p>used  and no clouddetected by:COR   CCCC   YYGGgg</p>
+<p>Z                       dddﬀGf mfm VVVV RDRDR/VRVRVRVRi w&#x27;w&#x27;          N sNsNshshshs (cc)Ceiling And Visibility OK. Replaces  visibility RVR, present weather and cloud if:  (1) Visibility is 10 km or more; (2) No cumulonimbus cloud and no cloud</p>
+<p>below 1 500 m (5 000 ft) or below the highest minimum sector altitude, whichever is greater; and (3) No signiﬁcant present weather (see table w&#x27;w&#x27;)</p>
+<p>Cloud type — only  CB (cumulonimbus) or TCU (Towering CUmulus) indicated</p>
+<p>or /// if it cannot be observed by automatic system</p>
+<p>FEW – FEW         (1–2 oktas)</p>
+<p>Cloud amount:   SCT – SC aTtered  (3–4 oktas)</p>
+<p>BKN – B roKeN     (5–7 oktas)</p>
+<p>OVC  – OV erCast   (8 oktas)Height of base of clouds in units of 30 m (100 ft)</p>
+<p>Present weather (see table w&#x27;w&#x27;)</p>
+<p>RVR tendency indicator over past 10 min. U = upward; D = downward;</p>
+<p>N = no distinct change.  Omitted  if impossible to determine</p>
+<p>RVR (10-min mean) at the touchdown zone  P2000 = more</p>
+<p>than 2 000 m, M0050 = less than 50 m</p>
+<p>Runway designator – for parallel runways may have</p>
+<p>LL, L, C, R  or RR appended ( L = left; C=centre; R = right)</p>
+<p>Indicator of RVR</p>
+<p id="c44">Prevailing visibility in metres or lowest visibility if visibility is not thesame and ﬂuctuating and the prevailing visibility cannot be determined</p>
+<p>9999 = 10 km or more</p>
+<p>Wind speed units used</p>
+<p>Indicator of</p>
+<p>Gust – if necessaryMaximum wind speed (gust) – if necessary</p>
+<p>Mean wind speed (10-min mean or since discontinuity)</p>
+<p>Mean wind direction in degrees true rounded oﬀ</p>
+<p>to nearest 10° ( VRB  = VaRiaBle when ﬀ &lt; 3 kt)</p>
+<p>In individual messages, day of the month and time of observation in hours andminutes UTCFully automated observation indicator</p>
+<p>COR – Code word used as appropriateIndicator of UTC</p>
+<p>METAR  – Aviation routine weather report code name</p>
+<p>SPECI   – Aviation special weather report code nameMETAR</p>
+<p>or</p>
+<p>SPECIKT or</p>
+<p>MPSsee Table: Aerodrome Forecast  –</p>
+<p>TAF decode for deﬁnitionsA E R O D R O M E      W E A T H E R      R E P O R T      –      M E T A R      A N D      S P E C I      D E C O D E</p>
+<p>IDENTIFICATION GROUPS SURFACE WINDRUNWAY VISUAL</p>
+<p>RANGE (RVR)</p>
+<p>WHERE REQUIRED,</p>
+<p>UP TO FOUR</p>
+<p>ACTIVE RUNWAYSCLOUDSaTREND FORECAST</p>
+<p>TWO HOURS FROM TIME OF OBSERVATION</p>
+<p>TTGGgg VVVV      w’w’         N sNsNshshshs (cc) dddﬀGf mfmTTTTT</p>
+<p>or</p>
+<p>NOSIGWIND</p>
+<p>SHEARSTATE OF</p>
+<p>THE RUNWAYb</p>
+<p>Runway designator – for parallel runwaysmay have</p>
+<p>LL, L, C, R  or RR appended</p>
+<p>(L = left; C = centre; R = right)</p>
+<p>Indicator of REcent weatherREcent weather since previous report (intensity NOT to be reported)RUNWAY</p>
+<p>Wind Shear</p>
+<p>Indicator of QNH in hectopascals. If Q = A then QNH is in inchesQNH rounded down to the whole nearest hectopascal or to tenths and hundredths of an inch, depending on indicator</p>
+<p id="c45">Dewpoint temperature in whole degrees Celsius(if below 0 °C preceded by</p>
+<p>M)</p>
+<p>Temperature in whole degrees Celsius(if below 0 °C preceded by</p>
+<p>M) T&#x27;T&#x27;/T&#x27; dT&#x27;d      QPHPHPHPH    REw’w’      WS R DRDR              ( WTsTs/SS’)     ( WTsTs/HHsHsHs)    (D RDR/ERCReReRBRBR)  FORECAST</p>
+<p>WIND</p>
+<p>CHANGE</p>
+<p>INDICATORS</p>
+<p>CHANGE</p>
+<p>AND</p>
+<p>TIMEFORECAST CLOUDS</p>
+<p>OF OPERATIONAL</p>
+<p>SIGNIFICANCE OR</p>
+<p>VERTICAL VISIBILITY</p>
+<p>Replaced</p>
+<p>whensigniﬁcantweatherendsby:</p>
+<p>NSW</p>
+<p>Nil</p>
+<p>Signiﬁcant</p>
+<p>Weather</p>
+<p>Notes:</p>
+<p>1.The w&#x27;w&#x27; groups are constructed by considering columns 1 to 5 in the table above in sequence, that</p>
+<p>is, intensity, followed by description, followed by weather phenomena. An example could be: +SHRA</p>
+<p>(heavy shower(s) of rain).</p>
+<p>2.A precipitation combination has dominant type ﬁrst.</p>
+<p>3.DR (low drifting) less than 2 m above the ground, BL (blowing) 2 m or more above the ground.</p>
+<p>4.GR is used when hailstone diameter is 5 mm or more.  When less than 5 mm, GS is used.</p>
+<p>5.BR – visibility at least 1 000 m but not more than 5 000 m. FG – visibility less than 1 000 m.</p>
+<p>6.VC – between 8 and 16 km of the aerodrome reference point.INTENSITY OR</p>
+<p>PROXIMITYDESCRIPTOR OTHER PRECIPITATION OBSCURATIONWEATHER PHENOMENA QUALIFIERw&#x27;w&#x27; – SIGNIFICANT PRESENT, FORECAST AND RECENT WEATHERRECENT</p>
+<p>WEATHERSUPPLEMENTARY INFORMATION</p>
+<p>PRESENT</p>
+<p>WEATHERPRESSURE</p>
+<p>CAVOKPREVAILINGVISIBILITYFORECAST</p>
+<p>WEATHER</p>
+<p>FORECAST</p>
+<p>VISIBILITYTEMP .</p>
+<p>AND</p>
+<p>DEW-</p>
+<p>POINT</p>
+<p>00000 = calm</p>
+<p>AUTO</p>
+<p>NIL – Code word used as appropriateNIL</p>
+<p>Replaced</p>
+<p>when all</p>
+<p>runways areaﬀected by wind shear by:</p>
+<p>WS ALL RWYRMK</p>
+<p>NSC</p>
+<p>Nil Signiﬁcant Cloud</p>
+<p>dndndnVdxdxdx                V nVnVnVn NDV RDRDR /VRVRVRVRi VVhshshsReplaced  when</p>
+<p id="c46">there are signiﬁcantvariations in RVR bythe group below:Followed  when</p>
+<p>visibility is not thesame and minimumvisibility ≠ prevailing and visibility &lt; 1 500 mor visibility &lt; 50% ofprevailing by thegroup below:P99 KT (P49 MPS)mean ﬀ orf</p>
+<p>mfm = 100 KT</p>
+<p>(50 MPS) or more</p>
+<p>Followed  when</p>
+<p>there is a variationin wind directionof 60° or more butless than 180° andwind speed ≥ 3  KTby group below:Replaced  when sky</p>
+<p>is obscured andinformation on verticalvisibility is available bythe group below:</p>
+<p>RVR tendency indicator</p>
+<p>Indicator of RVRRVR in metres (1-min mean minimum value</p>
+<p>during last 10 min)</p>
+<p>Runway designator – for parallel runways may</p>
+<p>have LL, L, C, R  or RR</p>
+<p>Indicator of VariabilityLowest visibility</p>
+<p>Other extreme direction of wind(measured clockwise)</p>
+<p>Extreme direction of windAbbreviation for</p>
+<p>no directionalvariationsVertical visibility</p>
+<p>in units of 30 m(100 ft) /// =vertical visibilityunavailable</p>
+<p>Indicator of</p>
+<p>Vertical Visibility00000 = calm</p>
+<p>Followed by</p>
+<p>VnVnVnVnDv</p>
+<p>NSC</p>
+<p>NCDReplaced  when there</p>
+<p>are no such clouds, norestriction on verticalvisibility and</p>
+<p>CAVOK is</p>
+<p>not appropriate by:</p>
+<p>Nil Signiﬁcant Cloud</p>
+<p>No Cloud Detected April 2019</p>
+<p>a Clouds of operational signiﬁcance (i.e. below 1 500 m (5 000 ft) or below the highest minimum sector altitude, whichever is greater, and CB or TCU).</p>
+<p>b State of the runway to be provided by appropriate airport authority.KT or</p>
+<p>MPS</p>
+<p>Indicatorof</p>
+<p>Vertical</p>
+<p>VisibilityVerticalvisibility inunits of30 m (100 ft)Information included by national decision but not disseminated internationally</p>
+<p>Cloud type –</p>
+<p>only CB</p>
+<p>Forecast cloudamountForecast height</p>
+<p>of base of cloud</p>
+<p id="c47">Forecast signiﬁcant</p>
+<p>weather (see table)</p>
+<p>Forecast prevailing</p>
+<p>visibility in metres 9999 = 10 km or more</p>
+<p>Wind speed units</p>
+<p>Forecast maximum wind speed (gust)</p>
+<p>Signiﬁcant wave height, in decimetres</p>
+<p>H indicator of the signiﬁcant wave height</p>
+<p>Group indicator letterTemperature in whole degrees CelsiusIndicator of</p>
+<p>Gust</p>
+<p>Forecast mean wind speed</p>
+<p>Forecast mean wind direction in degrees</p>
+<p>true, rounded to nearest 10°(</p>
+<p>VRB = V aRiaBle)</p>
+<p>Associated time group in hours and minutes UTC</p>
+<p>S&#x27; state of the water surface (see code S&#x27;)</p>
+<p>S indicator of state of the sea</p>
+<p>Temperature in whole degrees Celsius</p>
+<p>Group indicator letterFriction coeﬃcient/braking action</p>
+<p>Depth of deposit</p>
+<p>Extent of runway contamination</p>
+<p>Indicator of runwayRunway depositsCan be AT or FM = F romM or TL = T ilL</p>
+<p>BECMG = BEC oMinG or</p>
+<p>TEMPO = TEMPO rary</p>
+<p>NOSIG  = NO SIG niﬁcant change</p>
+<p>Lowest visibilityGeneral direction of lowest</p>
+<p>visibility or most operationally signiﬁcant if minimum visibility observed in more than one direction</p>
+<p>Note:</p>
+<p>25 m STEP if RVR &lt; 400 m</p>
+<p>50 m STEP if 400 ≤ RVR &lt; 800 m100 m STEP if RVR ≥ 800  m</p>
+<p>ICAO four-letter location indicator</p>
+<p>Replaced when skyexpected to beobscured  andvertical visibilityforecasts areundertaken by:</p>
+<p>Replaced  when no CB</p>
+<p>and no cloud below1 500 m (5 000 ft) orhighest minimumsector altitude,whichever is greater,are forecast and</p>
+<p>CAVOK  is not</p>
+<p>appropriate by:VVhshshs</p>
+<p>S&#x27; STATE OF THE SEA</p>
+<p>Descriptiveterms</p>
+<p>Calm (glassy)</p>
+<p>Calm (rippled)Smooth (wavelets)SlightModerateRoughVery roughHighVery highPhenomenalCode</p>
+<p>ﬁgure</p>
+<p>– Light</p>
+<p>Moderate</p>
+<p>(no qualiﬁer)</p>
+<p>+ Heavy or well-developed inthe caseof</p>
+<p>PO and  FC</p>
+<p id="c48">VC In the vicinityMI Shallow</p>
+<p>BC PatchesPR Partial</p>
+<p>(covering part of</p>
+<p>the aerodrome)</p>
+<p>DR Low driftingBL BlowingSH Shower(s)TS ThunderstormFZ Freezing</p>
+<p>(supercooled)DZ DrizzleRA RainSN SnowSG Snow grainsPL Ice pelletsGR HailGS Small hail</p>
+<p>and/or</p>
+<p>snow pellets</p>
+<p>UP Unknown</p>
+<p>precipitationBR Mist</p>
+<p>FG FogFU SmokeVA Volcanic ash</p>
+<p>DU Widespread</p>
+<p>dust</p>
+<p>SA SandHZ HazePO Dust/sand</p>
+<p>whirls (dust</p>
+<p>devils)</p>
+<p>SQ Squalls</p>
+<p>FC Funnel</p>
+<p>cloud(s)</p>
+<p>(tornado or waterspout)</p>
+<p>SS Sandstorm</p>
+<p>DS DuststormSEA-SURFACE TEMPERATURE</p>
+<p>STATE OF  ORSIGNIFICANT</p>
+<p>THE SEA WAVE HEIGHT</p>
+<p>1 2 5 3 4Abbreviated decode of METAR and SPECI</p>
+<p>For details of codes, see</p>
+<p>Manual on Codes,</p>
+<p>(WMO–No. 306).</p>
+<p>Replaced  when sky</p>
+<p>is expected to be</p>
+<p>obscured and</p>
+<p>information on vertical</p>
+<p>visibility is available by:</p>
+<p>VVhshshsVertical visibility in</p>
+<p>units of 30 m (100 ft)</p>
+<p>Indicator of</p>
+<p>Vertical VisibilityReplaced  when</p>
+<p>signiﬁcant</p>
+<p>weather pheno-</p>
+<p>menon forecast</p>
+<p>to end by:</p>
+<p>NSW</p>
+<p>Replaced  when no CB and no cloud below</p>
+<p>1 500 m (5 000 ft) or below the highest</p>
+<p>minimum sector altitude, whichever is</p>
+<p>greater, is forecast and CAVOK  is</p>
+<p>not appropriate by:</p>
+<p>NSC</p>
+<p>Nil Signiﬁcant Cloud</p>
+<p>Nil Signiﬁcant</p>
+<p>WeatherFORECAST CLOUD</p>
+<p>AMOUNT</p>
+<p>AND HEIGHTa FORECAST</p>
+<p>SURFACE WINDIDENTIFICATION GROUPS</p>
+<p>Probability is used to indicate the</p>
+<p>probability of occurence of:</p>
+<p>(a) an alternative element or</p>
+<p>elements</p>
+<p>(b) temporary ﬂuctuationsPROBABILITY        DATE AND TIME                   CHANGE                 DATE AND TIME</p>
+<p>PROB C2C2           YYGG/Y eYeGeGe                      TTTTT                    YYGG/Y eYeGeGeSIGNIFICANT CHANGES IN FORECAST</p>
+<p>CONDITIONS INDICATED BY: BY REGIONAL</p>
+<p>AGREEMENT</p>
+<p>FORECAST</p>
+<p id="c49">TEMPERATUREA E R O D R O M E          F O R E C A S T       –       T A F          D E C O D ECeiling And Visibility OK. Replaces  visibility, weather and cloud if:</p>
+<p>(1) Visibility is forecast to be 10 km or more</p>
+<p>(2) No cumulonimbus cloud and no other cloud forecast below 1 500 m  (5 000 ft)</p>
+<p>or below the highest minimum sector altitude, whichever is greater, and</p>
+<p>(3) No signiﬁcant weather forecast (see Table: Aerodrome Weather Report –</p>
+<p>METAR and SPECI decode)</p>
+<p>Cloud type — only CB (cumulonimbus) is indicatedTX, TN  Indicators of maximum and minimum forecast temperatures, respectivelyYYTFTF Date and forecast temperatures at GFGF</p>
+<p>Temperatures below 0 °C preceded by MYeYeGFGF Date and time UTC to which forecast temperature refersZ Indicator of UTC</p>
+<p>PROB abilityOnly 30 or 40 used, indicating</p>
+<p>30% or 40%Beginning day and time (UTC) YYGG</p>
+<p>and end day and time (UTC)</p>
+<p>YeYeGeGe of forecast periodTEMPO – TEMPO rary ﬂuctuations of less than one hour</p>
+<p>and in aggregate less than half the period</p>
+<p>indicated by YYGG/YeYeGeGeType of signiﬁcant changes:</p>
+<p>BECMG – BEC oMinG, used where changes are expected</p>
+<p>to reach or pass through speciﬁed values at</p>
+<p>a regular or irregular rateBeginning day and time (UTC) YYGG and end day and</p>
+<p>time (UTC) YeYeGeGe of forecast periodCCCC   YYGGgg Z    NIL   Y1Y1G1G1/Y2Y2G2G2  CNL          dddﬀGf mfm                        VVVV            w&#x27;w&#x27;             N sNsNshshshs (cc)KT or</p>
+<p>MPSTAF or</p>
+<p>TAF AMD  or</p>
+<p>TAF CORFORECAST</p>
+<p>SIGNIFICANT</p>
+<p>WEATHER</p>
+<p>FORECAST</p>
+<p>PREVAILING</p>
+<p>VISIBILITYAbbreviated decode of TAF</p>
+<p>For details of codes, see</p>
+<p>Manual on Codes,</p>
+<p>(WMO–No. 306).00000 = calm</p>
+<p>P99 KT</p>
+<p id="c50">(P49 MPS)</p>
+<p>mean</p>
+<p>fmfm =</p>
+<p>100 KT</p>
+<p>(50 MPS)</p>
+<p>or more(TXYYT FTF /YeYeGFGFZ</p>
+<p>TNYYT FTF /YeYeGFGFZ)</p>
+<p>a Clouds of operational signiﬁcance (i.e. below 1 500 m (5 000 ft) or below highest minimum</p>
+<p>sector altitude, whichever is greater, and CB or TCU).</p>
+<p>Note: Meteorological oﬃces to issue 30-h TAFs  are determined by regional air navigation agreement.April 2019OR</p>
+<p>If one set of weather conditions is expected to change more or less completely</p>
+<p>to a diﬀerent set of conditions, thus indicating the beginning of another</p>
+<p>self-contained part of the forecast, by:</p>
+<p>TTYYGGgg</p>
+<p>This takes the form FMYYGGgg where FM is the abbreviation for FroM and</p>
+<p>YYGGgg is the time in hours and minutes UTC. All forecast conditions before this</p>
+<p>group are superseded by conditions indicated after the group.</p>
+<p>Height of base of cloud in units of 30 m (100 ft)</p>
+<p>FEW – FEW  (1–2 oktas)</p>
+<p>Cloud amount: SCT – SC aTtered (3–4 oktas)</p>
+<p>BKN – B roKeN (5–7 oktas)</p>
+<p>OVC – OV erCast  (8 oktas)</p>
+<p>Prevailing visibility in metres</p>
+<p>9999 = 10 km or moreForecast signiﬁcant weather</p>
+<p>(see table w&#x27;w&#x27; for METAR/SPECI  decode)</p>
+<p>Mean wind direction in degrees true rounded</p>
+<p>to nearest 10°  ( VRB = VaRiaBle when ﬀ &lt; 3 kt)</p>
+<p>Period of validity, beginning on Y1Y1 day of month at G1G1</p>
+<p>(UTC) and ending on Y2Y2 day of month at  G2G2 (UTC)</p>
+<p>Code names for aerodrome forecast,</p>
+<p>amended aerodrome forecast and</p>
+<p>corrected  aerodrome forecast, respectivelyICAO four-letter location indicatorDate and time of issue of forecast in UTCIndicator of UTCIndicator of cancelled forecast</p>
+<p id="c51">Indicator of missing forecastMean wind speedIndicator of GustMaximum wind speed (gust)Wind speed units usedCAVOK</p>
+<p>WMO-No. 782WMO-No. 782For more information, please contact:</p>
+<p>World Meteorological Organization</p>
+<p>7 bis , avenue de la Paix – P.O. Box 2300 – CH 1211 Geneva 2 – Switzerland</p>
+<p>Strategic Communications Office</p>
+<p>Tel.: +41 (0) 22 730 87 40/83 14 – Fax: +41 (0) 22 730 80 27</p>
+<p>Email: communications@wmo.int</p>
+<p>public.wmo.int</p>
+<p>Aerodrome Reports and Forecasts – A Users’ Handbook to the CodesAerodrome</p>
+<p>Reports</p>
+<p>and Forecasts</p>
+<p>A Users’ Handbook to the CodesJN 20644</p>
+<p>WEATHER  CLIMATE  WATER</p>

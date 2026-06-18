@@ -1,0 +1,613 @@
+<p id="c0">Unified Surface Analysis Manual</p>
+<p>Weather Prediction Center</p>
+<p>Ocean Prediction Center</p>
+<p>National Hurricane  Center</p>
+<p>Honolulu Forecast Office</p>
+<p>November 21, 2013</p>
+<p>Table of Contents</p>
+<p>Chapter 1:  Surface Analysis –  Its Hi story at the Analysis Centers…… ……….3</p>
+<p>Chapter 2 : Datasets available for c reation of the Unified Analysis………...… ..5</p>
+<p>Chapter 3: The Unified Surface Analysis  and related features. ……… .……….19</p>
+<p>Chapter 4:  Creation/Merging of the Unified Surface Analysis…………. ……..24</p>
+<p>Chapter 5:  Bibliography …………………………………………………. ……. 30</p>
+<p>Appendix A:   Unified Graphics Legend showing Ocean  Center symbols. ….…33</p>
+<p>Chapter 1:</p>
+<p>Surface Analysis  – Its History at the Analysis Centers</p>
+<p>1.  INTRODUCTION</p>
+<p>Since 1942, surface analyses produced by several different offices within the U.S.</p>
+<p>Weather Bureau (USWB) and  the National Oceanic and Atmospheric Administration’s</p>
+<p>(NOAA’s) National Weather Service (NWS) were generally based on the Norwegian Cyclone</p>
+<p>Model (Bjerknes 1919) over land, and in recent decades , the Shapiro -Keyser Model over the</p>
+<p>mid-latitudes of the ocea n.  The graphic below shows a typical evolution according to both</p>
+<p>models of cyclone development.</p>
+<p>Conceptual models of cyclone evolution showing lower -tropospheric (e.g., 850 -hPa) geopotential height and</p>
+<p>fronts (top), and lower -tropospheric potential tem perature (bottom). (a) Norwegian cyclone model: (I)</p>
+<p>incipient frontal cyclone, (II) and (III) narrowing warm sector, (IV) occlusion; (b) Shapiro –Keyser cyclone</p>
+<p>model: (I) incipient frontal cyclone, (II) frontal fracture, (III) frontal T -bone and bent -back front, (IV)</p>
+<p>frontal T -bone and warm seclusion. Panel (b) is adapted from Shapiro and Keyser (1990) , their FIG. 10.27</p>
+<p>) to enhance the zonal elongation of the cyclone and fronts and to reflect the continued existence of the</p>
+<p id="c1">frontal T -bone in stage IV. The stages in the respective cyclone evolutions are separated b y approximately 6–</p>
+<p>24 h and the frontal symbols are conventional. The characteristic scale of the cyclones based on the distance</p>
+<p>from the geopotential height minimum, denoted by L, to the outermost geopotential height contour in stage</p>
+<p>IV is 1000 km.</p>
+<p>The N ational Meteorological Center (NMC)  created Northern Hemisphere Surface Analyses</p>
+<p>from 19 54 to 1996 from the equator to the North Pole, including adjacent ocean areas .  The</p>
+<p>Weather Prediction Center (WPC) and its predecessors  have created  North  American  Surface</p>
+<p>Analyses since 1942.  The Ocean Prediction C enter (OPC) and its predecessors have  created</p>
+<p>surface analyses since the 1970s  for the open waters of the Atlantic and Pacific Oceans, north of</p>
+<p>18 degrees north.  The Miami Weather Forecast Office and Nation al Hurricane Center ( NHC)</p>
+<p>composed surface analyses starting in 1942 for the waters of the Atlantic and much of the Pacific</p>
+<p>east of Hawaii between the equator and the  latitude of 500 N.  The Weather Forecast Office</p>
+<p>Honolulu (HFO) performed surface analyses  for the waters of the Pacific Ocean across the</p>
+<p>tropical, subtropical, and mid- latitudes sections of the northern Pacific south of 500 N and the</p>
+<p>tropical and subtropical sections of the southern Pacific north of 300 S.  The Anchorage Forecast</p>
+<p>Office (ANC) drew surface analyses for the northeast Pacific, eastern Asia, and the state of</p>
+<p>Alaska for many years.  This led to a significant duplication of effort over portions of the</p>
+<p id="c2">Northern Hemisphere.  Due to this redundancy, it was decided in 2001 that the various analysis centers would limit their analyses to their areas of responsibilities (AOR) and would combine the</p>
+<p>analyses from the other centers to create one seamless surface map for much of the Northern</p>
+<p>Hemisphere.  This collaboration was intended to save e ach center time and concentrate more</p>
+<p>fully on their regions of expertise.  By 2002, this plan went into place between NHC, OPC, and</p>
+<p>WPC, with HFO joining the collaboration effort in 2003.</p>
+<p>The W PC contributes  a surface analysis covering the area from rou ghly 3 0°N to  85°N</p>
+<p>latitude, including much of mainland North America, the  Canadian Archipelago, and the Arctic</p>
+<p>Ocean . The Tropical Analysis and Forecast Branch (TAFB) , part of the NH C, produces the</p>
+<p>surface analysis portion covering the tropical and subtropical regions  from the equator  northward</p>
+<p>to 31°N (except 30°N in the Pacific Ocean) from  20°E westward to 140°W , including  overland</p>
+<p>areas of Florida, Mexico, South America, Central America, Africa, and the Caribbean .  The HFO</p>
+<p>generates analyses between 140° W westward to 130°E in the northern Pacific south of 30°N.</p>
+<p>OPC produces a pair of analyses for the Atlantic and Pacific oceans that span from NHC’s  and</p>
+<p>HFO’s boundaries northward to Eastern Asia, the Aleutians, Greenland, Western Europe, and the</p>
+<p>Mediterranean Sea. The two OPC analyses are split at the 105</p>
+<p>0W longitude between their</p>
+<p id="c3">Atlantic and Pacific portions.  All surface analyses are produced using the nAWIPS/Nmap2 system.  The analyses include all synoptic -scale systems and isobars every 4 millibars</p>
+<p>(mb)/hectopascals  (hPa) , while mesoscale features are depicted in the data -rich contiguous</p>
+<p>United States (CONUS) and in other locations where data permits.  Intermediate isobars (every</p>
+<p>1-2 millibars /hectopascals ) may be included in area s of weak pressure gra dient in W PC, HFO,</p>
+<p>and NHC analyses.  The usage of intermediate isobars is left to the analyst’s discretion based on</p>
+<p>the pattern and value added to the analysis; aesthetics also may play a role.  All surface analyses</p>
+<p>are saved, exchanged, and disseminated using a vector graphic format (VGF).   The NWS unified</p>
+<p>surface analysis involves e xtensive collaboration between OPC, NHC , WPC, and HFO</p>
+<p>(collectively referred to as the analysis centers.)</p>
+<p>A good surface analysis incorporates a variety of data sources to accurately depict the</p>
+<p>physical processes occurring in the atmosphere at analysis time.  Examples of the data sources</p>
+<p>include surface observations (including ship, fixed buoy and C -MAN, as well as those over</p>
+<p>land), satellite data, ocean surface winds as measured by scatterometer ( ASCAT/OSCAT ), and</p>
+<p>model analysis fields.  Surface analyses are subjective in nature, and even skilled analysts can</p>
+<p>show marked differences in their analyses (Uccellini et. al 1992).  T hrough collaboration</p>
+<p>amongst the analysis center s, consistency with past analyses; and a review of the atmospheric</p>
+<p id="c4">models initializations, the Unified surface analyses provide NOAA’s National Weather Service</p>
+<p>(NWS) customers and users with the best consensus and consistent “one NWS” surface analyses.</p>
+<p>Chapter 2 :</p>
+<p>Datasets available for creation of the Unified Analysis</p>
+<p>1.  COMMON DATASETS AVAILABLE TO SURFACE ANALYSTS</p>
+<p>A.  SURFACE OBSERVATION REPORTS</p>
+<p>Surface observations are key to generating good surface analyses, although good surface</p>
+<p>analyses incorp orate a variety of data sources to accurately depict the physical processes</p>
+<p>occurring in the atmosphere at that given time.   The different analysis centers have varying levels</p>
+<p>of observations available with varying levels of timeliness after the sy noptic hour.  For example,</p>
+<p>the W PC has the densest dataset, with over 2000 METARs for the United States alone and an</p>
+<p>additional 50,000 sites available through the U.S. mesonet at the Global Systems Division</p>
+<p>(GSD), formerly known a s the Forecast Systems Lab (FSL ).  Many of the METARs are in by</p>
+<p>H+0:05, with the military sites and Canadian sites becoming available by H+0:10 .  Synoptic</p>
+<p>observations and buoy reports from the Great Lakes, Atlantic, and Pacific coastlines can lag, but</p>
+<p>they are normally in by H+0:20.  The other centers are not as fortunate.  Ship observations and</p>
+<p>data buoys are a primary data source for OPC, NHC, and HFO, with a relatively complete suite</p>
+<p>of ship observations not available until between H+1:00 and H+1:30.  Figure 1 is an example of</p>
+<p>a station  plot with  legends to decode present weather, wind direction and speed, press ure</p>
+<p id="c5">tendency and sky cover .  Note:  Sea- level pressure is plotted in tenths of mb/hPa , with the leading</p>
+<p>10 or 9 omitted. For reference, 1013 mb is equivalent to 29.92 inches of mer cury. Below are</p>
+<p>some sample conversions between plotted and complete sea -level pressure values:</p>
+<p>410: 1041.0 mb</p>
+<p>103: 1010.3 mb</p>
+<p>987: 998.7 mb</p>
+<p>872: 987.2 mb</p>
+<p>Figure 1.   Sample Station Plot and legends to decode present weather, pressure tendency,  wind</p>
+<p>direction and speed and skycover .</p>
+<p>There are three basic surface observation sets used at  the Analysis Centers:  METAR</p>
+<p>(from United States and Mexico land stations) observations, SHIP (which includes ships and</p>
+<p>buoys) observations, and SYNOP (international observations coded every 3 -6 hours).  For</p>
+<p>placing a surface front, cyclonic wind shear and the presence of a surface trough is essential. Placement of a front along a ridge line is considered impossible per the Margules equation</p>
+<p>(Byers 1959).  According to Byers, steep frontal slopes are normally favored by a large wind</p>
+<p>difference and high lat itude, which would imply weaker/broader discontinuities as one works</p>
+<p>towards the equator .  This can be seen in real -time, particularly over the relatively warm tropical</p>
+<p>oceans areas such as the subtropical Atlantic from the Gulf Stream southward, Gulf of M exico,</p>
+<p>and in the subtropical Pacific.</p>
+<p>Fronts are defined to be at the leading edge of temperature/dew point gradients, so using</p>
+<p>tools based on the current observations such as 24 -hour temperature change or 24- hour dew point</p>
+<p id="c6">change, with isotherms (line s of equal temperature) and isodrosotherms (lines of equal dewpoint)</p>
+<p>included, can be of great assistance.  Over the lower 48 (contiguous United States, or CONUS), GEMPAK scripts can be run by the analyst using the RUC initialization, and comparing it to t he</p>
+<p>initialization from 24 hours prior, to get 24 hour changes in temperature, dew point, and pressure in real -time.</p>
+<p>Pressure change, during a 3 hour period as coded in the 5 group in METAR observations,</p>
+<p>is a useful tool in defining cold/occluded front pas sage, as they tend to lie at the leading edge of</p>
+<p>relative rise/ fall couplets.  This can be seen in three patterns:</p>
+<p>(1) Falling, then rising</p>
+<p>(2) Falling, then falling less rapidly</p>
+<p>(3) Rising, then rising more rapidly</p>
+<p>Arctic/secondary fronts over the continent tend t o display pattern (3), while most other</p>
+<p>cold fronts show pattern (1).  If during times of diurnal pressure minimum, such as 4 am/pm local time, pattern (2) will reveal itself.  Over the continent, where observation coverage is</p>
+<p>greater, locally strong press ure rises will be seen behind squall lines and outflow boundaries.  It</p>
+<p>is easy to mistake an outflow boundary for a frontal zone.  However, a large area of relatively similar rises and falls usually leads the analyst in the right direction for frontal plac ement.  Over</p>
+<p>the oceans, ships are usually moving, and three -hour pressure changes can be a less reliable</p>
+<p>indicator of frontal passage.</p>
+<p>Warm fronts are broader/less vertical boundaries and tend to show weaker signatures in</p>
+<p id="c7">the wind, temperature, and dew point pattern.  However, a trough will usually help reveal a warm</p>
+<p>front’s position, and an area of strong pressure falls will usually be seen near its location.  Also,</p>
+<p>stratiform rain, depicted by light rain and drizzle, tends to lie on the pole ward side of warm/</p>
+<p>stationary fronts, as well as long -lived outflow boundaries.</p>
+<p>Tropical waves usually slope eastward with height and are associated with a maximum of</p>
+<p>low-level wind turning and convergence.  Figure 2 shows their characteristic pattern in the low -</p>
+<p>level pressure and wind field (Riehl 1945.)</p>
+<p>Figure 2.  Characteristic pattern in the low -level pressure and wind field for tropical waves.</p>
+<p>2.  UPPER -AIR SOUNDINGS/CROSS SECTIONS</p>
+<p>Looking for wind veering/backing with height can indicate warm/cold advection and</p>
+<p>indicate frontal passage.  Soundings plotted in AWIPS can show temperature advection at each level over the past 24 hours, confirming cold frontal passage.  Significant warm advection can</p>
+<p>indicate warm frontal passage.  Par allel winds with height indicate proximity to a boundary,</p>
+<p>usually on the equatorward/warm side.  In an upper air cross -section, fronts slope back into the</p>
+<p>cold air  mass and lie at the leading edge of packing in the potential temperature surfaces.</p>
+<p>Tropical  waves tend to slope back to the east with height, due to southwest winds aloft existing</p>
+<p>east of the tropical upper tropospheric trough (TUTT), a climatological feature of the central</p>
+<p>Atlantic and Caribbean Sea, as well as the central Pacific.  Anomalies i n the wind from east -to-</p>
+<p id="c8">west (u -component of the wind vector) or from north- to-south (v- component of the wind vector)</p>
+<p>can be used to help find tropical waves in sounding time series from tropical locales.  Figure 3 is</p>
+<p>an example from the middle of July 1995, showing a trio of waves emerging off the coast of west</p>
+<p>Africa.</p>
+<p>Figure 3.   An example from mid -July 1995, showing a trio of waves emerging off the coast of west Africa.</p>
+<p>Whether it is from a model- derived field or from a s kew-T log -P diagram from an individual</p>
+<p>upper air site, a more in -depth understanding of the frontal situation can be gleaned from looking</p>
+<p>at information aloft.  AWIPS software allows for cross -sections that can show frontal slope and</p>
+<p>where it intersects th e surface in the theta (potential temperature) or theta -E fields.  One must be</p>
+<p>careful in using individual upper air sites well back into the cold sector because topography can</p>
+<p>interfere with frontal progression downstream.  Figure 4 is an example of a cro ss section that can</p>
+<p>be generated on the AWIPS software at the various analysis centers for use in a real -time surface</p>
+<p>analysis.</p>
+<p>Figure 4.   An example of a cross section which can be generated on AWIPS at the various</p>
+<p>analysts centers for use in real -time surface analyses.  The position of the front is shown.</p>
+<p>3.  SATELLITE IMAGERY</p>
+<p>Cold fronts usually are located at the back edge of low cloud lines at higher latitudes for</p>
+<p>two reasons.  The first is due to strong westerly winds aloft near the frontal wave/point of</p>
+<p>occlusion, which shift the front aloft ahead of the main surface boundary (Bader et. al. 1995).</p>
+<p id="c9">The second is due to moisture overriding the surface boundary near its tail end which forces most</p>
+<p>of the cloudiness to its poleward side.  Frontal r opes are especially useful when seen on visible</p>
+<p>imagery, but one must be careful not to confuse a frontal rope for an arc cloud, otherwise known as an outflow boundary.  On infrared imagery, in the absence of clouds, the raw density</p>
+<p>discontinuity can be se en easily as a gradient in the shading (or color scale if enhanced.)</p>
+<p>Normally, drawing a frontal zone poleward of the jet (inferred as the northern edge of a streak of cirrus clouds) is to be avoided, to maintain proper three -dimensional structure with he ight.</p>
+<p>Exceptions are seen for features undergoing frontolysis  (weakening) , regions where strong winds</p>
+<p>aloft near a jet streak force the upper portion of the frontal zone past the surface front in</p>
+<p>question, and areas of significant terrain can hold up the frontal progression, such as western</p>
+<p>North America in the vicinity of the Continental Divide.  Used in concert with other tools,</p>
+<p>satellite imagery can be quite helpful.</p>
+<p>Tropical waves tend to slope to the east with height .  When the wind speeds and</p>
+<p>direct ions are relatively constant with height then the convection is mostly center on the position</p>
+<p>of the wave.  When easterly winds increase with height, most of the convection is to the west of</p>
+<p>the wave.  When there are west to southwesterly winds aloft, most  of the convection shifts to the</p>
+<p>east of the wave (Figure 5) .</p>
+<p>Figure 5.   An idealized portrait of a tropical wave in relation to its thunderstorm activity under</p>
+<p id="c10">different shear conditions.</p>
+<p>A. INFRARED SATELLITE IMAGERY</p>
+<p>Infrared satellite ima gery shows areas of temperature con trast quite well day or night,</p>
+<p>particularly over land masses, which cannot be caught by visible imagery.  Figure 6 below is an</p>
+<p>example of a complex analysis across the s outhern Plains, where a cold front and a dryline wer e</p>
+<p>clearly shown in infrared imagery.  In this daytime case, the warmer temperatures are shown by an increasingly purple hue.  Surface observations are also shown for comparison.</p>
+<p>Figure 6. Surface analysis over the Southern Plains.</p>
+<p>Figure 7 is an exam ple from the Pacific Ocean, using a GOES -10 infrared image of a Pacific</p>
+<p>instant occlusion.  GFS surface pressure field is in yellow while 1000mb- 850mb thickness is in</p>
+<p>dashed green contours.  Approximate locations of occluded, cold, warm, and developing col d</p>
+<p>(blue dashed) fronts are shown.</p>
+<p>Figure 7.  A GOES -10 infrared image of a Pacific instant occlusion.</p>
+<p>B. VISIBLE SATELLITE IMAGERY</p>
+<p>Figure 8 is an example of a case where visible imagery was quite helpful over the</p>
+<p>subtropical Pacific Ocean, with th e surface observations included for comparison.  Frontal ropes,</p>
+<p>such as the one seen below northwest of Hawaii, are extremely helpful in determining frontal placement, both over land and over sea.</p>
+<p>Figure 8.  GOES visible imagery depicting a frontal rope  over the Central Pacific Ocean.</p>
+<p>Satellite imagery -based Hovmoeller diagrams are quite useful at showing day -to-day</p>
+<p>shifts in the position of tropical waves in the deep tropics.  Figure 9 is an example from August</p>
+<p id="c11">1999, showing the tropical waves associa ted with the formation of Cindy, Dennis, and Emily.</p>
+<p>Figure 9.  Satellite imagery -based Hovmoeller diagrams showing day -to-day shifts in the</p>
+<p>position of tropical waves in the deep tropics from August 1999, showing the tropica l waves</p>
+<p>associated with the formation of Cindy, Dennis, and Emily.</p>
+<p>C.  A SCAT /OSCAT</p>
+<p>When regular surface observations are not available from land or sea, remote sensing can</p>
+<p>yield additional information.  ASCAT/OSCAT  wind vectors are derived via satellite, covering 5 4</p>
+<p>percent and 90 percent  of the world’s oceans per day , respectively .  Despite this high resolution</p>
+<p>data, there are drawbacks.  The satellite that derives this  information is a polar orbiting platform,</p>
+<p>meaning it only produces two useable wind s waths per day, which can be fairly dated by the time</p>
+<p>of the surface analysis.  Also, there are gaps between each pass.  Sometimes these gaps are</p>
+<p>directly over the area of interest, whether it is an occluded cyclone, a frontal boundary, or a</p>
+<p>tropical cyclon e.  Figure 10 is an example of an OSCAT  pass over the Mid- Latitudes  offshore</p>
+<p>Atlantic Canada, showing a couple of these gaps.</p>
+<p>Figure 10:  2 5 km OSCAT  pass from 0530Z, 22  February 2012, with wind speeds at gale (yellow), storm</p>
+<p>(brown), and hurricane forc e (red).  Occluded front (purple) and cold front (blue) are shown.</p>
+<p>Satellite -derived winds give you only part of the picture.  When used in coordination with</p>
+<p>surface observations and geostationary satellite imagery they can be very helpful.  Increases in</p>
+<p id="c12">the wind field are seen both poleward of occlusions and warm fronts, as well as behind cold</p>
+<p>fronts.  Increases in the wind pattern show pressure gradient, and indirectly indicate the presence</p>
+<p>of surface troughs.</p>
+<p>4.  RADAR IMAGERY</p>
+<p>Similar to satellite, the appearance of thin discontinuities, such as fine lines, can help in</p>
+<p>the placement of frontal zones and outflow boundaries, which can be seen when the WSR -88D</p>
+<p>radars are in clear air mode.  Linear convection can help define cold fronts, while broad area s of</p>
+<p>light rain are usually seen poleward of a warm front.  Squall lines are in exception, as they</p>
+<p>usually form along fronts and propagate eastward into the warm sector.  Used in concert with</p>
+<p>other tools, radar imagery can be quite helpful when available.  For large areas of the Atlantic,</p>
+<p>Pacific, and central portions of the Gulf of Mexico, radar data are not available.</p>
+<p>5.  MODEL -DERIVED FIELDS</p>
+<p>Model derived fields, such as 1000- 850 hPa thickness, 1000- 500 hPa thickness, and 850-</p>
+<p>700 hPa thickness, can be  quite useful in finding features, especially in areas with few</p>
+<p>observations.  Using the leading edge of the thickness gradient helps determine placement of</p>
+<p>warm/stationary/cold fronts, while thickness ridges indicate occluded fronts and lee troughs</p>
+<p>Bounda ry layer moisture convergence is also quite helpful, but there are places where both can</p>
+<p>lead analysts astray.  Thickness gradients appear at the edge of thermal circulations over the Sonoran Desert, which does not automatically indicate a frontal zone.  P re-frontal onshore winds</p>
+<p id="c13">off the cold eastern Pacific Ocean can weaken thickness gradients as cold fronts approach from the west.  The presence of Hudson Bay, the Great Lakes, as well as the Gulf Stream/loop current</p>
+<p>can also contort the thickness pattern m ost months of the year and mask the position of frontal</p>
+<p>zones in their vicinity.  Lee troughs can rob the boundary layer moisture convergence on portions of frontal zones to their north and northwest.  Using derived fields without corroboration from</p>
+<p>other tools/fields can create mistakes on surface analyses, and are not used on their own.</p>
+<p>A.  LOW LEVEL THICKNESS PATTERN</p>
+<p>Use of the 1000- 850 hPa thickness pattern can be helpful in placing frontal zones over</p>
+<p>bodies of water as well as flat terrain, with fro nts placed on the leading edge of the packing.  The</p>
+<p>western sections of North America are an exception (generally west of the 105</p>
+<p>th meridian),</p>
+<p>where due to the height of the terrain 850- 700 hPa thickness patterns are used to help place</p>
+<p>fronts.  Most derive d fields have a flaw and the thickness pattern is no exception.  Areas of</p>
+<p>thickness gradient will be enhanced near natural temperature discontinuities, such as the loop</p>
+<p>current in the Gulf of Mexico, the Gulf Stream, and in the vicinity of the Great Lakes and</p>
+<p>Hudson Bay in Canada.  Thermal circulations in the Sonoran Desert and over the Mexican Plateau, especially in summer, also tend to be surrounded by numerous thickness lines which</p>
+<p>may incorrectly imply a front in the vicinity.  Thickness alone is no substitute for other sources</p>
+<p id="c14">of data, such as surface observations, radiosonde observations, and satellite imagery.  Figure 11</p>
+<p>is an example of 850- 700 hPa thickness levels in the Great Basin, with surface observations</p>
+<p>included.</p>
+<p>Figure 1 1.  An example of 850- 700 hPa thickness levels in the Northwest with surface</p>
+<p>observations included.  Even in this textbook example, note how local winds in certain spots in</p>
+<p>the West make the placement less than obvious.</p>
+<p>B.  BOUNDARY LAYER MOISTURE CONVERGENCE</p>
+<p>This can be  an excellent tool for finding frontal zones and surface troughs.  Usually, this</p>
+<p>field is used in coordination with the surface dew point or theta -E (equivalent potential</p>
+<p>temperature) to paint a fuller picture of the current synoptic situation.  Moisture c onvergence</p>
+<p>also has limitations, such as when it appears near the coast due to frictional convergence</p>
+<p>overnight and where winds upslope into the terrain.  So like thickness, it cannot be used as the</p>
+<p>only determinate.  Theta -E has limitations near natural temperature discontinuities, such as near</p>
+<p>the loop current in the Gulf of Mexico, the Gulf Stream, and in the vicinity of the Great Lakes and Hudson Bay in Canada.  Away from these problem spots, the theta -E gradient is quite useful</p>
+<p>over the subtropical oce ans.  Additional problems can occur when mesoscale features are</p>
+<p>initialized in the model, including drylines, which can obscure the placement of the front.  Figure</p>
+<p>12 is an example of the moisture convergence field, with surface observations included.</p>
+<p id="c15">Figure 1 2.  An example of the moisture convergence field, with surface observations included.</p>
+<p>C.  LOCATION OF THE UPPER LEVEL JET</p>
+<p>Another simple check for vertical continuity is the location of the upper level jet, located</p>
+<p>at or below the 250 hPa leve l in the winter and above the 200 hPa level during the summer.</p>
+<p>Fronts are located equatorward (usually southward) of their respective branch of the jet stream</p>
+<p>which can be easily located on either water vapor imagery or model -derived plots of the wind</p>
+<p>pattern of the 250 hPa, 200 hPa, or 100 hPa pressure levels.  Most branches of the jet stream</p>
+<p>have frontal zones associated with them, save the subtropical jet which normally shows up</p>
+<p>weakly in the surface dew point field and tends not to have any temperature  gradient.  If a frontal</p>
+<p>zone from one of the other branches of the Westerlies slips equatorward of the subtropical jet, it becomes quite diffuse.</p>
+<p>Chapter 3 :</p>
+<p>The Unified Surface Analysis</p>
+<p>Figure 1.  Idealized depiction of features that could be  seen on the Unified Surface Analysis in</p>
+<p>the Mid -Latitudes</p>
+<p>1.  Features Depicted  and their related definitions</p>
+<p>Cold Front:  The leading, progressive edge of a density</p>
+<p>discontinuity ahead of a cooler/drier air mass.  These boundaries tend to be narrower than warm fronts due to the higher density low-level air in their wake which helps drive their forward</p>
+<p>motion.  Over the continent, a minimum of 6C (10F) over 500 km (300 nm) is usually needed for a frontal zone with smaller differences needed over the oce ans.  It is depicted as a blue line</p>
+<p id="c16">with periodic spikes  facing into the warmer air  mass .</p>
+<p>Dryline:  The leading edge of a significant density/dewpoint</p>
+<p>discontinuity forced by foehn winds off the Rockies, usually</p>
+<p>ahead of a significant synoptic scale sy stem moving through the</p>
+<p>West/Southwest.  They usually progress eastward during the heating of the day, and westward at night.  A tight 14C (25F), or a broader 17C (30F), dewpoint gradient is used to help determine the existence of a dryline.  The dryline does not have to be the leading edge of all the change in the dewpoint, merely where the best gradient/leading edge of foehn winds exists (mainly after Bluestein).  A dryline as drawn as a brown line with scallops facing into the moist air mass.</p>
+<p>High Pr essure System:   A relative maximum in the pressure</p>
+<p>pattern, usually accompanied by at least one closed isobar, which normally has an outward, clockwise circulation from its center in the Northern Hemisphere and an outward, counterclockwise circulation in the Southern Hemisphere.  It is depicted as a blue H with its central pressure underlined nearby its placement.</p>
+<p>Hurricane/Typhoon .  A tropical cyclone in which the maximum</p>
+<p>sustained surfac e wind (1 -minute mean) is 64 kts (74 mph) or</p>
+<p>more.  The term hurr icane is used for Northern Hemisphere</p>
+<p>tropical cyclones east of 1800 longitude to the Greenwich</p>
+<p>Meridian. The term typhoon is used for Pacific tropical cyclones north of the Equator west of the International Dateline .  Labeled</p>
+<p>as TYPH, HURCN, or HRCN on th e Unified Surface Analysis.</p>
+<p>Intertropical Convergence Zone.  A zonally elongated axis of</p>
+<p id="c17">surface wind confluence in the tropics, due to confluence of northeasterly and southeasterly trade winds, and/or confluence at the poleward extent of cross -equator ial flow into a near -equatorial</p>
+<p>heat trough.  It is depicted as a pair of ref lines with cross hatching.  The feature is labeled as ITCZ on the Unified Surface Analysis.</p>
+<p>Low Pressure System:   A relative minimum in the pressure</p>
+<p>pattern, usually accompanied by at least one closed isobar, which normally has an inward, counterclockwise circulation in the Northern Hemisphere and an inward, clockwise circulation in the Southern Hemisphere.  It is depicted as a red L with an x at its center of circulation with  its central pressure underlined nearby its</p>
+<p>placement.</p>
+<p>Maximum  1-Minute Sustained Surface Wind.  When applied to a particular weather system,</p>
+<p>refers to the highest 1 -minute average wind spe ed (at an elevation of 10 m  with an unobstructed</p>
+<p>exposure) asso ciated with that weather system at a particular point in time.</p>
+<p>Monsoon Trough:  an elongated area  of low pressure  along the</p>
+<p>Intertropical Convergence Zone (ITCZ) that leads to an</p>
+<p>enhancement of monsoon precipitation over land.  To its south lie southweste rly low -level winds, as opposed to the ITCZ which is a</p>
+<p id="c18">confluent zone of easterly winds.  The monsoon trough is the main focus for tropical cyclogenesis in the northwest Pacific ocean, and plays less of a role in tropical cyclone formation across the northeast Pacific, western Caribbean sea, and northeast Atlantic ocean.  This feature is depicted in red with a set of two parallel lines , showing the location of minimum sea level pressure.  This</p>
+<p>feature is labeled MONSOON TROF on the analysis.</p>
+<p>Occlud ed Front:   A front that forms southeast/east of a cyclone that</p>
+<p>moves deeper into colder air, in the late stages of wave -cyclone</p>
+<p>development.  Cold occlusions result when the coldest air surrounding the cyclone is behind its cold front, and are normally seen on the west sides of ocean basins and with clipper systems descending from the arctic.  Warm occlusions form when the coldest air surrounding the cyclone is ahead of its warm front, forcing the cold front aloft.  Warm occlusions are normally seen on the east side of ocean basins and just to the lee of the United States portion of the continental divide (mainly after Glickman 2000).  It is depicted as a purple line with alternating bumps and spikes.</p>
+<p>Outflow Boundary:   A mesoscale surface boundary forme d by the</p>
+<p>horizontal spreading of thunderstorm -cooled air.  These features</p>
+<p>may last more than a day (after Glickman 2000).  It is normally depicted as a trough with a label of “OUTFLOW BNDRY”</p>
+<p>Post-tropical Cyclone:   A former tropical cyclone. This gene ric term describes a cyclone that no</p>
+<p id="c19">longer possesses sufficient tropical characteristics to be considered a tropical cyclone . Post -</p>
+<p>tropical cyclones can continue carrying heavy rains and high winds. Note that former tropical cyclones that have become full y extratropical...as well as remnant lows ...are two classes of post -</p>
+<p>tropical cyclones.  It is depicted on the Unified Surface Analysis in the same manner as a low pressure area.</p>
+<p>Remnant Low :  A post -tropical cyclone  that no longer possesses the convective  organization</p>
+<p>required of a tropical cyclone ...and has maximum sus tained winds of less than 34 kts  (39 mph) .</p>
+<p>The term is most commonly applied to the nearly deep- convection -free swirls of stratocumulus</p>
+<p>in the eastern North Pacific.  It is depicted on the U nified Surface Analysis in the same manner</p>
+<p>as a low pressure area.</p>
+<p>Shearline:  The final stage in the life cycle of a cold front over</p>
+<p>the subtropics and tropics.  Lying equatorward of the</p>
+<p>subtropical ridge, these boundaries have lost all temperature contr ast over the warm ocean and have minimal dewpoint</p>
+<p>contrast across them.  They delineate an area where wind speed quickly increases  on the poleward side  of the boundary by  10+</p>
+<p>knots from nearly the same direction (within 45 degrees)  within</p>
+<p>a 60-90 nm zone .  As mid- and high- level cloudiness previously</p>
+<p>associated with the  front has dissipated due to lack of upper -</p>
+<p>level support, a shearline is indicated on satellite imagery as the leading edge of a line of low -level clouds with  tops near 10,000</p>
+<p>ft (3,040 m ).   Shearlines lie in troughs, but  as surface data over</p>
+<p id="c20">the subtropical/tropical ocean  is sparse , the trough may not be</p>
+<p>recognized in the available surface observation field .  Using</p>
+<p>streamline analysis, a shearline is denoted by a confluence of streamlines eq uatorward and west of the col area where a cold</p>
+<p>front divides the subtropical ridge.  The symbol for shearline is an alternating dot -dash pattern, in the color of blue .</p>
+<p>Squall Line:  A solid line of convection, usually associated</p>
+<p>with rapid pressure fl uctuations and high winds.  The squall line</p>
+<p>will normally be placed at the leading edge of the wind shifts and inside the leading pressure trough.  The symbol for squall line is an alternating two dot- dash pattern, in the color of red.</p>
+<p>Stationary Front :  The equatorward edge of a slow -moving</p>
+<p>density discontinuity with a motion of less than 10 knots (12 mph).  Winds tend to lie parallel to these boundaries.  Over the continent, a minimum of 6C (10F) over 500 km (300 nm) is usually needed for a frontal zone with smaller differences required over the oceans.  It is depicted with alternating red bumps and blue spikes.</p>
+<p>Subtropical Cyclone.  A low pressure system that develops over subtropical waters that initially</p>
+<p>has a non- tropical circulation but in whi ch some elements of tropical cloud structure , such as</p>
+<p>deep convection, are present.   On the map, it is depicted with an Lx symbol, like other low</p>
+<p>pressure areas.</p>
+<p>• The most common type is an upper -level cold low with a circulation extending to the</p>
+<p>surface l ayer and maximum sustained winds generally occurring at a radius of about 100</p>
+<p id="c21">miles or more from the center.  In comparison to tropical cyclones, such systems have a</p>
+<p>relatively broad zone of maximum winds that is located farther from the center, and typica lly have a less symmetric wind field and distribution of convection.</p>
+<p>• A second type of subtropical cyclone is a mesoscale low originating in or near a</p>
+<p>frontolyzing zone of horizontal wind shear, with radius of maximum winds generally less</p>
+<p>than 30 miles.  The entire circulation may initially have a diameter of less than 100 miles.</p>
+<p>These generally short -lived systems may be either cold core or warm core.</p>
+<p>• Subtropical cyclones which attain maximum sustained winds above 64 knots (74 mph)</p>
+<p>usually attain sufficient tropical characteristics to be considered hurricanes.</p>
+<p>Subtropical Depression.  A subtropical cyclone in which the</p>
+<p>maximum sustained winds speeds (1 -minute mean) is 33 kts (38</p>
+<p>mph) or less. Labeled as SUB  T.D.  on the Unified Surface</p>
+<p>Analysis.</p>
+<p>Subt ropical Storm.   A subtropical cyclone in which the maximum</p>
+<p>sustained winds speeds (1- minute mean) are betw een 34 kts (39</p>
+<p>mph) and 63 kts (73 mph).  On the Unified Surface Analysis, it is</p>
+<p>depicted with a tropical storm symbol and labeled SUB T.S.</p>
+<p>Super T yphoon .  A “super” typhoon is a tropical cyclone that is</p>
+<p>class ified as having winds of 130 kts (150 mph) or greater.  This</p>
+<p>term is only used by the Joint Typhoon Warning Center for strong tropical cyclones in the northwest Pacific ocean.  Labeled as STYPH on the Unified Surface Analysis.</p>
+<p>Tropical Cyclone.   A warm core, non- frontal, synoptic scale cyclone originating over tropical or</p>
+<p id="c22">subtropical waters, with organized deep convection and a closed surface wind circulation about a well-defined circulation.</p>
+<p>Tropical Depression.   A tropical cyclone in which the maximum</p>
+<p>sustained winds speeds (1- minute mean) is below 34 knots (39</p>
+<p>mph).  Labeled as T.D. on the Unified Surface Analysis.</p>
+<p>Tropical Disturbance .  A discrete tropical weather system of app arently  organized convection -</p>
+<p>generally 100 to 300 nmi  (185 to 555 km)  in diameter -  originating in the tropics or subtropics,</p>
+<p>having a non- frontal migratory character, and maintaining its identity for 24 hours or more. It</p>
+<p>may or may not be associated with a dete ctable perturbation of the wind field.</p>
+<p>Tropical Storm.   A tropical cyclone in which the maximum</p>
+<p>sustained winds speeds (1- minute mean) are between 34 knots (39</p>
+<p>mph) and 63 knots (73 mph).  Labeled as T.S. on the Unified</p>
+<p>Surface Analysis.</p>
+<p>Tropical Wave .  A trough or cyclonic curvature maximum in the</p>
+<p>trade- wind easterlies. The wave may reach maximum amplitude</p>
+<p>in the lower middle troposphere or may be the reflection of an</p>
+<p>upper tropospheric cold low or equatorial extension of a middle latitude trough.  Th ey are labeled with the words TRPCL WAVE</p>
+<p>or TROPICAL WAVE on the unified analysis.</p>
+<p>Trough:   An elongated area of low pressure with no distinct low</p>
+<p>level center.  Winds usually flow cyclonically through it, outside of terrain influences.  A trough is dr awn as a wide orange, dashed</p>
+<p>line.</p>
+<p>Warm Front :  The equatorward edge of a density discontinuity</p>
+<p id="c23">behind a retreating and modified cool, dry air mass.  This type of frontal zone is significantly broader than a cold front, due to the slower erosion of the  superior density airmass ahead of the</p>
+<p>boundary.  Over the continent , a minimum of 6C (10F) over 300</p>
+<p>nm (500 km) is usually needed for a frontal zone while smaller differences are necessary over the oceans.  It is depicted as a red line with periodic bumps  facing into the cooler air  mass .</p>
+<p>Chapter 4:</p>
+<p>Creation/Merging of the Unified Surface Analysis</p>
+<p>Each center/office produces unique surface analyses which lie adjacent to the areas of</p>
+<p>responsibility of other centers/offices.   On the top of the next pag e is an image, in Mercator</p>
+<p>projection, showing the various surface centers’ areas of responsibility for the Unifie d Surface</p>
+<p>Analysis.  Note: the W PC area is orange, the OPC area is in white, the NHC area is in brow n, the</p>
+<p>HFO area is in green.  The southern bound of the analysis is the equator with the western bound</p>
+<p>130E and the eastern bound 30E.</p>
+<p>VGF SWAPPING AND CLIPPING WITH W PC, HFO, OPC, and NHC</p>
+<p>A)   UNIFIED ANALYSIS DEADLINES</p>
+<p>Analyses must be swapped with other centers/offices for coordination and construction of</p>
+<p>one National Weather Service Unified Analysis (UA).  The UA is constructed in several steps</p>
+<p>where OPC, WPC, NHC , and HFO exchange analyses, coordinate features along the boundaries,</p>
+<p>and append final analyses.  Time is allowed for coordination between the analysis centers, as</p>
+<p id="c24">there can be marked differences of opinions concerning frontal placement, even between knowledgeable analysts (Uccellini et al. 1992.)   The following timeline outlines deadlines and necessary steps for construction of the  UA.</p>
+<p>TIME  ACTION (synoptic and intermediate analyses)</p>
+<p>H + 0:00  NHC , WPC, OPC, HFO begin analysis.</p>
+<p>by H + 1:00  NHC /OPC save a nalysis and send preliminary vgf (surface analysis</p>
+<p>file) to W PC/OPC/ NHC  (automated script).  A pop- up window will</p>
+<p>appear at H+0:5 8 as a reminder to save the map.</p>
+<p>by H + 1:00  NHC  sends message to W PC stating that the analysis is complete or</p>
+<p>delayed (including reason).</p>
+<p>H + 1:00 -1:30 NHC /WPC coordinate via chat software  or phone (if necessary) with</p>
+<p>features along boundary and send s updated vgf as required.</p>
+<p>H+ 1:30  WPC completes and transmits final North American Analysis.</p>
+<p>H + 1:00 -2:00 NHC /OPC finalize analyses.</p>
+<p>H + 2:00 -2:15 HFO completes pr eliminary analysis and sends vgf  to NHC by H+2:00.</p>
+<p>HFO sends m essage  via chat softwar e informing  NHC that the analysis</p>
+<p>is ready.  NHC coordinates with HFO (if necessary) via chat software or</p>
+<p>phone and clips the HFO analysis from the equator to 30N west of</p>
+<p>1400W.  NHC draws isobars but traces HFO features south of equator</p>
+<p>west of 120W.</p>
+<p>H + 2:00-2:30 OPC and  NHC exchange initial analysis vgfs and coordinate oceanic</p>
+<p>features along boundary (if necessary).   For complex coordination, a</p>
+<p>phone call may be required.</p>
+<p>H + 2:30  OPC  completes analysis and sends vgf  with a “FINAL” stamp, along</p>
+<p>with a message to NHC .</p>
+<p id="c25">H + 2:30 -2:45 NHC  appends the OPC vgf  (combined W PC/OPC analysis) north of</p>
+<p>30N/31N.</p>
+<p>H + 2:45  NHC  transmits/launches final analysis and sends chat message to OPC</p>
+<p>that the final analysis has been launched.</p>
+<p>Notes: 1) If the W PC/HFO/OPC an alysis is not at the designated time, or soon thereafter, the</p>
+<p>corresponding center s are  inform ed that center’s analyst that the vgf  is not available or</p>
+<p>incomplete.  This may be due to communication problems.  In the event that a complete analysis</p>
+<p>is not available by the designated time despite contacting the appropriate center, check with the lead forecaster to determine if isobars/features will be drawn outside of the other centers’ area of responsibility to make up the gap on the unified analysis .  2) Ana lysts coordinate with their</p>
+<p>fellow forecasters/lead forecaster with approval given by the above stated deadlines.</p>
+<p>B)  UNIFIED ANALYSIS COORDINATION AND FILE SWAPPING</p>
+<p>In addition to the coordination outlined in the above timeline, the analysts should inform</p>
+<p>the other relevant analysis centers if anything will delay the completion of the analysis or VGF</p>
+<p>swapping (i.e. data flow or computer issues).  Communication with corresponding centers is accomplished via telephone or instant messaging.  Instant messagi ng is encouraged for short and</p>
+<p>simple information exchange such as “The NHC /OPC/W PC/HNL analysis is ready to be</p>
+<p>clipped.”  More complex exchange such as coordinating a feature requires a telephone call.  At times during coordination with the other analysis  centers, an updated analysis may need to be</p>
+<p id="c26">sent once the initial swap deadline has passed.  Modification of the surface analysis can be accomplished beyond the above stated deadlines by simply saving the updated map. Files are swapped with each center vi a a cron facility and daemon processes which run in the background</p>
+<p>and execute at specified times. In addition, a script can be run that will manually send the analysis to the other centers. The lead forecaster should be consulted if agreement cannot be reached by the analysts at the disagreeing center(s). The final Unified Analysis can be viewed at</p>
+<p>(www.opc.ncep.noaa.gov/USA.shtml).</p>
+<p>Cron facility for VGF swapping with NHC /OPC/W PC:</p>
+<p>WPC/ NHC : H + 0:45  First surface analyses swapped with updated files sent</p>
+<p>automatically every minute from H+0:46 -H+1:00, then every 6 minutes from H+1:00-</p>
+<p>H+1:18).  The  NHC analy sis is considered complete for W PC purposes at H + 1:00 in the</p>
+<p>absence of a chat message.  A pop -up window will display 2 minutes before the initial</p>
+<p>VGF is sent reminding the analyst to save the map and create the coded messages.</p>
+<p>OPC/ NHC/HFO: H + 2:00  NHC sends first surface merged NHC /HFO to OPC</p>
+<p>(updated files sent in five minute increments between H + 2:00 and H + 3:15) and</p>
+<p>receives a merged OPC/W PC a nalysis.  A pop- up window will display 2 minutes before</p>
+<p>the first analysis is due (H+2:15) reminding the analyst to save the map.</p>
+<p>C) FILE CLIPPING AND APPENDING</p>
+<p>Clipping scripts are available t hat will create a VGF from the W PC, HFO, OPC, and NHC</p>
+<p>surface analyses.   Once executed, the script clips the desired center’ s analysis which can then be</p>
+<p id="c27">appended to the analysis thus eliminating the need to trace.  As a result, once the forecaster</p>
+<p>appends a VGF from either analysis center to his/her own analysis, the analyst will only need to connect isobars/features along the neighboring centers boundaries and, if necessary, smooth the isobars and features to achieve a smooth/unified analysis.  The analyst will not draw isobars or features outside of their area of responsibility unless there are technical problems with the VGF exchange and clipping procedures and it is coordinated by phone.   In some instances, the analyst may delete duplicate text and symbols and/or retype some of the text labels which lie right along the boundary which might be stripped away during the executi on of the clipping script.   This</p>
+<p>must be done manually by the analyst using tools in the product generation palette.  The analyst underlays the latest OPC/W PC/HFO/ NHC  analysis while appending the file to ensure that all</p>
+<p>relevant text and  symbols which occ ur along the W PC/NHC /OPC/HFO boundary are retained.</p>
+<p>The HFO analysis will only  include synoptic features (fronts, lows, etc) south of the equator</p>
+<p>(0N).  The  NHC analyst will add isobars south of 0N west of 120W.   The early OPC analysis</p>
+<p>will only include  synoptic features (fronts, lows, etc) for the western Atlantic and eastern Pacific</p>
+<p>for inclusion into the WPC analysis.  The W PC analyst will need to modify isobars in the OPC</p>
+<p>area to conform to the features analyzed and the available observations at the time of their map.</p>
+<p id="c28">The clipping script will execute with no input from the forecaster other than the execution of</p>
+<p>the commands as long as  the VGFs are available from the corresponding center.</p>
+<p>The following acronyms are used on the Unified Surface Analysis :</p>
+<p>• moving -  MOVG</p>
+<p>• stationary - STNRY</p>
+<p>• maximum – MAX</p>
+<p>• Position – PSN</p>
+<p>• Gusts – G</p>
+<p>• Degrees – DEG</p>
+<p>• Joint Typhoon Warning Center – JTWC</p>
+<p>• Japanese Meteorological Agency -  JMA</p>
+<p>A.  Tropical cyclone text boxes</p>
+<p>(1) By synoptic time (H) plus 1 hour (H + 1:00), or soon there after, the TAFB analyst will</p>
+<p>depict the following information (including north of 31N) on the surface analysis and made</p>
+<p>available to analysts at W PC and OPC.  [Note:  This inform ation will only be included in</p>
+<p>WPC analysis area, because of their earlier pro duction time.]</p>
+<p>• The tropical cyclone symbol (hurricane, tropical storm, or tropical depression)</p>
+<p>taken from the latest issued (H + 3:00) Forecast/Advisory (TCM), or if an</p>
+<p>intermediate Public Advisory (TCP) was issued, the tropical cyclone symbol from</p>
+<p>this bulletin.</p>
+<p>• A text box that includes 1) the name and intensity category (hurricane, tropical</p>
+<p>storm, or tropical depression) t aken from the latest issued (H + 3:00) TCM, or, if</p>
+<p>available from the intermediate TCP, and 2) the position to the nearest tenth of a</p>
+<p>degree (available from the intermediate TCP, or the Hurricane Specialist tropical cyclone advisory composition worksheet or the compute data worksheet, hereafter called worksheet).</p>
+<p>[Note:  the location of the symbol placed on the surface analysis will be a synoptic position].</p>
+<p id="c29">In the text box, intensity or movement is not i nitially included as the final W PC analysis</p>
+<p>does not include this information.  The central pressure in millibars (mb) (equivalent to hectopascals or hPa)  will be placed near the tro pical cyclone center.  Also, the outermost closed</p>
+<p>isobar is required (additional isobars may be drawn at four or greater millibar intervals if sufficient data is available while preserving legibilit y).  For systems north of 31N, W PC and</p>
+<p>OPC, will draw their own isobars.  If an intermediate TCP, TCU (tropical cyclone update), or TCE (tropical cyclone estimate) statements are not issued, the name and intensity category of the</p>
+<p>tropical cyclone is from the latest issued TCM, e.g., use the name and intensity cat egory given in</p>
+<p>the 0900 UTC TCM for the 1200 UTC surface analysis.  No analysis center’s  final analysis</p>
+<p>should upgrade or downgrade a system befor e the respective tropical cyclone center</p>
+<p>upgrades/downgrades a system .</p>
+<p>An example a text box supplied to W PC will look like this:</p>
+<p>(2) All centers (NHC/TAFB, OPC, and WFO HFO) will reflect the status of the system at synoptic time.  Text boxes will include the following information [Note: the original text boxes sent at H +1:00 will be deleted] :</p>
+<p>• name and in tensity category of the tropical/subtropical cyclone</p>
+<p>• maximum sustained wind</p>
+<p>• “SEE LATEST (issuing center) ADVISORY” disclaimer.</p>
+<p>T.D. ONE</p>
+<p>25.0N 90.3W</p>
+<p>NHC PSN</p>
+<p>Tropical/subtropical cyclone  text boxes west of the International Dateline in  the</p>
+<p id="c30">northwest Pacific will contain the s ame information (except for the last  bullet).  The information</p>
+<p>required will usually be taken from advisories issued by the Joint Typhoon Warning Center</p>
+<p>(JTWC).   When information from JTWC is not available, data from JMA will be utilized.   TAFB</p>
+<p>analysts wi ll construct the text boxes over the Atlantic south of 50N and the East Paci fic south of</p>
+<p>50N east of 140W, OPC for the Atlantic north of 50N and the Pacific north of 30N west of 140W, and HFO for the Pacific Ocean area south of 30N and west of 140W.</p>
+<p>Sample text box</p>
+<p>[Note: Substitute “CPHC” for NHC for systems between 140W and 180</p>
+<p>0 longitude in the north</p>
+<p>central Pacific, “JTWC” for systems west of the 1800 longitude in the northwest Pacific , “W PC”</p>
+<p>for weakening tropical  depr essions over the lower 48.</p>
+<p>B.  Tropical disturbance text boxes</p>
+<p>The determination of whether a system should be called a tropical disturbance is often</p>
+<p>subjective .  Therefore  in NHC’s  area of responsibility (AOR), coordination is essential and the</p>
+<p>analys ts consult with the TAFB lead forecaster or TAFB satellite classifier and the duty</p>
+<p>hurricane specialist to determine if a tropical disturbance should be depicted on the map.  In</p>
+<p>CPHC’s AOR, the analyst will consult with the hurricane specialist.  Motion is  determined using</p>
+<p>extrapolation from previous positions or consulting the classifier.    For W PC, there will be</p>
+<p>situations where a TAFB analyst begins the surface map and then passes the map off to the next</p>
+<p id="c31">shift (i.e. day shift to evening shift) for compl etion.  In these situations, it is important for  NHC</p>
+<p>to relay all relevant information to subsequent shifts so that continuity can be maintained.   If the</p>
+<p>tropical disturbance is being upgraded to a tropical depression, the H + 3:00 TCM is used for</p>
+<p>pressur e and movement.</p>
+<p>Tropical Disturbances are depicted on the surface analysis as an “L x” and the four -digit</p>
+<p>underlined central pressure near it.  The central pressure will be determined from the worksheet</p>
+<p>available in the NHC operatio ns area or from the best track in the ATCF (Automated Tropical</p>
+<p>Cyclone Forecasting system) workstation.  A text box containing the position and movement is not needed.  Follow this example for depicting a Tropical Disturbance when using the “Lx”</p>
+<p>symbol:</p>
+<p>Lx</p>
+<p>TRPCL DISTURBANCE  HURCN XXXX</p>
+<p>MAX WIND 90 KT G 105 KT</p>
+<p>SEE LATEST NHC ADVISORY</p>
+<p>Or</p>
+<p>TRPCL DISTURBANCE</p>
+<p>14N 101W</p>
+<p>MOVG WNW 10KT</p>
+<p>C.  Drawing Isobars Around a Tropical/Subtropical Cyclone.</p>
+<p>For systems south of 31N, the outermost closed  isobar (may be an intermediate isobar)</p>
+<p>will be drawn for all tropical cyclones.  Even though in -situ data is often absent for systems over</p>
+<p>open water, analysts should make use of any other available data to draw the outermost isobar as accurately as possible.   For NHC, this  information is utilized by the hurricane specialist to</p>
+<p id="c32">initialize the GFDL Hurricane Prediction System.  Additional isobars within the outermost closed isobars will be drawn as the tropical cyclone approaches land and nearby waters if data is available and it does not degrade the appearance or legibility of the analysis.   The outermost isobar is usually relatively close to the center of the tropical cyclone and should not normally cover a large area or have an unusual shape.  In cases where the outermost isobar is significantly away from the center, additional isobars will be drawn within the outermost closed isobar.  For systems north of 31N, NHC supplies  the TC symbol and text box as W PC and OPC will draw</p>
+<p>their own isobars.  For systems west of 140</p>
+<p>0W, HFO draws their own isobars.</p>
+<p>Chapter 5:</p>
+<p>Bibliography</p>
+<p>Bader , M. J., G. S. Forbes, J.R. Grant, R.B.E. Lilley, and A.J. Waters, 1995.  Images in Weather</p>
+<p>Forecasting :  A Practical Guide for Interpreting Satellite and Radar Imagery.</p>
+<p>Bell, G. D., and L. F. Bosart, 1988:  Appalachian cold -air damming. Mon. Wea. Rev., 116, 137–</p>
+<p>161.  Bjerknes, J., 1919: On the structure of moving cyclones .  Geof. Publ., 1, 1- 9.</p>
+<p>Bjerknes, and H. Solberg, 1922: Life cycle of cyclones and the polar front theory of atmospheric</p>
+<p>circulation.  Geofys. Publ. , 3 (1), 3 -18.</p>
+<p>Bluestein, H., 1986:  Fronts and jet streaks: A theoretical perspective.  Mesoscale Meteorology</p>
+<p>and Forecasting, Peter Ray, Ed ., Amer. Meteor. Soc., 173- 215.</p>
+<p>Byers, Horace R. 1959:  General Meteorology .  Third edition.  Mc -Graw Hill Publishing</p>
+<p>Company, Inc.  1959:  pp. 295- 297.</p>
+<p id="c33">Colle, B. A., and C. F. Mass, 1995:  The structure and evolution of cold surges east of the Rocky</p>
+<p>Mountains. Mon. Wea. Rev.,  123, 2577–2610.</p>
+<p>Crocker M., W. L. Godson and C. M. Penner. 1947: FRONTAL CONTOUR CHARTS . Journal</p>
+<p>of the Atmospheric Sciences : Vol. 4, No. 3, pp. 95 –99.</p>
+<p>Dunn, L., 1987:  Cold- air damming by the Front Range of the Colorado Rockies and its</p>
+<p>relationship to locally heavy snows.  Wea. Forecasting., 2, 177–189.</p>
+<p>Egger, J., and K. P. Hoinka, 1992: Fronts and orography.  Meteor. Atmos. P hys., 48, 3–36.</p>
+<p>Freytag, C., 1990:  Modification of the structure of cold fronts over the foreland and in a mountain valley.  Meteor. Atmos. Phys., 43, 69–76.  Glickman, T. S. Ed., 2000: Glossary of Meteorology . 2d ed. Amer. Meteor. Soc., 855 pp.</p>
+<p>Hoffman , E., 2004:  Surface potential temperature as an analysis and forecasting tool.  Preprints</p>
+<p>of the Fred Sanders Symposium.  84th AMS Annual M eeting. January, 2004.</p>
+<p>Mass, Clifford F.. 1991: Synoptic Frontal  Analysis: Time for a Reassessment ?. Bulletin of the</p>
+<p>American Meteorological Society : 72, No. 3, pp. 348–363.</p>
+<p>Müller, H  and R. Sladkovic , 1990:  Case studies of frontal passages in a mountain va lley with</p>
+<p>direct access to the Bavarian pre- alpine region. Results from the German front experiment 1987.</p>
+<p>Meteor. Atmos. Phys., 43 , 77–87.</p>
+<p>Neiman, Paul J. and M.A. Shapiro. 1993: The Life Cycle of an Extratropical Marine Cyclone. Part I: Frontal- Cyclone Evolution and Thermodynamic Air -Sea Interaction . Monthly Weather</p>
+<p>Review : 121, No. 8, pp. 2153–2176.</p>
+<p id="c34">Penner, C .M., 1955: A three front model for synoptic analyses . Quart. J. Roy. Meteor. Soc., 81,</p>
+<p>Reed, Richard J. and Mark D. Albright. 1997: Frontal Structure in the Interior of an Intense</p>
+<p>Mature Ocean Cyclone. Weather and Forecasting: 12, No. 4, pp. 866–876.</p>
+<p>_____, Ying -Hwa  Kuo and Simon Low -Nam. 1994: An Adiabatic Simulation of the ERICA IOP</p>
+<p>4 Storm: An Example of Quasi -Ideal Frontal Cyclone Development . Monthly Weather Review :</p>
+<p>122, No. 12, pp. 2688–2708.  Riehl, Herbert and Carlos Bonnot, 1944:  Waves in the easterlies.  Chicago:  University of Illinois.</p>
+<p>Sanders, Frederick. 1955: A n Investigation of the Structure and D ynamics of an Intense Surface</p>
+<p>Frontal Zone . Journal of the Atmospheric Sciences : 12, No. 6, pp. 542–552.</p>
+<p>_____. 1990:  Surface Analysis O ver the Oceans —Searching for Sea Truth . Weather and</p>
+<p>Forecasting: 5, No. 4, pp. 596–612.  _____. 1999: A Proposed Method of Surface Map Analysis . Monthly Weather Review : 127, No.</p>
+<p>6, pp. 945–955.  _____ and Charles A. Doswell III. 1995: A Case for Detailed S urface Analysis.  Bulletin of the</p>
+<p>American Meteorological Society : 76, No. 4, pp. 505–521.</p>
+<p>_____ and E. G. Hoffman 2002: A Climatology of Surface Baroclinic Zones.  Weather and</p>
+<p>Forecasting, Vol. 17, No. 4, pp. 774–782.  Schultz, David M., Bracken, W.E., Bos art, L.F., Hakim, G.J., Bedrick, M.A., Dickinson, M.J.,</p>
+<p>and K. R. Tyle, 1997:  The 1993 Superstorm Cold Surge:  Frontal Structure, Gap Flow, and</p>
+<p>Tropical Impact.  Monthly Weather Review : Vol. 125, No. 1, pp. 5–39.</p>
+<p id="c35">_____., Daniel  Keyser and Lance F.  Bosar t. 1998: The Effect of Large -Scale Flow on Low -Level</p>
+<p>Frontal Structure and Evolution in Midlatitude Cyclones .  Monthly Weather Review : 126, No. 7,</p>
+<p>pp. 1767–1791.  Steenburgh, W.J., and T. R. Blazek. 2001:  Topographic Distortion of a Cold Front over the Snake River Plain and Central Idaho Mountains .  Weather and Forecasting: 16, No. 3, pp. 301-</p>
+<p>314.   Stoelinga, Mark T., John D. Locatelli and Peter V.  Hobbs. 2002: Warm Occlusions, Cold</p>
+<p>Occlusions, and Forward -Tilting Cold Fronts . Bulletin of the American Met eorological Society :</p>
+<p>83, No. 5, pp. 709–721.  Uccellini, L.W., S.F. Corfidi, N.W. Junker, P.J. Kocin, and D.A. Olson, 1992: Report on the surface analysis workshop at the National Meteorological Center 25 -28 March 1991. Bull. Amer.</p>
+<p>Soc., 73 459- 471.</p>
+<p>Appendix A:   Unified Graphics Legend showing Ocean Center symbology</p>

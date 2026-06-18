@@ -1,0 +1,79 @@
+.count {
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.card:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.icao {
+  font-weight: var(--fw-bold);
+  color: var(--accent-bright);
+  font-variant-numeric: tabular-nums;
+}
+.iata {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.name {
+  font-weight: var(--fw-medium);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.freqs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.freq {
+  padding: var(--space-1) var(--space-2);
+  border: var(--clay-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.freq:hover {
+  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
+  color: var(--brand-hover);
+}

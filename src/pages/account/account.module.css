@@ -1,0 +1,251 @@
+.page {
+  padding-block: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── Page header ── */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.head h1 {
+  font-size: var(--fs-h2);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+.sub {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+.note {
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+  margin: 0;
+}
+.or {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+.error {
+  color: var(--color-error);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+.linkBtn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--link);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.planBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+.planBadge[data-plan='pro'] {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--brand-hover);
+}
+.planBadge[data-plan='school'] {
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  color: var(--gold);
+}
+
+/* ── Stat cards grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.card:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
+}
+.cardLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cardValue {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+.good {
+  color: var(--color-success);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+.bad {
+  color: var(--color-error);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  text-decoration: none;
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.btn:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+  color: var(--brand-hover);
+  text-decoration: none;
+}
+.btn:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.97);
+}
+.btnPrimary {
+  background: var(--brand);
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  color: var(--text-on-brand);
+  box-shadow:
+    var(--clay-shadow),
+    0 0 14px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+.btnPrimary:hover {
+  background: var(--brand-hover);
+  color: var(--text-on-brand);
+  box-shadow:
+    var(--clay-shadow-hover),
+    0 0 22px color-mix(in srgb, var(--brand) 32%, transparent);
+}
+.btnDanger:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+/* ── Logbook table ── */
+.tableWrap {
+  overflow-x: auto;
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  box-shadow: var(--clay-shadow);
+}
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+.table th,
+.table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: start;
+  border-block-end: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table th {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+}
+.table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface-raised) 60%, transparent);
+}
+.totals td {
+  font-weight: var(--fw-bold);
+  border-block-start: 2px solid var(--border-bright);
+  border-block-end: none;
+}
+.del {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  min-block-size: 36px;
+  min-inline-size: 36px;
+  border-radius: var(--radius-sm);
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.del:hover {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+/* Local-ahead-of-server warning when a Firestore write-through fails. */
+.syncNotice {
+  margin: 0;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}

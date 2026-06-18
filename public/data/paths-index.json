@@ -1,0 +1,86 @@
+{
+ "generated": "2026-05-24",
+ "note": "Curated reading paths — guided routes through the Fly GACA library.",
+ "paths": [
+  {
+   "id": "private-pilot",
+   "title": "Becoming a Private Pilot",
+   "desc": "From the regulations to the airmanship — the route to the PPL written exam.",
+   "steps": [
+    {"label": "Pilot certification — GACAR Part 61", "note": "Who may hold a licence, the ratings, and the requirements.", "url": "document.html?type=regulations&id=part-61"},
+    {"label": "The medical certificate — GACAR Part 67", "note": "Medical standards and how to qualify.", "url": "document.html?type=regulations&id=part-67"},
+    {"label": "General operating & flight rules — GACAR Part 91", "note": "The rules every flight is flown by.", "url": "document.html?type=regulations&id=part-91"},
+    {"label": "Airmanship — FAA Pilot's Handbook of Aeronautical Knowledge", "note": "The core knowledge a pilot is built on.", "url": "document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"},
+    {"label": "Flying technique — FAA Airplane Flying Handbook", "note": "How the aircraft is actually flown.", "url": "document.html?type=reference&id=airplane-flying-handbook-faa-h-8083-3c"},
+    {"label": "Guide — Saudi PPL requirements", "note": "The plain-language walkthrough of the path.", "url": "guides/saudi-ppl-requirements.html"},
+    {"label": "Work the Ground School", "note": "Nine subjects, taught lesson by lesson.", "url": "study/groundschool.html"},
+    {"label": "Test yourself — Pilot Licensing quiz", "note": "Check what's stuck.", "url": "study/quiz.html?bank=pilot-licensing"}
+   ]
+  },
+  {
+   "id": "uas-operations",
+   "title": "Drone & UAS Operations",
+   "desc": "Everything on flying unmanned aircraft in the Kingdom, in order.",
+   "steps": [
+    {"label": "Registration & marking of small UAS — GACAR Part 48", "note": "Registering a model aircraft or small drone.", "url": "document.html?type=regulations&id=part-48"},
+    {"label": "Unmanned balloons, kites, model aircraft & UAS — GACAR Part 101", "note": "The baseline rules for unmanned flight.", "url": "document.html?type=regulations&id=part-101"},
+    {"label": "Non-recreational small UAS — GACAR Part 107", "note": "Commercial and advanced drone operations.", "url": "document.html?type=regulations&id=part-107"},
+    {"label": "Remote pilot certification — GACA AC-107-02", "note": "How to become a certified remote pilot.", "url": "document.html?type=reference&id=gaca-ac-107-02-remote-pilot-certification"},
+    {"label": "Advanced UAS operations — GACA AC-107-01", "note": "Beyond-visual-line-of-sight and advanced ops.", "url": "document.html?type=reference&id=gaca-ac-107-01-advanced-operations-with-unmanned-aircraft-systems"},
+    {"label": "The Unmanned Aircraft Systems handbook", "note": "GACA's topical guidance on UAS.", "url": "document.html?type=handbooks&id=unmanned-aircraft-systems"}
+   ]
+  },
+  {
+   "id": "aviation-medical",
+   "title": "The Aviation Medical",
+   "desc": "What the medical certificate requires — and the human factors behind it.",
+   "steps": [
+    {"label": "Medical standards — GACAR Part 67", "note": "The regulation that sets the standard.", "url": "document.html?type=regulations&id=part-67"},
+    {"label": "Guide — the GACA Class 1 medical", "note": "What to expect at the examination.", "url": "guides/gaca-medical-class-1.html"},
+    {"label": "Pilot vision", "note": "How the eye works, and its limits in flight.", "url": "document.html?type=reference&id=faa-brochure-pilot-vision"},
+    {"label": "Medications and flying", "note": "Which medications ground you, and why.", "url": "document.html?type=reference&id=faa-brochure-medications-and-flying"},
+    {"label": "Hypoxia", "note": "The silent hazard of altitude.", "url": "document.html?type=reference&id=faa-brochure-hypoxia"},
+    {"label": "Fatigue in aviation", "note": "Recognising and managing fatigue.", "url": "document.html?type=reference&id=faa-brochure-fatigue-in-aviation"},
+    {"label": "Test yourself — Medical Fitness quiz", "note": "Check what's stuck.", "url": "study/quiz.html?bank=medical"}
+   ]
+  },
+  {
+   "id": "foreign-licence",
+   "title": "Converting a Foreign Licence",
+   "desc": "The route for a pilot bringing a licence from another ICAO state.",
+   "steps": [
+    {"label": "Guide — converting a foreign licence to GACA", "note": "The plain-language overview.", "url": "guides/foreign-license-conversion-to-gaca.html"},
+    {"label": "Pilot certification — GACAR Part 61", "note": "Especially §61.55 on foreign-licence conversion.", "url": "document.html?type=regulations&id=part-61"},
+    {"label": "Guide — ICAO English language proficiency", "note": "The SAELPT and the Level 4 requirement.", "url": "guides/icao-english-saelpt.html"},
+    {"label": "The medical certificate — GACAR Part 67", "note": "A Saudi medical is still required.", "url": "document.html?type=regulations&id=part-67"},
+    {"label": "Test yourself — Pilot Licensing quiz", "note": "Confirm you have the rules straight.", "url": "study/quiz.html?bank=pilot-licensing"}
+   ]
+  },
+  {
+   "id": "airspace-vfr",
+   "title": "Airspace & VFR Flying",
+   "desc": "How Saudi airspace is structured and the rules for flying VFR within it.",
+   "steps": [
+    {"label": "Designated airspace, routes & altitudes — GACAR Part 71", "note": "How the Kingdom's airspace is laid out.", "url": "document.html?type=regulations&id=part-71"},
+    {"label": "General operating & flight rules — GACAR Part 91", "note": "VFR minima, cruising altitudes, special VFR.", "url": "document.html?type=regulations&id=part-91"},
+    {"label": "Tool — airspace structure", "note": "The ICAO classes A–G at a glance.", "url": "tools/airspace.html"},
+    {"label": "Tool — VFR weather minima", "note": "The minima by airspace class.", "url": "tools/vfr.html"},
+    {"label": "Test yourself — Airspace & Air Traffic quiz", "note": "Check what's stuck.", "url": "study/quiz.html?bank=airspace"},
+    {"label": "Test yourself — VFR & Flight Rules quiz", "note": "Drill the flight rules.", "url": "study/quiz.html?bank=vfr-flight-rules"}
+   ]
+  },
+  {
+   "id": "airworthiness",
+   "title": "Airworthiness & Maintenance",
+   "desc": "Keeping an aircraft legal to fly — certification, directives and maintenance.",
+   "steps": [
+    {"label": "Certification of products & articles — GACAR Part 21", "note": "How aircraft and parts are certified.", "url": "document.html?type=regulations&id=part-21"},
+    {"label": "Airworthiness directives — GACAR Part 39", "note": "Mandatory corrective action.", "url": "document.html?type=regulations&id=part-39"},
+    {"label": "Maintenance & alteration — GACAR Part 43", "note": "Who may work on an aircraft, and to what standard.", "url": "document.html?type=regulations&id=part-43"},
+    {"label": "Aircraft & Equipment certification handbook", "note": "GACA's topical guidance.", "url": "document.html?type=handbooks&id=aircraft-equipment-certification"},
+    {"label": "FAA Aviation Maintenance Technician Handbook — General", "note": "The foundation of maintenance knowledge.", "url": "document.html?type=reference&id=aviation-maintenance-technician-handbook-general-faa-h-8083-30b"},
+    {"label": "Test yourself — Aircraft, Equipment & Airworthiness quiz", "note": "Check what's stuck.", "url": "study/quiz.html?bank=aircraft-equipment"}
+   ]
+  }
+ ]
+}

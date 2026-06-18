@@ -1,0 +1,355 @@
+.page {
+  padding-block: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-block-size: calc(100dvh - var(--nav-h) - var(--space-12));
+}
+
+/* ── Header ── */
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.head h1 {
+  font-size: var(--fs-h2);
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  margin-block-start: var(--space-1);
+}
+
+/* Neon green "online" pulse dot */
+.statusDot {
+  display: inline-block;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background: var(--neon-green);
+  box-shadow: 0 0 6px var(--neon-green);
+  flex-shrink: 0;
+  animation: online-pulse 2.5s ease-in-out infinite;
+}
+@keyframes online-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--neon-green); }
+  50%       { opacity: 0.7; box-shadow: 0 0 14px var(--neon-green); }
+}
+
+.clear {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.clear:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.clear:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Message log ── */
+.log {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  overflow-y: auto;
+  min-block-size: 320px;
+  scroll-behavior: smooth;
+}
+
+/* ── Welcome screen ── */
+.welcome {
+  margin: auto 0;
+  text-align: center;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Captain Adel avatar monogram */
+.welcomeAvatar {
+  inline-size: 60px;
+  block-size: 60px;
+  border-radius: 50%;
+  background: var(--grad-brand);
+  color: var(--text-on-brand);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    var(--clay-shadow),
+    0 0 28px color-mix(in srgb, var(--brand) 40%, transparent);
+}
+
+.welcomeLead {
+  max-inline-size: 52ch;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+  margin-block-start: var(--space-1);
+}
+
+.suggestion {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  text-align: start;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.suggestion:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+}
+.suggestion:active {
+  transform: scale(0.97);
+  box-shadow: var(--clay-shadow-press);
+}
+
+/* ── Message bubbles ── */
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-inline-size: 85%;
+}
+.user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+.adel {
+  align-self: flex-start;
+}
+
+.bubble {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  white-space: pre-wrap;
+  line-height: var(--lh-snug);
+}
+
+.user .bubble {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  /* Bubble tail: flatten the bottom-end corner toward the user */
+  border-end-end-radius: var(--radius-sm);
+}
+
+.adel .bubble {
+  background: var(--surface-raised);
+  color: var(--text);
+  border-inline-start: 2px solid color-mix(in srgb, var(--brand) 45%, transparent);
+  border-end-start-radius: var(--radius-sm);
+}
+
+/* Thinking-dots replace the pending bubble text */
+.thinkingDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-block: var(--space-2);
+}
+.thinkingDots span {
+  display: block;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background: var(--brand-hover);
+  animation: dot-bounce 1.3s ease-in-out infinite;
+}
+.thinkingDots span:nth-child(1) { animation-delay: 0s; }
+.thinkingDots span:nth-child(2) { animation-delay: 0.18s; }
+.thinkingDots span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes dot-bounce {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.35; }
+  30%            { transform: translateY(-7px); opacity: 1; }
+}
+
+/* Streaming cursor — a soft blink while tokens arrive. */
+.caret {
+  display: inline-block;
+  inline-size: 2px;
+  block-size: 1em;
+  margin-inline-start: 2px;
+  vertical-align: text-bottom;
+  background: var(--brand-hover);
+  animation: caret-blink 1s steps(2, start) infinite;
+}
+@keyframes caret-blink {
+  to { visibility: hidden; }
+}
+
+/* ── Source citations ── */
+.sourcesWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.sourcesLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.sources {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+}
+.srcRow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  max-inline-size: 100%;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.srcRow:hover {
+  border-color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+}
+.srcCite {
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.srcDetails summary.srcCite {
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--dur) var(--ease);
+}
+.srcDetails summary.srcCite:hover {
+  color: var(--brand-hover);
+}
+.srcDetails summary.srcCite::before {
+  content: '▸';
+  display: inline-block;
+  margin-inline-end: var(--space-1);
+  color: var(--text-dim);
+}
+.srcDetails[open] summary.srcCite::before {
+  content: '▾';
+}
+.srcVerbatim {
+  margin-block: var(--space-2) var(--space-1);
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid var(--border-bright);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: pre-wrap;
+}
+.srcVer {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.srcOpen {
+  font-size: var(--fs-xs);
+  color: var(--link);
+  white-space: nowrap;
+}
+
+/* ── Composer (clay floating input bar) ── */
+.composer {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-end;
+  background: var(--surface);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  box-shadow: var(--clay-shadow);
+  padding: var(--space-3);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.composer:focus-within {
+  border-color: var(--brand-hover);
+  box-shadow:
+    var(--clay-shadow-hover),
+    0 0 0 2px color-mix(in srgb, var(--focus) 28%, transparent);
+}
+
+.input {
+  flex: 1;
+  resize: none;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  line-height: var(--lh-snug);
+  /* composer:focus-within handles the visual focus ring */
+}
+.input:focus {
+  outline: none;
+}
+
+.note {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .caret,
+  .statusDot,
+  .thinkingDots span {
+    animation: none !important;
+  }
+  .statusDot {
+    box-shadow: 0 0 6px var(--neon-green);
+  }
+  .thinkingDots span {
+    opacity: 0.7;
+  }
+}

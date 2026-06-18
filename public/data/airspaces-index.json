@@ -1,0 +1,334 @@
+{
+ "generated": "2026-06-09",
+ "source": "GACA AIP ENR 2 / AD 2 and regional AIPs — simplified circular depiction for study",
+ "sourceUrl": "https://gaca.gov.sa",
+ "note": "Approximate circles centred on the primary aerodrome and NOT drawn to scale. Real control zones and terminal areas are irregular and have published lateral and vertical limits — always verify against the current AIP ENR 2 and the approach charts.",
+ "schema": "Each entry has center [lat, lon] + radius_nm for the approximate depiction. To plot an authentic boundary from the AIP instead, add a polygon: an array of [lat, lon] vertices (a closed ring); the map renders the polygon in place of the circle.",
+ "count": 24,
+ "classes": [
+  {
+   "id": "CTR",
+   "label": "Control zone (CTR)",
+   "color": "#E0633E"
+  },
+  {
+   "id": "TMA",
+   "label": "Terminal area (TMA/CTA)",
+   "color": "#4A9CB8"
+  }
+ ],
+ "airspaces": [
+  {
+   "id": "OERK-CTR",
+   "name": "Riyadh CTR",
+   "name_ar": "منطقة مراقبة الرياض",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    24.9576,
+    46.6988
+   ],
+   "radius_nm": 8,
+   "unit": "Riyadh Tower"
+  },
+  {
+   "id": "OERK-TMA",
+   "name": "Riyadh TMA",
+   "name_ar": "منطقة الرياض الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    24.9576,
+    46.6988
+   ],
+   "radius_nm": 40,
+   "unit": "Riyadh Approach"
+  },
+  {
+   "id": "OEJN-CTR",
+   "name": "Jeddah CTR",
+   "name_ar": "منطقة مراقبة جدة",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    21.6796,
+    39.1565
+   ],
+   "radius_nm": 8,
+   "unit": "Jeddah Tower"
+  },
+  {
+   "id": "OEJN-TMA",
+   "name": "Jeddah TMA",
+   "name_ar": "منطقة جدة الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    21.6796,
+    39.1565
+   ],
+   "radius_nm": 40,
+   "unit": "Jeddah Approach"
+  },
+  {
+   "id": "OEDF-CTR",
+   "name": "Dammam CTR",
+   "name_ar": "منطقة مراقبة الدمام",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    26.4711,
+    49.7978
+   ],
+   "radius_nm": 8,
+   "unit": "Dammam Tower"
+  },
+  {
+   "id": "OEDF-TMA",
+   "name": "Dammam TMA",
+   "name_ar": "منطقة الدمام الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    26.4711,
+    49.7978
+   ],
+   "radius_nm": 35,
+   "unit": "Dammam Approach"
+  },
+  {
+   "id": "OEMA-CTR",
+   "name": "Madinah CTR",
+   "name_ar": "منطقة مراقبة المدينة",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    24.5534,
+    39.7051
+   ],
+   "radius_nm": 7,
+   "unit": "Madinah Tower"
+  },
+  {
+   "id": "OEMA-TMA",
+   "name": "Madinah TMA",
+   "name_ar": "منطقة المدينة الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    24.5534,
+    39.7051
+   ],
+   "radius_nm": 30,
+   "unit": "Madinah Approach"
+  },
+  {
+   "id": "OEAB-CTR",
+   "name": "Abha CTR",
+   "name_ar": "منطقة مراقبة أبها",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    18.2403,
+    42.6564
+   ],
+   "radius_nm": 7,
+   "unit": "Abha Tower"
+  },
+  {
+   "id": "OEAB-TMA",
+   "name": "Abha TMA",
+   "name_ar": "منطقة أبها الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    18.2403,
+    42.6564
+   ],
+   "radius_nm": 25,
+   "unit": "Abha Approach"
+  },
+  {
+   "id": "OETB-CTR",
+   "name": "Tabuk CTR",
+   "name_ar": "منطقة مراقبة تبوك",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    28.3654,
+    36.6189
+   ],
+   "radius_nm": 6,
+   "unit": "Tabuk Tower"
+  },
+  {
+   "id": "OEGN-CTR",
+   "name": "Jazan CTR",
+   "name_ar": "منطقة مراقبة جازان",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    16.9011,
+    42.5858
+   ],
+   "radius_nm": 6,
+   "unit": "Jazan Tower"
+  },
+  {
+   "id": "OETF-CTR",
+   "name": "Taif CTR",
+   "name_ar": "منطقة مراقبة الطائف",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    21.4834,
+    40.5444
+   ],
+   "radius_nm": 6,
+   "unit": "Taif Tower"
+  },
+  {
+   "id": "OEGS-CTR",
+   "name": "Gassim CTR",
+   "name_ar": "منطقة مراقبة القصيم",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    26.3028,
+    43.7744
+   ],
+   "radius_nm": 6,
+   "unit": "Gassim Tower"
+  },
+  {
+   "id": "OEYN-CTR",
+   "name": "Yanbu CTR",
+   "name_ar": "منطقة مراقبة ينبع",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    24.1442,
+    38.0636
+   ],
+   "radius_nm": 6,
+   "unit": "Yanbu Tower"
+  },
+  {
+   "id": "OEHL-CTR",
+   "name": "Hail CTR",
+   "name_ar": "منطقة مراقبة حائل",
+   "type": "CTR",
+   "class": "D",
+   "center": [
+    27.4379,
+    41.6863
+   ],
+   "radius_nm": 6,
+   "unit": "Hail Tower"
+  },
+  {
+   "id": "OMDB-TMA",
+   "name": "Emirates (Dubai) TMA",
+   "name_ar": "منطقة دبي الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    25.2528,
+    55.3644
+   ],
+   "radius_nm": 40,
+   "unit": "Dubai Approach"
+  },
+  {
+   "id": "OMAA-TMA",
+   "name": "Abu Dhabi TMA",
+   "name_ar": "منطقة أبوظبي الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    24.433,
+    54.6511
+   ],
+   "radius_nm": 35,
+   "unit": "Abu Dhabi Approach"
+  },
+  {
+   "id": "OTHH-TMA",
+   "name": "Doha TMA",
+   "name_ar": "منطقة الدوحة الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    25.2731,
+    51.6081
+   ],
+   "radius_nm": 35,
+   "unit": "Doha Approach"
+  },
+  {
+   "id": "OBBI-TMA",
+   "name": "Bahrain TMA",
+   "name_ar": "منطقة البحرين الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    26.2708,
+    50.6336
+   ],
+   "radius_nm": 30,
+   "unit": "Bahrain Approach"
+  },
+  {
+   "id": "OKBK-TMA",
+   "name": "Kuwait TMA",
+   "name_ar": "منطقة الكويت الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    29.2266,
+    47.9689
+   ],
+   "radius_nm": 35,
+   "unit": "Kuwait Approach"
+  },
+  {
+   "id": "OOMS-TMA",
+   "name": "Muscat TMA",
+   "name_ar": "منطقة مسقط الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    23.5933,
+    58.2844
+   ],
+   "radius_nm": 30,
+   "unit": "Muscat Approach"
+  },
+  {
+   "id": "OJAI-TMA",
+   "name": "Amman TMA",
+   "name_ar": "منطقة عمّان الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    31.7226,
+    35.9932
+   ],
+   "radius_nm": 30,
+   "unit": "Amman Approach"
+  },
+  {
+   "id": "HECA-TMA",
+   "name": "Cairo TMA",
+   "name_ar": "منطقة القاهرة الطرفية",
+   "type": "TMA",
+   "class": "C",
+   "center": [
+    30.1219,
+    31.4056
+   ],
+   "radius_nm": 35,
+   "unit": "Cairo Approach"
+  }
+ ]
+}
