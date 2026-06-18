@@ -127,7 +127,9 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
   line-height: var(--lh-snug);
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 .toc a:hover {
   background: color-mix(in srgb, var(--brand) 8%, var(--surface-raised));

@@ -5,7 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { CORPUS, fetchJson, searchHref } from '../../lib/content';
-import type { CorpusDoc, CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '../../lib/content';
+import type {
+  CorpusDoc,
+  CorpusIndex,
+  LibraryKind,
+  SearchEntry,
+  SearchIndex,
+} from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import styles from './Library.module.css';

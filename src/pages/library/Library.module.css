@@ -155,7 +155,8 @@
   font-weight: var(--fw-semibold);
 }
 .chipActive .count {
-  background: color-mix(in srgb, var(--text-on-brand) 22%, transparent);
+  /* Darken (don't lighten) the pill so white keeps ≥4.5:1 on the teal chip. */
+  background: color-mix(in srgb, var(--falcon-night) 30%, transparent);
   color: var(--text-on-brand);
 }
 

@@ -18,7 +18,9 @@
   border-radius: var(--clay-radius);
   background: var(--surface);
   box-shadow: var(--clay-shadow);
-  transition: box-shadow var(--dur) var(--ease), border-inline-start-color var(--dur) var(--ease);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    border-inline-start-color var(--dur) var(--ease);
 }
 .item:hover {
   box-shadow: var(--clay-shadow-hover);

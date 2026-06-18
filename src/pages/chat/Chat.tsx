@@ -178,7 +178,9 @@ export function Chat() {
       <div className={styles.log} ref={logRef} role="log" aria-live="polite">
         {messages.length === 0 && (
           <div className={styles.welcome}>
-            <div className={styles.welcomeAvatar} aria-hidden="true">CA</div>
+            <div className={styles.welcomeAvatar} aria-hidden="true">
+              CA
+            </div>
             <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
             <div className={styles.suggestions}>
               {SUGGESTIONS.map((s) => (
@@ -207,11 +209,7 @@ export function Chat() {
             )}
             <div className={styles.bubble}>
               {m.pending ? (
-                <span
-                  className={styles.thinkingDots}
-                  aria-label={t('chat.thinking')}
-                  role="status"
-                >
+                <span className={styles.thinkingDots} aria-label={t('chat.thinking')} role="status">
                   <span aria-hidden="true" />
                   <span aria-hidden="true" />
                   <span aria-hidden="true" />
