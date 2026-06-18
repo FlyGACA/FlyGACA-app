@@ -51,6 +51,9 @@ export function GroundSchool() {
                   count={t('study.gsProgress', { done, total: m.lessons.length })}
                 />
                 <p className={styles.summary}>{m.summary}</p>
+                <p className={styles.progress}>
+                  {t('study.gsProgress', { done, total: m.lessons.length })}
+                </p>
                 <div
                   className={styles.progressBar}
                   role="progressbar"
