@@ -15,6 +15,10 @@ const PAGES = [
 
 for (const path of PAGES) {
   test(`a11y: ${path}`, async ({ page }) => {
+    // Scan the settled page: the app disables entrance animations under
+    // reduced-motion (stagger-grid children → opacity:1), so axe never samples
+    // a card mid-fade — which would otherwise report transient low contrast.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
     // Audit the resting UI, not a transient animation frame. The stagger-grid
     // entry fade-up briefly lowers card opacity, which axe catches as a

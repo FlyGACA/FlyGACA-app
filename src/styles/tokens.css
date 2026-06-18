@@ -16,7 +16,19 @@
   --sage-bright: #b5ddc2; /* highlight, focus ring */
   --falcon-gold: #c8a04a; /* heritage accent — used sparingly */
   --falcon-clay: #cf6b52; /* warm clay — caution / "hold" states */
+  --falcon-mist-2: #243749; /* brighter mist — raised border on dark (Design System) */
+  --falcon-gold-soft: #e0c588; /* softened gold — gold button hover */
   --ivory: #f5f2ed; /* light reading surface */
+
+  /* --- Light reading surfaces + ink (authored per The-Office Design System;
+     the app ships dark-first, so these seed future light/reading views) --- */
+  --ivory-warm: #fbf8f2; /* elevated light surface */
+  --ivory-edge: #e5dfd3; /* border on light */
+  --ink-soft: #3f4a55; /* secondary text on light */
+  --ink-mute: #7a8590; /* tertiary / metadata on light */
+  --moon: var(--ivory); /* primary text on dark gradient bands */
+  --moon-soft: #a8b5c0; /* secondary text on dark bands */
+  --moon-mute: #5e6c7a; /* tertiary text on dark bands */
 
   /* --- Semantic surfaces --- */
   --bg: var(--falcon-night);
@@ -54,6 +66,16 @@
   /* --- The brand gradient: teal -> sage (wordmark GACA, hairlines) --- */
   --grad-brand: linear-gradient(102deg, var(--falcon-teal) 0%, var(--falcon-sage) 100%);
   --grad-wing: linear-gradient(155deg, var(--teal-bright) 0%, var(--falcon-sage) 100%);
+  /* The signature hero band — night deepening into the falcon's teal (Design System) */
+  --falcon-stroke: linear-gradient(135deg, #0a0e12 0%, #1a3548 35%, #2d6e8a 70%, #4a9cb8 100%);
+
+  /* --- Category accent map: cycles the Falcon hues for per-category card bars,
+     section headers and badges. Frontend-only; the corpus carries no colour. --- */
+  --cat-1: var(--teal-bright);
+  --cat-2: var(--falcon-sage);
+  --cat-3: var(--falcon-gold);
+  --cat-4: var(--falcon-teal);
+  --cat-5: var(--falcon-clay);
 
   /* --- Glow tokens (the only glows allowed on the mark / hero) --- */
   --glow-teal: radial-gradient(closest-side, rgba(45, 110, 138, 0.55), rgba(45, 110, 138, 0) 70%);
@@ -108,6 +130,11 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.45);
   --shadow-pop: 0 18px 50px rgba(0, 0, 0, 0.55);
+  /* Cool, low-spread shadows for light reading surfaces (Design System §06).
+     Dark UI keeps --shadow-card / --shadow-pop above. */
+  --shadow-1: 0 1px 2px rgba(15, 26, 36, 0.04), 0 1px 3px rgba(15, 26, 36, 0.06);
+  --shadow-2: 0 4px 8px -2px rgba(15, 26, 36, 0.08), 0 2px 4px -2px rgba(15, 26, 36, 0.04);
+  --shadow-3: 0 12px 24px -8px rgba(15, 26, 36, 0.14), 0 4px 8px -4px rgba(15, 26, 36, 0.06);
 
   /* --- Claymorphism (2026 trend) ---
      Double-shadow system: outer drop + inner highlight. Borders 3-4px.
@@ -135,6 +162,8 @@
 
   /* --- Motion --- */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-glide: cubic-bezier(0.2, 0.7, 0.2, 1); /* button / control glide (Design System) */
+  --ease-lift: var(--ease-entry); /* card lift — shares the kinetic-entry curve */
   --dur: 0.2s;
   --dur-slow: 0.4s;
 
