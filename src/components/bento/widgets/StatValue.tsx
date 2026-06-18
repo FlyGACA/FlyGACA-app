@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { animate, useReducedMotion } from 'framer-motion';
+import shared from './widgets.module.css';
 
 interface StatValueProps {
   value: number;
@@ -33,11 +34,16 @@ export function StatValue({ value, className }: StatValueProps) {
     return () => controls.stop();
   }, [value, reduce]);
 
+  // The animated digits are hidden from assistive tech (they'd otherwise be
+  // announced mid-count); a visually-hidden sibling carries the true final value.
   // Initial paint shows 0 while animating (avoids a flash of the final value),
   // or the value itself when motion is reduced.
   return (
-    <span ref={ref} className={className}>
-      {reduce ? value : 0}
+    <span className={className}>
+      <span ref={ref} aria-hidden="true">
+        {reduce ? value : 0}
+      </span>
+      <span className={shared.srOnly}>{value}</span>
     </span>
   );
 }

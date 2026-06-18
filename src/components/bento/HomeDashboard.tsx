@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { BentoGrid } from './BentoGrid';
+import { AdelFeatureWidget } from './widgets/AdelFeatureWidget';
+import { SearchFeatureWidget } from './widgets/SearchFeatureWidget';
 import { RadarWidget } from './widgets/RadarWidget';
 import { RegStreamWidget } from './widgets/RegStreamWidget';
 import { ComplianceWidget } from './widgets/ComplianceWidget';
 import { ToolsWidget } from './widgets/ToolsWidget';
 import { StudyWidget } from './widgets/StudyWidget';
-import { AdelWidget } from './widgets/AdelWidget';
 import styles from './HomeDashboard.module.css';
 
 /**
@@ -22,12 +23,13 @@ export default function HomeDashboard() {
         <span className={styles.rule} aria-hidden="true" />
       </header>
       <BentoGrid label={t('home.dashboard.region')}>
+        <AdelFeatureWidget />
+        <SearchFeatureWidget />
         <RadarWidget />
         <RegStreamWidget />
         <ComplianceWidget />
         <ToolsWidget />
         <StudyWidget />
-        <AdelWidget />
       </BentoGrid>
     </div>
   );

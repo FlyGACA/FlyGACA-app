@@ -1,0 +1,49 @@
+import { useState, type FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { BentoCard } from '../BentoCard';
+import shared from './widgets.module.css';
+
+/**
+ * Captain Adel feature tile — a co-equal hero with an inline "ask" field that
+ * deep-links into the chat (which auto-sends the `?q=` question). The card is not
+ * itself a link, so the input is the natural focus target.
+ */
+export function AdelFeatureWidget() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [q, setQ] = useState('');
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    const trimmed = q.trim();
+    navigate(trimmed ? `/chat?q=${encodeURIComponent(trimmed)}` : '/chat');
+  }
+
+  return (
+    <BentoCard span="wide" tone="green">
+      <span className={shared.pill}>
+        <span className={shared.dot} aria-hidden="true" />
+        {t('home.dashboard.adel.status')}
+      </span>
+      <p className={shared.heading}>{t('home.dashboard.adel.heading')}</p>
+      <p className={shared.desc}>{t('home.dashboard.adel.desc')}</p>
+      <form className={shared.featForm} onSubmit={onSubmit}>
+        <input
+          className={shared.featInput}
+          type="text"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={t('home.dashboard.ask.placeholder')}
+          aria-label={t('home.dashboard.ask.placeholder')}
+        />
+        <button className={shared.featBtn} type="submit">
+          {t('home.dashboard.ask.submit')}
+        </button>
+      </form>
+      <Link className={shared.featOpen} to="/chat">
+        {t('home.dashboard.ask.open')} →
+      </Link>
+    </BentoCard>
+  );
+}

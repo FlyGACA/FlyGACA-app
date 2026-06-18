@@ -117,6 +117,11 @@
   grid-row: span 2;
 }
 
+/* Half-width single-row tile — the co-equal feature tiles (Ask / Search). */
+.spanWide {
+  grid-column: span 6;
+}
+
 /* Tablet: 6-col grid */
 @media (max-width: 960px) {
   .spanSm {
@@ -124,7 +129,8 @@
   }
   .spanMd,
   .spanLg,
-  .spanTall {
+  .spanTall,
+  .spanWide {
     grid-column: span 6;
   }
   .spanLg,
@@ -138,7 +144,8 @@
   .spanSm,
   .spanMd,
   .spanLg,
-  .spanTall {
+  .spanTall,
+  .spanWide {
     grid-column: 1 / -1;
   }
 }

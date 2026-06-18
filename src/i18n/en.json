@@ -34,6 +34,19 @@
     "dashboard": {
       "region": "Fly GACA dashboard",
       "overview": "Operations overview",
+      "ask": {
+        "placeholder": "Ask about any GACAR Part…",
+        "submit": "Ask",
+        "open": "Open the full chat"
+      },
+      "search": {
+        "eyebrow": "Regulation search",
+        "heading": "Find any regulation",
+        "desc": "Search GACAR, reference guidance and handbooks.",
+        "placeholder": "Search GACAR, reference, handbooks…",
+        "submit": "Search",
+        "open": "Browse the library"
+      },
       "radar": {
         "eyebrow": "Charts · Radar",
         "title": "Aeronautical charts",
