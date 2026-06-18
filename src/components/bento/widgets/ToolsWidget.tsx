@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
 import { TOOLS } from '../../../lib/tools';
-import { StatValue } from './StatValue';
 import shared from './widgets.module.css';
 
 const QUICK = ['crosswind', 'tas', 'density-altitude'];
@@ -20,7 +19,7 @@ export function ToolsWidget() {
       <p className={shared.eyebrow}>{t('home.dashboard.tools.eyebrow')}</p>
       <p className={shared.heading}>{t('home.dashboard.tools.heading')}</p>
       <div className={shared.statRow}>
-        <StatValue value={LIVE_COUNT} className={shared.stat} />
+        <span className={shared.statSecondary}>{LIVE_COUNT}</span>
         <span className={shared.unit}>{t('home.dashboard.tools.live')}</span>
       </div>
       <div className={shared.chips}>

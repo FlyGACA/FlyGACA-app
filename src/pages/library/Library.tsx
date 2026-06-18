@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -37,7 +37,9 @@ export function Library() {
   const [kind, setKind] = useState<LibraryKind>('regulations');
   const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index);
   const [category, setCategory] = useState<string>('all');
-  const [query, setQuery] = useState('');
+  // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
+  const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
 
   // Reset the category filter whenever the corpus changes.
   useEffect(() => setCategory('all'), [kind]);

@@ -11,7 +11,7 @@ export function RegStreamWidget() {
   const { data, loading } = useFetchJson<GacarIndex>(CORPUS.regulations.index);
 
   return (
-    <BentoCard span="md" tone="green" to="/library" label={t('home.dashboard.reg.cta')}>
+    <BentoCard span="md" tone="cyan" to="/library" label={t('home.dashboard.reg.cta')}>
       <span className={shared.pill}>
         <span className={shared.dot} aria-hidden="true" />
         {t('home.dashboard.reg.live')}
@@ -21,7 +21,7 @@ export function RegStreamWidget() {
         <div className={shared.skeleton} />
       ) : (
         <div className={shared.statRow}>
-          <StatValue value={data.count} className={`${shared.stat} ${shared.statGreen}`} />
+          <StatValue value={data.count} className={`${shared.stat} ${shared.statCyan}`} />
           <span className={shared.unit}>
             {t('home.dashboard.reg.streams', { count: data.categories.length })}
           </span>
