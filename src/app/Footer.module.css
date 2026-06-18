@@ -126,8 +126,8 @@
   inline-size: 44px;
   block-size: 44px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-bright);
-  background: transparent;
+  border: var(--clay-border);
+  background: var(--surface);
   color: var(--text);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-sm);
@@ -135,13 +135,22 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: var(--clay-shadow);
   transition:
+    box-shadow var(--dur) var(--ease),
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .langToggle:hover {
-  border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
   color: var(--brand-hover);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
+  background: color-mix(in srgb, var(--brand) 10%, var(--surface));
+}
+.langToggle:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.95);
 }

@@ -52,7 +52,7 @@ export function WindTable() {
       {rows.length === 0 ? (
         <p className={styles.empty}>{t('windTable.empty')}</p>
       ) : (
-        <table className={styles.table}>
+        <div className={styles.tableWrap}><table className={styles.table}>
           <thead>
             <tr>
               <th>{t('windTable.runwayCol')}</th>
@@ -78,7 +78,7 @@ export function WindTable() {
               );
             })}
           </tbody>
-        </table>
+        </table></div>
       )}
     </CalcShell>
   );

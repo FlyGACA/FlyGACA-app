@@ -46,6 +46,12 @@ export function GroundSchool() {
                 <p className={styles.progress}>
                   {t('study.gsProgress', { done, total: m.lessons.length })}
                 </p>
+                <div className={styles.progressBar} role="progressbar" aria-valuenow={done} aria-valuemin={0} aria-valuemax={m.lessons.length}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ inlineSize: `${m.lessons.length > 0 ? Math.round((done / m.lessons.length) * 100) : 0}%` }}
+                  />
+                </div>
                 <ul className={styles.lessons}>
                   {m.lessons.map((l) => (
                     <Lesson

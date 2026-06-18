@@ -14,9 +14,10 @@
 }
 
 .module {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
   padding: var(--space-5);
 }
 .moduleTitle {
@@ -30,7 +31,22 @@
 .progress {
   font-size: var(--fs-xs);
   color: var(--accent-bright);
-  margin-block: var(--space-2) var(--space-4);
+  margin-block: var(--space-2) var(--space-1);
+}
+
+/* Progress bar track */
+.progressBar {
+  block-size: 4px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  margin-block-end: var(--space-4);
+  overflow: hidden;
+}
+.progressFill {
+  block-size: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--grad-brand);
+  transition: inline-size 0.4s var(--ease-entry);
 }
 
 .lessons {
@@ -44,24 +60,30 @@
 
 .lesson {
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--bg);
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .lessonDone {
-  border-color: var(--brand);
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
 }
 
 .check {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  min-height: 36px;
   cursor: pointer;
 }
 .check input {
   inline-size: 18px;
   block-size: 18px;
   accent-color: var(--brand);
+  flex-shrink: 0;
 }
 .lessonTitle {
   font-weight: var(--fw-semibold);
@@ -79,11 +101,15 @@
   gap: var(--space-2);
 }
 .action {
-  padding: var(--space-1) var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: var(--space-1) var(--space-4);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .action:hover {
   border-color: var(--brand-hover);

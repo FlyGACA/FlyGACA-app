@@ -1,3 +1,9 @@
+.tableWrap {
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  box-shadow: var(--clay-shadow);
+  overflow-x: auto;
+}
 .table {
   inline-size: 100%;
   border-collapse: collapse;
@@ -15,12 +21,16 @@
   letter-spacing: 0.04em;
   color: var(--text-dim);
   font-weight: var(--fw-semibold);
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
 }
 .table td {
   color: var(--text);
 }
+.table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface-raised) 60%, transparent);
+}
 .bad {
-  color: #e5534b;
+  color: var(--color-error);
   font-weight: var(--fw-semibold);
 }
 .empty {

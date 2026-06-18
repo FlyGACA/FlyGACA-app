@@ -23,9 +23,15 @@
   flex-wrap: wrap;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition: box-shadow var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.stop:hover {
+  box-shadow: var(--clay-shadow-hover);
+  background: color-mix(in srgb, var(--brand) 4%, var(--surface));
 }
 .stopHead {
   display: flex;
