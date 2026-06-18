@@ -16,16 +16,43 @@
 
 .field input {
   padding: var(--space-3);
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   font: inherit;
   font-variant-numeric: tabular-nums;
+  transition: border-color var(--dur) var(--ease);
 }
 .field input:focus {
   border-color: var(--brand-hover);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.fieldInvalid input {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+.fieldInvalid input:focus {
+  outline-color: var(--color-error);
+}
+.fieldValid input {
+  border-color: var(--color-success);
+}
+
+.fieldError {
+  font-size: var(--fs-xs);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.fieldError::before {
+  content: '⚠';
+  font-size: 0.85em;
+  flex-shrink: 0;
 }
 
 .outputs {

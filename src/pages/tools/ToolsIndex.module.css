@@ -17,6 +17,7 @@
   inline-size: 100%;
   max-inline-size: 520px;
   padding: var(--space-3) var(--space-4);
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
@@ -25,7 +26,8 @@
 }
 .search:focus {
   border-color: var(--brand-hover);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .category {
@@ -69,13 +71,17 @@
 }
 
 .card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
-  transition: border-color var(--dur) var(--ease);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .card:hover {
-  border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
 }
 
 .pending {

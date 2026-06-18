@@ -1,0 +1,844 @@
+extend type Category {
+  """
+  ✨ List `DocumentCategory` objects in a one-to-many relationship (where `DocumentCategory`.`category` is this object).
+  """
+  documentCategories_on_category(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentCategory_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentCategory_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentCategory_Having
+  ): [DocumentCategory!]! @fdc_generated(from: "DocumentCategory.category", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Document` objects using `DocumentCategory` as the join table (a `DocumentCategory` object exists where its `category` is this and its `document` is that).
+  """
+  documents_via_DocumentCategory(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentCategory_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentCategory_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentCategory_Having
+  ): [Document!]! @fdc_generated(from: "DocumentCategory", purpose: QUERY_MULTIPLE_MANY_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Category", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Category` table.
+  """
+  _count: Int! @fdc_generated(from: "Category.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Category` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Category.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Category` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Category.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Category` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Category.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Category` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Category.name", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Category` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Category.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Category` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Category.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Category.id", purpose: ENTITY_ID)
+}
+extend type Document {
+  """
+  ✨ List `DocumentCategory` objects in a one-to-many relationship (where `DocumentCategory`.`document` is this object).
+  """
+  documentCategories_on_document(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentCategory_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentCategory_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentCategory_Having
+  ): [DocumentCategory!]! @fdc_generated(from: "DocumentCategory.document", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `DocumentRating` objects in a one-to-many relationship (where `DocumentRating`.`document` is this object).
+  """
+  documentRatings_on_document(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentRating_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentRating_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentRating_Having
+  ): [DocumentRating!]! @fdc_generated(from: "DocumentRating.document", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `FavoriteDocument` objects in a one-to-many relationship (where `FavoriteDocument`.`document` is this object).
+  """
+  favoriteDocuments_on_document(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: FavoriteDocument_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [FavoriteDocument_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: FavoriteDocument_Having
+  ): [FavoriteDocument!]! @fdc_generated(from: "FavoriteDocument.document", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Category` objects using `DocumentCategory` as the join table (a `DocumentCategory` object exists where its `document` is this and its `category` is that).
+  """
+  categories_via_DocumentCategory(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentCategory_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentCategory_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentCategory_Having
+  ): [Category!]! @fdc_generated(from: "DocumentCategory", purpose: QUERY_MULTIPLE_MANY_TO_MANY)
+  """
+  ✨ List `User` objects using `DocumentRating` as the join table (a `DocumentRating` object exists where its `document` is this and its `user` is that).
+  """
+  users_via_DocumentRating(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentRating_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentRating_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentRating_Having
+  ): [User!]! @fdc_generated(from: "DocumentRating", purpose: QUERY_MULTIPLE_MANY_TO_MANY)
+  """
+  ✨ List `User` objects using `FavoriteDocument` as the join table (a `FavoriteDocument` object exists where its `document` is this and its `user` is that).
+  """
+  users_via_FavoriteDocument(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: FavoriteDocument_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [FavoriteDocument_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: FavoriteDocument_Having
+  ): [User!]! @fdc_generated(from: "FavoriteDocument", purpose: QUERY_MULTIPLE_MANY_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Document", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Document` table.
+  """
+  _count: Int! @fdc_generated(from: "Document.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `author` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  author_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.author", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `documentUrl` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  documentUrl_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.documentUrl", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `gacaReferenceNumber` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  gacaReferenceNumber_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.gacaReferenceNumber", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `publicationDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  publicationDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.publicationDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `publisher` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  publisher_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.publisher", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `title` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  title_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.title", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Document` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Document.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `publicationDate` field in the `Document` table.
+  """
+  publicationDate_min: Date @fdc_generated(from: "Document.publicationDate", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Document` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Document.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `publicationDate` field in the `Document` table.
+  """
+  publicationDate_max: Date @fdc_generated(from: "Document.publicationDate", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Document.id", purpose: ENTITY_ID)
+}
+extend type DocumentCategory {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "DocumentCategory", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `DocumentCategory` table.
+  """
+  _count: Int! @fdc_generated(from: "DocumentCategory.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentCategory` table where the `categoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  categoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentCategory.categoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentCategory` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentCategory.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentCategory` table where the `documentId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  documentId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentCategory.documentId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `DocumentCategory` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "DocumentCategory.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `DocumentCategory` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "DocumentCategory.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "DocumentCategory.documentId,categoryId", purpose: ENTITY_ID)
+}
+extend type DocumentRating {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "DocumentRating", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `DocumentRating` table.
+  """
+  _count: Int! @fdc_generated(from: "DocumentRating.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentRating` table where the `comment` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  comment_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentRating.comment", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentRating` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentRating.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentRating` table where the `documentId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  documentId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentRating.documentId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentRating` table where the `ratingValue` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  ratingValue_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentRating.ratingValue", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `DocumentRating` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "DocumentRating.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `ratingValue` field in the `DocumentRating` table.
+  """
+  ratingValue_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "DocumentRating.ratingValue", purpose: QUERY_SUM)
+  """
+  ✨ Average the `ratingValue` field in the `DocumentRating` table.
+  """
+  ratingValue_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "DocumentRating.ratingValue", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `DocumentRating` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "DocumentRating.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `ratingValue` field in the `DocumentRating` table.
+  """
+  ratingValue_min: Int @fdc_generated(from: "DocumentRating.ratingValue", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `DocumentRating` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "DocumentRating.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `ratingValue` field in the `DocumentRating` table.
+  """
+  ratingValue_max: Int @fdc_generated(from: "DocumentRating.ratingValue", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "DocumentRating.userId,documentId", purpose: ENTITY_ID)
+}
+extend type FavoriteDocument {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "FavoriteDocument", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `FavoriteDocument` table.
+  """
+  _count: Int! @fdc_generated(from: "FavoriteDocument.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `FavoriteDocument` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "FavoriteDocument.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `FavoriteDocument` table where the `documentId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  documentId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "FavoriteDocument.documentId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `FavoriteDocument` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "FavoriteDocument.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `FavoriteDocument` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "FavoriteDocument.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `FavoriteDocument` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "FavoriteDocument.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "FavoriteDocument.userId,documentId", purpose: ENTITY_ID)
+}
+extend type User {
+  """
+  ✨ List `DocumentRating` objects in a one-to-many relationship (where `DocumentRating`.`user` is this object).
+  """
+  documentRatings_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentRating_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentRating_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentRating_Having
+  ): [DocumentRating!]! @fdc_generated(from: "DocumentRating.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `FavoriteDocument` objects in a one-to-many relationship (where `FavoriteDocument`.`user` is this object).
+  """
+  favoriteDocuments_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: FavoriteDocument_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [FavoriteDocument_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: FavoriteDocument_Having
+  ): [FavoriteDocument!]! @fdc_generated(from: "FavoriteDocument.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Document` objects using `DocumentRating` as the join table (a `DocumentRating` object exists where its `user` is this and its `document` is that).
+  """
+  documents_via_DocumentRating(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DocumentRating_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DocumentRating_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: DocumentRating_Having
+  ): [Document!]! @fdc_generated(from: "DocumentRating", purpose: QUERY_MULTIPLE_MANY_TO_MANY)
+  """
+  ✨ List `Document` objects using `FavoriteDocument` as the join table (a `FavoriteDocument` object exists where its `user` is this and its `document` is that).
+  """
+  documents_via_FavoriteDocument(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: FavoriteDocument_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [FavoriteDocument_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: FavoriteDocument_Having
+  ): [Document!]! @fdc_generated(from: "FavoriteDocument", purpose: QUERY_MULTIPLE_MANY_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "User", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `User` table.
+  """
+  _count: Int! @fdc_generated(from: "User.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `displayName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  displayName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.displayName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.email", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `photoUrl` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  photoUrl_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.photoUrl", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `userRole` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userRole_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.userRole", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `User` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `User` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "User.id", purpose: ENTITY_ID)
+}
