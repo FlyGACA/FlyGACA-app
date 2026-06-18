@@ -29,6 +29,8 @@
 }
 .inputRow:focus-within {
   border-color: var(--brand-hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .input {
@@ -114,5 +116,5 @@
   color: var(--accent);
 }
 .bad dd {
-  color: #e5534b;
+  color: var(--danger);
 }

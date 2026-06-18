@@ -13,7 +13,11 @@ export function ResultStat({ label, value, sub, tone }: ResultStatProps) {
   return (
     <div className={`${styles.stat} ${tone ? styles[tone] : ''}`}>
       <dt>{label}</dt>
-      <dd>{value}</dd>
+      {/* dir="ltr" + bdi isolation keep LTR measurements ("13.8 kt", "340°")
+          in order under RTL instead of rendering as "kt 13.8". */}
+      <dd>
+        <bdi dir="ltr">{value}</bdi>
+      </dd>
       {sub != null && <span className={styles.sub}>{sub}</span>}
     </div>
   );

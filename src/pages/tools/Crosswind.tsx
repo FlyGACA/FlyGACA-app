@@ -34,6 +34,22 @@ export function Crosswind() {
         })
     : '';
 
+  const diagramLabel = result
+    ? Math.abs(result.crosswind) < 0.5
+      ? t('crosswind.diagramLabelCalm', {
+          rwy: result.runwayHeading,
+          dir: Math.round(parseFloat(inputs.wdir)),
+          spd: Math.round(parseFloat(inputs.wspd)),
+        })
+      : t('crosswind.diagramLabel', {
+          rwy: result.runwayHeading,
+          dir: Math.round(parseFloat(inputs.wdir)),
+          spd: Math.round(parseFloat(inputs.wspd)),
+          xw: Math.abs(result.crosswind).toFixed(1),
+          side: result.crosswind >= 0 ? t('crosswind.right') : t('crosswind.left'),
+        })
+    : undefined;
+
   const adelPrompt = () => {
     if (!result) return null;
     return (
@@ -50,12 +66,19 @@ export function Crosswind() {
     <CalcShell
       title={t('crosswind.title')}
       intro={t('crosswind.intro')}
+      category={t('tools.categories.wind-runway')}
+      formula={t('crosswind.formula')}
       onExample={() => {
         set('rwy', EXAMPLE.rwy);
         set('wdir', EXAMPLE.wdir);
         set('wspd', EXAMPLE.wspd);
       }}
       adelPrompt={adelPrompt}
+      related={[
+        { to: '/tools/wind-table', label: t('tools.items.wind-table.name') },
+        { to: '/tools/takeoff-landing', label: t('tools.items.takeoff-landing.name') },
+        { to: '/tools/wind-triangle', label: t('tools.items.wind-triangle.name') },
+      ]}
     >
       <div className={styles.grid}>
         <div className={styles.inputs}>
@@ -89,13 +112,16 @@ export function Crosswind() {
         </div>
 
         <div className={styles.diagram}>
-          {result && (
+          {result ? (
             <WindDiagram
               runwayHeading={result.runwayHeading}
               windDir={parseFloat(inputs.wdir)}
               windSpeed={parseFloat(inputs.wspd)}
               crosswind={result.crosswind}
+              label={diagramLabel}
             />
+          ) : (
+            <p className={styles.diagramPlaceholder}>{t('crosswind.diagramHint')}</p>
           )}
         </div>
       </div>
@@ -103,26 +129,30 @@ export function Crosswind() {
       <dl className={styles.outputs}>
         <div>
           <dt>{t('crosswind.runwayHeading')}</dt>
-          <dd>{result ? `${result.runwayHeading}°` : '—'}</dd>
+          <dd>
+            <bdi dir="ltr">{result ? `${result.runwayHeading}°` : '—'}</bdi>
+          </dd>
         </div>
         <div>
           <dt>{t('crosswind.crosswind')}</dt>
           <dd>
-            {result ? `${Math.abs(result.crosswind).toFixed(1)} kt` : '—'}
-            <span className={styles.sub}>{side}</span>
+            <bdi dir="ltr">{result ? `${Math.abs(result.crosswind).toFixed(1)} kt` : '—'}</bdi>
+            {result && <span className={styles.sub}>{side}</span>}
           </dd>
         </div>
         <div>
           <dt>
             {result && result.headwind < 0 ? t('crosswind.tailwind') : t('crosswind.headwind')}
           </dt>
-          <dd className={result && result.headwind < 0 ? styles.bad : styles.good}>
-            {result ? `${Math.abs(result.headwind).toFixed(1)} kt` : '—'}
+          <dd className={result ? (result.headwind < 0 ? styles.bad : styles.good) : undefined}>
+            <bdi dir="ltr">{result ? `${Math.abs(result.headwind).toFixed(1)} kt` : '—'}</bdi>
           </dd>
         </div>
         <div>
           <dt>{t('crosswind.angle')}</dt>
-          <dd>{result ? `${Math.round(Math.abs(result.angle))}°` : '—'}</dd>
+          <dd>
+            <bdi dir="ltr">{result ? `${Math.round(Math.abs(result.angle))}°` : '—'}</bdi>
+          </dd>
         </div>
       </dl>
       {angleNote && <p className={styles.angleNote}>{angleNote}</p>}

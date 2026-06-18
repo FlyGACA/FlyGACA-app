@@ -25,11 +25,32 @@
 }
 .search:focus {
   border-color: var(--brand-hover);
-  outline: none;
+}
+
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-6);
+}
+.jumpChip {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.jumpChip:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  text-decoration: none;
 }
 
 .category {
   margin-block-end: var(--space-8);
+  /* Keep the heading clear of the sticky header when jumped to via the nav. */
+  scroll-margin-block-start: calc(var(--nav-h) + var(--space-4));
 }
 .categoryTitle {
   font-size: var(--fs-h3);
@@ -46,9 +67,9 @@
 .badge {
   padding: 1px var(--space-2);
   border-radius: var(--radius-pill);
-  background: var(--grad-brand);
+  background: var(--brand);
   color: var(--text-on-brand);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: 0.06em;

@@ -122,6 +122,7 @@
   --neon-cyan: #3fe0ff; /* electric cyan: data tracks, radar plot lines */
   --bento-gutter: #08090b; /* near-black grid gutter, one step below --bg */
   --bento-surface: #0c141c; /* bento tile face, between night and deep */
+  --diagram-runway: #3f4a55; /* runway slab in the wind-vector diagram */
 
   /* Neon glows (radial — hover illumination + radar trails) */
   --glow-neon-green: radial-gradient(

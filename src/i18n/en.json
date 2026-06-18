@@ -92,6 +92,7 @@
     "new": "New",
     "empty": "No tools match that search.",
     "searchPlaceholder": "Search {{count}}+ tools — wind, fuel, currency…",
+    "jumpNav": "Jump to category",
     "categories": {
       "wind-runway": "Wind & runway",
       "atmosphere": "Atmosphere & altitude",
@@ -327,7 +328,11 @@
     "straightDown": "Wind straight down the runway.",
     "offCentreline": "Wind {{deg}}° {{side}} of the runway centreline.",
     "left": "left",
-    "right": "right"
+    "right": "right",
+    "diagramHint": "Enter runway, wind direction and speed to see the wind diagram.",
+    "diagramLabel": "Wind vector diagram. Runway {{rwy}}°, wind {{dir}}° at {{spd}} kt; crosswind {{xw}} kt from the {{side}}.",
+    "diagramLabelCalm": "Wind vector diagram. Runway {{rwy}}°, wind {{dir}}° at {{spd}} kt; crosswind negligible.",
+    "formula": "The wind angle is the signed difference between the wind direction and the runway heading (−180° to +180°). The crosswind component is wind speed × sin(angle) and the headwind is wind speed × cos(angle). A positive crosswind blows from the right; a negative headwind is a tailwind."
   },
   "densityAltitude": {
     "title": "Density altitude",
