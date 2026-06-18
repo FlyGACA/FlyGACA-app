@@ -160,7 +160,7 @@ export function Library() {
           {docs.length === 0 ? (
             <p className={styles.empty}>{t('library.empty')}</p>
           ) : (
-            <ul className={styles.grid}>
+            <ul className={`${styles.grid} stagger-grid`}>
               {docs.map((d) => (
                 <li key={d.slug}>
                   <Link to={`${CORPUS[kind].base}/${d.slug}`} className={styles.card}>

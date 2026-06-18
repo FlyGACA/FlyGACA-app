@@ -22,13 +22,42 @@
 .inputRow {
   display: flex;
   align-items: stretch;
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   overflow: hidden;
+  transition: border-color var(--dur) var(--ease);
 }
 .inputRow:focus-within {
   border-color: var(--brand-hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Error / valid state modifiers — add .fieldInvalid or .fieldValid to the .field */
+.fieldInvalid .inputRow {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+.fieldInvalid .inputRow:focus-within {
+  outline-color: var(--color-error);
+}
+.fieldValid .inputRow {
+  border-color: var(--color-success);
+}
+
+.fieldError {
+  font-size: var(--fs-xs);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.fieldError::before {
+  content: '⚠';
+  font-size: 0.85em;
+  flex-shrink: 0;
 }
 
 .input {
@@ -42,7 +71,7 @@
   font-variant-numeric: tabular-nums;
 }
 .input:focus {
-  outline: none;
+  outline: none; /* focus ring is on .inputRow:focus-within */
 }
 
 .unit {
@@ -88,11 +117,14 @@
 }
 .segBtn {
   padding: var(--space-2) var(--space-4);
+  min-height: 44px;
   border: none;
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
 }
 .segBtn:hover {
   color: var(--text);
@@ -114,5 +146,5 @@
   color: var(--accent);
 }
 .bad dd {
-  color: #e5534b;
+  color: var(--color-error);
 }

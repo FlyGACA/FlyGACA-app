@@ -54,7 +54,7 @@ export function ToolsIndex() {
         grouped.map(({ cat, tools }) => (
           <section key={cat} className={styles.category}>
             <h2 className={styles.categoryTitle}>{t(`tools.categories.${cat}`)}</h2>
-            <ul className={styles.grid}>
+            <ul className={`${styles.grid} stagger-grid`}>
               {tools.map((tool) => (
                 <ToolCard key={tool.id} tool={tool} />
               ))}

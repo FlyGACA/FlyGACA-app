@@ -94,6 +94,7 @@
 .featInput {
   flex: 1;
   min-inline-size: 0;
+  min-height: 44px;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
@@ -101,15 +102,18 @@
   color: var(--text);
   font: inherit;
   font-size: var(--fs-sm);
+  transition: border-color var(--dur) var(--ease);
 }
 
 .featInput:focus {
   border-color: var(--brand-hover);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .featBtn {
   flex-shrink: 0;
+  min-height: 44px;
   padding-inline: var(--space-4);
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
@@ -119,11 +123,17 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition: background var(--dur) var(--ease);
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 
 .featBtn:hover {
   background: var(--brand-hover);
+}
+
+.featBtn:active {
+  transform: scale(0.97);
 }
 
 .featOpen {
@@ -154,6 +164,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  min-height: 44px;
   margin-block-start: var(--space-3);
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
