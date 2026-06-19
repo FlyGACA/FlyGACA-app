@@ -95,6 +95,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
   box-shadow: var(--clay-shadow);
   transition:
     box-shadow var(--dur) var(--ease),
@@ -112,6 +116,7 @@
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand) 65%, transparent);
   color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
   background: color-mix(in srgb, var(--brand) 10%, var(--surface));
 }
 .langToggle:active {
@@ -126,6 +131,12 @@
   justify-content: center;
   inline-size: 44px;
   block-size: 44px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
   border: var(--clay-border);
   border-radius: var(--clay-radius);
   background: var(--surface);
@@ -144,6 +155,8 @@
     background var(--dur) var(--ease);
 }
 .toggle:hover {
+  border-color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
   box-shadow: var(--clay-shadow-hover);
   border-color: color-mix(in srgb, var(--brand) 65%, transparent);
   background: color-mix(in srgb, var(--brand) 8%, var(--surface));

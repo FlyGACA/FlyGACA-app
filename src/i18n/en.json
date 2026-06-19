@@ -1101,7 +1101,15 @@
         "rules": "Uncontrolled. Flight information service only."
       }
     ],
-    "formula": "The ICAO airspace classes and the service each provides. For Saudi sector boundaries and frequencies, consult the AIP-KSA."
+    "formula": "The ICAO airspace classes and the service each provides. For Saudi sector boundaries and frequencies, consult the AIP-KSA.",
+    "zonesTitle": "Control zones & terminal areas",
+    "zonesLead": "Saudi control zones (CTR) and terminal areas (TMA) from AIP ENR 2.1, as approximate circles for study — always verify lateral and vertical limits against the current AIP.",
+    "zonesCount": "{{n}} areas in the Kingdom and region",
+    "typeCTR": "Control zones (CTR)",
+    "typeTMA": "Terminal areas (TMA / CTA)",
+    "radiusNm": "{{n}} NM radius",
+    "boundary": "Published boundary",
+    "classChip": "Class {{c}}"
   },
   "metBrief": {
     "routeLabel": "Route (ICAO codes)",

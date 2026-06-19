@@ -8,6 +8,8 @@
     "dev": "vite",
     "build:sitemap": "node scripts/build-sitemap.mjs",
     "build": "npm run build:sitemap && tsc -b && vite build",
+    "sync:gaca": "node scripts/sync-gaca.mjs",
+    "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply",
     "check:bundle": "node scripts/check-bundle.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",

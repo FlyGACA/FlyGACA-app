@@ -37,6 +37,7 @@ export function TextField({
           aria-invalid={error ? 'true' : undefined}
         />
       </span>
+      {error && <span className={styles.fieldError} role="alert">{error}</span>}
       {error && (
         <span className={styles.fieldError} role="alert">
           {error}
