@@ -7,6 +7,7 @@ import { getAppCheckToken } from '../../lib/firebase';
 import { sessionId } from '../../lib/session';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
+import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { GroundingBadge } from '../../components/chat/GroundingBadge';
 import styles from './Chat.module.css';
 
@@ -178,9 +179,7 @@ export function Chat() {
       <div className={styles.log} ref={logRef} role="log" aria-live="polite">
         {messages.length === 0 && (
           <div className={styles.welcome}>
-            <div className={styles.welcomeAvatar} aria-hidden="true">
-              CA
-            </div>
+            <CaptainAvatar size="xl" glow pose="wave" className={styles.welcomeAvatar} />
             <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
             <div className={styles.suggestions}>
               {SUGGESTIONS.map((s) => (
@@ -197,33 +196,48 @@ export function Chat() {
           </div>
         )}
 
-        {messages.map((m, i) => (
-          <div
-            key={i}
-            className={`${styles.msg} ${m.role === 'user' ? styles.user : styles.adel} ${
-              m.pending ? styles.pending : ''
-            }`}
-          >
-            {m.role === 'assistant' && !m.pending && (
-              <GroundingBadge kind={m.kind} refusalClass={m.refusalClass} />
-            )}
-            <div className={styles.bubble}>
-              {m.pending ? (
-                <span className={styles.thinkingDots} aria-label={t('chat.thinking')} role="status">
-                  <span aria-hidden="true" />
-                  <span aria-hidden="true" />
-                  <span aria-hidden="true" />
-                </span>
-              ) : (
-                <>
-                  {m.text}
-                  {m.streaming && <span className={styles.caret} aria-hidden="true" />}
-                </>
+        {messages.map((m, i) => {
+          const isAdel = m.role === 'assistant';
+          // His expression tracks the reply's state: thinking while pending,
+          // a calm "hold" when the answer isn't grounded, neutral otherwise.
+          const pose = m.pending ? 'thinking' : m.kind === 'refusal' ? 'hold' : 'default';
+          return (
+            <div
+              key={i}
+              className={`${styles.msg} ${isAdel ? styles.adel : styles.user} ${
+                m.pending ? styles.pending : ''
+              }`}
+            >
+              {isAdel && (
+                <CaptainAvatar size="sm" pose={pose} decorative className={styles.msgAvatar} />
               )}
+              <div className={styles.msgBody}>
+                {isAdel && !m.pending && (
+                  <GroundingBadge kind={m.kind} refusalClass={m.refusalClass} />
+                )}
+                <div className={styles.bubble}>
+                  {m.pending ? (
+                    <span
+                      className={styles.thinkingDots}
+                      aria-label={t('chat.thinking')}
+                      role="status"
+                    >
+                      <span aria-hidden="true" />
+                      <span aria-hidden="true" />
+                      <span aria-hidden="true" />
+                    </span>
+                  ) : (
+                    <>
+                      {m.text}
+                      {m.streaming && <span className={styles.caret} aria-hidden="true" />}
+                    </>
+                  )}
+                </div>
+                {m.sources && m.sources.length > 0 && <SourceList sources={m.sources} />}
+              </div>
             </div>
-            {m.sources && m.sources.length > 0 && <SourceList sources={m.sources} />}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <form

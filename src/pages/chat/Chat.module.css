@@ -97,22 +97,9 @@
   gap: var(--space-3);
 }
 
-/* Captain Adel avatar monogram */
+/* Captain Adel portrait — anchors the empty-state welcome. */
 .welcomeAvatar {
-  inline-size: 60px;
-  block-size: 60px;
-  border-radius: 50%;
-  background: var(--grad-brand);
-  color: var(--text-on-brand);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.06em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    var(--clay-shadow),
-    0 0 28px color-mix(in srgb, var(--brand) 40%, transparent);
+  margin-block-end: var(--space-1);
 }
 
 .welcomeLead {
@@ -158,16 +145,31 @@
 /* ── Message bubbles ── */
 .msg {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
   max-inline-size: 85%;
 }
 .user {
   align-self: flex-end;
-  align-items: flex-end;
 }
 .adel {
   align-self: flex-start;
+}
+
+/* Captain Adel's portrait leads each of his replies, level with the first line. */
+.msgAvatar {
+  margin-block-start: 2px;
+}
+
+/* The stacked content (grounding badge · bubble · sources) within a message row. */
+.msgBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+.user .msgBody {
+  align-items: flex-end;
 }
 
 .bubble {

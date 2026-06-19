@@ -44,3 +44,6 @@ npm-debug.log*
 
 # GACA sync — fetched source HTML/PDF assets (regenerated on demand)
 sync-input/assets/
+
+# Generated Captain Adel source art (regenerate via npm run gen:captain) — kept out of the deploy
+captain-art/

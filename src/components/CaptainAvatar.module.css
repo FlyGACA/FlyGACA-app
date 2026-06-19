@@ -1,0 +1,59 @@
+.avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  /* A warm fallback while the PNG decodes; the Falcon gradient reads as "him". */
+  background: var(--grad-brand);
+  border: 2px solid color-mix(in srgb, var(--brand) 45%, transparent);
+  box-shadow: var(--clay-shadow);
+  user-select: none;
+}
+
+.sm {
+  inline-size: 34px;
+  block-size: 34px;
+  border-width: 1.5px;
+}
+.md {
+  inline-size: 48px;
+  block-size: 48px;
+}
+.lg {
+  inline-size: 72px;
+  block-size: 72px;
+}
+.xl {
+  inline-size: 104px;
+  block-size: 104px;
+}
+
+/* "Online" ring — Captain Adel is live and answering. */
+.glow {
+  box-shadow:
+    var(--clay-shadow),
+    0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent),
+    0 0 26px color-mix(in srgb, var(--brand) 40%, transparent);
+  animation: captain-pulse 3s ease-in-out infinite;
+}
+
+@keyframes captain-pulse {
+  0%,
+  100% {
+    box-shadow:
+      var(--clay-shadow),
+      0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent),
+      0 0 22px color-mix(in srgb, var(--brand) 34%, transparent);
+  }
+  50% {
+    box-shadow:
+      var(--clay-shadow),
+      0 0 0 3px color-mix(in srgb, var(--brand) 30%, transparent),
+      0 0 34px color-mix(in srgb, var(--brand) 50%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
+  }
+}
