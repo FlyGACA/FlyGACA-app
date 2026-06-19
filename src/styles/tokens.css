@@ -55,6 +55,10 @@
   --danger: var(--falcon-clay); /* refusal / "hold — not grounded" */
   --focus: var(--sage-bright);
 
+  /* Brand-tinted surfaces — reused by nav/footer pill hover + active states. */
+  --brand-tint: color-mix(in srgb, var(--brand) 12%, transparent);
+  --brand-tint-strong: color-mix(in srgb, var(--brand) 18%, transparent);
+
   /* --- Form validation state colours (derive from semantic palette) --- */
   --color-error: var(--danger);
   --color-error-bg: color-mix(in srgb, var(--danger) 12%, transparent);
