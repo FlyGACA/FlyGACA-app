@@ -102,6 +102,10 @@
     color var(--dur) var(--ease),
     background var(--dur) var(--ease),
     transform var(--dur) var(--ease);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .langToggle:hover {
   box-shadow: var(--clay-shadow-hover);
@@ -113,6 +117,7 @@
 .langToggle:active {
   box-shadow: var(--clay-shadow-press);
   transform: scale(0.95);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
 }
 
 .toggle {
@@ -129,6 +134,12 @@
   box-shadow: var(--clay-shadow);
   transition:
     box-shadow var(--dur) var(--ease),
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
     border-color var(--dur) var(--ease),
     background var(--dur) var(--ease);
 }
@@ -136,6 +147,8 @@
   box-shadow: var(--clay-shadow-hover);
   border-color: color-mix(in srgb, var(--brand) 65%, transparent);
   background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  border-color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
 }
 
 @media (max-width: 860px) {

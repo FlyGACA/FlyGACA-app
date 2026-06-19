@@ -233,6 +233,26 @@ export function Library() {
                 <ul className={`${styles.grid} stagger-grid`}>{g.docs.map(renderCard)}</ul>
               </section>
             ))
+            <ul className={`${styles.grid} stagger-grid`}>
+              {docs.map((d) => (
+                <li key={d.slug}>
+                  <Link to={`${CORPUS[kind].base}/${d.slug}`} className={styles.card}>
+                    <span className={styles.badge}>
+                      {d.part ? `${t('library.part')} ${d.part}` : d.badge}
+                    </span>
+                    <span className={styles.cat}>{categoryLabel(d.category)}</span>
+                    <span className={styles.cardTitle}>{d.title}</span>
+                    <span className={styles.pages}>
+                      {d.pages
+                        ? `${d.pages} ${t('library.pages')}`
+                        : d.sections
+                          ? `${d.sections} ${t('document.sections')}`
+                          : ''}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           )}
 
           {fullText && (

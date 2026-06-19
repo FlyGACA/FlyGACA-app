@@ -20,6 +20,7 @@ export function NumberField({
   hint,
   error,
 }: NumberFieldProps) {
+export function NumberField({ label, value, onChange, unit, placeholder, hint, error }: NumberFieldProps) {
   const fieldClass = [styles.field, error ? styles.fieldInvalid : ''].filter(Boolean).join(' ');
   return (
     <label className={fieldClass}>
@@ -40,6 +41,7 @@ export function NumberField({
           {error}
         </span>
       )}
+      {error && <span className={styles.fieldError} role="alert">{error}</span>}
       {hint && !error && <small className={styles.hint}>{hint}</small>}
     </label>
   );
