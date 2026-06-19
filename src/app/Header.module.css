@@ -6,11 +6,23 @@
   padding-block-start: var(--safe-top);
   display: flex;
   align-items: center;
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
   border-block-end: 1px solid var(--border);
-  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  transition:
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+/* Distinct brand-gradient hairline along the header's bottom edge. */
+.nav::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background: var(--grad-brand);
+  opacity: 0.7;
 }
 
 .inner {
@@ -24,11 +36,14 @@
   align-items: center;
   min-width: 44px;
   min-height: 44px;
-  border-radius: var(--radius-sm);
-  transition: opacity var(--dur) var(--ease);
+  border-radius: var(--radius-md);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .lockup:hover {
-  opacity: 0.85;
+  opacity: 0.9;
+  transform: scale(1.04);
   text-decoration: none;
 }
 
@@ -40,40 +55,34 @@
 .links {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-1);
   margin-inline-end: auto;
 }
 
 .links a {
-  color: var(--text-muted);
+  color: color-mix(in srgb, var(--text-muted) 40%, var(--text));
   font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-semibold);
   padding-block: var(--space-2);
-  padding-inline: var(--space-2);
+  padding-inline: var(--space-3);
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  border-radius: var(--radius-sm);
-  position: relative;
-  transition: color var(--dur) var(--ease);
+  border-radius: var(--radius-pill);
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .links a:hover {
   color: var(--text);
+  background: var(--brand-tint);
   text-decoration: none;
 }
+/* Bold active state: filled brand-tint pill (mirrors cleanly in RTL). */
 .links a.active {
   color: var(--brand-hover);
-  font-weight: var(--fw-semibold);
-}
-/* Active indicator underline */
-.links a.active::after {
-  content: '';
-  position: absolute;
-  inset-block-end: -2px;
-  inset-inline: var(--space-2);
-  block-size: 2px;
-  background: var(--grad-brand);
-  border-radius: var(--radius-pill);
+  background: var(--brand-tint-strong);
+  font-weight: var(--fw-bold);
 }
 
 .actions {
@@ -89,16 +98,12 @@
   border: var(--clay-border);
   background: var(--surface);
   color: var(--text);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   font-size: var(--fs-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
   box-shadow: var(--clay-shadow);
   transition:
     box-shadow var(--dur) var(--ease),
@@ -106,23 +111,18 @@
     color var(--dur) var(--ease),
     background var(--dur) var(--ease),
     transform var(--dur) var(--ease);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
 }
 .langToggle:hover {
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand) 65%, transparent);
   color: var(--brand-hover);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
   background: color-mix(in srgb, var(--brand) 10%, var(--surface));
 }
 .langToggle:active {
   box-shadow: var(--clay-shadow-press);
   transform: scale(0.95);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
+  background: var(--brand-tint);
 }
 
 .toggle {
@@ -137,31 +137,12 @@
   color: var(--text);
   cursor: pointer;
   transition:
-  border: var(--clay-border);
-  border-radius: var(--clay-radius);
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-  box-shadow: var(--clay-shadow);
-  transition:
-    box-shadow var(--dur) var(--ease),
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition:
     border-color var(--dur) var(--ease),
     background var(--dur) var(--ease);
 }
 .toggle:hover {
   border-color: var(--brand-hover);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
-  box-shadow: var(--clay-shadow-hover);
-  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
-  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
-  border-color: var(--brand-hover);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
+  background: var(--brand-tint);
 }
 
 @media (max-width: 860px) {
@@ -171,8 +152,8 @@
     inset-inline: 0;
     z-index: var(--z-dropdown);
     flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-2);
+    align-items: stretch;
+    gap: var(--space-1);
     padding: var(--space-4) var(--space-5) var(--space-5);
     background: var(--surface);
     border-block-end: 1px solid var(--border);
@@ -191,20 +172,17 @@
   }
   .links a {
     inline-size: 100%;
-    padding-inline: var(--space-3);
+    padding-inline: var(--space-4);
     border-radius: var(--radius-md);
     min-height: 48px;
   }
   .links a:hover {
-    background: color-mix(in srgb, var(--brand) 8%, transparent);
-  }
-  .links a.active::after {
-    display: none;
+    background: var(--brand-tint);
   }
   .links a.active {
-    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    background: var(--brand-tint-strong);
     border-inline-start: 3px solid var(--brand);
-    padding-inline-start: calc(var(--space-3) - 3px);
+    padding-inline-start: calc(var(--space-4) - 3px);
   }
   .toggle {
     display: inline-flex;

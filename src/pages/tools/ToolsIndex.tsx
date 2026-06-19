@@ -66,12 +66,8 @@ export function ToolsIndex() {
       {grouped.length === 0 ? (
         <p className={styles.empty}>{t('tools.empty')}</p>
       ) : (
-        grouped.map(({ cat, tools }) => (
-          <section key={cat} id={cat} className={styles.category}>
-            <h2 className={styles.categoryTitle}>{t(`tools.categories.${cat}`)}</h2>
-            <ul className={styles.grid}>
         grouped.map(({ cat, tools }, i) => (
-          <section key={cat} className={styles.category}>
+          <section key={cat} id={cat} className={styles.category}>
             <SectionHeader
               title={t(`tools.categories.${cat}`)}
               tone={CAT_TOKENS[i % CAT_TOKENS.length]}

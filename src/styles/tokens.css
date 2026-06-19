@@ -55,6 +55,10 @@
   --danger: var(--falcon-clay); /* refusal / "hold — not grounded" */
   --focus: var(--sage-bright);
 
+  /* Brand-tinted surfaces — reused by nav/footer pill hover + active states. */
+  --brand-tint: color-mix(in srgb, var(--brand) 12%, transparent);
+  --brand-tint-strong: color-mix(in srgb, var(--brand) 18%, transparent);
+
   /* --- Form validation state colours (derive from semantic palette) --- */
   --color-error: var(--danger);
   --color-error-bg: color-mix(in srgb, var(--danger) 12%, transparent);
@@ -83,14 +87,16 @@
 
   /* --- Typography --- */
   --font-sans: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
+  --font-body:
+    'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
   --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
   --font-sans:
     'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif; /* headings, brand, Arabic body */
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; /* primary body text */
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --font-sans: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
+  --font-body:
+    'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
   --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Fluid type scale */
@@ -244,7 +250,7 @@
 
     --text: #0f1a24; /* falcon-deep — deep navy on ivory */
     --text-muted: #4a5a68;
-    --text-dim: #6b7a88;
+    --text-dim: #5e6b78; /* darkened for WCAG AA 4.5:1 on ivory/white */
     --text-on-brand: #ffffff;
 
     --brand: var(--falcon-teal);
@@ -277,7 +283,7 @@
   --border-bright: #ccc7be;
   --text: #0f1a24;
   --text-muted: #4a5a68;
-  --text-dim: #6b7a88;
+  --text-dim: #5e6b78; /* darkened for WCAG AA 4.5:1 on ivory/white */
   --text-on-brand: #ffffff;
   --brand: var(--falcon-teal);
   --brand-hover: #1f5a75;
