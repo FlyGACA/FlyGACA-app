@@ -26,6 +26,10 @@ export function Home() {
               {t('home.ctaLibrary')}
             </Link>
             <Link to="/tools" className="btn btn-secondary">
+            <Link to="/library" className="btn btn-clay-primary">
+              {t('home.ctaLibrary')}
+            </Link>
+            <Link to="/tools" className="btn btn-clay">
               {t('home.ctaTools')}
             </Link>
             <Link to="/chat" className="btn btn-ghost">

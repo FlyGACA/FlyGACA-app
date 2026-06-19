@@ -89,6 +89,9 @@
     'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif; /* headings, brand, Arabic body */
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; /* primary body text */
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Fluid type scale */
   --fs-display: clamp(2.6rem, 1.5rem + 4.6vw, 4.6rem);

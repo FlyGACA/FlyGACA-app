@@ -142,6 +142,8 @@
   padding: var(--space-2) var(--space-4);
   min-height: 44px;
   padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   background: transparent;
@@ -159,6 +161,7 @@
   text-decoration: none;
   transition:
     box-shadow var(--dur) var(--ease),
+  transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
     background var(--dur) var(--ease),
@@ -178,6 +181,10 @@
 }
 .action:active {
   box-shadow: var(--clay-shadow-press);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+  text-decoration: none;
+}
+.action:active {
   transform: scale(0.97);
 }
 
@@ -208,6 +215,10 @@
   box-shadow:
     var(--clay-shadow-hover),
     0 0 20px color-mix(in srgb, var(--brand) 28%, transparent);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+}
+.adel:hover {
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
 }
 
 .note {

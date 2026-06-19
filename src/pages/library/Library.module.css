@@ -70,6 +70,8 @@
   min-height: 44px;
   padding: var(--space-2) var(--space-4);
   min-height: 40px;
+  padding: var(--space-3) var(--space-4);
+  min-height: 44px;
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -81,6 +83,7 @@
   transition:
     color var(--dur) var(--ease),
     background var(--dur) var(--ease);
+  transition: color var(--dur) var(--ease);
 }
 .tab:hover {
   color: var(--text);
@@ -216,6 +219,18 @@
   transform: translateY(-3px);
   border-color: var(--cat-color, var(--brand));
   box-shadow: var(--shadow-card);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  color: inherit;
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.card:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
   text-decoration: none;
 }
 .catBar {
