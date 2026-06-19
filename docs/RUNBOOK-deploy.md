@@ -61,7 +61,17 @@ vercel deploy --prod   # uses vercel.json (build + rewrites + headers)
 ```
 Config: `vercel.json` (proxies `/api/(.*)` → Firebase, SPA fallback, mirrored headers/CSP).
 
-## Cloudflare Pages (mirror) — `wrangler login` first
+## Cloudflare Pages (mirror)
+
+**Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys `dist/`
+to the `flygaca-app` Pages project on every push to `main` (and on demand via Actions → **Deploy
+(Cloudflare Pages mirror)** → *Run workflow*). The deploy step is **gated on secrets**, so it builds
+but skips publishing until you add both in repo Settings → Secrets → Actions:
+
+- **`CLOUDFLARE_API_TOKEN`** — a token with the *Cloudflare Pages: Edit* permission.
+- **`CLOUDFLARE_ACCOUNT_ID`** — the account that owns the `flygaca-app` Pages project.
+
+**Manual (`wrangler login` first):**
 
 ```bash
 npm i -g wrangler
