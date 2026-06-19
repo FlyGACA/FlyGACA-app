@@ -141,6 +141,14 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
   border: var(--clay-border);
   border-radius: var(--clay-radius);
   background: var(--surface);
@@ -148,10 +156,12 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   cursor: pointer;
+  transition:
   box-shadow: var(--clay-shadow);
   text-decoration: none;
   transition:
     box-shadow var(--dur) var(--ease),
+  transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
     background var(--dur) var(--ease),
@@ -162,17 +172,39 @@
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand) 50%, transparent);
   color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+  text-decoration: none;
+}
+.action:active {
   background: color-mix(in srgb, var(--brand) 6%, var(--surface));
   text-decoration: none;
 }
 .action:active {
   box-shadow: var(--clay-shadow-press);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+  text-decoration: none;
+}
+.action:active {
   transform: scale(0.97);
 }
 
+/* The Ask-Adel action is the one primary CTA on a calculator: filled, while
+   copy-link / try-an-example stay as subordinate ghost pills. */
 .adel {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-on-brand);
+}
+.adel:hover {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+  color: var(--text-on-brand);
   border-color: color-mix(in srgb, var(--brand) 55%, transparent);
   color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+}
+.adel:hover {
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
   background: color-mix(in srgb, var(--brand) 8%, var(--surface));
   box-shadow:
     var(--clay-shadow),
@@ -183,6 +215,10 @@
   box-shadow:
     var(--clay-shadow-hover),
     0 0 20px color-mix(in srgb, var(--brand) 28%, transparent);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+}
+.adel:hover {
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
 }
 
 .note {

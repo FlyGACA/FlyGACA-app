@@ -11,6 +11,7 @@ interface NumberFieldProps {
 }
 
 /** Labelled numeric input with an optional unit affix. Used by every calculator. */
+export function NumberField({ label, value, onChange, unit, placeholder, hint, error }: NumberFieldProps) {
 export function NumberField({
   label,
   value,
@@ -20,6 +21,7 @@ export function NumberField({
   hint,
   error,
 }: NumberFieldProps) {
+export function NumberField({ label, value, onChange, unit, placeholder, hint, error }: NumberFieldProps) {
   const fieldClass = [styles.field, error ? styles.fieldInvalid : ''].filter(Boolean).join(' ');
   return (
     <label className={fieldClass}>
@@ -35,11 +37,13 @@ export function NumberField({
         />
         {unit && <span className={styles.unit}>{unit}</span>}
       </span>
+      {error && <span className={styles.fieldError} role="alert">{error}</span>}
       {error && (
         <span className={styles.fieldError} role="alert">
           {error}
         </span>
       )}
+      {error && <span className={styles.fieldError} role="alert">{error}</span>}
       {hint && !error && <small className={styles.hint}>{hint}</small>}
     </label>
   );

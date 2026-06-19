@@ -53,9 +53,23 @@ export function ToolsIndex() {
         />
       </header>
 
+      {grouped.length > 1 && (
+        <nav className={styles.jump} aria-label={t('tools.jumpNav')}>
+          {grouped.map(({ cat }) => (
+            <a key={cat} href={`#${cat}`} className={styles.jumpChip}>
+              {t(`tools.categories.${cat}`)}
+            </a>
+          ))}
+        </nav>
+      )}
+
       {grouped.length === 0 ? (
         <p className={styles.empty}>{t('tools.empty')}</p>
       ) : (
+        grouped.map(({ cat, tools }) => (
+          <section key={cat} id={cat} className={styles.category}>
+            <h2 className={styles.categoryTitle}>{t(`tools.categories.${cat}`)}</h2>
+            <ul className={styles.grid}>
         grouped.map(({ cat, tools }, i) => (
           <section key={cat} className={styles.category}>
             <SectionHeader

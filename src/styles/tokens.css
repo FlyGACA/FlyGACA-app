@@ -82,10 +82,16 @@
   --glow-sage: radial-gradient(closest-side, rgba(143, 201, 168, 0.4), rgba(143, 201, 168, 0) 70%);
 
   /* --- Typography --- */
+  --font-sans: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
   --font-sans:
     'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif; /* headings, brand, Arabic body */
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; /* primary body text */
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Fluid type scale */
   --fs-display: clamp(2.6rem, 1.5rem + 4.6vw, 4.6rem);
@@ -149,6 +155,19 @@
   --skeleton-base: color-mix(in srgb, var(--surface) 60%, var(--border));
   --skeleton-shine: color-mix(in srgb, var(--surface-raised) 80%, var(--border-bright));
 
+  /* --- Claymorphism (2026 trend) ---
+     Double-shadow system: outer drop + inner highlight. Borders 3-4px.
+     Use on interactive cards/buttons that need tactile depth. */
+  --clay-border: 3px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  --clay-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --clay-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --clay-shadow-press: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  --clay-radius: var(--radius-lg); /* 20px — chunky rounded corners */
+
+  /* --- Skeleton shimmer --- */
+  --skeleton-base: color-mix(in srgb, var(--surface) 60%, var(--border));
+  --skeleton-shine: color-mix(in srgb, var(--surface-raised) 80%, var(--border-bright));
+
   /* --- Layout --- */
   --container: 1180px;
   --container-narrow: 760px;
@@ -174,6 +193,7 @@
   --neon-cyan: #3fe0ff; /* electric cyan: data tracks, radar plot lines */
   --bento-gutter: #08090b; /* near-black grid gutter, one step below --bg */
   --bento-surface: #0c141c; /* bento tile face, between night and deep */
+  --diagram-runway: #3f4a55; /* runway slab in the wind-vector diagram */
 
   /* Neon glows (radial — hover illumination + radar trails) */
   --glow-neon-green: radial-gradient(
@@ -207,4 +227,71 @@
   --sheen-top: color-mix(in srgb, var(--text) 6%, transparent); /* glassy top highlight */
   --glow-stat-cyan: 0 0 22px color-mix(in srgb, var(--neon-cyan) 40%, transparent);
   --glow-stat-green: 0 0 22px color-mix(in srgb, var(--neon-green) 40%, transparent);
+}
+
+/* =================================================================
+   Light mode — opt-in via [data-theme="light"] or system preference.
+   Overrides only the semantic surface/text/brand tokens; the raw
+   Falcon palette stays unchanged so gradients remain consistent.
+   ================================================================= */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: #f5f2ed; /* ivory reading surface */
+    --surface: #ffffff;
+    --surface-raised: #f0ede8;
+    --border: #ddd8d0;
+    --border-bright: #ccc7be;
+
+    --text: #0f1a24; /* falcon-deep — deep navy on ivory */
+    --text-muted: #4a5a68;
+    --text-dim: #6b7a88;
+    --text-on-brand: #ffffff;
+
+    --brand: var(--falcon-teal);
+    --brand-hover: #1f5a75;
+    --link: #1f5a75; /* darker teal for 4.5:1 on light bg */
+    --accent: #3d8f62; /* darker sage for contrast */
+    --accent-bright: #2d7050;
+    --focus: var(--falcon-teal);
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-pop: 0 12px 36px rgba(0, 0, 0, 0.15);
+
+    --clay-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    --clay-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 1);
+    --clay-shadow-press: 0 2px 6px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.08);
+
+    --skeleton-base: #e8e4de;
+    --skeleton-shine: #f0ede8;
+
+    --sheen-top: color-mix(in srgb, var(--text) 4%, transparent);
+  }
+}
+
+[data-theme='light'] {
+  --bg: #f5f2ed;
+  --surface: #ffffff;
+  --surface-raised: #f0ede8;
+  --border: #ddd8d0;
+  --border-bright: #ccc7be;
+  --text: #0f1a24;
+  --text-muted: #4a5a68;
+  --text-dim: #6b7a88;
+  --text-on-brand: #ffffff;
+  --brand: var(--falcon-teal);
+  --brand-hover: #1f5a75;
+  --link: #1f5a75;
+  --accent: #3d8f62;
+  --accent-bright: #2d7050;
+  --focus: var(--falcon-teal);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-pop: 0 12px 36px rgba(0, 0, 0, 0.15);
+  --clay-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --clay-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 1);
+  --clay-shadow-press: 0 2px 6px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.08);
+  --skeleton-base: #e8e4de;
+  --skeleton-shine: #f0ede8;
+  --sheen-top: color-mix(in srgb, var(--text) 4%, transparent);
 }
