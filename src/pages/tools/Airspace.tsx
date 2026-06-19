@@ -38,7 +38,9 @@ export function Airspace() {
           type,
           byType
             .get(type)!
-            .sort((x, y) => (ar ? x.name_ar.localeCompare(y.name_ar) : x.name.localeCompare(y.name))),
+            .sort((x, y) =>
+              ar ? x.name_ar.localeCompare(y.name_ar) : x.name.localeCompare(y.name),
+            ),
         ] as const,
     );
   }, [data, ar]);
