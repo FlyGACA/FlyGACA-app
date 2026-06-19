@@ -250,7 +250,7 @@
 
     --text: #0f1a24; /* falcon-deep — deep navy on ivory */
     --text-muted: #4a5a68;
-    --text-dim: #6b7a88;
+    --text-dim: #5e6b78; /* darkened for WCAG AA 4.5:1 on ivory/white */
     --text-on-brand: #ffffff;
 
     --brand: var(--falcon-teal);
@@ -283,7 +283,7 @@
   --border-bright: #ccc7be;
   --text: #0f1a24;
   --text-muted: #4a5a68;
-  --text-dim: #6b7a88;
+  --text-dim: #5e6b78; /* darkened for WCAG AA 4.5:1 on ivory/white */
   --text-on-brand: #ffffff;
   --brand: var(--falcon-teal);
   --brand-hover: #1f5a75;
