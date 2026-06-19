@@ -163,7 +163,10 @@ export function Chat() {
       <header className={styles.head}>
         <div>
           <h1>{t('chat.title')}</h1>
-          <p className={styles.status}>{t('chat.status')}</p>
+          <p className={styles.status}>
+            <span className={styles.statusDot} aria-hidden="true" />
+            {t('chat.status')}
+          </p>
         </div>
         {messages.length > 0 && (
           <button type="button" className={styles.clear} onClick={clearChat} disabled={busy}>
@@ -175,6 +178,9 @@ export function Chat() {
       <div className={styles.log} ref={logRef} role="log" aria-live="polite">
         {messages.length === 0 && (
           <div className={styles.welcome}>
+            <div className={styles.welcomeAvatar} aria-hidden="true">
+              CA
+            </div>
             <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
             <div className={styles.suggestions}>
               {SUGGESTIONS.map((s) => (
@@ -202,8 +208,18 @@ export function Chat() {
               <GroundingBadge kind={m.kind} refusalClass={m.refusalClass} />
             )}
             <div className={styles.bubble}>
-              {m.pending ? t('chat.thinking') : m.text}
-              {m.streaming && !m.pending && <span className={styles.caret} aria-hidden="true" />}
+              {m.pending ? (
+                <span className={styles.thinkingDots} aria-label={t('chat.thinking')} role="status">
+                  <span aria-hidden="true" />
+                  <span aria-hidden="true" />
+                  <span aria-hidden="true" />
+                </span>
+              ) : (
+                <>
+                  {m.text}
+                  {m.streaming && <span className={styles.caret} aria-hidden="true" />}
+                </>
+              )}
             </div>
             {m.sources && m.sources.length > 0 && <SourceList sources={m.sources} />}
           </div>

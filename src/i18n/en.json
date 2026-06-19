@@ -8,7 +8,8 @@
     "loading": "Loading…",
     "loadError": "Could not load this content. Verify your connection and try again.",
     "skipToContent": "Skip to content",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "open": "Open"
   },
   "nav": {
     "library": "Library",
@@ -30,7 +31,59 @@
     "ctaLibrary": "Open the library",
     "ctaTools": "Flight tools",
     "ctaChat": "Ask Captain Adel",
-    "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication."
+    "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication.",
+    "dashboard": {
+      "region": "Fly GACA dashboard",
+      "overview": "Operations overview",
+      "ask": {
+        "placeholder": "Ask about any GACAR Part…",
+        "submit": "Ask",
+        "open": "Open the full chat"
+      },
+      "search": {
+        "eyebrow": "Regulation search",
+        "heading": "Find any regulation",
+        "desc": "Search GACAR, reference guidance and handbooks.",
+        "placeholder": "Search GACAR, reference, handbooks…",
+        "submit": "Search",
+        "open": "Browse the library"
+      },
+      "radar": {
+        "eyebrow": "Coverage · GACAR",
+        "title": "Regulatory coverage",
+        "concept": "{{parts}} GACAR Parts across {{domains}} domains",
+        "cta": "Open the regulations"
+      },
+      "reg": {
+        "live": "Live",
+        "heading": "GACAR regulations",
+        "streams": "across {{count}} streams",
+        "cta": "Open the library"
+      },
+      "compliance": {
+        "eyebrow": "Reference library",
+        "heading": "Guidance & standards",
+        "docs": "docs · {{count}} categories",
+        "cta": "Open reference"
+      },
+      "tools": {
+        "eyebrow": "Flight planning",
+        "heading": "Flight tools",
+        "live": "live calculators",
+        "cta": "All tools"
+      },
+      "study": {
+        "eyebrow": "Study",
+        "questions": "practice questions",
+        "cta": "Start studying"
+      },
+      "adel": {
+        "status": "Online",
+        "heading": "Captain Adel",
+        "desc": "Ask anything — he cites the exact Part and section.",
+        "cta": "Ask Captain Adel"
+      }
+    }
   },
   "tools": {
     "title": "Flight tools",
@@ -351,6 +404,7 @@
     "moreHits": "Showing the first {{max}} passages — refine your search to narrow them.",
     "noFullMatches": "No passages match “{{q}}”.",
     "browse": "Browse by collection",
+    "docsCount": "{{count}} document(s)",
     "kind": {
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
@@ -1093,9 +1147,11 @@
     "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
     "monthly": "Monthly",
     "annual": "Annual",
-    "saveBadge": "2 months free",
+    "saveBadge": "Save 51%",
     "indicative": "Indicative pricing — confirmed at launch.",
     "billingNote": "Checkout opens when billing is connected.",
+    "eyebrow": "Plans & Pricing",
+    "popular": "Most popular",
     "current": "Current plan",
     "goPro": "Go Pro",
     "checkoutBusy": "Opening checkout…",
@@ -1107,15 +1163,15 @@
         "price": "SAR 0",
         "features": [
           "The full regulatory library",
-          "Every flight tool",
-          "Captain Adel — limited daily questions",
+          "Every flight tool — 3 runs / day",
+          "Captain Adel — 5 questions / month",
           "Study quizzes & flashcards"
         ]
       },
       "pro": {
         "name": "Pro",
-        "priceMo": "SAR 29 / mo",
-        "priceYr": "SAR 290 / yr",
+        "priceMo": "SAR 59 / mo",
+        "priceYr": "SAR 349 / yr · ≈ 29 / mo",
         "features": [
           "Everything in Free",
           "Unlimited Captain Adel",
@@ -1126,9 +1182,10 @@
       },
       "school": {
         "name": "Schools",
-        "price": "Custom",
+        "price": "From SAR 199 / seat / yr",
         "features": [
           "Seat licences for your students",
+          "Minimum 10 seats",
           "Admin dashboard",
           "Bulk onboarding",
           "Invoiced billing"
@@ -1496,8 +1553,8 @@
     ]
   },
   "disclaimer": {
-    "strong": "Unofficial & educational.",
-    "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
+    "strong": "Fly GACA is an independent educational platform.",
+    "body": "It is not affiliated with, endorsed by, or operated by the General Authority of Civil Aviation (GACA) or the Government of the Kingdom of Saudi Arabia. The official and authoritative source for all civil aviation regulations, publications, and aeronautical information is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa."
   },
   "legal": {
     "updated": "An educational reference — not a legal document.",

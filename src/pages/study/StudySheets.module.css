@@ -35,6 +35,9 @@
   gap: var(--space-2);
 }
 .item {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
@@ -42,9 +45,13 @@
   color: var(--text);
   font-size: var(--fs-sm);
   text-align: start;
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .item:hover {
   border-color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
 }
 .itemActive {
   border-color: var(--brand);
@@ -79,9 +86,10 @@
 .embed {
   inline-size: 100%;
   block-size: 78dvh;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
 }
 .fallback {
   padding: var(--space-4);

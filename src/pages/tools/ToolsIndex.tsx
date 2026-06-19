@@ -1,10 +1,15 @@
 import { useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TOOLS, TOOL_CATEGORIES, type ToolMeta } from '../../lib/tools';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
+import { SectionHeader } from '../../components/SectionHeader';
 import styles from './ToolsIndex.module.css';
+
+/** Per-category accent — cycles the Falcon hues from the design-token map. */
+const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 export function ToolsIndex() {
   const { t } = useTranslation();
@@ -51,12 +56,15 @@ export function ToolsIndex() {
       {grouped.length === 0 ? (
         <p className={styles.empty}>{t('tools.empty')}</p>
       ) : (
-        grouped.map(({ cat, tools }) => (
+        grouped.map(({ cat, tools }, i) => (
           <section key={cat} className={styles.category}>
-            <h2 className={styles.categoryTitle}>{t(`tools.categories.${cat}`)}</h2>
-            <ul className={styles.grid}>
+            <SectionHeader
+              title={t(`tools.categories.${cat}`)}
+              tone={CAT_TOKENS[i % CAT_TOKENS.length]}
+            />
+            <ul className={`${styles.grid} stagger-grid`}>
               {tools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
+                <ToolCard key={tool.id} tool={tool} tone={CAT_TOKENS[i % CAT_TOKENS.length]} />
               ))}
             </ul>
           </section>
@@ -70,11 +78,12 @@ export function ToolsIndex() {
   );
 }
 
-function ToolCard({ tool }: { tool: ToolMeta }) {
+function ToolCard({ tool, tone }: { tool: ToolMeta; tone: string }) {
   const { t } = useTranslation();
   const live = tool.status === 'live';
   const inner = (
     <>
+      <span className={styles.catBar} aria-hidden="true" />
       <span className={styles.cardHead}>
         <h3 className={styles.cardTitle}>{t(`tools.items.${tool.id}.name`)}</h3>
         {tool.badge === 'new' && live && <span className={styles.badge}>{t('tools.new')}</span>}
@@ -84,7 +93,10 @@ function ToolCard({ tool }: { tool: ToolMeta }) {
     </>
   );
   return (
-    <li className={`${styles.card} ${live ? '' : styles.pending}`}>
+    <li
+      className={`${styles.card} ${live ? '' : styles.pending}`}
+      style={{ '--cat-color': tone } as CSSProperties}
+    >
       {live ? (
         <Link to={tool.route} className={styles.cardLink}>
           {inner}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
@@ -23,7 +23,19 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const doc = index.data?.documents.find((d) => d.slug === slug);
   const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
   const [filter, setFilter] = useState('');
+  const [progress, setProgress] = useState(0);
   usePageMeta(doc?.title, doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined);
+
+  // Reading progress bar
+  const onScroll = useCallback(() => {
+    const el = document.documentElement;
+    const total = el.scrollHeight - el.clientHeight;
+    setProgress(total > 0 ? Math.round((el.scrollTop / total) * 100) : 0);
+  }, []);
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [onScroll]);
 
   const html = useMemo(() => (text ? sanitizeHtml(text) : ''), [text]);
   const toc = useMemo(() => (text ? tocFromHtml(text) : []), [text]);
@@ -49,6 +61,11 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
 
   return (
     <article className={`container ${styles.page}`}>
+      {html && (
+        <div className={styles.readingTrack} aria-hidden="true">
+          <div className={styles.readingBar} style={{ inlineSize: `${progress}%` }} />
+        </div>
+      )}
       <p className={styles.back}>
         <Link to="/library">← {t('library.title')}</Link>
       </p>
@@ -83,8 +100,13 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                     <a
                       href={`#${e.id}`}
                       onClick={() => {
-                        // Smooth-scroll without a full hash navigation jump.
-                        setTimeout(() => document.getElementById(e.id)?.scrollIntoView(), 0);
+                        setTimeout(
+                          () =>
+                            document
+                              .getElementById(e.id)
+                              ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+                          0,
+                        );
                       }}
                     >
                       {e.title}

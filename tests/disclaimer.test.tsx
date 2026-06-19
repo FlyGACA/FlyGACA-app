@@ -13,7 +13,9 @@ afterEach(() => {
 describe('<Disclaimer /> bilingual rendering', () => {
   it('renders the not-affiliated notice in English', () => {
     render(<Disclaimer />);
-    expect(screen.getByRole('note')).toHaveTextContent('Unofficial & educational.');
+    expect(screen.getByRole('note')).toHaveTextContent(
+      'Fly GACA is an independent educational platform.',
+    );
     expect(screen.getByText(/not affiliated with/i)).toBeInTheDocument();
   });
 
@@ -22,7 +24,7 @@ describe('<Disclaimer /> bilingual rendering', () => {
       await i18n.changeLanguage('ar');
     });
     render(<Disclaimer />);
-    expect(screen.getByRole('note')).toHaveTextContent('غير رسمية وتعليمية.');
+    expect(screen.getByRole('note')).toHaveTextContent('فلاي جاكا منصة تعليمية مستقلة.');
     expect(document.documentElement.dir).toBe('rtl');
     expect(document.documentElement.lang).toBe('ar');
   });

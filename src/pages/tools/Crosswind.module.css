@@ -29,16 +29,19 @@
 
 .field input {
   padding: var(--space-3);
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   font: inherit;
   font-variant-numeric: tabular-nums;
+  transition: border-color var(--dur) var(--ease);
 }
 .field input:focus {
   border-color: var(--brand-hover);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .diagram {
@@ -87,7 +90,7 @@
   color: var(--accent);
 }
 .bad {
-  color: #e5534b;
+  color: var(--color-error);
 }
 
 .angleNote {

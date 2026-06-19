@@ -19,6 +19,9 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-i18n': ['i18next', 'react-i18next'],
+          // framer-motion is intentionally NOT a manual chunk: it is only reached
+          // through the lazily-imported home dashboard, so leaving it un-pinned lets
+          // Rollup fold it into that async chunk and keep it off the initial path.
         },
       },
     },

@@ -1,8 +1,12 @@
 .hero {
-  padding-block: var(--space-12) var(--space-8);
+  /* Fluid padding scales from tight mobile to generous desktop */
+  padding-block: clamp(2rem, 8dvh, 5rem) clamp(1.5rem, 4dvh, 3rem);
   text-align: center;
+  /* clip prevents glow orbs from triggering horizontal scroll on 375px screens */
+  overflow: clip;
   background:
     var(--glow-teal) center -120px / 700px 700px no-repeat,
+    var(--glow-neon-cyan) 86% 130% / 44% 60% no-repeat,
     var(--bg);
 }
 
@@ -16,7 +20,7 @@
 
 .title {
   margin-block-start: var(--space-4);
-  font-size: var(--fs-display);
+  font-size: var(--fs-h1);
   background: var(--grad-brand);
   -webkit-background-clip: text;
   background-clip: text;
@@ -24,23 +28,34 @@
 }
 
 .subtitle {
-  margin-block: var(--space-5) auto;
-  max-inline-size: 56ch;
+  margin-block: var(--space-4) auto;
+  max-inline-size: 64ch;
   margin-inline: auto;
   color: var(--text-muted);
   font-size: var(--fs-lg);
 }
 
-.ctas {
-  margin-block-start: var(--space-6);
+.heroCta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
   justify-content: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+}
+
+.dashboardSection {
+  padding-block: var(--space-6) var(--space-10);
+}
+
+/* Reserve the grid's rough height while its chunk loads, to avoid layout shift. */
+.dashboardFallback {
+  min-block-size: clamp(320px, 60vw, 520px);
+  contain: layout style;
 }
 
 .notice {
   margin-block-start: var(--space-6);
+  text-align: center;
   font-size: var(--fs-xs);
   color: var(--text-dim);
 }

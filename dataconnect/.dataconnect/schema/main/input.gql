@@ -1,0 +1,1698 @@
+"""
+✨ `Category_KeyOutput` returns the primary key fields of table type `Category`.
+
+It has the same format as `Category_Key`, but is only used as mutation return value.
+"""
+scalar Category_KeyOutput
+"""
+✨ `Document_KeyOutput` returns the primary key fields of table type `Document`.
+
+It has the same format as `Document_Key`, but is only used as mutation return value.
+"""
+scalar Document_KeyOutput
+"""
+✨ `DocumentCategory_KeyOutput` returns the primary key fields of table type `DocumentCategory`.
+
+It has the same format as `DocumentCategory_Key`, but is only used as mutation return value.
+"""
+scalar DocumentCategory_KeyOutput
+"""
+✨ `DocumentRating_KeyOutput` returns the primary key fields of table type `DocumentRating`.
+
+It has the same format as `DocumentRating_Key`, but is only used as mutation return value.
+"""
+scalar DocumentRating_KeyOutput
+"""
+✨ `FavoriteDocument_KeyOutput` returns the primary key fields of table type `FavoriteDocument`.
+
+It has the same format as `FavoriteDocument_Key`, but is only used as mutation return value.
+"""
+scalar FavoriteDocument_KeyOutput
+"""
+✨ `User_KeyOutput` returns the primary key fields of table type `User`.
+
+It has the same format as `User_Key`, but is only used as mutation return value.
+"""
+scalar User_KeyOutput
+"""
+✨ Generated data input type for table 'Category'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Category_Data {
+  """
+  ✨ Generated from Field `Category`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Category`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Category`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Category`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Category`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Category`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Category`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Category`.`description` of type `String`)
+  """
+  description_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Category`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Category`.`name` of type `String!`)
+  """
+  name_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Category`.`documentCategories_on_category` of type `[DocumentCategory!]!`
+  """
+  documentCategories_on_category: [DocumentCategory_Data!]
+}
+"""
+✨ Generated filter input type for table 'Category'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Category_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Category_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Category_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Category_Filter!]
+  """
+  ✨ Generated from Field `Category`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Category`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Category`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Category`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Category`.`documentCategories_on_category` of type `[DocumentCategory!]!`
+  """
+  documentCategories_on_category: DocumentCategory_ListFilter
+  """
+  ✨ Generated from Field `Category`.`documents_via_DocumentCategory` of type `[Document!]!`
+  """
+  documents_via_DocumentCategory: Document_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Category'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Category_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Category_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Category_Filter
+}
+"""
+✨ Generated having input type for table 'Category'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Category_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Category_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Category_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Category_Having!]
+  """
+  ✨ Generated from Field `Category`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Category`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Category`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Category`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Category`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Category`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Category`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Category'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Category_Key {
+  """
+  ✨ Generated from Field `Category`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Category`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'Category'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Category_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Category_Filter
+}
+"""
+✨ Generated order input type for table 'Category'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Category_Order {
+  """
+  ✨ Generated from Field `Category`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Category`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Document'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Document_Data {
+  """
+  ✨ Generated from Field `Document`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Document`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`author` of type `String`
+  """
+  author: String
+  """
+  ✨ `_expr` server value variant of `author` (✨ Generated from Field `Document`.`author` of type `String`)
+  """
+  author_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Document`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Document`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Document`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Document`.`description` of type `String`)
+  """
+  description_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`documentUrl` of type `String!`
+  """
+  documentUrl: String
+  """
+  ✨ `_expr` server value variant of `documentUrl` (✨ Generated from Field `Document`.`documentUrl` of type `String!`)
+  """
+  documentUrl_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`gacaReferenceNumber` of type `String`
+  """
+  gacaReferenceNumber: String
+  """
+  ✨ `_expr` server value variant of `gacaReferenceNumber` (✨ Generated from Field `Document`.`gacaReferenceNumber` of type `String`)
+  """
+  gacaReferenceNumber_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`publicationDate` of type `Date!`
+  """
+  publicationDate: Date
+  """
+  ✨ `_date` server value variant of `publicationDate` (✨ Generated from Field `Document`.`publicationDate` of type `Date!`)
+  """
+  publicationDate_date: Date_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_expr` server value variant of `publicationDate` (✨ Generated from Field `Document`.`publicationDate` of type `Date!`)
+  """
+  publicationDate_expr: Date_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `publicationDate` (✨ Generated from Field `Document`.`publicationDate` of type `Date!`)
+  """
+  publicationDate_update: [Date_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`publisher` of type `String`
+  """
+  publisher: String
+  """
+  ✨ `_expr` server value variant of `publisher` (✨ Generated from Field `Document`.`publisher` of type `String`)
+  """
+  publisher_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`title` of type `String!`
+  """
+  title: String
+  """
+  ✨ `_expr` server value variant of `title` (✨ Generated from Field `Document`.`title` of type `String!`)
+  """
+  title_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Document`.`documentCategories_on_document` of type `[DocumentCategory!]!`
+  """
+  documentCategories_on_document: [DocumentCategory_Data!]
+  """
+  ✨ Generated from Field `Document`.`documentRatings_on_document` of type `[DocumentRating!]!`
+  """
+  documentRatings_on_document: [DocumentRating_Data!]
+  """
+  ✨ Generated from Field `Document`.`favoriteDocuments_on_document` of type `[FavoriteDocument!]!`
+  """
+  favoriteDocuments_on_document: [FavoriteDocument_Data!]
+}
+"""
+✨ Generated filter input type for table 'Document'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Document_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Document_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Document_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Document_Filter!]
+  """
+  ✨ Generated from Field `Document`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Document`.`author` of type `String`
+  """
+  author: String_Filter
+  """
+  ✨ Generated from Field `Document`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Document`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Document`.`documentUrl` of type `String!`
+  """
+  documentUrl: String_Filter
+  """
+  ✨ Generated from Field `Document`.`gacaReferenceNumber` of type `String`
+  """
+  gacaReferenceNumber: String_Filter
+  """
+  ✨ Generated from Field `Document`.`publicationDate` of type `Date!`
+  """
+  publicationDate: Date_Filter
+  """
+  ✨ Generated from Field `Document`.`publisher` of type `String`
+  """
+  publisher: String_Filter
+  """
+  ✨ Generated from Field `Document`.`title` of type `String!`
+  """
+  title: String_Filter
+  """
+  ✨ Generated from Field `Document`.`documentCategories_on_document` of type `[DocumentCategory!]!`
+  """
+  documentCategories_on_document: DocumentCategory_ListFilter
+  """
+  ✨ Generated from Field `Document`.`documentRatings_on_document` of type `[DocumentRating!]!`
+  """
+  documentRatings_on_document: DocumentRating_ListFilter
+  """
+  ✨ Generated from Field `Document`.`favoriteDocuments_on_document` of type `[FavoriteDocument!]!`
+  """
+  favoriteDocuments_on_document: FavoriteDocument_ListFilter
+  """
+  ✨ Generated from Field `Document`.`categories_via_DocumentCategory` of type `[Category!]!`
+  """
+  categories_via_DocumentCategory: Category_ListFilter
+  """
+  ✨ Generated from Field `Document`.`users_via_DocumentRating` of type `[User!]!`
+  """
+  users_via_DocumentRating: User_ListFilter
+  """
+  ✨ Generated from Field `Document`.`users_via_FavoriteDocument` of type `[User!]!`
+  """
+  users_via_FavoriteDocument: User_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Document'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Document_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Document_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Document_Filter
+}
+"""
+✨ Generated having input type for table 'Document'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Document_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Document_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Document_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Document_Having!]
+  """
+  ✨ Generated from Field `Document`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`author_count` of type `Int!`
+  """
+  author_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`documentUrl_count` of type `Int!`
+  """
+  documentUrl_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`gacaReferenceNumber_count` of type `Int!`
+  """
+  gacaReferenceNumber_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`publicationDate_count` of type `Int!`
+  """
+  publicationDate_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`publisher_count` of type `Int!`
+  """
+  publisher_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`title_count` of type `Int!`
+  """
+  title_count: Int_Filter
+  """
+  ✨ Generated from Field `Document`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Document`.`publicationDate_min` of type `Date`
+  """
+  publicationDate_min: Date_Filter
+  """
+  ✨ Generated from Field `Document`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Document`.`publicationDate_max` of type `Date`
+  """
+  publicationDate_max: Date_Filter
+}
+"""
+✨ Generated key input type for table 'Document'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Document_Key {
+  """
+  ✨ Generated from Field `Document`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Document`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'Document'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Document_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Document_Filter
+}
+"""
+✨ Generated order input type for table 'Document'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Document_Order {
+  """
+  ✨ Generated from Field `Document`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`author` of type `String`
+  """
+  author: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`documentUrl` of type `String!`
+  """
+  documentUrl: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`gacaReferenceNumber` of type `String`
+  """
+  gacaReferenceNumber: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`publicationDate` of type `Date!`
+  """
+  publicationDate: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`publisher` of type `String`
+  """
+  publisher: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`title` of type `String!`
+  """
+  title: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`author_count` of type `Int!`
+  """
+  author_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`documentUrl_count` of type `Int!`
+  """
+  documentUrl_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`gacaReferenceNumber_count` of type `Int!`
+  """
+  gacaReferenceNumber_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`publicationDate_count` of type `Int!`
+  """
+  publicationDate_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`publisher_count` of type `Int!`
+  """
+  publisher_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`title_count` of type `Int!`
+  """
+  title_count: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`publicationDate_min` of type `Date`
+  """
+  publicationDate_min: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Document`.`publicationDate_max` of type `Date`
+  """
+  publicationDate_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'DocumentCategory'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input DocumentCategory_Data {
+  """
+  ✨ Generated from Field `DocumentCategory`.`documentId` of type `UUID!`
+  """
+  documentId: UUID
+  """
+  ✨ `_expr` server value variant of `documentId` (✨ Generated from Field `DocumentCategory`.`documentId` of type `UUID!`)
+  """
+  documentId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `DocumentCategory`.`categoryId` of type `UUID!`)
+  """
+  categoryId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentCategory`.`category` of type `Category!`
+  """
+  category: Category_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentCategory`.`document` of type `Document!`
+  """
+  document: Document_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `DocumentCategory`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `DocumentCategory`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `DocumentCategory`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'DocumentCategory'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input DocumentCategory_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [DocumentCategory_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: DocumentCategory_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [DocumentCategory_Filter!]
+  """
+  ✨ Generated from Field `DocumentCategory`.`documentId` of type `UUID!`
+  """
+  documentId: UUID_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`category` of type `Category!`
+  """
+  category: Category_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`document` of type `Document!`
+  """
+  document: Document_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+}
+"""
+✨ Generated first-row input type for table 'DocumentCategory'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input DocumentCategory_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [DocumentCategory_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: DocumentCategory_Filter
+}
+"""
+✨ Generated having input type for table 'DocumentCategory'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input DocumentCategory_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [DocumentCategory_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: DocumentCategory_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [DocumentCategory_Having!]
+  """
+  ✨ Generated from Field `DocumentCategory`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`documentId_count` of type `Int!`
+  """
+  documentId_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'DocumentCategory'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input DocumentCategory_Key {
+  """
+  ✨ Generated from Field `DocumentCategory`.`documentId` of type `UUID!`
+  """
+  documentId: UUID
+  """
+  ✨ `_expr` server value variant of `documentId` (✨ Generated from Field `DocumentCategory`.`documentId` of type `UUID!`)
+  """
+  documentId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: UUID
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `DocumentCategory`.`categoryId` of type `UUID!`)
+  """
+  categoryId_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'DocumentCategory'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input DocumentCategory_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: DocumentCategory_Filter
+}
+"""
+✨ Generated order input type for table 'DocumentCategory'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input DocumentCategory_Order {
+  """
+  ✨ Generated from Field `DocumentCategory`.`documentId` of type `UUID!`
+  """
+  documentId: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`categoryId` of type `UUID!`
+  """
+  categoryId: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`category` of type `Category!`
+  """
+  category: Category_Order
+  """
+  ✨ Generated from Field `DocumentCategory`.`document` of type `Document!`
+  """
+  document: Document_Order
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`documentId_count` of type `Int!`
+  """
+  documentId_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `DocumentCategory`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'DocumentRating'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input DocumentRating_Data {
+  """
+  ✨ Generated from Field `DocumentRating`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `DocumentRating`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`documentId` of type `UUID!`
+  """
+  documentId: UUID
+  """
+  ✨ `_expr` server value variant of `documentId` (✨ Generated from Field `DocumentRating`.`documentId` of type `UUID!`)
+  """
+  documentId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`document` of type `Document!`
+  """
+  document: Document_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`user` of type `User!`
+  """
+  user: User_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`comment` of type `String`
+  """
+  comment: String
+  """
+  ✨ `_expr` server value variant of `comment` (✨ Generated from Field `DocumentRating`.`comment` of type `String`)
+  """
+  comment_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `DocumentRating`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `DocumentRating`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `DocumentRating`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue` of type `Int!`
+  """
+  ratingValue: Int
+  """
+  ✨ `_expr` server value variant of `ratingValue` (✨ Generated from Field `DocumentRating`.`ratingValue` of type `Int!`)
+  """
+  ratingValue_expr: Int_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `ratingValue` (✨ Generated from Field `DocumentRating`.`ratingValue` of type `Int!`)
+  """
+  ratingValue_update: [Int_Update!] @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'DocumentRating'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input DocumentRating_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [DocumentRating_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: DocumentRating_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [DocumentRating_Filter!]
+  """
+  ✨ Generated from Field `DocumentRating`.`userId` of type `UUID!`
+  """
+  userId: UUID_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`documentId` of type `UUID!`
+  """
+  documentId: UUID_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`document` of type `Document!`
+  """
+  document: Document_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`user` of type `User!`
+  """
+  user: User_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`comment` of type `String`
+  """
+  comment: String_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue` of type `Int!`
+  """
+  ratingValue: Int_Filter
+}
+"""
+✨ Generated first-row input type for table 'DocumentRating'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input DocumentRating_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [DocumentRating_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: DocumentRating_Filter
+}
+"""
+✨ Generated having input type for table 'DocumentRating'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input DocumentRating_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [DocumentRating_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: DocumentRating_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [DocumentRating_Having!]
+  """
+  ✨ Generated from Field `DocumentRating`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`comment_count` of type `Int!`
+  """
+  comment_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`documentId_count` of type `Int!`
+  """
+  documentId_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_count` of type `Int!`
+  """
+  ratingValue_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_sum` of type `Int`
+  """
+  ratingValue_sum: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_avg` of type `Float`
+  """
+  ratingValue_avg: Float_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_min` of type `Int`
+  """
+  ratingValue_min: Int_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_max` of type `Int`
+  """
+  ratingValue_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'DocumentRating'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input DocumentRating_Key {
+  """
+  ✨ Generated from Field `DocumentRating`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `DocumentRating`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `DocumentRating`.`documentId` of type `UUID!`
+  """
+  documentId: UUID
+  """
+  ✨ `_expr` server value variant of `documentId` (✨ Generated from Field `DocumentRating`.`documentId` of type `UUID!`)
+  """
+  documentId_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'DocumentRating'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input DocumentRating_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: DocumentRating_Filter
+}
+"""
+✨ Generated order input type for table 'DocumentRating'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input DocumentRating_Order {
+  """
+  ✨ Generated from Field `DocumentRating`.`userId` of type `UUID!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`documentId` of type `UUID!`
+  """
+  documentId: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`document` of type `Document!`
+  """
+  document: Document_Order
+  """
+  ✨ Generated from Field `DocumentRating`.`user` of type `User!`
+  """
+  user: User_Order
+  """
+  ✨ Generated from Field `DocumentRating`.`comment` of type `String`
+  """
+  comment: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue` of type `Int!`
+  """
+  ratingValue: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`comment_count` of type `Int!`
+  """
+  comment_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`documentId_count` of type `Int!`
+  """
+  documentId_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_count` of type `Int!`
+  """
+  ratingValue_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_sum` of type `Int`
+  """
+  ratingValue_sum: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_avg` of type `Float`
+  """
+  ratingValue_avg: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_min` of type `Int`
+  """
+  ratingValue_min: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `DocumentRating`.`ratingValue_max` of type `Int`
+  """
+  ratingValue_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'FavoriteDocument'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input FavoriteDocument_Data {
+  """
+  ✨ Generated from Field `FavoriteDocument`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `FavoriteDocument`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `FavoriteDocument`.`documentId` of type `UUID!`
+  """
+  documentId: UUID
+  """
+  ✨ `_expr` server value variant of `documentId` (✨ Generated from Field `FavoriteDocument`.`documentId` of type `UUID!`)
+  """
+  documentId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `FavoriteDocument`.`document` of type `Document!`
+  """
+  document: Document_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `FavoriteDocument`.`user` of type `User!`
+  """
+  user: User_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `FavoriteDocument`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `FavoriteDocument`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `FavoriteDocument`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'FavoriteDocument'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input FavoriteDocument_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [FavoriteDocument_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: FavoriteDocument_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [FavoriteDocument_Filter!]
+  """
+  ✨ Generated from Field `FavoriteDocument`.`userId` of type `UUID!`
+  """
+  userId: UUID_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`documentId` of type `UUID!`
+  """
+  documentId: UUID_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`document` of type `Document!`
+  """
+  document: Document_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`user` of type `User!`
+  """
+  user: User_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+}
+"""
+✨ Generated first-row input type for table 'FavoriteDocument'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input FavoriteDocument_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [FavoriteDocument_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: FavoriteDocument_Filter
+}
+"""
+✨ Generated having input type for table 'FavoriteDocument'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input FavoriteDocument_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [FavoriteDocument_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: FavoriteDocument_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [FavoriteDocument_Having!]
+  """
+  ✨ Generated from Field `FavoriteDocument`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`documentId_count` of type `Int!`
+  """
+  documentId_count: Int_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'FavoriteDocument'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input FavoriteDocument_Key {
+  """
+  ✨ Generated from Field `FavoriteDocument`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `FavoriteDocument`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `FavoriteDocument`.`documentId` of type `UUID!`
+  """
+  documentId: UUID
+  """
+  ✨ `_expr` server value variant of `documentId` (✨ Generated from Field `FavoriteDocument`.`documentId` of type `UUID!`)
+  """
+  documentId_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'FavoriteDocument'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input FavoriteDocument_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: FavoriteDocument_Filter
+}
+"""
+✨ Generated order input type for table 'FavoriteDocument'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input FavoriteDocument_Order {
+  """
+  ✨ Generated from Field `FavoriteDocument`.`userId` of type `UUID!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`documentId` of type `UUID!`
+  """
+  documentId: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`document` of type `Document!`
+  """
+  document: Document_Order
+  """
+  ✨ Generated from Field `FavoriteDocument`.`user` of type `User!`
+  """
+  user: User_Order
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`documentId_count` of type `Int!`
+  """
+  documentId_count: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `FavoriteDocument`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'User'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input User_Data {
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `User`.`displayName` of type `String!`
+  """
+  displayName: String
+  """
+  ✨ `_expr` server value variant of `displayName` (✨ Generated from Field `User`.`displayName` of type `String!`)
+  """
+  displayName_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String
+  """
+  ✨ `_expr` server value variant of `email` (✨ Generated from Field `User`.`email` of type `String!`)
+  """
+  email_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `User`.`photoUrl` of type `String`
+  """
+  photoUrl: String
+  """
+  ✨ `_expr` server value variant of `photoUrl` (✨ Generated from Field `User`.`photoUrl` of type `String`)
+  """
+  photoUrl_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `User`.`userRole` of type `String`
+  """
+  userRole: String
+  """
+  ✨ `_expr` server value variant of `userRole` (✨ Generated from Field `User`.`userRole` of type `String`)
+  """
+  userRole_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `User`.`documentRatings_on_user` of type `[DocumentRating!]!`
+  """
+  documentRatings_on_user: [DocumentRating_Data!]
+  """
+  ✨ Generated from Field `User`.`favoriteDocuments_on_user` of type `[FavoriteDocument!]!`
+  """
+  favoriteDocuments_on_user: [FavoriteDocument_Data!]
+}
+"""
+✨ Generated filter input type for table 'User'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [User_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: User_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [User_Filter!]
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`displayName` of type `String!`
+  """
+  displayName: String_Filter
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String_Filter
+  """
+  ✨ Generated from Field `User`.`photoUrl` of type `String`
+  """
+  photoUrl: String_Filter
+  """
+  ✨ Generated from Field `User`.`userRole` of type `String`
+  """
+  userRole: String_Filter
+  """
+  ✨ Generated from Field `User`.`documentRatings_on_user` of type `[DocumentRating!]!`
+  """
+  documentRatings_on_user: DocumentRating_ListFilter
+  """
+  ✨ Generated from Field `User`.`favoriteDocuments_on_user` of type `[FavoriteDocument!]!`
+  """
+  favoriteDocuments_on_user: FavoriteDocument_ListFilter
+  """
+  ✨ Generated from Field `User`.`documents_via_DocumentRating` of type `[Document!]!`
+  """
+  documents_via_DocumentRating: Document_ListFilter
+  """
+  ✨ Generated from Field `User`.`documents_via_FavoriteDocument` of type `[Document!]!`
+  """
+  documents_via_FavoriteDocument: Document_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input User_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [User_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: User_Filter
+}
+"""
+✨ Generated having input type for table 'User'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [User_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: User_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [User_Having!]
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`displayName_count` of type `Int!`
+  """
+  displayName_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`photoUrl_count` of type `Int!`
+  """
+  photoUrl_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`userRole_count` of type `Int!`
+  """
+  userRole_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'User'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input User_Key {
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input User_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: User_Filter
+}
+"""
+✨ Generated order input type for table 'User'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input User_Order {
+  """
+  ✨ Generated from Field `User`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `User`.`displayName` of type `String!`
+  """
+  displayName: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: OrderDirection
+  """
+  ✨ Generated from Field `User`.`photoUrl` of type `String`
+  """
+  photoUrl: OrderDirection
+  """
+  ✨ Generated from Field `User`.`userRole` of type `String`
+  """
+  userRole: OrderDirection
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`displayName_count` of type `Int!`
+  """
+  displayName_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`photoUrl_count` of type `Int!`
+  """
+  photoUrl_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`userRole_count` of type `Int!`
+  """
+  userRole_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}

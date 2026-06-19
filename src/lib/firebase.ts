@@ -21,7 +21,7 @@ import type { Functions } from 'firebase/functions';
 const env = import.meta.env;
 
 /** Functions region — must match the deployed gateway (functions/region.js). */
-export const FUNCTIONS_REGION = 'me-central2';
+export const FUNCTIONS_REGION = 'me-central1';
 
 export const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY as string | undefined,
