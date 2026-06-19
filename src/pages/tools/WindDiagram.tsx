@@ -5,6 +5,8 @@ interface WindDiagramProps {
   windDir: number;
   windSpeed: number;
   crosswind: number;
+  /** Descriptive, translated accessibility label for the whole figure. */
+  label?: string;
 }
 
 const CX = 110;
@@ -16,9 +18,16 @@ function pt(brg: number, r: number): [number, number] {
   return [CX + r * Math.sin(rad), CY - r * Math.cos(rad)];
 }
 
-export function WindDiagram({ runwayHeading, windDir, windSpeed, crosswind }: WindDiagramProps) {
+export function WindDiagram({
+  runwayHeading,
+  windDir,
+  windSpeed,
+  crosswind,
+  label,
+}: WindDiagramProps) {
   const xwBad = Math.abs(crosswind) >= 15;
-  const stroke = xwBad ? '#e5534b' : '#2f9be0';
+  const stroke = xwBad ? 'var(--danger)' : 'var(--link)';
+  const stroke = xwBad ? 'var(--color-error)' : 'var(--link)';
 
   const [wx1, wy1] = pt(windDir, R - 6);
   const [wx2, wy2] = pt(windDir, 34);
@@ -60,7 +69,13 @@ export function WindDiagram({ runwayHeading, windDir, windSpeed, crosswind }: Wi
   });
 
   return (
-    <svg viewBox="0 0 220 220" width={220} height={220} role="img" aria-label="Wind vector diagram">
+    <svg
+      viewBox="0 0 220 220"
+      width={220}
+      height={220}
+      role="img"
+      aria-label={label ?? 'Wind vector diagram'}
+    >
       <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--border)" strokeWidth={2} />
       {ticks}
       <g>
@@ -70,7 +85,7 @@ export function WindDiagram({ runwayHeading, windDir, windSpeed, crosswind }: Wi
           width={14}
           height={124}
           rx={3}
-          fill="#3F4A55"
+          fill="var(--diagram-runway)"
           transform={`rotate(${runwayHeading} ${CX} ${CY})`}
         />
         <line
@@ -78,7 +93,7 @@ export function WindDiagram({ runwayHeading, windDir, windSpeed, crosswind }: Wi
           y1={CY - 56}
           x2={CX}
           y2={CY + 56}
-          stroke="#fff"
+          stroke="var(--text)"
           strokeWidth={1.5}
           strokeDasharray="6 5"
           transform={`rotate(${runwayHeading} ${CX} ${CY})`}
@@ -98,7 +113,14 @@ export function WindDiagram({ runwayHeading, windDir, windSpeed, crosswind }: Wi
         fill={stroke}
         transform={`rotate(180 ${head[0]} ${head[1]})`}
       />
-      <text x={labelX} y={labelY - 6} textAnchor="middle" fontSize={11} fill="var(--text-muted)">
+      <text
+        x={labelX}
+        y={labelY - 6}
+        textAnchor="middle"
+        fontSize={11}
+        fill="var(--text-muted)"
+        style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
+      >
         {Math.round(windSpeed)} kt
       </text>
       {compass}

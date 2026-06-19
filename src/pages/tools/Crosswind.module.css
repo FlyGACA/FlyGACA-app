@@ -29,22 +29,41 @@
 
 .field input {
   padding: var(--space-3);
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   font: inherit;
   font-variant-numeric: tabular-nums;
+  transition: border-color var(--dur) var(--ease);
 }
 .field input:focus {
   border-color: var(--brand-hover);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .diagram {
   display: grid;
   place-items: center;
   min-block-size: 220px;
+}
+
+/* Reserves the diagram's footprint (220px) before any input is entered, so the
+   input column doesn't reflow the moment the first valid value appears. */
+.diagramPlaceholder {
+  inline-size: 220px;
+  min-block-size: 220px;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  text-align: center;
 }
 
 .outputs {
@@ -87,7 +106,8 @@
   color: var(--accent);
 }
 .bad {
-  color: #e5534b;
+  color: var(--danger);
+  color: var(--color-error);
 }
 
 .angleNote {

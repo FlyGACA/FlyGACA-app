@@ -40,3 +40,7 @@ firestore-debug.log
 # Logs
 npm-debug.log*
 *.log
+.vercel
+
+# GACA sync — fetched source HTML/PDF assets (regenerated on demand)
+sync-input/assets/

@@ -52,33 +52,35 @@ export function WindTable() {
       {rows.length === 0 ? (
         <p className={styles.empty}>{t('windTable.empty')}</p>
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>{t('windTable.runwayCol')}</th>
-              <th>{t('windTable.headingCol')}</th>
-              <th>{t('windTable.crosswindCol')}</th>
-              <th>{t('windTable.headwindCol')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => {
-              const xwBad = Math.abs(r.crosswind) >= 15;
-              return (
-                <tr key={r.label}>
-                  <td>{r.label}</td>
-                  <td>{r.heading}°</td>
-                  <td className={xwBad ? styles.bad : undefined}>
-                    {Math.abs(r.crosswind).toFixed(0)} kt {r.crosswind >= 0 ? '→R' : '←L'}
-                  </td>
-                  <td className={r.headwind < 0 ? styles.bad : undefined}>
-                    {Math.abs(r.headwind).toFixed(0)} kt {r.headwind >= 0 ? 'H' : 'T'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>{t('windTable.runwayCol')}</th>
+                <th>{t('windTable.headingCol')}</th>
+                <th>{t('windTable.crosswindCol')}</th>
+                <th>{t('windTable.headwindCol')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => {
+                const xwBad = Math.abs(r.crosswind) >= 15;
+                return (
+                  <tr key={r.label}>
+                    <td>{r.label}</td>
+                    <td>{r.heading}°</td>
+                    <td className={xwBad ? styles.bad : undefined}>
+                      {Math.abs(r.crosswind).toFixed(0)} kt {r.crosswind >= 0 ? '→R' : '←L'}
+                    </td>
+                    <td className={r.headwind < 0 ? styles.bad : undefined}>
+                      {Math.abs(r.headwind).toFixed(0)} kt {r.headwind >= 0 ? 'H' : 'T'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </CalcShell>
   );

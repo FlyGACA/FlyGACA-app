@@ -31,24 +31,58 @@
   inline-size: 100%;
   text-align: start;
   padding: var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
   color: inherit;
   cursor: pointer;
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.mode::before {
+  content: '';
+  display: block;
+  block-size: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--grad-brand);
+  margin-block-end: var(--space-3);
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+.mode:hover::before {
+  opacity: 1;
 }
 .mode:hover,
 .bank:hover {
-  border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
   text-decoration: none;
+}
+.mode:active,
+.bank:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.97);
 }
 .mode h2 {
   font-size: var(--fs-lg);
+}
+.modeIcon {
+  font-size: 1.25rem;
+  line-height: 1;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-block-end: var(--space-1);
 }
 .mode p,
 .bankDesc {
   color: var(--text-muted);
   font-size: var(--fs-sm);
+  flex: 1;
 }
 .bankTitle {
   font-weight: var(--fw-semibold);
@@ -56,16 +90,21 @@
 .bankMeta {
   font-size: var(--fs-xs);
   color: var(--text-dim);
+  margin-block-start: var(--space-1);
 }
 
 .back {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
   background: none;
   border: none;
   color: var(--text-muted);
   font-size: var(--fs-sm);
   cursor: pointer;
-  padding: 0;
+  padding: var(--space-1) 0;
+  transition: color var(--dur) var(--ease);
 }
 .back:hover {
   color: var(--text);
@@ -93,33 +132,46 @@
 .option {
   inline-size: 100%;
   text-align: start;
+  min-height: 44px;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .option:hover:enabled {
   border-color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+}
+.option:active:enabled {
+  transform: scale(0.98);
 }
 .correct {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+  color: var(--color-success);
 }
 .incorrect {
-  border-color: #e5534b;
-  background: color-mix(in srgb, #e5534b 14%, transparent);
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+  color: var(--color-error);
 }
 
 .explain {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: var(--clay-border);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--clay-radius);
   background: var(--surface);
-  padding: var(--space-4);
+  box-shadow: var(--clay-shadow);
+  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
@@ -130,17 +182,31 @@
 
 .primary {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: var(--space-3) var(--space-5);
-  border: none;
-  border-radius: var(--radius-pill);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--brand);
   color: var(--text-on-brand);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-sm);
   cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  transition:
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .primary:hover {
   background: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+}
+.primary:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.97);
 }
 
 .result {
@@ -160,19 +226,48 @@
   margin: 0;
 }
 
-.card {
+/* ── Flashcard — 3D flip ── */
+.cardWrapper {
+  perspective: 900px;
   inline-size: 100%;
-  min-block-size: 200px;
+  cursor: pointer;
+  min-block-size: 220px;
+}
+.cardInner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s var(--ease-entry);
+  min-block-size: 220px;
+  border-radius: var(--clay-radius);
+}
+.flippedCard {
+  transform: rotateY(180deg);
+}
+.cardFront,
+.cardBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   display: grid;
   place-items: center;
   text-align: center;
   padding: var(--space-6);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
+  box-shadow: var(--clay-shadow);
 }
+.cardBack {
+  transform: rotateY(180deg);
+  background: color-mix(in srgb, var(--brand) 7%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.cardWrapper:hover .cardFront,
+.cardWrapper:hover .cardBack {
+  box-shadow: var(--clay-shadow-hover);
+}
+
 .cardQ {
   font-size: var(--fs-lg);
 }
@@ -196,20 +291,33 @@
 }
 .mark {
   flex: 1;
+  min-height: 44px;
   padding: var(--space-3);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-bright);
   background: transparent;
   color: var(--text);
   cursor: pointer;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.mark:active {
+  transform: scale(0.97);
 }
 .markKnown:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: var(--color-success-bg);
 }
 .markReview:hover {
-  border-color: #e5534b;
-  color: #e5534b;
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: var(--color-error-bg);
 }
 
 .footnote {
@@ -238,10 +346,10 @@
   background: color-mix(in srgb, var(--brand) 16%, transparent);
 }
 .passed {
-  color: var(--accent);
+  color: var(--color-success);
   font-weight: var(--fw-bold);
 }
 .failed {
-  color: #e5534b;
+  color: var(--color-error);
   font-weight: var(--fw-bold);
 }

@@ -82,16 +82,31 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
           <p className={styles.qProgress}>
             {t('study.progress', { done: i + 1, total: bank.questions.length })}
           </p>
-          <button type="button" className={styles.card} onClick={() => setFlipped((f) => !f)}>
-            {!flipped ? (
-              <span className={styles.cardQ}>{card.q}</span>
-            ) : (
-              <span className={styles.cardA}>
-                <strong>{card.options[card.answer]}</strong>
-                <span className={styles.cardExplain}>{card.explain}</span>
-              </span>
-            )}
-          </button>
+          <div
+            className={styles.cardWrapper}
+            role="button"
+            tabIndex={0}
+            aria-pressed={flipped}
+            onClick={() => setFlipped((f) => !f)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setFlipped((f) => !f);
+              }
+            }}
+          >
+            <div className={`${styles.cardInner} ${flipped ? styles.flippedCard : ''}`}>
+              <div className={styles.cardFront}>
+                <span className={styles.cardQ}>{card.q}</span>
+              </div>
+              <div className={styles.cardBack}>
+                <span className={styles.cardA}>
+                  <strong>{card.options[card.answer]}</strong>
+                  <span className={styles.cardExplain}>{card.explain}</span>
+                </span>
+              </div>
+            </div>
+          </div>
           {!flipped ? (
             <button type="button" className={styles.primary} onClick={() => setFlipped(true)}>
               {t('study.flip')}

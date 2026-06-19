@@ -1,16 +1,26 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import type { CSSProperties } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { CORPUS, fetchJson, searchHref } from '../../lib/content';
-import type { CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '../../lib/content';
+import type {
+  CorpusDoc,
+  CorpusIndex,
+  LibraryKind,
+  SearchEntry,
+  SearchIndex,
+} from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
+import { SectionHeader } from '../../components/SectionHeader';
 import styles from './Library.module.css';
 
 const MIN_QUERY = 3;
 const MAX_HITS = 80;
 const KINDS: LibraryKind[] = ['regulations', 'reference', 'handbook'];
+/** Per-category accent — cycles the Falcon hues from the design-token map. */
+const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 /** Split text on a case-insensitive needle, wrapping matches in <mark>. */
 function highlight(text: string, needle: string) {
@@ -37,7 +47,9 @@ export function Library() {
   const [kind, setKind] = useState<LibraryKind>('regulations');
   const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index);
   const [category, setCategory] = useState<string>('all');
-  const [query, setQuery] = useState('');
+  // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
+  const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
 
   // Reset the category filter whenever the corpus changes.
   useEffect(() => setCategory('all'), [kind]);
@@ -90,6 +102,57 @@ export function Library() {
 
   const categoryLabel = (id: string) => data?.categories.find((c) => c.id === id)?.label ?? id;
 
+  // Deterministic category → accent colour, by the category's order in the index.
+  const catColor = useMemo(() => {
+    const map = new Map<string, string>();
+    data?.categories.forEach((c, i) => map.set(c.id, CAT_TOKENS[i % CAT_TOKENS.length]));
+    return (id: string) => map.get(id) ?? CAT_TOKENS[0];
+  }, [data]);
+
+  // When not searching by text, group the cards under category section headers.
+  const groups = useMemo(() => {
+    if (!data) return [];
+    const byCat = new Map<string, CorpusDoc[]>();
+    for (const d of docs) {
+      const arr = byCat.get(d.category);
+      if (arr) arr.push(d);
+      else byCat.set(d.category, [d]);
+    }
+    return data.categories
+      .filter((c) => byCat.has(c.id))
+      .map((c) => ({ id: c.id, label: c.label, docs: byCat.get(c.id) as CorpusDoc[] }));
+  }, [data, docs]);
+
+  const renderCard = (d: CorpusDoc) => {
+    const meta = d.pages
+      ? `${d.pages} ${t('library.pages')}`
+      : d.sections
+        ? `${d.sections} ${t('document.sections')}`
+        : '';
+    return (
+      <li key={d.slug}>
+        <Link
+          to={`${CORPUS[kind].base}/${d.slug}`}
+          className={styles.card}
+          style={{ '--cat-color': catColor(d.category) } as CSSProperties}
+        >
+          <span className={styles.catBar} aria-hidden="true" />
+          <span className={styles.cardHead}>
+            <span className={styles.badge}>
+              {d.part ? `${t('library.part')} ${d.part}` : d.badge}
+            </span>
+            {meta && <span className={styles.meta}>{meta}</span>}
+          </span>
+          <span className={styles.cardTitle}>{d.title}</span>
+          <span className={styles.cardFoot}>
+            <span className={styles.cat}>{categoryLabel(d.category)}</span>
+            <span className={styles.open}>{t('common.open')} →</span>
+          </span>
+        </Link>
+      </li>
+    );
+  };
+
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>
@@ -137,7 +200,7 @@ export function Library() {
                 className={`${styles.chip} ${category === 'all' ? styles.chipActive : ''}`}
                 onClick={() => setCategory('all')}
               >
-                {t('library.all')} ({data.count})
+                {t('library.all')} <span className={styles.count}>{data.count}</span>
               </button>
               {data.categories.map((c) => {
                 const n = data.documents.filter((d) => d.category === c.id).length;
@@ -148,7 +211,7 @@ export function Library() {
                     className={`${styles.chip} ${category === c.id ? styles.chipActive : ''}`}
                     onClick={() => setCategory(c.id)}
                   >
-                    {c.label} ({n})
+                    {c.label} <span className={styles.count}>{n}</span>
                   </button>
                 );
               })}
@@ -157,8 +220,40 @@ export function Library() {
 
           {docs.length === 0 ? (
             <p className={styles.empty}>{t('library.empty')}</p>
+          ) : q ? (
+            <ul className={`${styles.grid} stagger-grid`}>{docs.map(renderCard)}</ul>
           ) : (
-            <ul className={styles.grid}>
+            <ul className={`${styles.grid} stagger-grid`}>
+              {docs.map((d) => (
+                <li key={d.slug}>
+                  <Link to={`${CORPUS[kind].base}/${d.slug}`} className={styles.card}>
+                    <span className={styles.badge}>
+                      {d.part ? `${t('library.part')} ${d.part}` : d.badge}
+                    </span>
+                    <span className={styles.cat}>{categoryLabel(d.category)}</span>
+                    <span className={styles.cardTitle}>{d.title}</span>
+                    <span className={styles.pages}>
+                      {d.pages
+                        ? `${d.pages} ${t('library.pages')}`
+                        : d.sections
+                          ? `${d.sections} ${t('document.sections')}`
+                          : ''}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            groups.map((g) => (
+              <section key={g.id} className={styles.group}>
+                <SectionHeader
+                  title={g.label}
+                  tone={catColor(g.id)}
+                  count={t('library.docsCount', { count: g.docs.length })}
+                />
+                <ul className={`${styles.grid} stagger-grid`}>{g.docs.map(renderCard)}</ul>
+              </section>
+            ))
+            <ul className={`${styles.grid} stagger-grid`}>
               {docs.map((d) => (
                 <li key={d.slug}>
                   <Link to={`${CORPUS[kind].base}/${d.slug}`} className={styles.card}>

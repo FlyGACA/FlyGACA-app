@@ -27,7 +27,24 @@ export interface GacarCategory {
   label: string;
 }
 
-export interface GacarDocument {
+/**
+ * Optional provenance carried on synced records. Written by `scripts/sync-gaca.mjs`
+ * from the official-source (GACA / AIP) extraction agents; additive and ignored by
+ * the reader (`fetchJson` drops unknown fields), so it never affects rendering. Its
+ * only job is to let one refresh/AIRAC cycle be diffed against the next.
+ */
+export interface SourceProvenance {
+  /** Canonical source URL the record was extracted from. */
+  sourceUrl?: string;
+  /** Document revision / amendment marker (e.g. "Rev 3", AC letter "C"). */
+  revision?: string;
+  /** ISO date the source became effective (AIRAC effective date, AC date). */
+  effectiveDate?: string;
+  /** Content hash of the imported body/asset, for change detection. */
+  contentHash?: string;
+}
+
+export interface GacarDocument extends SourceProvenance {
   part: string;
   partNum: number;
   title: string;
@@ -53,7 +70,7 @@ export interface GacarIndex {
  */
 export type LibraryKind = 'regulations' | 'reference' | 'handbook';
 
-export interface CorpusDoc {
+export interface CorpusDoc extends SourceProvenance {
   slug: string;
   title: string;
   category: string;
@@ -89,7 +106,7 @@ export const CORPUS: Record<LibraryKind, CorpusMeta> = {
   handbook: { index: '/data/ebooks-index.json', dir: '/data/ebooks', base: '/library/handbook' },
 };
 
-export interface ChartDoc {
+export interface ChartDoc extends SourceProvenance {
   region: string;
   variant: string;
   date: string | null;
@@ -132,7 +149,7 @@ export interface PdfsIndex {
   documents: PdfDoc[];
 }
 
-export interface Airport {
+export interface Airport extends SourceProvenance {
   icao: string;
   iata: string;
   name_en: string;
@@ -149,6 +166,36 @@ export interface Airport {
 export interface AirportsIndex {
   count: number;
   airports: Airport[];
+}
+
+/** An ATS airspace (CTR/TMA) in the study airspace directory. Geometry is the
+ *  AIP's approximate circle (`center` + `radius_nm`); a `polygon` ring, when
+ *  present, is the published lateral boundary and overrides the circle. */
+export interface AtsAirspace extends SourceProvenance {
+  id: string;
+  name: string;
+  name_ar: string;
+  type: string;
+  class: string;
+  center: [number, number];
+  radius_nm: number;
+  unit: string;
+  polygon?: [number, number][];
+}
+
+export interface AirspaceClass {
+  id: string;
+  label: string;
+  color: string;
+}
+
+export interface AirspacesIndex {
+  generated: string;
+  source: string;
+  note: string;
+  count: number;
+  classes: AirspaceClass[];
+  airspaces: AtsAirspace[];
 }
 
 export interface DefinitionTerm {

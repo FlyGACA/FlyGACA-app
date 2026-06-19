@@ -18,6 +18,27 @@
   }
 }
 
+@media (max-width: 480px) {
+  .top {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .brand {
+    max-inline-size: 100%;
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .copyright {
+    margin-inline-end: 0;
+  }
+}
+
 .brand {
   max-inline-size: 36ch;
 }
@@ -29,6 +50,7 @@
 }
 
 .wordmark {
+  font-family: var(--font-sans);
   font-weight: var(--fw-black);
   font-size: var(--fs-lg);
 }
@@ -63,9 +85,14 @@
 .col a {
   color: var(--text-muted);
   font-size: var(--fs-sm);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--dur) var(--ease);
 }
 .col a:hover {
   color: var(--text);
+  text-decoration: none;
 }
 
 .bottom {
@@ -86,14 +113,63 @@
 
 .contact {
   font-size: var(--fs-sm);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--dur) var(--ease);
+}
+.contact:hover {
+  color: var(--brand-hover);
+  text-decoration: none;
 }
 
 .langToggle {
-  inline-size: 34px;
-  block-size: 34px;
+  inline-size: 44px;
+  block-size: 44px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-bright);
-  background: transparent;
+  border: var(--clay-border);
+  background: var(--surface);
   color: var(--text);
   font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.langToggle:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.langToggle:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
+  color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 10%, var(--surface));
+}
+.langToggle:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.95);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.langToggle:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
 }
