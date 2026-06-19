@@ -27,7 +27,6 @@ export function WindDiagram({
 }: WindDiagramProps) {
   const xwBad = Math.abs(crosswind) >= 15;
   const stroke = xwBad ? 'var(--danger)' : 'var(--link)';
-  const stroke = xwBad ? 'var(--color-error)' : 'var(--link)';
 
   const [wx1, wy1] = pt(windDir, R - 6);
   const [wx2, wy2] = pt(windDir, 34);
