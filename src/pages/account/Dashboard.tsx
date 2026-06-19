@@ -63,7 +63,7 @@ function Inner() {
         </p>
       </header>
 
-      <div className={styles.grid}>
+      <div className={`${styles.grid} stagger-grid`}>
         {cards.map((c) => (
           <div key={c.label} className={styles.card}>
             <span className={styles.cardLabel}>{c.label}</span>

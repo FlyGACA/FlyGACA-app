@@ -3,9 +3,10 @@
   line-height: var(--lh-snug);
   color: var(--text-dim);
   padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
 }
 
 .disclaimer strong {

@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: var(--fs-base);
   line-height: var(--lh-body);
   color: var(--text);
@@ -28,6 +28,11 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Inter carries no Arabic glyphs — keep Arabic body text on Cairo. */
+html[lang='ar'] body {
+  font-family: var(--font-sans);
 }
 
 img,
@@ -41,6 +46,7 @@ h1,
 h2,
 h3,
 h4 {
+  font-family: var(--font-sans);
   line-height: var(--lh-tight);
   font-weight: var(--fw-bold);
   text-wrap: balance;
@@ -119,6 +125,12 @@ button {
 .btn:active {
   transform: scale(0.97);
 }
+/* Sage focus ring (Design System §07) — keyboard navigation only. */
+.btn:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent);
+}
 .btn:disabled,
 .btn[aria-disabled='true'] {
   opacity: 0.45;
@@ -132,6 +144,32 @@ button {
 }
 .btn-primary:hover {
   background: var(--brand-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+/* Outline / secondary — teal border that fills on hover (Design System §07). */
+.btn-secondary {
+  background: transparent;
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+.btn-secondary:hover {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+/* Heritage accent — used sparingly for a single highlighted action. */
+.btn-gold {
+  background: var(--gold);
+  color: var(--falcon-night);
+}
+.btn-gold:hover {
+  background: var(--falcon-gold-soft);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
 }
 
 .btn-ghost {
@@ -362,6 +400,45 @@ button {
 .stagger-grid > *:nth-child(11) { animation-delay: calc(10 * var(--dur-stagger)); }
 .stagger-grid > *:nth-child(12) { animation-delay: calc(11 * var(--dur-stagger)); }
 .stagger-grid > *:nth-child(n + 13) { animation-delay: calc(12 * var(--dur-stagger)); }
+.stagger-grid > *:nth-child(1) {
+  animation-delay: calc(0 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(2) {
+  animation-delay: calc(1 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(3) {
+  animation-delay: calc(2 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(4) {
+  animation-delay: calc(3 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(5) {
+  animation-delay: calc(4 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(6) {
+  animation-delay: calc(5 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(7) {
+  animation-delay: calc(6 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(8) {
+  animation-delay: calc(7 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(9) {
+  animation-delay: calc(8 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(10) {
+  animation-delay: calc(9 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(11) {
+  animation-delay: calc(10 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(12) {
+  animation-delay: calc(11 * var(--dur-stagger));
+}
+.stagger-grid > *:nth-child(n + 13) {
+  animation-delay: calc(12 * var(--dur-stagger));
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

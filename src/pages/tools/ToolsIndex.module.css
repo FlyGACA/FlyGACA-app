@@ -19,19 +19,48 @@
   padding: var(--space-3) var(--space-4);
   min-height: 44px;
   border: 1px solid var(--border-bright);
+  border: var(--clay-border);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
   font: inherit;
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
 }
 .search:focus {
   border-color: var(--brand-hover);
+}
+
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-6);
+}
+.jumpChip {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.jumpChip:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  text-decoration: none;
+  box-shadow: var(--clay-shadow-hover);
+  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
 .category {
   margin-block-end: var(--space-8);
+  /* Keep the heading clear of the sticky header when jumped to via the nav. */
+  scroll-margin-block-start: calc(var(--nav-h) + var(--space-4));
 }
 .categoryTitle {
   font-size: var(--fs-h3);
@@ -48,9 +77,9 @@
 .badge {
   padding: 1px var(--space-2);
   border-radius: var(--radius-pill);
-  background: var(--grad-brand);
+  background: var(--brand);
   color: var(--text-on-brand);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -71,6 +100,8 @@
 }
 
 .card {
+  position: relative;
+  overflow: hidden;
   border: var(--clay-border);
   border-radius: var(--clay-radius);
   background: var(--surface);
@@ -82,6 +113,18 @@
 .card:hover {
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-2px);
+}
+/* Left category accent bar — matches the Library cards (Design System §09). */
+.catBar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  background: var(--cat-color, var(--brand));
+  transition: inline-size var(--dur) var(--ease);
+}
+.card:hover .catBar {
+  inline-size: 6px;
 }
 
 .pending {

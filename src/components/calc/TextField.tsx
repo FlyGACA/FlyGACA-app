@@ -38,6 +38,11 @@ export function TextField({
         />
       </span>
       {error && <span className={styles.fieldError} role="alert">{error}</span>}
+      {error && (
+        <span className={styles.fieldError} role="alert">
+          {error}
+        </span>
+      )}
       {hint && !error && <small className={styles.hint}>{hint}</small>}
     </label>
   );

@@ -18,24 +18,13 @@
   block-size: 100%;
 }
 
-/* Interactive data node, parked over the scope. Logical inset so it mirrors. */
-.node {
-  position: absolute;
-  inset-block-start: 34%;
-  inset-inline-start: 62%;
-  inline-size: 12px;
-  block-size: 12px;
-  border-radius: var(--radius-pill);
-  background: var(--neon-cyan);
-  box-shadow: 0 0 10px 1px var(--neon-cyan);
-}
-
+/* Roving tooltip naming the GACAR Part under the pointer. Positioned via inline
+   left/top in canvas-raster coordinates (the raster isn't direction-mirrored),
+   then pulled up and centred over the contact. */
 .tooltip {
   position: absolute;
-  inset-block-end: calc(100% + 8px);
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
+  transform: translate(-50%, calc(-100% - 8px));
+  max-inline-size: 160px;
   padding-block: var(--space-1);
   padding-inline: var(--space-2);
   border-radius: var(--radius-sm);
@@ -43,13 +32,8 @@
   border: 1px solid var(--border-bright);
   color: var(--text);
   font-size: var(--fs-xs);
-  opacity: 0;
+  line-height: var(--lh-snug);
   pointer-events: none;
-  transition: opacity var(--dur) var(--ease);
-}
-
-.node:hover .tooltip {
-  opacity: 1;
 }
 
 .concept {

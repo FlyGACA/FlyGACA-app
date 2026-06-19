@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
+import { StatusPill } from '../../StatusPill';
 import shared from './widgets.module.css';
 
 /**
@@ -22,10 +23,9 @@ export function AdelFeatureWidget() {
 
   return (
     <BentoCard span="wide" tone="green">
-      <span className={shared.pill}>
-        <span className={shared.dot} aria-hidden="true" />
+      <StatusPill tone="live" pulse>
         {t('home.dashboard.adel.status')}
-      </span>
+      </StatusPill>
       <p className={shared.heading}>{t('home.dashboard.adel.heading')}</p>
       <p className={shared.desc}>{t('home.dashboard.adel.desc')}</p>
       <form className={shared.featForm} onSubmit={onSubmit}>

@@ -52,15 +52,21 @@
   display: inline-flex;
   flex-direction: column;
   gap: 2px;
+  min-height: 44px;
+  justify-content: center;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   font-size: var(--fs-sm);
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 .variant:hover {
   border-color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
 }
 .variantActive {
   border-color: var(--brand);
@@ -95,9 +101,11 @@
 
 .map {
   block-size: 70dvh;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--falcon-night);
+  box-shadow: var(--clay-shadow);
+  overflow: hidden;
 }
 
 /* Leaflet controls themed for the dark surface. */

@@ -90,7 +90,7 @@ export function RoutePlanner() {
       </FieldGrid>
 
       {unknown.length > 0 && (
-        <p style={{ color: '#e5534b', fontSize: 'var(--fs-sm)', margin: 0 }}>
+        <p style={{ color: 'var(--color-error)', fontSize: 'var(--fs-sm)', margin: 0 }}>
           {t('routePlanner.unknown', { codes: unknown.join(', ') })}
         </p>
       )}
