@@ -8,7 +8,8 @@
     "loading": "Loading…",
     "loadError": "Could not load this content. Verify your connection and try again.",
     "skipToContent": "Skip to content",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "open": "Open"
   },
   "nav": {
     "library": "Library",
@@ -48,11 +49,10 @@
         "open": "Browse the library"
       },
       "radar": {
-        "eyebrow": "Charts · Radar",
-        "title": "Aeronautical charts",
-        "node": "Aerodrome chart",
-        "concept": "Concept visual — not live flight tracking.",
-        "cta": "Browse charts"
+        "eyebrow": "Coverage · GACAR",
+        "title": "Regulatory coverage",
+        "concept": "{{parts}} GACAR Parts across {{domains}} domains",
+        "cta": "Open the regulations"
       },
       "reg": {
         "live": "Live",
@@ -409,6 +409,7 @@
     "moreHits": "Showing the first {{max}} passages — refine your search to narrow them.",
     "noFullMatches": "No passages match “{{q}}”.",
     "browse": "Browse by collection",
+    "docsCount": "{{count}} document(s)",
     "kind": {
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
@@ -1151,9 +1152,11 @@
     "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
     "monthly": "Monthly",
     "annual": "Annual",
-    "saveBadge": "2 months free",
+    "saveBadge": "Save 51%",
     "indicative": "Indicative pricing — confirmed at launch.",
     "billingNote": "Checkout opens when billing is connected.",
+    "eyebrow": "Plans & Pricing",
+    "popular": "Most popular",
     "current": "Current plan",
     "goPro": "Go Pro",
     "checkoutBusy": "Opening checkout…",
@@ -1165,15 +1168,15 @@
         "price": "SAR 0",
         "features": [
           "The full regulatory library",
-          "Every flight tool",
-          "Captain Adel — limited daily questions",
+          "Every flight tool — 3 runs / day",
+          "Captain Adel — 5 questions / month",
           "Study quizzes & flashcards"
         ]
       },
       "pro": {
         "name": "Pro",
-        "priceMo": "SAR 29 / mo",
-        "priceYr": "SAR 290 / yr",
+        "priceMo": "SAR 59 / mo",
+        "priceYr": "SAR 349 / yr · ≈ 29 / mo",
         "features": [
           "Everything in Free",
           "Unlimited Captain Adel",
@@ -1184,9 +1187,10 @@
       },
       "school": {
         "name": "Schools",
-        "price": "Custom",
+        "price": "From SAR 199 / seat / yr",
         "features": [
           "Seat licences for your students",
+          "Minimum 10 seats",
           "Admin dashboard",
           "Bulk onboarding",
           "Invoiced billing"
@@ -1554,8 +1558,8 @@
     ]
   },
   "disclaimer": {
-    "strong": "Unofficial & educational.",
-    "body": "Fly GACA is an independent educational tool. It is not affiliated with, endorsed by, or connected to the General Authority of Civil Aviation (GACA). The authoritative source for any regulation is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa before relying on any information."
+    "strong": "Fly GACA is an independent educational platform.",
+    "body": "It is not affiliated with, endorsed by, or operated by the General Authority of Civil Aviation (GACA) or the Government of the Kingdom of Saudi Arabia. The official and authoritative source for all civil aviation regulations, publications, and aeronautical information is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa."
   },
   "legal": {
     "updated": "An educational reference — not a legal document.",

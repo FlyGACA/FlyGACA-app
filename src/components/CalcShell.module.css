@@ -7,6 +7,11 @@
 
 .head h1 {
   font-size: var(--fs-h2);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
 }
 
 .eyebrow {
@@ -19,16 +24,42 @@
 }
 
 .formula {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition: box-shadow var(--dur) var(--ease);
+}
+.formula[open] {
+  box-shadow: var(--clay-shadow-hover);
 }
 .formula summary {
   padding: var(--space-3) var(--space-4);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   font-weight: var(--fw-semibold);
   font-size: var(--fs-sm);
   color: var(--text);
+  border-radius: var(--clay-radius);
+  transition: color var(--dur) var(--ease);
+  list-style: none;
+  gap: var(--space-2);
+}
+.formula summary::-webkit-details-marker {
+  display: none;
+}
+.formula summary::before {
+  content: '›';
+  font-size: 1.2em;
+  font-weight: var(--fw-bold);
+  color: var(--brand);
+  transition: transform var(--dur) var(--ease);
+  display: inline-block;
+}
+.formula[open] summary::before {
+  transform: rotate(90deg);
 }
 .formula summary:hover {
   color: var(--brand-hover);
@@ -59,16 +90,28 @@
   margin-inline-end: var(--space-1);
 }
 .relatedChip {
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .relatedChip:hover {
   border-color: var(--brand-hover);
   color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
   text-decoration: none;
+}
+.relatedChip:active {
+  transform: scale(0.97);
 }
 
 .intro {
@@ -94,19 +137,41 @@
 .action {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   background: transparent;
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
   color: var(--text);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
+  cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  text-decoration: none;
+  transition:
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .action:hover {
-  border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
   color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
   text-decoration: none;
+}
+.action:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.97);
 }
 
 /* The Ask-Adel action is the one primary CTA on a calculator: filled, while
@@ -120,6 +185,18 @@
   background: var(--brand-hover);
   border-color: var(--brand-hover);
   color: var(--text-on-brand);
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  box-shadow:
+    var(--clay-shadow),
+    0 0 12px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+.adel:hover {
+  background: color-mix(in srgb, var(--brand) 14%, var(--surface));
+  box-shadow:
+    var(--clay-shadow-hover),
+    0 0 20px color-mix(in srgb, var(--brand) 28%, transparent);
 }
 
 .note {

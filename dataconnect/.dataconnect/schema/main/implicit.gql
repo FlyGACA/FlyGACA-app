@@ -1,0 +1,48 @@
+extend type Category {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Category", purpose: IMPLICIT_KEY_FIELD)
+}
+extend type Document {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Document", purpose: IMPLICIT_KEY_FIELD)
+}
+extend type DocumentCategory {
+  """
+  ✨ Implicit foreign key field based on `DocumentCategory`.`document`. It must match the value of `Document`.`id`. See `@ref` for how to customize it.
+  """
+  documentId: UUID! @fdc_generated(from: "DocumentCategory.document", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `DocumentCategory`.`category`. It must match the value of `Category`.`id`. See `@ref` for how to customize it.
+  """
+  categoryId: UUID! @fdc_generated(from: "DocumentCategory.category", purpose: IMPLICIT_REF_FIELD)
+}
+extend type DocumentRating {
+  """
+  ✨ Implicit foreign key field based on `DocumentRating`.`user`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  userId: UUID! @fdc_generated(from: "DocumentRating.user", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `DocumentRating`.`document`. It must match the value of `Document`.`id`. See `@ref` for how to customize it.
+  """
+  documentId: UUID! @fdc_generated(from: "DocumentRating.document", purpose: IMPLICIT_REF_FIELD)
+}
+extend type FavoriteDocument {
+  """
+  ✨ Implicit foreign key field based on `FavoriteDocument`.`user`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  userId: UUID! @fdc_generated(from: "FavoriteDocument.user", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `FavoriteDocument`.`document`. It must match the value of `Document`.`id`. See `@ref` for how to customize it.
+  """
+  documentId: UUID! @fdc_generated(from: "FavoriteDocument.document", purpose: IMPLICIT_REF_FIELD)
+}
+extend type User {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "User", purpose: IMPLICIT_KEY_FIELD)
+}

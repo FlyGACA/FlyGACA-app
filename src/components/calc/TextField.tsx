@@ -6,6 +6,7 @@ interface TextFieldProps {
   onChange: (value: string) => void;
   placeholder?: string;
   hint?: string;
+  error?: string;
   type?: 'text' | 'email' | 'password';
   autoComplete?: string;
 }
@@ -17,11 +18,13 @@ export function TextField({
   onChange,
   placeholder,
   hint,
+  error,
   type = 'text',
   autoComplete,
 }: TextFieldProps) {
+  const fieldClass = [styles.field, error ? styles.fieldInvalid : ''].filter(Boolean).join(' ');
   return (
-    <label className={styles.field}>
+    <label className={fieldClass}>
       <span>{label}</span>
       <span className={styles.inputRow}>
         <input
@@ -31,9 +34,15 @@ export function TextField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
+          aria-invalid={error ? 'true' : undefined}
         />
       </span>
-      {hint && <small className={styles.hint}>{hint}</small>}
+      {error && (
+        <span className={styles.fieldError} role="alert">
+          {error}
+        </span>
+      )}
+      {hint && !error && <small className={styles.hint}>{hint}</small>}
     </label>
   );
 }

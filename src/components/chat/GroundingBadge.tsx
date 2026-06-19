@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { GroundingKind } from '../../lib/api';
-import styles from './GroundingBadge.module.css';
+import { StatusPill, type StatusTone } from '../StatusPill';
 
 const LABEL_KEY: Record<'grounded' | 'partial' | 'refusal', string> = {
   grounded: 'chat.grounding.grounded',
@@ -8,10 +8,18 @@ const LABEL_KEY: Record<'grounded' | 'partial' | 'refusal', string> = {
   refusal: 'chat.grounding.refusal',
 };
 
+/** Verdict → semantic pill tone. */
+const TONE: Record<'grounded' | 'partial' | 'refusal', StatusTone> = {
+  grounded: 'success',
+  partial: 'warning',
+  refusal: 'danger',
+};
+
 /**
- * Renders the brain's grounding verdict (grounded / partially grounded / hold).
- * `na` or an unknown kind renders nothing — same rule as the legacy client.
- * For a refusal, the cited rule is shown LTR via <bdi> even under RTL.
+ * Renders the brain's grounding verdict (grounded / partially grounded / hold)
+ * as a shared {@link StatusPill}. `na` or an unknown kind renders nothing — same
+ * rule as the legacy client. For a refusal, the cited rule is shown LTR via <bdi>
+ * even under RTL. `data-state` is kept on the pill for styling/test hooks.
  */
 export function GroundingBadge({
   kind,
@@ -26,16 +34,19 @@ export function GroundingBadge({
   if (!key) return null;
 
   return (
-    <div className={styles.badge} data-state={kind} role="status">
-      <span className={styles.dot} aria-hidden="true" />
-      <span className={styles.label}>{t(key)}</span>
-      {kind === 'refusal' && refusalClass && (
-        <span className={styles.cls}>
+    <StatusPill
+      tone={TONE[kind]}
+      role="status"
+      data-state={kind}
+      cite={
+        kind === 'refusal' && refusalClass ? (
           <bdi dir="ltr" lang="en">
             §{refusalClass}
           </bdi>
-        </span>
-      )}
-    </div>
+        ) : undefined
+      }
+    >
+      {t(key)}
+    </StatusPill>
   );
 }

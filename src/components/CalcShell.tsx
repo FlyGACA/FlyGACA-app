@@ -67,7 +67,7 @@ export function CalcShell({
   const adelHref = adelPrompt ? adelLink(adelPrompt()) : null;
 
   return (
-    <article className={`container-narrow ${styles.shell}`}>
+    <article className={`container-narrow ${styles.shell} page-enter`}>
       <header className={styles.head}>
         {category && <p className={styles.eyebrow}>{category}</p>}
         <h1>{title}</h1>

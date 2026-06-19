@@ -1,18 +1,53 @@
-import { useEffect, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
+import { useFetchJson } from '../../../lib/useFetchJson';
+import { CORPUS, type GacarIndex } from '../../../lib/content';
 import shared from './widgets.module.css';
 import styles from './RadarWidget.module.css';
 
-/** Seeded "contacts" — fixed polar positions so the scene is deterministic. */
-const BLIPS = [
-  { angle: 0.6, radius: 0.55 },
-  { angle: 2.1, radius: 0.78 },
-  { angle: 3.4, radius: 0.4 },
-  { angle: 4.7, radius: 0.66 },
-  { angle: 5.6, radius: 0.85 },
-];
+/** One plotted GACAR Part: polar position + visual weight + label. */
+interface Blip {
+  angle: number;
+  radiusFrac: number;
+  size: number;
+  bright: number;
+  title: string;
+}
+
+/**
+ * Map the real GACAR corpus onto the radar scope: each Part is a contact placed
+ * in its domain's angular sector and pushed outward by page-count (corpus depth),
+ * so the scope reads as genuine regulatory coverage. Deterministic — no real-time
+ * feed — but data-driven rather than decorative.
+ */
+function buildBlips(data: GacarIndex | null | undefined): Blip[] {
+  if (!data || data.documents.length === 0) return [];
+  const cats = data.categories.map((c) => c.id);
+  const nCat = cats.length || 1;
+  const pages = data.documents.map((d) => d.pages);
+  const minP = Math.min(...pages);
+  const span = Math.max(1, Math.max(...pages) - minP);
+  const sectorWidth = ((Math.PI * 2) / nCat) * 0.82;
+  const perSector: Record<string, number> = {};
+
+  return data.documents.map((d) => {
+    const sector = Math.max(0, cats.indexOf(d.category));
+    const idx = (perSector[d.category] = (perSector[d.category] ?? 0) + 1);
+    // Sector centred at the top (−90°), Parts fanned within it by a golden offset.
+    const base = (sector / nCat) * Math.PI * 2 - Math.PI / 2;
+    const frac = ((idx * 0.61803) % 1) - 0.5;
+    const depth = (d.pages - minP) / span; // 0..1
+    return {
+      angle: base + frac * sectorWidth,
+      radiusFrac: 0.4 + depth * 0.52, // deeper Parts sit further out
+      size: 1.8 + depth * 2.6,
+      bright: 0.45 + depth * 0.5,
+      title: `${d.part} · ${d.title}`,
+    };
+  });
+}
 
 /** Read a CSS custom property off :root so canvas paint stays token-driven. */
 function cssVar(name: string, fallback: string): string {
@@ -21,16 +56,20 @@ function cssVar(name: string, fallback: string): string {
 }
 
 /**
- * The "active canvas element" — a decorative radar sweep. It does NOT track real
- * flights (the app has no live feed); it is an ambient visual that links through
- * to the charts library, and is labelled as a concept. Anti-aliased via devicePixel
- * scaling; a continuous sweep leaves a fading cyan trail and lights contacts as it
- * passes. Honours reduced-motion by painting a single static frame.
+ * The dashboard's "regulatory coverage map" — a radar scope whose contacts are the
+ * 74 GACAR Parts, grouped by domain sector and weighted by corpus depth. Anti-aliased
+ * via devicePixel scaling; a continuous sweep lights contacts as it passes, and a
+ * single roving tooltip names the Part under the pointer. Honours reduced-motion by
+ * painting a single static frame (data still shown).
  */
 export function RadarWidget() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { data } = useFetchJson<GacarIndex>(CORPUS.regulations.index);
+  const blips = useMemo(() => buildBlips(data), [data]);
+  const [tip, setTip] = useState<{ title: string; left: number; top: number } | null>(null);
+  const lastTitle = useRef<string | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -119,24 +158,24 @@ export function RadarWidget() {
       ctx.stroke();
       ctx.globalAlpha = 1;
 
-      // Contacts — brighten as the sweep passes, then fade
-      for (const b of BLIPS) {
-        const bx = cx + Math.cos(b.angle) * b.radius * maxR;
-        const by = cy + Math.sin(b.angle) * b.radius * maxR;
+      // Contacts — one per GACAR Part (cyan = data), brightening to green as the
+      // sweep passes, then fading.
+      for (const b of blips) {
+        const bx = cx + Math.cos(b.angle) * b.radiusFrac * maxR;
+        const by = cy + Math.sin(b.angle) * b.radiusFrac * maxR;
         let delta = sweep - b.angle;
         delta = ((delta % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-        const lit = Math.max(0, 1 - delta / 1.4); // recently swept → bright
-        const r = 2 + lit * 3;
+        const lit = Math.max(0, 1 - delta / 1.4);
         ctx.beginPath();
-        ctx.fillStyle = green;
-        ctx.globalAlpha = 0.25 + lit * 0.75;
-        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        ctx.fillStyle = lit > 0.05 ? green : cyan;
+        ctx.globalAlpha = Math.min(1, b.bright * (0.6 + lit * 0.7));
+        ctx.arc(bx, by, b.size + lit * 1.6, 0, Math.PI * 2);
         ctx.fill();
         if (lit > 0.05) {
           ctx.globalAlpha = lit * 0.4;
           ctx.strokeStyle = green;
           ctx.beginPath();
-          ctx.arc(bx, by, r + 5, 0, Math.PI * 2);
+          ctx.arc(bx, by, b.size + 5, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
@@ -149,6 +188,48 @@ export function RadarWidget() {
       ctx.fill();
     };
 
+    // Roving tooltip: hit-test the nearest Part contact under the pointer. Uses
+    // raw canvas (physical) coordinates — the raster isn't direction-mirrored, so
+    // percentage left/top track the painted blip in both LTR and RTL.
+    const onMove = (e: MouseEvent) => {
+      const cx = cssW / 2;
+      const cy = cssH / 2;
+      const maxR = Math.min(cssW, cssH) / 2 - 6;
+      if (maxR <= 0 || blips.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      let best: Blip | null = null;
+      let bestD = Infinity;
+      let bx = 0;
+      let by = 0;
+      for (const b of blips) {
+        const px = cx + Math.cos(b.angle) * b.radiusFrac * maxR;
+        const py = cy + Math.sin(b.angle) * b.radiusFrac * maxR;
+        const d = Math.hypot(px - mx, py - my);
+        if (d < bestD) {
+          bestD = d;
+          best = b;
+          bx = px;
+          by = py;
+        }
+      }
+      if (best && bestD <= Math.max(10, best.size + 6)) {
+        if (lastTitle.current !== best.title) {
+          lastTitle.current = best.title;
+          setTip({ title: best.title, left: (bx / cssW) * 100, top: (by / cssH) * 100 });
+        }
+      } else if (lastTitle.current !== null) {
+        lastTitle.current = null;
+        setTip(null);
+      }
+    };
+
+    const onLeave = () => {
+      lastTitle.current = null;
+      setTip(null);
+    };
+
     resize();
 
     const observer = new ResizeObserver(() => {
@@ -156,10 +237,18 @@ export function RadarWidget() {
       if (reduce) draw(-Math.PI / 4);
     });
     observer.observe(canvas);
+    canvas.addEventListener('mousemove', onMove);
+    canvas.addEventListener('mouseleave', onLeave);
+
+    const cleanupListeners = () => {
+      observer.disconnect();
+      canvas.removeEventListener('mousemove', onMove);
+      canvas.removeEventListener('mouseleave', onLeave);
+    };
 
     if (reduce) {
       draw(-Math.PI / 4); // single static frame
-      return () => observer.disconnect();
+      return cleanupListeners;
     }
 
     let raf = 0;
@@ -176,28 +265,34 @@ export function RadarWidget() {
 
     return () => {
       cancelAnimationFrame(raf);
-      observer.disconnect();
+      cleanupListeners();
     };
-  }, [reduce]);
+  }, [reduce, blips]);
+
+  const parts = data?.count ?? 0;
+  const domains = data?.categories.length ?? 0;
+  const caption = t('home.dashboard.radar.concept', { parts, domains });
 
   return (
-    <BentoCard span="tall" tone="cyan" to="/library/charts" label={t('home.dashboard.radar.title')}>
+    <BentoCard span="tall" tone="cyan" to="/library" label={t('home.dashboard.radar.title')}>
       <p className={shared.eyebrow}>{t('home.dashboard.radar.eyebrow')}</p>
       <div className={styles.scope}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
-        {/* A decorative data node with an elastic, spring tooltip on hover. It is
-            part of the concept visual (hidden from the a11y tree) so it never
-            becomes interactive content nested inside the card's link. */}
-        <motion.span
-          className={styles.node}
-          aria-hidden="true"
-          whileHover={reduce ? undefined : { scale: 1.4 }}
-          transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-        >
-          <span className={styles.tooltip}>{t('home.dashboard.radar.node')}</span>
-        </motion.span>
+        {tip && (
+          <span
+            className={styles.tooltip}
+            style={{ left: `${tip.left}%`, top: `${tip.top}%` }}
+            aria-hidden="true"
+          >
+            {tip.title}
+          </span>
+        )}
       </div>
-      <p className={styles.concept}>{t('home.dashboard.radar.concept')}</p>
+      <p className={styles.concept}>{caption}</p>
+      {/* The canvas is decorative to AT; this carries the same coverage figure. */}
+      <p className={shared.srOnly}>
+        {t('home.dashboard.radar.title')}: {caption}
+      </p>
       <span className={`${shared.foot} cardHoverArrow`}>
         {t('home.dashboard.radar.cta')}
         <span className={shared.arrow} aria-hidden="true">

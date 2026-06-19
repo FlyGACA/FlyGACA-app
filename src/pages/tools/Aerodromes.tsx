@@ -44,7 +44,7 @@ export function Aerodromes() {
           {list.length === 0 ? (
             <p className={styles.count}>{t('aerodromesTool.empty')}</p>
           ) : (
-            <ul className={styles.list}>
+            <ul className={`${styles.list} stagger-grid`}>
               {list.map((a) => (
                 <li key={a.icao} className={styles.card}>
                   <div className={styles.head}>

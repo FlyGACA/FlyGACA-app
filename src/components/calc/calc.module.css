@@ -22,15 +22,42 @@
 .inputRow {
   display: flex;
   align-items: stretch;
+  min-height: 44px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   overflow: hidden;
+  transition: border-color var(--dur) var(--ease);
 }
 .inputRow:focus-within {
   border-color: var(--brand-hover);
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* Error / valid state modifiers — add .fieldInvalid or .fieldValid to the .field */
+.fieldInvalid .inputRow {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+.fieldInvalid .inputRow:focus-within {
+  outline-color: var(--color-error);
+}
+.fieldValid .inputRow {
+  border-color: var(--color-success);
+}
+
+.fieldError {
+  font-size: var(--fs-xs);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.fieldError::before {
+  content: '⚠';
+  font-size: 0.85em;
+  flex-shrink: 0;
 }
 
 .input {
@@ -44,7 +71,7 @@
   font-variant-numeric: tabular-nums;
 }
 .input:focus {
-  outline: none;
+  outline: none; /* focus ring is on .inputRow:focus-within */
 }
 
 .unit {
@@ -61,6 +88,18 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  padding: var(--space-4);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.stat:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
 }
 .stat dt {
   font-size: var(--fs-xs);
@@ -83,18 +122,22 @@
 .seg {
   display: inline-flex;
   gap: 2px;
-  padding: 2px;
-  border: 1px solid var(--border-bright);
+  padding: 3px;
+  border: var(--clay-border);
   border-radius: var(--radius-pill);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
 }
 .segBtn {
   padding: var(--space-2) var(--space-4);
+  min-height: 44px;
   border: none;
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
 }
 .segBtn:hover {
   color: var(--text);
@@ -104,6 +147,9 @@
   color: var(--text-on-brand);
 }
 
+.headline {
+  border-block-start: 3px solid var(--accent-bright);
+}
 .headline dd {
   color: var(--accent-bright);
 }
@@ -117,4 +163,5 @@
 }
 .bad dd {
   color: var(--danger);
+  color: var(--color-error);
 }

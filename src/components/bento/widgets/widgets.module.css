@@ -94,6 +94,7 @@
 .featInput {
   flex: 1;
   min-inline-size: 0;
+  min-height: 44px;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
@@ -101,15 +102,18 @@
   color: var(--text);
   font: inherit;
   font-size: var(--fs-sm);
+  transition: border-color var(--dur) var(--ease);
 }
 
 .featInput:focus {
   border-color: var(--brand-hover);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .featBtn {
   flex-shrink: 0;
+  min-height: 44px;
   padding-inline: var(--space-4);
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
@@ -119,61 +123,23 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition: background var(--dur) var(--ease);
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 
 .featBtn:hover {
   background: var(--brand-hover);
 }
 
+.featBtn:active {
+  transform: scale(0.97);
+}
+
 .featOpen {
   margin-block-start: var(--space-2);
   font-size: var(--fs-xs);
   color: var(--link);
-}
-
-/* Live status pill */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  align-self: flex-start;
-  padding-block: 2px;
-  padding-inline: var(--space-2) var(--space-3);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-bright);
-  font-size: var(--fs-xs);
-  font-family: var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.dot {
-  inline-size: 8px;
-  block-size: 8px;
-  border-radius: var(--radius-pill);
-  background: var(--neon-green);
-  box-shadow: 0 0 0 0 var(--neon-green);
-  animation: pulse-dot 2.4s var(--ease) infinite;
-}
-
-@keyframes pulse-dot {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--neon-green) 50%, transparent);
-  }
-  70% {
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--neon-green) 0%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--neon-green) 0%, transparent);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dot {
-    animation: none;
-  }
 }
 
 /* Quick chips */
@@ -198,6 +164,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  min-height: 44px;
   margin-block-start: var(--space-3);
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
