@@ -1,125 +1,235 @@
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!--  HERO / BRANDING                                                       -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+
 <div align="center">
 
-<img src="public/brand/flygaca-mark.png" alt="Fly GACA" width="112" />
+<!-- Centered project logo -->
+<img src="public/brand/flygaca-mark.png" alt="Fly GACA logo" width="120" />
 
-# Fly GACA — App
+<!-- Hero banner -->
+<img src="public/img/og-card.png" alt="Fly GACA — independent educational platform for Saudi civil aviation" width="100%" />
 
-**An independent, educational platform and open regulatory library for Saudi civil aviation.**
-GACAR · charts · study tools · an AI flight instructor — bilingual (EN ⇄ AR) and RTL-native.
+<h1>✈️ Fly GACA</h1>
+
+### The independent flight deck for Saudi civil aviation — *find it · study it · always verify against GACA*
+
+A bilingual (EN ⇄ AR), RTL-native platform and **open GACAR regulatory library**, paired with **Captain Adel**, a citation-first AI flight instructor.
+
+<!-- ──────────────────────────  BADGES  ────────────────────────── -->
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/gacafly/FlyGACA-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=2d6e8a)](https://github.com/gacafly/FlyGACA-app/actions)
+[![Version](https://img.shields.io/badge/version-0.1.0-2d6e8a?style=for-the-badge&labelColor=0a0e12)](https://github.com/gacafly/FlyGACA-app/releases)
+[![License](https://img.shields.io/badge/license-MIT-8fc9a8?style=for-the-badge&labelColor=0a0e12)](LICENSE)
+[![PWA Ready](https://img.shields.io/badge/PWA-ready-8fc9a8?style=for-the-badge&logo=pwa&logoColor=white&labelColor=0a0e12)](https://flygaca.com)
 
 <br />
 
-[![CI](https://img.shields.io/github/actions/workflow/status/gacafly/flygaca-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=2d6e8a)](../../actions/workflows/ci.yml)
-![Bundle](https://img.shields.io/badge/initial_JS-134_kB_gz-2d6e8a?style=for-the-badge&labelColor=0a0e12)
-![i18n](https://img.shields.io/badge/i18n-EN_⇄_AR-8fc9a8?style=for-the-badge&labelColor=0a0e12)
-![PWA](https://img.shields.io/badge/PWA-ready-8fc9a8?style=for-the-badge&labelColor=0a0e12&logo=pwa&logoColor=white)
-
-<br />
-
-![Vite](https://img.shields.io/badge/Vite-6-2d6e8a?style=flat-square&logo=vite&logoColor=white&labelColor=0a0e12)
-![React](https://img.shields.io/badge/React-18-2d6e8a?style=flat-square&logo=react&logoColor=white&labelColor=0a0e12)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-2d6e8a?style=flat-square&logo=typescript&logoColor=white&labelColor=0a0e12)
-![React Router](https://img.shields.io/badge/Router-6-2d6e8a?style=flat-square&logo=reactrouter&logoColor=white&labelColor=0a0e12)
-![Capacitor](https://img.shields.io/badge/Capacitor-iOS-2d6e8a?style=flat-square&logo=capacitor&logoColor=white&labelColor=0a0e12)
-![Firebase](https://img.shields.io/badge/Firebase-Hosting-2d6e8a?style=flat-square&logo=firebase&logoColor=white&labelColor=0a0e12)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0a0e12)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white&labelColor=0a0e12)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0a0e12)
+![i18next](https://img.shields.io/badge/i18n-EN%20%E2%87%84%20AR-8fc9a8?style=flat-square&logo=i18next&logoColor=white&labelColor=0a0e12)
+![Capacitor](https://img.shields.io/badge/Capacitor-iOS%20%2F%20Android-119EFF?style=flat-square&logo=capacitor&logoColor=white&labelColor=0a0e12)
+![Firebase](https://img.shields.io/badge/Firebase-Hosting-FFCA28?style=flat-square&logo=firebase&logoColor=white&labelColor=0a0e12)
 
 </div>
 
 > [!IMPORTANT]
 > **Not affiliated with GACA.** Fly GACA helps you *find and study* regulation — it never replaces it.
-> Every surface reinforces one rule: **verify against the latest official GACA publication.** The
-> assistant cites the exact Part/section; the `<Disclaimer />` notice is load-bearing and never reworded.
+> Every answer cites the exact Part/section, and every surface reinforces one rule:
+> **verify against the latest official GACA publication.**
 
 ---
 
-## ✈️ What this is
+## 📑 Table of Contents
 
-A modern TypeScript rebuild of the **Fly GACA** frontend. This repository is the **frontend app
-only** — it talks to the *same* backend as the legacy site:
+- [About the Project](#about-the-project)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-- `/api/chat` → the **Captain Adel** brain (grounded, citation-first answers)
-- `/api/content` → gated assets
+---
+
+## About the Project
+
+**Fly GACA** is an independent, educational platform and open regulatory library for the Saudi
+general-aviation community. It turns the dense world of **GACAR** (General Authority of Civil
+Aviation Regulations) into something you can actually *navigate, study, and trust* — in both
+**Arabic and English**, with full right-to-left support baked in from the ground up.
+
+This repository is the **modern frontend rebuild** — a fast, offline-capable Progressive Web App
+(and native iOS/Android shell) that replaces the legacy no-build vanilla PWA. It ships the
+regulatory corpus, interactive flight calculators, charts, ground-school study tools, and a
+direct line to **Captain Adel**, a Retrieval-Augmented AI instructor that answers with citations
+to the exact regulation — never guesswork.
 
 > [!NOTE]
-> The Firebase Functions gateway and the Captain Adel service live in the separate `flygaca/flygaca`
-> repo and are **not** part of this codebase.
+> This repo is **frontend only**. The chat (`/api/chat`) and content (`/api/content`) endpoints are
+> served by a separate backend gateway and are not part of this codebase.
 
-## 🧰 Stack
+---
 
-| Concern | Choice |
-| --- | --- |
-| **Build** | [Vite](https://vite.dev) 6 → `dist/` (static-host payload + Capacitor `webDir`) |
-| **UI** | React 18 + TypeScript (strict) |
-| **Routing** | React Router 6 (single route table) |
-| **i18n / RTL** | i18next + react-i18next — EN/AR with document-wide `dir` flipping |
-| **Styling** | Design tokens (the *Falcon* palette) + CSS Modules, CSS **logical properties** for free RTL |
-| **Data** | Static JSON corpus under `public/data/`, fetched at runtime (never bundled) |
-| **PWA** | `vite-plugin-pwa` (Workbox) — app shell precached, `/data/*` network-first |
-| **Native** | Capacitor (iOS primary) via a thin `native-bridge` adapter |
-| **Tests** | Vitest (pure calc + i18n parity) · Playwright (e2e + a11y) |
+## Key Features
 
-## ⚡ Quick start
+- 📚 **Open GACAR Library** — the full regulatory corpus, browsable and searchable, shipped as a
+  static JSON library that streams at runtime (the heavy corpus never bloats the JS bundle).
+- 🤖 **Captain Adel — AI Flight Instructor** — a citation-first assistant that grounds every answer
+  in the exact Part/section, so you can study with confidence and always trace the source.
+- 🌍 **Bilingual & RTL-Native** — every string lives in both `en.json` and `ar.json`; the document
+  `dir` flips end-to-end, and CSS logical properties mirror the entire UI automatically.
+- 🧮 **Interactive Flight Calculators** — pure, unit-tested aviation math (crosswind components and
+  more) wrapped in a shared, shareable-by-URL calculator shell.
+- 🗺️ **Charts, Aerodromes & Airspace** — interactive Leaflet maps plus indexed aerodrome, airspace,
+  and approach-chart data for Saudi airfields.
+- 🎓 **Ground-School Study Tools** — quizzes, definitions, study sheets, and reference ebooks for
+  exam prep and continued learning.
+- 📲 **Installable PWA + Native Apps** — app-shell precaching via Workbox for offline use, wrapped
+  by Capacitor into first-class iOS and Android builds.
+- ⚡ **Built for Speed** — Vite 6 + React 18, strict TypeScript, and an enforced initial-JS budget.
+
+---
+
+## Tech Stack
+
+> Built on a modern, type-safe web foundation with mobile and offline as first-class citizens.
+
+| Layer | Technology | Notes |
+| :--- | :--- | :--- |
+| **Build Tooling** | [Vite 6](https://vite.dev) | `tsc -b && vite build` → `dist/` (static payload + Capacitor `webDir`) |
+| **UI Framework** | [React 18](https://react.dev) + [TypeScript](https://www.typescriptlang.org) | Strict mode, no implicit `any` |
+| **Routing** | [React Router 6](https://reactrouter.com) | Single, declarative route table |
+| **Internationalization** | [i18next](https://www.i18next.com) + react-i18next | EN/AR with document-wide RTL flipping |
+| **Styling** | CSS Modules + design tokens | The *Falcon* palette; logical properties for free RTL |
+| **Motion** | [Framer Motion](https://www.framer.com/motion/) | Page and micro-interactions |
+| **Maps** | [Leaflet](https://leafletjs.com) | Aerodrome / airspace visualisation |
+| **PWA** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app) (Workbox) | App shell precached, `/data/*` network-first |
+| **Native** | [Capacitor](https://capacitorjs.com) | iOS & Android shells |
+| **Backend Services** | [Firebase](https://firebase.google.com) | Hosting (canonical) + Functions gateway |
+| **Testing** | [Vitest](https://vitest.dev) + [Playwright](https://playwright.dev) | Pure-logic & i18n parity · e2e + a11y |
+
+---
+
+## Getting Started
+
+Follow these steps to get a local development environment running.
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- **Node.js** `>= 20` (LTS recommended)
+- **npm** `>= 10` (ships with Node)
+- *(Optional)* **Xcode** / **Android Studio** — only if you intend to build the native shells
+
+### Installation
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/gacafly/FlyGACA-app.git
+cd FlyGACA-app
+
+# 2. Install dependencies
 npm install
-npm run dev          # Vite dev server (HMR)
-npm run build        # build:sitemap → tsc -b → vite build → dist/
-npm run preview      # serve the production build
 
-# quality gates (all green before commit)
-npm run typecheck    # tsc -b --noEmit
-npm run lint         # eslint
-npm run test         # vitest — calc correctness + bilingual key parity
-npm run test:e2e     # playwright — smoke + a11y
-npm run format       # prettier --write
+# 3. (Optional) Configure environment
+#    Copy the example env file and add your public Firebase config.
+#    With no VITE_FIREBASE_* set, the app runs fully local-first — no backend required.
+cp .env.example .env.local
 
-npm run cap:sync     # build + copy the web payload into the native shells
+# 4. Start the dev server (Vite + HMR)
+npm run dev
 ```
+
+The app will be available at **`http://localhost:5173`**.
+
+---
+
+## Usage
+
+### Running the project
+
+```bash
+npm run dev          # Start the Vite dev server with hot-module reload
+npm run build        # Production build → dist/  (sitemap → tsc -b → vite build)
+npm run preview      # Serve the production build locally
+```
+
+### Quality gates
 
 > [!TIP]
-> Copy `.env.example` → `.env.local` to wire the public Firebase config and turn on Auth/Firestore/
-> Analytics. With no `VITE_FIREBASE_*` set, the app runs fully **local-first** — no backend required.
+> Run all four before committing — CI will reject a PR that fails any of them.
 
-## 🗂 Project layout
+```bash
+npm run typecheck    # tsc -b --noEmit
+npm run lint         # ESLint
+npm run test         # Vitest — calc correctness + bilingual key parity
+npm run test:e2e     # Playwright — smoke + accessibility
+```
 
-<details open>
+### Native builds
+
+```bash
+npm run cap:sync     # Build the web payload and copy it into the native shells
+npm run cap:open     # Open the iOS project in Xcode
+```
+
+### Screenshots
+
+<!-- Replace the placeholders below with real screenshots once available -->
+
+| Library & Search | Captain Adel (AI) | Calculators |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/library.png" alt="GACAR library view" width="260" /> | <img src="docs/screenshots/captain-adel.png" alt="Captain Adel AI chat" width="260" /> | <img src="docs/screenshots/calculators.png" alt="Crosswind calculator" width="260" /> |
+
+> _📸 Screenshots coming soon — drop images into `docs/screenshots/` and update the paths above._
+
+---
+
+## Project Structure
+
+<details>
 <summary><b>Where things live</b></summary>
 
-```
+```text
 public/data/      Static JSON corpus + content indexes (fetched at runtime)
-public/img|fonts  Brand assets
-src/styles/       tokens.css (the Falcon palette) + global.css base layer
+public/brand/     Brand assets (logo mark, OG card)
+src/styles/       tokens.css (the Falcon palette) + global base layer
 src/i18n/         en.json / ar.json + the i18next setup
 src/app/          Shared chrome: Layout, Header, Footer
 src/components/   Reusable UI: LangToggle, Disclaimer, CalcShell
-src/lib/          Typed services: api, auth, firebase, entitlements, native-bridge, content, hooks
+src/lib/          Typed services: api, auth, firebase, entitlements, content, hooks
 src/calc/         Pure, unit-tested flight math (crosswind is the reference impl)
 src/pages/        One folder per route
-tests/            Vitest specs   ·   e2e/  Playwright specs
+src/router.tsx    The single route table
+tests/  ·  e2e/   Vitest specs  ·  Playwright specs
 ```
 
 </details>
 
-## 📐 Non-negotiable conventions
+---
 
-- **🌍 Bilingual + RTL is first-class.** Every user-facing string lives in `src/i18n/{en,ar}.json`.
-  `npm run test` fails if a key exists in one language but not the other.
-- **⚖️ The disclaimer is load-bearing.** The not-affiliated / verify-against-GACA notice is one shared
-  `<Disclaimer />` — render it on every surface; never reword it inline.
-- **🎨 Design tokens only.** Never hard-code a colour / space / radius outside `src/styles/tokens.css`.
-- **↔️ RTL for free.** Use CSS logical properties (`margin-inline`, `inset-block-start`, …), never
-  physical `left`/`right`.
+## Deployment
 
-## 🚀 CI & deploy
+### Continuous Integration
 
-**CI** (`.github/workflows/ci.yml`) runs on every PR — two jobs:
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on every pull request as two jobs:
 
-- `typecheck · lint · format:check · test · build · check:bundle` (initial JS budget ≤ 160 kB gz)
-- `e2e · a11y` (Playwright)
+- **Quality** — `typecheck · lint · format:check · test · build · check:bundle` (enforced initial-JS budget ≤ 160 kB gz)
+- **End-to-end** — `e2e · a11y` (Playwright)
 
-**Hosting** — one build, four fronts. **Firebase Hosting is canonical** (the `/api/*` Cloud Functions
-are co-located); **Vercel · Cloudflare · Netlify** are mirror fronts that proxy `/api/*` back to the
-Firebase gateway, so chat/content keep working with the strict CSP unchanged.
+### Hosting — one build, four fronts
+
+**Firebase Hosting is canonical** (the `/api/*` Cloud Functions are co-located with it). **Vercel ·
+Cloudflare · Netlify** are mirror fronts that proxy `/api/*` back to the Firebase gateway, so chat and
+content keep working with the strict CSP unchanged.
 
 <div align="center">
 
@@ -142,15 +252,57 @@ npm run build && firebase deploy --only hosting   # + npm run deploy:rules
 > [!NOTE]
 > Per-platform env vars, exact commands, and a post-deploy smoke checklist live in
 > [`docs/RUNBOOK-deploy.md`](docs/RUNBOOK-deploy.md). Firebase + Firestore specifics are in
-> [`docs/RUNBOOK-firebase.md`](docs/RUNBOOK-firebase.md); go-live in
+> [`docs/RUNBOOK-firebase.md`](docs/RUNBOOK-firebase.md); go-live steps are in
 > [`docs/RUNBOOK-cutover.md`](docs/RUNBOOK-cutover.md).
 
-## 📚 More
+---
 
-See [`MIGRATION.md`](MIGRATION.md) for what has been ported from the legacy site and what remains, and
-[`CLAUDE.md`](CLAUDE.md) for the architecture deep-dive.
+## Contributing
+
+Contributions are what make the open-source community such an amazing place to learn and build.
+Any contributions you make are **greatly appreciated**. 🛫
+
+1. **Fork** the project
+2. Create your feature branch — `git checkout -b feature/amazing-feature`
+3. Make your changes, keeping the project conventions:
+   - 🌍 **Bilingual + RTL is first-class** — add new copy to **both** `en.json` and `ar.json`
+   - ⚖️ **The disclaimer is load-bearing** — render the shared `<Disclaimer />`; never reword it
+   - 🎨 **Tokens only** — no hard-coded colours; logical properties only (no physical `left`/`right`)
+4. Run the quality gates — `npm run typecheck && npm run lint && npm run test`
+5. **Commit** your changes — `git commit -m "feat: add amazing feature"`
+6. **Push** to the branch — `git push origin feature/amazing-feature`
+7. Open a **Pull Request**
+
+> [!NOTE]
+> Found a bug or have an idea? [Open an issue](https://github.com/gacafly/FlyGACA-app/issues) — clear,
+> reproducible reports help everyone.
+
+---
+
+## License
+
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+
+---
+
+## Contact
+
+| | |
+| :--- | :--- |
+| **Author** | FlyGACA |
+| **GitHub** | [@gacafly](https://github.com/gacafly) |
+| **Email** | [i@flygaca.com](mailto:i@flygaca.com) |
+| **Website** | [flygaca.com](https://flygaca.com) |
+| **Project Link** | [github.com/gacafly/FlyGACA-app](https://github.com/gacafly/FlyGACA-app) |
+
+---
 
 <div align="center">
-<br />
+
 <sub>Built for the Saudi GA community · <b>find it · study it · always verify against GACA</b></sub>
+
+<br /><br />
+
+<b>صُنع في السعودية 🇸🇦 · Made in Saudi Arabia</b>
+
 </div>
