@@ -10,12 +10,12 @@
       {
         "source": "/api/chat",
         "function": "chat",
-        "region": "me-central2"
+        "region": "me-central1"
       },
       {
         "source": "/api/content",
         "function": "protectedContent",
-        "region": "me-central2"
+        "region": "me-central1"
       },
       {
         "source": "**",
