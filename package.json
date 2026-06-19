@@ -10,6 +10,7 @@
     "build": "npm run build:sitemap && tsc -b && vite build",
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply",
+    "gen:captain": "node scripts/generate-captain-adel.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",

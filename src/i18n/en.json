@@ -358,6 +358,7 @@
   },
   "chat": {
     "title": "Captain Adel",
+    "avatarAlt": "Captain Adel, your AI flight instructor",
     "status": "AI flight instructor · cites the GACAR",
     "welcome": "Captain Adel — your AI study assistant, trained on the GACAR. Ask about any Saudi regulation and he cites the exact Part and section. He can be wrong — always verify against the official source.",
     "placeholder": "Ask about any GACAR Part or section…",
