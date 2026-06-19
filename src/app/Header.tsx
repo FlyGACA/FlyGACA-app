@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
 import styles from './Header.module.css';
@@ -22,18 +22,64 @@ const NAV: NavItem[] = [
   { to: '/account', key: 'nav.account' },
 ];
 
+/** True once the page has scrolled past `threshold`px — drives the header's
+ *  elevated state (hairline + shadow appear, background firms up). Passive
+ *  listener; the global reduced-motion rule already neutralises the transition. */
+function useScrolled(threshold = 8): boolean {
+  const [scrolled, setScrolled] = useState(
+    () => typeof window !== 'undefined' && window.scrollY > threshold,
+  );
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [threshold]);
+  return scrolled;
+}
+
 export function Header() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const scrolled = useScrolled();
+  const location = useLocation();
+
+  // Close the mobile drawer whenever the route changes.
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  // While the drawer is open: lock body scroll and close on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
 
   return (
-    <header className={styles.nav}>
+    <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
       <div className={`container ${styles.inner}`}>
         <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
-          <img className={styles.mark} src="/img/flygaca-mark.png" alt="" width={34} height={34} />
+          <img className={styles.mark} src="/img/flygaca-mark.png" alt="" width={36} height={36} />
+          <span className={styles.wordmark} aria-hidden="true">
+            <span className={styles.wmFly}>Fly</span>
+            <span className={styles.wmGaca}>GACA</span>
+          </span>
         </Link>
 
-        <nav className={`${styles.links} ${open ? styles.open : ''}`} aria-label={t('nav.primary')}>
+        <nav
+          id="primary-nav"
+          className={`${styles.links} ${open ? styles.open : ''}`}
+          aria-label={t('nav.primary')}
+        >
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -44,11 +90,19 @@ export function Header() {
               {t(item.key)}
             </NavLink>
           ))}
+          {/* Primary CTA, surfaced inside the drawer on mobile (hidden ≥860px). */}
+          <Link
+            className={`btn btn-primary ${styles.drawerCta}`}
+            to="/pricing"
+            onClick={() => setOpen(false)}
+          >
+            {t('common.goPro')}
+          </Link>
         </nav>
 
         <div className={styles.actions}>
           <LangToggle className={styles.langToggle} />
-          <Link className="btn btn-primary" to="/pricing">
+          <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
             {t('common.goPro')}
           </Link>
           <button
@@ -56,24 +110,29 @@ export function Header() {
             type="button"
             aria-label={t('nav.menu')}
             aria-expanded={open}
+            aria-controls="primary-nav"
             onClick={() => setOpen((v) => !v)}
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
+            <span
+              className={`${styles.burger} ${open ? styles.burgerOpen : ''}`}
+              aria-hidden="true"
             >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </div>
+
+      {/* Dimmed backdrop behind the mobile drawer; tap to dismiss. */}
+      <button
+        className={`${styles.backdrop} ${open ? styles.backdropShown : ''}`}
+        type="button"
+        aria-label={t('common.close')}
+        tabIndex={open ? 0 : -1}
+        onClick={() => setOpen(false)}
+      />
     </header>
   );
 }

@@ -4,8 +4,9 @@
   padding-block: var(--space-10) var(--space-8);
   border-block-start: 1px solid var(--border);
   background: var(--surface);
+  overflow: hidden;
 }
-/* Distinct brand-gradient strip along the footer's top edge. */
+/* Brand-gradient strip along the top edge. */
 .footer::before {
   content: '';
   position: absolute;
@@ -13,6 +14,22 @@
   inset-inline: 0;
   block-size: 3px;
   background: var(--grad-brand);
+}
+/* Soft teal glow anchored to the brand corner — sits behind all content. */
+.footer::after {
+  content: '';
+  position: absolute;
+  inset-block-start: -40%;
+  inset-inline-start: -10%;
+  inline-size: 480px;
+  block-size: 480px;
+  background: var(--glow-teal);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.footer > .container {
+  position: relative;
+  z-index: var(--z-raised);
 }
 
 .top {
@@ -25,6 +42,9 @@
 @media (max-width: 760px) {
   .top {
     grid-template-columns: 1fr 1fr;
+  }
+  .brand {
+    grid-column: 1 / -1;
   }
 }
 
@@ -47,18 +67,23 @@
   .copyright {
     margin-inline-end: 0;
   }
+  .backToTop {
+    margin-inline-start: 0;
+  }
 }
 
 .brand {
-  max-inline-size: 36ch;
+  max-inline-size: 38ch;
 }
 
 .lockup {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
+  transition: transform var(--dur) var(--ease);
 }
 .lockup:hover {
+  transform: translateY(-1px);
   text-decoration: none;
 }
 
@@ -72,6 +97,7 @@
   color: var(--text);
 }
 .wmGaca {
+  margin-inline-start: 0.1em;
   background: var(--grad-brand);
   -webkit-background-clip: text;
   background-clip: text;
@@ -85,6 +111,49 @@
   line-height: var(--lh-snug);
 }
 
+/* --- Contact block --- */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: var(--space-5);
+}
+.contactLabel {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+.contactLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  min-block-size: 40px;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.contactLink svg {
+  color: var(--brand-hover);
+}
+.contactLink:hover {
+  color: var(--brand-hover);
+  border-color: color-mix(in srgb, var(--brand) 60%, transparent);
+  background: var(--brand-tint);
+  text-decoration: none;
+}
+
+/* --- Nav columns --- */
 .col h4 {
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
@@ -101,18 +170,43 @@
   gap: var(--space-1);
 }
 .col a {
+  position: relative;
   color: color-mix(in srgb, var(--text-muted) 55%, var(--text));
   font-size: var(--fs-sm);
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  transition: color var(--dur) var(--ease);
+  transition:
+    color var(--dur) var(--ease),
+    padding-inline-start var(--dur) var(--ease);
+}
+/* A gradient tick that fades in to the inline-start on hover. */
+.col a::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 50%;
+  inline-size: 0;
+  block-size: 2px;
+  border-radius: 2px;
+  background: var(--grad-brand);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition:
+    inline-size var(--dur) var(--ease),
+    opacity var(--dur) var(--ease);
 }
 .col a:hover {
   color: var(--brand-hover);
+  padding-inline-start: var(--space-4);
   text-decoration: none;
 }
+.col a:hover::before {
+  inline-size: var(--space-3);
+  opacity: 1;
+}
 
+/* --- Bottom bar --- */
 .bottom {
   display: flex;
   flex-wrap: wrap;
@@ -129,17 +223,40 @@
   margin-inline-end: auto;
 }
 
-.contact {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  min-height: 44px;
+.backToTop {
   display: inline-flex;
   align-items: center;
-  transition: color var(--dur) var(--ease);
+  gap: var(--space-2);
+  min-block-size: 44px;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
-.contact:hover {
+.backToTop:hover {
   color: var(--brand-hover);
-  text-decoration: none;
+  border-color: color-mix(in srgb, var(--brand) 60%, transparent);
+  background: var(--brand-tint);
+  transform: translateY(-1px);
+}
+.backToTop:active {
+  transform: scale(0.97);
+}
+.backToTop svg {
+  transition: transform var(--dur) var(--ease);
+}
+.backToTop:hover svg {
+  transform: translateY(-2px);
 }
 
 .langToggle {
