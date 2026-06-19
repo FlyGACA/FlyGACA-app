@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: var(--fs-base);
   line-height: var(--lh-body);
   color: var(--text);
@@ -28,6 +28,11 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Inter carries no Arabic glyphs — keep Arabic body text on Cairo. */
+html[lang='ar'] body {
+  font-family: var(--font-sans);
 }
 
 img,
@@ -41,6 +46,7 @@ h1,
 h2,
 h3,
 h4 {
+  font-family: var(--font-sans);
   line-height: var(--lh-tight);
   font-weight: var(--fw-bold);
   text-wrap: balance;
