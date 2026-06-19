@@ -6,15 +6,22 @@
   padding-block-start: var(--safe-top);
   display: flex;
   align-items: center;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border-block-end: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border-block-end: 1px solid transparent;
   transition:
     background var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease);
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
 }
-/* Distinct brand-gradient hairline along the header's bottom edge. */
+/* Elevated state — firmer surface, hairline + shadow appear once scrolled. */
+.nav.scrolled {
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  border-block-end-color: var(--border);
+  box-shadow: var(--shadow-card);
+}
+/* Brand-gradient hairline along the bottom edge; reveals on scroll. */
 .nav::after {
   content: '';
   position: absolute;
@@ -22,50 +29,82 @@
   inset-inline: 0;
   block-size: 2px;
   background: var(--grad-brand);
-  opacity: 0.7;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+.nav.scrolled::after {
+  opacity: 0.85;
 }
 
 .inner {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-4);
+  inline-size: 100%;
 }
 
+/* --- Brand lockup: mark + wordmark --- */
 .lockup {
   display: inline-flex;
   align-items: center;
-  min-width: 44px;
-  min-height: 44px;
+  gap: var(--space-3);
+  min-block-size: 44px;
+  padding-inline-end: var(--space-2);
   border-radius: var(--radius-md);
   transition:
     opacity var(--dur) var(--ease),
     transform var(--dur) var(--ease);
 }
 .lockup:hover {
-  opacity: 0.9;
-  transform: scale(1.04);
+  opacity: 0.96;
+  transform: translateY(-1px);
   text-decoration: none;
+}
+.lockup:active {
+  transform: scale(0.98);
 }
 
 .mark {
-  inline-size: 34px;
-  block-size: 34px;
+  inline-size: 36px;
+  block-size: 36px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.28));
 }
 
+.wordmark {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-black);
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.wmFly {
+  color: var(--text);
+}
+.wmGaca {
+  margin-inline-start: 0.1em;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Primary nav --- */
 .links {
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  margin-inline-end: auto;
+  margin-inline: var(--space-3) auto;
 }
 
 .links a {
-  color: color-mix(in srgb, var(--text-muted) 40%, var(--text));
+  position: relative;
+  color: color-mix(in srgb, var(--text-muted) 35%, var(--text));
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   padding-block: var(--space-2);
   padding-inline: var(--space-3);
-  min-height: 44px;
+  min-block-size: 44px;
   display: inline-flex;
   align-items: center;
   border-radius: var(--radius-pill);
@@ -85,10 +124,19 @@
   font-weight: var(--fw-bold);
 }
 
+/* CTA lives inside the drawer on mobile only. Scoped under .links so it wins
+   the specificity tie against the global .btn { display: inline-flex }. */
+.links .drawerCta {
+  display: none;
+}
+
 .actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  /* Anchor to the inline-end edge even when the nav is pulled out of flow
+     (mobile drawer is position: fixed, so its margin-end:auto no longer applies). */
+  margin-inline-start: auto;
 }
 
 .langToggle {
@@ -125,6 +173,7 @@
   background: var(--brand-tint);
 }
 
+/* --- Hamburger toggle + animated burger glyph --- */
 .toggle {
   display: none;
   align-items: center;
@@ -145,46 +194,134 @@
   background: var(--brand-tint);
 }
 
+.burger {
+  position: relative;
+  inline-size: 20px;
+  block-size: 14px;
+  display: inline-block;
+}
+.burger span {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform var(--dur) var(--ease),
+    opacity var(--dur) var(--ease);
+}
+.burger span:nth-child(1) {
+  inset-block-start: 0;
+}
+.burger span:nth-child(2) {
+  inset-block-start: 6px;
+}
+.burger span:nth-child(3) {
+  inset-block-start: 12px;
+}
+.burgerOpen span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.burgerOpen span:nth-child(2) {
+  opacity: 0;
+}
+.burgerOpen span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* --- Mobile drawer backdrop (off-canvas tap target) --- */
+.backdrop {
+  display: none;
+}
+
 @media (max-width: 860px) {
+  /* Slightly tighten the wordmark so the lockup never crowds the actions. */
+  .wordmark {
+    font-size: 1.15rem;
+  }
+
   .links {
-    position: absolute;
+    position: fixed;
     inset-block-start: var(--nav-h);
     inset-inline: 0;
     z-index: var(--z-dropdown);
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-1);
-    padding: var(--space-4) var(--space-5) var(--space-5);
+    margin: 0;
+    padding: var(--space-4) var(--space-5) calc(var(--space-5) + var(--safe-bottom));
     background: var(--surface);
     border-block-end: 1px solid var(--border);
-    box-shadow: var(--shadow-card);
-    display: none;
+    box-shadow: var(--shadow-pop);
+    max-block-size: calc(100dvh - var(--nav-h));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     opacity: 0;
-    transform: translateY(-8px);
+    visibility: hidden;
+    transform: translateY(-12px);
     transition:
       opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+      transform var(--dur) var(--ease),
+      visibility var(--dur) var(--ease);
   }
   .links.open {
-    display: flex;
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
   }
   .links a {
     inline-size: 100%;
     padding-inline: var(--space-4);
     border-radius: var(--radius-md);
-    min-height: 48px;
-  }
-  .links a:hover {
-    background: var(--brand-tint);
+    min-block-size: 48px;
+    font-size: var(--fs-base);
   }
   .links a.active {
     background: var(--brand-tint-strong);
     border-inline-start: 3px solid var(--brand);
     padding-inline-start: calc(var(--space-4) - 3px);
   }
+
+  .links .drawerCta {
+    display: inline-flex;
+    inline-size: 100%;
+    margin-block-start: var(--space-3);
+  }
+
+  /* Scoped under .actions to beat the global .btn display in the cascade. */
+  .actions .cta {
+    display: none;
+  }
+
   .toggle {
     display: inline-flex;
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    /* The header's backdrop-filter makes it the containing block for its
+       fixed children, so inset-block-end would resolve against the ~68px
+       header box. Anchor to the top and give it an explicit viewport height. */
+    inset-block-start: var(--nav-h);
+    inset-inline: 0;
+    block-size: 100dvh;
+    z-index: var(--z-base);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: color-mix(in srgb, var(--falcon-night) 62%, transparent);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur) var(--ease),
+      visibility var(--dur) var(--ease);
+  }
+  .backdropShown {
+    opacity: 1;
+    visibility: visible;
   }
 }

@@ -8,6 +8,7 @@
 :root {
   /* Cockpit view: Fly GACA is always dark. This also tells the UA to paint
      native controls, scrollbars, and form widgets dark to match. */
+  /* Dark-only app — keep native controls, scrollbars and form widgets dark. */
   color-scheme: dark;
 
   /* --- The Falcon palette (sampled from the mark) --- */
@@ -272,3 +273,11 @@
   --skeleton-shine: #f0ede8;
   --sheen-top: color-mix(in srgb, var(--text) 4%, transparent);
 }
+   Always dark — Fly GACA is a cockpit view and must render dark on
+   every device, regardless of the OS colour-scheme preference. There is
+   intentionally NO light theme: no `prefers-color-scheme: light` switch
+   and no `[data-theme="light"]` opt-in. Do not re-add either — the whole
+   palette above is dark-first and the app has no light reading surface.
+   `color-scheme: dark` (set on :root) keeps native controls, scrollbars
+   and form widgets dark to match.
+   ================================================================= */
