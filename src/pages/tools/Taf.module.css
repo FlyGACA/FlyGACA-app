@@ -18,9 +18,18 @@
   align-items: baseline;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: var(--clay-border);
+  border-inline-start: 3px solid color-mix(in srgb, var(--brand) 35%, transparent);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.group:hover {
+  box-shadow: var(--clay-shadow-hover);
+  background: color-mix(in srgb, var(--brand) 3%, var(--surface));
 }
 
 .type {

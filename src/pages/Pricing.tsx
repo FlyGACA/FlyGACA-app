@@ -35,6 +35,7 @@ export function Pricing() {
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>
+        <p className={styles.eyebrow}>{t('pricing.eyebrow')}</p>
         <h1>{t('pricing.title')}</h1>
         <p className={styles.subtitle}>{t('pricing.subtitle')}</p>
         <div className={styles.toggle} role="group">
@@ -69,6 +70,7 @@ export function Pricing() {
           features={f('pricing.plans.pro')}
           cta={busy ? t('pricing.checkoutBusy') : t('pricing.goPro')}
           highlight
+          badge={t('pricing.popular')}
           ctaOnClick={canCheckout() ? () => void goPro() : undefined}
           ctaDisabled={busy || !canCheckout()}
           note={`${t('pricing.indicative')} ${t('pricing.billingNote')}`}
@@ -99,6 +101,7 @@ interface PlanProps {
   features: string[];
   cta: string;
   highlight?: boolean;
+  badge?: string;
   ctaDisabled?: boolean;
   ctaHref?: string;
   ctaOnClick?: () => void;
@@ -111,6 +114,7 @@ function Plan({
   features,
   cta,
   highlight,
+  badge,
   ctaDisabled,
   ctaHref,
   ctaOnClick,
@@ -118,6 +122,7 @@ function Plan({
 }: PlanProps) {
   return (
     <div className={`${styles.plan} ${highlight ? styles.highlight : ''}`}>
+      {badge && <span className={styles.popularBadge}>{badge}</span>}
       <h2 className={styles.planName}>{name}</h2>
       <p className={styles.price}>{price}</p>
       <ul className={styles.features}>
