@@ -4,6 +4,13 @@ import { LangToggle } from '../components/LangToggle';
 import { Disclaimer } from '../components/Disclaimer';
 import styles from './Footer.module.css';
 
+/** Scrolls to the top, honouring the user's reduced-motion preference. */
+function scrollToTop() {
+  const reduce =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+}
+
 export function Footer() {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
@@ -14,13 +21,34 @@ export function Footer() {
         <div className={styles.top}>
           <div className={styles.brand}>
             <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
-              <img src="/img/flygaca-mark.png" alt="" width={30} height={30} loading="lazy" />
+              <img src="/img/flygaca-mark.png" alt="" width={34} height={34} loading="lazy" />
               <span className={styles.wordmark}>
                 <span className={styles.wmFly}>Fly</span>
                 <span className={styles.wmGaca}>GACA</span>
               </span>
             </Link>
             <p className={styles.tagline}>{t('footer.tagline')}</p>
+
+            <div className={styles.contact}>
+              <span className={styles.contactLabel}>{t('footer.contact')}</span>
+              <a className={styles.contactLink} href="mailto:i@flygaca.com">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-10 5L2 7" />
+                </svg>
+                i@flygaca.com
+              </a>
+            </div>
           </div>
 
           <nav className={styles.col} aria-label={t('footer.explore')}>
@@ -89,9 +117,22 @@ export function Footer() {
           <span className={styles.copyright}>
             © {year} {t('footer.copyright')}
           </span>
-          <a className={styles.contact} href="mailto:i@flygaca.com">
-            i@flygaca.com
-          </a>
+          <button type="button" className={styles.backToTop} onClick={scrollToTop}>
+            <span>{t('common.backToTop')}</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m18 15-6-6-6 6" />
+            </svg>
+          </button>
           <LangToggle className={styles.langToggle} />
         </div>
       </div>
