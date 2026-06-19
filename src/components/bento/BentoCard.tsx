@@ -6,7 +6,7 @@ import styles from './BentoCard.module.css';
 
 const MotionLink = motion.create(Link);
 
-export type BentoSpan = 'sm' | 'md' | 'lg' | 'tall';
+export type BentoSpan = 'sm' | 'md' | 'lg' | 'tall' | 'wide';
 export type BentoTone = 'default' | 'cyan' | 'green';
 
 interface BentoCardProps {
@@ -26,6 +26,7 @@ const spanClass: Record<BentoSpan, string> = {
   md: styles.spanMd,
   lg: styles.spanLg,
   tall: styles.spanTall,
+  wide: styles.spanWide,
 };
 
 const toneClass: Record<BentoTone, string> = {

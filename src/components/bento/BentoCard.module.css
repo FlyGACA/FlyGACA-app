@@ -117,14 +117,22 @@
   grid-row: span 2;
 }
 
-/* Tablet: 6-col grid */
+/* Half-width single-row tile — the co-equal feature tiles (Ask / Search). */
+.spanWide {
+  grid-column: span 6;
+}
+
+/* Tablet: 6-col grid — a deliberate 2-up rhythm. The nav/stat tiles pair
+   two-per-row (span 3 of 6); the feature tiles and the coverage radar keep the
+   full width so the primary actions and the data viz stay prominent. */
 @media (max-width: 960px) {
-  .spanSm {
+  .spanSm,
+  .spanMd {
     grid-column: span 3;
   }
-  .spanMd,
   .spanLg,
-  .spanTall {
+  .spanTall,
+  .spanWide {
     grid-column: span 6;
   }
   .spanLg,
@@ -138,7 +146,8 @@
   .spanSm,
   .spanMd,
   .spanLg,
-  .spanTall {
+  .spanTall,
+  .spanWide {
     grid-column: 1 / -1;
   }
 }

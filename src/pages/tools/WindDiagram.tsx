@@ -18,7 +18,7 @@ function pt(brg: number, r: number): [number, number] {
 
 export function WindDiagram({ runwayHeading, windDir, windSpeed, crosswind }: WindDiagramProps) {
   const xwBad = Math.abs(crosswind) >= 15;
-  const stroke = xwBad ? '#e5534b' : '#2f9be0';
+  const stroke = xwBad ? 'var(--color-error)' : 'var(--link)';
 
   const [wx1, wy1] = pt(windDir, R - 6);
   const [wx2, wy2] = pt(windDir, 34);

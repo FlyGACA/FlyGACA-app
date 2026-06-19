@@ -1,16 +1,19 @@
 import { Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { RouteFallback } from './RouteFallback';
 
 /** The shared chrome: header + routed page + footer. Replaces the legacy
  *  build-chrome.js stamper — the chrome is now a component, never copied.
- *  The Suspense boundary covers lazily code-split route chunks. */
+ *  The Suspense boundary covers lazily code-split route chunks.
+ *  The keyed wrapper div restarts the global page-enter CSS animation on
+ *  every route change — zero bundle cost, prefers-reduced-motion aware. */
 export function Layout() {
   const { t } = useTranslation();
+  const location = useLocation();
+
   return (
     <>
       <a className="skip-link" href="#main">
@@ -18,12 +21,13 @@ export function Layout() {
       </a>
       <Header />
       <main id="main">
-        <Suspense fallback={<RouteFallback />}>
-          <Outlet />
-        </Suspense>
+        <div key={location.pathname} className="page-enter">
+          <Suspense fallback={<RouteFallback />}>
+            <Outlet />
+          </Suspense>
+        </div>
       </main>
       <Footer />
-      <SpeedInsights />
     </>
   );
 }

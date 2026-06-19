@@ -21,7 +21,7 @@ export function Phonetic() {
       formula={t('phonetic.formula')}
     >
       <TextField label={t('phonetic.filter')} value={q} onChange={setQ} placeholder="R" />
-      <ul className={styles.grid}>
+      <ul className={`${styles.grid} stagger-grid`}>
         {filtered.map((e) => (
           <li key={e.symbol} className={styles.card}>
             <span className={styles.symbol}>{e.symbol}</span>

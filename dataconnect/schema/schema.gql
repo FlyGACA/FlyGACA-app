@@ -1,0 +1,44 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  userRole: String
+}
+
+type Document @table {
+  title: String!
+  documentUrl: String!
+  publicationDate: Date!
+  createdAt: Timestamp!
+  description: String
+  author: String
+  publisher: String
+  gacaReferenceNumber: String
+}
+
+type Category @table {
+  name: String!
+  createdAt: Timestamp!
+  description: String
+}
+
+type DocumentCategory @table(key: ["document", "category"]) {
+  document: Document!
+  category: Category!
+  createdAt: Timestamp!
+}
+
+type FavoriteDocument @table(key: ["user", "document"]) {
+  user: User!
+  document: Document!
+  createdAt: Timestamp!
+}
+
+type DocumentRating @table(key: ["user", "document"]) {
+  user: User!
+  document: Document!
+  ratingValue: Int!
+  createdAt: Timestamp!
+  comment: String
+}
