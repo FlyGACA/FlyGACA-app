@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '../BentoCard';
 import { StatusPill } from '../../StatusPill';
+import { CaptainAvatar } from '../../CaptainAvatar';
 import shared from './widgets.module.css';
 
 /**
@@ -23,10 +24,15 @@ export function AdelFeatureWidget() {
 
   return (
     <BentoCard span="wide" tone="green">
-      <StatusPill tone="live" pulse>
-        {t('home.dashboard.adel.status')}
-      </StatusPill>
-      <p className={shared.heading}>{t('home.dashboard.adel.heading')}</p>
+      <div className={shared.adelHead}>
+        <CaptainAvatar size="lg" glow decorative pose="smile" />
+        <div className={shared.adelHeadText}>
+          <StatusPill tone="live" pulse>
+            {t('home.dashboard.adel.status')}
+          </StatusPill>
+          <p className={shared.heading}>{t('home.dashboard.adel.heading')}</p>
+        </div>
+      </div>
       <p className={shared.desc}>{t('home.dashboard.adel.desc')}</p>
       <form className={shared.featForm} onSubmit={onSubmit}>
         <input
