@@ -10,16 +10,13 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-block-end: 1px solid var(--border);
-  transition:
-    background var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease);
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 
 .inner {
   display: flex;
   align-items: center;
   gap: var(--space-5);
-  inline-size: 100%;
 }
 
 .lockup {
