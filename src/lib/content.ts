@@ -156,6 +156,10 @@ export interface Airport extends SourceProvenance {
   name_ar: string;
   city_en: string;
   city_ar: string;
+  /** Present on the worldwide rows; the original curated Saudi set omitted them. */
+  country_en?: string;
+  country_ar?: string;
+  region?: string;
   lat: number;
   lon: number;
   elev_ft: number;

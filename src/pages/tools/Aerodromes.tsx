@@ -12,7 +12,10 @@ export function Aerodromes() {
   const { data, error, loading } = useFetchJson<AirportsIndex>('/data/airports.json');
   const [q, setQ] = useState('');
 
-  const list = useMemo(() => {
+  // The dataset is now global (thousands of rows), so render is capped; a search
+  // narrows it. The full count is still shown from data.count.
+  const CAP = 60;
+  const matches = useMemo(() => {
     if (!data) return [];
     const query = q.trim().toLowerCase();
     return data.airports
@@ -23,10 +26,12 @@ export function Aerodromes() {
           a.iata.toLowerCase().includes(query) ||
           a.name_en.toLowerCase().includes(query) ||
           a.name_ar.includes(q.trim()) ||
-          a.city_en.toLowerCase().includes(query),
+          a.city_en.toLowerCase().includes(query) ||
+          (a.country_en?.toLowerCase().includes(query) ?? false),
       )
       .sort((a, b) => a.icao.localeCompare(b.icao));
   }, [data, q]);
+  const list = useMemo(() => matches.slice(0, CAP), [matches]);
 
   return (
     <CalcShell
@@ -40,7 +45,11 @@ export function Aerodromes() {
       {error && <p role="alert">{t('common.loadError')}</p>}
       {data && (
         <>
-          <p className={styles.count}>{t('aerodromesTool.count', { n: data.count })}</p>
+          <p className={styles.count}>
+            {matches.length > list.length
+              ? t('aerodromesTool.showing', { n: list.length, total: matches.length })
+              : t('aerodromesTool.count', { n: data.count })}
+          </p>
           {list.length === 0 ? (
             <p className={styles.count}>{t('aerodromesTool.empty')}</p>
           ) : (
@@ -53,6 +62,9 @@ export function Aerodromes() {
                     <span className={styles.name}>{ar ? a.name_ar : a.name_en}</span>
                   </div>
                   <div className={styles.meta}>
+                    {a.country_en && (
+                      <span>{ar ? a.country_ar || a.country_en : a.country_en}</span>
+                    )}
                     <span>
                       {t('aerodromesTool.elevation')}: {a.elev_ft.toLocaleString()} ft
                     </span>

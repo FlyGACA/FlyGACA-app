@@ -1193,13 +1193,14 @@
     "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA — confirm before you start."
   },
   "aerodromesTool": {
-    "search": "Search by ICAO, name or city",
+    "search": "Search by ICAO, name, city or country",
     "runways": "Runways",
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
-    "count": "{{n}} Saudi aerodromes",
-    "formula": "Aerodrome data derived from the AIP-KSA. Not for operational use — always use the current AIP and NOTAMs."
+    "count": "{{n}} aerodromes — Saudi in full detail, plus MENA & worldwide",
+    "showing": "Showing {{n}} of {{total}} — refine your search",
+    "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
   },
   "definitionsTool": {
     "search": "Search the GACAR Part 1 glossary",
