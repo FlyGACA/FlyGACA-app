@@ -1,0 +1,138 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 1000);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(var(--space-5), 12vh, 140px) var(--space-4) var(--space-4);
+  background: color-mix(in srgb, var(--falcon-night) 64%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: cmdk-fade var(--dur) var(--ease);
+}
+
+.panel {
+  inline-size: 100%;
+  max-inline-size: 560px;
+  display: flex;
+  flex-direction: column;
+  max-block-size: min(60vh, 520px);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow-hover);
+  overflow: hidden;
+  animation: cmdk-rise var(--dur) var(--ease);
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-block-end: 1px solid var(--border);
+}
+.searchIcon {
+  font-size: var(--fs-lg);
+  color: var(--text-dim);
+}
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-lg);
+}
+.input:focus {
+  outline: none;
+}
+.esc {
+  flex-shrink: 0;
+  padding: 2px var(--space-2);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  min-block-size: 44px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.itemActive {
+  background: var(--brand-tint-strong);
+}
+.itemLabel {
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.itemActive .itemLabel {
+  color: var(--brand-hover);
+}
+.itemGroup {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+
+.empty {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.footer {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  border-block-start: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+}
+.footer kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  margin-inline-end: 2px;
+}
+
+@keyframes cmdk-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cmdk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .panel {
+    animation: none;
+  }
+}

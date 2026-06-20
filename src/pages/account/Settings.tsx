@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { TextField } from '../../components/calc/TextField';
+import { SelectField, type SelectOption } from '../../components/calc/SelectField';
 import { LangToggle } from '../../components/LangToggle';
 import { deleteAllData, exportAll, saveProfile, useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
+
+/** GACAR pilot licence types, in progression order. */
+const LICENCE_TYPES = ['SPL', 'PPL', 'CPL', 'ATPL'] as const;
 
 export function Settings() {
   return (
@@ -29,6 +33,15 @@ function Inner() {
     saveProfile(patch);
     setSaved(true);
     window.setTimeout(() => setSaved(false), 1200);
+  }
+
+  // Built-in options + any legacy free-text value so an old profile isn't blanked.
+  const licenceOptions: SelectOption[] = LICENCE_TYPES.map((code) => ({
+    value: code,
+    label: t(`account.licenceOptions.${code}`),
+  }));
+  if (profile.licenceType && !LICENCE_TYPES.includes(profile.licenceType as never)) {
+    licenceOptions.push({ value: profile.licenceType, label: profile.licenceType });
   }
 
   function exportJson() {
@@ -80,11 +93,12 @@ function Inner() {
           placeholder="OERK"
           hint={t('account.homeBaseHint')}
         />
-        <TextField
+        <SelectField
           label={t('account.licence')}
           value={profile.licenceType}
           onChange={(v) => save({ licenceType: v })}
-          placeholder="PPL"
+          options={licenceOptions}
+          placeholder={t('account.licenceSelect')}
           hint={t('account.licenceHint')}
         />
         <TextField

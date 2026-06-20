@@ -71,6 +71,11 @@
 }
 
 /* ── Message log ── */
+.logWrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
 .log {
   flex: 1;
   display: flex;
@@ -84,6 +89,29 @@
   overflow-y: auto;
   min-block-size: 320px;
   scroll-behavior: smooth;
+}
+
+/* Floating "jump to newest" affordance when scrolled up the transcript. */
+.scrollDown {
+  position: absolute;
+  inset-block-end: var(--space-4);
+  inset-inline-end: var(--space-4);
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 50%;
+  border: var(--clay-border);
+  background: var(--surface-raised);
+  color: var(--brand-hover);
+  font-size: var(--fs-lg);
+  box-shadow: var(--clay-shadow);
+  cursor: pointer;
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.scrollDown:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
 }
 
 /* ── Welcome screen ── */
@@ -106,6 +134,28 @@
   max-inline-size: 52ch;
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
+}
+
+/* Topic-grouped starter prompts on the welcome screen. */
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  inline-size: 100%;
+  max-inline-size: 56ch;
+  margin-block-start: var(--space-2);
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.groupLabel {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
 }
 
 .suggestions {
@@ -194,6 +244,35 @@
   color: var(--text);
   border-inline-start: 2px solid color-mix(in srgb, var(--brand) 45%, transparent);
   border-end-start-radius: var(--radius-sm);
+}
+
+/* Rendered markdown inside an assistant bubble (RichText output). */
+.bubble :is(p, ul, ol) {
+  margin-block: var(--space-2);
+}
+.bubble :is(p, ul, ol):first-child {
+  margin-block-start: 0;
+}
+.bubble :is(p, ul, ol):last-child {
+  margin-block-end: 0;
+}
+.bubble :is(ul, ol) {
+  padding-inline-start: var(--space-5);
+}
+.bubble li {
+  margin-block: 2px;
+}
+.bubble :is(h3, h4, h5, h6) {
+  margin-block: var(--space-2) var(--space-1);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+.bubble code {
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.92em;
 }
 
 /* Thinking-dots replace the pending bubble text */
@@ -369,6 +448,52 @@
 .note {
   font-size: var(--fs-xs);
   color: var(--text-dim);
+}
+
+/* Contextual follow-up chips under the latest grounded answer. */
+.followups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-self: flex-start;
+}
+.followup {
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px dashed var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.followup:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+}
+
+/* Free-tier quota readout under the composer. */
+.quota {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-align: center;
+  margin: 0;
+}
+
+/* Exhausted free-tier gate (replaces the composer). */
+.gate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.gateNote {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
 }
 
 /* ── Reduced motion ── */

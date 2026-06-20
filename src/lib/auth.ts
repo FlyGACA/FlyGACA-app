@@ -85,3 +85,18 @@ export async function signOutUser(): Promise<void> {
   const auth = await getFirebaseAuth();
   if (auth) await auth.signOut();
 }
+
+/** Email the user a password-reset link. Throws `auth-unavailable` when unconfigured. */
+export async function sendPasswordReset(email: string): Promise<void> {
+  const auth = requireAuth(await getFirebaseAuth());
+  const { sendPasswordResetEmail } = await import('firebase/auth');
+  await sendPasswordResetEmail(auth, email);
+}
+
+/** Re-send the verification email to the current user (no-op when none). */
+export async function resendEmailVerification(): Promise<void> {
+  const auth = requireAuth(await getFirebaseAuth());
+  if (!auth.currentUser) return;
+  const { sendEmailVerification } = await import('firebase/auth');
+  await sendEmailVerification(auth.currentUser);
+}

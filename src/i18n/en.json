@@ -20,11 +20,32 @@
     "search": "Search",
     "loading": "Loading…",
     "loadError": "Could not load this content. Verify your connection and try again.",
+    "retry": "Retry",
     "skipToContent": "Skip to content",
     "soon": "Coming soon",
     "open": "Open",
     "close": "Close",
+    "share": "Share",
     "backToTop": "Back to top"
+  },
+  "pwa": {
+    "updateTitle": "A new version is available.",
+    "update": "Reload",
+    "dismiss": "Dismiss",
+    "offlineReady": "Ready to work offline.",
+    "offline": "Offline",
+    "install": "Install app",
+    "installHintIos": "Tap the Share button, then “Add to Home Screen”."
+  },
+  "offline": {
+    "save": "Save offline",
+    "saved": "Saved",
+    "remove": "Remove",
+    "removeAll": "Remove all",
+    "downloads": "Offline downloads",
+    "count": "{{n}} saved",
+    "size": "{{size}} on device",
+    "empty": "Nothing saved for offline yet."
   },
   "nav": {
     "library": "Library",
@@ -35,9 +56,38 @@
     "pricing": "Pricing",
     "about": "About",
     "account": "Account",
+    "charts": "VFR Charts",
     "home": "Fly GACA — home",
     "primary": "Primary",
     "menu": "Menu"
+  },
+  "command": {
+    "title": "Search & jump",
+    "open": "Search (⌘K)",
+    "searchShort": "Search",
+    "placeholder": "Search pages, tools, guides, GACAR Parts…",
+    "noResults": "No matches. Try a Part number, tool name, or topic.",
+    "partPrefix": "Part",
+    "hintNavigate": "navigate",
+    "hintOpen": "open",
+    "groups": {
+      "page": "Page",
+      "tool": "Tool",
+      "guide": "Guide",
+      "library": "Library"
+    }
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "This page took a wrong turn",
+    "lead": "We couldn't find that page. It may have moved, or the link may be off. Here's how to get back on course.",
+    "search": "Search the site",
+    "links": {
+      "home": "Home",
+      "library": "Reference library",
+      "chat": "Ask Captain Adel",
+      "tools": "Flight tools"
+    }
   },
   "home": {
     "eyebrow": "Independent · Educational · Bilingual",
@@ -102,6 +152,65 @@
       ]
     },
     "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication.",
+    "trust": {
+      "label": "Fly GACA at a glance",
+      "parts": "GACAR Parts",
+      "tools": "Flight tools",
+      "guides": "Study guides",
+      "languages": "Bilingual",
+      "price": "Core library",
+      "priceValue": "Free"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From question to cited answer in seconds",
+      "steps": [
+        {
+          "h": "Find the rule",
+          "p": "Search every numbered GACAR Part, reference guidance and handbooks — in English or Arabic."
+        },
+        {
+          "h": "Captain Adel cites it",
+          "p": "Ask in plain language; the AI instructor answers and points to the exact Part and section."
+        },
+        {
+          "h": "Study & stay current",
+          "p": "Practice questions, flashcards and tools to prep for checks and keep your currency."
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Why trust it",
+      "title": "Built to be checked, not taken on faith",
+      "items": [
+        {
+          "h": "Independent & educational",
+          "p": "Not GACA, not official. A study aid that always points you back to the source."
+        },
+        {
+          "h": "Cites the exact section",
+          "p": "Every answer names the Part and section so you can verify it against the GACAR."
+        },
+        {
+          "h": "Works offline",
+          "p": "A fast Progressive Web App — install it and read the library without a connection."
+        },
+        {
+          "h": "Fully bilingual",
+          "p": "Every page in English and Arabic, with right-to-left support throughout."
+        }
+      ]
+    },
+    "convert": {
+      "eyebrow": "Go further",
+      "title": "Unlock the full flight deck",
+      "lead": "Unlimited Captain Adel, currency reminders, logbook export and offline access — for serious students and crews.",
+      "cta": "See Pro plans",
+      "secondary": "Ask Captain Adel",
+      "proTitle": "You're flying Pro",
+      "proLead": "Your full toolkit is ready — jump back into your dashboard.",
+      "proCta": "Open my dashboard"
+    },
     "dashboard": {
       "region": "Fly GACA dashboard",
       "overview": "Operations overview",
@@ -443,16 +552,39 @@
     "clear": "Clear chat",
     "sourcesLabel": "Sources",
     "open": "Open ↗",
+    "openInLibrary": "Open in Library",
+    "copy": "Copy",
+    "copied": "Copied",
+    "regenerate": "Regenerate",
+    "retry": "Retry",
+    "stop": "Stop",
+    "scrollToLatest": "Scroll to latest",
     "grounding": {
       "grounded": "Grounded",
       "partial": "Partially grounded",
       "refusal": "Hold — not grounded"
     },
+    "quota": {
+      "left": "{{n}} of {{limit}} free questions left today",
+      "exhausted": "You've used today's free questions. Go Pro for unlimited access to Captain Adel."
+    },
+    "groups": {
+      "airspace": "Airspace & weather",
+      "licensing": "Licensing",
+      "operations": "Operations"
+    },
+    "followups": {
+      "section": "Cite the exact GACAR section",
+      "simple": "Explain that more simply",
+      "example": "Give a practical example"
+    },
     "suggestions": {
       "s1": "What are the VFR weather minima in controlled airspace?",
       "s2": "What's required for a GACAR commercial pilot licence?",
       "s3": "What are the fuel reserve requirements for a Part 121 flight?",
-      "s4": "What does GACAR Part 91 say about carry-on baggage?"
+      "s4": "What does GACAR Part 91 say about carry-on baggage?",
+      "s5": "What equipment is required for night VFR flight?",
+      "s6": "How many flight hours are required for an instrument rating?"
     }
   },
   "sheets": {
@@ -460,13 +592,31 @@
     "lead": "One-page PDF summaries for each Saudi licence and check. Study aids — always verify against the official GACAR.",
     "open": "Open ↗",
     "download": "Download",
-    "noInline": "Your browser can't display the PDF inline."
+    "noInline": "Your browser can't display the PDF inline.",
+    "search": "Search sheets",
+    "print": "Print",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "noMatch": "No sheets match your search.",
+    "category": "Other"
   },
   "charts": {
     "title": "VFR Charts",
     "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy — always verify against the current official AIP.",
     "sheet": "Sheet",
-    "openImage": "Open full image ↗"
+    "openImage": "Open full image ↗",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "download": "Download",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "prevSheet": "Previous sheet",
+    "nextSheet": "Next sheet",
+    "source": "Source",
+    "revision": "Revision",
+    "thumbnails": "Sheet thumbnails",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
   },
   "library": {
     "viewCharts": "Browse VFR charts",
@@ -503,7 +653,22 @@
     "filterToc": "Filter contents",
     "verifyAtGaca": "Read the official GACAR at gaca.gov.sa",
     "verifyLine": "Reproduced for study. Always verify against the official GACAR at gaca.gov.sa.",
-    "sections": "sections"
+    "sections": "sections",
+    "findPlaceholder": "Find in this document…",
+    "findCount": "{{n}}/{{total}}",
+    "findPrev": "Previous match",
+    "findNext": "Next match",
+    "fontSize": "Text size",
+    "fontSmaller": "Smaller text",
+    "fontLarger": "Larger text",
+    "backToTop": "Back to top",
+    "copyLink": "Copy link to section",
+    "copied": "Link copied",
+    "askAdel": "Ask Captain Adel about this",
+    "adelPrompt": "Explain {{title}} in simple terms and cite the exact GACAR Part and section.",
+    "related": "Related documents",
+    "prev": "Previous",
+    "next": "Next"
   },
   "pressureAltitude": {
     "elevation": "Field elevation (ft)",
@@ -1135,13 +1300,14 @@
     "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA — confirm before you start."
   },
   "aerodromesTool": {
-    "search": "Search by ICAO, name or city",
+    "search": "Search by ICAO, name, city or country",
     "runways": "Runways",
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
-    "count": "{{n}} Saudi aerodromes",
-    "formula": "Aerodrome data derived from the AIP-KSA. Not for operational use — always use the current AIP and NOTAMs."
+    "count": "{{n}} aerodromes — Saudi in full detail, plus MENA & worldwide",
+    "showing": "Showing {{n}} of {{total}} — refine your search",
+    "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
   },
   "definitionsTool": {
     "search": "Search the GACAR Part 1 glossary",
@@ -1421,6 +1587,44 @@
     "needAccount": "Need an account? Create one",
     "haveAccount": "Already have an account? Sign in",
     "authError": "Sign-in failed. Check your details and try again.",
+    "forgotPassword": "Forgot password?",
+    "resetSent": "If that email has an account, a password-reset link is on its way.",
+    "resetNeedEmail": "Enter your email above first.",
+    "emailNotVerified": "Email not verified",
+    "resendVerification": "Resend verification email",
+    "verificationSent": "Verification email sent — check your inbox.",
+    "licenceSelect": "Select…",
+    "licenceOptions": {
+      "SPL": "Student (SPL)",
+      "PPL": "Private (PPL)",
+      "CPL": "Commercial (CPL)",
+      "ATPL": "Airline (ATPL)"
+    },
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "userNotFound": "No account found with that email.",
+      "wrongPassword": "Incorrect email or password.",
+      "emailInUse": "An account already exists with that email.",
+      "weakPassword": "Password must be at least 6 characters.",
+      "tooManyRequests": "Too many attempts. Try again in a little while.",
+      "network": "Network error. Check your connection and try again."
+    },
+    "subscription": {
+      "title": "Subscription",
+      "renews": "Renews",
+      "source": "Billed via",
+      "manage": "Manage subscription",
+      "none": "You're on the free plan.",
+      "activating": "Activating your subscription…",
+      "checkoutSuccess": "You're Pro — thank you!",
+      "checkoutCanceled": "Checkout canceled — no charge was made.",
+      "errors": {
+        "generic": "Couldn't open billing just now. Please try again.",
+        "sign-in-required": "Sign in to manage your subscription.",
+        "billing-unavailable": "Billing isn't connected in this build.",
+        "no-subscription": "No active subscription to manage."
+      }
+    },
     "signOut": "Sign out",
     "signedInAs": "Signed in as {{name}}",
     "plan": {
@@ -1743,6 +1947,10 @@
     "flip": "Reveal answer",
     "known": "Got it",
     "unknown": "Review",
+    "gotIt": "Got it →",
+    "again": "← Again",
+    "dueCount": "{{n}} due",
+    "masteredCount": "{{n}} learned",
     "progress": "{{done}} of {{total}}",
     "deckDone": "Deck complete — {{known}} known, {{review}} to review.",
     "reset": "Reset deck",
@@ -1762,6 +1970,7 @@
     "paths": "Reading paths",
     "pathsDesc": "Guided routes through the library, step by step.",
     "pathOpen": "Open",
+    "pathProgress": "{{done}} of {{total}} steps",
     "packs": "Prep packs",
     "packsDesc": "Focused exam-prep bundles for Pro members.",
     "sheets": "Study sheets",
@@ -1784,6 +1993,7 @@
     ],
     "streak": "Study streak",
     "streakUnit": "days",
+    "streakMilestone": "🔥 {{n}}-day study streak — keep it going!",
     "avgBest": "Avg best",
     "banksDone": "Quiz banks",
     "lessonsDone": "Lessons",
@@ -1796,7 +2006,14 @@
     "reviewAnswers": "Review answers",
     "noAnswer": "Not answered",
     "flipHint": "Tap or press Enter to flip",
-    "lastResult": "Last attempt: {{pct}}%"
+    "lastResult": "Last attempt: {{pct}}%",
+    "answered": "{{n}}/{{total}} answered",
+    "flag": "Flag",
+    "flagged": "Flagged",
+    "summaryTitle": "Answer summary",
+    "reviewSubmit": "Review & submit",
+    "submitExam": "Submit exam",
+    "byTopic": "By topic"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
@@ -1960,6 +2177,18 @@
       }
     ],
     "contactTitle": "Contact",
+    "stats": [
+      { "value": "70+", "label": "GACAR Parts" },
+      { "value": "50+", "label": "Flight tools" },
+      { "value": "2", "label": "Languages · EN / AR" },
+      { "value": "Free", "label": "Open reference" }
+    ],
+    "cta": {
+      "title": "Start with the regulation",
+      "lead": "Browse the library or ask Captain Adel — he cites the exact Part and section.",
+      "browse": "Browse the library",
+      "ask": "Ask Captain Adel"
+    },
     "contacts": [
       {
         "label": "General & corrections",

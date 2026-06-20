@@ -1,0 +1,195 @@
+/* ── Hero trust strip ── */
+.trust {
+  list-style: none;
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-inline-size: 92px;
+  padding: var(--space-3) var(--space-4);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  box-shadow: var(--clay-shadow);
+}
+.chipValue {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-black);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.chipLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ── Shared section frame ── */
+.section {
+  padding-block: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.sectionHead {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+}
+.sectionTitle {
+  font-size: var(--fs-h2);
+  margin: 0;
+}
+
+/* ── How it works ── */
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  counter-reset: step;
+}
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  block-size: 100%;
+  padding: var(--space-6);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.step:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.stepNum {
+  flex-shrink: 0;
+  inline-size: 40px;
+  block-size: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--grad-brand);
+  color: var(--text-on-brand);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-lg);
+}
+.stepText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.stepTitle {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+}
+.stepBody {
+  color: var(--text-muted);
+  line-height: var(--lh-snug);
+}
+
+/* ── Why-trust band ── */
+.why {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+.whyCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.whyTitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  margin: 0;
+}
+.whyBody {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  margin: 0;
+}
+
+/* ── Conversion band ── */
+.convert {
+  margin-block: var(--space-8);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-7);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.convertHot {
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  box-shadow:
+    var(--clay-shadow),
+    0 0 48px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+.convertEyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  margin: 0 0 var(--space-1);
+}
+.convertTitle {
+  font-size: var(--fs-h2);
+  margin: 0 0 var(--space-1);
+}
+.convertLead {
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  max-inline-size: 56ch;
+  margin: 0;
+}
+.convertActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

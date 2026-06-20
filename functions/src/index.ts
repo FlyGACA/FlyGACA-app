@@ -33,3 +33,10 @@ export const chat = onRequest(
   },
   app,
 );
+
+// Stripe billing: checkout + portal callables and the entitlement-writing webhook.
+export {
+  createCheckoutSession,
+  createBillingPortalSession,
+  stripeWebhook,
+} from "./billing.js";

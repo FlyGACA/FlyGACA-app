@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
@@ -8,6 +8,7 @@ import { useUrlState } from '../../lib/useUrlState';
 import { usePageMeta } from '../../lib/usePageMeta';
 import type { ChartsIndex, ChartDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
+import { ExternalLink } from '../../components/ExternalLink';
 import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path). */
@@ -18,13 +19,17 @@ function chartSrc(doc: ChartDoc): string {
 export function Charts() {
   const { t } = useTranslation();
   usePageMeta(t('meta.charts'));
-  const index = useFetchJson<ChartsIndex>('/data/charts-index.json');
+  const [reloadToken, setReloadToken] = useState(0);
+  const index = useFetchJson<ChartsIndex>('/data/charts-index.json', reloadToken);
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);
   const [params, setParam] = useUrlState({ chart: '' });
+  const [fullscreen, setFullscreen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const active = docs.find((d) => d.slug === params.chart) ?? docs[0];
+  const activeIdx = active ? docs.findIndex((d) => d.slug === active.slug) : -1;
 
-  // Group by region for the selector.
+  // Group by region for the selector + thumbnails.
   const regions = useMemo(() => {
     const map = new Map<string, ChartDoc[]>();
     for (const d of docs) {
@@ -34,16 +39,39 @@ export function Charts() {
     }
     return [...map.entries()];
   }, [docs]);
+  const regionVariants = useMemo(
+    () => (active ? docs.filter((d) => d.region === active.region) : []),
+    [docs, active],
+  );
 
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const overlayRef = useRef<L.ImageOverlay | null>(null);
 
+  const go = useCallback(
+    (delta: number) => {
+      if (!docs.length || activeIdx < 0) return;
+      const nextI = (activeIdx + delta + docs.length) % docs.length;
+      setParam('chart', docs[nextI].slug);
+    },
+    [docs, activeIdx, setParam],
+  );
+
+  const copyLink = useCallback(() => {
+    if (!active) return;
+    const url = `${window.location.origin}${window.location.pathname}?chart=${active.slug}`;
+    navigator.clipboard
+      ?.writeText(url)
+      .then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+      })
+      .catch(() => {
+        /* clipboard blocked — ignore */
+      });
+  }, [active]);
+
   // Create the Leaflet map once the (data-gated) container is in the DOM.
-  // Keyed on a readiness boolean (not docs.length): the container appears when
-  // the index first loads, and we must not tear down + rebuild the map on a
-  // later count change — that would drop the overlay (which only re-adds on
-  // `active`), leaving a blank canvas.
   const ready = docs.length > 0;
   useEffect(() => {
     if (!ready || !mapEl.current || mapRef.current) return;
@@ -55,12 +83,19 @@ export function Charts() {
       attributionControl: false,
     });
     mapRef.current = map;
+    // Label the native zoom controls for assistive tech.
+    mapEl.current
+      .querySelector('.leaflet-control-zoom-in')
+      ?.setAttribute('aria-label', t('charts.zoomIn'));
+    mapEl.current
+      .querySelector('.leaflet-control-zoom-out')
+      ?.setAttribute('aria-label', t('charts.zoomOut'));
     return () => {
       map.remove();
       mapRef.current = null;
       overlayRef.current = null;
     };
-  }, [ready]);
+  }, [ready, t]);
 
   // Swap the image overlay whenever the active chart changes.
   useEffect(() => {
@@ -77,6 +112,31 @@ export function Charts() {
     map.fitBounds(bounds);
   }, [active]);
 
+  // After a fullscreen toggle the container resized — tell Leaflet and re-fit.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !active) return;
+    const id = window.setTimeout(() => {
+      map.invalidateSize();
+      map.fitBounds([
+        [0, 0],
+        [active.h, active.w],
+      ]);
+    }, 60);
+    return () => window.clearTimeout(id);
+  }, [fullscreen, active]);
+
+  // Keyboard: ←/→ switch sheets, Esc exits fullscreen.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === 'ArrowRight') go(1);
+      else if (e.key === 'Escape') setFullscreen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+
   return (
     <section className={`container ${styles.page}`}>
       <p className={styles.back}>
@@ -88,8 +148,19 @@ export function Charts() {
         <p className={styles.lead}>{t('charts.lead')}</p>
       </header>
 
-      {index.loading && <p>{t('common.loading')}</p>}
-      {index.error && <p role="alert">{t('common.loadError')}</p>}
+      {index.loading && <div className={styles.skeleton} aria-hidden="true" />}
+      {index.error && (
+        <p role="alert" className={styles.errorRow}>
+          {t('common.loadError')}{' '}
+          <button
+            type="button"
+            className={styles.retry}
+            onClick={() => setReloadToken((n) => n + 1)}
+          >
+            {t('common.retry')}
+          </button>
+        </p>
+      )}
 
       {docs.length > 0 && (
         <div className={styles.layout}>
@@ -117,18 +188,89 @@ export function Charts() {
             ))}
           </nav>
 
-          <div className={styles.viewer}>
+          <div className={`${styles.viewer} ${fullscreen ? styles.fullscreen : ''}`}>
             <div className={styles.mapToolbar}>
-              <span className={styles.activeLabel}>{active?.label}</span>
-              {active && (
-                <a className={styles.open} href={chartSrc(active)} target="_blank" rel="noopener">
-                  {t('charts.openImage')}
-                </a>
-              )}
+              <div className={styles.toolbarMain}>
+                <button
+                  type="button"
+                  className={styles.navBtn}
+                  onClick={() => go(-1)}
+                  aria-label={t('charts.prevSheet')}
+                >
+                  ←
+                </button>
+                <span className={styles.activeLabel}>{active?.label}</span>
+                <button
+                  type="button"
+                  className={styles.navBtn}
+                  onClick={() => go(1)}
+                  aria-label={t('charts.nextSheet')}
+                >
+                  →
+                </button>
+              </div>
+              <div className={styles.toolbarActions}>
+                <button type="button" className={styles.toolBtn} onClick={copyLink}>
+                  {copied ? t('charts.copied') : t('charts.copyLink')}
+                </button>
+                {active && (
+                  <a className={styles.toolBtn} href={chartSrc(active)} download>
+                    {t('charts.download')}
+                  </a>
+                )}
+                {active && (
+                  <ExternalLink className={styles.toolBtn} href={chartSrc(active)}>
+                    {t('charts.openImage')}
+                  </ExternalLink>
+                )}
+                <button
+                  type="button"
+                  className={styles.toolBtn}
+                  onClick={() => setFullscreen((f) => !f)}
+                  aria-pressed={fullscreen}
+                >
+                  {fullscreen ? t('charts.exitFullscreen') : t('charts.fullscreen')}
+                </button>
+              </div>
             </div>
+
+            {active && (active.date || active.revision || active.sourceUrl) && (
+              <p className={styles.metaLine}>
+                {active.date && <span>{active.date}</span>}
+                {active.revision && (
+                  <span>
+                    {t('charts.revision')}: {active.revision}
+                  </span>
+                )}
+                {active.sourceUrl && (
+                  <a href={active.sourceUrl} target="_blank" rel="noopener">
+                    {t('charts.source')} ↗
+                  </a>
+                )}
+              </p>
+            )}
+
             {/* Interactive map: role=group (not img) so its focusable zoom
                 controls aren't flagged as nested inside a leaf img role. */}
             <div className={styles.map} ref={mapEl} role="group" aria-label={active?.label} />
+
+            {regionVariants.length > 1 && (
+              <div className={styles.thumbs} aria-label={t('charts.thumbnails')}>
+                {regionVariants.map((d) => (
+                  <button
+                    key={d.slug}
+                    type="button"
+                    className={`${styles.thumb} ${active?.slug === d.slug ? styles.thumbActive : ''}`}
+                    aria-pressed={active?.slug === d.slug}
+                    aria-label={d.label}
+                    onClick={() => setParam('chart', d.slug)}
+                  >
+                    <img src={chartSrc(d)} alt="" loading="lazy" decoding="async" />
+                    <span>{d.variant || t('charts.sheet')}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
