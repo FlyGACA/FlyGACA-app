@@ -4,11 +4,71 @@
 
 .head {
   max-inline-size: 60ch;
-  margin-block-end: var(--space-6);
+  margin-block-end: var(--space-5);
 }
 .subtitle {
   margin-block-start: var(--space-3);
   color: var(--text-muted);
+}
+.search {
+  margin-block-start: var(--space-5);
+  inline-size: 100%;
+  max-inline-size: 480px;
+  padding: var(--space-3) var(--space-4);
+  min-height: 44px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.search:focus {
+  border-color: var(--brand-hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Topic + level filter chips. */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-block-end: var(--space-6);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 40px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.chip:hover {
+  color: var(--text);
+  border-color: var(--brand-hover);
+}
+.chipActive {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-on-brand);
+}
+
+.group {
+  margin-block-end: var(--space-8);
 }
 
 .grid {
@@ -26,14 +86,20 @@
   gap: var(--space-2);
   block-size: 100%;
   padding: var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
   background: var(--surface);
+  box-shadow: var(--clay-shadow);
   color: inherit;
-  transition: border-color var(--dur) var(--ease);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
 }
 .card:hover {
   border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
   text-decoration: none;
 }
 .cardTitle {
@@ -42,14 +108,153 @@
 .blurb {
   color: var(--text-muted);
   font-size: var(--fs-sm);
+  flex: 1;
+}
+
+/* Card / header metadata: level pill + read time + section count. */
+.metaRow,
+.headMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+}
+.headMeta {
+  margin-block-end: var(--space-2);
+}
+.metaDim {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.level {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.level[data-level='beginner'] {
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  color: var(--success);
+}
+.level[data-level='intermediate'] {
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--gold);
+}
+
+.empty {
+  color: var(--text-muted);
+  padding-block: var(--space-6);
+}
+
+/* Reading progress bar — fixed below the nav (mirrors the document reader). */
+.readingTrack {
+  position: fixed;
+  inset-block-start: var(--nav-h);
+  inset-inline: 0;
+  block-size: 3px;
+  background: color-mix(in srgb, var(--brand) 15%, transparent);
+  z-index: var(--z-sticky);
+}
+.readingBar {
+  block-size: 100%;
+  background: var(--grad-brand);
+  transition: inline-size 0.12s var(--ease);
 }
 
 .back {
   margin: 0 0 var(--space-4);
 }
 .back a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
   font-size: var(--fs-sm);
   color: var(--text-muted);
+  transition: color var(--dur) var(--ease);
+}
+.back a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* "On this page" mini table of contents. */
+.onThisPage {
+  margin-block: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+.onThisPageLabel {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+.onThisPage ol {
+  margin: var(--space-2) 0 0;
+  padding-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.onThisPage a {
+  color: var(--link);
+  font-size: var(--fs-sm);
+}
+.sectionH {
+  scroll-margin-block-start: calc(var(--nav-h) + var(--space-4));
+}
+
+/* Related guides + prev/next navigation. */
+.related {
+  margin-block-start: var(--space-8);
+}
+.relatedHead {
+  font-size: var(--fs-h3);
+  margin-block-end: var(--space-4);
+}
+.prevNext {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block: var(--space-8) var(--space-6);
+  flex-wrap: wrap;
+}
+.prevNextLink {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-inline-size: 48%;
+  padding: var(--space-3) var(--space-4);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  color: inherit;
+}
+.prevNextLink:hover {
+  border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  text-decoration: none;
+}
+.prevNextEnd {
+  text-align: end;
+  margin-inline-start: auto;
+}
+.prevNextDir {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.prevNextName {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
 }
 
 .links {

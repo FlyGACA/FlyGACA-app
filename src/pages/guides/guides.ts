@@ -14,6 +14,42 @@ export const GUIDE_SLUGS = [
 
 export type GuideSlug = (typeof GUIDE_SLUGS)[number];
 
+export type GuideTopic = 'licensing' | 'medical' | 'language' | 'airspace' | 'weather' | 'planning';
+export type GuideLevel = 'beginner' | 'intermediate';
+
+/** Topic display order in the index. */
+export const GUIDE_TOPICS: GuideTopic[] = [
+  'licensing',
+  'medical',
+  'language',
+  'airspace',
+  'weather',
+  'planning',
+];
+
+/** Per-guide classification — structure only; labels are localized in i18n. */
+export const GUIDE_META: Record<GuideSlug, { topic: GuideTopic; level: GuideLevel }> = {
+  'saudi-ppl-requirements': { topic: 'licensing', level: 'beginner' },
+  'saudi-cpl-requirements': { topic: 'licensing', level: 'intermediate' },
+  'saudi-instrument-rating': { topic: 'licensing', level: 'intermediate' },
+  'gaca-medical-class-1': { topic: 'medical', level: 'beginner' },
+  'foreign-license-conversion-to-gaca': { topic: 'licensing', level: 'intermediate' },
+  'icao-english-saelpt': { topic: 'language', level: 'beginner' },
+  'airspace-explained': { topic: 'airspace', level: 'beginner' },
+  'reading-metar-taf': { topic: 'weather', level: 'beginner' },
+  'decoding-notams': { topic: 'planning', level: 'intermediate' },
+  'the-airac-cycle': { topic: 'planning', level: 'intermediate' },
+};
+
+/** Stable DOM id for a guide section heading (for the TOC + progress anchors). */
+export function sectionId(index: number, heading: string): string {
+  const base = heading
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  return `sec-${index}-${base || 'section'}`;
+}
+
 /** Related tool routes per guide (label comes from the tool's i18n name). */
 export const GUIDE_TOOLS: Record<string, string[]> = {
   'gaca-medical-class-1': ['/tools/medical-validity'],

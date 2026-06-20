@@ -1522,6 +1522,30 @@
         ],
         "adel": "What is the AIRAC cycle and why is it 28 days?"
       }
+    },
+    "searchPlaceholder": "Search guides…",
+    "empty": "No guides match your filters.",
+    "allTopics": "All topics",
+    "allLevels": "All levels",
+    "levelLabel": "Level",
+    "guideCount": "{{count}} guides",
+    "readTime": "{{min}} min read",
+    "sectionCount": "{{count}} sections",
+    "onThisPage": "On this page",
+    "prev": "Previous",
+    "next": "Next",
+    "related": "Related guides",
+    "level": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate"
+    },
+    "topics": {
+      "licensing": "Licensing",
+      "medical": "Medical",
+      "language": "Language",
+      "airspace": "Airspace",
+      "weather": "Weather",
+      "planning": "Planning & cycles"
     }
   },
   "study": {

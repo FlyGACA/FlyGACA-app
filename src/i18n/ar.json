@@ -1522,6 +1522,30 @@
         ],
         "adel": "ما دورة AIRAC ولماذا مدّتها 28 يومًا؟"
       }
+    },
+    "searchPlaceholder": "ابحث في الأدلة…",
+    "empty": "لا توجد أدلة تطابق عوامل التصفية.",
+    "allTopics": "كل المواضيع",
+    "allLevels": "كل المستويات",
+    "levelLabel": "المستوى",
+    "guideCount": "{{count}} أدلة",
+    "readTime": "قراءة {{min}} دقيقة",
+    "sectionCount": "{{count}} أقسام",
+    "onThisPage": "في هذه الصفحة",
+    "prev": "السابق",
+    "next": "التالي",
+    "related": "أدلة ذات صلة",
+    "level": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط"
+    },
+    "topics": {
+      "licensing": "الرخص",
+      "medical": "الطبية",
+      "language": "اللغة",
+      "airspace": "المجال الجوي",
+      "weather": "الطقس",
+      "planning": "التخطيط والدورات"
     }
   },
   "study": {
