@@ -243,6 +243,11 @@
 .flippedCard {
   transform: rotateY(180deg);
 }
+@media (prefers-reduced-motion: reduce) {
+  .cardInner {
+    transition: none;
+  }
+}
 .cardFront,
 .cardBack {
   position: absolute;

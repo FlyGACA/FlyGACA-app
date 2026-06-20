@@ -7,12 +7,15 @@
  * `flygaca:gs:*`) so existing data carries over. Date/streak logic is pure.
  */
 import { useSyncExternalStore } from 'react';
+import { scheduleCard, type SrsEntry } from '../calc/srs';
 
 const Q_PREFIX = 'flygaca:quiz:';
 const GS_PREFIX = 'flygaca:gs:';
 const FC_KEY = 'flygaca:study:flashcards';
+const SRS_KEY = 'flygaca:study:srs';
 const STREAK_KEY = 'flygaca:study:streak';
 const EXAM_KEY = 'flygaca:study:exam';
+const PATHS_KEY = 'flygaca:study:paths';
 
 export interface Streak {
   /** ISO yyyy-mm-dd of the most recent study day. */
@@ -27,8 +30,12 @@ export interface ExamResult {
 export interface StudyState {
   quizBest: Record<string, number>;
   gsDone: Record<string, boolean>;
-  /** bankId → list of mastered card keys. */
+  /** bankId → list of mastered card keys (legacy known/unknown flow). */
   fcKnown: Record<string, string[]>;
+  /** bankId → cardKey → spaced-repetition schedule. */
+  fcSrs: Record<string, Record<string, SrsEntry>>;
+  /** pathId → list of completed step indices. */
+  pathDone: Record<string, number[]>;
   streak: Streak;
   exam: ExamResult | null;
 }
@@ -93,6 +100,8 @@ function load(): StudyState {
     quizBest,
     gsDone,
     fcKnown: readJson<Record<string, string[]>>(FC_KEY, {}),
+    fcSrs: readJson<Record<string, Record<string, SrsEntry>>>(SRS_KEY, {}),
+    pathDone: readJson<Record<string, number[]>>(PATHS_KEY, {}),
     streak: readJson<Streak>(STREAK_KEY, { day: '', count: 0 }),
     exam: readJson<ExamResult | null>(EXAM_KEY, null),
   };
@@ -157,6 +166,34 @@ export function setCardKnown(bankId: string, cardKey: string, known: boolean): v
   const fcKnown = { ...state.fcKnown, [bankId]: [...cur] };
   save(FC_KEY, JSON.stringify(fcKnown));
   commit({ ...state, fcKnown });
+}
+
+/** Grade a flashcard (spaced repetition): promote/reset its box + due date. */
+export function gradeCard(
+  bankId: string,
+  cardKey: string,
+  correct: boolean,
+  now: Date = new Date(),
+): void {
+  recordStudyDay(now);
+  const bankMap = { ...(state.fcSrs[bankId] ?? {}) };
+  bankMap[cardKey] = scheduleCard(bankMap[cardKey], correct, now);
+  const fcSrs = { ...state.fcSrs, [bankId]: bankMap };
+  save(SRS_KEY, JSON.stringify(fcSrs));
+  commit({ ...state, fcSrs });
+}
+
+/** Toggle a reading-path step's completion. */
+export function togglePathStep(pathId: string, step: number): void {
+  const cur = new Set(state.pathDone[pathId] ?? []);
+  if (cur.has(step)) cur.delete(step);
+  else {
+    cur.add(step);
+    recordStudyDay();
+  }
+  const pathDone = { ...state.pathDone, [pathId]: [...cur].sort((a, b) => a - b) };
+  save(PATHS_KEY, JSON.stringify(pathDone));
+  commit({ ...state, pathDone });
 }
 
 export function setExamResult(result: ExamResult): void {
