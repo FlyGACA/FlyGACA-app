@@ -130,6 +130,9 @@
   gap: var(--space-2);
 }
 .option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   inline-size: 100%;
   text-align: start;
   min-height: 44px;
@@ -143,6 +146,20 @@
     border-color var(--dur) var(--ease),
     background var(--dur) var(--ease),
     transform var(--dur) var(--ease);
+}
+/* The A/B/C/D key badge on each option. */
+.optionKey {
+  flex-shrink: 0;
+  inline-size: 24px;
+  block-size: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
 }
 .option:hover:enabled {
   border-color: var(--brand-hover);
