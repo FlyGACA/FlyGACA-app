@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../lib/usePageMeta';
 import { CaptainAvatar } from '../components/CaptainAvatar';
-import { useCommandPalette } from '../components/command/context';
+import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import styles from './NotFound.module.css';
 
 const LINKS = [
@@ -15,7 +15,6 @@ const LINKS = [
 export function NotFound() {
   const { t } = useTranslation();
   usePageMeta(t('meta.notFound'));
-  const palette = useCommandPalette();
 
   return (
     <section className={`container-narrow ${styles.page}`}>
@@ -24,7 +23,7 @@ export function NotFound() {
       <h1 className={styles.title}>{t('notFound.title')}</h1>
       <p className={styles.lead}>{t('notFound.lead')}</p>
 
-      <button type="button" className={styles.search} onClick={palette.open}>
+      <button type="button" className={styles.search} onClick={openCommandPalette}>
         <span aria-hidden="true">⌕</span>
         {t('notFound.search')}
         <kbd className={styles.kbd} aria-hidden="true">
