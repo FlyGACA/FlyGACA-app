@@ -158,6 +158,9 @@ export function Account() {
         <Link to="/dashboard" className={styles.btn}>
           {t('account.dashboard')}
         </Link>
+        <Link to="/currency" className={styles.btn}>
+          {t('currency.title')}
+        </Link>
         <Link to="/logbook" className={styles.btn}>
           {t('account.logbook')}
         </Link>

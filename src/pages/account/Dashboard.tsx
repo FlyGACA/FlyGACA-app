@@ -1,21 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { sumHours, useAccount } from '../../lib/account';
+import { CaptainAvatar } from '../../components/CaptainAvatar';
+import { CurrencyBoard } from '../../components/CurrencyBoard';
+import { UpsellCard } from '../../components/UpsellCard';
+import { ResultStat } from '../../components/calc/ResultStat';
+import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { addMonths, parseISO } from '../../calc/recency';
-import styles from './account.module.css';
-
-const DAY = 86400000;
-const fmt = (d: Date) =>
-  d.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
-const daysLeft = (d: Date) => Math.ceil((d.getTime() - Date.now()) / DAY);
+import { computeCurrency, actionNeeded } from '../../calc/currency';
+import { summarizeLogbook } from '../../calc/logbook';
+import styles from './dashboard.module.css';
 
 export function Dashboard() {
   return (
@@ -30,68 +25,84 @@ function Inner() {
   usePageMeta(t('meta.dashboard'));
   const { profile, flights, entitlement } = useAccount();
   const plan = effectivePlan(entitlement);
+  const isPro = plan !== 'free';
 
-  const medical = parseISO(profile.medicalExpiry);
-  const lastReview = parseISO(profile.lastFlightReview);
-  const reviewDue = lastReview ? addMonths(lastReview, 24) : null;
-
-  const card = (label: string, expiry: Date | null, dueLabel: 'expires' | 'due') => {
-    if (!expiry) return { label, value: t('account.notSet'), tone: '' };
-    const left = daysLeft(expiry);
-    return {
-      label,
-      value: t(`account.${dueLabel}`, { date: fmt(expiry) }),
-      sub: left >= 0 ? t('account.valid') : t('account.expired'),
-      tone: left >= 0 ? styles.good : styles.bad,
-    };
-  };
-
-  const cards = [
-    card(t('account.medical'), medical, 'expires'),
-    card(t('account.review'), reviewDue, 'due'),
-  ];
+  const currency = computeCurrency(profile, flights);
+  const needs = actionNeeded(currency);
+  const log = summarizeLogbook(flights);
+  const name = profile.displayName || profile.email || t('account.title');
 
   return (
     <section className={`container ${styles.page}`}>
-      <header className={styles.head}>
-        <h1>{t('account.dashboard')}</h1>
-        <p className={styles.sub}>
-          {t('account.signedInAs', { name: profile.displayName || profile.email })}
-          <span className={styles.planBadge} data-plan={plan}>
-            {t(`account.plan.${plan}`)}
-          </span>
-        </p>
+      <header className={styles.hero}>
+        <CaptainAvatar size="lg" pose="smile" glow decorative className={styles.avatar} />
+        <div className={styles.heroText}>
+          <p className={styles.eyebrow}>{t('dashboard.eyebrow')}</p>
+          <h1>{t('dashboard.greeting', { name })}</h1>
+          <p className={styles.sub}>
+            <span className={styles.planBadge} data-plan={plan}>
+              {t(`account.plan.${plan}`)}
+            </span>
+            <span className={`${styles.status} ${needs ? styles.statusWarn : styles.statusOk}`}>
+              {needs ? t('dashboard.actionNeeded') : t('dashboard.allCurrent')}
+            </span>
+          </p>
+        </div>
       </header>
 
-      <div className={`${styles.grid} stagger-grid`}>
-        {cards.map((c) => (
-          <div key={c.label} className={styles.card}>
-            <span className={styles.cardLabel}>{c.label}</span>
-            <span className={styles.cardValue}>{c.value}</span>
-            {c.sub && <span className={c.tone}>{c.sub}</span>}
+      <div className={styles.grid}>
+        <section className={`${styles.card} ${styles.currencyCard}`}>
+          <div className={styles.cardHead}>
+            <h2>{t('dashboard.currencyBoard')}</h2>
+            <Link to="/currency" className={styles.cardLink}>
+              {t('dashboard.viewAll')}
+            </Link>
           </div>
-        ))}
-        <div className={styles.card}>
-          <span className={styles.cardLabel}>{t('account.totalHours')}</span>
-          <span className={styles.cardValue}>{sumHours(flights, 'total').toFixed(1)}</span>
-          <span className={styles.note}>{t('account.flightsLogged', { n: flights.length })}</span>
-        </div>
+          <CurrencyBoard items={currency} />
+        </section>
+
+        <section className={`${styles.card} ${styles.logCard}`}>
+          <div className={styles.cardHead}>
+            <h2>{t('dashboard.logbookSummary')}</h2>
+            <Link to="/logbook" className={styles.cardLink}>
+              {t('dashboard.openLogbook')}
+            </Link>
+          </div>
+          <dl className={styles.stats}>
+            <ResultStat label={t('account.totalHours')} value={log.totalHours.toFixed(1)} tone="headline" />
+            <ResultStat label={t('account.pic')} value={log.picHours.toFixed(1)} />
+            <ResultStat label={t('account.night')} value={log.nightHours.toFixed(1)} />
+            <ResultStat
+              label={t('dashboard.last90Days')}
+              value={log.last90.flightCount}
+              sub={t('account.flightsLogged', { n: log.flightCount })}
+            />
+          </dl>
+          {log.recent.length > 0 ? (
+            <ul className={styles.recent}>
+              {log.recent.map((f) => (
+                <li key={f.id} className={styles.recentRow}>
+                  <span className={styles.recentDate}>
+                    <bdi dir="ltr">{f.date || '—'}</bdi>
+                  </span>
+                  <span className={styles.recentRoute}>
+                    <bdi dir="ltr">
+                      {(f.type || '—') + ' · ' + (f.from || '?') + '→' + (f.to || '?')}
+                    </bdi>
+                  </span>
+                  <span className={styles.recentHrs}>
+                    <bdi dir="ltr">{f.total || '—'}</bdi>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.empty}>{t('account.emptyLog')}</p>
+          )}
+        </section>
       </div>
 
-      <div className={styles.linkRow}>
-        <Link to="/logbook" className={styles.btn}>
-          {t('account.logbook')}
-        </Link>
-        <Link to="/tools/medical-validity" className={styles.btn}>
-          {t('tools.items.medical-validity.name')}
-        </Link>
-        <Link to="/tools/part61-currency" className={styles.btn}>
-          {t('tools.items.part61-currency.name')}
-        </Link>
-        <Link to="/settings" className={styles.btn}>
-          {t('account.settings')}
-        </Link>
-      </div>
+      {!isPro && <UpsellCard />}
     </section>
   );
 }

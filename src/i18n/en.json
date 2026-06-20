@@ -633,7 +633,9 @@
     "inDate": "In date",
     "expired": "Expired",
     "overdue": "Overdue",
-    "daysLeft": "Days remaining"
+    "daysLeft": "Days remaining",
+    "expiring": "Expiring soon",
+    "unknown": "Unknown"
   },
   "part61Currency": {
     "lastDate": "Last met the requirement (date)",
@@ -1294,7 +1296,13 @@
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
     "deleteConfirm": "Delete your profile and all logbook entries on this device?",
-    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit."
+    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit.",
+    "nightLdg": "Night ldg",
+    "appr": "Appr",
+    "summary": "Logbook summary",
+    "exportCsv": "Export CSV",
+    "last90": "Last 90 days",
+    "csvProNote": "CSV & PDF export are part of Pro"
   },
   "guides": {
     "title": "Guides",
@@ -1759,6 +1767,62 @@
     "dashboard": "Dashboard",
     "logbook": "Logbook",
     "settings": "Settings",
-    "notFound": "Page not found"
+    "notFound": "Page not found",
+    "currency": "Currency Tracker"
+  },
+  "dashboard": {
+    "eyebrow": "Flight deck",
+    "greeting": "Welcome back, {{name}}",
+    "actionNeeded": "Some items need attention",
+    "allCurrent": "You're all current",
+    "currencyBoard": "Currency board",
+    "logbookSummary": "Logbook",
+    "viewAll": "View all",
+    "openLogbook": "Open logbook",
+    "last90Days": "Flights · 90 days",
+    "adelRenewalPrompt": "Help me plan how to stay current as a pilot under the GACA regulations — walk me through which renewals I need and when."
+  },
+  "currency": {
+    "title": "Currency Tracker",
+    "intro": "Track your certificates and recency requirements in one place. Always confirm the exact periods in GACAR Part 61 / 67.",
+    "notSet": "Not set — add it in Settings",
+    "medicalDetail": "Medical certificate validity",
+    "reviewDetail": "Flight review (every {{months}} months)",
+    "landingsDetail": "{{have}} of {{need}} landings in {{days}} days",
+    "approachesDetail": "{{have}} of {{need}} approaches in {{days}} days",
+    "logApproaches": "Log instrument approaches to track recency",
+    "daysLeft": "{{n}} days left",
+    "daysOver": "{{n}} days overdue",
+    "fixNow": "How to renew",
+    "askAdel": "Ask Captain Adel",
+    "items": {
+      "medical": {
+        "label": "Medical certificate"
+      },
+      "flightReview": {
+        "label": "Flight review"
+      },
+      "passenger90": {
+        "label": "Passenger currency (day)"
+      },
+      "nightPassenger": {
+        "label": "Passenger currency (night)"
+      },
+      "ifr": {
+        "label": "Instrument recency"
+      }
+    }
+  },
+  "upsell": {
+    "proOnly": "Pro",
+    "title": "Upgrade to Pro",
+    "subtitle": "Unlock the tools that keep you current and checkride-ready.",
+    "cta": "See plans",
+    "features": {
+      "reminders": "Expiry reminders & calendar export",
+      "export": "CSV & PDF logbook export",
+      "unlimited": "Unlimited logbook entries",
+      "adel": "Plan renewals with Captain Adel"
+    }
   }
 }

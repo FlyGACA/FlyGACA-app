@@ -1,0 +1,171 @@
+.page {
+  padding-block: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── Hero / identity ── */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+.avatar {
+  flex-shrink: 0;
+}
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+.eyebrow {
+  margin: 0;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+.heroText h1 {
+  margin: 0;
+  font-size: var(--fs-h2);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+}
+.planBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+}
+.planBadge[data-plan='pro'] {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--brand-hover);
+}
+.planBadge[data-plan='school'] {
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  color: var(--gold);
+}
+.status {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+.statusOk {
+  color: var(--success);
+}
+.statusWarn {
+  color: var(--warning);
+}
+
+/* ── Bento grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-5);
+}
+.currencyCard {
+  grid-column: span 7;
+}
+.logCard {
+  grid-column: span 5;
+}
+@media (max-width: 880px) {
+  .currencyCard,
+  .logCard {
+    grid-column: 1 / -1;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.cardHead h2 {
+  margin: 0;
+  font-size: var(--fs-h3);
+}
+.cardLink {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--link);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cardLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Logbook summary ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.recent {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.recentRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  border-block-start: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+.recentRow:first-child {
+  border-block-start: none;
+}
+.recentDate {
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.recentRoute {
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recentHrs {
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.empty {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+}

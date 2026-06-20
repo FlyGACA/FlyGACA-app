@@ -29,6 +29,8 @@ const flight: Flight = {
   night: '0',
   ifr: '0',
   ldg: '1',
+  nightLdg: '0',
+  appr: '0',
   remarks: 'nav',
 };
 
@@ -52,6 +54,15 @@ describe('flight mappers', () => {
     const doc = flightToDoc(flight);
     expect(doc).not.toHaveProperty('id');
     expect(flightFromDoc('f1', doc)).toEqual(flight);
+  });
+
+  it('defaults the newer optional columns to empty strings on legacy docs', () => {
+    // A doc written before nightLdg / appr existed.
+    const legacy = { date: '2024-01-01', type: 'C172', ldg: '2' };
+    const out = flightFromDoc('old', legacy);
+    expect(out.nightLdg).toBe('');
+    expect(out.appr).toBe('');
+    expect(out.ldg).toBe('2');
   });
 });
 

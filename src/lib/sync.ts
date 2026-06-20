@@ -31,6 +31,8 @@ const FLIGHT_FIELDS: (keyof Omit<Flight, 'id'>)[] = [
   'night',
   'ifr',
   'ldg',
+  'nightLdg',
+  'appr',
   'remarks',
 ];
 

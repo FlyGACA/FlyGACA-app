@@ -33,6 +33,10 @@ export interface Flight {
   night: string;
   ifr: string;
   ldg: string;
+  /** Night landings — optional; older records predate this field. */
+  nightLdg?: string;
+  /** Instrument approaches flown — optional; older records predate this field. */
+  appr?: string;
   remarks: string;
 }
 

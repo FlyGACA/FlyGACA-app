@@ -122,6 +122,24 @@
   gap: var(--space-3);
 }
 
+.inlineLink {
+  color: var(--link);
+  font-weight: var(--fw-semibold);
+}
+
+/* "Pro" tag inside a gated control (e.g. CSV export for free users). */
+.proTag {
+  margin-inline-start: var(--space-2);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  color: var(--gold);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

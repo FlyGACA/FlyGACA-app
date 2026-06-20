@@ -22,6 +22,19 @@ export function addMonths(d: Date, n: number): Date {
   return x;
 }
 
+/** The date `n` days before `now`. */
+export function daysAgo(n: number, now: Date = new Date()): Date {
+  return addDays(now, -n);
+}
+
+/** True when an ISO date falls inside the trailing `days`-day window ending at `now`. */
+export function withinDays(dateISO: string, days: number, now: Date = new Date()): boolean {
+  const d = parseISO(dateISO);
+  if (!d) return false;
+  const t = d.getTime();
+  return t >= daysAgo(days, now).getTime() && t <= now.getTime();
+}
+
 export interface Validity {
   expiry: Date;
   daysLeft: number;
