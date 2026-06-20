@@ -48,7 +48,14 @@ export function FlightDivider() {
       <svg viewBox="0 0 1200 88" preserveAspectRatio="none" className={styles.path}>
         <path className={styles.line} d="M0 44 Q 300 18 600 44 T 1200 44" />
       </svg>
-      <img ref={falconRef} className={styles.falcon} src="/img/flygaca-mark.png" alt="" width="26" height="26" />
+      <img
+        ref={falconRef}
+        className={styles.falcon}
+        src="/img/flygaca-mark.png"
+        alt=""
+        width="26"
+        height="26"
+      />
     </div>
   );
 }

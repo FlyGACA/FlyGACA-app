@@ -8,13 +8,47 @@ import styles from './CommandPalette.module.css';
 /** Every tool route in the app (mirrors router.tsx). Each maps to /tools/{id}
  *  with its name pulled from i18n `tools.items.{id}.name`. */
 const TOOL_IDS = [
-  'crosswind', 'density-altitude', 'tas', 'pressure-altitude', 'isa', 'altimeter',
-  'cloud-base', 'mach', 'climb-gradient', 'standard-rate-turn', 'wind-table',
-  'hydroplaning', 'takeoff-landing', 'wind-triangle', 'great-circle', 'one-in-sixty',
-  'tsd', 'top-of-descent', 'descent-vdp', 'fuel', 'specific-range', 'weight-balance',
-  'zulu-clock', 'airac', 'sun-times', 'medical-validity', 'flight-review', 'holding',
-  'procedural-separation', 'vfr-brief', 'loa', 'units', 'transponder', 'phonetic',
-  'metar', 'taf', 'notam', 'met-brief', 'chart-symbols', 'vfr-minima', 'aerodromes',
+  'crosswind',
+  'density-altitude',
+  'tas',
+  'pressure-altitude',
+  'isa',
+  'altimeter',
+  'cloud-base',
+  'mach',
+  'climb-gradient',
+  'standard-rate-turn',
+  'wind-table',
+  'hydroplaning',
+  'takeoff-landing',
+  'wind-triangle',
+  'great-circle',
+  'one-in-sixty',
+  'tsd',
+  'top-of-descent',
+  'descent-vdp',
+  'fuel',
+  'specific-range',
+  'weight-balance',
+  'zulu-clock',
+  'airac',
+  'sun-times',
+  'medical-validity',
+  'flight-review',
+  'holding',
+  'procedural-separation',
+  'vfr-brief',
+  'loa',
+  'units',
+  'transponder',
+  'phonetic',
+  'metar',
+  'taf',
+  'notam',
+  'met-brief',
+  'chart-symbols',
+  'vfr-minima',
+  'aerodromes',
 ];
 
 type Filter = 'all' | 'reg' | 'aero' | 'tool';
@@ -224,7 +258,14 @@ export function CommandPalette() {
     >
       <div className={styles.box} role="dialog" aria-modal="true" aria-label={t('cmdk.label')}>
         <div className={styles.inputRow}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>

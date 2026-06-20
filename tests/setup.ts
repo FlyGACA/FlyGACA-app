@@ -1,1 +1,86 @@
 import '@testing-library/jest-dom/vitest';
+import i18n from '../src/i18n';
+import { initReactI18next } from 'react-i18next';
+import en from '../src/i18n/en.json';
+import ar from '../src/i18n/ar.json';
+import { applyDocumentLang, type Lang } from '../src/i18n';
+
+// Initialize i18n for components using translation hooks/functions under Vitest.
+void i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  resources: {
+    en: { translation: en },
+    ar: { translation: ar },
+  },
+  interpolation: {
+    escapeValue: false, // React already escapes values
+  },
+  returnNull: false,
+});
+
+// Update document language/direction attributes when changing language in tests
+i18n.on('languageChanged', (next) => {
+  applyDocumentLang(next as Lang);
+});
+
+// Define robust in-memory Storage mock to replace native Node 22+ localStorage/sessionStorage
+class MockStorage implements Storage {
+  private store: Record<string, string> = {};
+
+  get length(): number {
+    return Object.keys(this.store).length;
+  }
+
+  clear(): void {
+    this.store = {};
+  }
+
+  getItem(key: string): string | null {
+    return this.store[key] !== undefined ? this.store[key] : null;
+  }
+
+  setItem(key: string, value: string): void {
+    this.store[key] = String(value);
+  }
+
+  removeItem(key: string): void {
+    delete this.store[key];
+  }
+
+  key(index: number): string | null {
+    const keys = Object.keys(this.store);
+    return keys[index] !== undefined ? keys[index] : null;
+  }
+}
+
+const mockLocalStorage = new MockStorage();
+const mockSessionStorage = new MockStorage();
+
+Object.defineProperty(globalThis, 'localStorage', {
+  value: mockLocalStorage,
+  writable: true,
+  configurable: true,
+});
+
+Object.defineProperty(globalThis, 'sessionStorage', {
+  value: mockSessionStorage,
+  writable: true,
+  configurable: true,
+});
+
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: mockLocalStorage,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window, 'sessionStorage', {
+    value: mockSessionStorage,
+    writable: true,
+    configurable: true,
+  });
+}
+
+
+
