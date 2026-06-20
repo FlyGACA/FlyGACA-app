@@ -58,7 +58,7 @@ test('a11y: command palette (open dialog)', async ({ page }) => {
     content:
       '*,*::before,*::after{animation:none!important;transition:none!important}.stagger-grid>*,.page-enter{opacity:1!important;translate:none!important}',
   });
-  await page.getByLabel('Search (⌘K)').first().click();
+  await page.getByLabel('Search Fly GACA').first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
 
