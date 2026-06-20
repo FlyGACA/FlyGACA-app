@@ -7,6 +7,7 @@
     "search": "Search",
     "loading": "Loading…",
     "loadError": "Could not load this content. Verify your connection and try again.",
+    "retry": "Retry",
     "skipToContent": "Skip to content",
     "soon": "Coming soon",
     "open": "Open",
@@ -503,13 +504,31 @@
     "lead": "One-page PDF summaries for each Saudi licence and check. Study aids — always verify against the official GACAR.",
     "open": "Open ↗",
     "download": "Download",
-    "noInline": "Your browser can't display the PDF inline."
+    "noInline": "Your browser can't display the PDF inline.",
+    "search": "Search sheets",
+    "print": "Print",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "noMatch": "No sheets match your search.",
+    "category": "Other"
   },
   "charts": {
     "title": "VFR Charts",
     "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy — always verify against the current official AIP.",
     "sheet": "Sheet",
-    "openImage": "Open full image ↗"
+    "openImage": "Open full image ↗",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "download": "Download",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "prevSheet": "Previous sheet",
+    "nextSheet": "Next sheet",
+    "source": "Source",
+    "revision": "Revision",
+    "thumbnails": "Sheet thumbnails",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
   },
   "library": {
     "viewCharts": "Browse VFR charts",
