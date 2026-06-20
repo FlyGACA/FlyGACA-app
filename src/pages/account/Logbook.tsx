@@ -113,7 +113,11 @@ function Inner() {
 
       {flights.length > 0 && (
         <OutputGrid>
-          <ResultStat label={t('account.totalHours')} value={summary.totalHours.toFixed(1)} tone="headline" />
+          <ResultStat
+            label={t('account.totalHours')}
+            value={summary.totalHours.toFixed(1)}
+            tone="headline"
+          />
           <ResultStat label={t('account.pic')} value={summary.picHours.toFixed(1)} />
           <ResultStat label={t('account.night')} value={summary.nightHours.toFixed(1)} />
           <ResultStat label={t('account.ifr')} value={summary.ifrHours.toFixed(1)} />

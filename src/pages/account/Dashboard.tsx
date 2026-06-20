@@ -69,7 +69,11 @@ function Inner() {
             </Link>
           </div>
           <dl className={styles.stats}>
-            <ResultStat label={t('account.totalHours')} value={log.totalHours.toFixed(1)} tone="headline" />
+            <ResultStat
+              label={t('account.totalHours')}
+              value={log.totalHours.toFixed(1)}
+              tone="headline"
+            />
             <ResultStat label={t('account.pic')} value={log.picHours.toFixed(1)} />
             <ResultStat label={t('account.night')} value={log.nightHours.toFixed(1)} />
             <ResultStat

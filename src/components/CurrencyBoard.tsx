@@ -19,7 +19,12 @@ const statusLabel: Record<CurrencyStatus, string> = {
 };
 
 const fmtDate = (d: Date) =>
-  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  d.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 
 interface Props {
   items: CurrencyItem[];

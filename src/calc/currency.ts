@@ -43,7 +43,10 @@ export interface CurrencyItem {
 const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
 
 /** Map a validity window to a status, flipping to "expiring" within `soonDays`. */
-export function statusFromValidity(v: Validity | null, soonDays = EXPIRING_SOON_DAYS): CurrencyStatus {
+export function statusFromValidity(
+  v: Validity | null,
+  soonDays = EXPIRING_SOON_DAYS,
+): CurrencyStatus {
   if (!v) return 'unknown';
   if (v.daysLeft < 0) return 'expired';
   if (v.daysLeft <= soonDays) return 'expiring';
@@ -103,7 +106,11 @@ export function rollingLandingExpiry(
   }
 
   const current = count >= minEvents;
-  return { count, current, expiry: current && qualifyingDate ? addDays(qualifyingDate, windowDays) : null };
+  return {
+    count,
+    current,
+    expiry: current && qualifyingDate ? addDays(qualifyingDate, windowDays) : null,
+  };
 }
 
 /** Turn a rolling-window result into a CurrencyItem. */
@@ -177,7 +184,13 @@ export function computeCurrency(
       'passenger90',
       'currency.items.passenger90.label',
       'currency.landingsDetail',
-      rollingLandingExpiry(flights, PASSENGER_RECENCY_DAYS, PASSENGER_MIN_LANDINGS, (f) => num(f.ldg), now),
+      rollingLandingExpiry(
+        flights,
+        PASSENGER_RECENCY_DAYS,
+        PASSENGER_MIN_LANDINGS,
+        (f) => num(f.ldg),
+        now,
+      ),
       PASSENGER_MIN_LANDINGS,
       PASSENGER_RECENCY_DAYS,
       now,
@@ -190,7 +203,13 @@ export function computeCurrency(
       'nightPassenger',
       'currency.items.nightPassenger.label',
       'currency.landingsDetail',
-      rollingLandingExpiry(flights, PASSENGER_RECENCY_DAYS, PASSENGER_MIN_LANDINGS, (f) => num(f.nightLdg), now),
+      rollingLandingExpiry(
+        flights,
+        PASSENGER_RECENCY_DAYS,
+        PASSENGER_MIN_LANDINGS,
+        (f) => num(f.nightLdg),
+        now,
+      ),
       PASSENGER_MIN_LANDINGS,
       PASSENGER_RECENCY_DAYS,
       now,
@@ -215,7 +234,13 @@ export function computeCurrency(
         'ifr',
         'currency.items.ifr.label',
         'currency.approachesDetail',
-        rollingLandingExpiry(flights, IFR_RECENCY_DAYS, IFR_MIN_APPROACHES, (f) => num(f.appr), now),
+        rollingLandingExpiry(
+          flights,
+          IFR_RECENCY_DAYS,
+          IFR_MIN_APPROACHES,
+          (f) => num(f.appr),
+          now,
+        ),
         IFR_MIN_APPROACHES,
         IFR_RECENCY_DAYS,
         now,
