@@ -1900,7 +1900,14 @@
     "reviewAnswers": "مراجعة الإجابات",
     "noAnswer": "لم تُجب",
     "flipHint": "انقر أو اضغط Enter للقلب",
-    "lastResult": "آخر محاولة: {{pct}}%"
+    "lastResult": "آخر محاولة: {{pct}}%",
+    "answered": "{{n}}/{{total}} مُجابة",
+    "flag": "وضع علامة",
+    "flagged": "معلّمة",
+    "summaryTitle": "ملخّص الإجابات",
+    "reviewSubmit": "مراجعة وتسليم",
+    "submitExam": "تسليم الاختبار",
+    "byTopic": "حسب الموضوع"
   },
   "disclaimer": {
     "strong": "فلاي جاكا منصة تعليمية مستقلة.",

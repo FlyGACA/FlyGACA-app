@@ -1900,7 +1900,14 @@
     "reviewAnswers": "Review answers",
     "noAnswer": "Not answered",
     "flipHint": "Tap or press Enter to flip",
-    "lastResult": "Last attempt: {{pct}}%"
+    "lastResult": "Last attempt: {{pct}}%",
+    "answered": "{{n}}/{{total}} answered",
+    "flag": "Flag",
+    "flagged": "Flagged",
+    "summaryTitle": "Answer summary",
+    "reviewSubmit": "Review & submit",
+    "submitExam": "Submit exam",
+    "byTopic": "By topic"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",

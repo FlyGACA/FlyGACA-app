@@ -358,10 +358,122 @@
   font-weight: var(--fw-semibold);
   color: var(--accent-bright);
 }
+/* Timer urgency as time runs low. */
+.timerWarn {
+  color: var(--warning);
+}
+.timerDanger {
+  color: var(--danger);
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+@keyframes timer-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timerDanger {
+    animation: none;
+  }
+}
 .examNav {
   display: flex;
   gap: var(--space-3);
   align-items: center;
+}
+
+/* Question header with the flag-for-review toggle. */
+.examQHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.flagBtn {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.flagOn {
+  border-color: var(--warning);
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+}
+
+/* Pre-submit answer-summary grid. */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: var(--space-2);
+  margin-block: var(--space-4);
+}
+.summaryCell {
+  aspect-ratio: 1;
+  min-block-size: 44px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.summaryCell:hover {
+  border-color: var(--brand-hover);
+}
+.summaryDone {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+  color: var(--text);
+}
+.summaryFlag {
+  box-shadow: inset 0 0 0 2px var(--warning);
+}
+
+/* Post-exam per-topic breakdown. */
+.breakdown {
+  margin-block: var(--space-5);
+}
+.breakdownList {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.breakdownRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.breakdownName {
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+.breakdownScore {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
 }
 .picked {
   border-color: var(--brand);
