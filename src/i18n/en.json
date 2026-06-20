@@ -546,7 +546,22 @@
     "filterToc": "Filter contents",
     "verifyAtGaca": "Read the official GACAR at gaca.gov.sa",
     "verifyLine": "Reproduced for study. Always verify against the official GACAR at gaca.gov.sa.",
-    "sections": "sections"
+    "sections": "sections",
+    "findPlaceholder": "Find in this document…",
+    "findCount": "{{n}}/{{total}}",
+    "findPrev": "Previous match",
+    "findNext": "Next match",
+    "fontSize": "Text size",
+    "fontSmaller": "Smaller text",
+    "fontLarger": "Larger text",
+    "backToTop": "Back to top",
+    "copyLink": "Copy link to section",
+    "copied": "Link copied",
+    "askAdel": "Ask Captain Adel about this",
+    "adelPrompt": "Explain {{title}} in simple terms and cite the exact GACAR Part and section.",
+    "related": "Related documents",
+    "prev": "Previous",
+    "next": "Next"
   },
   "pressureAltitude": {
     "elevation": "Field elevation (ft)",

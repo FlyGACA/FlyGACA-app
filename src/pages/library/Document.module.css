@@ -64,6 +64,109 @@
   color: var(--text-dim);
 }
 
+/* ── Reader toolbar (find · font · ask Adel) ── */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-4);
+  padding: var(--space-2);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.find {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-inline-size: 200px;
+}
+.findInput {
+  flex: 1;
+  min-inline-size: 0;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  transition: border-color var(--dur) var(--ease);
+}
+.findInput:focus {
+  border-color: var(--brand-hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.findCount {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.toolGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.fontControls {
+  display: inline-flex;
+  gap: var(--space-1);
+}
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 40px;
+  min-block-size: 40px;
+  padding-inline: var(--space-2);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.iconBtn:hover:not(:disabled) {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  background: var(--brand-tint);
+}
+.iconBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.askAdel {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--brand) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
+  color: var(--accent-bright);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  transition:
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.askAdel:hover {
+  background: color-mix(in srgb, var(--brand) 22%, var(--surface));
+  box-shadow: var(--clay-shadow);
+  text-decoration: none;
+}
+
 .layout {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -146,7 +249,14 @@
   flex-direction: column;
   gap: 1px;
 }
+.tocRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
 .toc a {
+  flex: 1;
+  min-inline-size: 0;
   display: block;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
@@ -162,23 +272,79 @@
   color: var(--text);
   text-decoration: none;
 }
+/* Scroll-spy: the section currently in view. */
+.tocActive {
+  background: var(--brand-tint-strong) !important;
+  color: var(--brand-hover) !important;
+  font-weight: var(--fw-semibold);
+}
+/* Per-section copy-link button, revealed on row hover/focus. */
+.tocCopy {
+  flex-shrink: 0;
+  inline-size: 28px;
+  block-size: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.tocRow:hover .tocCopy,
+.tocCopy:focus-visible {
+  opacity: 1;
+}
+.tocCopy:hover {
+  color: var(--brand-hover);
+  background: var(--surface-raised);
+}
 
 /* ── Rendered regulation HTML ── */
 .content {
   min-inline-size: 0;
   color: var(--text);
   line-height: var(--lh-body);
-  font-size: 1.02rem;
+  /* Reader font scale (A− / A+), persisted; defaults to 1. */
+  font-size: calc(1.02rem * var(--reader-scale, 1));
 }
 
 /* Section headings: teal left-accent, sticky-aware scroll margin */
+.content :global(h2),
+.content :global(h3) {
+  scroll-margin-block-start: calc(var(--nav-h) + var(--space-5));
+}
 .content :global(h3) {
   font-size: var(--fs-lg);
   margin-block: var(--space-6) var(--space-2);
-  scroll-margin-block-start: calc(var(--nav-h) + var(--space-5));
   color: var(--text);
   padding-inline-start: var(--space-3);
   border-inline-start: 3px solid var(--brand);
+}
+
+/* Trailing copy-link anchor appended to each heading (DOM-decorated). */
+.anchor {
+  margin-inline-start: var(--space-2);
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.8em;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.content :global(h2):hover .anchor,
+.content :global(h3):hover .anchor,
+.anchor:focus-visible {
+  opacity: 1;
+}
+.anchor:hover {
+  color: var(--brand-hover);
 }
 
 /* Paragraph text at full contrast — regulations must be readable */
@@ -187,13 +353,19 @@
   margin-block-end: var(--space-3);
 }
 
-/* Highlighted passage when arriving from a full-text search hit (?q=). */
+/* Highlighted passage from the find box (or an incoming ?q= hit). */
 .content :global(mark[data-hit]) {
   background: color-mix(in srgb, var(--gold) 42%, transparent);
   color: var(--text);
   border-radius: var(--radius-sm);
   padding-inline: 2px;
   scroll-margin-block-start: calc(var(--nav-h) + var(--space-5));
+}
+/* The match currently focused by the find ◀/▶ cycle. */
+.content :global(mark[data-active]) {
+  background: var(--gold);
+  color: var(--falcon-night);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 50%, transparent);
 }
 
 /* Strong / emphasis */
@@ -248,4 +420,121 @@
   border: none;
   border-block-start: 1px solid var(--border);
   margin-block: var(--space-6);
+}
+
+/* ── Related documents ── */
+.related {
+  margin-block-start: var(--space-8);
+}
+.relatedHead {
+  font-size: var(--fs-h3);
+  margin-block-end: var(--space-4);
+}
+.relatedGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+.relatedCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  block-size: 100%;
+  padding: var(--space-4) var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.relatedCard:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.relatedBadge {
+  align-self: flex-start;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  color: var(--accent-bright);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.relatedTitle {
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+}
+
+/* ── Prev / next document navigation ── */
+.prevNext {
+  display: flex;
+  gap: var(--space-4);
+  margin-block: var(--space-8);
+}
+.prevNextLink {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.prevNextLink:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.prevNextEnd {
+  text-align: end;
+}
+.prevNextDir {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.prevNextName {
+  font-weight: var(--fw-semibold);
+  color: var(--brand-hover);
+  line-height: var(--lh-snug);
+}
+
+/* ── Back-to-top floating button ── */
+.backTop {
+  position: fixed;
+  inset-block-end: var(--space-5);
+  inset-inline-end: var(--space-5);
+  z-index: var(--z-sticky);
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 50%;
+  border: var(--clay-border);
+  background: var(--surface-raised);
+  color: var(--brand-hover);
+  font-size: var(--fs-lg);
+  cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.backTop:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-2px);
 }

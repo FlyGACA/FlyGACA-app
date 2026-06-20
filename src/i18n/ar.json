@@ -546,7 +546,22 @@
     "filterToc": "تصفية المحتويات",
     "verifyAtGaca": "اقرأ لوائح GACAR الرسمية على gaca.gov.sa",
     "verifyLine": "مُعاد إنتاجه للدراسة. تحقّق دائمًا من لوائح GACAR الرسمية على gaca.gov.sa.",
-    "sections": "أقسام"
+    "sections": "أقسام",
+    "findPlaceholder": "ابحث في هذا المستند…",
+    "findCount": "{{n}}/{{total}}",
+    "findPrev": "النتيجة السابقة",
+    "findNext": "النتيجة التالية",
+    "fontSize": "حجم النص",
+    "fontSmaller": "تصغير النص",
+    "fontLarger": "تكبير النص",
+    "backToTop": "العودة إلى الأعلى",
+    "copyLink": "انسخ رابط القسم",
+    "copied": "تم نسخ الرابط",
+    "askAdel": "اسأل كابتن عادل عن هذا",
+    "adelPrompt": "اشرح {{title}} بعبارات بسيطة واذكر الـ Part والمادة بدقّة من GACAR.",
+    "related": "مستندات ذات صلة",
+    "prev": "السابق",
+    "next": "التالي"
   },
   "pressureAltitude": {
     "elevation": "ارتفاع المطار (قدم)",
