@@ -295,7 +295,8 @@
   padding: var(--space-1) var(--space-4);
   border-radius: var(--radius-pill);
   background: var(--success);
-  color: var(--text-on-brand);
+  /* Dark text on the light sage success colour for WCAG AA contrast. */
+  color: var(--falcon-night);
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   letter-spacing: 0.05em;
