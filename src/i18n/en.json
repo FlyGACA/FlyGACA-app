@@ -375,16 +375,39 @@
     "clear": "Clear chat",
     "sourcesLabel": "Sources",
     "open": "Open ↗",
+    "openInLibrary": "Open in Library",
+    "copy": "Copy",
+    "copied": "Copied",
+    "regenerate": "Regenerate",
+    "retry": "Retry",
+    "stop": "Stop",
+    "scrollToLatest": "Scroll to latest",
     "grounding": {
       "grounded": "Grounded",
       "partial": "Partially grounded",
       "refusal": "Hold — not grounded"
     },
+    "quota": {
+      "left": "{{n}} of {{limit}} free questions left today",
+      "exhausted": "You've used today's free questions. Go Pro for unlimited access to Captain Adel."
+    },
+    "groups": {
+      "airspace": "Airspace & weather",
+      "licensing": "Licensing",
+      "operations": "Operations"
+    },
+    "followups": {
+      "section": "Cite the exact GACAR section",
+      "simple": "Explain that more simply",
+      "example": "Give a practical example"
+    },
     "suggestions": {
       "s1": "What are the VFR weather minima in controlled airspace?",
       "s2": "What's required for a GACAR commercial pilot licence?",
       "s3": "What are the fuel reserve requirements for a Part 121 flight?",
-      "s4": "What does GACAR Part 91 say about carry-on baggage?"
+      "s4": "What does GACAR Part 91 say about carry-on baggage?",
+      "s5": "What equipment is required for night VFR flight?",
+      "s6": "How many flight hours are required for an instrument rating?"
     }
   },
   "sheets": {

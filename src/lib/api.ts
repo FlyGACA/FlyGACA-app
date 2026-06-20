@@ -89,6 +89,7 @@ export async function sendChat(
   req: ChatRequest,
   authToken?: string,
   appCheckToken?: string,
+  signal?: AbortSignal,
 ): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
@@ -98,6 +99,7 @@ export async function sendChat(
       ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
     },
     body: chatBody(req),
+    signal,
   });
   if (!res.ok) {
     throw new Error(`Chat request failed: ${res.status}`);
@@ -140,6 +142,7 @@ export async function* sendChatStream(
   req: ChatRequest,
   authToken?: string,
   appCheckToken?: string,
+  signal?: AbortSignal,
 ): AsyncGenerator<StreamEvent> {
   const res = await fetch(`${API_BASE}/chat?stream=1`, {
     method: 'POST',
@@ -150,6 +153,7 @@ export async function* sendChatStream(
       ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
     },
     body: chatBody(req),
+    signal,
   });
   if (!res.ok) throw new Error(`Chat request failed: ${res.status}`);
 
