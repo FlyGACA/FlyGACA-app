@@ -7,7 +7,7 @@ interface TextFieldProps {
   placeholder?: string;
   hint?: string;
   error?: string;
-  type?: 'text' | 'email' | 'password';
+  type?: 'text' | 'email' | 'password' | 'date';
   autoComplete?: string;
 }
 

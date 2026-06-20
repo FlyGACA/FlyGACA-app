@@ -12,7 +12,7 @@ import { StatValue } from '../../components/bento/widgets/StatValue';
 import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { computeCurrency, actionNeeded } from '../../calc/currency';
+import { computeCurrency, recordCurrency, actionNeeded } from '../../calc/currency';
 import { summarizeLogbook, monthlyHours } from '../../calc/logbook';
 import { profileCompleteness } from '../../calc/onboarding';
 import { buildIcs } from '../../calc/ics';
@@ -30,11 +30,11 @@ function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   usePageMeta(t('meta.dashboard'));
-  const { profile, flights, entitlement } = useAccount();
+  const { profile, flights, records, entitlement } = useAccount();
   const plan = effectivePlan(entitlement);
   const isPro = plan !== 'free';
 
-  const currency = computeCurrency(profile, flights);
+  const currency = [...computeCurrency(profile, flights), ...recordCurrency(records)];
   const needs = actionNeeded(currency);
   const log = summarizeLogbook(flights);
   const trend = monthlyHours(flights, 6);
@@ -169,6 +169,9 @@ function Inner() {
           <div className={styles.quick}>
             <Link to="/logbook?add=1" className={styles.quickLink}>
               {t('dashboard.logFlight')}
+            </Link>
+            <Link to="/records" className={styles.quickLink}>
+              {t('records.title')}
             </Link>
             <Link to="/currency" className={styles.quickLink}>
               {t('currency.title')}

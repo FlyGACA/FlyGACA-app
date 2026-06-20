@@ -9,7 +9,7 @@
  * and any item we cannot assess from the logged data reports `unknown` rather
  * than asserting a pass: the tool never overstates currency.
  */
-import type { Flight, Profile } from '../lib/account';
+import type { Flight, PilotRecord, Profile } from '../lib/account';
 import { addDays, parseISO, validityByMonths, type Validity } from './recency';
 
 const DAY = 86400000;
@@ -26,9 +26,12 @@ export const EXPIRING_SOON_DAYS = 30;
 export type CurrencyStatus = 'current' | 'expiring' | 'expired' | 'unknown';
 
 export interface CurrencyItem {
-  id: 'medical' | 'flightReview' | 'passenger90' | 'nightPassenger' | 'ifr';
-  /** i18n key for the item name. */
+  /** Stable id (built-in items use a fixed key; records use `record-<id>`). */
+  id: string;
+  /** i18n key for the item name (built-in items). */
   labelKey: string;
+  /** Raw display label (user records), preferred over `labelKey` when present. */
+  label?: string;
   status: CurrencyStatus;
   /** Renewal / lapse date, or null when it cannot be computed. */
   expiry: Date | null;
@@ -249,6 +252,33 @@ export function computeCurrency(
   }
 
   return items;
+}
+
+/**
+ * Currency items for user-entered records that carry an expiry date (ratings,
+ * documents, etc.). Records without an expiry are skipped. The display label is
+ * the record's own title, so no i18n key is needed.
+ */
+export function recordCurrency(records: PilotRecord[], now: Date = new Date()): CurrencyItem[] {
+  const out: CurrencyItem[] = [];
+  for (const r of records) {
+    const expiry = parseISO(r.expires);
+    if (!expiry) continue;
+    const daysLeft = Math.ceil((expiry.getTime() - now.getTime()) / DAY);
+    const status: CurrencyStatus =
+      daysLeft < 0 ? 'expired' : daysLeft <= EXPIRING_SOON_DAYS ? 'expiring' : 'current';
+    out.push({
+      id: `record-${r.id}`,
+      labelKey: '',
+      label: r.title || r.ref,
+      status,
+      expiry,
+      daysLeft,
+      detailKey: `records.categories.${r.category}`,
+      fixTo: '/records',
+    });
+  }
+  return out;
 }
 
 /** True when any item needs attention (expired or expiring soon) — drives the dashboard headline. */

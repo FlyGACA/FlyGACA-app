@@ -20,7 +20,7 @@ const readJson = (p) => JSON.parse(read(p));
 const routerPaths = [...read('src/router.tsx').matchAll(/path:\s*'([^']+)'/g)].map((m) => m[1]);
 
 // Session-gated, user-private routes carry no SEO value — keep them out.
-const PRIVATE = new Set(['/account', '/dashboard', '/currency', '/logbook', '/settings']);
+const PRIVATE = new Set(['/account', '/dashboard', '/currency', '/logbook', '/records', '/settings']);
 const norm = (p) => (p === '/' ? '/' : `/${p.replace(/^\//, '')}`);
 
 const staticPaths = routerPaths

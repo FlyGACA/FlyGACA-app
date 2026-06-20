@@ -44,7 +44,7 @@ export function CurrencyBoard({ items, showFix = true }: Props) {
       {items.map((item) => (
         <li key={item.id} className={styles.row} data-status={item.status}>
           <div className={styles.main}>
-            <span className={styles.label}>{t(item.labelKey)}</span>
+            <span className={styles.label}>{item.label ?? t(item.labelKey)}</span>
             <span className={styles.detail}>{t(item.detailKey, item.detailVars)}</span>
           </div>
           <div className={styles.meta}>

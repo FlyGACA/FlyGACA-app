@@ -6,8 +6,10 @@ import {
   flightToDoc,
   entitlementFromDoc,
   updateFlightDoc,
+  recordToDoc,
+  recordFromDoc,
 } from '../src/lib/sync';
-import type { Profile, Flight } from '../src/lib/account';
+import type { Profile, Flight, PilotRecord } from '../src/lib/account';
 
 const profile: Profile = {
   email: 'pilot@example.com',
@@ -68,6 +70,31 @@ describe('flight mappers', () => {
 
   it('updateFlightDoc no-ops (resolves) when Firebase is not configured', async () => {
     await expect(updateFlightDoc('uid', 'f1', flight)).resolves.toBeUndefined();
+  });
+});
+
+describe('record mappers', () => {
+  const record: PilotRecord = {
+    id: 'r1',
+    category: 'rating',
+    title: 'Instrument Rating',
+    ref: 'IR-2024',
+    issued: '2024-01-01',
+    expires: '2026-01-01',
+    remarks: 'renew with IPC',
+  };
+
+  it('round-trips without the id in the doc body', () => {
+    const doc = recordToDoc(record);
+    expect(doc).not.toHaveProperty('id');
+    expect(recordFromDoc('r1', doc)).toEqual(record);
+  });
+
+  it('coerces missing fields to empty strings', () => {
+    const out = recordFromDoc('r2', { category: 'document', title: 'Passport' });
+    expect(out.ref).toBe('');
+    expect(out.expires).toBe('');
+    expect(out.title).toBe('Passport');
   });
 });
 

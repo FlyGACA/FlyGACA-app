@@ -1412,7 +1412,12 @@
     "last90": "آخر ٩٠ يومًا",
     "csvProNote": "تصدير CSV و PDF ضمن اشتراك Pro",
     "edit": "تعديل",
-    "update": "تحديث"
+    "update": "تحديث",
+    "manage": "الإدارة",
+    "saved": "تم الحفظ ✓",
+    "homeBaseHint": "رمز ICAO، مثل OERK",
+    "licenceHint": "PPL · CPL · ATPL",
+    "records": "السجلات والتصاريح"
   },
   "guides": {
     "title": "الأدلة",
@@ -1989,6 +1994,47 @@
       "review": "أضِف آخر مراجعة طيران",
       "homeBase": "حدّد قاعدتك الرئيسية",
       "firstFlight": "سجّل أول رحلة لك"
+    }
+  },
+  "records": {
+    "title": "السجلات والتصاريح",
+    "intro": "تابع رخصك وتصاريحك وطائراتك ووثائقك واعتماداتك. كل ما له تاريخ انتهاء يظهر في لوحة الصلاحيات.",
+    "empty": "لا شيء بعد — أضِف أول سجل.",
+    "expiresHint": "اتركه فارغًا إن لم تكن له صلاحية",
+    "categories": {
+      "rating": "التصاريح",
+      "aircraft": "الطائرات",
+      "document": "الوثائق",
+      "endorsement": "الاعتمادات"
+    },
+    "add": {
+      "rating": "إضافة تصريح",
+      "aircraft": "إضافة طائرة",
+      "document": "إضافة وثيقة",
+      "endorsement": "إضافة اعتماد"
+    },
+    "titleLabel": {
+      "rating": "التصريح / الرخصة",
+      "aircraft": "التسجيل",
+      "document": "الوثيقة",
+      "endorsement": "الاعتماد"
+    },
+    "titlePh": {
+      "rating": "التصريح الآلي",
+      "aircraft": "HZ-ABC",
+      "document": "جواز السفر",
+      "endorsement": "العجلة الخلفية"
+    },
+    "refLabel": {
+      "rating": "رقم الرخصة / الشهادة",
+      "aircraft": "الطراز",
+      "document": "الرقم",
+      "endorsement": "المدرّب"
+    },
+    "fields": {
+      "issued": "تاريخ الإصدار",
+      "expires": "تاريخ الانتهاء",
+      "remarks": "ملاحظات"
     }
   }
 }

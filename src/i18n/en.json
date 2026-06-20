@@ -1412,7 +1412,12 @@
     "last90": "Last 90 days",
     "csvProNote": "CSV & PDF export are part of Pro",
     "edit": "Edit",
-    "update": "Update"
+    "update": "Update",
+    "manage": "Manage",
+    "saved": "Saved ✓",
+    "homeBaseHint": "ICAO code, e.g. OERK",
+    "licenceHint": "PPL · CPL · ATPL",
+    "records": "Records & ratings"
   },
   "guides": {
     "title": "Guides",
@@ -1989,6 +1994,47 @@
       "review": "Add your last flight review",
       "homeBase": "Set your home base",
       "firstFlight": "Log your first flight"
+    }
+  },
+  "records": {
+    "title": "Records & ratings",
+    "intro": "Track your licences, ratings, aircraft, documents and endorsements. Anything with an expiry shows on your currency board.",
+    "empty": "Nothing here yet — add your first one.",
+    "expiresHint": "Leave blank if it does not expire",
+    "categories": {
+      "rating": "Ratings",
+      "aircraft": "Aircraft",
+      "document": "Documents",
+      "endorsement": "Endorsements"
+    },
+    "add": {
+      "rating": "Add rating",
+      "aircraft": "Add aircraft",
+      "document": "Add document",
+      "endorsement": "Add endorsement"
+    },
+    "titleLabel": {
+      "rating": "Rating / licence",
+      "aircraft": "Registration",
+      "document": "Document",
+      "endorsement": "Endorsement"
+    },
+    "titlePh": {
+      "rating": "Instrument Rating",
+      "aircraft": "HZ-ABC",
+      "document": "Passport",
+      "endorsement": "Tailwheel"
+    },
+    "refLabel": {
+      "rating": "Licence / certificate no.",
+      "aircraft": "Type",
+      "document": "Number",
+      "endorsement": "Instructor"
+    },
+    "fields": {
+      "issued": "Issued",
+      "expires": "Expires",
+      "remarks": "Remarks"
     }
   }
 }

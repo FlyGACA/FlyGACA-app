@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   computeCurrency,
+  recordCurrency,
   rollingLandingExpiry,
   statusFromValidity,
   EXPIRING_SOON_DAYS,
@@ -119,5 +120,37 @@ describe('computeCurrency — passenger & night & ifr', () => {
     expect(item(computeCurrency(blankProfile, [flight('2024-05-20')], now), 'ifr').status).toBe('unknown');
     const withAppr = computeCurrency(blankProfile, [flight('2024-05-20', { appr: '6' })], now);
     expect(item(withAppr, 'ifr').status).not.toBe('unknown');
+  });
+});
+
+describe('recordCurrency', () => {
+  const rec = (over: Partial<import('../src/lib/account').PilotRecord> = {}) => ({
+    id: 'r1',
+    category: 'rating' as const,
+    title: 'Instrument Rating',
+    ref: '',
+    issued: '',
+    expires: '',
+    remarks: '',
+    ...over,
+  });
+
+  it('skips records without an expiry', () => {
+    expect(recordCurrency([rec({ expires: '' })], now)).toEqual([]);
+  });
+
+  it('builds an item with the record title as its label and a status from the expiry', () => {
+    const items = recordCurrency(
+      [
+        rec({ id: 'a', expires: '2024-05-01' }), // past → expired
+        rec({ id: 'b', expires: '2024-06-20' }), // within 30 days → expiring
+        rec({ id: 'c', expires: '2025-01-01' }), // far future → current
+      ],
+      now,
+    );
+    expect(items.map((i) => i.status)).toEqual(['expired', 'expiring', 'current']);
+    expect(items[0].label).toBe('Instrument Rating');
+    expect(items[0].id).toBe('record-a');
+    expect(items[0].fixTo).toBe('/records');
   });
 });
