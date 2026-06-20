@@ -6,6 +6,7 @@ import { useUrlState } from '../../lib/useUrlState';
 import { usePageMeta } from '../../lib/usePageMeta';
 import type { PdfsIndex, PdfDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
+import { ExternalLink } from '../../components/ExternalLink';
 import styles from './StudySheets.module.css';
 
 /** Deployed PDF path (the index stores the legacy `assets/…` path). */
@@ -131,9 +132,9 @@ export function StudySheets() {
                   >
                     {fullscreen ? t('sheets.exitFullscreen') : t('sheets.fullscreen')}
                   </button>
-                  <a className={styles.toolBtn} href={activeSrc} target="_blank" rel="noopener">
+                  <ExternalLink className={styles.toolBtn} href={activeSrc}>
                     {t('sheets.open')}
-                  </a>
+                  </ExternalLink>
                   <a className={styles.toolBtn} href={activeSrc} download>
                     {t('sheets.download')}
                   </a>

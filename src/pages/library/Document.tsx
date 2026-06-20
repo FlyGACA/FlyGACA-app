@@ -8,6 +8,8 @@ import { CORPUS } from '../../lib/content';
 import type { CorpusIndex, LibraryKind } from '../../lib/content';
 import { docNeighbors, relatedDocs } from '../../calc/corpusNav';
 import { adelLink } from '../../lib/adel';
+import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
+import { share } from '../../lib/native-bridge';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Document.module.css';
@@ -235,6 +237,26 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const related = relatedDocs(docs, slug);
   const adel = doc ? adelLink(t('document.adelPrompt', { title: doc.title })) : null;
 
+  // "Save for offline": warm the SW data cache with this doc's HTML + its index.
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    setSaved(!!slug && loadSaved().includes(slug));
+  }, [slug]);
+  async function toggleSave() {
+    if (!slug) return;
+    const urls = [`${corpus.dir}/${slug}.html`, corpus.index];
+    if (saved) {
+      await removeDoc(slug, urls);
+      setSaved(false);
+    } else {
+      const ok = await saveDoc(slug, urls);
+      setSaved(ok);
+    }
+  }
+  function shareDoc() {
+    void share({ title: doc?.title, url: window.location.href });
+  }
+
   // The eyebrow badge: "Part 91" for regulations, the corpus badge otherwise.
   const badge = doc?.part ? `${t('library.part')} ${doc.part}` : doc?.badge;
   const count = doc?.pages
@@ -329,6 +351,19 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                   A+
                 </button>
               </div>
+              {offlineSupported() && (
+                <button
+                  type="button"
+                  className={`${styles.toolPill} ${saved ? styles.toolPillOn : ''}`}
+                  aria-pressed={saved}
+                  onClick={() => void toggleSave()}
+                >
+                  {saved ? `✓ ${t('offline.saved')}` : `⬇ ${t('offline.save')}`}
+                </button>
+              )}
+              <button type="button" className={styles.toolPill} onClick={shareDoc}>
+                ↗ {t('common.share')}
+              </button>
               {adel && (
                 <Link to={adel} className={styles.askAdel}>
                   {t('document.askAdel')}

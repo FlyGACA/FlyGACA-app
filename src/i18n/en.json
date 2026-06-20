@@ -12,7 +12,27 @@
     "soon": "Coming soon",
     "open": "Open",
     "close": "Close",
+    "share": "Share",
     "backToTop": "Back to top"
+  },
+  "pwa": {
+    "updateTitle": "A new version is available.",
+    "update": "Reload",
+    "dismiss": "Dismiss",
+    "offlineReady": "Ready to work offline.",
+    "offline": "Offline",
+    "install": "Install app",
+    "installHintIos": "Tap the Share button, then “Add to Home Screen”."
+  },
+  "offline": {
+    "save": "Save offline",
+    "saved": "Saved",
+    "remove": "Remove",
+    "removeAll": "Remove all",
+    "downloads": "Offline downloads",
+    "count": "{{n}} saved",
+    "size": "{{size}} on device",
+    "empty": "Nothing saved for offline yet."
   },
   "nav": {
     "library": "Library",

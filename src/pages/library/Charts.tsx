@@ -8,6 +8,7 @@ import { useUrlState } from '../../lib/useUrlState';
 import { usePageMeta } from '../../lib/usePageMeta';
 import type { ChartsIndex, ChartDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
+import { ExternalLink } from '../../components/ExternalLink';
 import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path). */
@@ -218,14 +219,9 @@ export function Charts() {
                   </a>
                 )}
                 {active && (
-                  <a
-                    className={styles.toolBtn}
-                    href={chartSrc(active)}
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <ExternalLink className={styles.toolBtn} href={chartSrc(active)}>
                     {t('charts.openImage')}
-                  </a>
+                  </ExternalLink>
                 )}
                 <button
                   type="button"
