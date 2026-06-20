@@ -112,6 +112,7 @@ const About = lazyNamed(() => import('./pages/About'), 'About');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
+const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPage');
 const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
 
 /**
@@ -203,6 +204,7 @@ export const router = createBrowserRouter([
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'safety', element: <SafetyPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },

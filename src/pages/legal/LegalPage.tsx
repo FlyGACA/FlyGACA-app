@@ -12,7 +12,7 @@ interface Section {
 export function LegalPage({
   base,
 }: {
-  base: 'legal.disclaimer' | 'legal.terms' | 'legal.privacy';
+  base: 'legal.disclaimer' | 'legal.terms' | 'legal.privacy' | 'legal.safety';
 }) {
   const { t } = useTranslation();
   usePageMeta(t(`${base}.title`));
@@ -41,3 +41,4 @@ export function LegalPage({
 export const DisclaimerPage = () => <LegalPage base="legal.disclaimer" />;
 export const TermsPage = () => <LegalPage base="legal.terms" />;
 export const PrivacyPage = () => <LegalPage base="legal.privacy" />;
+export const SafetyPage = () => <LegalPage base="legal.safety" />;

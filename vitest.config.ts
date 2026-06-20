@@ -1,9 +1,11 @@
 import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
 // Kept separate from vite.config.ts so the app build does not depend on the
-// Vitest toolchain. The React plugin is unused here — the component tests we do
-// run (Disclaimer, CalcShell, …) compile fine under the default esbuild JSX.
+// Vitest toolchain.
 export default defineConfig({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plugins: [react() as any],
   test: {
     // Unit tests live in tests/; the Playwright E2E specs in e2e/ run under a
     // separate runner, so keep Vitest from trying to execute them.

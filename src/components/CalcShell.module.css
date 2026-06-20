@@ -183,26 +183,9 @@
   background: var(--brand-hover);
   border-color: var(--brand-hover);
   color: var(--text-on-brand);
-  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
-  color: var(--brand-hover);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
-}
-.adel:hover {
-  background: color-mix(in srgb, var(--brand) 16%, transparent);
-  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
-  box-shadow:
-    var(--clay-shadow),
-    0 0 12px color-mix(in srgb, var(--brand) 18%, transparent);
-}
-.adel:hover {
-  background: color-mix(in srgb, var(--brand) 14%, var(--surface));
   box-shadow:
     var(--clay-shadow-hover),
     0 0 20px color-mix(in srgb, var(--brand) 28%, transparent);
-  background: color-mix(in srgb, var(--brand) 8%, transparent);
-}
-.adel:hover {
-  background: color-mix(in srgb, var(--brand) 16%, transparent);
 }
 
 .note {

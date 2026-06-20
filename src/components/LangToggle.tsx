@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { Lang } from '../i18n';
+import { switchLanguage, type Lang } from '../i18n';
 
 /** Bilingual toggle. Shows the *other* language's glyph (ع on EN, EN on AR),
  *  matching the legacy .lang-toggle button. */
@@ -12,7 +12,7 @@ export function LangToggle({ className }: { className?: string }) {
       type="button"
       className={className}
       aria-label={t('common.switchLanguage')}
-      onClick={() => void i18n.changeLanguage(next)}
+      onClick={() => void switchLanguage(next)}
     >
       {t('common.langToggleLabel')}
     </button>

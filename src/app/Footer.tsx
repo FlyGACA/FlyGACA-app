@@ -87,6 +87,9 @@ export function Footer() {
               <li>
                 <Link to="/privacy">{t('footer.privacy')}</Link>
               </li>
+              <li>
+                <Link to="/safety">{t('footer.safety')}</Link>
+              </li>
             </ul>
           </nav>
 

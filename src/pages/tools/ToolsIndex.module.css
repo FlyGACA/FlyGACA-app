@@ -62,9 +62,10 @@
   white-space: nowrap;
 }
 .jumpChip:hover {
-  border-color: var(--brand-hover);
   color: var(--brand-hover);
   text-decoration: none;
+  box-shadow: var(--clay-shadow-hover);
+  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
 }
 .jumpChip:focus-visible {
   outline: 2px solid var(--focus);

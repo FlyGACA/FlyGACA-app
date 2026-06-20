@@ -279,7 +279,7 @@ function connectAuth(): void {
             ...state,
             profile: { ...state.profile, ...loaded.profile },
             flights: loaded.flights.length ? loaded.flights : state.flights,
-            records: loaded.records.length ? loaded.records : state.records,
+            records: loaded.records && loaded.records.length ? loaded.records : state.records,
             entitlement: loaded.entitlement,
             syncError: false,
           });
@@ -317,7 +317,7 @@ export async function refreshAccount(): Promise<void> {
         ...state,
         profile: { ...state.profile, ...loaded.profile },
         flights: loaded.flights.length ? loaded.flights : state.flights,
-        records: loaded.records.length ? loaded.records : state.records,
+        records: loaded.records?.length ? loaded.records : state.records,
         entitlement: loaded.entitlement,
         syncError: false,
       });

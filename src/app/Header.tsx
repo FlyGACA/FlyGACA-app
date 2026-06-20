@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
-import { useCommandPalette } from '../components/command/context';
-import { InstallButton } from '../components/pwa/InstallButton';
-import { useAccount } from '../lib/account';
-import { effectivePlan } from '../lib/entitlements';
+import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import styles from './Header.module.css';
 
 interface NavItem {
@@ -47,9 +44,6 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const location = useLocation();
-  const palette = useCommandPalette();
-  const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => {
@@ -97,41 +91,41 @@ export function Header() {
               {t(item.key)}
             </NavLink>
           ))}
-          {/* Primary CTA, surfaced inside the drawer on mobile (hidden ≥860px).
-             Hidden for paid users, who have nothing to upgrade to. */}
-          {!isPro && (
-            <Link
-              className={`btn btn-primary ${styles.drawerCta}`}
-              to="/pricing"
-              onClick={() => setOpen(false)}
-            >
-              {t('common.goPro')}
-            </Link>
-          )}
+          {/* Primary CTA, surfaced inside the drawer on mobile (hidden ≥860px). */}
+          <Link
+            className={`btn btn-primary ${styles.drawerCta}`}
+            to="/pricing"
+            onClick={() => setOpen(false)}
+          >
+            {t('common.goPro')}
+          </Link>
         </nav>
 
         <div className={styles.actions}>
-          <InstallButton />
           <button
-            className={styles.search}
+            className={styles.searchPill}
             type="button"
-            aria-label={t('command.open')}
-            onClick={palette.open}
+            onClick={openCommandPalette}
+            aria-label={t('cmdk.label')}
           >
-            <span className={styles.searchGlyph} aria-hidden="true">
-              ⌕
-            </span>
-            <span className={styles.searchLabel}>{t('command.searchShort')}</span>
-            <kbd className={styles.searchKbd} aria-hidden="true">
-              ⌘K
-            </kbd>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span className={styles.searchPillText}>{t('cmdk.search')}</span>
+            <kbd className={styles.searchPillKbd}>⌘K</kbd>
           </button>
           <LangToggle className={styles.langToggle} />
-          {!isPro && (
-            <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
-              {t('common.goPro')}
-            </Link>
-          )}
+          <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
+            {t('common.goPro')}
+          </Link>
           <button
             className={styles.toggle}
             type="button"

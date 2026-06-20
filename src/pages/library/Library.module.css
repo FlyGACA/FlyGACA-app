@@ -202,6 +202,7 @@
   background: var(--surface);
   box-shadow: var(--clay-shadow);
   color: inherit;
+  overflow: hidden;
   transition:
     box-shadow var(--dur) var(--ease),
     transform var(--dur) var(--ease);
@@ -212,6 +213,7 @@
   box-shadow: var(--clay-shadow-hover);
   text-decoration: none;
 }
+/* Left category accent bar — widens on card hover (Design System §09). */
 .catBar {
   position: absolute;
   inset-block: 0;

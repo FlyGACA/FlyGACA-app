@@ -189,9 +189,13 @@
   transition: transform var(--dur) var(--ease);
 }
 
-/* Nudge the arrow along the inline axis on hover (RTL-safe via the parent's dir). */
+/* Nudge the arrow along the inline axis on hover. translateX is physical, so
+   mirror it under RTL to keep the nudge pointing toward the inline-end. */
 :global(.cardHoverArrow):hover .arrow {
   transform: translateX(3px);
+}
+:global([dir='rtl']) :global(.cardHoverArrow):hover .arrow {
+  transform: translateX(-3px);
 }
 
 /* Loading skeleton */
