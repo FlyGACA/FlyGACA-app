@@ -31,7 +31,14 @@ for (const path of PAGES) {
     });
     await expect(page.locator('h1').first()).toBeVisible();
 
-    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+    // The reader injects a very large (~500 KB) regulation document; auditing the
+    // whole DOM times out axe. Audit the reader's own chrome and skip the
+    // sanitized third-party body (its .content styles are verified separately).
+    const isReader = path.startsWith('/library/part');
+    if (isReader) test.slow();
+    const builder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']);
+    if (isReader) builder.exclude('[data-testid="reader-body"]');
+    const results = await builder.analyze();
 
     const serious = results.violations.filter(
       (v) => v.impact === 'serious' || v.impact === 'critical',
