@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizData, QuizQuestion } from '../../lib/content';
+import { setExamResult, useStudyProgress } from '../../lib/studyProgress';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Study.module.css';
 
@@ -13,13 +14,24 @@ function pickQuestions(data: QuizData): QuizQuestion[] {
 
 export function MockExam() {
   const { t } = useTranslation();
-  const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json');
+  const [reload, setReload] = useState(0);
+  const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
+  const { exam } = useStudyProgress();
   const [started, setStarted] = useState(false);
 
   if (loading)
     return <section className={`container-narrow ${styles.page}`}>{t('common.loading')}</section>;
   if (error || !data)
-    return <section className={`container-narrow ${styles.page}`}>{t('common.loadError')}</section>;
+    return (
+      <section className={`container-narrow ${styles.page}`}>
+        <div className={styles.errorBox} role="alert">
+          <p>{t('common.loadError')}</p>
+          <button type="button" className={styles.primary} onClick={() => setReload((r) => r + 1)}>
+            {t('library.retry')}
+          </button>
+        </div>
+      </section>
+    );
 
   if (!started) {
     return (
@@ -27,6 +39,14 @@ export function MockExam() {
         <h1>{t('study.exam')}</h1>
         <p className={styles.subtitle}>{t('study.examDesc')}</p>
         <p className={styles.qProgress}>{t('study.examPassMark', { n: data.exam.passMark })}</p>
+        {exam && (
+          <p className={styles.lastResult}>
+            {t('study.lastResult', { pct: exam.pct })}{' '}
+            <span className={exam.passed ? styles.passed : styles.failed}>
+              {exam.passed ? t('study.examPassed') : t('study.examFailed')}
+            </span>
+          </p>
+        )}
         <button type="button" className={styles.primary} onClick={() => setStarted(true)}>
           {t('study.examStart')}
         </button>
@@ -52,22 +72,52 @@ function Runner({ data }: { data: QuizData }) {
     return () => clearInterval(id);
   }, [done]);
 
+  const correct = answers.filter((a, idx) => a === questions[idx].answer).length;
+  const pct = Math.round((correct / questions.length) * 100);
+  const passed = pct >= data.exam.passMark;
+
+  useEffect(() => {
+    if (done) setExamResult({ pct, passed, date: new Date().toISOString() });
+  }, [done, pct, passed]);
+
   const q = questions[i];
   const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
   const ss = String(seconds % 60).padStart(2, '0');
 
   if (done) {
-    const correct = answers.filter((a, idx) => a === questions[idx].answer).length;
-    const pct = Math.round((correct / questions.length) * 100);
-    const passed = pct >= data.exam.passMark;
     return (
       <section className={`container-narrow ${styles.page}`}>
-        <div className={styles.result}>
+        <div className={styles.result} role="status">
           <p className={styles.resultPct}>{pct}%</p>
           <p>{t('study.scoreLine', { correct, total: questions.length })}</p>
           <p className={passed ? styles.passed : styles.failed}>
             {passed ? t('study.examPassed') : t('study.examFailed')}
           </p>
+        </div>
+        <div className={styles.review}>
+          <h2 className={styles.reviewHead}>{t('study.reviewAnswers')}</h2>
+          <ul className={styles.reviewList}>
+            {questions.map((item, idx) => {
+              const a = answers[idx];
+              const ok = a === item.answer;
+              return (
+                <li
+                  key={idx}
+                  className={`${styles.reviewItem} ${ok ? styles.reviewOk : styles.reviewBad}`}
+                >
+                  <p className={styles.reviewQ}>
+                    {idx + 1}. {item.q}
+                  </p>
+                  <p className={styles.reviewA}>✓ {item.options[item.answer]}</p>
+                  {!ok && (
+                    <p className={styles.reviewYours}>
+                      {a == null ? t('study.noAnswer') : `✗ ${item.options[a]}`}
+                    </p>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </section>
     );
@@ -81,7 +131,7 @@ function Runner({ data }: { data: QuizData }) {
     <section className={`container-narrow ${styles.page}`}>
       <div className={styles.examBar}>
         <span>{t('study.question', { n: i + 1, total: questions.length })}</span>
-        <span className={styles.timer}>
+        <span className={styles.timer} role="timer" aria-label={t('study.examTimeLeft')}>
           {t('study.examTimeLeft')}: {mm}:{ss}
         </span>
       </div>

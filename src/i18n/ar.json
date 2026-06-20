@@ -1610,7 +1610,22 @@
         "name": "حزمة التحويل",
         "desc": "تحضير تحويل الرخصة الأجنبية إلى GACA."
       }
-    ]
+    ],
+    "streak": "سلسلة المذاكرة",
+    "streakUnit": "أيام",
+    "avgBest": "متوسط الأفضل",
+    "banksDone": "بنوك الأسئلة",
+    "lessonsDone": "الدروس",
+    "banksProgress": "{{done}}/{{total}} بنك تمّت محاولته",
+    "lessonsProgress": "{{done}}/{{total}} درس مكتمل",
+    "cardsProgress": "{{done}}/{{total}} بطاقة معروفة",
+    "retryWrong": "إعادة {{n}} خاطئة",
+    "reviewWrong": "راجع أخطاءك",
+    "reviewUnknowns": "راجع {{n}} للتعلّم",
+    "reviewAnswers": "مراجعة الإجابات",
+    "noAnswer": "لم تُجب",
+    "flipHint": "انقر أو اضغط Enter للقلب",
+    "lastResult": "آخر محاولة: {{pct}}%"
   },
   "disclaimer": {
     "strong": "فلاي جاكا منصة تعليمية مستقلة.",

@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, GsLesson } from '../../lib/content';
 import { adelLink } from '../../lib/adel';
+import { useStudyProgress, toggleLesson } from '../../lib/studyProgress';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import styles from './GroundSchool.module.css';
@@ -18,18 +18,11 @@ function readHref(url: string | undefined): string | null {
   return id ? `/library/${id}` : null;
 }
 
-const doneKey = (id: string) => `flygaca:gs:${id}`;
-
 export function GroundSchool() {
   const { t } = useTranslation();
   const { data, error, loading } = useFetchJson<GroundSchoolData>('/data/groundschool.json');
-  const [, force] = useState(0);
-  const isDone = (id: string) => localStorage.getItem(doneKey(id)) === '1';
-  const toggle = (id: string) => {
-    if (isDone(id)) localStorage.removeItem(doneKey(id));
-    else localStorage.setItem(doneKey(id), '1');
-    force((n) => n + 1);
-  };
+  const { gsDone } = useStudyProgress();
+  const isDone = (id: string) => Boolean(gsDone[id]);
 
   return (
     <section className={`container-narrow ${styles.page}`}>
@@ -74,7 +67,7 @@ export function GroundSchool() {
                       key={l.id}
                       lesson={l}
                       done={isDone(l.id)}
-                      onToggle={() => toggle(l.id)}
+                      onToggle={() => toggleLesson(l.id)}
                     />
                   ))}
                 </ul>

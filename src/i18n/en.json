@@ -1610,7 +1610,22 @@
         "name": "Conversion pack",
         "desc": "Foreign-to-GACA licence conversion prep."
       }
-    ]
+    ],
+    "streak": "Study streak",
+    "streakUnit": "days",
+    "avgBest": "Avg best",
+    "banksDone": "Quiz banks",
+    "lessonsDone": "Lessons",
+    "banksProgress": "{{done}}/{{total}} banks attempted",
+    "lessonsProgress": "{{done}}/{{total}} lessons done",
+    "cardsProgress": "{{done}}/{{total}} cards known",
+    "retryWrong": "Retry {{n}} wrong",
+    "reviewWrong": "Review your mistakes",
+    "reviewUnknowns": "Review {{n}} to learn",
+    "reviewAnswers": "Review answers",
+    "noAnswer": "Not answered",
+    "flipHint": "Tap or press Enter to flip",
+    "lastResult": "Last attempt: {{pct}}%"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
