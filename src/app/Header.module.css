@@ -173,6 +173,47 @@
   background: var(--brand-tint);
 }
 
+/* --- ⌘K search pill --- */
+.searchPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  block-size: 44px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-pill);
+  border: var(--clay-border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.searchPill:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
+  box-shadow: var(--clay-shadow-hover);
+}
+.searchPill svg {
+  inline-size: 16px;
+  block-size: 16px;
+  flex: none;
+}
+.searchPillKbd {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid var(--border-bright);
+  border-radius: 5px;
+  padding: 1px 5px;
+  color: var(--text-dim);
+}
+
 /* --- Hamburger toggle + animated burger glyph --- */
 .toggle {
   display: none;
@@ -291,6 +332,17 @@
   /* Scoped under .actions to beat the global .btn display in the cascade. */
   .actions .cta {
     display: none;
+  }
+
+  /* Collapse the search pill to its icon to save room next to the burger. */
+  .searchPillText,
+  .searchPillKbd {
+    display: none;
+  }
+  .searchPill {
+    padding-inline: 0;
+    inline-size: 44px;
+    justify-content: center;
   }
 
   .toggle {
