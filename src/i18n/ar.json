@@ -417,7 +417,11 @@
       "regulations": "لوائح GACAR",
       "reference": "المكتبة المرجعية",
       "handbook": "أدلة الهيئة"
-    }
+    },
+    "retry": "إعادة المحاولة",
+    "showing": "عرض {{shown}} من {{total}}",
+    "loadMore": "تحميل المزيد",
+    "capHint": "أول {{max}} — حسّن البحث للتضييق"
   },
   "document": {
     "outline": "المحتويات",

@@ -417,7 +417,11 @@
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
       "handbook": "GACA Handbooks"
-    }
+    },
+    "retry": "Retry",
+    "showing": "Showing {{shown}} of {{total}}",
+    "loadMore": "Load more",
+    "capHint": "first {{max}} — refine to narrow"
   },
   "document": {
     "outline": "Outline",

@@ -293,16 +293,33 @@ const SEARCH_TYPE_TO_KIND: Record<string, LibraryKind> = {
   handbooks: 'handbook',
 };
 
-/**
- * Rewrite a legacy search-index URL to the app's Document-reader route.
- * `document.html?type=reference&id=ac-68-1#sec-x` → `/library/reference/ac-68-1#sec-x`.
- * Returns null for entries we can't route.
- */
-export function searchHref(u: string): string | null {
+export interface SearchRef {
+  kind: LibraryKind;
+  /** Document slug. */
+  id: string;
+  /** In-document heading anchor, if any. */
+  anchor?: string;
+}
+
+/** Parse a legacy search-index URL into its corpus kind, document id and anchor. */
+export function parseSearchUrl(u: string): SearchRef | null {
   const type = /[?&]type=([^&#]+)/.exec(u)?.[1];
   const id = /[?&]id=([^&#]+)/.exec(u)?.[1];
   const kind = type ? SEARCH_TYPE_TO_KIND[type] : undefined;
   if (!id || !kind) return null;
   const anchor = /#(.+)$/.exec(u)?.[1];
-  return `${CORPUS[kind].base}/${id}${anchor ? `#${anchor}` : ''}`;
+  return { kind, id, anchor };
+}
+
+/**
+ * Rewrite a legacy search-index URL to the app's Document-reader route.
+ * `document.html?type=reference&id=ac-68-1#sec-x` → `/library/reference/ac-68-1#sec-x`.
+ * Returns null for entries we can't route. Pass `q` to carry the search phrase
+ * through to the reader so it can highlight and scroll to the matched passage.
+ */
+export function searchHref(u: string, q?: string): string | null {
+  const ref = parseSearchUrl(u);
+  if (!ref) return null;
+  const query = q && q.trim() ? `?q=${encodeURIComponent(q.trim())}` : '';
+  return `${CORPUS[ref.kind].base}/${ref.id}${query}${ref.anchor ? `#${ref.anchor}` : ''}`;
 }

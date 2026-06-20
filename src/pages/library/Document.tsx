@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { sanitizeHtml, tocFromHtml, useFetchText } from '../../lib/useFetchText';
@@ -14,16 +14,61 @@ interface DocumentProps {
   kind?: LibraryKind;
 }
 
+/**
+ * Wrap every case-insensitive occurrence of `needle` inside `root`'s text nodes
+ * in `<mark data-hit>`, skipping text already inside a mark so repeated runs
+ * don't double-wrap. Returns the first mark created (to scroll into view).
+ */
+function highlightMatches(root: HTMLElement, needle: string): HTMLElement | null {
+  const n = needle.toLowerCase();
+  if (!n) return null;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const targets: Text[] = [];
+  let node: Node | null;
+  while ((node = walker.nextNode())) {
+    const tn = node as Text;
+    const val = tn.nodeValue;
+    if (!val || !val.toLowerCase().includes(n)) continue;
+    if (tn.parentElement?.closest('mark')) continue;
+    targets.push(tn);
+  }
+  let first: HTMLElement | null = null;
+  for (const tn of targets) {
+    const text = tn.nodeValue as string;
+    const lower = text.toLowerCase();
+    const frag = document.createDocumentFragment();
+    let i = 0;
+    let idx = lower.indexOf(n);
+    while (idx !== -1) {
+      if (idx > i) frag.appendChild(document.createTextNode(text.slice(i, idx)));
+      const mark = document.createElement('mark');
+      mark.dataset.hit = '1';
+      mark.textContent = text.slice(idx, idx + n.length);
+      frag.appendChild(mark);
+      if (!first) first = mark;
+      i = idx + n.length;
+      idx = lower.indexOf(n, i);
+    }
+    if (i < text.length) frag.appendChild(document.createTextNode(text.slice(i)));
+    tn.parentNode?.replaceChild(frag, tn);
+  }
+  return first;
+}
+
 export function Document({ kind = 'regulations' }: DocumentProps) {
   const { t } = useTranslation();
   const { hash } = useLocation();
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const q = (searchParams.get('q') ?? '').trim();
   const corpus = CORPUS[kind];
   const index = useFetchJson<CorpusIndex>(corpus.index);
   const doc = index.data?.documents.find((d) => d.slug === slug);
   const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
   const [filter, setFilter] = useState('');
   const [progress, setProgress] = useState(0);
+  const [tocOpen, setTocOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   usePageMeta(doc?.title, doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined);
 
   // Reading progress bar
@@ -44,12 +89,15 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     return q ? toc.filter((e) => e.title.toLowerCase().includes(q)) : toc;
   }, [toc, filter]);
 
-  // Scroll to the anchor once the content is in the DOM.
+  // Once content is in the DOM: highlight the search phrase (when arriving from a
+  // full-text hit's `?q=`) and scroll to the first match, else to the anchor.
   useEffect(() => {
     if (!html) return;
     const id = hash.replace(/^#/, '');
-    if (id) document.getElementById(id)?.scrollIntoView();
-  }, [html, hash]);
+    const firstMark = contentRef.current && q ? highlightMatches(contentRef.current, q) : null;
+    if (firstMark) firstMark.scrollIntoView({ block: 'center' });
+    else if (id) document.getElementById(id)?.scrollIntoView();
+  }, [html, hash, q]);
 
   // The eyebrow badge: "Part 91" for regulations, the corpus badge otherwise.
   const badge = doc?.part ? `${t('library.part')} ${doc.part}` : doc?.badge;
@@ -84,8 +132,20 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             <p className={styles.verify}>{t('document.verifyLine')}</p>
           </header>
 
+          <button
+            type="button"
+            className={styles.tocToggle}
+            aria-expanded={tocOpen}
+            onClick={() => setTocOpen((o) => !o)}
+          >
+            {t('document.toc')}
+          </button>
+
           <div className={styles.layout}>
-            <nav className={styles.toc} aria-label={t('document.toc')}>
+            <nav
+              className={`${styles.toc} ${tocOpen ? styles.tocOpen : ''}`}
+              aria-label={t('document.toc')}
+            >
               <input
                 className={styles.tocFilter}
                 type="search"
@@ -100,6 +160,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                     <a
                       href={`#${e.id}`}
                       onClick={() => {
+                        setTocOpen(false);
                         setTimeout(
                           () =>
                             document
@@ -117,6 +178,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             </nav>
 
             <div
+              ref={contentRef}
               className={styles.content}
               // Trusted, machine-extracted GACAR HTML from our own corpus; sanitized above.
               dangerouslySetInnerHTML={{ __html: html }}
