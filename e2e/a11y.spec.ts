@@ -6,6 +6,7 @@ const PAGES = [
   '/',
   '/tools/crosswind',
   '/library',
+  '/library/part-1',
   '/chat',
   '/pricing',
   '/account',
@@ -45,3 +46,36 @@ for (const path of PAGES) {
     ).toEqual([]);
   });
 }
+
+/**
+ * The command palette is a modal the static page scan can't reach. Open it from
+ * the header and audit the live dialog so the new keyboard surface is covered.
+ */
+test('a11y: command palette (open dialog)', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page.addStyleTag({
+    content:
+      '*,*::before,*::after{animation:none!important;transition:none!important}.stagger-grid>*,.page-enter{opacity:1!important;translate:none!important}',
+  });
+  await page.getByLabel('Search (⌘K)').first().click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+
+  const results = await new AxeBuilder({ page })
+    .include('[role="dialog"]')
+    .withTags(['wcag2a', 'wcag2aa'])
+    .analyze();
+
+  const serious = results.violations.filter(
+    (v) => v.impact === 'serious' || v.impact === 'critical',
+  );
+  expect(
+    serious,
+    JSON.stringify(
+      serious.map((v) => ({ id: v.id, nodes: v.nodes.length })),
+      null,
+      2,
+    ),
+  ).toEqual([]);
+});
