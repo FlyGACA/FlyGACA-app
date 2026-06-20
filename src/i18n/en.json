@@ -311,7 +311,13 @@
         "name": "Definitions",
         "blurb": "The GACAR Part 1 glossary, searchable and bilingual."
       }
-    }
+    },
+    "pinned": "Pinned",
+    "recent": "Recent",
+    "favorite": "Pin tool",
+    "unfavorite": "Unpin tool",
+    "resultCount": "{{count}} tools",
+    "searchTip": "Press / to search"
   },
   "crosswind": {
     "title": "Crosswind & headwind",

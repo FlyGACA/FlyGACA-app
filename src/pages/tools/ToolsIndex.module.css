@@ -19,8 +19,6 @@
   padding: var(--space-3) var(--space-4);
   min-height: 44px;
   border: 1px solid var(--border-bright);
-  border: var(--clay-border);
-  border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
@@ -32,13 +30,28 @@
 }
 .search:focus {
   border-color: var(--brand-hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.searchMeta {
+  margin-block-start: var(--space-2);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
+/* Sticky category nav so it stays reachable while scrolling the long catalogue. */
 .jump {
+  position: sticky;
+  inset-block-start: var(--nav-h);
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
   margin-block-end: var(--space-6);
+  padding-block: var(--space-3);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(6px);
 }
 .jumpChip {
   padding: var(--space-1) var(--space-3);
@@ -52,8 +65,8 @@
   border-color: var(--brand-hover);
   color: var(--brand-hover);
   text-decoration: none;
-  box-shadow: var(--clay-shadow-hover);
-  border-color: color-mix(in srgb, var(--brand) 65%, transparent);
+}
+.jumpChip:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
@@ -132,12 +145,44 @@
   opacity: 0.55;
 }
 
+/* Favourite toggle — overlaid in the top inline-end corner, a sibling of the
+   card link so we never nest an interactive control inside another. */
+.star {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  z-index: 2;
+  inline-size: 32px;
+  block-size: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.star:hover {
+  color: var(--gold);
+  background: var(--surface-raised);
+}
+.starOn {
+  color: var(--gold);
+}
+
 .cardLink {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   block-size: 100%;
   padding: var(--space-5);
+  padding-inline-end: calc(var(--space-5) + 28px);
   color: inherit;
 }
 .cardLink:hover {
@@ -146,6 +191,12 @@
 
 .cardTitle {
   font-size: var(--fs-lg);
+}
+.card mark {
+  background: color-mix(in srgb, var(--gold) 35%, transparent);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding-inline: 2px;
 }
 
 .blurb {
