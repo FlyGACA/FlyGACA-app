@@ -346,6 +346,18 @@
   margin-block-start: var(--space-6);
 }
 
+/* Study-hub streak milestone nudge. */
+.milestone {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: var(--clay-radius);
+  background: color-mix(in srgb, var(--gold) 10%, var(--surface));
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  text-align: center;
+}
+
 .examBar {
   display: flex;
   justify-content: space-between;
