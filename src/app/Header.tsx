@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
+import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import styles from './Header.module.css';
 
 interface NavItem {
@@ -101,6 +102,19 @@ export function Header() {
         </nav>
 
         <div className={styles.actions}>
+          <button
+            className={styles.searchPill}
+            type="button"
+            onClick={openCommandPalette}
+            aria-label={t('cmdk.label')}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span className={styles.searchPillText}>{t('cmdk.search')}</span>
+            <kbd className={styles.searchPillKbd}>⌘K</kbd>
+          </button>
           <LangToggle className={styles.langToggle} />
           <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
             {t('common.goPro')}

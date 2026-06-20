@@ -1,12 +1,21 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import en from './en.json';
-import ar from './ar.json';
 
 export const LANGS = ['en', 'ar'] as const;
 export type Lang = (typeof LANGS)[number];
 
 const STORAGE_KEY = 'flygaca:lang';
+
+/**
+ * Per-language string bundles, code-split. Only the active language's JSON is
+ * fetched at boot — the other (~70–92 KB raw) is loaded on demand the first time
+ * the user switches, so an English session never ships the Arabic strings and
+ * vice versa. Vite emits each JSON as its own chunk from these dynamic imports.
+ */
+const LOADERS: Record<Lang, () => Promise<{ default: Record<string, unknown> }>> = {
+  en: () => import('./en.json'),
+  ar: () => import('./ar.json'),
+};
 
 /** Picks the initial language: ?lang= → stored choice → browser hint → English. */
 function initialLang(): Lang {
@@ -24,22 +33,47 @@ export function applyDocumentLang(lang: Lang): void {
   el.dir = lang === 'ar' ? 'rtl' : 'ltr';
 }
 
-void i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    ar: { translation: ar },
-  },
-  lng: initialLang(),
-  fallbackLng: 'en',
-  interpolation: { escapeValue: false },
-  returnNull: false,
-});
+/** Fetch + register a language's strings exactly once (idempotent). */
+async function ensureLanguage(lang: Lang): Promise<void> {
+  if (i18n.hasResourceBundle(lang, 'translation')) return;
+  const mod = await LOADERS[lang]();
+  i18n.addResourceBundle(lang, 'translation', mod.default, true, true);
+}
 
-applyDocumentLang(i18n.language as Lang);
+/**
+ * Boot i18next with only the initial language loaded. `main.tsx` awaits this
+ * before the first render so there is no flash of untranslated keys.
+ */
+export async function bootI18n(): Promise<typeof i18n> {
+  const lng = initialLang();
+  const mod = await LOADERS[lng]();
 
-i18n.on('languageChanged', (lng) => {
-  localStorage.setItem(STORAGE_KEY, lng);
-  applyDocumentLang(lng as Lang);
-});
+  await i18n.use(initReactI18next).init({
+    resources: { [lng]: { translation: mod.default } },
+    lng,
+    fallbackLng: 'en',
+    interpolation: { escapeValue: false },
+    returnNull: false,
+  });
+
+  applyDocumentLang(lng);
+
+  i18n.on('languageChanged', (next) => {
+    localStorage.setItem(STORAGE_KEY, next);
+    applyDocumentLang(next as Lang);
+  });
+
+  return i18n;
+}
+
+/**
+ * Switch language, fetching the target bundle first when it isn't loaded yet.
+ * Use this instead of `i18n.changeLanguage` so the strings are present before
+ * React re-renders into the new language.
+ */
+export async function switchLanguage(lang: Lang): Promise<void> {
+  await ensureLanguage(lang);
+  await i18n.changeLanguage(lang);
+}
 
 export default i18n;

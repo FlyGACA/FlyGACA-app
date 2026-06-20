@@ -176,6 +176,9 @@
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
   white-space: pre-wrap;
+  /* A long pasted URL / citation must wrap inside the bubble, not stretch the
+     message row past 85% and force horizontal scroll on a phone. */
+  overflow-wrap: anywhere;
   line-height: var(--lh-snug);
 }
 
@@ -288,6 +291,8 @@
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   color: var(--text);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
 }
 .srcDetails summary.srcCite {
   cursor: pointer;

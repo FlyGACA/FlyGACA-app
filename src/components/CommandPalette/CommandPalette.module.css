@@ -1,0 +1,210 @@
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-block-start: 12vh;
+  animation: cmdk-fade var(--dur) var(--ease);
+}
+
+@keyframes cmdk-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.box {
+  inline-size: min(560px, 92vw);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-pop);
+  overflow: hidden;
+  animation: cmdk-rise var(--dur) var(--ease);
+}
+
+@keyframes cmdk-rise {
+  from {
+    transform: translateY(-12px) scale(0.98);
+  }
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-block-end: 1px solid var(--border);
+}
+
+.inputRow svg {
+  inline-size: 18px;
+  block-size: 18px;
+  color: var(--text-muted);
+  flex: none;
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+}
+
+.input::placeholder {
+  color: var(--text-dim);
+}
+
+.esc {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  border: 1px solid var(--border-bright);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+.chips {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-block-end: 1px solid var(--border);
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  padding: 3px 11px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.chipActive {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  border-color: var(--brand);
+}
+
+.results {
+  max-block-size: 46vh;
+  overflow-y: auto;
+  padding: var(--space-3);
+}
+
+.item {
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: start;
+}
+
+.itemActive {
+  background: color-mix(in srgb, var(--teal-bright) 12%, transparent);
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-bold);
+  font-size: 0.72rem;
+  color: var(--teal-bright);
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal-bright) 28%, transparent);
+  border-radius: 6px;
+  padding: 3px 7px;
+  min-inline-size: 56px;
+  text-align: center;
+  flex: none;
+}
+
+/* Per-group accent on the code chip. */
+.aero {
+  color: var(--sage-bright);
+  border-color: color-mix(in srgb, var(--sage-bright) 30%, transparent);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+}
+.tool {
+  color: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 30%, transparent);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-inline-size: 0;
+  flex: 1;
+}
+
+.name {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tip {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.enter {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  opacity: 0;
+  flex: none;
+}
+
+.itemActive .enter {
+  opacity: 1;
+}
+
+.empty {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+}
+
+.foot {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-block-start: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrim,
+  .box {
+    animation: none;
+  }
+}

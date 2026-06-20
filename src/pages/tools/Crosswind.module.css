@@ -107,7 +107,6 @@
 }
 .bad {
   color: var(--danger);
-  color: var(--color-error);
 }
 
 .angleNote {

@@ -163,5 +163,4 @@
 }
 .bad dd {
   color: var(--danger);
-  color: var(--color-error);
 }

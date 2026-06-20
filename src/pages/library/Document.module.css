@@ -143,6 +143,9 @@
   color: var(--text);
   line-height: var(--lh-body);
   font-size: 1.02rem;
+  /* Long identifiers / URLs in the regulation text must wrap rather than push
+     the page wider than a phone viewport. */
+  overflow-wrap: break-word;
 }
 
 /* Section headings: teal left-accent, sticky-aware scroll margin */
@@ -167,15 +170,20 @@
   color: var(--text);
 }
 
-/* Tables — brand-tinted header row, zebra-striped body */
+/* Tables — brand-tinted header row, zebra-striped body.
+   A wide regulation table must scroll inside its own box on a phone instead of
+   widening the whole page; `display: block` + overflow-x makes the table the
+   scroll container (the injected HTML carries no wrapper to scroll). */
 .content :global(table) {
-  inline-size: 100%;
+  display: block;
+  max-inline-size: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   margin-block: var(--space-4);
   font-size: var(--fs-sm);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 .content :global(th) {
   background: color-mix(in srgb, var(--brand) 12%, var(--surface));
@@ -206,6 +214,13 @@
   border-radius: var(--radius-sm);
   background: var(--surface-raised);
   color: var(--accent-bright);
+}
+
+/* Pre-formatted blocks scroll horizontally rather than widen the page. */
+.content :global(pre) {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Horizontal rule (part dividers) */

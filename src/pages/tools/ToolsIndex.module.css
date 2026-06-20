@@ -19,8 +19,6 @@
   padding: var(--space-3) var(--space-4);
   min-height: 44px;
   border: 1px solid var(--border-bright);
-  border: var(--clay-border);
-  border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
@@ -49,11 +47,12 @@
   white-space: nowrap;
 }
 .jumpChip:hover {
-  border-color: var(--brand-hover);
   color: var(--brand-hover);
   text-decoration: none;
   box-shadow: var(--clay-shadow-hover);
   border-color: color-mix(in srgb, var(--brand) 65%, transparent);
+}
+.jumpChip:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
