@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
+import { useCommandPalette } from '../components/command/context';
+import { useAccount } from '../lib/account';
+import { effectivePlan } from '../lib/entitlements';
 import styles from './Header.module.css';
 
 interface NavItem {
@@ -43,6 +46,9 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const location = useLocation();
+  const palette = useCommandPalette();
+  const { entitlement } = useAccount();
+  const isPro = effectivePlan(entitlement) !== 'free';
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => {
@@ -90,21 +96,40 @@ export function Header() {
               {t(item.key)}
             </NavLink>
           ))}
-          {/* Primary CTA, surfaced inside the drawer on mobile (hidden ≥860px). */}
-          <Link
-            className={`btn btn-primary ${styles.drawerCta}`}
-            to="/pricing"
-            onClick={() => setOpen(false)}
-          >
-            {t('common.goPro')}
-          </Link>
+          {/* Primary CTA, surfaced inside the drawer on mobile (hidden ≥860px).
+             Hidden for paid users, who have nothing to upgrade to. */}
+          {!isPro && (
+            <Link
+              className={`btn btn-primary ${styles.drawerCta}`}
+              to="/pricing"
+              onClick={() => setOpen(false)}
+            >
+              {t('common.goPro')}
+            </Link>
+          )}
         </nav>
 
         <div className={styles.actions}>
+          <button
+            className={styles.search}
+            type="button"
+            aria-label={t('command.open')}
+            onClick={palette.open}
+          >
+            <span className={styles.searchGlyph} aria-hidden="true">
+              ⌕
+            </span>
+            <span className={styles.searchLabel}>{t('command.searchShort')}</span>
+            <kbd className={styles.searchKbd} aria-hidden="true">
+              ⌘K
+            </kbd>
+          </button>
           <LangToggle className={styles.langToggle} />
-          <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
-            {t('common.goPro')}
-          </Link>
+          {!isPro && (
+            <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
+              {t('common.goPro')}
+            </Link>
+          )}
           <button
             className={styles.toggle}
             type="button"

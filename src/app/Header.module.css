@@ -139,6 +139,57 @@
   margin-inline-start: auto;
 }
 
+/* --- Command-palette search trigger --- */
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.search:hover {
+  border-color: var(--brand-hover);
+  color: var(--text);
+  background: var(--brand-tint);
+}
+.searchGlyph {
+  font-size: var(--fs-lg);
+  line-height: 1;
+}
+.searchLabel {
+  white-space: nowrap;
+}
+.searchKbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+/* On small screens collapse to an icon-only button. */
+@media (max-width: 600px) {
+  .searchLabel,
+  .searchKbd {
+    display: none;
+  }
+  .search {
+    inline-size: 44px;
+    justify-content: center;
+    padding-inline: 0;
+  }
+}
+
 .langToggle {
   inline-size: 44px;
   block-size: 44px;
