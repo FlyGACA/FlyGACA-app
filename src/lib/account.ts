@@ -9,7 +9,13 @@
 import { useSyncExternalStore } from 'react';
 import type { Entitlement } from './entitlements';
 import { isAuthAvailable, onAuthChange } from './auth';
-import { loadAccount, saveProfileDoc, addFlightDoc, deleteFlightDoc } from './sync';
+import {
+  loadAccount,
+  saveProfileDoc,
+  addFlightDoc,
+  updateFlightDoc,
+  deleteFlightDoc,
+} from './sync';
 
 export interface Profile {
   email: string;
@@ -139,6 +145,14 @@ export function addFlight(f: Omit<Flight, 'id'>): void {
   const flight: Flight = { ...f, id: crypto.randomUUID() };
   commit({ ...state, flights: [flight, ...state.flights] });
   if (state.uid) void addFlightDoc(state.uid, flight).then(onSyncOk, onSyncFail);
+}
+
+export function updateFlight(id: string, patch: Partial<Omit<Flight, 'id'>>): void {
+  const current = state.flights.find((f) => f.id === id);
+  if (!current) return;
+  const updated: Flight = { ...current, ...patch, id };
+  commit({ ...state, flights: state.flights.map((f) => (f.id === id ? updated : f)) });
+  if (state.uid) void updateFlightDoc(state.uid, id, updated).then(onSyncOk, onSyncFail);
 }
 
 export function deleteFlight(id: string): void {

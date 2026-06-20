@@ -5,6 +5,7 @@ import {
   flightFromDoc,
   flightToDoc,
   entitlementFromDoc,
+  updateFlightDoc,
 } from '../src/lib/sync';
 import type { Profile, Flight } from '../src/lib/account';
 
@@ -63,6 +64,10 @@ describe('flight mappers', () => {
     expect(out.nightLdg).toBe('');
     expect(out.appr).toBe('');
     expect(out.ldg).toBe('2');
+  });
+
+  it('updateFlightDoc no-ops (resolves) when Firebase is not configured', async () => {
+    await expect(updateFlightDoc('uid', 'f1', flight)).resolves.toBeUndefined();
   });
 });
 

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { CurrencyBoard } from '../../components/CurrencyBoard';
@@ -8,6 +8,7 @@ import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { computeCurrency } from '../../calc/currency';
+import { buildIcs } from '../../calc/ics';
 import { adelLink } from '../../lib/adel';
 import styles from './account.module.css';
 
@@ -21,11 +22,30 @@ export function Currency() {
 
 function Inner() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   usePageMeta(t('meta.currency'));
   const { profile, flights, entitlement } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
   const items = computeCurrency(profile, flights);
   const adelHref = adelLink(t('dashboard.adelRenewalPrompt'));
+
+  const icsEvents = items
+    .filter((i) => i.expiry)
+    .map((i) => ({ summary: t(i.labelKey), date: i.expiry as Date }));
+
+  function exportIcs() {
+    if (!isPro) {
+      navigate('/pricing');
+      return;
+    }
+    const blob = new Blob([buildIcs(icsEvents)], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'flygaca-currency.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <section className={`container-narrow ${styles.page}`}>
@@ -37,6 +57,12 @@ function Inner() {
       <CurrencyBoard items={items} />
 
       <div className={styles.linkRow}>
+        {icsEvents.length > 0 && (
+          <button type="button" className={styles.btn} onClick={exportIcs}>
+            {t('currency.addCalendar')}
+            {!isPro && <span className={styles.proTag}>{t('upsell.proOnly')}</span>}
+          </button>
+        )}
         <Link to="/settings" className={styles.btn}>
           {t('account.settings')}
         </Link>

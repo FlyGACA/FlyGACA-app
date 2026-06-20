@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { summarizeLogbook, flightsToCsv } from '../src/calc/logbook';
+import { summarizeLogbook, flightsToCsv, monthlyHours } from '../src/calc/logbook';
 import type { Flight } from '../src/lib/account';
 
 const now = new Date('2024-06-01T12:00:00Z');
@@ -46,6 +46,30 @@ describe('summarizeLogbook', () => {
   it('returns the newest-first slice for recent', () => {
     const s = summarizeLogbook(flights, now, 2);
     expect(s.recent.map((f) => f.date)).toEqual(['2024-05-20', '2024-04-10']);
+  });
+});
+
+describe('monthlyHours', () => {
+  it('buckets total hours into the trailing N months, oldest first', () => {
+    const flights = [
+      flight('2024-06-01', { total: '2.0' }),
+      flight('2024-06-20', { total: '1.5' }),
+      flight('2024-04-10', { total: '3.0' }),
+      flight('2023-12-01', { total: '9.0' }), // outside a 6-month window
+    ];
+    const buckets = monthlyHours(flights, 6, now);
+    expect(buckets).toHaveLength(6);
+    expect(buckets[buckets.length - 1].key).toBe('2024-06');
+    expect(buckets[buckets.length - 1].hours).toBeCloseTo(3.5);
+    expect(buckets[buckets.length - 1].label).toBe('Jun');
+    expect(buckets.find((b) => b.key === '2024-04')!.hours).toBeCloseTo(3.0);
+    expect(buckets.some((b) => b.key === '2023-12')).toBe(false);
+  });
+
+  it('returns zeroed buckets when there are no flights', () => {
+    const buckets = monthlyHours([], 3, now);
+    expect(buckets).toHaveLength(3);
+    expect(buckets.every((b) => b.hours === 0)).toBe(true);
   });
 });
 

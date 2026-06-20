@@ -1,38 +1,23 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { TextField } from '../../components/calc/TextField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { OutputGrid } from '../../components/calc/Grids';
+import { FlightForm } from '../../components/account/FlightForm';
+import { BLANK_FLIGHT, type FlightDraft } from '../../components/account/flight';
 import {
   addFlight,
+  updateFlight,
   deleteFlight,
   exportAll,
   sumHours,
   useAccount,
-  type Flight,
 } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { summarizeLogbook, flightsToCsv } from '../../calc/logbook';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
-
-const BLANK: Omit<Flight, 'id'> = {
-  date: '',
-  type: '',
-  reg: '',
-  from: '',
-  to: '',
-  total: '',
-  pic: '',
-  night: '',
-  ifr: '',
-  ldg: '',
-  nightLdg: '',
-  appr: '',
-  remarks: '',
-};
 
 function download(name: string, data: string, mime: string) {
   const blob = new Blob([data], { type: mime });
@@ -43,6 +28,21 @@ function download(name: string, data: string, mime: string) {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+const COLS: (keyof FlightDraft)[] = [
+  'date',
+  'type',
+  'reg',
+  'from',
+  'to',
+  'total',
+  'pic',
+  'night',
+  'ifr',
+  'ldg',
+  'nightLdg',
+  'appr',
+];
 
 export function Logbook() {
   return (
@@ -58,18 +58,22 @@ function Inner() {
   usePageMeta(t('meta.logbook'));
   const { flights, entitlement, syncError } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
-  const [draft, setDraft] = useState(BLANK);
   const [adding, setAdding] = useState(false);
-  const set = (k: keyof typeof BLANK, v: string) => setDraft((d) => ({ ...d, [k]: v }));
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [params, setParams] = useSearchParams();
+
+  // Deep link from the dashboard "Log a flight" quick action opens the add form.
+  useEffect(() => {
+    if (params.get('add') === '1') {
+      setAdding(true);
+      setEditingId(null);
+      params.delete('add');
+      setParams(params, { replace: true });
+    }
+  }, [params, setParams]);
 
   const summary = summarizeLogbook(flights);
-
-  function save() {
-    if (!draft.date && !draft.type) return;
-    addFlight(draft);
-    setDraft(BLANK);
-    setAdding(false);
-  }
+  const editing = editingId ? flights.find((f) => f.id === editingId) : undefined;
 
   function exportJson() {
     download('flygaca-logbook.json', exportAll(), 'application/json');
@@ -83,21 +87,6 @@ function Inner() {
     }
     download('flygaca-logbook.csv', flightsToCsv(flights), 'text/csv');
   }
-
-  const cols: (keyof typeof BLANK)[] = [
-    'date',
-    'type',
-    'reg',
-    'from',
-    'to',
-    'total',
-    'pic',
-    'night',
-    'ifr',
-    'ldg',
-    'nightLdg',
-    'appr',
-  ];
 
   return (
     <section className={`container ${styles.page}`}>
@@ -134,7 +123,10 @@ function Inner() {
         <button
           type="button"
           className={`${styles.btn} ${styles.btnPrimary}`}
-          onClick={() => setAdding((a) => !a)}
+          onClick={() => {
+            setEditingId(null);
+            setAdding((a) => !a);
+          }}
         >
           {t('account.addFlight')}
         </button>
@@ -153,96 +145,28 @@ function Inner() {
       {flights.length > 0 && !isPro && <p className={styles.note}>{t('account.csvProNote')}</p>}
 
       {adding && (
-        <>
-          <div className={styles.form}>
-            <TextField
-              label={t('account.date')}
-              value={draft.date}
-              onChange={(v) => set('date', v)}
-              placeholder="2024-06-01"
-            />
-            <TextField
-              label={t('account.type')}
-              value={draft.type}
-              onChange={(v) => set('type', v)}
-              placeholder="C172"
-            />
-            <TextField
-              label={t('account.reg')}
-              value={draft.reg}
-              onChange={(v) => set('reg', v)}
-              placeholder="HZ-ABC"
-            />
-            <TextField
-              label={t('account.from')}
-              value={draft.from}
-              onChange={(v) => set('from', v)}
-              placeholder="OERK"
-            />
-            <TextField
-              label={t('account.to')}
-              value={draft.to}
-              onChange={(v) => set('to', v)}
-              placeholder="OEJN"
-            />
-            <TextField
-              label={t('account.total')}
-              value={draft.total}
-              onChange={(v) => set('total', v)}
-              placeholder="1.5"
-            />
-            <TextField
-              label={t('account.pic')}
-              value={draft.pic}
-              onChange={(v) => set('pic', v)}
-              placeholder="1.5"
-            />
-            <TextField
-              label={t('account.night')}
-              value={draft.night}
-              onChange={(v) => set('night', v)}
-            />
-            <TextField label={t('account.ifr')} value={draft.ifr} onChange={(v) => set('ifr', v)} />
-            <TextField
-              label={t('account.ldg')}
-              value={draft.ldg}
-              onChange={(v) => set('ldg', v)}
-              placeholder="1"
-            />
-            <TextField
-              label={t('account.nightLdg')}
-              value={draft.nightLdg ?? ''}
-              onChange={(v) => set('nightLdg', v)}
-              placeholder="0"
-            />
-            <TextField
-              label={t('account.appr')}
-              value={draft.appr ?? ''}
-              onChange={(v) => set('appr', v)}
-              placeholder="0"
-            />
-            <TextField
-              label={t('account.remarks')}
-              value={draft.remarks}
-              onChange={(v) => set('remarks', v)}
-            />
-          </div>
-          <div className={styles.actions}>
-            <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={save}>
-              {t('account.save')}
-            </button>
-            <button
-              type="button"
-              className={styles.btn}
-              onClick={() => {
-                setDraft(BLANK);
-                setAdding(false);
-              }}
-            >
-              {t('account.cancel')}
-            </button>
-          </div>
-        </>
+        <FlightForm
+          initial={BLANK_FLIGHT}
+          submitLabel={t('account.save')}
+          onSubmit={(draft) => {
+            addFlight(draft);
+            setAdding(false);
+          }}
+          onCancel={() => setAdding(false)}
+        />
+      )}
+
+      {editing && (
+        <FlightForm
+          key={editing.id}
+          initial={editing}
+          submitLabel={t('account.update')}
+          onSubmit={(draft) => {
+            updateFlight(editing.id, draft);
+            setEditingId(null);
+          }}
+          onCancel={() => setEditingId(null)}
+        />
       )}
 
       {flights.length === 0 ? (
@@ -257,7 +181,7 @@ function Inner() {
           <table className={styles.table}>
             <thead>
               <tr>
-                {cols.map((c) => (
+                {COLS.map((c) => (
                   <th key={c}>{t(`account.${c}`)}</th>
                 ))}
                 <th />
@@ -266,10 +190,21 @@ function Inner() {
             <tbody>
               {flights.map((f) => (
                 <tr key={f.id}>
-                  {cols.map((c) => (
+                  {COLS.map((c) => (
                     <td key={c}>{f[c] || '—'}</td>
                   ))}
-                  <td>
+                  <td className={styles.rowActions}>
+                    <button
+                      type="button"
+                      className={styles.rowBtn}
+                      onClick={() => {
+                        setAdding(false);
+                        setEditingId(f.id);
+                      }}
+                      aria-label={t('account.edit')}
+                    >
+                      ✎
+                    </button>
                     <button
                       type="button"
                       className={styles.del}

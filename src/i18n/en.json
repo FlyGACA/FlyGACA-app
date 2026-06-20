@@ -1302,7 +1302,9 @@
     "summary": "Logbook summary",
     "exportCsv": "Export CSV",
     "last90": "Last 90 days",
-    "csvProNote": "CSV & PDF export are part of Pro"
+    "csvProNote": "CSV & PDF export are part of Pro",
+    "edit": "Edit",
+    "update": "Update"
   },
   "guides": {
     "title": "Guides",
@@ -1780,7 +1782,12 @@
     "viewAll": "View all",
     "openLogbook": "Open logbook",
     "last90Days": "Flights · 90 days",
-    "adelRenewalPrompt": "Help me plan how to stay current as a pilot under the GACA regulations — walk me through which renewals I need and when."
+    "adelRenewalPrompt": "Help me plan how to stay current as a pilot under the GACA regulations — walk me through which renewals I need and when.",
+    "hoursTrend": "Hours trend",
+    "last6Months": "6 months",
+    "hoursTrendSummary": "{{hours}} hours flown in the last 6 months",
+    "quickActions": "Quick actions",
+    "logFlight": "Log a flight"
   },
   "currency": {
     "title": "Currency Tracker",
@@ -1811,7 +1818,8 @@
       "ifr": {
         "label": "Instrument recency"
       }
-    }
+    },
+    "addCalendar": "Add reminders to calendar"
   },
   "upsell": {
     "proOnly": "Pro",
@@ -1823,6 +1831,17 @@
       "export": "CSV & PDF logbook export",
       "unlimited": "Unlimited logbook entries",
       "adel": "Plan renewals with Captain Adel"
+    }
+  },
+  "setup": {
+    "title": "Get current",
+    "subtitle": "A few steps to set up your currency tracking.",
+    "progress": "{{done}} of {{total}} done",
+    "steps": {
+      "medical": "Add your medical certificate expiry",
+      "review": "Add your last flight review",
+      "homeBase": "Set your home base",
+      "firstFlight": "Log your first flight"
     }
   }
 }

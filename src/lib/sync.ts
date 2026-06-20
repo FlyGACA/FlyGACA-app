@@ -117,6 +117,13 @@ export async function addFlightDoc(uid: string, flight: Flight): Promise<void> {
   await setDoc(doc(db, 'users', uid, 'logbook', flight.id), flightToDoc(flight));
 }
 
+export async function updateFlightDoc(uid: string, id: string, flight: Flight): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const { doc, setDoc } = await import('firebase/firestore');
+  await setDoc(doc(db, 'users', uid, 'logbook', id), flightToDoc(flight), { merge: true });
+}
+
 export async function deleteFlightDoc(uid: string, id: string): Promise<void> {
   const db = await getDb();
   if (!db) return;

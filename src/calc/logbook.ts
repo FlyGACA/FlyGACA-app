@@ -5,7 +5,7 @@
  * read is coerced through `num`.
  */
 import type { Flight } from '../lib/account';
-import { addDays, parseISO } from './recency';
+import { addDays, addMonths, parseISO } from './recency';
 
 const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
 const sum = (flights: Flight[], key: keyof Flight): number =>
@@ -72,6 +72,40 @@ const CSV_FIELDS: (keyof Flight)[] = [
 function csvCell(v: string | undefined): string {
   const s = String(v ?? '');
   return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+export interface MonthBucket {
+  /** Short month label, e.g. "Jan". */
+  label: string;
+  /** YYYY-MM key (stable, locale-independent). */
+  key: string;
+  hours: number;
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * Flight `total` hours bucketed by calendar month over the trailing `months`
+ * (oldest → newest), so the dashboard can chart recent activity. Months with no
+ * flights report 0.
+ */
+export function monthlyHours(flights: Flight[], months = 6, now: Date = new Date()): MonthBucket[] {
+  const buckets: MonthBucket[] = [];
+  const index = new Map<string, number>();
+  for (let i = months - 1; i >= 0; i--) {
+    const d = addMonths(now, -i);
+    const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+    index.set(key, buckets.length);
+    buckets.push({ label: MONTHS[d.getUTCMonth()], key, hours: 0 });
+  }
+  for (const f of flights) {
+    const d = parseISO(f.date);
+    if (!d) continue;
+    const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+    const at = index.get(key);
+    if (at != null) buckets[at].hours += num(f.total);
+  }
+  return buckets;
 }
 
 /** Serialize the logbook to CSV (header + one row per flight), CRLF-terminated. */

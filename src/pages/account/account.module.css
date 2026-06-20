@@ -241,6 +241,11 @@
   border-block-start: 2px solid var(--border-bright);
   border-block-end: none;
 }
+.rowActions {
+  display: flex;
+  gap: var(--space-1);
+}
+.rowBtn,
 .del {
   background: none;
   border: none;
@@ -252,6 +257,10 @@
   transition:
     color var(--dur) var(--ease),
     background var(--dur) var(--ease);
+}
+.rowBtn:hover {
+  color: var(--brand-hover);
+  background: var(--surface-raised);
 }
 .del:hover {
   color: var(--color-error);

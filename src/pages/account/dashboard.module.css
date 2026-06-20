@@ -2,7 +2,7 @@
   padding-block: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 
 /* ── Hero / identity ── */
@@ -72,44 +72,34 @@
   color: var(--warning);
 }
 
-/* ── Bento grid ── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-5);
-}
-.currencyCard {
-  grid-column: span 7;
-}
-.logCard {
-  grid-column: span 5;
-}
-@media (max-width: 880px) {
-  .currencyCard,
-  .logCard {
-    grid-column: 1 / -1;
-  }
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+/* ── Onboarding banner (full width, above the grid) ── */
+.setupCard {
   padding: var(--space-5);
   border: var(--clay-border);
   border-radius: var(--clay-radius);
-  background: var(--surface);
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--brand) 12%, var(--surface)),
+    var(--surface)
+  );
   box-shadow: var(--clay-shadow);
 }
-.cardHead {
+
+/* ── Tile internals (inside BentoCards) ── */
+.tileHead {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-3);
 }
-.cardHead h2 {
+.tileHead h2 {
   margin: 0;
   font-size: var(--fs-h3);
+}
+.tileActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 .cardLink {
   font-size: var(--fs-sm);
@@ -122,14 +112,54 @@
   text-decoration: underline;
 }
 
-/* ── Logbook summary ── */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: var(--space-3);
-  margin: 0;
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.ghostBtn:hover {
+  color: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
+.proTag {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  color: var(--gold);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
 }
 
+/* ── Metric tiles ── */
+.metricLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.metricValue {
+  font-size: var(--fs-display, 2.6rem);
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-block-start: auto;
+}
+
+/* ── Recent flights ── */
 .recent {
   list-style: none;
   margin: 0;
@@ -168,4 +198,34 @@
   margin: 0;
   color: var(--text-dim);
   font-size: var(--fs-sm);
+}
+
+/* ── Quick actions ── */
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: auto;
+}
+.quickLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.quickLink:hover {
+  color: var(--brand-hover);
+  border-color: var(--brand-hover);
+  transform: translateY(-1px);
 }
