@@ -1175,7 +1175,7 @@
     "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
     "monthly": "Monthly",
     "annual": "Annual",
-    "saveBadge": "Save 51%",
+    "saveBadge": "Save {{pct}}%",
     "indicative": "Indicative pricing — confirmed at launch.",
     "billingNote": "Checkout opens when billing is connected.",
     "eyebrow": "Plans & Pricing",
@@ -1219,7 +1219,69 @@
           "Invoiced billing"
         ]
       }
-    }
+    },
+    "yourPlan": "Your plan",
+    "included": "Included",
+    "billingCycle": "Billing cycle",
+    "compareHead": "Compare plans",
+    "feature": "Feature",
+    "faqHead": "Frequently asked",
+    "compare": [
+      {
+        "feature": "Regulatory library",
+        "free": "✓",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Flight tools",
+        "free": "3 / day",
+        "pro": "Unlimited",
+        "school": "Unlimited"
+      },
+      {
+        "feature": "Captain Adel",
+        "free": "5 / mo",
+        "pro": "Unlimited",
+        "school": "Unlimited"
+      },
+      {
+        "feature": "Ground school & mock exams",
+        "free": "—",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Logbook export & offline",
+        "free": "—",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Admin dashboard & seats",
+        "free": "—",
+        "pro": "—",
+        "school": "✓"
+      }
+    ],
+    "faq": [
+      {
+        "q": "Can I cancel anytime?",
+        "a": "Yes — Pro is month-to-month or annual. Cancel whenever and keep access until the period ends."
+      },
+      {
+        "q": "Do you offer refunds?",
+        "a": "Contact us within 14 days of an annual purchase and we will sort it out."
+      },
+      {
+        "q": "What happens to my data if I downgrade?",
+        "a": "Your logbook and progress stay on your device; Pro-only exports pause until you re-subscribe."
+      },
+      {
+        "q": "Is Fly GACA affiliated with GACA?",
+        "a": "No. Fly GACA is an independent educational tool — always verify against the official GACA sources."
+      }
+    ]
   },
   "schools": {
     "title": "Fly GACA for schools",
@@ -1239,7 +1301,43 @@
       }
     ],
     "cta": "Contact sales",
-    "email": "sales@flygaca.com"
+    "email": "sales@flygaca.com",
+    "eyebrow": "For flight schools",
+    "formHead": "Talk to us",
+    "formIntro": "Tell us about your school and we'll get back to you with seat pricing.",
+    "orEmail": "Or email us at",
+    "mailSubject": "Fly GACA for schools — {{school}}",
+    "mailBody": "Name: {{name}}\nSchool: {{school}}\nSeats: {{seats}}\n\n{{message}}",
+    "faqHead": "Common questions",
+    "form": {
+      "name": "Your name",
+      "namePh": "Capt. Sara Al-Otaibi",
+      "school": "School / academy",
+      "schoolPh": "Riyadh Flight Academy",
+      "seats": "Approx. seats",
+      "seatsPh": "25",
+      "message": "Anything else?",
+      "messagePh": "Cohort start date, syllabus, questions…",
+      "send": "Send enquiry"
+    },
+    "faq": [
+      {
+        "q": "How fast can we onboard?",
+        "a": "Most schools are set up within a day of confirming seats."
+      },
+      {
+        "q": "Is there a minimum?",
+        "a": "Seat licences start at 10."
+      },
+      {
+        "q": "Can we manage students centrally?",
+        "a": "Yes — the admin dashboard handles bulk onboarding and usage tracking."
+      },
+      {
+        "q": "How are we billed?",
+        "a": "By invoice, annually, per seat."
+      }
+    ]
   },
   "account": {
     "title": "Account",
