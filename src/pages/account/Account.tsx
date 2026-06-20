@@ -4,16 +4,26 @@ import { useTranslation } from 'react-i18next';
 import { TextField } from '../../components/calc/TextField';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
+import { StatusPill } from '../../components/StatusPill';
 import { signIn, signOut, useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import {
   isAuthAvailable,
   registerWithEmail,
+  resendEmailVerification,
+  sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
 } from '../../lib/auth';
+import { authErrorInfo } from '../../calc/authError';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
+
+interface FieldErrors {
+  email?: string;
+  password?: string;
+  general?: string;
+}
 
 function FirebaseSignIn() {
   const { t } = useTranslation();
@@ -21,20 +31,34 @@ function FirebaseSignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function run(fn: () => Promise<unknown>) {
     setBusy(true);
-    setError('');
+    setErrors({});
+    setNotice('');
     try {
       await fn();
       // The account store adopts the session via onAuthChange.
-    } catch {
-      setError(t('account.authError'));
+    } catch (e) {
+      const { field, key } = authErrorInfo((e as { code?: string }).code);
+      setErrors({ [field]: t(key) });
     } finally {
       setBusy(false);
     }
+  }
+
+  function forgotPassword() {
+    if (!email.trim()) {
+      setErrors({ email: t('account.resetNeedEmail') });
+      return;
+    }
+    void run(async () => {
+      await sendPasswordReset(email.trim());
+      setNotice(t('account.resetSent'));
+    });
   }
 
   return (
@@ -68,6 +92,7 @@ function FirebaseSignIn() {
           type="email"
           autoComplete="email"
           placeholder="you@example.com"
+          error={errors.email}
         />
         <TextField
           label={t('account.password')}
@@ -75,24 +100,74 @@ function FirebaseSignIn() {
           onChange={setPassword}
           type="password"
           autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
+          error={errors.password}
         />
-        {error && (
+        {errors.general && (
           <p role="alert" className={styles.error}>
-            {error}
+            {errors.general}
+          </p>
+        )}
+        {notice && (
+          <p role="status" className={styles.notice}>
+            {notice}
           </p>
         )}
         <button type="submit" className={styles.btn} disabled={busy || !email.trim() || !password}>
           {mode === 'in' ? t('account.signIn') : t('account.register')}
         </button>
       </form>
-      <button
-        type="button"
-        className={styles.linkBtn}
-        onClick={() => setMode((m) => (m === 'in' ? 'up' : 'in'))}
-      >
-        {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
-      </button>
+      <div className={styles.signInLinks}>
+        <button
+          type="button"
+          className={styles.linkBtn}
+          onClick={() => setMode((m) => (m === 'in' ? 'up' : 'in'))}
+        >
+          {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
+        </button>
+        {mode === 'in' && (
+          <button type="button" className={styles.linkBtn} disabled={busy} onClick={forgotPassword}>
+            {t('account.forgotPassword')}
+          </button>
+        )}
+      </div>
     </>
+  );
+}
+
+/** Banner prompting an unverified Firebase user to resend their verification email. */
+function VerifyBanner() {
+  const { t } = useTranslation();
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  async function resend() {
+    setBusy(true);
+    try {
+      await resendEmailVerification();
+      setSent(true);
+    } catch {
+      /* ignore — generic to avoid leaking account state */
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className={styles.verifyBanner} role="status">
+      <StatusPill tone="warning">{t('account.emailNotVerified')}</StatusPill>
+      {sent ? (
+        <span className={styles.verifySent}>{t('account.verificationSent')}</span>
+      ) : (
+        <button
+          type="button"
+          className={styles.linkBtn}
+          disabled={busy}
+          onClick={() => void resend()}
+        >
+          {t('account.resendVerification')}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -133,7 +208,7 @@ function LocalSignIn() {
 export function Account() {
   const { t } = useTranslation();
   usePageMeta(t('meta.account'));
-  const { session, profile, entitlement, syncError } = useAccount();
+  const { session, uid, emailVerified, profile, entitlement, syncError } = useAccount();
   const plan = effectivePlan(entitlement);
 
   if (!session) {
@@ -163,6 +238,8 @@ export function Account() {
           </p>
         </div>
       </header>
+
+      {isAuthAvailable() && uid && !emailVerified && <VerifyBanner />}
 
       {syncError && (
         <p className={styles.syncNotice} role="status">

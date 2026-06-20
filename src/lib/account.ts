@@ -70,6 +70,8 @@ interface State {
   session: string | null;
   /** Firebase uid when signed in through Firebase; null for a local session. */
   uid: string | null;
+  /** Whether the Firebase user's email is verified (false for local sessions). */
+  emailVerified: boolean;
   profile: Profile;
   flights: Flight[];
   records: PilotRecord[];
@@ -107,6 +109,7 @@ function readJson<T>(key: string, fallback: T): T {
 let state: State = {
   session: localStorage.getItem(K.session),
   uid: null,
+  emailVerified: false,
   profile: readJson(K.profile, DEFAULT_PROFILE),
   flights: readJson(K.logbook, [] as Flight[]),
   records: readJson(K.records, [] as PilotRecord[]),
@@ -144,7 +147,14 @@ export function signIn(email: string, name: string): void {
 
 export function signOut(): void {
   void import('./auth').then(({ signOutUser }) => signOutUser());
-  commit({ ...state, session: null, uid: null, entitlement: null, syncError: false });
+  commit({
+    ...state,
+    session: null,
+    uid: null,
+    emailVerified: false,
+    entitlement: null,
+    syncError: false,
+  });
 }
 
 /**
@@ -252,6 +262,7 @@ function connectAuth(): void {
         ...state,
         session: user.email ?? user.uid,
         uid: user.uid,
+        emailVerified: user.emailVerified,
         profile: {
           ...state.profile,
           email: user.email ?? state.profile.email,
@@ -277,7 +288,14 @@ function connectAuth(): void {
         /* offline / rules — keep the local cache */
       }
     } else if (state.uid) {
-      commit({ ...state, session: null, uid: null, entitlement: null, syncError: false });
+      commit({
+        ...state,
+        session: null,
+        uid: null,
+        emailVerified: false,
+        entitlement: null,
+        syncError: false,
+      });
     }
   });
 }

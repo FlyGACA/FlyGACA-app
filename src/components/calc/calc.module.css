@@ -74,6 +74,35 @@
   outline: none; /* focus ring is on .inputRow:focus-within */
 }
 
+/* Native select sharing the input look (chevron via a tokenised SVG). */
+.select {
+  flex: 1;
+  min-inline-size: 0;
+  padding: var(--space-3);
+  padding-inline-end: var(--space-7);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237b8a99' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+}
+:global([dir='rtl']) .select {
+  background-position: left var(--space-3) center;
+  padding-inline-end: var(--space-3);
+  padding-inline-start: var(--space-7);
+}
+.select:focus {
+  outline: none; /* focus ring is on .inputRow:focus-within */
+}
+.select option {
+  color: var(--text);
+  background: var(--surface);
+}
+
 .unit {
   display: flex;
   align-items: center;

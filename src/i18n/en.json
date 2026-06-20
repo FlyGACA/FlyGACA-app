@@ -1499,6 +1499,28 @@
     "needAccount": "Need an account? Create one",
     "haveAccount": "Already have an account? Sign in",
     "authError": "Sign-in failed. Check your details and try again.",
+    "forgotPassword": "Forgot password?",
+    "resetSent": "If that email has an account, a password-reset link is on its way.",
+    "resetNeedEmail": "Enter your email above first.",
+    "emailNotVerified": "Email not verified",
+    "resendVerification": "Resend verification email",
+    "verificationSent": "Verification email sent — check your inbox.",
+    "licenceSelect": "Select…",
+    "licenceOptions": {
+      "SPL": "Student (SPL)",
+      "PPL": "Private (PPL)",
+      "CPL": "Commercial (CPL)",
+      "ATPL": "Airline (ATPL)"
+    },
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "userNotFound": "No account found with that email.",
+      "wrongPassword": "Incorrect email or password.",
+      "emailInUse": "An account already exists with that email.",
+      "weakPassword": "Password must be at least 6 characters.",
+      "tooManyRequests": "Too many attempts. Try again in a little while.",
+      "network": "Network error. Check your connection and try again."
+    },
     "signOut": "Sign out",
     "signedInAs": "Signed in as {{name}}",
     "plan": {
