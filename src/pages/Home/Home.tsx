@@ -2,6 +2,10 @@ import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
+import { TrustStrip } from './sections/TrustStrip';
+import { HowItWorks } from './sections/HowItWorks';
+import { WhyTrust } from './sections/WhyTrust';
+import { ConvertBand } from './sections/ConvertBand';
 import styles from './Home.module.css';
 
 // The bento dashboard (and its framer-motion runtime) is split off the home
@@ -28,13 +32,23 @@ export function Home() {
               {t('home.ctaChat')}
             </Link>
           </div>
+          <TrustStrip />
         </div>
       </section>
+
+      <HowItWorks />
 
       <section className={`container ${styles.dashboardSection}`}>
         <Suspense fallback={<div className={styles.dashboardFallback} aria-hidden="true" />}>
           <HomeDashboard />
         </Suspense>
+      </section>
+
+      <WhyTrust />
+
+      <ConvertBand />
+
+      <section className="container">
         <p className={styles.notice}>{t('home.notAffiliated')}</p>
         <Disclaimer />
       </section>

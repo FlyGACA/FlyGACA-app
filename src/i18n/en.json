@@ -63,6 +63,65 @@
     "ctaTools": "Flight tools",
     "ctaChat": "Ask Captain Adel",
     "notAffiliated": "Not affiliated with GACA. Always verify against the latest official GACA publication.",
+    "trust": {
+      "label": "Fly GACA at a glance",
+      "parts": "GACAR Parts",
+      "tools": "Flight tools",
+      "guides": "Study guides",
+      "languages": "Bilingual",
+      "price": "Core library",
+      "priceValue": "Free"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From question to cited answer in seconds",
+      "steps": [
+        {
+          "h": "Find the rule",
+          "p": "Search every numbered GACAR Part, reference guidance and handbooks — in English or Arabic."
+        },
+        {
+          "h": "Captain Adel cites it",
+          "p": "Ask in plain language; the AI instructor answers and points to the exact Part and section."
+        },
+        {
+          "h": "Study & stay current",
+          "p": "Practice questions, flashcards and tools to prep for checks and keep your currency."
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Why trust it",
+      "title": "Built to be checked, not taken on faith",
+      "items": [
+        {
+          "h": "Independent & educational",
+          "p": "Not GACA, not official. A study aid that always points you back to the source."
+        },
+        {
+          "h": "Cites the exact section",
+          "p": "Every answer names the Part and section so you can verify it against the GACAR."
+        },
+        {
+          "h": "Works offline",
+          "p": "A fast Progressive Web App — install it and read the library without a connection."
+        },
+        {
+          "h": "Fully bilingual",
+          "p": "Every page in English and Arabic, with right-to-left support throughout."
+        }
+      ]
+    },
+    "convert": {
+      "eyebrow": "Go further",
+      "title": "Unlock the full flight deck",
+      "lead": "Unlimited Captain Adel, currency reminders, logbook export and offline access — for serious students and crews.",
+      "cta": "See Pro plans",
+      "secondary": "Ask Captain Adel",
+      "proTitle": "You're flying Pro",
+      "proLead": "Your full toolkit is ready — jump back into your dashboard.",
+      "proCta": "Open my dashboard"
+    },
     "dashboard": {
       "region": "Fly GACA dashboard",
       "overview": "Operations overview",
