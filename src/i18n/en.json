@@ -1521,6 +1521,22 @@
       "tooManyRequests": "Too many attempts. Try again in a little while.",
       "network": "Network error. Check your connection and try again."
     },
+    "subscription": {
+      "title": "Subscription",
+      "renews": "Renews",
+      "source": "Billed via",
+      "manage": "Manage subscription",
+      "none": "You're on the free plan.",
+      "activating": "Activating your subscription…",
+      "checkoutSuccess": "You're Pro — thank you!",
+      "checkoutCanceled": "Checkout canceled — no charge was made.",
+      "errors": {
+        "generic": "Couldn't open billing just now. Please try again.",
+        "sign-in-required": "Sign in to manage your subscription.",
+        "billing-unavailable": "Billing isn't connected in this build.",
+        "no-subscription": "No active subscription to manage."
+      }
+    },
     "signOut": "Sign out",
     "signedInAs": "Signed in as {{name}}",
     "plan": {

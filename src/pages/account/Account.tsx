@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TextField } from '../../components/calc/TextField';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { StatusPill } from '../../components/StatusPill';
-import { signIn, signOut, useAccount } from '../../lib/account';
+import { SubscriptionPanel } from '../../components/account/SubscriptionPanel';
+import { refreshAccount, signIn, signOut, useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import {
   isAuthAvailable,
@@ -210,6 +211,21 @@ export function Account() {
   usePageMeta(t('meta.account'));
   const { session, uid, emailVerified, profile, entitlement, syncError } = useAccount();
   const plan = effectivePlan(entitlement);
+  const [params, setParams] = useSearchParams();
+  const checkout = params.get('checkout');
+
+  // After a Stripe checkout returns, the entitlement is granted asynchronously by
+  // the webhook — poll a few times so the new plan appears without a manual reload.
+  useEffect(() => {
+    if (checkout !== 'success') return;
+    void refreshAccount();
+    let n = 0;
+    const id = window.setInterval(() => {
+      void refreshAccount();
+      if (++n >= 5) window.clearInterval(id);
+    }, 2500);
+    return () => window.clearInterval(id);
+  }, [checkout]);
 
   if (!session) {
     return (
@@ -239,7 +255,27 @@ export function Account() {
         </div>
       </header>
 
+      {checkout === 'success' && (
+        <div className={styles.verifyBanner} role="status">
+          <StatusPill tone={plan !== 'free' ? 'success' : 'warning'}>
+            {plan !== 'free'
+              ? t('account.subscription.checkoutSuccess')
+              : t('account.subscription.activating')}
+          </StatusPill>
+          <button type="button" className={styles.linkBtn} onClick={() => setParams({})}>
+            {t('common.close')}
+          </button>
+        </div>
+      )}
+      {checkout === 'cancel' && (
+        <p className={styles.note} role="status">
+          {t('account.subscription.checkoutCanceled')}
+        </p>
+      )}
+
       {isAuthAvailable() && uid && !emailVerified && <VerifyBanner />}
+
+      <SubscriptionPanel />
 
       {syncError && (
         <p className={styles.syncNotice} role="status">

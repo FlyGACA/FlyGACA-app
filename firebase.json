@@ -1,11 +1,7 @@
 {
   "hosting": {
     "public": "dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "/api/chat",
@@ -16,6 +12,11 @@
         "source": "/api/content",
         "function": "protectedContent",
         "region": "me-central1"
+      },
+      {
+        "source": "/api/stripe-webhook",
+        "function": "stripeWebhook",
+        "region": "me-central2"
       },
       {
         "source": "**",
@@ -109,12 +110,6 @@
   "apphosting": {
     "backendId": "flygaca",
     "rootDir": "/",
-    "ignore": [
-      "node_modules",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log",
-      "functions"
-    ]
+    "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "functions"]
   }
 }

@@ -72,6 +72,12 @@ service cloud.firestore {
       }
     }
 
+    // The uid → Stripe-customer mapping, written ONLY by the billing functions
+    // (Admin SDK bypasses rules). No client may read or write it.
+    match /stripeCustomers/{uid} {
+      allow read, write: if false;
+    }
+
     // Everything else stays denied. This also covers server-only collections
     // such as `adelQuota` (Captain Adel's daily-quota counters), which only
     // the Cloud Functions Admin SDK touches.
