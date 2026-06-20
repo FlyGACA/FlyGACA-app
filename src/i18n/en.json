@@ -1671,6 +1671,36 @@
           "p": "We use minimal local storage (such as your language choice) and privacy-friendly analytics. We keep data only as long as needed for the purposes above."
         }
       ]
+    },
+    "safety": {
+      "title": "Safety Notice",
+      "intro": "Aviation is safety-critical. Read this before you let anything here influence a flight.",
+      "sections": [
+        {
+          "h": "Not for operational use",
+          "p": "Fly GACA is for study and reference only. Never use it for flight planning, dispatch, navigation, weight & balance, performance or maintenance sign-off. Use official, current sources for every operational decision."
+        },
+        {
+          "h": "In an emergency, contact the authorities",
+          "p": "If you have a safety or emergency situation, contact ATC, your operator and the relevant official channels — never this app. Fly GACA provides no real-time, operational or emergency service."
+        },
+        {
+          "h": "Information may be out of date",
+          "p": "Regulations, aerodrome data and charts change, and aeronautical information follows the 28-day AIRAC cycle. Content here may lag or contain extraction errors — always verify against the current official GACA publication."
+        },
+        {
+          "h": "Captain Adel can be wrong",
+          "p": "Captain Adel is an educational AI assistant. It cites sources but can be incomplete or mistaken. Treat its answers as a study aid and confirm every point against the official GACAR before relying on it."
+        },
+        {
+          "h": "The pilot-in-command is responsible",
+          "p": "Final authority and responsibility for the safe conduct of a flight rest with the certificated pilot-in-command and operator — not with Fly GACA. Nothing here transfers, reduces or satisfies that responsibility."
+        },
+        {
+          "h": "Report an error or safety concern",
+          "p": "Spotted a mistake or a safety-relevant issue? Tell us at i@flygaca.com so we can correct it. Reporting it here does not discharge any reporting duty you owe to GACA or your operator."
+        }
+      ]
     }
   },
   "about": {
@@ -1729,6 +1759,7 @@
     "disclaimerLink": "Disclaimer",
     "terms": "Terms of Use",
     "privacy": "Privacy Notice",
+    "safety": "Safety Notice",
     "gacaSite": "GACA official site ↗",
     "gacaRules": "GACAR & AIP ↗",
     "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية"

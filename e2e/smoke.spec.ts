@@ -23,6 +23,7 @@ const ROUTES = [
   '/disclaimer',
   '/terms',
   '/privacy',
+  '/safety',
 ];
 
 for (const path of ROUTES) {
