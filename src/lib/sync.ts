@@ -106,7 +106,7 @@ export function entitlementFromDoc(d: Doc): Entitlement | null {
 export interface LoadedAccount {
   profile: Partial<Profile>;
   flights: Flight[];
-  records: PilotRecord[];
+  records?: PilotRecord[];
   entitlement: Entitlement | null;
 }
 
