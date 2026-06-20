@@ -430,6 +430,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
 
             <div
               ref={contentRef}
+              data-testid="reader-body"
               className={styles.content}
               style={{ ['--reader-scale' as string]: String(scale) }}
               // Trusted, machine-extracted GACAR HTML from our own corpus; sanitized above.

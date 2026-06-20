@@ -36,7 +36,10 @@ for (const path of ROUTES) {
 
 test('unknown route renders the 404 page', async ({ page }) => {
   await page.goto('/no-such-page');
-  await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+  await expect(page.getByText('404')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'This page took a wrong turn' }),
+  ).toBeVisible();
 });
 
 test('the disclaimer is present on the home page', async ({ page }) => {
