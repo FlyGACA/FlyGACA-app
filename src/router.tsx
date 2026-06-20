@@ -100,7 +100,9 @@ const StudySheets = lazyNamed(() => import('./pages/study/StudySheets'), 'StudyS
 // Account
 const Account = lazyNamed(() => import('./pages/account/Account'), 'Account');
 const Dashboard = lazyNamed(() => import('./pages/account/Dashboard'), 'Dashboard');
+const Currency = lazyNamed(() => import('./pages/account/Currency'), 'Currency');
 const Logbook = lazyNamed(() => import('./pages/account/Logbook'), 'Logbook');
+const Records = lazyNamed(() => import('./pages/account/Records'), 'Records');
 const Settings = lazyNamed(() => import('./pages/account/Settings'), 'Settings');
 
 // Marketing / legal
@@ -192,7 +194,9 @@ export const router = createBrowserRouter([
       { path: 'study/sheets', element: <StudySheets /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },
+      { path: 'currency', element: <Currency /> },
       { path: 'logbook', element: <Logbook /> },
+      { path: 'records', element: <Records /> },
       { path: 'settings', element: <Settings /> },
       { path: 'pricing', element: <Pricing /> },
       { path: 'schools', element: <Schools /> },

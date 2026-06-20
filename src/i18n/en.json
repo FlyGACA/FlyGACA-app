@@ -379,7 +379,13 @@
         "name": "Definitions",
         "blurb": "The GACAR Part 1 glossary, searchable and bilingual."
       }
-    }
+    },
+    "pinned": "Pinned",
+    "recent": "Recent",
+    "favorite": "Pin tool",
+    "unfavorite": "Unpin tool",
+    "resultCount": "{{count}} tools",
+    "searchTip": "Press / to search"
   },
   "crosswind": {
     "title": "Crosswind & headwind",
@@ -485,7 +491,11 @@
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
       "handbook": "GACA Handbooks"
-    }
+    },
+    "retry": "Retry",
+    "showing": "Showing {{shown}} of {{total}}",
+    "loadMore": "Load more",
+    "capHint": "first {{max}} — refine to narrow"
   },
   "document": {
     "outline": "Outline",
@@ -701,7 +711,9 @@
     "inDate": "In date",
     "expired": "Expired",
     "overdue": "Overdue",
-    "daysLeft": "Days remaining"
+    "daysLeft": "Days remaining",
+    "expiring": "Expiring soon",
+    "unknown": "Unknown"
   },
   "part61Currency": {
     "lastDate": "Last met the requirement (date)",
@@ -1231,7 +1243,7 @@
     "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
     "monthly": "Monthly",
     "annual": "Annual",
-    "saveBadge": "Save 51%",
+    "saveBadge": "Save {{pct}}%",
     "indicative": "Indicative pricing — confirmed at launch.",
     "billingNote": "Checkout opens when billing is connected.",
     "eyebrow": "Plans & Pricing",
@@ -1275,7 +1287,69 @@
           "Invoiced billing"
         ]
       }
-    }
+    },
+    "yourPlan": "Your plan",
+    "included": "Included",
+    "billingCycle": "Billing cycle",
+    "compareHead": "Compare plans",
+    "feature": "Feature",
+    "faqHead": "Frequently asked",
+    "compare": [
+      {
+        "feature": "Regulatory library",
+        "free": "✓",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Flight tools",
+        "free": "3 / day",
+        "pro": "Unlimited",
+        "school": "Unlimited"
+      },
+      {
+        "feature": "Captain Adel",
+        "free": "5 / mo",
+        "pro": "Unlimited",
+        "school": "Unlimited"
+      },
+      {
+        "feature": "Ground school & mock exams",
+        "free": "—",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Logbook export & offline",
+        "free": "—",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Admin dashboard & seats",
+        "free": "—",
+        "pro": "—",
+        "school": "✓"
+      }
+    ],
+    "faq": [
+      {
+        "q": "Can I cancel anytime?",
+        "a": "Yes — Pro is month-to-month or annual. Cancel whenever and keep access until the period ends."
+      },
+      {
+        "q": "Do you offer refunds?",
+        "a": "Contact us within 14 days of an annual purchase and we will sort it out."
+      },
+      {
+        "q": "What happens to my data if I downgrade?",
+        "a": "Your logbook and progress stay on your device; Pro-only exports pause until you re-subscribe."
+      },
+      {
+        "q": "Is Fly GACA affiliated with GACA?",
+        "a": "No. Fly GACA is an independent educational tool — always verify against the official GACA sources."
+      }
+    ]
   },
   "schools": {
     "title": "Fly GACA for schools",
@@ -1295,7 +1369,43 @@
       }
     ],
     "cta": "Contact sales",
-    "email": "sales@flygaca.com"
+    "email": "sales@flygaca.com",
+    "eyebrow": "For flight schools",
+    "formHead": "Talk to us",
+    "formIntro": "Tell us about your school and we'll get back to you with seat pricing.",
+    "orEmail": "Or email us at",
+    "mailSubject": "Fly GACA for schools — {{school}}",
+    "mailBody": "Name: {{name}}\nSchool: {{school}}\nSeats: {{seats}}\n\n{{message}}",
+    "faqHead": "Common questions",
+    "form": {
+      "name": "Your name",
+      "namePh": "Capt. Sara Al-Otaibi",
+      "school": "School / academy",
+      "schoolPh": "Riyadh Flight Academy",
+      "seats": "Approx. seats",
+      "seatsPh": "25",
+      "message": "Anything else?",
+      "messagePh": "Cohort start date, syllabus, questions…",
+      "send": "Send enquiry"
+    },
+    "faq": [
+      {
+        "q": "How fast can we onboard?",
+        "a": "Most schools are set up within a day of confirming seats."
+      },
+      {
+        "q": "Is there a minimum?",
+        "a": "Seat licences start at 10."
+      },
+      {
+        "q": "Can we manage students centrally?",
+        "a": "Yes — the admin dashboard handles bulk onboarding and usage tracking."
+      },
+      {
+        "q": "How are we billed?",
+        "a": "By invoice, annually, per seat."
+      }
+    ]
   },
   "account": {
     "title": "Account",
@@ -1362,7 +1472,20 @@
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
     "deleteConfirm": "Delete your profile and all logbook entries on this device?",
-    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit."
+    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit.",
+    "nightLdg": "Night ldg",
+    "appr": "Appr",
+    "summary": "Logbook summary",
+    "exportCsv": "Export CSV",
+    "last90": "Last 90 days",
+    "csvProNote": "CSV & PDF export are part of Pro",
+    "edit": "Edit",
+    "update": "Update",
+    "manage": "Manage",
+    "saved": "Saved ✓",
+    "homeBaseHint": "ICAO code, e.g. OERK",
+    "licenceHint": "PPL · CPL · ATPL",
+    "records": "Records & ratings"
   },
   "guides": {
     "title": "Guides",
@@ -1570,6 +1693,30 @@
         ],
         "adel": "What is the AIRAC cycle and why is it 28 days?"
       }
+    },
+    "searchPlaceholder": "Search guides…",
+    "empty": "No guides match your filters.",
+    "allTopics": "All topics",
+    "allLevels": "All levels",
+    "levelLabel": "Level",
+    "guideCount": "{{count}} guides",
+    "readTime": "{{min}} min read",
+    "sectionCount": "{{count}} sections",
+    "onThisPage": "On this page",
+    "prev": "Previous",
+    "next": "Next",
+    "related": "Related guides",
+    "level": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate"
+    },
+    "topics": {
+      "licensing": "Licensing",
+      "medical": "Medical",
+      "language": "Language",
+      "airspace": "Airspace",
+      "weather": "Weather",
+      "planning": "Planning & cycles"
     }
   },
   "study": {
@@ -1634,7 +1781,22 @@
         "name": "Conversion pack",
         "desc": "Foreign-to-GACA licence conversion prep."
       }
-    ]
+    ],
+    "streak": "Study streak",
+    "streakUnit": "days",
+    "avgBest": "Avg best",
+    "banksDone": "Quiz banks",
+    "lessonsDone": "Lessons",
+    "banksProgress": "{{done}}/{{total}} banks attempted",
+    "lessonsProgress": "{{done}}/{{total}} lessons done",
+    "cardsProgress": "{{done}}/{{total}} cards known",
+    "retryWrong": "Retry {{n}} wrong",
+    "reviewWrong": "Review your mistakes",
+    "reviewUnknowns": "Review {{n}} to learn",
+    "reviewAnswers": "Review answers",
+    "noAnswer": "Not answered",
+    "flipHint": "Tap or press Enter to flip",
+    "lastResult": "Last attempt: {{pct}}%"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
@@ -1858,6 +2020,120 @@
     "dashboard": "Dashboard",
     "logbook": "Logbook",
     "settings": "Settings",
-    "notFound": "Page not found"
+    "notFound": "Page not found",
+    "currency": "Currency Tracker"
+  },
+  "dashboard": {
+    "eyebrow": "Flight deck",
+    "greeting": "Welcome back, {{name}}",
+    "actionNeeded": "Some items need attention",
+    "allCurrent": "You're all current",
+    "currencyBoard": "Currency board",
+    "logbookSummary": "Logbook",
+    "viewAll": "View all",
+    "openLogbook": "Open logbook",
+    "last90Days": "Flights · 90 days",
+    "adelRenewalPrompt": "Help me plan how to stay current as a pilot under the GACA regulations — walk me through which renewals I need and when.",
+    "hoursTrend": "Hours trend",
+    "last6Months": "6 months",
+    "hoursTrendSummary": "{{hours}} hours flown in the last 6 months",
+    "quickActions": "Quick actions",
+    "logFlight": "Log a flight"
+  },
+  "currency": {
+    "title": "Currency Tracker",
+    "intro": "Track your certificates and recency requirements in one place. Always confirm the exact periods in GACAR Part 61 / 67.",
+    "notSet": "Not set — add it in Settings",
+    "medicalDetail": "Medical certificate validity",
+    "reviewDetail": "Flight review (every {{months}} months)",
+    "landingsDetail": "{{have}} of {{need}} landings in {{days}} days",
+    "approachesDetail": "{{have}} of {{need}} approaches in {{days}} days",
+    "logApproaches": "Log instrument approaches to track recency",
+    "daysLeft": "{{n}} days left",
+    "daysOver": "{{n}} days overdue",
+    "fixNow": "How to renew",
+    "askAdel": "Ask Captain Adel",
+    "items": {
+      "medical": {
+        "label": "Medical certificate"
+      },
+      "flightReview": {
+        "label": "Flight review"
+      },
+      "passenger90": {
+        "label": "Passenger currency (day)"
+      },
+      "nightPassenger": {
+        "label": "Passenger currency (night)"
+      },
+      "ifr": {
+        "label": "Instrument recency"
+      }
+    },
+    "addCalendar": "Add reminders to calendar"
+  },
+  "upsell": {
+    "proOnly": "Pro",
+    "title": "Upgrade to Pro",
+    "subtitle": "Unlock the tools that keep you current and checkride-ready.",
+    "cta": "See plans",
+    "features": {
+      "reminders": "Expiry reminders & calendar export",
+      "export": "CSV & PDF logbook export",
+      "unlimited": "Unlimited logbook entries",
+      "adel": "Plan renewals with Captain Adel"
+    }
+  },
+  "setup": {
+    "title": "Get current",
+    "subtitle": "A few steps to set up your currency tracking.",
+    "progress": "{{done}} of {{total}} done",
+    "steps": {
+      "medical": "Add your medical certificate expiry",
+      "review": "Add your last flight review",
+      "homeBase": "Set your home base",
+      "firstFlight": "Log your first flight"
+    }
+  },
+  "records": {
+    "title": "Records & ratings",
+    "intro": "Track your licences, ratings, aircraft, documents and endorsements. Anything with an expiry shows on your currency board.",
+    "empty": "Nothing here yet — add your first one.",
+    "expiresHint": "Leave blank if it does not expire",
+    "categories": {
+      "rating": "Ratings",
+      "aircraft": "Aircraft",
+      "document": "Documents",
+      "endorsement": "Endorsements"
+    },
+    "add": {
+      "rating": "Add rating",
+      "aircraft": "Add aircraft",
+      "document": "Add document",
+      "endorsement": "Add endorsement"
+    },
+    "titleLabel": {
+      "rating": "Rating / licence",
+      "aircraft": "Registration",
+      "document": "Document",
+      "endorsement": "Endorsement"
+    },
+    "titlePh": {
+      "rating": "Instrument Rating",
+      "aircraft": "HZ-ABC",
+      "document": "Passport",
+      "endorsement": "Tailwheel"
+    },
+    "refLabel": {
+      "rating": "Licence / certificate no.",
+      "aircraft": "Type",
+      "document": "Number",
+      "endorsement": "Instructor"
+    },
+    "fields": {
+      "issued": "Issued",
+      "expires": "Expires",
+      "remarks": "Remarks"
+    }
   }
 }

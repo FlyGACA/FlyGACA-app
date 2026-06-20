@@ -7,7 +7,7 @@
  * logbook, but NEVER the server-only `entitlement` field — so `profileToDoc`
  * deliberately omits it.
  */
-import type { Profile, Flight } from './account';
+import type { Profile, Flight, PilotRecord } from './account';
 import type { Entitlement, Plan } from './entitlements';
 import { getDb } from './firebase';
 
@@ -31,6 +31,8 @@ const FLIGHT_FIELDS: (keyof Omit<Flight, 'id'>)[] = [
   'night',
   'ifr',
   'ldg',
+  'nightLdg',
+  'appr',
   'remarks',
 ];
 
@@ -64,6 +66,27 @@ export function flightFromDoc(id: string, d: Record<string, unknown>): Flight {
   return out;
 }
 
+const RECORD_FIELDS: (keyof Omit<PilotRecord, 'id'>)[] = [
+  'category',
+  'title',
+  'ref',
+  'issued',
+  'expires',
+  'remarks',
+];
+
+export function recordToDoc(r: PilotRecord): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const k of RECORD_FIELDS) out[k] = str(r[k]);
+  return out;
+}
+
+export function recordFromDoc(id: string, d: Record<string, unknown>): PilotRecord {
+  const out = { id } as PilotRecord;
+  for (const k of RECORD_FIELDS) out[k] = str(d[k]) as never;
+  return out;
+}
+
 const PLANS: Plan[] = ['free', 'pro', 'school'];
 
 /** Read the server-written entitlement from a user doc (read-only here). */
@@ -83,10 +106,11 @@ export function entitlementFromDoc(d: Doc): Entitlement | null {
 export interface LoadedAccount {
   profile: Partial<Profile>;
   flights: Flight[];
+  records: PilotRecord[];
   entitlement: Entitlement | null;
 }
 
-/** One-time hydration of the user's profile, logbook and entitlement. */
+/** One-time hydration of the user's profile, logbook, records and entitlement. */
 export async function loadAccount(uid: string): Promise<LoadedAccount | null> {
   const db = await getDb();
   if (!db) return null;
@@ -94,9 +118,11 @@ export async function loadAccount(uid: string): Promise<LoadedAccount | null> {
   const userSnap = await getDoc(doc(db, 'users', uid));
   const data = userSnap.data();
   const lbSnap = await getDocs(collection(db, 'users', uid, 'logbook'));
+  const recSnap = await getDocs(collection(db, 'users', uid, 'records'));
   return {
     profile: profileFromDoc(data),
     flights: lbSnap.docs.map((d) => flightFromDoc(d.id, d.data())),
+    records: recSnap.docs.map((d) => recordFromDoc(d.id, d.data())),
     entitlement: entitlementFromDoc(data),
   };
 }
@@ -115,9 +141,37 @@ export async function addFlightDoc(uid: string, flight: Flight): Promise<void> {
   await setDoc(doc(db, 'users', uid, 'logbook', flight.id), flightToDoc(flight));
 }
 
+export async function updateFlightDoc(uid: string, id: string, flight: Flight): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const { doc, setDoc } = await import('firebase/firestore');
+  await setDoc(doc(db, 'users', uid, 'logbook', id), flightToDoc(flight), { merge: true });
+}
+
 export async function deleteFlightDoc(uid: string, id: string): Promise<void> {
   const db = await getDb();
   if (!db) return;
   const { doc, deleteDoc } = await import('firebase/firestore');
   await deleteDoc(doc(db, 'users', uid, 'logbook', id));
+}
+
+export async function addRecordDoc(uid: string, record: PilotRecord): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const { doc, setDoc } = await import('firebase/firestore');
+  await setDoc(doc(db, 'users', uid, 'records', record.id), recordToDoc(record));
+}
+
+export async function updateRecordDoc(uid: string, id: string, record: PilotRecord): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const { doc, setDoc } = await import('firebase/firestore');
+  await setDoc(doc(db, 'users', uid, 'records', id), recordToDoc(record), { merge: true });
+}
+
+export async function deleteRecordDoc(uid: string, id: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const { doc, deleteDoc } = await import('firebase/firestore');
+  await deleteDoc(doc(db, 'users', uid, 'records', id));
 }

@@ -1,8 +1,11 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { TextField } from '../../components/calc/TextField';
 import { LangToggle } from '../../components/LangToggle';
-import { deleteAllData, saveProfile, useAccount } from '../../lib/account';
+import { deleteAllData, exportAll, saveProfile, useAccount } from '../../lib/account';
+import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
 
@@ -17,45 +20,98 @@ export function Settings() {
 function Inner() {
   const { t } = useTranslation();
   usePageMeta(t('meta.settings'));
-  const { profile } = useAccount();
+  const { profile, entitlement, syncError } = useAccount();
+  const plan = effectivePlan(entitlement);
+  const [saved, setSaved] = useState(false);
+
+  // Save-on-change with a transient "Saved" confirmation.
+  function save(patch: Parameters<typeof saveProfile>[0]) {
+    saveProfile(patch);
+    setSaved(true);
+    window.setTimeout(() => setSaved(false), 1200);
+  }
+
+  function exportJson() {
+    const blob = new Blob([exportAll()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'flygaca-account.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <section className={`container-narrow ${styles.page}`}>
       <header className={styles.head}>
         <h1>{t('account.settings')}</h1>
+        <p className={styles.sub}>
+          {t('account.signedInAs', { name: profile.displayName || profile.email })}
+          <span className={styles.planBadge} data-plan={plan}>
+            {t(`account.plan.${plan}`)}
+          </span>
+        </p>
       </header>
 
-      <h2>{t('account.profile')}</h2>
+      {syncError && (
+        <p className={styles.syncNotice} role="status">
+          {t('account.syncError')}
+        </p>
+      )}
+
+      <div className={styles.sectionHead}>
+        <h2>{t('account.profile')}</h2>
+        {saved && (
+          <span className={styles.saved} role="status">
+            {t('account.saved')}
+          </span>
+        )}
+      </div>
       <div className={styles.form}>
         <TextField
           label={t('account.name')}
           value={profile.displayName}
-          onChange={(v) => saveProfile({ displayName: v })}
+          onChange={(v) => save({ displayName: v })}
         />
         <TextField
           label={t('account.homeBase')}
           value={profile.homeBase}
-          onChange={(v) => saveProfile({ homeBase: v })}
+          onChange={(v) => save({ homeBase: v })}
           placeholder="OERK"
+          hint={t('account.homeBaseHint')}
         />
         <TextField
           label={t('account.licence')}
           value={profile.licenceType}
-          onChange={(v) => saveProfile({ licenceType: v })}
+          onChange={(v) => save({ licenceType: v })}
           placeholder="PPL"
+          hint={t('account.licenceHint')}
         />
         <TextField
           label={t('account.medicalExpiry')}
           value={profile.medicalExpiry}
-          onChange={(v) => saveProfile({ medicalExpiry: v })}
-          placeholder="2025-06-01"
+          onChange={(v) => save({ medicalExpiry: v })}
+          type="date"
         />
         <TextField
           label={t('account.lastReview')}
           value={profile.lastFlightReview}
-          onChange={(v) => saveProfile({ lastFlightReview: v })}
-          placeholder="2024-01-15"
+          onChange={(v) => save({ lastFlightReview: v })}
+          type="date"
         />
+      </div>
+
+      <h2>{t('account.manage')}</h2>
+      <div className={styles.linkRow}>
+        <Link to="/logbook" className={styles.btn}>
+          {t('account.logbook')}
+        </Link>
+        <Link to="/records" className={styles.btn}>
+          {t('records.title')}
+        </Link>
+        <Link to="/currency" className={styles.btn}>
+          {t('currency.title')}
+        </Link>
       </div>
 
       <h2>{t('account.language')}</h2>
@@ -65,6 +121,9 @@ function Inner() {
 
       <h2>{t('account.data')}</h2>
       <div className={styles.actions}>
+        <button type="button" className={styles.btn} onClick={exportJson}>
+          {t('account.exportData')}
+        </button>
         <button
           type="button"
           className={`${styles.btn} ${styles.btnDanger}`}

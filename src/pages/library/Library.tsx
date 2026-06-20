@@ -3,8 +3,9 @@ import type { CSSProperties } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
+import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { CORPUS, fetchJson, searchHref } from '../../lib/content';
+import { CORPUS, fetchJson, parseSearchUrl, searchHref } from '../../lib/content';
 import type {
   CorpusDoc,
   CorpusIndex,
@@ -17,7 +18,10 @@ import { SectionHeader } from '../../components/SectionHeader';
 import styles from './Library.module.css';
 
 const MIN_QUERY = 3;
-const MAX_HITS = 80;
+/** Max full-text matches collected before we ask the user to refine. */
+const HIT_CAP = 400;
+/** Full-text results revealed per "load more" page. */
+const PAGE = 30;
 const KINDS: LibraryKind[] = ['regulations', 'reference', 'handbook'];
 /** Per-category accent — cycles the Falcon hues from the design-token map. */
 const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
@@ -45,7 +49,8 @@ export function Library() {
   const { t } = useTranslation();
   usePageMeta(t('meta.library'));
   const [kind, setKind] = useState<LibraryKind>('regulations');
-  const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index);
+  const [reload, setReload] = useState(0);
+  const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index, reload);
   const [category, setCategory] = useState<string>('all');
   // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
   const [searchParams] = useSearchParams();
@@ -59,7 +64,8 @@ export function Library() {
   const [indexLoading, setIndexLoading] = useState(false);
   const requested = useRef(false);
 
-  const q = query.trim();
+  // Debounce the live query so we don't refilter the corpus on every keystroke.
+  const q = useDebouncedValue(query.trim(), 200);
   const fullText = q.length >= MIN_QUERY;
 
   useEffect(() => {
@@ -87,18 +93,46 @@ export function Library() {
       .sort((a, b) => (a.partNum ?? 0) - (b.partNum ?? 0) || a.title.localeCompare(b.title));
   }, [data, category, q]);
 
+  // slug → category for the active corpus, so full-text hits can honour the chips.
+  const docCat = useMemo(() => {
+    const m = new Map<string, string>();
+    data?.documents.forEach((d) => m.set(d.slug, d.category));
+    return m;
+  }, [data]);
+
+  // Full-text hits, scoped to the active corpus tab and category chip.
   const hits = useMemo(() => {
     if (!fullText || !entries) return [];
     const needle = q.toLowerCase();
     const out: SearchEntry[] = [];
     for (const e of entries) {
-      if (e.d.toLowerCase().includes(needle) || (e.x ?? '').toLowerCase().includes(needle)) {
-        out.push(e);
-        if (out.length >= MAX_HITS) break;
+      if (!e.d.toLowerCase().includes(needle) && !(e.x ?? '').toLowerCase().includes(needle)) {
+        continue;
       }
+      const ref = parseSearchUrl(e.u);
+      if (!ref || ref.kind !== kind) continue;
+      if (category !== 'all' && docCat.get(ref.id) !== category) continue;
+      out.push(e);
+      if (out.length >= HIT_CAP) break;
     }
     return out;
-  }, [fullText, entries, q]);
+  }, [fullText, entries, q, kind, category, docCat]);
+
+  // Pagination + keyboard navigation for the hit list.
+  const [visible, setVisible] = useState(PAGE);
+  useEffect(() => setVisible(PAGE), [q, kind, category]);
+  const shownHits = hits.slice(0, visible);
+  const hitRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  function onHitKeyDown(e: React.KeyboardEvent<HTMLUListElement>) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const items = hitRefs.current.filter(Boolean) as HTMLAnchorElement[];
+    if (items.length === 0) return;
+    const at = items.indexOf(document.activeElement as HTMLAnchorElement);
+    const next = e.key === 'ArrowDown' ? Math.min(at + 1, items.length - 1) : Math.max(at - 1, 0);
+    items[at === -1 ? 0 : next]?.focus();
+  }
 
   const categoryLabel = (id: string) => data?.categories.find((c) => c.id === id)?.label ?? id;
 
@@ -179,8 +213,21 @@ export function Library() {
         ))}
       </div>
 
-      {loading && <p>{t('common.loading')}</p>}
-      {error && <p role="alert">{t('common.loadError')}</p>}
+      {loading && (
+        <ul className={`${styles.grid} ${styles.skeletonGrid}`} aria-hidden="true">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <li key={i} className={styles.skeleton} />
+          ))}
+        </ul>
+      )}
+      {error && (
+        <div className={styles.errorBox} role="alert">
+          <p>{t('common.loadError')}</p>
+          <button type="button" className={styles.retry} onClick={() => setReload((r) => r + 1)}>
+            {t('library.retry')}
+          </button>
+        </div>
+      )}
 
       {data && (
         <>
@@ -236,22 +283,25 @@ export function Library() {
           )}
 
           {fullText && (
-            <section className={styles.results} aria-live="polite">
+            <section className={styles.results}>
               {indexLoading && !entries ? (
-                <p className={styles.resultsMeta}>{t('library.searching')}</p>
+                <p className={styles.resultsMeta} role="status">
+                  {t('library.searching')}
+                </p>
               ) : hits.length === 0 ? (
-                <p className={styles.resultsMeta}>{t('library.noFullMatches', { q })}</p>
+                <p className={styles.resultsMeta} role="status">
+                  {t('library.noFullMatches', { q })}
+                </p>
               ) : (
                 <>
                   <h2 className={styles.resultsHead}>{t('library.fullResults')}</h2>
-                  <p className={styles.resultsMeta}>
-                    {hits.length >= MAX_HITS
-                      ? t('library.moreHits', { max: MAX_HITS })
-                      : t('library.hitsCount', { count: hits.length })}
+                  <p className={styles.resultsMeta} role="status" aria-live="polite">
+                    {t('library.showing', { shown: shownHits.length, total: hits.length })}
+                    {hits.length >= HIT_CAP && ` · ${t('library.capHint', { max: HIT_CAP })}`}
                   </p>
-                  <ul className={styles.hitList}>
-                    {hits.map((e, i) => {
-                      const href = searchHref(e.u);
+                  <ul className={styles.hitList} onKeyDown={onHitKeyDown}>
+                    {shownHits.map((e, i) => {
+                      const href = searchHref(e.u, q);
                       const body = (
                         <Fragment>
                           <span className={styles.hitBadge}>{e.b}</span>
@@ -262,7 +312,13 @@ export function Library() {
                       return (
                         <li key={`${e.u}-${i}`}>
                           {href ? (
-                            <Link to={href} className={styles.hit}>
+                            <Link
+                              to={href}
+                              className={styles.hit}
+                              ref={(el) => {
+                                hitRefs.current[i] = el;
+                              }}
+                            >
                               {body}
                             </Link>
                           ) : (
@@ -272,6 +328,15 @@ export function Library() {
                       );
                     })}
                   </ul>
+                  {visible < hits.length && (
+                    <button
+                      type="button"
+                      className={styles.loadMore}
+                      onClick={() => setVisible((v) => v + PAGE)}
+                    >
+                      {t('library.loadMore')}
+                    </button>
+                  )}
                 </>
               )}
             </section>

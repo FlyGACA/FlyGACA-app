@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TextField } from '../../components/calc/TextField';
 import { Disclaimer } from '../../components/Disclaimer';
+import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { signIn, signOut, useAccount } from '../../lib/account';
+import { effectivePlan } from '../../lib/entitlements';
 import {
   isAuthAvailable,
   registerWithEmail,
@@ -131,7 +133,8 @@ function LocalSignIn() {
 export function Account() {
   const { t } = useTranslation();
   usePageMeta(t('meta.account'));
-  const { session, profile } = useAccount();
+  const { session, profile, entitlement, syncError } = useAccount();
+  const plan = effectivePlan(entitlement);
 
   if (!session) {
     return (
@@ -148,18 +151,37 @@ export function Account() {
 
   return (
     <section className={`container-narrow ${styles.page}`}>
-      <header className={styles.head}>
-        <h1>{t('account.title')}</h1>
-        <p className={styles.sub}>
-          {t('account.signedInAs', { name: profile.displayName || profile.email })}
-        </p>
+      <header className={styles.identity}>
+        <CaptainAvatar size="md" pose="smile" decorative className={styles.identityAvatar} />
+        <div>
+          <h1>{t('account.title')}</h1>
+          <p className={styles.sub}>
+            {t('account.signedInAs', { name: profile.displayName || profile.email })}
+            <span className={styles.planBadge} data-plan={plan}>
+              {t(`account.plan.${plan}`)}
+            </span>
+          </p>
+        </div>
       </header>
+
+      {syncError && (
+        <p className={styles.syncNotice} role="status">
+          {t('account.syncError')}
+        </p>
+      )}
+
       <div className={styles.linkRow}>
         <Link to="/dashboard" className={styles.btn}>
           {t('account.dashboard')}
         </Link>
+        <Link to="/currency" className={styles.btn}>
+          {t('currency.title')}
+        </Link>
         <Link to="/logbook" className={styles.btn}>
           {t('account.logbook')}
+        </Link>
+        <Link to="/records" className={styles.btn}>
+          {t('records.title')}
         </Link>
         <Link to="/settings" className={styles.btn}>
           {t('account.settings')}

@@ -5,8 +5,11 @@ import {
   flightFromDoc,
   flightToDoc,
   entitlementFromDoc,
+  updateFlightDoc,
+  recordToDoc,
+  recordFromDoc,
 } from '../src/lib/sync';
-import type { Profile, Flight } from '../src/lib/account';
+import type { Profile, Flight, PilotRecord } from '../src/lib/account';
 
 const profile: Profile = {
   email: 'pilot@example.com',
@@ -29,6 +32,8 @@ const flight: Flight = {
   night: '0',
   ifr: '0',
   ldg: '1',
+  nightLdg: '0',
+  appr: '0',
   remarks: 'nav',
 };
 
@@ -52,6 +57,44 @@ describe('flight mappers', () => {
     const doc = flightToDoc(flight);
     expect(doc).not.toHaveProperty('id');
     expect(flightFromDoc('f1', doc)).toEqual(flight);
+  });
+
+  it('defaults the newer optional columns to empty strings on legacy docs', () => {
+    // A doc written before nightLdg / appr existed.
+    const legacy = { date: '2024-01-01', type: 'C172', ldg: '2' };
+    const out = flightFromDoc('old', legacy);
+    expect(out.nightLdg).toBe('');
+    expect(out.appr).toBe('');
+    expect(out.ldg).toBe('2');
+  });
+
+  it('updateFlightDoc no-ops (resolves) when Firebase is not configured', async () => {
+    await expect(updateFlightDoc('uid', 'f1', flight)).resolves.toBeUndefined();
+  });
+});
+
+describe('record mappers', () => {
+  const record: PilotRecord = {
+    id: 'r1',
+    category: 'rating',
+    title: 'Instrument Rating',
+    ref: 'IR-2024',
+    issued: '2024-01-01',
+    expires: '2026-01-01',
+    remarks: 'renew with IPC',
+  };
+
+  it('round-trips without the id in the doc body', () => {
+    const doc = recordToDoc(record);
+    expect(doc).not.toHaveProperty('id');
+    expect(recordFromDoc('r1', doc)).toEqual(record);
+  });
+
+  it('coerces missing fields to empty strings', () => {
+    const out = recordFromDoc('r2', { category: 'document', title: 'Passport' });
+    expect(out.ref).toBe('');
+    expect(out.expires).toBe('');
+    expect(out.title).toBe('Passport');
   });
 });
 

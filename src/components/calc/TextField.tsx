@@ -7,7 +7,7 @@ interface TextFieldProps {
   placeholder?: string;
   hint?: string;
   error?: string;
-  type?: 'text' | 'email' | 'password';
+  type?: 'text' | 'email' | 'password' | 'date';
   autoComplete?: string;
 }
 
@@ -37,16 +37,6 @@ export function TextField({
           aria-invalid={error ? 'true' : undefined}
         />
       </span>
-      {error && (
-        <span className={styles.fieldError} role="alert">
-          {error}
-        </span>
-      )}
-      {error && (
-        <span className={styles.fieldError} role="alert">
-          {error}
-        </span>
-      )}
       {error && (
         <span className={styles.fieldError} role="alert">
           {error}

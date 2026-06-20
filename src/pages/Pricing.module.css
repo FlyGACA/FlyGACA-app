@@ -282,3 +282,112 @@
   font-size: var(--fs-sm);
   text-align: center;
 }
+
+/* Current-plan affordance. */
+.currentPlan {
+  border-color: color-mix(in srgb, var(--success) 55%, transparent);
+}
+.currentBadge {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--space-4) - 2px);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--success);
+  /* Dark text on the light sage success colour for WCAG AA contrast. */
+  color: var(--falcon-night);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  box-shadow: var(--clay-shadow);
+}
+
+/* ── Section headings (compare / FAQ) ── */
+.sectionHead {
+  text-align: center;
+  font-size: var(--fs-h2);
+  margin-block-end: var(--space-5);
+}
+
+/* ── Comparison table ── */
+.compareSection {
+  margin-block-start: var(--space-4);
+}
+.tableWrap {
+  overflow-x: auto;
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  box-shadow: var(--clay-shadow);
+}
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+  border-block-end: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table thead th {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+}
+.table thead th:nth-child(3) {
+  color: var(--accent-bright);
+}
+.table tbody th {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.table tbody td {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+/* ── FAQ accordion ── */
+.faqSection {
+  margin-block-start: var(--space-4);
+}
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-inline-size: 70ch;
+  margin-inline: auto;
+}
+.faq {
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+  padding: var(--space-3) var(--space-5);
+}
+.faq summary {
+  cursor: pointer;
+  font-weight: var(--fw-semibold);
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+.faq summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.faq p {
+  margin-block: var(--space-3) var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+}

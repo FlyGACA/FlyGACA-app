@@ -7,8 +7,11 @@ interface FetchState<T> {
   loading: boolean;
 }
 
-/** Loads JSON content at runtime with abort-on-unmount. */
-export function useFetchJson<T>(path: string): FetchState<T> {
+/**
+ * Loads JSON content at runtime with abort-on-unmount. Bump `reloadToken` to
+ * re-fetch the same path (e.g. a retry button after a network error).
+ */
+export function useFetchJson<T>(path: string, reloadToken = 0): FetchState<T> {
   const [state, setState] = useState<FetchState<T>>({ data: null, error: null, loading: true });
 
   useEffect(() => {
@@ -21,7 +24,7 @@ export function useFetchJson<T>(path: string): FetchState<T> {
         setState({ data: null, error: error as Error, loading: false });
       });
     return () => controller.abort();
-  }, [path]);
+  }, [path, reloadToken]);
 
   return state;
 }

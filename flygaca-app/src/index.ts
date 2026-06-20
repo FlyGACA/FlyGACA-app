@@ -8,8 +8,8 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
+// `onRequest` and `logger` are imported where needed — see the commented
+// example below. They're omitted here to keep the starter lint-clean.
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript

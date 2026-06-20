@@ -9,7 +9,16 @@
 import { useSyncExternalStore } from 'react';
 import type { Entitlement } from './entitlements';
 import { isAuthAvailable, onAuthChange } from './auth';
-import { loadAccount, saveProfileDoc, addFlightDoc, deleteFlightDoc } from './sync';
+import {
+  loadAccount,
+  saveProfileDoc,
+  addFlightDoc,
+  updateFlightDoc,
+  deleteFlightDoc,
+  addRecordDoc,
+  updateRecordDoc,
+  deleteRecordDoc,
+} from './sync';
 
 export interface Profile {
   email: string;
@@ -33,6 +42,27 @@ export interface Flight {
   night: string;
   ifr: string;
   ldg: string;
+  /** Night landings — optional; older records predate this field. */
+  nightLdg?: string;
+  /** Instrument approaches flown — optional; older records predate this field. */
+  appr?: string;
+  remarks: string;
+}
+
+/** Categories of pilot record tracked alongside the logbook. */
+export type RecordCategory = 'rating' | 'aircraft' | 'document' | 'endorsement';
+
+export interface PilotRecord {
+  id: string;
+  category: RecordCategory;
+  /** Human title — e.g. "Instrument Rating", "HZ-ABC", "Passport". */
+  title: string;
+  /** Reference — licence/registration/document number. */
+  ref: string;
+  /** ISO date (YYYY-MM-DD) or ''. */
+  issued: string;
+  /** ISO expiry (YYYY-MM-DD) or '' when it doesn't expire. */
+  expires: string;
   remarks: string;
 }
 
@@ -42,6 +72,7 @@ interface State {
   uid: string | null;
   profile: Profile;
   flights: Flight[];
+  records: PilotRecord[];
   /** Server-written; read-only, used only to gate UI. */
   entitlement: Entitlement | null;
   /** True when the last Firestore write-through failed — local is ahead of server. */
@@ -52,6 +83,7 @@ const K = {
   session: 'flygaca:session',
   profile: 'flygaca:profile',
   logbook: 'flygaca:logbook',
+  records: 'flygaca:records',
 } as const;
 
 const DEFAULT_PROFILE: Profile = {
@@ -77,6 +109,7 @@ let state: State = {
   uid: null,
   profile: readJson(K.profile, DEFAULT_PROFILE),
   flights: readJson(K.logbook, [] as Flight[]),
+  records: readJson(K.records, [] as PilotRecord[]),
   entitlement: null,
   syncError: false,
 };
@@ -95,6 +128,7 @@ function persist() {
   else localStorage.removeItem(K.session);
   localStorage.setItem(K.profile, JSON.stringify(state.profile));
   localStorage.setItem(K.logbook, JSON.stringify(state.flights));
+  localStorage.setItem(K.records, JSON.stringify(state.records));
 }
 
 function commit(next: State) {
@@ -137,13 +171,44 @@ export function addFlight(f: Omit<Flight, 'id'>): void {
   if (state.uid) void addFlightDoc(state.uid, flight).then(onSyncOk, onSyncFail);
 }
 
+export function updateFlight(id: string, patch: Partial<Omit<Flight, 'id'>>): void {
+  const current = state.flights.find((f) => f.id === id);
+  if (!current) return;
+  const updated: Flight = { ...current, ...patch, id };
+  commit({ ...state, flights: state.flights.map((f) => (f.id === id ? updated : f)) });
+  if (state.uid) void updateFlightDoc(state.uid, id, updated).then(onSyncOk, onSyncFail);
+}
+
 export function deleteFlight(id: string): void {
   commit({ ...state, flights: state.flights.filter((x) => x.id !== id) });
   if (state.uid) void deleteFlightDoc(state.uid, id).then(onSyncOk, onSyncFail);
 }
 
+export function addRecord(r: Omit<PilotRecord, 'id'>): void {
+  const record: PilotRecord = { ...r, id: crypto.randomUUID() };
+  commit({ ...state, records: [record, ...state.records] });
+  if (state.uid) void addRecordDoc(state.uid, record).then(onSyncOk, onSyncFail);
+}
+
+export function updateRecord(id: string, patch: Partial<Omit<PilotRecord, 'id'>>): void {
+  const current = state.records.find((r) => r.id === id);
+  if (!current) return;
+  const updated: PilotRecord = { ...current, ...patch, id };
+  commit({ ...state, records: state.records.map((r) => (r.id === id ? updated : r)) });
+  if (state.uid) void updateRecordDoc(state.uid, id, updated).then(onSyncOk, onSyncFail);
+}
+
+export function deleteRecord(id: string): void {
+  commit({ ...state, records: state.records.filter((x) => x.id !== id) });
+  if (state.uid) void deleteRecordDoc(state.uid, id).then(onSyncOk, onSyncFail);
+}
+
 export function exportAll(): string {
-  return JSON.stringify({ profile: state.profile, flights: state.flights }, null, 2);
+  return JSON.stringify(
+    { profile: state.profile, flights: state.flights, records: state.records },
+    null,
+    2,
+  );
 }
 
 export function deleteAllData(): void {
@@ -155,6 +220,7 @@ export function deleteAllData(): void {
       displayName: state.profile.displayName,
     },
     flights: [],
+    records: [],
   });
 }
 
@@ -202,6 +268,7 @@ function connectAuth(): void {
             ...state,
             profile: { ...state.profile, ...loaded.profile },
             flights: loaded.flights.length ? loaded.flights : state.flights,
+            records: loaded.records.length ? loaded.records : state.records,
             entitlement: loaded.entitlement,
             syncError: false,
           });
