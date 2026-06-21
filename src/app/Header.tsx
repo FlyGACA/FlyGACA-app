@@ -65,8 +65,9 @@ export function Header() {
 
     const focusables = () =>
       Array.from(
-        navRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]') ??
-          [],
+        navRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]',
+        ) ?? [],
       ).filter((el) => el.tabIndex !== -1);
     // Defer to the next tick: the drawer transitions out of visibility:hidden,
     // so the first link isn't focusable on the synchronous commit frame.
