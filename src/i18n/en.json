@@ -29,7 +29,8 @@
     "open": "Open",
     "close": "Close",
     "share": "Share",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "cancel": "Cancel"
   },
   "pwa": {
     "updateTitle": "A new version is available.",
@@ -656,7 +657,16 @@
     "retry": "Retry",
     "showing": "Showing {{shown}} of {{total}}",
     "loadMore": "Load more",
-    "capHint": "first {{max}} — refine to narrow"
+    "capHint": "first {{max}} — refine to narrow",
+    "bookmark": "Bookmark",
+    "bookmarked": "Bookmarked",
+    "unbookmark": "Remove bookmark",
+    "bookmarkSection": "Bookmark section",
+    "savedTitle": "Saved",
+    "continueReading": "Continue reading",
+    "saveSearch": "Save search",
+    "savedSearches": "Saved searches",
+    "removeSearch": "Remove saved search"
   },
   "document": {
     "outline": "Outline",
@@ -679,7 +689,14 @@
     "adelPrompt": "Explain {{title}} in simple terms and cite the exact GACAR Part and section.",
     "related": "Related documents",
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "annotate": "Annotate",
+    "highlight": "Highlight",
+    "addNote": "Add note",
+    "saveNote": "Save note",
+    "notePlaceholder": "Your note…",
+    "notes": "Notes ({{n}})",
+    "removeNote": "Remove note"
   },
   "pressureAltitude": {
     "elevation": "Field elevation (ft)",

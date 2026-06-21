@@ -264,3 +264,143 @@
   border-block-start: 1px solid var(--border);
   margin-block: var(--space-6);
 }
+
+/* ── Reader toolbar pills (bookmark / offline / share) ── */
+.toolPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.toolPill:hover {
+  border-color: var(--brand-hover);
+  color: var(--text);
+}
+.toolPillOn {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+
+/* ── TOC rows: title + bookmark star + copy-link ── */
+.tocRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.tocRow a {
+  flex: 1;
+  min-inline-size: 0;
+}
+.tocStar,
+.tocCopy {
+  flex-shrink: 0;
+  inline-size: 28px;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.tocStar:hover,
+.tocCopy:hover {
+  color: var(--brand-hover);
+}
+.tocStarOn {
+  color: var(--gold);
+}
+
+/* ── Annotation highlights (distinct from search marks) ── */
+.content :global(mark[data-annot]) {
+  background: color-mix(in srgb, var(--brand) 28%, transparent);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding-inline: 2px;
+  cursor: pointer;
+  scroll-margin-block-start: calc(var(--nav-h) + var(--space-5));
+}
+
+/* ── Notes panel ── */
+.notes {
+  margin-block-start: var(--space-7);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+.notesHead {
+  font-size: var(--fs-h3);
+  margin-block-end: var(--space-3);
+}
+.notesList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.noteItem {
+  position: relative;
+  padding: var(--space-3) var(--space-6) var(--space-3) var(--space-4);
+  border-inline-start: 3px solid var(--brand);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.noteQuote {
+  display: block;
+  inline-size: 100%;
+  text-align: start;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-style: italic;
+  cursor: pointer;
+  padding: 0;
+}
+.noteQuote:hover {
+  color: var(--brand-hover);
+}
+.noteText {
+  margin-block: var(--space-1) 0;
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+.noteRemove {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  inline-size: 28px;
+  block-size: 28px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+.noteRemove:hover {
+  color: var(--danger);
+  background: var(--surface-raised);
+}

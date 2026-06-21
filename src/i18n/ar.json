@@ -29,7 +29,8 @@
     "open": "افتح",
     "close": "إغلاق",
     "share": "مشاركة",
-    "backToTop": "العودة للأعلى"
+    "backToTop": "العودة للأعلى",
+    "cancel": "إلغاء"
   },
   "pwa": {
     "updateTitle": "يتوفّر إصدار جديد.",
@@ -656,7 +657,16 @@
     "retry": "إعادة المحاولة",
     "showing": "عرض {{shown}} من {{total}}",
     "loadMore": "تحميل المزيد",
-    "capHint": "أول {{max}} — حسّن البحث للتضييق"
+    "capHint": "أول {{max}} — حسّن البحث للتضييق",
+    "bookmark": "حفظ",
+    "bookmarked": "محفوظ",
+    "unbookmark": "إزالة الحفظ",
+    "bookmarkSection": "حفظ القسم",
+    "savedTitle": "المحفوظة",
+    "continueReading": "متابعة القراءة",
+    "saveSearch": "حفظ البحث",
+    "savedSearches": "عمليات البحث المحفوظة",
+    "removeSearch": "إزالة البحث المحفوظ"
   },
   "document": {
     "outline": "المحتويات",
@@ -679,7 +689,14 @@
     "adelPrompt": "اشرح {{title}} بعبارات بسيطة واذكر الـ Part والمادة بدقّة من GACAR.",
     "related": "مستندات ذات صلة",
     "prev": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "annotate": "تعليق",
+    "highlight": "تظليل",
+    "addNote": "إضافة ملاحظة",
+    "saveNote": "حفظ الملاحظة",
+    "notePlaceholder": "ملاحظتك…",
+    "notes": "ملاحظات ({{n}})",
+    "removeNote": "إزالة الملاحظة"
   },
   "pressureAltitude": {
     "elevation": "ارتفاع المطار (قدم)",

@@ -13,6 +13,15 @@ import type {
   SearchEntry,
   SearchIndex,
 } from '../../lib/content';
+import {
+  useLibraryPrefs,
+  toggleBookmark,
+  isBookmarked,
+  saveSearch,
+  removeSearch,
+  searchKey,
+  bookmarkKey,
+} from '../../lib/libraryPrefs';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
@@ -56,9 +65,26 @@ export function Library() {
   // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
+  const prefs = useLibraryPrefs();
+  const { bookmarks, recents, searches } = prefs;
+  // When applying a saved search, carry its category across the corpus switch.
+  const pendingCat = useRef<string | null>(null);
 
-  // Reset the category filter whenever the corpus changes.
-  useEffect(() => setCategory('all'), [kind]);
+  // Reset the category filter whenever the corpus changes (honouring a pending apply).
+  useEffect(() => {
+    setCategory(pendingCat.current ?? 'all');
+    pendingCat.current = null;
+  }, [kind]);
+
+  const applySearch = (s: { kind: LibraryKind; category: string; query: string }) => {
+    setQuery(s.query);
+    if (s.kind !== kind) {
+      pendingCat.current = s.category;
+      setKind(s.kind);
+    } else {
+      setCategory(s.category);
+    }
+  };
 
   // Lazy full-text index — fetched once, the first time a query reaches MIN_QUERY chars.
   const [entries, setEntries] = useState<SearchEntry[] | null>(null);
@@ -164,8 +190,18 @@ export function Library() {
       : d.sections
         ? `${d.sections} ${t('document.sections')}`
         : '';
+    const marked = isBookmarked(prefs, kind, d.slug);
     return (
-      <li key={d.slug}>
+      <li key={d.slug} className={styles.cardWrap}>
+        <button
+          type="button"
+          className={`${styles.star} ${marked ? styles.starOn : ''}`}
+          aria-pressed={marked}
+          aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
+          onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
+        >
+          {marked ? '★' : '☆'}
+        </button>
         <Link
           to={`${CORPUS[kind].base}/${d.slug}`}
           className={styles.card}
@@ -201,6 +237,43 @@ export function Library() {
 
       <OfflineDownloads />
 
+      {!q && recents.length > 0 && (
+        <section className={styles.personal} aria-label={t('library.continueReading')}>
+          <h2 className={styles.personalHead}>{t('library.continueReading')}</h2>
+          <ul className={styles.personalRow}>
+            {recents.map((d) => (
+              <li key={`${d.kind}:${d.slug}`}>
+                <Link to={`${CORPUS[d.kind].base}/${d.slug}`} className={styles.personalCard}>
+                  <span className={styles.personalKind}>{t(`library.kind.${d.kind}`)}</span>
+                  <span className={styles.personalTitle}>{d.title}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {!q && bookmarks.length > 0 && (
+        <section className={styles.personal} aria-label={t('library.savedTitle')}>
+          <h2 className={styles.personalHead}>★ {t('library.savedTitle')}</h2>
+          <ul className={styles.personalRow}>
+            {bookmarks.map((b) => (
+              <li key={bookmarkKey(b)}>
+                <Link
+                  to={`${CORPUS[b.kind].base}/${b.slug}${b.anchor ? `#${b.anchor}` : ''}`}
+                  className={styles.personalCard}
+                >
+                  <span className={styles.personalKind}>{t(`library.kind.${b.kind}`)}</span>
+                  <span className={styles.personalTitle}>
+                    {b.anchorText ? `${b.title} · ${b.anchorText}` : b.title}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <div className={styles.tabs} role="tablist" aria-label={t('library.browse')}>
         {KINDS.map((k) => (
           <button
@@ -235,15 +308,50 @@ export function Library() {
       {data && (
         <>
           <div className={styles.controls}>
-            <input
-              className={styles.search}
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t('library.searchPlaceholder')}
-              aria-label={t('library.searchPlaceholder')}
-            />
+            <div className={styles.searchRow}>
+              <input
+                className={styles.search}
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t('library.searchPlaceholder')}
+                aria-label={t('library.searchPlaceholder')}
+              />
+              {(query.trim() || category !== 'all') && (
+                <button
+                  type="button"
+                  className={styles.saveSearchBtn}
+                  onClick={() => saveSearch({ kind, category, query: query.trim() })}
+                >
+                  ☆ {t('library.saveSearch')}
+                </button>
+              )}
+            </div>
             <p className={styles.searchHint}>{t('library.searchHint')}</p>
+            {searches.length > 0 && (
+              <div className={styles.savedSearches} aria-label={t('library.savedSearches')}>
+                {searches.map((s) => (
+                  <span key={searchKey(s)} className={styles.savedSearch}>
+                    <button
+                      type="button"
+                      className={styles.savedSearchApply}
+                      onClick={() => applySearch(s)}
+                    >
+                      {s.query || t(`library.kind.${s.kind}`)}
+                      {s.category !== 'all' ? ` · ${categoryLabel(s.category)}` : ''}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.savedSearchX}
+                      aria-label={t('library.removeSearch')}
+                      onClick={() => removeSearch(searchKey(s))}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
             <div className={styles.chips} role="group" aria-label={t('library.eyebrow')}>
               <button
                 type="button"

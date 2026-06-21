@@ -439,3 +439,144 @@ a.hit:hover {
 .footnote {
   margin-block-start: var(--space-8);
 }
+
+/* ── Bookmark star on document cards ── */
+.cardWrap {
+  position: relative;
+  block-size: 100%;
+}
+.star {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  z-index: 2;
+  inline-size: 32px;
+  block-size: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.star:hover {
+  color: var(--gold);
+  background: var(--surface-raised);
+}
+.starOn {
+  color: var(--gold);
+}
+
+/* ── Continue-reading + Saved rows ── */
+.personal {
+  margin-block-end: var(--space-6);
+}
+.personalHead {
+  font-size: var(--fs-h3);
+  margin-block-end: var(--space-3);
+}
+.personalRow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.personalCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-inline-size: 240px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: inherit;
+}
+.personalCard:hover {
+  border-color: var(--brand-hover);
+  text-decoration: none;
+}
+.personalKind {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+.personalTitle {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Saved searches ── */
+.searchRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.saveSearchBtn {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.saveSearchBtn:hover {
+  border-color: var(--brand-hover);
+  color: var(--text);
+}
+.savedSearches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.savedSearch {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  overflow: hidden;
+}
+.savedSearchApply {
+  padding: var(--space-1) var(--space-3);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.savedSearchApply:hover {
+  color: var(--text);
+}
+.savedSearchX {
+  padding-inline: var(--space-2);
+  border: none;
+  border-inline-start: 1px solid var(--border-bright);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-md);
+  line-height: 1;
+  cursor: pointer;
+  align-self: stretch;
+}
+.savedSearchX:hover {
+  color: var(--danger);
+}
