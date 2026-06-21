@@ -6,6 +6,12 @@
   background: var(--surface);
   overflow: hidden;
 }
+/* Clear the floating bottom dock so the footer's last row is never hidden. */
+@media (max-width: 860px) {
+  .footer {
+    padding-block-end: calc(var(--space-8) + 80px + var(--safe-bottom));
+  }
+}
 /* Brand-gradient strip along the top edge. */
 .footer::before {
   content: '';

@@ -82,6 +82,13 @@
   color: var(--text);
 }
 
+/* On mobile, lift the toast above the floating bottom dock so they don't stack. */
+@media (max-width: 860px) {
+  .toast {
+    inset-block-end: calc(var(--space-3) + var(--safe-bottom) + 84px);
+  }
+}
+
 @keyframes toast-rise {
   from {
     opacity: 0;
