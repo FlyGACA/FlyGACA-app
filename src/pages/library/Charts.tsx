@@ -126,12 +126,20 @@ export function Charts() {
     return () => window.clearTimeout(id);
   }, [fullscreen, active]);
 
-  // Keyboard: ←/→ switch sheets, Esc exits fullscreen.
+  // Keyboard: ←/→ switch sheets, Esc exits fullscreen. When the Leaflet map (or
+  // any control) has focus, leave the arrows to it — Leaflet makes its container
+  // focusable and pans the chart with the arrow keys, so hijacking them here
+  // would trap keyboard users who are trying to pan. Esc still exits fullscreen.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === 'Escape') {
+        setFullscreen(false);
+        return;
+      }
+      if (mapEl.current?.contains(document.activeElement)) return;
       if (e.key === 'ArrowLeft') go(-1);
       else if (e.key === 'ArrowRight') go(1);
-      else if (e.key === 'Escape') setFullscreen(false);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
