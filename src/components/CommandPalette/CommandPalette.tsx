@@ -50,6 +50,11 @@ const TOOL_IDS = [
   'chart-symbols',
   'vfr-minima',
   'aerodromes',
+  'critical-point',
+  'top-of-climb',
+  'turn-performance',
+  'pivotal-altitude',
+  'true-altitude',
 ];
 
 type Filter = 'all' | 'reg' | 'aero' | 'tool' | 'guide';

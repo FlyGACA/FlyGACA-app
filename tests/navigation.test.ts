@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { greatCircle, oneInSixty, windTriangle } from '../src/calc/navigation';
+import { greatCircle, oneInSixty, pivotalAltitude, windTriangle } from '../src/calc/navigation';
 import { topOfDescent, visualDescentPoint } from '../src/calc/descent';
 import { solveTsd } from '../src/calc/tsd';
+
+describe('pivotalAltitude', () => {
+  it('100 kt GS → ~885 ft', () => {
+    expect(pivotalAltitude(100)).toBeCloseTo(884.96, 1);
+  });
+  it('scales with the square of groundspeed', () => {
+    expect(pivotalAltitude(120)!).toBeCloseTo(1274.3, 0);
+  });
+  it('rejects a non-number', () => {
+    expect(pivotalAltitude(NaN)).toBeNull();
+  });
+});
 
 describe('windTriangle', () => {
   it('pure headwind reduces groundspeed, no drift', () => {

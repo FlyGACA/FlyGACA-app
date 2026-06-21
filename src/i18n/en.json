@@ -497,6 +497,26 @@
       "definitions": {
         "name": "Definitions",
         "blurb": "The GACAR Part 1 glossary, searchable and bilingual."
+      },
+      "critical-point": {
+        "name": "Critical point & PNR",
+        "blurb": "The equal time point and point of no return for a leg."
+      },
+      "top-of-climb": {
+        "name": "Top of climb",
+        "blurb": "Time, distance and fuel to climb to altitude."
+      },
+      "turn-performance": {
+        "name": "Turn radius & rate",
+        "blurb": "Rate of turn and radius for any speed and bank."
+      },
+      "pivotal-altitude": {
+        "name": "Pivotal altitude",
+        "blurb": "The pivotal altitude for eights-on-pylons."
+      },
+      "true-altitude": {
+        "name": "True altitude",
+        "blurb": "Correct indicated altitude for temperature error."
       }
     },
     "pinned": "Pinned",
@@ -504,7 +524,8 @@
     "favorite": "Pin tool",
     "unfavorite": "Unpin tool",
     "resultCount": "{{count}} tools",
-    "searchTip": "Press / to search"
+    "searchTip": "Press / to search",
+    "allCategories": "All"
   },
   "crosswind": {
     "title": "Crosswind & headwind",
@@ -538,7 +559,8 @@
     "oat": "OAT (°C)",
     "pressureAltitude": "Pressure altitude",
     "isaDev": "ISA deviation",
-    "densityAltitude": "Density altitude"
+    "densityAltitude": "Density altitude",
+    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it — and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative."
   },
   "tas": {
     "title": "True airspeed",
@@ -548,7 +570,8 @@
     "oat": "OAT (°C)",
     "trueAirspeed": "True airspeed",
     "mach": "Mach",
-    "isaDev": "ISA deviation"
+    "isaDev": "ISA deviation",
+    "formula": "TAS rises above CAS as the air thins with altitude and temperature: roughly TAS = CAS × √(ρ₀/ρ), about +2% per 1,000 ft. Use CAS for performance limits, TAS for navigation, and groundspeed (TAS ± wind) for timing."
   },
   "chat": {
     "title": "Captain Adel",
@@ -2699,5 +2722,47 @@
       "expires": "Expires",
       "remarks": "Remarks"
     }
+  },
+  "criticalPoint": {
+    "distance": "Leg distance",
+    "gsOut": "Groundspeed out",
+    "gsHome": "Groundspeed home",
+    "endurance": "Usable endurance",
+    "etpDist": "ETP — distance",
+    "etpTime": "ETP — time",
+    "pnrDist": "PNR — distance",
+    "pnrTime": "PNR — time",
+    "formula": "The equal time point (ETP) is where continuing and returning take the same time: distance = D·GSh/(GSo+GSh). The point of no return (PNR) is the farthest you can go and still return within your usable endurance E: time = E·GSh/(GSo+GSh). A planning aid — use your operator’s fuel policy."
+  },
+  "topOfClimb": {
+    "altGain": "Altitude to gain",
+    "roc": "Rate of climb",
+    "gs": "Climb groundspeed",
+    "fuelFlow": "Fuel flow",
+    "time": "Time to climb",
+    "dist": "Distance",
+    "fuel": "Fuel",
+    "formula": "Time = altitude to gain ÷ rate of climb; distance = groundspeed × time; fuel = fuel flow × time. Uses an average climb rate — the AFM/POH climb tables are authoritative."
+  },
+  "turnPerf": {
+    "tas": "True airspeed",
+    "bank": "Bank angle",
+    "rate": "Rate of turn",
+    "radius": "Turn radius",
+    "formula": "Rate of turn (°/s) = 1091 × tan(bank) ÷ TAS; radius (ft) = TAS² ÷ (11.26 × tan(bank)), with TAS in knots. A steeper bank and a lower speed tighten the turn."
+  },
+  "pivotalAlt": {
+    "gs": "Groundspeed",
+    "altitude": "Pivotal altitude",
+    "formula": "Pivotal altitude (ft) = groundspeed (kt)² ÷ 11.3 — the height at which the line of sight to a ground reference stays on the wingtip in eights-on-pylons. It rises and falls with groundspeed through the turn."
+  },
+  "trueAlt": {
+    "indicated": "Indicated altitude",
+    "source": "Altimeter-setting source elev.",
+    "oat": "Outside air temperature",
+    "trueAlt": "True altitude",
+    "correction": "Temperature correction",
+    "isaDev": "ISA deviation",
+    "formula": "Correction (ft) ≈ 4 × ISA deviation × (height above the altimeter-setting source ÷ 1,000); true altitude = indicated + correction. Warmer than ISA → you are higher than indicated; colder → lower. An approximation; for terrain-critical cold-weather operations use the AIP/ICAO tables."
   }
 }
