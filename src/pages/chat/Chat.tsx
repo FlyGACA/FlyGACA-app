@@ -18,12 +18,25 @@ import {
   FREE_DAILY_LIMIT,
   type Usage,
 } from '../../calc/chatQuota';
+import { partSlug, conversationParts } from '../../calc/chatSources';
+import { transcriptToMarkdown } from '../../calc/transcript';
+import {
+  conversationTitle,
+  upsertConversation,
+  removeConversation,
+  normalizeConversations,
+  type Conversation,
+} from '../../calc/conversations';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
+import { StatusPill } from '../../components/StatusPill';
 import { UpsellCard } from '../../components/UpsellCard';
 import { GroundingBadge } from '../../components/chat/GroundingBadge';
 import { RichText } from '../../components/chat/RichText';
 import { MessageActions } from '../../components/chat/MessageActions';
+import { ConversationMenu } from '../../components/chat/ConversationMenu';
+import { ExportActions } from '../../components/chat/ExportActions';
+import { SourcesDigest } from '../../components/chat/SourcesDigest';
 import styles from './Chat.module.css';
 
 interface Message {
@@ -43,21 +56,59 @@ const GROUPS: { id: string; items: string[] }[] = [
   { id: 'licensing', items: ['s2', 's6'] },
   { id: 'operations', items: ['s3', 's4'] },
 ];
+const SUGGESTION_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6'];
+/** Capability chips on the welcome screen (label key → StatusPill tone). */
+const CAPABILITIES = [
+  { id: 'cites', tone: 'success' as const },
+  { id: 'bilingual', tone: 'data' as const },
+  { id: 'verify', tone: 'warning' as const },
+];
 /** Contextual follow-ups offered under the latest grounded answer. */
 const FOLLOWUPS = ['section', 'simple', 'example'] as const;
 
 const TRANSCRIPT_KEY = 'flygaca:adel-transcript';
+const CONV_KEY = 'flygaca:adel-conversations';
 const QUOTA_KEY = 'flygaca:adel-quota';
 
-/** Restore the finalized turns from a previous visit (web localStorage). */
-function loadTranscript(): Message[] {
+function newId(): string {
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`
+  );
+}
+
+/**
+ * Restore the saved conversation archive. Falls back to a one-time migration of
+ * the legacy single transcript (`flygaca:adel-transcript`) into one conversation.
+ */
+function loadConversations(): Conversation<Message>[] {
   try {
-    const raw = localStorage.getItem(TRANSCRIPT_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as Message[];
-    return Array.isArray(parsed) ? parsed : [];
+    const raw = localStorage.getItem(CONV_KEY);
+    if (raw) return normalizeConversations(JSON.parse(raw)) as Conversation<Message>[];
   } catch {
-    return [];
+    /* ignore */
+  }
+  try {
+    const legacy = localStorage.getItem(TRANSCRIPT_KEY);
+    if (legacy) {
+      const msgs = JSON.parse(legacy) as Message[];
+      if (Array.isArray(msgs) && msgs.length > 0) {
+        return [
+          { id: newId(), title: conversationTitle(msgs), messages: msgs, updatedAt: Date.now() },
+        ];
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return [];
+}
+
+function persistConversations(list: Conversation<Message>[]): void {
+  try {
+    localStorage.setItem(CONV_KEY, JSON.stringify(list));
+  } catch {
+    /* ignore quota / private-mode errors */
   }
 }
 
@@ -69,23 +120,13 @@ function loadUsage(): Usage {
   }
 }
 
-/** Leading Part number from a citation field, as a Library slug if it exists. */
-function partSlug(valid: Set<string>, ...candidates: (string | undefined)[]): string | null {
-  for (const c of candidates) {
-    if (!c) continue;
-    const m = /(\d+)/.exec(c);
-    if (!m) continue;
-    const slug = `part-${m[1]}`;
-    if (valid.has(slug)) return slug;
-  }
-  return null;
-}
-
 export function Chat() {
   const { t } = useTranslation();
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
   const [params, setParams] = useSearchParams();
-  const [messages, setMessages] = useState<Message[]>(loadTranscript);
+  const [conversations, setConversations] = useState<Conversation<Message>[]>(loadConversations);
+  const [activeId, setActiveId] = useState<string>(() => conversations[0]?.id ?? newId());
+  const [messages, setMessages] = useState<Message[]>(() => conversations[0]?.messages ?? []);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [usage, setUsage] = useState<Usage>(loadUsage);
@@ -224,12 +265,32 @@ export function Chat() {
     abortRef.current?.abort();
   }
 
-  function clearChat() {
+  /** Start a fresh thread; the current one is already saved in the archive. */
+  function newChat() {
+    if (busy) return;
     setMessages([]);
-    try {
-      localStorage.removeItem(TRANSCRIPT_KEY);
-    } catch {
-      /* ignore */
+    setActiveId(newId());
+  }
+
+  /** Load a saved conversation into the composer. */
+  function selectConversation(id: string) {
+    if (busy) return;
+    const c = conversations.find((x) => x.id === id);
+    if (!c) return;
+    setActiveId(id);
+    setMessages(c.messages);
+  }
+
+  /** Delete a saved conversation; if it was active, drop into a fresh thread. */
+  function deleteConversation(id: string) {
+    setConversations((prev) => {
+      const next = removeConversation(prev, id);
+      persistConversations(next);
+      return next;
+    });
+    if (id === activeId) {
+      setMessages([]);
+      setActiveId(newId());
     }
   }
 
@@ -256,16 +317,24 @@ export function Chat() {
     }
   }, [messages]);
 
-  // Persist finalized turns once a turn settles (not mid-stream).
+  // Persist the active thread into the archive once a turn settles (not mid-stream).
   useEffect(() => {
     if (busy) return;
     const keep = messages.filter((m) => !m.pending && !m.error);
-    try {
-      localStorage.setItem(TRANSCRIPT_KEY, JSON.stringify(keep));
-    } catch {
-      /* ignore quota / private-mode errors */
-    }
-  }, [messages, busy]);
+    setConversations((prev) => {
+      const next =
+        keep.length === 0
+          ? removeConversation(prev, activeId)
+          : upsertConversation(prev, {
+              id: activeId,
+              title: conversationTitle(keep),
+              messages: keep,
+              updatedAt: Date.now(),
+            });
+      persistConversations(next);
+      return next;
+    });
+  }, [messages, busy, activeId]);
 
   const last = messages[messages.length - 1];
   const showFollowups =
@@ -277,6 +346,18 @@ export function Chat() {
     !last.streaming &&
     last.kind !== 'refusal';
 
+  const digest = conversationParts(messages, validSlugs.current);
+  const hasMessages = messages.length > 0;
+  const transcriptMd = hasMessages
+    ? transcriptToMarkdown(messages, {
+        title: t('chat.transcriptTitle'),
+        disclaimer: t('chat.disclaimer'),
+        you: t('chat.you'),
+        adel: t('chat.title'),
+        sources: t('chat.sourcesLabel'),
+      })
+    : '';
+
   return (
     <section className={`container-narrow ${styles.page}`}>
       <header className={styles.head}>
@@ -287,11 +368,18 @@ export function Chat() {
             {t('chat.status')}
           </p>
         </div>
-        {messages.length > 0 && (
-          <button type="button" className={styles.clear} onClick={clearChat} disabled={busy}>
-            {t('chat.clear')}
-          </button>
-        )}
+        <div className={styles.headActions}>
+          {hasMessages && (
+            <ExportActions markdown={transcriptMd} filename="flygaca-captain-adel.md" />
+          )}
+          <ConversationMenu
+            conversations={conversations}
+            activeId={activeId}
+            onNew={newChat}
+            onSelect={selectConversation}
+            onDelete={deleteConversation}
+          />
+        </div>
       </header>
 
       <div className={styles.logWrap}>
@@ -311,6 +399,13 @@ export function Chat() {
             <div className={styles.welcome}>
               <CaptainAvatar size="xl" glow pose="wave" className={styles.welcomeAvatar} />
               <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
+              <div className={styles.capabilities}>
+                {CAPABILITIES.map((c) => (
+                  <StatusPill key={c.id} tone={c.tone}>
+                    {t(`chat.capabilities.${c.id}`)}
+                  </StatusPill>
+                ))}
+              </div>
               <div className={styles.groups}>
                 {GROUPS.map((g) => (
                   <div key={g.id} className={styles.group}>
@@ -329,6 +424,24 @@ export function Chat() {
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className={styles.welcomeActions}>
+                <button
+                  type="button"
+                  className={styles.surprise}
+                  onClick={() => {
+                    const k = SUGGESTION_KEYS[Math.floor(Math.random() * SUGGESTION_KEYS.length)];
+                    void ask(t(`chat.suggestions.${k}`));
+                  }}
+                >
+                  {t('chat.surprise')}
+                </button>
+                <Link to="/library" className={styles.welcomeLink}>
+                  {t('chat.exploreLibrary')}
+                </Link>
+                <Link to="/tools" className={styles.welcomeLink}>
+                  {t('chat.exploreTools')}
+                </Link>
               </div>
             </div>
           )}
@@ -414,6 +527,8 @@ export function Chat() {
           </button>
         )}
       </div>
+
+      {hasMessages && <SourcesDigest parts={digest} />}
 
       {gated ? (
         <div className={styles.gate}>

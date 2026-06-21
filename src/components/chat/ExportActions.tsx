@@ -1,0 +1,47 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import styles from './ExportActions.module.css';
+
+/**
+ * Header actions to take the whole conversation with you: copy it to the
+ * clipboard as Markdown, or download it as a `.md` file. Pure presentational —
+ * the page builds the Markdown (via `transcriptToMarkdown`) and owns when this is
+ * shown (only when the active conversation has messages).
+ */
+export function ExportActions({ markdown, filename }: { markdown: string; filename: string }) {
+  const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(markdown);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard blocked (insecure context / permissions) — ignore */
+    }
+  }
+
+  function download() {
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className={styles.actions}>
+      <button type="button" className={styles.action} onClick={() => void copy()}>
+        <span aria-hidden="true">{copied ? '✓' : '⧉'}</span>
+        <span className={styles.label}>{copied ? t('chat.exportCopied') : t('chat.export')}</span>
+      </button>
+      <button type="button" className={styles.action} onClick={download}>
+        <span aria-hidden="true">↓</span>
+        <span className={styles.label}>{t('chat.download')}</span>
+      </button>
+    </div>
+  );
+}

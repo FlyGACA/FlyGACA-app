@@ -48,26 +48,14 @@
   }
 }
 
-.clear {
+/* Header right cluster: export actions + the conversation switcher. */
+.headActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
   flex-shrink: 0;
-  min-height: 36px;
-  padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
-}
-.clear:hover:not(:disabled) {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-.clear:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
 }
 
 /* ── Message log ── */
@@ -136,6 +124,14 @@
   line-height: var(--lh-body);
 }
 
+/* Capability chips under the welcome lead. */
+.capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
 /* Topic-grouped starter prompts on the welcome screen. */
 .groups {
   display: flex;
@@ -190,6 +186,40 @@
 .suggestion:active {
   transform: scale(0.97);
   box-shadow: var(--clay-shadow-press);
+}
+
+/* Welcome footer: "Surprise me" + quick links out to Library / Tools. */
+.welcomeActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-block-start: var(--space-1);
+}
+.surprise {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-5);
+  border: 1px solid var(--brand-hover);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  color: var(--brand-hover);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.surprise:hover {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+}
+.welcomeLink {
+  font-size: var(--fs-sm);
+  color: var(--link);
 }
 
 /* ── Message bubbles ── */
