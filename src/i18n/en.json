@@ -621,7 +621,27 @@
       "s4": "What does GACAR Part 91 say about carry-on baggage?",
       "s5": "What equipment is required for night VFR flight?",
       "s6": "How many flight hours are required for an instrument rating?"
-    }
+    },
+    "transcriptTitle": "Captain Adel — conversation",
+    "you": "You",
+    "export": "Copy conversation",
+    "exportCopied": "Copied",
+    "download": "Download .md",
+    "referenced": "Referenced in this conversation",
+    "partLabel": "Part {{n}}",
+    "capabilities": {
+      "cites": "Cites the exact Part & section",
+      "bilingual": "English & Arabic",
+      "verify": "Not for operational use"
+    },
+    "surprise": "Surprise me",
+    "exploreLibrary": "Browse the library",
+    "exploreTools": "Flight tools",
+    "newChat": "New chat",
+    "history": "History",
+    "untitled": "Untitled chat",
+    "deleteConversation": "Delete conversation",
+    "historyEmpty": "No saved conversations yet"
   },
   "sheets": {
     "title": "Study Sheets",
