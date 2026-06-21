@@ -7,20 +7,30 @@ import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
+import { canonicalRedirect } from './lib/seo';
 
-const rootEl = document.getElementById('root');
-if (!rootEl) throw new Error('Root element #root not found');
+// A duplicate host (e.g. captadel.com) serves this same build — fold it straight
+// onto the canonical origin, preserving the path, before booting anything. This
+// is the host-agnostic safety net; an edge 301 (vercel.json) handles it sooner
+// where the duplicate is served by Vercel.
+const redirectTo = canonicalRedirect(window.location);
+if (redirectTo) {
+  window.location.replace(redirectTo);
+} else {
+  const rootEl = document.getElementById('root');
+  if (!rootEl) throw new Error('Root element #root not found');
 
-// Load only the active language's strings before the first render — no flash of
-// untranslated keys, and the other language stays off the boot path.
-void bootI18n().then(() => {
-  createRoot(rootEl).render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>,
-  );
-});
+  // Load only the active language's strings before the first render — no flash of
+  // untranslated keys, and the other language stays off the boot path.
+  void bootI18n().then(() => {
+    createRoot(rootEl).render(
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>,
+    );
+  });
 
-// Native shell bootstrap (no-op on the web). Deep links route through the
-// same data router the rest of the app uses.
-void initNative({ onDeepLink: (path) => void router.navigate(path) });
+  // Native shell bootstrap (no-op on the web). Deep links route through the
+  // same data router the rest of the app uses.
+  void initNative({ onDeepLink: (path) => void router.navigate(path) });
+}

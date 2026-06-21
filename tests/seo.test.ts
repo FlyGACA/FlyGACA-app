@@ -6,6 +6,7 @@ import {
   langUrl,
   hreflangAlternates,
   ogLocale,
+  canonicalRedirect,
 } from '../src/lib/seo';
 
 describe('normalizePath', () => {
@@ -40,5 +41,32 @@ describe('ogLocale', () => {
     expect(ogLocale('ar')).toBe('ar_SA');
     expect(ogLocale('en')).toBe('en_US');
     expect(ogLocale('zz')).toBe('en_US');
+  });
+});
+
+describe('canonicalRedirect', () => {
+  it('folds a duplicate host onto the canonical origin, preserving path/query/hash', () => {
+    expect(
+      canonicalRedirect({
+        hostname: 'captadel.com',
+        pathname: '/pricing',
+        search: '?lang=ar',
+        hash: '#faq',
+      }),
+    ).toBe(`${SITE_ORIGIN}/pricing?lang=ar#faq`);
+    expect(
+      canonicalRedirect({ hostname: 'www.captadel.com', pathname: '/', search: '', hash: '' }),
+    ).toBe(`${SITE_ORIGIN}/`);
+  });
+
+  it('returns null for the canonical host, previews, localhost and native', () => {
+    for (const hostname of [
+      'flygaca.com',
+      'flygaca-app.web.app',
+      'flygaca-app-git-x.vercel.app',
+      'localhost',
+    ]) {
+      expect(canonicalRedirect({ hostname, pathname: '/tools', search: '', hash: '' })).toBeNull();
+    }
   });
 });
