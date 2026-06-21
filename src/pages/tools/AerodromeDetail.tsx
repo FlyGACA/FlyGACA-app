@@ -5,6 +5,9 @@ import { CalcShell } from '../../components/CalcShell';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { regionBadge } from '../../lib/aerodromes';
 import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
+import { AirportTypeIcon } from '../../components/aerodrome/AirportTypeIcon';
+import { RunwayDiagram } from '../../components/aerodrome/RunwayDiagram';
+import { PositionMarker } from '../../components/aerodrome/PositionMarker';
 import styles from './Aerodromes.module.css';
 
 export function AerodromeDetail() {
@@ -69,6 +72,7 @@ export function AerodromeDetail() {
       related={[{ to: '/tools/aerodromes', label: t('aerodromesTool.backToList') }]}
     >
       <div className={styles.detailHead}>
+        <AirportTypeIcon type={a.type} className={styles.detailTypeIcon} />
         <span className={styles.detailIcao}>{a.icao}</span>
         {a.iata && <span className={styles.iata}>{a.iata}</span>}
         <span className={`${styles.badge} ${styles[`badge_${badge}`]}`}>
@@ -76,43 +80,49 @@ export function AerodromeDetail() {
         </span>
       </div>
 
-      <dl className={styles.facts}>
-        {country && (
+      <div className={styles.overview}>
+        <dl className={styles.facts}>
+          {country && (
+            <div className={styles.fact}>
+              <dt>{t('aerodromesTool.country')}</dt>
+              <dd>{country}</dd>
+            </div>
+          )}
           <div className={styles.fact}>
-            <dt>{t('aerodromesTool.country')}</dt>
-            <dd>{country}</dd>
+            <dt>{t('aerodromesTool.elevation')}</dt>
+            <dd>{a.elev_ft.toLocaleString()} ft</dd>
           </div>
-        )}
-        <div className={styles.fact}>
-          <dt>{t('aerodromesTool.elevation')}</dt>
-          <dd>{a.elev_ft.toLocaleString()} ft</dd>
-        </div>
-        <div className={styles.fact}>
-          <dt>{t('aerodromesTool.coordinates')}</dt>
-          <dd className={styles.coords}>
-            {a.lat.toFixed(4)}, {a.lon.toFixed(4)}
-          </dd>
-        </div>
-        {a.mag && (
           <div className={styles.fact}>
-            <dt>{t('aerodromesTool.magVar')}</dt>
-            <dd>{a.mag}</dd>
+            <dt>{t('aerodromesTool.coordinates')}</dt>
+            <dd className={styles.coords}>
+              {a.lat.toFixed(4)}, {a.lon.toFixed(4)}
+            </dd>
           </div>
-        )}
-      </dl>
+          {a.mag && (
+            <div className={styles.fact}>
+              <dt>{t('aerodromesTool.magVar')}</dt>
+              <dd>{a.mag}</dd>
+            </div>
+          )}
+        </dl>
+        <PositionMarker lat={a.lat} lon={a.lon} />
+      </div>
 
       {a.rwys.length > 0 && (
         <section className={styles.detailSection}>
           <h2 className={styles.detailH2}>{t('aerodromesTool.runways')}</h2>
-          <ul className={styles.rwyList}>
-            {a.rwys.map((r, i) => (
-              <li key={i} className={styles.rwyRow}>
-                <span className={styles.rwyId}>{r.id}</span>
-                {r.len && <span className={styles.rwyMeta}>{r.len.toLocaleString()} ft</span>}
-                {r.surf && <span className={styles.rwyMeta}>{r.surf}</span>}
-              </li>
-            ))}
-          </ul>
+          <div className={styles.rwyLayout}>
+            <RunwayDiagram rwys={a.rwys} />
+            <ul className={styles.rwyList}>
+              {a.rwys.map((r, i) => (
+                <li key={i} className={styles.rwyRow}>
+                  <span className={styles.rwyId}>{r.id}</span>
+                  {r.len && <span className={styles.rwyMeta}>{r.len.toLocaleString()} ft</span>}
+                  {r.surf && <span className={styles.rwyMeta}>{r.surf}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
       )}
 

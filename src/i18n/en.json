@@ -1353,6 +1353,8 @@
     "coordinates": "Coordinates",
     "magVar": "Magnetic variation",
     "services": "Services",
+    "runwayDiagram": "Runway orientation diagram",
+    "position": "Approximate position on the globe",
     "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data — runways and frequencies included — from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
   },
   "definitionsTool": {

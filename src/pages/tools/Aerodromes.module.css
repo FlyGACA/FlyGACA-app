@@ -96,6 +96,9 @@
   gap: var(--space-2);
   flex-wrap: wrap;
 }
+.cardTypeIcon {
+  color: var(--text-muted);
+}
 .icao {
   font-weight: var(--fw-bold);
   color: var(--accent-bright);
@@ -238,6 +241,33 @@
 }
 .detailHead .badge {
   margin-inline-start: 0;
+}
+.detailTypeIcon {
+  color: var(--accent-bright);
+  font-size: var(--fs-h3);
+}
+
+/* Facts grid + position globe side by side; wraps on narrow screens. */
+.overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: center;
+  justify-content: space-between;
+}
+.overview .facts {
+  flex: 1 1 220px;
+}
+
+/* Runway diagram next to its tabular list. */
+.rwyLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: center;
+}
+.rwyLayout .rwyList {
+  flex: 1 1 200px;
 }
 
 .facts {

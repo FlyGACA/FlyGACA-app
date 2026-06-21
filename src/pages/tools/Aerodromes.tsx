@@ -8,6 +8,8 @@ import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { useUrlState } from '../../lib/useUrlState';
 import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
 import { REGION_FILTERS, inRegion, regionBadge, type RegionFilter } from '../../lib/aerodromes';
+import { AerodromesHero } from '../../components/aerodrome/AerodromesHero';
+import { AirportTypeIcon } from '../../components/aerodrome/AirportTypeIcon';
 import styles from './Aerodromes.module.css';
 
 const PAGE = 60;
@@ -89,6 +91,7 @@ export function Aerodromes() {
       formula={t('aerodromesTool.formula')}
       adelPrompt={adelPrompt}
     >
+      <AerodromesHero />
       <div className={styles.regions} role="group" aria-label={t('aerodromesTool.regionLabel')}>
         {REGION_FILTERS.map((r) => (
           <button
@@ -135,6 +138,7 @@ export function Aerodromes() {
                         className={styles.cardLink}
                       >
                         <span className={styles.head}>
+                          <AirportTypeIcon type={a.type} className={styles.cardTypeIcon} />
                           <span className={styles.icao}>{a.icao}</span>
                           {a.iata && <span className={styles.iata}>{a.iata}</span>}
                           <span
