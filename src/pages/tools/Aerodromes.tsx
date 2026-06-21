@@ -96,11 +96,7 @@ export function Aerodromes() {
       formula={t('aerodromesTool.formula')}
       adelPrompt={adelPrompt}
     >
-      <div
-        className={styles.regions}
-        role="group"
-        aria-label={t('aerodromesTool.regionLabel')}
-      >
+      <div className={styles.regions} role="group" aria-label={t('aerodromesTool.regionLabel')}>
         {REGION_FILTERS.map((r) => (
           <button
             key={r}
