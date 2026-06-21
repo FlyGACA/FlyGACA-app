@@ -100,7 +100,7 @@
   max-inline-size: 480px;
   padding: var(--space-3) var(--space-4);
   min-height: 44px;
-  border: 1px solid var(--border-bright);
+  border: 1px solid var(--border-input);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);

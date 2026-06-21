@@ -64,6 +64,12 @@ export function CalcShell({
         ? t('calc.copyFailed')
         : t('calc.copyLink');
 
+  // The button's visible label changes on copy, but screen readers also need the
+  // outcome announced — a polite live region carries the transient confirmation
+  // (WCAG 4.1.3 Status Messages). Empty while idle so it only speaks on change.
+  const copyStatus =
+    copied === 'ok' ? t('calc.copied') : copied === 'fail' ? t('calc.copyFailed') : '';
+
   const adelHref = adelPrompt ? adelLink(adelPrompt()) : null;
 
   return (
@@ -92,6 +98,10 @@ export function CalcShell({
         )}
         <span className={styles.note}>{t('calc.shareNote')}</span>
       </div>
+
+      <span className="sr-only" role="status" aria-live="polite">
+        {copyStatus}
+      </span>
 
       {formula && (
         <details className={styles.formula}>

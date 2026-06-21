@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { loadJson } from '../../lib/content';
@@ -110,7 +110,12 @@ export function CommandPalette() {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
   const loaded = useRef(false);
+
+  // Stable ids wiring the combobox input → listbox → active option for AT.
+  const listboxId = useId();
+  const optionId = (idx: number) => `${listboxId}-opt-${idx}`;
 
   // Tools are static (names from i18n) so they need no fetch.
   const tools = useMemo<Item[]>(
@@ -191,15 +196,17 @@ export function CommandPalette() {
     };
   }, [open, show, loadData]);
 
-  // Focus the input and lock body scroll while open.
+  // Focus the input, lock body scroll, and restore focus to the trigger on close.
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
+    const restoreFocusTo = document.activeElement as HTMLElement | null;
     document.body.style.overflow = 'hidden';
     const id = window.setTimeout(() => inputRef.current?.focus(), 50);
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
       window.clearTimeout(id);
+      restoreFocusTo?.focus?.();
     };
   }, [open]);
 
@@ -213,6 +220,10 @@ export function CommandPalette() {
     });
   }, [parts, aerodromes, tools, query, filter]);
 
+  // Cap the rendered list (and keyboard navigation) to the first 50 matches so
+  // the active index, aria-activedescendant, and scroll-into-view stay in sync.
+  const visible = useMemo(() => results.slice(0, 50), [results]);
+
   const choose = useCallback(
     (item: Item | undefined) => {
       if (!item) return;
@@ -222,20 +233,48 @@ export function CommandPalette() {
     [close, navigate],
   );
 
-  // In-palette keyboard nav.
+  // In-palette result nav — focus stays on the combobox input, so the active
+  // row is moved via aria-activedescendant rather than real focus.
   const onListKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActive((a) => (visible.length ? (a + 1) % visible.length : 0));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive((a) => (visible.length ? (a - 1 + visible.length) % visible.length : 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      choose(visible[active]);
+    }
+  };
+
+  // Dialog-level keys: Escape closes from anywhere inside the modal, and Tab is
+  // trapped within the box so focus can never fall behind the scrim. Result rows
+  // are tabindex=-1 (arrow-navigated), so the trap cycles input ↔ filter chips.
+  const onDialogKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       e.preventDefault();
       close();
-    } else if (e.key === 'ArrowDown') {
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const box = boxRef.current;
+    if (!box) return;
+    // Only genuinely tabbable nodes: the result rows are buttons with
+    // tabindex=-1 (arrow-navigated), so they must be excluded from the cycle.
+    const focusable = Array.from(
+      box.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, [tabindex]'),
+    ).filter((el) => el.tabIndex !== -1);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const activeEl = document.activeElement;
+    if (e.shiftKey && (activeEl === first || !box.contains(activeEl))) {
       e.preventDefault();
-      setActive((a) => (results.length ? (a + 1) % results.length : 0));
-    } else if (e.key === 'ArrowUp') {
+      last.focus();
+    } else if (!e.shiftKey && (activeEl === last || !box.contains(activeEl))) {
       e.preventDefault();
-      setActive((a) => (results.length ? (a - 1 + results.length) % results.length : 0));
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      choose(results[active]);
+      first.focus();
     }
   };
 
@@ -243,7 +282,7 @@ export function CommandPalette() {
   useEffect(() => {
     const node = resultsRef.current?.querySelector<HTMLElement>(`[data-idx="${active}"]`);
     node?.scrollIntoView({ block: 'nearest' });
-  }, [active, results]);
+  }, [active, visible]);
 
   if (!open) return null;
 
@@ -261,7 +300,14 @@ export function CommandPalette() {
         if (e.target === e.currentTarget) close();
       }}
     >
-      <div className={styles.box} role="dialog" aria-modal="true" aria-label={t('cmdk.label')}>
+      <div
+        ref={boxRef}
+        className={styles.box}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('cmdk.label')}
+        onKeyDown={onDialogKeyDown}
+      >
         <div className={styles.inputRow}>
           <svg
             viewBox="0 0 24 24"
@@ -280,8 +326,14 @@ export function CommandPalette() {
             type="text"
             value={query}
             placeholder={t('cmdk.placeholder')}
+            aria-label={t('cmdk.placeholder')}
             autoComplete="off"
             spellCheck={false}
+            role="combobox"
+            aria-expanded
+            aria-controls={listboxId}
+            aria-autocomplete="list"
+            aria-activedescendant={visible.length ? optionId(active) : undefined}
             onChange={(e) => {
               setQuery(e.target.value);
               setActive(0);
@@ -307,14 +359,24 @@ export function CommandPalette() {
           ))}
         </div>
 
-        <div className={styles.results} ref={resultsRef}>
-          {results.length === 0 ? (
+        <div
+          className={styles.results}
+          ref={resultsRef}
+          role="listbox"
+          id={listboxId}
+          aria-label={t('cmdk.resultsLabel')}
+        >
+          {visible.length === 0 ? (
             <p className={styles.empty}>{loading ? t('common.loading') : t('cmdk.empty')}</p>
           ) : (
-            results.slice(0, 50).map((it, idx) => (
+            visible.map((it, idx) => (
               <button
                 key={`${it.group}-${it.code}-${idx}`}
                 type="button"
+                role="option"
+                id={optionId(idx)}
+                aria-selected={idx === active}
+                tabIndex={-1}
                 data-idx={idx}
                 className={`${styles.item} ${idx === active ? styles.itemActive : ''}`}
                 onMouseEnter={() => setActive(idx)}
@@ -329,6 +391,13 @@ export function CommandPalette() {
               </button>
             ))
           )}
+        </div>
+
+        {/* Polite live region so AT users hear the match count as they type. */}
+        <div className="sr-only" aria-live="polite">
+          {visible.length === 0
+            ? t('cmdk.empty')
+            : t('cmdk.resultCount', { count: results.length })}
         </div>
 
         <div className={styles.foot}>

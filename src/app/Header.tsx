@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
@@ -45,24 +45,59 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const location = useLocation();
+  const navRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
 
-  // While the drawer is open: lock body scroll and close on Escape.
+  // While the drawer is open: lock body scroll, move focus into the drawer and
+  // trap Tab within it so focus can't fall behind the overlay, and close on
+  // Escape. Focus returns to the toggle when the drawer closes.
   useEffect(() => {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Capture the trigger now so cleanup restores focus to the same node.
+    const toggleEl = toggleRef.current;
+
+    const focusables = () =>
+      Array.from(
+        navRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]') ??
+          [],
+      ).filter((el) => el.tabIndex !== -1);
+    // Defer to the next tick: the drawer transitions out of visibility:hidden,
+    // so the first link isn't focusable on the synchronous commit frame.
+    const focusTimer = window.setTimeout(() => focusables()[0]?.focus(), 60);
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const activeEl = document.activeElement;
+      const inDrawer = navRef.current?.contains(activeEl);
+      if (e.shiftKey && (activeEl === first || !inDrawer)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (activeEl === last || !inDrawer)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKey);
+      window.clearTimeout(focusTimer);
+      toggleEl?.focus();
     };
   }, [open]);
 
@@ -78,6 +113,7 @@ export function Header() {
         </Link>
 
         <nav
+          ref={navRef}
           id="primary-nav"
           className={`${styles.links} ${open ? styles.open : ''}`}
           aria-label={t('nav.primary')}
@@ -121,7 +157,9 @@ export function Header() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <span className={styles.searchPillText}>{t('cmdk.search')}</span>
-            <kbd className={styles.searchPillKbd}>⌘K</kbd>
+            <kbd className={styles.searchPillKbd} aria-hidden="true">
+              ⌘K
+            </kbd>
           </button>
           <LangToggle className={styles.langToggle} />
           <InstallButton />
@@ -129,6 +167,7 @@ export function Header() {
             {t('common.goPro')}
           </Link>
           <button
+            ref={toggleRef}
             className={styles.toggle}
             type="button"
             aria-label={t('nav.menu')}

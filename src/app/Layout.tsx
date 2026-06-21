@@ -25,7 +25,7 @@ export function Layout() {
       <ScrollProgress />
       <CommandPalette />
       <Header />
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <div key={location.pathname} className="page-enter">
           <Suspense fallback={<RouteFallback />}>
             <Outlet />

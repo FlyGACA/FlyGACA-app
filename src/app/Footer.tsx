@@ -22,7 +22,7 @@ export function Footer() {
           <div className={styles.brand}>
             <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
               <img src="/img/flygaca-mark.png" alt="" width={34} height={34} loading="lazy" />
-              <span className={styles.wordmark}>
+              <span className={styles.wordmark} aria-hidden="true">
                 <span className={styles.wmFly}>Fly</span>
                 <span className={styles.wmGaca}>GACA</span>
               </span>
@@ -52,7 +52,7 @@ export function Footer() {
           </div>
 
           <nav className={styles.col} aria-label={t('footer.explore')}>
-            <h4>{t('footer.explore')}</h4>
+            <h2>{t('footer.explore')}</h2>
             <ul>
               <li>
                 <Link to="/library">{t('nav.library')}</Link>
@@ -76,7 +76,7 @@ export function Footer() {
           </nav>
 
           <nav className={styles.col} aria-label={t('footer.legal')}>
-            <h4>{t('footer.legal')}</h4>
+            <h2>{t('footer.legal')}</h2>
             <ul>
               <li>
                 <Link to="/disclaimer">{t('footer.disclaimerLink')}</Link>
@@ -94,7 +94,7 @@ export function Footer() {
           </nav>
 
           <nav className={styles.col} aria-label={t('footer.verify')}>
-            <h4>{t('footer.verify')}</h4>
+            <h2>{t('footer.verify')}</h2>
             <ul>
               <li>
                 <a href="https://gaca.gov.sa" target="_blank" rel="noopener">
