@@ -40,7 +40,7 @@ export function FlightForm({ initial, submitLabel, onSubmit, onCancel }: FlightF
 
   return (
     <>
-      <div className={styles.form}>
+      <div className={styles.form} role="group" aria-label={t('account.flightDetails')}>
         {FIELDS.map(({ key, placeholder }) => (
           <TextField
             key={key}

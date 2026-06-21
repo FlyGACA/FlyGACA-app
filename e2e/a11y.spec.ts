@@ -12,6 +12,9 @@ const PAGES = [
   '/account',
   '/library/charts',
   '/study/sheets',
+  '/study/quiz',
+  '/study/flashcards',
+  '/study/exam',
 ];
 
 for (const path of PAGES) {
