@@ -21,7 +21,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 export function Flashcards() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.flashcards'));
+  usePageMeta(t('meta.flashcards'), t('metaDesc.flashcards'));
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { fcSrs } = useStudyProgress();

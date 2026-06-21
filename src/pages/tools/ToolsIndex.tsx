@@ -50,7 +50,7 @@ function highlight(text: string, needle: string) {
 
 export function ToolsIndex() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.tools'));
+  usePageMeta(t('meta.tools'), t('metaDesc.tools'));
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ToolCategoryId | 'all'>('all');
   const { favorites, recents } = useToolPrefs();

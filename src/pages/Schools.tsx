@@ -15,7 +15,7 @@ interface Faq {
 
 export function Schools() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.schools'));
+  usePageMeta(t('meta.schools'), t('metaDesc.schools'));
   const sections = t('schools.sections', { returnObjects: true }) as unknown as Section[];
   const faqs = t('schools.faq', { returnObjects: true }) as unknown as Faq[];
   const email = t('schools.email');

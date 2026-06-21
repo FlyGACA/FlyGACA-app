@@ -26,7 +26,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 export function Quiz() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.quiz'));
+  usePageMeta(t('meta.quiz'), t('metaDesc.quiz'));
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { quizBest, flagged } = useStudyProgress();

@@ -18,7 +18,7 @@ function chartSrc(doc: ChartDoc): string {
 
 export function Charts() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.charts'));
+  usePageMeta(t('meta.charts'), t('metaDesc.charts'));
   const [reloadToken, setReloadToken] = useState(0);
   const index = useFetchJson<ChartsIndex>('/data/charts-index.json', reloadToken);
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);

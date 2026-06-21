@@ -17,7 +17,7 @@ function pdfSrc(doc: PdfDoc): string | null {
 
 export function StudySheets() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.sheets'));
+  usePageMeta(t('meta.sheets'), t('metaDesc.sheets'));
   const [reloadToken, setReloadToken] = useState(0);
   const index = useFetchJson<PdfsIndex>('/data/pdfs-index.json', reloadToken);
   const [params, setParam] = useUrlState({ doc: '' });

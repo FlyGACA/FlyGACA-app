@@ -23,7 +23,7 @@ const MODES = [
 
 export function StudyHub() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.study'));
+  usePageMeta(t('meta.study'), t('metaDesc.study'));
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
   const { quizBest, gsDone, fcSrs, streak, examHistory, flagged, lastBank } = useStudyProgress();
