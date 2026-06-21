@@ -2209,6 +2209,124 @@
           "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         }
       ]
+    },
+    {
+      "id": "flight-planning",
+      "title": "Flight Planning & Fuel",
+      "desc": "Mass & balance, fuel reserves, performance and the ISA — the planning numbers.",
+      "source": "GACAR Part 91 · FAA Pilot's Handbook of Aeronautical Knowledge",
+      "questions": [
+        {
+          "q": "On a standard day (ISA), what is the sea-level temperature?",
+          "options": [
+            "0°C",
+            "15°C",
+            "20°C",
+            "25°C"
+          ],
+          "answer": 1,
+          "explain": "The ICAO Standard Atmosphere defines sea level as 15°C and 1013.25 hPa."
+        },
+        {
+          "q": "What is the approximate ISA temperature lapse rate in the troposphere?",
+          "options": [
+            "1°C per 1,000 ft",
+            "2°C per 1,000 ft",
+            "3°C per 1,000 ft",
+            "2°C per 100 ft"
+          ],
+          "answer": 1,
+          "explain": "Temperature falls about 2°C (1.98°C) per 1,000 ft up to the tropopause."
+        },
+        {
+          "q": "How does a high density altitude affect take-off performance?",
+          "options": [
+            "Shortens the ground roll",
+            "Lengthens the ground roll",
+            "Has no effect",
+            "Improves the rate of climb"
+          ],
+          "answer": 1,
+          "explain": "Thinner air reduces engine thrust and lift, lengthening the take-off roll and flattening the climb."
+        },
+        {
+          "q": "Loading an aircraft aft of its centre-of-gravity limit mainly affects what?",
+          "options": [
+            "Fuel burn only",
+            "Longitudinal stability",
+            "Tyre pressure",
+            "Radio range"
+          ],
+          "answer": 1,
+          "explain": "An aft CG reduces longitudinal stability and can make stall recovery difficult."
+        },
+        {
+          "q": "Final reserve fuel is best described as fuel that…",
+          "options": [
+            "may be used during the cruise",
+            "should never be planned for use",
+            "is only for taxi",
+            "replaces alternate fuel"
+          ],
+          "answer": 1,
+          "explain": "Final reserve is a protected minimum on landing — it is never planned to be consumed en route."
+        },
+        {
+          "q": "One nautical mile is approximately how many metres?",
+          "options": [
+            "1,000 m",
+            "1,609 m",
+            "1,852 m",
+            "2,000 m"
+          ],
+          "answer": 2,
+          "explain": "By definition 1 NM = 1,852 m (1,609 m is a statute mile)."
+        },
+        {
+          "q": "With a true airspeed of 120 kt and a 20 kt direct headwind, the groundspeed is…",
+          "options": [
+            "100 kt",
+            "120 kt",
+            "140 kt",
+            "80 kt"
+          ],
+          "answer": 0,
+          "explain": "A headwind subtracts from TAS: 120 − 20 = 100 kt groundspeed."
+        },
+        {
+          "q": "To convert a fuel volume in litres to a mass, you multiply by its…",
+          "options": [
+            "temperature",
+            "specific gravity (density)",
+            "octane rating",
+            "viscosity"
+          ],
+          "answer": 1,
+          "explain": "Mass = volume × density. Avgas density is roughly 0.72 kg/L."
+        },
+        {
+          "q": "A stronger headwind component has what effect on take-off and landing distance?",
+          "options": [
+            "Increases both",
+            "Decreases both",
+            "No effect",
+            "Affects landing only"
+          ],
+          "answer": 1,
+          "explain": "A headwind reduces the ground run required for both take-off and landing."
+        },
+        {
+          "q": "Density altitude equals pressure altitude when…",
+          "options": [
+            "always",
+            "the temperature equals ISA for that level",
+            "never",
+            "flying at night"
+          ],
+          "answer": 1,
+          "explain": "When the actual temperature matches the ISA value for that level, density altitude equals pressure altitude."
+        }
+      ]
     }
   ]
 }

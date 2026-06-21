@@ -139,3 +139,23 @@ export const GUIDE_REGS: Record<string, string[]> = {
 
 /** "61" from "part-61" — for the chip label `GACAR Part {{part}}`. */
 export const partNumber = (slug: string): string => slug.replace(/^part-/, '');
+
+/** Guide → quiz bank id (quiz.json) for the "Test yourself" cross-link. */
+export const GUIDE_QUIZ: Record<string, string> = {
+  'saudi-ppl-requirements': 'pilot-licensing',
+  'saudi-cpl-requirements': 'pilot-licensing',
+  'saudi-instrument-rating': 'pilot-licensing',
+  'atpl-requirements': 'pilot-licensing',
+  'flight-instructor-rating': 'pilot-licensing',
+  'gaca-medical-class-1': 'medical',
+  'icao-english-saelpt': 'radio-elpt',
+  'radiotelephony-phraseology': 'radio-elpt',
+  'airspace-explained': 'airspace',
+  'reading-metar-taf': 'weather',
+  'decoding-notams': 'aip-ais',
+  'the-airac-cycle': 'aip-ais',
+  'fuel-planning-and-reserves': 'navigation',
+  'density-altitude-and-performance': 'aerodynamics',
+  'weight-and-balance-basics': 'aerodynamics',
+  'drone-uas-rules-in-ksa': 'air-law',
+};

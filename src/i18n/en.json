@@ -2199,7 +2199,8 @@
     "copyLink": "Copy link to section",
     "copied": "Copied",
     "regsCited": "Regulations cited",
-    "regChip": "GACAR Part {{part}}"
+    "regChip": "GACAR Part {{part}}",
+    "testYourself": "Test yourself"
   },
   "study": {
     "title": "Study",
@@ -2255,20 +2256,6 @@
     "sheetsDesc": "Printable one-page PDF summaries for each licence and check.",
     "packPro": "Included with Pro",
     "packGo": "Go Pro to unlock",
-    "packItems": [
-      {
-        "name": "AIP pack",
-        "desc": "Aeronautical information for Saudi aerodromes and airspace."
-      },
-      {
-        "name": "ELP pack",
-        "desc": "English language proficiency (SAELPT) practice."
-      },
-      {
-        "name": "Conversion pack",
-        "desc": "Foreign-to-GACA licence conversion prep."
-      }
-    ],
     "streak": "Study streak",
     "streakUnit": "days",
     "streakMilestone": "🔥 {{n}}-day study streak — keep it going!",
@@ -2291,7 +2278,42 @@
     "summaryTitle": "Answer summary",
     "reviewSubmit": "Review & submit",
     "submitExam": "Submit exam",
-    "byTopic": "By topic"
+    "byTopic": "By topic",
+    "packCatalog": {
+      "ppl-exam": {
+        "name": "PPL exam prep",
+        "desc": "Everything for the Saudi PPL written exam — air law, airspace, navigation and operations."
+      },
+      "airspace-vfr": {
+        "name": "Airspace & VFR",
+        "desc": "Airspace classes, VFR minima and the rules of the air."
+      },
+      "medical": {
+        "name": "Aviation medical",
+        "desc": "Class 1 medical standards and the human factors that surround them."
+      },
+      "aip": {
+        "name": "AIP pack",
+        "desc": "Aeronautical information for Saudi aerodromes and airspace."
+      },
+      "elp": {
+        "name": "ELP pack",
+        "desc": "English language proficiency (SAELPT) practice."
+      },
+      "conversion": {
+        "name": "Conversion pack",
+        "desc": "Foreign-to-GACA licence conversion prep."
+      }
+    },
+    "packMixed": "Mixed topics",
+    "startPackQuiz": "Start pack quiz",
+    "packItemCount": "{{n}} items",
+    "reviewFlagged": "Review flagged ({{n}})",
+    "reviewFlaggedTitle": "Flagged questions",
+    "weakest": "Focus areas",
+    "dueToday": "Due today",
+    "examHistory": "Recent exams",
+    "resume": "Resume"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",

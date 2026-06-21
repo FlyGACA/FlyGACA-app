@@ -10,6 +10,7 @@ import {
   GUIDE_SLUGS,
   GUIDE_TOOLS,
   GUIDE_REGS,
+  GUIDE_QUIZ,
   GUIDE_META,
   TOOL_NAME_KEY,
   partNumber,
@@ -68,6 +69,7 @@ export function Guide() {
   const adel = adelLink(t(`${base}.adel`));
   const tools = GUIDE_TOOLS[guideSlug] ?? [];
   const regs = GUIDE_REGS[guideSlug] ?? [];
+  const quizBank = GUIDE_QUIZ[guideSlug];
   const meta = GUIDE_META[guideSlug];
   const minutes = readingMinutes(
     [intro, ...sections.flatMap((s) => [s.h, s.p]), ...takeaways].join(' '),
@@ -167,6 +169,11 @@ export function Guide() {
             {t(TOOL_NAME_KEY[to] ?? to)}
           </Link>
         ))}
+        {quizBank && (
+          <Link to={`/study/quiz?bank=${quizBank}`} className={styles.toolChip}>
+            {t('guides.testYourself')}
+          </Link>
+        )}
       </nav>
 
       {regs.length > 0 && (

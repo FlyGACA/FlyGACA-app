@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
-import { useStudyProgress, setQuizBest } from '../../lib/studyProgress';
+import { useStudyProgress, setQuizBest, setLastBank, toggleFlag } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
+import { buildSession, isSynthetic } from './session';
 import styles from './Study.module.css';
 
 /** Fisher–Yates shuffle (returns a new array). */
@@ -27,8 +29,32 @@ export function Quiz() {
   usePageMeta(t('meta.quiz'));
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
-  const { quizBest } = useStudyProgress();
+  const { quizBest, flagged } = useStudyProgress();
   const [bank, setBank] = useState<QuizBank | null>(null);
+  const [params, setParams] = useSearchParams();
+
+  // Launch a focused session (pack / single bank / flagged review) from the URL.
+  useEffect(() => {
+    if (!data || bank) return;
+    const sess = buildSession(
+      data,
+      { pack: params.get('pack'), bank: params.get('bank'), review: params.get('review') },
+      flagged,
+      t,
+    );
+    if (sess) setBank(sess);
+    // Build once when data/params resolve; flagged/t are snapshotted intentionally.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, params, bank]);
+
+  const openBank = (b: QuizBank) => {
+    setBank(b);
+    setLastBank(b.id);
+  };
+  const backToBanks = () => {
+    setBank(null);
+    if ([...params.keys()].length) setParams({}, { replace: true });
+  };
 
   if (loading) return <Shell>{t('common.loading')}</Shell>;
   if (error || !data)
@@ -53,7 +79,7 @@ export function Quiz() {
             const best = quizBest[b.id];
             return (
               <li key={b.id}>
-                <button type="button" className={styles.bank} onClick={() => setBank(b)}>
+                <button type="button" className={styles.bank} onClick={() => openBank(b)}>
                   <span className={styles.bankTitle}>{b.title}</span>
                   <span className={styles.bankDesc}>{b.desc}</span>
                   <span className={styles.bankMeta}>
@@ -70,11 +96,13 @@ export function Quiz() {
     );
   }
 
-  return <Runner bank={bank} onBack={() => setBank(null)} />;
+  return <Runner bank={bank} onBack={backToBanks} />;
 }
 
 function Runner({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
   const { t } = useTranslation();
+  const { flagged } = useStudyProgress();
+  const synthetic = isSynthetic(bank.id);
   const [queue, setQueue] = useState<QuizQuestion[]>(() => shuffle(bank.questions));
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -95,7 +123,7 @@ function Runner({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
 
   function next() {
     if (i + 1 >= queue.length) {
-      setQuizBest(bank.id, Math.round((correct / queue.length) * 100));
+      if (!synthetic) setQuizBest(bank.id, Math.round((correct / queue.length) * 100));
       setDone(true);
     } else {
       setI(i + 1);
@@ -186,9 +214,26 @@ function Runner({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
       <button type="button" className={styles.back} onClick={onBack}>
         ← {t('study.back')}
       </button>
-      <p className={styles.qProgress} role="status" aria-live="polite">
-        {t('study.question', { n: i + 1, total: queue.length })}
-      </p>
+      <div className={styles.qHead}>
+        <p className={styles.qProgress} role="status" aria-live="polite">
+          {t('study.question', { n: i + 1, total: queue.length })}
+        </p>
+        {!synthetic &&
+          (() => {
+            const qIdx = bank.questions.indexOf(q);
+            const isFlagged = (flagged[bank.id] ?? []).includes(qIdx);
+            return (
+              <button
+                type="button"
+                className={`${styles.flagBtn} ${isFlagged ? styles.flagOn : ''}`}
+                aria-pressed={isFlagged}
+                onClick={() => toggleFlag(bank.id, qIdx)}
+              >
+                {isFlagged ? '★' : '☆'} {t(isFlagged ? 'study.flagged' : 'study.flag')}
+              </button>
+            );
+          })()}
+      </div>
       <ProgressBar percent={Math.round((i / queue.length) * 100)} />
       <h2 className={styles.qText}>{q.q}</h2>
       <ul className={styles.options}>
