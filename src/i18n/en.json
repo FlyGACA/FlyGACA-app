@@ -63,7 +63,8 @@
     "charts": "VFR Charts",
     "home": "Fly GACA — home",
     "primary": "Primary",
-    "menu": "Menu"
+    "menu": "Menu",
+    "more": "More"
   },
   "command": {
     "title": "Search & jump",

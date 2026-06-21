@@ -101,7 +101,7 @@
   position: relative;
   color: color-mix(in srgb, var(--text-muted) 35%, var(--text));
   font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   padding-block: var(--space-2);
   padding-inline: var(--space-3);
   min-block-size: 44px;
@@ -117,17 +117,11 @@
   background: var(--brand-tint);
   text-decoration: none;
 }
-/* Bold active state: filled brand-tint pill (mirrors cleanly in RTL). */
+/* Active state: soft brand-tint pill, semibold (not bold) — mirrors in RTL. */
 .links a.active {
   color: var(--brand-hover);
-  background: var(--brand-tint-strong);
-  font-weight: var(--fw-bold);
-}
-
-/* CTA lives inside the drawer on mobile only. Scoped under .links so it wins
-   the specificity tie against the global .btn { display: inline-flex }. */
-.links .drawerCta {
-  display: none;
+  background: var(--brand-tint);
+  font-weight: var(--fw-semibold);
 }
 
 .actions {
@@ -265,63 +259,13 @@
   color: var(--text-dim);
 }
 
-/* --- Hamburger toggle + animated burger glyph --- */
-.toggle {
+/* --- Mobile bottom dock + "More" sheet (shown ≤860px; base = hidden) --- */
+.dock,
+.sheet {
   display: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: 44px;
-  block-size: 44px;
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
-}
-.toggle:hover {
-  border-color: var(--brand-hover);
-  background: var(--brand-tint);
 }
 
-.burger {
-  position: relative;
-  inline-size: 20px;
-  block-size: 14px;
-  display: inline-block;
-}
-.burger span {
-  position: absolute;
-  inset-inline: 0;
-  block-size: 2px;
-  border-radius: 2px;
-  background: currentColor;
-  transition:
-    transform var(--dur) var(--ease),
-    opacity var(--dur) var(--ease);
-}
-.burger span:nth-child(1) {
-  inset-block-start: 0;
-}
-.burger span:nth-child(2) {
-  inset-block-start: 6px;
-}
-.burger span:nth-child(3) {
-  inset-block-start: 12px;
-}
-.burgerOpen span:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
-}
-.burgerOpen span:nth-child(2) {
-  opacity: 0;
-}
-.burgerOpen span:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
-}
-
-/* --- Mobile drawer backdrop (off-canvas tap target) --- */
+/* Mobile sheet backdrop (off-canvas tap target). */
 .backdrop {
   display: none;
 }
@@ -332,60 +276,17 @@
     font-size: 1.15rem;
   }
 
+  /* The inline nav gives way to the bottom dock on mobile. */
   .links {
-    position: fixed;
-    inset-block-start: var(--nav-h);
-    inset-inline: 0;
-    z-index: var(--z-dropdown);
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-1);
-    margin: 0;
-    padding: var(--space-4) var(--space-5) calc(var(--space-5) + var(--safe-bottom));
-    background: var(--surface);
-    border-block-end: 1px solid var(--border);
-    box-shadow: var(--shadow-pop);
-    max-block-size: calc(100dvh - var(--nav-h));
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-12px);
-    transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease),
-      visibility var(--dur) var(--ease);
-  }
-  .links.open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-  .links a {
-    inline-size: 100%;
-    padding-inline: var(--space-4);
-    border-radius: var(--radius-md);
-    min-block-size: 48px;
-    font-size: var(--fs-base);
-  }
-  .links a.active {
-    background: var(--brand-tint-strong);
-    border-inline-start: 3px solid var(--brand);
-    padding-inline-start: calc(var(--space-4) - 3px);
+    display: none;
   }
 
-  .links .drawerCta {
-    display: inline-flex;
-    inline-size: 100%;
-    margin-block-start: var(--space-3);
-  }
-
-  /* Scoped under .actions to beat the global .btn display in the cascade. */
+  /* Go Pro moves into the "More" sheet on mobile. */
   .actions .cta {
     display: none;
   }
 
-  /* Collapse the search pill to its icon to save room next to the burger. */
+  /* Collapse the search pill to its icon to save room in the header. */
   .searchPillText,
   .searchPillKbd {
     display: none;
@@ -396,20 +297,160 @@
     justify-content: center;
   }
 
-  .toggle {
-    display: inline-flex;
+  /* --- Floating bottom dock --- */
+  .dock {
+    position: fixed;
+    inset-block-end: calc(var(--space-3) + var(--safe-bottom));
+    inset-inline: var(--space-4);
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-1);
+    inline-size: auto;
+    max-inline-size: 30rem;
+    margin-inline: auto;
+    padding: var(--space-2);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-pop);
   }
 
+  .dockItem {
+    position: relative;
+    flex: 1 1 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-inline-size: 0;
+    min-block-size: 52px;
+    padding-block: var(--space-1);
+    padding-inline: 2px;
+    border: 0;
+    background: transparent;
+    color: color-mix(in srgb, var(--text-muted) 30%, var(--text));
+    font-family: inherit;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  /* Spotlight indicator: a small glowing dot above the active tab. The dot row
+     is reserved on every tab so the icon never shifts between states. */
+  .dockItem::before {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    transition:
+      background var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+  .dockItem svg {
+    inline-size: 22px;
+    block-size: 22px;
+  }
+  .dockItem span {
+    max-inline-size: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .dockItem:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .dockItem:active {
+    transform: scale(0.94);
+  }
+  .dockActive {
+    color: var(--brand-hover);
+  }
+  .dockActive::before {
+    background: var(--brand-hover);
+    box-shadow: 0 0 10px 1px color-mix(in srgb, var(--brand-hover) 60%, transparent);
+  }
+
+  /* --- "More" sheet: floats just above the dock --- */
+  .sheet {
+    position: fixed;
+    inset-block-end: calc(var(--space-3) + var(--safe-bottom) + 72px);
+    inset-inline: var(--space-4);
+    z-index: var(--z-dropdown);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    inline-size: auto;
+    max-inline-size: 30rem;
+    margin-inline: auto;
+    max-block-size: calc(100dvh - var(--nav-h) - 120px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-3);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-pop);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(0.98);
+    transform-origin: bottom center;
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      visibility var(--dur) var(--ease);
+  }
+  .sheet.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+  .sheet a {
+    display: inline-flex;
+    align-items: center;
+    inline-size: 100%;
+    min-block-size: 48px;
+    padding-inline: var(--space-3);
+    border-radius: var(--radius-md);
+    color: color-mix(in srgb, var(--text-muted) 30%, var(--text));
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    transition:
+      color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+  .sheet a:hover {
+    color: var(--text);
+    background: var(--brand-tint);
+    text-decoration: none;
+  }
+  .sheet a.active {
+    color: var(--brand-hover);
+    background: var(--brand-tint);
+    font-weight: var(--fw-semibold);
+  }
+  .sheet .sheetCta {
+    display: inline-flex;
+    inline-size: 100%;
+    margin-block-start: var(--space-2);
+  }
+
+  /* Dimmed backdrop behind the sheet (sits above the dock when open). */
   .backdrop {
     display: block;
     position: fixed;
-    /* The header's backdrop-filter makes it the containing block for its
-       fixed children, so inset-block-end would resolve against the ~68px
-       header box. Anchor to the top and give it an explicit viewport height. */
-    inset-block-start: var(--nav-h);
-    inset-inline: 0;
-    block-size: 100dvh;
-    z-index: var(--z-base);
+    inset: 0;
+    z-index: var(--z-raised);
     margin: 0;
     padding: 0;
     border: 0;
