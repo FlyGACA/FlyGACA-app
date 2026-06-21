@@ -1622,7 +1622,9 @@
         "generic": "Couldn't open billing just now. Please try again.",
         "sign-in-required": "Sign in to manage your subscription.",
         "billing-unavailable": "Billing isn't connected in this build.",
-        "no-subscription": "No active subscription to manage."
+        "no-subscription": "No active subscription to manage.",
+        "native-billing": "Manage your subscription from the app store.",
+        "no-url": "Couldn't reach billing just now. Please try again."
       }
     },
     "signOut": "Sign out",

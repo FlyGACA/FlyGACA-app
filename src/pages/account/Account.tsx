@@ -222,7 +222,8 @@ export function Account() {
     let n = 0;
     const id = window.setInterval(() => {
       void refreshAccount();
-      if (++n >= 5) window.clearInterval(id);
+      // ~20s of polling — the webhook write can lag the redirect by several seconds.
+      if (++n >= 8) window.clearInterval(id);
     }, 2500);
     return () => window.clearInterval(id);
   }, [checkout]);

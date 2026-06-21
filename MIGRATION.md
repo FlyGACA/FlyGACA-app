@@ -112,9 +112,14 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
   calls checkout when `canCheckout()` (configured + web), redirecting an unauthenticated visitor to
   sign in; otherwise it stays disabled. Gated + unit-tested; emulator-verified per the runbook.
 
-  **Remaining for production:** inject real `VITE_FIREBASE_*` + reCAPTCHA/App-Check keys and Stripe
-  price IDs, enforce App Check on the Functions, deploy `firestore.rules`. Native RevenueCat IAP
-  purchase is wired when the `@revenuecat/purchases-capacitor` plugin is added to the iOS shell.
+  **Remaining for production (owner live-ops — see the step-by-step in `docs/BILLING.md`):** create the
+  Stripe product/prices, set the `STRIPE_*` secrets/params + `APP_ORIGIN`, register the `/api/stripe-webhook`
+  endpoint, `npm run deploy:functions` + `deploy:rules`, then provision the reCAPTCHA/App-Check key and
+  enable `enforceAppCheck` last. Native RevenueCat IAP purchase is wired when the
+  `@revenuecat/purchases-capacitor` plugin is added to the iOS shell.
+
+  > Fixed in-repo: the client's `FUNCTIONS_REGION` had drifted to `me-central1`; it now matches the billing
+  > callables' `me-central2` so checkout resolves in production (guarded by a test in `tests/billing.test.ts`).
 
 ## ✅ Stage 9 — Hardening & cutover
 
