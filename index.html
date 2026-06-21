@@ -60,7 +60,7 @@
     <link
       rel="stylesheet"
       media="print"
-      onload="this.media='all'"
+      onload="this.media = 'all'"
       href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap"
     />
     <noscript>
@@ -69,9 +69,110 @@
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap"
       />
     </noscript>
+    <!-- Critical CSS for the static home hero shell below: it paints from the
+         initial HTML at CSS-load time (no JS), so the <h1> becomes the LCP element
+         immediately instead of waiting for the bundle + React. Values mirror
+         src/styles/tokens.css; React replaces #root on boot. -->
+    <style>
+      #app-shell {
+        min-block-size: 62vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0a0e12;
+        padding: clamp(2rem, 8vh, 5rem) 1rem;
+        text-align: center;
+        font-family:
+          'Atkinson Hyperlegible',
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      #app-shell .s-inner {
+        max-inline-size: 64rem;
+        margin-inline: auto;
+      }
+      #app-shell .s-eyebrow {
+        margin: 0;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 600;
+        color: #b5ddc2;
+      }
+      #app-shell h1 {
+        margin: 1rem 0 0;
+        font-size: clamp(2rem, 1.5rem + 2.1vw, 3rem);
+        line-height: 1.15;
+        background: linear-gradient(102deg, #2d6e8a 0%, #8fc9a8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      #app-shell .s-sub {
+        margin: 1rem auto 0;
+        max-inline-size: 64ch;
+        font-size: 1.15rem;
+        line-height: 1.65;
+        color: #9da9b4;
+      }
+      #app-shell .s-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-block-start: 2rem;
+      }
+      #app-shell .s-btn {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: 44px;
+        padding: 0.75rem 1.4rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 600;
+        text-decoration: none;
+        color: #e8edf2;
+      }
+      #app-shell .s-btn.primary {
+        background: #2d6e8a;
+        color: #fff;
+      }
+      #app-shell .s-btn.ghost {
+        border-color: rgba(232, 237, 242, 0.25);
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static landing hero (English default) — paints before JS for fast LCP/FCP.
+           Mirrors home.eyebrow/title/subtitle/cta in src/i18n/en.json; keep in sync.
+           Removed immediately on non-home routes (the SPA fallback serves this file
+           for every path); React replaces it on the home route. -->
+      <div id="app-shell">
+        <div class="s-inner">
+          <p class="s-eyebrow">Independent · Educational · Bilingual</p>
+          <h1>Every Saudi reg. One captain on the answer.</h1>
+          <p class="s-sub">
+            A fast, free reference library of Saudi civil-aviation regulations (GACAR), charts and
+            study tools — with an AI flight instructor who cites the exact Part and section.
+          </p>
+          <div class="s-cta">
+            <a class="s-btn primary" href="/library">Open the library</a>
+            <a class="s-btn" href="/tools">Flight tools</a>
+            <a class="s-btn ghost" href="/chat">Ask Captain Adel</a>
+          </div>
+        </div>
+      </div>
+      <script>
+        // The shell is the home hero; on any other route the SPA fallback still
+        // serves this file, so drop the shell there to avoid a wrong-page flash.
+        if (location.pathname !== '/' && location.pathname !== '/index.html') {
+          var s = document.getElementById('app-shell');
+          if (s) s.remove();
+        }
+      </script>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
