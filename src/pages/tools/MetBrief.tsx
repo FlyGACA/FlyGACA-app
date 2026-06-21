@@ -16,7 +16,7 @@ import styles from './MetBrief.module.css';
  */
 export function MetBrief() {
   const { t } = useTranslation();
-  const { data } = useFetchJson<AirportsIndex>('/data/airports.json');
+  const { data, loading, error } = useFetchJson<AirportsIndex>('/data/airports.json');
   const [inputs, set] = useUrlState({ route: '' });
 
   const byIcao = useMemo(() => {
@@ -48,6 +48,8 @@ export function MetBrief() {
         { to: '/tools/notam', label: t('tools.items.notam.name') },
       ]}
     >
+      {loading && <p>{t('common.loading')}</p>}
+      {error && <p role="alert">{t('common.loadError')}</p>}
       <FieldGrid>
         <TextField
           label={t('metBrief.routeLabel')}
