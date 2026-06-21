@@ -2293,6 +2293,7 @@
     "logApproaches": "Log instrument approaches to track recency",
     "daysLeft": "{{n}} days left",
     "daysOver": "{{n}} days overdue",
+    "moreNeeded": "{{n}} more needed",
     "fixNow": "How to renew",
     "askAdel": "Ask Captain Adel",
     "items": {

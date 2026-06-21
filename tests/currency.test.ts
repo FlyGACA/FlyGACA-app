@@ -121,6 +121,14 @@ describe('computeCurrency — passenger & night & ifr', () => {
     const withAppr = computeCurrency(blankProfile, [flight('2024-05-20', { appr: '6' })], now);
     expect(item(withAppr, 'ifr').status).not.toBe('unknown');
   });
+
+  it('exposes count progress on landing items but not time-based ones', () => {
+    const flights = [flight('2024-05-20', { ldg: '2', nightLdg: '0' })];
+    const items = computeCurrency(blankProfile, flights, now);
+    expect(item(items, 'passenger90').count).toEqual({ have: 2, need: 3 });
+    expect(item(items, 'medical').count).toBeUndefined();
+    expect(item(items, 'flightReview').count).toBeUndefined();
+  });
 });
 
 describe('recordCurrency', () => {
