@@ -18,10 +18,17 @@ service cloud.firestore {
     function isHours(v) {
       return v is number && v >= 0 && v <= 100000;
     }
+    // Simple email validation: contains @ and a dot after @, length reasonable.
+    function isEmail(email) {
+      return email is string
+          && email.size() >= 5
+          && email.size() <= 254
+          && email.matches('^[^@]+@[^@]+\\.[^@]+$');
+    }
     // A profile write must always carry a sane email + displayName.
     function validProfile() {
       return request.resource.data.email is string
-        && request.resource.data.email.size() < 254
+        && isEmail(request.resource.data.email)
         && (!('displayName' in request.resource.data)
             || (request.resource.data.displayName is string
                 && request.resource.data.displayName.size() <= 120));
@@ -40,9 +47,9 @@ service cloud.firestore {
     // Waitlist — anyone may submit their email; the list is never readable
     // from the client, so addresses stay private.
     match /waitlist/{entry} {
-      allow create: if request.resource.data.email is string
-                    && request.resource.data.email.size() > 3
-                    && request.resource.data.email.size() < 254;
+      allow create: if isEmail(request.resource.data.email)
+                    && request.resource.data.email.size() >= 5
+                    && request.resource.data.email.size() <= 254;
       allow read, update, delete: if false;
     }
 
