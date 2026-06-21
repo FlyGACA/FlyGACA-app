@@ -61,7 +61,9 @@ describe('<CalcShell />', () => {
         fireEvent.click(btn);
       });
       expect(writeText).toHaveBeenCalledWith(window.location.href);
-      expect(screen.getByText('✓ Link copied')).toBeInTheDocument();
+      // The confirmation appears twice by design — the button's visible label and
+      // the sr-only live region (WCAG 4.1.3) — so assert the button's own label.
+      expect(btn).toHaveTextContent('✓ Link copied');
       await act(async () => {
         vi.advanceTimersByTime(1500);
       });
