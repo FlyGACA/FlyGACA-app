@@ -11,6 +11,17 @@ function Probe({ title, desc }: { title?: string; desc?: string }) {
   return null;
 }
 
+function LdProbe() {
+  usePageMeta('Crosswind', 'desc', [
+    { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Crosswind' },
+    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [] },
+  ]);
+  return null;
+}
+
+const managedLd = () =>
+  document.head.querySelector('script[data-managed-ld]')?.textContent ?? null;
+
 // usePageMeta reads useLocation, so it must render inside a Router.
 const renderProbe = (ui: ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);
 
@@ -40,5 +51,19 @@ describe('usePageMeta', () => {
     unmount();
     expect(document.title).toBe(DEFAULT_TITLE);
     expect(ogTitle()).toBe(DEFAULT_TITLE);
+  });
+
+  it('injects a single managed JSON-LD script and removes it on unmount', () => {
+    const { unmount } = renderProbe(<LdProbe />);
+    const json = managedLd();
+    expect(json).toBeTruthy();
+    const parsed = JSON.parse(json as string);
+    expect(parsed.map((x: { '@type': string }) => x['@type'])).toEqual([
+      'SoftwareApplication',
+      'BreadcrumbList',
+    ]);
+    expect(document.head.querySelectorAll('script[data-managed-ld]')).toHaveLength(1);
+    unmount();
+    expect(managedLd()).toBeNull();
   });
 });

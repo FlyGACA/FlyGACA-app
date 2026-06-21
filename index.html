@@ -20,6 +20,38 @@
     <meta property="og:image" content="/img/og-card.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Fly GACA — Saudi Aviation Library</title>
+    <!-- Site-wide structured data (constant; per-route schema is injected by usePageMeta). -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://flygaca.com/#organization",
+            "name": "Fly GACA",
+            "url": "https://flygaca.com",
+            "logo": "https://flygaca.com/img/icon-512.png",
+            "description": "Fly GACA — an independent educational reference library of Saudi civil-aviation regulations (GACAR). Not affiliated with GACA."
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://flygaca.com/#website",
+            "name": "Fly GACA",
+            "url": "https://flygaca.com",
+            "inLanguage": ["en", "ar"],
+            "publisher": { "@id": "https://flygaca.com/#organization" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://flygaca.com/library?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
     <!-- Fonts: preconnect first, then combined stylesheet with display=swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

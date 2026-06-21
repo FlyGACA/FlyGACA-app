@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
 import { adelLink } from '../../lib/adel';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { articleLd, breadcrumbLd } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
 import {
   GUIDE_SLUGS,
@@ -23,13 +24,31 @@ interface Section {
 }
 
 export function Guide() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const valid = !!slug && GUIDE_SLUGS.includes(slug as GuideSlug);
   const base = `guides.items.${slug}`;
 
   // Hook must run before the early return; title is undefined for unknown slugs.
-  usePageMeta(valid ? t(`${base}.name`) : undefined);
+  usePageMeta(
+    valid ? t(`${base}.name`) : undefined,
+    valid ? t(`${base}.blurb`) : undefined,
+    valid
+      ? [
+          articleLd({
+            title: t(`${base}.name`),
+            description: t(`${base}.blurb`),
+            path: `/guides/${slug}`,
+            lang: i18n.language,
+          }),
+          breadcrumbLd([
+            { name: t('nav.home'), path: '/' },
+            { name: t('guides.title'), path: '/guides' },
+            { name: t(`${base}.name`), path: `/guides/${slug}` },
+          ]),
+        ]
+      : undefined,
+  );
 
   const [progress, setProgress] = useState(0);
   const onScroll = useCallback(() => {

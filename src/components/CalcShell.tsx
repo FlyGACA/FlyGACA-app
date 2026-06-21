@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
 import { usePageMeta } from '../lib/usePageMeta';
+import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
 import styles from './CalcShell.module.css';
 
 export interface RelatedTool {
@@ -44,8 +45,16 @@ export function CalcShell({
   related,
 }: CalcShellProps) {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
-  usePageMeta(title, intro);
+  usePageMeta(title, intro, [
+    softwareAppLd({ title, description: intro, path: pathname }),
+    breadcrumbLd([
+      { name: t('nav.home'), path: '/' },
+      { name: t('nav.tools'), path: '/tools' },
+      { name: title, path: pathname },
+    ]),
+  ]);
 
   async function copyLink() {
     try {
