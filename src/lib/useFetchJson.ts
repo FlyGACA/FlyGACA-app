@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchJson } from './content';
+import { loadJson } from './content';
 
 interface FetchState<T> {
   data: T | null;
@@ -8,22 +8,28 @@ interface FetchState<T> {
 }
 
 /**
- * Loads JSON content at runtime with abort-on-unmount. Bump `reloadToken` to
- * re-fetch the same path (e.g. a retry button after a network error).
+ * Loads JSON content at runtime through the shared `loadJson` cache, so several
+ * components reading the same `/data/*` file share one fetch + parse. Bump
+ * `reloadToken` to force a fresh load of the same path (e.g. a retry button).
  */
 export function useFetchJson<T>(path: string, reloadToken = 0): FetchState<T> {
   const [state, setState] = useState<FetchState<T>>({ data: null, error: null, loading: true });
 
   useEffect(() => {
-    const controller = new AbortController();
+    // The cache promise is shared and not abortable, so guard setState with an
+    // `ignore` flag on unmount instead of aborting the in-flight request.
+    let ignore = false;
     setState({ data: null, error: null, loading: true });
-    fetchJson<T>(path, controller.signal)
-      .then((data) => setState({ data, error: null, loading: false }))
+    loadJson<T>(path, reloadToken > 0)
+      .then((data) => {
+        if (!ignore) setState({ data, error: null, loading: false });
+      })
       .catch((error: unknown) => {
-        if (controller.signal.aborted) return;
-        setState({ data: null, error: error as Error, loading: false });
+        if (!ignore) setState({ data: null, error: error as Error, loading: false });
       });
-    return () => controller.abort();
+    return () => {
+      ignore = true;
+    };
   }, [path, reloadToken]);
 
   return state;

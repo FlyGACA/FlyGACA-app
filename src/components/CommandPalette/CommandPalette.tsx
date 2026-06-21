@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { fetchJson } from '../../lib/content';
+import { loadJson } from '../../lib/content';
 import { OPEN_CMDK_EVENT } from './openCommandPalette';
 import styles from './CommandPalette.module.css';
 
@@ -106,6 +106,7 @@ export function CommandPalette() {
   const [active, setActive] = useState(0);
   const [parts, setParts] = useState<Item[]>([]);
   const [aerodromes, setAerodromes] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -127,10 +128,12 @@ export function CommandPalette() {
   const loadData = useCallback(async () => {
     if (loaded.current) return;
     loaded.current = true;
+    setLoading(true);
     try {
+      // Shared cache: the palette and the flight tools reuse one airports fetch+parse.
       const [gacar, ap] = await Promise.all([
-        fetchJson<GacarIndex>('/data/gacar-index.json'),
-        fetchJson<AirportsIndex>('/data/airports.json'),
+        loadJson<GacarIndex>('/data/gacar-index.json'),
+        loadJson<AirportsIndex>('/data/airports.json'),
       ]);
       const catLabel = new Map(gacar.categories.map((c) => [c.id, c.label]));
       setParts(
@@ -153,6 +156,8 @@ export function CommandPalette() {
       );
     } catch {
       loaded.current = false; // allow a retry on the next open
+    } finally {
+      setLoading(false);
     }
   }, [ar]);
 
@@ -304,7 +309,7 @@ export function CommandPalette() {
 
         <div className={styles.results} ref={resultsRef}>
           {results.length === 0 ? (
-            <p className={styles.empty}>{t('cmdk.empty')}</p>
+            <p className={styles.empty}>{loading ? t('common.loading') : t('cmdk.empty')}</p>
           ) : (
             results.slice(0, 50).map((it, idx) => (
               <button

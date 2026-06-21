@@ -51,6 +51,31 @@ describe('useFetchJson', () => {
     await waitFor(() => expect(result.current.data).toEqual({ id: 'b' }));
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
+
+  it('de-duplicates concurrent loads of the same path to one fetch', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okJson({ shared: true }));
+    vi.stubGlobal('fetch', fetchMock);
+    const a = renderHook(() => useFetchJson('/data/airports.json'));
+    const b = renderHook(() => useFetchJson('/data/airports.json'));
+    await waitFor(() => expect(a.result.current.data).toEqual({ shared: true }));
+    await waitFor(() => expect(b.result.current.data).toEqual({ shared: true }));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('forces a fresh fetch when reloadToken changes', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(okJson({ v: 1 }))
+      .mockResolvedValueOnce(okJson({ v: 2 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result, rerender } = renderHook(({ tok }) => useFetchJson<{ v: number }>('/data/x.json', tok), {
+      initialProps: { tok: 0 },
+    });
+    await waitFor(() => expect(result.current.data).toEqual({ v: 1 }));
+    rerender({ tok: 1 });
+    await waitFor(() => expect(result.current.data).toEqual({ v: 2 }));
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('useFetchText', () => {
