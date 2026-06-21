@@ -27,3 +27,34 @@ export function climbFromFtPerNm(ftPerNm: number, groundSpeedKt?: number): Climb
 export function ftPerNmFromPercent(percent: number): number | null {
   return Number.isFinite(percent) ? (percent / 100) * FT_PER_NM : null;
 }
+
+export interface ClimbToAltitude {
+  /** Time to climb, minutes. */
+  timeMin: number;
+  /** Horizontal distance covered in the climb, NM. */
+  distNm: number;
+  /** Fuel burned in the climb (same unit as the flow), null if no flow given. */
+  fuel: number | null;
+}
+
+/**
+ * Time, distance and fuel to climb a height at an average rate of climb and
+ * groundspeed (optional fuel flow per hour). A planning aid — the AFM/POH climb
+ * tables are authoritative.
+ */
+export function timeToClimb(
+  altGainFt: number,
+  rocFpm: number,
+  groundSpeedKt: number,
+  fuelFlowPerHr?: number,
+): ClimbToAltitude | null {
+  if (!Number.isFinite(altGainFt) || !Number.isFinite(rocFpm) || rocFpm <= 0 || altGainFt < 0) {
+    return null;
+  }
+  if (!Number.isFinite(groundSpeedKt) || groundSpeedKt < 0) return null;
+  const timeMin = altGainFt / rocFpm;
+  const distNm = (groundSpeedKt * timeMin) / 60;
+  const fuel =
+    fuelFlowPerHr != null && Number.isFinite(fuelFlowPerHr) ? (fuelFlowPerHr * timeMin) / 60 : null;
+  return { timeMin, distNm, fuel };
+}

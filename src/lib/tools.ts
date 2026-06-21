@@ -83,6 +83,10 @@ export const TOOLS: ToolMeta[] = [
   t('isa', 'atmosphere', 'live', { badge: 'new', keywords: ['standard atmosphere', 'deviation'] }),
   t('altimeter', 'atmosphere', 'live', { badge: 'new', keywords: ['qnh', 'qfe', 'setting'] }),
   t('cloud-base', 'atmosphere', 'live', { keywords: ['dew point', 'spread', 'lcl'] }),
+  t('true-altitude', 'atmosphere', 'live', {
+    badge: 'new',
+    keywords: ['temperature error', 'cold weather', 'isa deviation'],
+  }),
 
   // Speed
   t('tas', 'speed', 'live', { keywords: ['true airspeed', 'cas', 'mach'] }),
@@ -102,6 +106,14 @@ export const TOOLS: ToolMeta[] = [
     badge: 'new',
     keywords: ['rate one', 'bank', 'radius'],
   }),
+  t('top-of-climb', 'climb-descent', 'live', {
+    badge: 'new',
+    keywords: ['toc', 'time to climb', 'fuel'],
+  }),
+  t('turn-performance', 'climb-descent', 'live', {
+    badge: 'new',
+    keywords: ['turn radius', 'rate of turn', 'bank'],
+  }),
 
   // Navigation & planning
   t('wind-triangle', 'navigation', 'live', {
@@ -120,6 +132,14 @@ export const TOOLS: ToolMeta[] = [
   t('e6b', 'navigation', 'live', { keywords: ['flight computer', 'whiz wheel'] }),
   t('route-planner', 'navigation', 'live', { keywords: ['leg', 'eta', 'wind'] }),
   t('flight-plan', 'navigation', 'live', { keywords: ['icao fpl', 'filing'] }),
+  t('critical-point', 'navigation', 'live', {
+    badge: 'new',
+    keywords: ['etp', 'pnr', 'point of no return', 'radius of action'],
+  }),
+  t('pivotal-altitude', 'navigation', 'live', {
+    badge: 'new',
+    keywords: ['eights on pylons', 'commercial maneuver'],
+  }),
 
   // Fuel & weight
   t('fuel', 'fuel-weight', 'live', { keywords: ['burn', 'endurance', 'range'] }),

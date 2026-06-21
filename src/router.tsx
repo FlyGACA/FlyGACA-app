@@ -83,6 +83,17 @@ const Airspace = lazyNamed(() => import('./pages/tools/Airspace'), 'Airspace');
 const Definitions = lazyNamed(() => import('./pages/tools/Definitions'), 'Definitions');
 const RoutePlanner = lazyNamed(() => import('./pages/tools/RoutePlanner'), 'RoutePlanner');
 const FlightPlan = lazyNamed(() => import('./pages/tools/FlightPlan'), 'FlightPlan');
+const CriticalPoint = lazyNamed(() => import('./pages/tools/CriticalPoint'), 'CriticalPoint');
+const TopOfClimb = lazyNamed(() => import('./pages/tools/TopOfClimb'), 'TopOfClimb');
+const TurnPerformance = lazyNamed(
+  () => import('./pages/tools/TurnPerformance'),
+  'TurnPerformance',
+);
+const PivotalAltitude = lazyNamed(
+  () => import('./pages/tools/PivotalAltitude'),
+  'PivotalAltitude',
+);
+const TrueAltitude = lazyNamed(() => import('./pages/tools/TrueAltitude'), 'TrueAltitude');
 
 // Guides
 const GuidesIndex = lazyNamed(() => import('./pages/guides/GuidesIndex'), 'GuidesIndex');
@@ -185,6 +196,11 @@ export const router = createBrowserRouter([
       { path: 'tools/definitions', element: <Definitions /> },
       { path: 'tools/route-planner', element: <RoutePlanner /> },
       { path: 'tools/flight-plan', element: <FlightPlan /> },
+      { path: 'tools/critical-point', element: <CriticalPoint /> },
+      { path: 'tools/top-of-climb', element: <TopOfClimb /> },
+      { path: 'tools/turn-performance', element: <TurnPerformance /> },
+      { path: 'tools/pivotal-altitude', element: <PivotalAltitude /> },
+      { path: 'tools/true-altitude', element: <TrueAltitude /> },
       { path: 'guides', element: <GuidesIndex /> },
       { path: 'guides/:slug', element: <Guide /> },
       { path: 'study', element: <StudyHub /> },

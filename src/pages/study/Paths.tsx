@@ -16,7 +16,7 @@ function partHref(url: string): string | null {
 
 export function Paths() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.paths'));
+  usePageMeta(t('meta.paths'), t('metaDesc.paths'));
   const { data, error, loading } = useFetchJson<PathsIndex>('/data/paths-index.json');
   const { pathDone } = useStudyProgress();
 

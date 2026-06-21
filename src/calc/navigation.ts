@@ -70,3 +70,13 @@ export function oneInSixty(flownNm: number, offTrackNm: number, toGoNm: number):
   const closing = fin(toGoNm) && toGoNm > 0 ? (offTrackNm / toGoNm) * 60 : 0;
   return { trackErrorDeg: trackError, correctionDeg: trackError + closing };
 }
+
+/**
+ * Pivotal altitude (ft) for eights-on-pylons: GS(kt)² / 11.3 — the height at
+ * which the line of sight to a ground point stays fixed on the wingtip. Pure
+ * planning aid for the commercial manoeuvre.
+ */
+export function pivotalAltitude(groundSpeedKt: number): number | null {
+  if (!fin(groundSpeedKt) || groundSpeedKt < 0) return null;
+  return (groundSpeedKt * groundSpeedKt) / 11.3;
+}

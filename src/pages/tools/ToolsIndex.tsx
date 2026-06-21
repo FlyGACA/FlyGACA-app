@@ -50,8 +50,9 @@ function highlight(text: string, needle: string) {
 
 export function ToolsIndex() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.tools'));
+  usePageMeta(t('meta.tools'), t('metaDesc.tools'));
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState<ToolCategoryId | 'all'>('all');
   const { favorites, recents } = useToolPrefs();
   const searchRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -75,10 +76,18 @@ export function ToolsIndex() {
     );
   }, [q, t]);
 
+  const filtered = category === 'all' ? matches : matches.filter((x) => x.category === category);
   const grouped = TOOL_CATEGORIES.map((cat) => ({
     cat,
-    tools: matches.filter((x) => x.category === cat),
+    tools: filtered.filter((x) => x.category === cat),
   })).filter((g) => g.tools.length > 0);
+  // Category counts (independent of the active filter) for the chip badges.
+  const catCount = useMemo(() => {
+    const m = new Map<ToolCategoryId, number>();
+    for (const tl of matches) m.set(tl.category, (m.get(tl.category) ?? 0) + 1);
+    return m;
+  }, [matches]);
+  const unfiltered = category === 'all';
 
   // Pinned + recent rows only when not actively searching.
   const pinned = favorites.map((id) => byId.get(id)).filter((x): x is ToolMeta => Boolean(x));
@@ -147,23 +156,44 @@ export function ToolsIndex() {
         <p className={styles.searchMeta} role="status">
           {q ? t('tools.resultCount', { count: matches.length }) : t('tools.searchTip')}
         </p>
+        <div className={styles.filters} role="group" aria-label={t('tools.title')}>
+          <button
+            type="button"
+            className={`${styles.filterChip} ${unfiltered ? styles.filterChipActive : ''}`}
+            aria-pressed={unfiltered}
+            onClick={() => setCategory('all')}
+          >
+            {t('tools.allCategories')}
+          </button>
+          {TOOL_CATEGORIES.filter((cat) => (catCount.get(cat) ?? 0) > 0).map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`${styles.filterChip} ${category === cat ? styles.filterChipActive : ''}`}
+              aria-pressed={category === cat}
+              onClick={() => setCategory(cat)}
+            >
+              <span aria-hidden="true">{CAT_ICON[cat]}</span> {t(`tools.categories.${cat}`)}
+            </button>
+          ))}
+        </div>
       </header>
 
       <div ref={rootRef} onKeyDown={onGridKeyDown}>
-        {!q && pinned.length > 0 && (
+        {unfiltered && !q && pinned.length > 0 && (
           <section className={styles.category}>
             <SectionHeader title={`★ ${t('tools.pinned')}`} tone="var(--gold)" />
             {renderGrid(pinned, 'var(--gold)')}
           </section>
         )}
-        {!q && recent.length > 0 && (
+        {unfiltered && !q && recent.length > 0 && (
           <section className={styles.category}>
             <SectionHeader title={`🕐 ${t('tools.recent')}`} tone="var(--cat-2)" />
             {renderGrid(recent, 'var(--cat-2)')}
           </section>
         )}
 
-        {grouped.length > 1 && (
+        {unfiltered && grouped.length > 1 && (
           <nav className={styles.jump} aria-label={t('tools.jumpNav')}>
             {grouped.map(({ cat }) => (
               <a key={cat} href={`#${cat}`} className={styles.jumpChip}>

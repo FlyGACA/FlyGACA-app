@@ -83,7 +83,7 @@ function partSlug(valid: Set<string>, ...candidates: (string | undefined)[]): st
 
 export function Chat() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.chat'));
+  usePageMeta(t('meta.chat'), t('metaDesc.chat'));
   const [params, setParams] = useSearchParams();
   const [messages, setMessages] = useState<Message[]>(loadTranscript);
   const [input, setInput] = useState('');
