@@ -54,6 +54,25 @@
   font-size: var(--fs-sm);
 }
 
+/* Landing/approach recency: a visual meter + how-many-more cue. */
+.count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-start: var(--space-1);
+  max-inline-size: 16rem;
+}
+.count > :first-child {
+  flex: 1;
+}
+.moreNeeded {
+  flex: none;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--warning);
+  white-space: nowrap;
+}
+
 .meta {
   display: flex;
   flex-direction: column;

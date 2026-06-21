@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { StatusPill, type StatusTone } from './StatusPill';
+import { ProgressBar } from './ProgressBar';
 import type { CurrencyItem, CurrencyStatus } from '../calc/currency';
 import styles from './CurrencyBoard.module.css';
 
@@ -46,6 +47,16 @@ export function CurrencyBoard({ items, showFix = true }: Props) {
           <div className={styles.main}>
             <span className={styles.label}>{item.label ?? t(item.labelKey)}</span>
             <span className={styles.detail}>{t(item.detailKey, item.detailVars)}</span>
+            {item.count && (
+              <div className={styles.count}>
+                <ProgressBar percent={Math.round((item.count.have / item.count.need) * 100)} />
+                {item.count.have < item.count.need && (
+                  <span className={styles.moreNeeded}>
+                    {t('currency.moreNeeded', { n: item.count.need - item.count.have })}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div className={styles.meta}>
             <StatusPill tone={tone[item.status]}>{t(statusLabel[item.status])}</StatusPill>

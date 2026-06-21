@@ -39,6 +39,8 @@ export interface CurrencyItem {
   /** i18n key for the sub-line, with optional interpolation vars. */
   detailKey: string;
   detailVars?: Record<string, string | number>;
+  /** Count progress for landing/approach recency (absent for time-based items). */
+  count?: { have: number; need: number };
   /** Route to the tool that explains how to renew this item. */
   fixTo: string;
 }
@@ -144,6 +146,7 @@ function rollingItem(
     daysLeft,
     detailKey,
     detailVars: { have: r.count, need, days },
+    count: { have: r.count, need },
     fixTo: '/tools/part61-currency',
   };
 }
