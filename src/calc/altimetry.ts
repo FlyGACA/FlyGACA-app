@@ -2,7 +2,7 @@
  * Altimetry helpers — flight level and QNH/QFE conversion. Builds on the ISA
  * core (src/calc/isa.ts). hPa throughout (the unit used in KSA). Planning aids.
  */
-import { pressureAltitude } from './isa';
+import { isaTemperature, pressureAltitude } from './isa';
 
 const FT_PER_HPA = 27.3;
 
@@ -34,4 +34,35 @@ export function altimeter(qnhHpa: number, elevFt: number): AltimeterResult | nul
   const pa = pressureAltitude(elevFt, qnhHpa, 'hpa');
   if (qfe == null || pa == null) return null;
   return { qfe, pressureAltitude: pa };
+}
+
+export interface TrueAltitudeResult {
+  /** True altitude, ft. */
+  trueAltFt: number;
+  /** Temperature-error correction applied, ft (+ when warmer than ISA). */
+  correctionFt: number;
+  /** ISA deviation used, °C. */
+  isaDevC: number;
+}
+
+/**
+ * True altitude from an indicated/pressure altitude corrected for non-standard
+ * temperature, using the standard ~4 ft per 1,000 ft per °C of ISA deviation
+ * approximation (height measured above the altimeter-setting source). Warm air
+ * → true altitude higher than indicated. An approximation — see the AIP/ICAO
+ * cold-temperature tables for terrain-critical operations.
+ */
+export function trueAltitude(
+  indicatedFt: number,
+  sourceElevFt: number,
+  oatC: number,
+): TrueAltitudeResult | null {
+  if (!Number.isFinite(indicatedFt) || !Number.isFinite(sourceElevFt) || !Number.isFinite(oatC)) {
+    return null;
+  }
+  const isaTemp = isaTemperature(indicatedFt);
+  if (isaTemp == null) return null;
+  const isaDevC = oatC - isaTemp;
+  const correctionFt = 4 * isaDevC * ((indicatedFt - sourceElevFt) / 1000);
+  return { trueAltFt: indicatedFt + correctionFt, correctionFt, isaDevC };
 }

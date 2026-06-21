@@ -1,5 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { altimeter, flightLevel, qfeToQnh, qnhToQfe } from '../src/calc/altimetry';
+import { altimeter, flightLevel, qfeToQnh, qnhToQfe, trueAltitude } from '../src/calc/altimetry';
+
+describe('trueAltitude', () => {
+  it('warm air → true altitude above indicated', () => {
+    // 10,000 ft indicated, sea-level source, OAT 0°C.
+    // ISA temp at 10,000 ft = 15 − 19.8 = −4.8°C; ISA dev = +4.8°C.
+    // correction = 4 × 4.8 × 10 = 192 ft → true ≈ 10,192 ft.
+    const r = trueAltitude(10000, 0, 0)!;
+    expect(r.isaDevC).toBeCloseTo(4.8, 1);
+    expect(r.correctionFt).toBeCloseTo(192, 0);
+    expect(r.trueAltFt).toBeCloseTo(10192, 0);
+  });
+  it('no correction when there is no height above the source', () => {
+    expect(trueAltitude(2000, 2000, -30)!.correctionFt).toBeCloseTo(0, 6);
+  });
+  it('rejects a non-number', () => {
+    expect(trueAltitude(NaN, 0, 0)).toBeNull();
+  });
+});
 
 describe('flightLevel', () => {
   it('rounds pressure altitude to the nearest 100 ft', () => {

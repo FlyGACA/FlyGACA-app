@@ -30,12 +30,19 @@ export function Tas() {
     <CalcShell
       title={t('tas.title')}
       intro={t('tas.intro')}
+      category={t('tools.categories.speed')}
+      formula={t('tas.formula')}
       onExample={() => {
         set('cas', EXAMPLE.cas);
         set('pa', EXAMPLE.pa);
         set('oat', EXAMPLE.oat);
       }}
       adelPrompt={adelPrompt}
+      related={[
+        { to: '/tools/mach', label: t('tools.items.mach.name') },
+        { to: '/tools/isa', label: t('tools.items.isa.name') },
+        { to: '/tools/wind-triangle', label: t('tools.items.wind-triangle.name') },
+      ]}
     >
       <div className={shared.inputs}>
         <label className={shared.field}>

@@ -32,12 +32,19 @@ export function DensityAltitude() {
     <CalcShell
       title={t('densityAltitude.title')}
       intro={t('densityAltitude.intro')}
+      category={t('tools.categories.atmosphere')}
+      formula={t('densityAltitude.formula')}
       onExample={() => {
         set('elev', EXAMPLE.elev);
         set('qnh', EXAMPLE.qnh);
         set('oat', EXAMPLE.oat);
       }}
       adelPrompt={adelPrompt}
+      related={[
+        { to: '/tools/isa', label: t('tools.items.isa.name') },
+        { to: '/tools/true-altitude', label: t('tools.items.true-altitude.name') },
+        { to: '/tools/takeoff-landing', label: t('tools.items.takeoff-landing.name') },
+      ]}
     >
       <div className={shared.inputs}>
         <label className={shared.field}>

@@ -27,3 +27,29 @@ export function standardRateTurn(tasKt: number): TurnResult | null {
     ruleOfThumbDeg: tasKt / 10 + 7,
   };
 }
+
+export interface TurnPerformance {
+  /** Rate of turn, degrees per second. */
+  rateDegSec: number;
+  /** Turn radius, nautical miles. */
+  radiusNm: number;
+  /** Turn radius, feet. */
+  radiusFt: number;
+}
+
+/**
+ * Rate of turn and radius for any true airspeed and bank angle:
+ *   rate (°/s) = 1091·tanφ / TAS,   radius (ft) = TAS² / (11.26·tanφ)
+ * (TAS in kt). Pure planning aid.
+ */
+export function turnPerformance(tasKt: number, bankDeg: number): TurnPerformance | null {
+  if (!Number.isFinite(tasKt) || !Number.isFinite(bankDeg) || tasKt <= 0) return null;
+  if (bankDeg <= 0 || bankDeg >= 90) return null;
+  const tan = Math.tan((bankDeg * Math.PI) / 180);
+  const radiusFt = (tasKt * tasKt) / (11.26 * tan);
+  return {
+    rateDegSec: (1091 * tan) / tasKt,
+    radiusNm: radiusFt / 6076.12,
+    radiusFt,
+  };
+}
