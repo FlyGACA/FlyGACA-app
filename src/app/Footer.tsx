@@ -18,8 +18,25 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       <div className="container">
-        <div className={styles.top}>
-          <div className={styles.brand}>
+        <div className={styles.bento}>
+          {/* Go Pro CTA band — the footer's focal card. */}
+          <section className={styles.cta} aria-label={t('footer.ctaTitle')}>
+            <div className={styles.ctaText}>
+              <h2 className={styles.ctaTitle}>{t('footer.ctaTitle')}</h2>
+              <p>{t('footer.ctaText')}</p>
+            </div>
+            <div className={styles.ctaActions}>
+              <Link className="btn btn-primary" to="/pricing">
+                {t('common.goPro')}
+              </Link>
+              <Link className={styles.ctaSecondary} to="/library">
+                {t('footer.browseLibrary')}
+              </Link>
+            </div>
+          </section>
+
+          {/* Brand card */}
+          <div className={`${styles.card} ${styles.brandCard}`}>
             <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
               <img src="/img/flygaca-mark.png" alt="" width={34} height={34} loading="lazy" />
               <span className={styles.wordmark} aria-hidden="true">
@@ -51,7 +68,7 @@ export function Footer() {
             </div>
           </div>
 
-          <nav className={styles.col} aria-label={t('footer.explore')}>
+          <nav className={`${styles.card} ${styles.col}`} aria-label={t('footer.explore')}>
             <h2>{t('footer.explore')}</h2>
             <ul>
               <li>
@@ -75,7 +92,7 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className={styles.col} aria-label={t('footer.legal')}>
+          <nav className={`${styles.card} ${styles.col}`} aria-label={t('footer.legal')}>
             <h2>{t('footer.legal')}</h2>
             <ul>
               <li>
@@ -93,9 +110,13 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className={styles.col} aria-label={t('footer.verify')}>
+          {/* Verify card — wide; reinforces "always check the official source". */}
+          <nav
+            className={`${styles.card} ${styles.col} ${styles.verifyCard}`}
+            aria-label={t('footer.verify')}
+          >
             <h2>{t('footer.verify')}</h2>
-            <ul>
+            <ul className={styles.verifyLinks}>
               <li>
                 <a href="https://gaca.gov.sa" target="_blank" rel="noopener">
                   {t('footer.gacaSite')}

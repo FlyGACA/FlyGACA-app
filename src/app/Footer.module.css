@@ -38,30 +38,121 @@
   z-index: var(--z-raised);
 }
 
-.top {
+/* --- Bento grid of frosted cards --- */
+.bento {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: var(--space-6);
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
   padding-block-end: var(--space-6);
 }
 
+/* Shared frosted-glass card. */
+.card {
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.card:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--border-bright));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.brandCard {
+  grid-column: span 2;
+}
+/* Verify spans the row — a calm reminder to check the official source. */
+.verifyCard {
+  grid-column: 1 / -1;
+}
+
+/* --- Go Pro CTA band --- */
+.cta {
+  grid-column: 1 / -1;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  overflow: hidden;
+  padding: var(--space-6) var(--space-7);
+  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border-bright));
+  border-radius: var(--radius-xl);
+}
+/* Gradient accent bar pinned to the inline-start edge. */
+.cta::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  background: var(--grad-brand);
+}
+.ctaTitle {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.ctaText p {
+  margin-block-start: var(--space-2);
+  max-inline-size: 48ch;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+}
+.ctaActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  transition: color var(--dur) var(--ease);
+}
+.ctaSecondary:hover {
+  color: var(--brand-hover);
+  text-decoration: none;
+}
+
 @media (max-width: 760px) {
-  .top {
+  .bento {
     grid-template-columns: 1fr 1fr;
   }
-  .brand {
+  .brandCard {
     grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 480px) {
-  .top {
+  .bento {
     grid-template-columns: 1fr;
-    gap: var(--space-5);
+    gap: var(--space-3);
   }
 
-  .brand {
-    max-inline-size: 100%;
+  .cta {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-5);
+  }
+  .ctaActions {
+    inline-size: 100%;
   }
 
   .bottom {
@@ -76,10 +167,6 @@
   .backToTop {
     margin-inline-start: 0;
   }
-}
-
-.brand {
-  max-inline-size: 38ch;
 }
 
 .lockup {
@@ -162,7 +249,7 @@
 /* --- Nav columns --- */
 .col h2 {
   font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text);
@@ -210,6 +297,36 @@
 .col a:hover::before {
   inline-size: var(--space-3);
   opacity: 1;
+}
+
+/* Verify card: render its two links as inline pills instead of a stack. */
+.verifyLinks {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.verifyLinks a {
+  min-height: 0;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-weight: var(--fw-medium);
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+/* Neutralise the column's slide-in gradient tick for the pill variant. */
+.verifyLinks a::before {
+  content: none;
+}
+.verifyLinks a:hover {
+  padding-inline-start: var(--space-4);
+  color: var(--brand-hover);
+  border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  background: var(--brand-tint);
 }
 
 /* --- Bottom bar --- */

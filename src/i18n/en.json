@@ -2655,7 +2655,10 @@
     "safety": "Safety Notice",
     "gacaSite": "GACA official site ↗",
     "gacaRules": "GACAR & AIP ↗",
-    "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية"
+    "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية",
+    "ctaTitle": "Study smarter with Captain Adel",
+    "ctaText": "Go Pro for unlimited questions, deeper study tools, and full offline access to the library.",
+    "browseLibrary": "Browse the library"
   },
   "calc": {
     "copyLink": "Copy link to this setup",
