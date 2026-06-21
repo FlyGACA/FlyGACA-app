@@ -11,6 +11,7 @@ import { adelLink } from '../../lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
 import { share } from '../../lib/native-bridge';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { breadcrumbLd, techArticleLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Document.module.css';
 
@@ -74,7 +75,7 @@ function clearHighlights(root: HTMLElement): void {
 }
 
 export function Document({ kind = 'regulations' }: DocumentProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { hash, pathname } = useLocation();
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
@@ -91,7 +92,26 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const [activeId, setActiveId] = useState('');
   const [copiedId, setCopiedId] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
-  usePageMeta(doc?.title, doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined);
+  const docDesc = doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined;
+  usePageMeta(
+    doc?.title,
+    docDesc,
+    doc?.title
+      ? [
+          techArticleLd({
+            title: doc.title,
+            description: docDesc,
+            path: pathname,
+            lang: i18n.language,
+          }),
+          breadcrumbLd([
+            { name: t('nav.home'), path: '/' },
+            { name: t('nav.library'), path: '/library' },
+            { name: doc.title, path: pathname },
+          ]),
+        ]
+      : undefined,
+  );
 
   // ── Reading font scale (persisted) ──
   const [scale, setScale] = useState(() => {
