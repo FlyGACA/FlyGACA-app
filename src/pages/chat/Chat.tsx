@@ -424,6 +424,7 @@ export function Chat() {
         <>
           <form
             className={styles.composer}
+            aria-label={t('chat.composer')}
             onSubmit={(e) => {
               e.preventDefault();
               void ask(input);
