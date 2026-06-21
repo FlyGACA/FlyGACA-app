@@ -154,7 +154,7 @@
 }
 
 /* --- Nav columns --- */
-.col h4 {
+.col h2 {
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   text-transform: uppercase;

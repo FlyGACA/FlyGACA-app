@@ -14,6 +14,8 @@ import styles from './account.module.css';
 const LICENCE_TYPES = ['SPL', 'PPL', 'CPL', 'ATPL'] as const;
 
 export function Settings() {
+  const { t } = useTranslation();
+  usePageMeta(t('meta.settings'));
   return (
     <RequireSession>
       <Inner />
@@ -23,7 +25,6 @@ export function Settings() {
 
 function Inner() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.settings'));
   const { profile, entitlement, syncError } = useAccount();
   const plan = effectivePlan(entitlement);
   const [saved, setSaved] = useState(false);

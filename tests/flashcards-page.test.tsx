@@ -1,7 +1,8 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '../src/i18n';
+import { renderWithRouter } from './helpers/render';
 import { Flashcards } from '../src/pages/study/Flashcards';
 
 const fixture = {
@@ -30,7 +31,7 @@ describe('<Flashcards /> interaction', () => {
   it('opens a deck, flips a card, and grades it', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okJson(fixture)));
     const user = userEvent.setup();
-    render(<Flashcards />);
+    renderWithRouter(<Flashcards />);
 
     await user.click(await screen.findByRole('button', { name: /Card Bank/ }));
 

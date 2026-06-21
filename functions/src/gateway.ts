@@ -6,6 +6,8 @@
  * buffered `ChatResponse`.
  */
 import express from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import type { Request, Response } from "express";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
@@ -77,8 +79,41 @@ function parseRequest(body: unknown): ChatRequest | null {
   };
 }
 
-export const app = express();
-app.use(express.json({ limit: "1mb" }));
+const app = express();
+// Security middleware
+app.use(helmet());
+// Rate limiting: 30 requests per minute per IP
+app.use(
+  rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests, please try again later." },
+  })
+);
+// CORS: restrict to same origin (adjust if needed)
+app.use((req, res, next) => {
+  const allowedOrigin = req.headers.origin ?? "";
+  // Allow requests from the same host (including preview deployments)
+  // You can customize this list as needed.
+  if (
+    allowedOrigin === "" ||
+    allowedOrigin.endsWith(".flygaca-app.web.app") ||
+    allowedOrigin.endsWith(".flygaca-app.firebaseapp.com") ||
+    allowedOrigin.startsWith("http://localhost:") ||
+    allowedOrigin.startsWith("http://127.0.0.1:")
+  ) {
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Firebase-AppCheck");
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(204);
+    }
+    return next();
+  }
+  return res.status(403).json({ error: "CORS not allowed" });
+});
 
 app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<void> => {
   // Auth / App Check.
@@ -153,3 +188,5 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     }
   }
 });
+
+export default app;

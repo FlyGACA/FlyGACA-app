@@ -1,7 +1,8 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '../src/i18n';
+import { renderWithRouter } from './helpers/render';
 import { Quiz } from '../src/pages/study/Quiz';
 
 // A minimal QuizData fixture (one bank, one question) matching src/lib/content.ts.
@@ -31,7 +32,7 @@ describe('<Quiz /> interaction', () => {
   it('picks a bank, answers correctly, and shows the score', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okJson(fixture)));
     const user = userEvent.setup();
-    render(<Quiz />);
+    renderWithRouter(<Quiz />);
 
     // Bank selection appears once the (stubbed) data load resolves.
     await user.click(await screen.findByRole('button', { name: /Test Bank/ }));
@@ -54,7 +55,7 @@ describe('<Quiz /> interaction', () => {
       'fetch',
       vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'Server Error' } as Response),
     );
-    render(<Quiz />);
+    renderWithRouter(<Quiz />);
     expect(await screen.findByRole('alert')).toBeInTheDocument();
   });
 });
