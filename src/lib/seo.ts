@@ -44,3 +44,27 @@ const OG_LOCALE: Record<string, string> = { en: 'en_US', ar: 'ar_SA' };
 export function ogLocale(lang: string): string {
   return OG_LOCALE[lang] ?? 'en_US';
 }
+
+/**
+ * Non-canonical production hosts that serve the *same* build under a different
+ * brand/domain. Left indexable they split ranking signals and clutter the
+ * branded SERP, so we fold them onto the canonical origin. Preview/staging
+ * fronts (`*.vercel.app`, `*.web.app`, `*.netlify.app`, `*.pages.dev`),
+ * `localhost`, and the native shell are intentionally excluded.
+ */
+export const DUPLICATE_HOSTS = new Set(['captadel.com', 'www.captadel.com']);
+
+/**
+ * If `loc` is on a known duplicate host, the canonical URL to redirect to
+ * (same path/query/hash on the canonical origin); otherwise `null`. Pure so the
+ * decision is unit-testable; the actual `location.replace` lives in `main.tsx`.
+ */
+export function canonicalRedirect(loc: {
+  hostname: string;
+  pathname: string;
+  search: string;
+  hash: string;
+}): string | null {
+  if (!DUPLICATE_HOSTS.has(loc.hostname)) return null;
+  return `${SITE_ORIGIN}${loc.pathname}${loc.search}${loc.hash}`;
+}
