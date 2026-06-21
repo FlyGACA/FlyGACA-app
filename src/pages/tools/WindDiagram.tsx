@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 /** Compact wind-vector diagram: runway aligned to its heading, wind arrow
  *  blowing from the reported direction. Ported from tools-crosswind.js draw(). */
 interface WindDiagramProps {
@@ -25,6 +27,7 @@ export function WindDiagram({
   crosswind,
   label,
 }: WindDiagramProps) {
+  const { t } = useTranslation();
   const xwBad = Math.abs(crosswind) >= 15;
   const stroke = xwBad ? 'var(--danger)' : 'var(--link)';
 
@@ -73,7 +76,7 @@ export function WindDiagram({
       width={220}
       height={220}
       role="img"
-      aria-label={label ?? 'Wind vector diagram'}
+      aria-label={label ?? t('crosswind.diagramAria')}
     >
       <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--border)" strokeWidth={2} />
       {ticks}

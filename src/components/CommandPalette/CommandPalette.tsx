@@ -255,9 +255,11 @@ export function CommandPalette() {
     if (e.key !== 'Tab') return;
     const box = boxRef.current;
     if (!box) return;
-    const focusable = box.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
-    );
+    // Only genuinely tabbable nodes: the result rows are buttons with
+    // tabindex=-1 (arrow-navigated), so they must be excluded from the cycle.
+    const focusable = Array.from(
+      box.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, [tabindex]'),
+    ).filter((el) => el.tabIndex !== -1);
     if (focusable.length === 0) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];

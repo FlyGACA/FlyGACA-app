@@ -335,7 +335,10 @@
   gap: var(--space-3);
   align-items: flex-end;
   background: var(--surface);
-  border: var(--clay-border);
+  /* Keep the 3px clay thickness/radius/shadow, but use the accessible input
+     border colour at rest so the field boundary clears WCAG 1.4.11 3:1
+     (the teal --clay-border tint was ~1.5:1). Focus still goes brand-hover. */
+  border: 3px solid var(--border-input);
   border-radius: var(--clay-radius);
   box-shadow: var(--clay-shadow);
   padding: var(--space-3);
