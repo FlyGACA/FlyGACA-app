@@ -10,6 +10,7 @@
     "build:airports": "node scripts/build-airports.mjs",
     "optimize:img": "node scripts/optimize-images.mjs",
     "build": "npm run build:sitemap && tsc -b && vite build",
+    "prerender": "node scripts/prerender.mjs",
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply",
     "gen:captain": "node scripts/generate-captain-adel.mjs",
