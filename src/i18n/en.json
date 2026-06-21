@@ -12,7 +12,8 @@
     "openHint": "open",
     "closeHint": "close",
     "resultsLabel": "Results",
-    "resultCount": "{{count}} results"
+    "resultCount": "{{count}} results",
+    "guides": "Guides"
   },
   "common": {
     "appName": "Fly GACA",
@@ -263,6 +264,12 @@
         "heading": "Captain Adel",
         "desc": "Ask anything — he cites the exact Part and section.",
         "cta": "Ask Captain Adel"
+      },
+      "guides": {
+        "eyebrow": "Learn",
+        "heading": "Study guides",
+        "count": "guides",
+        "cta": "Browse guides"
       }
     }
   },
@@ -1722,7 +1729,12 @@
             "p": "Pass the theoretical-knowledge exams and the skill test with an authorized examiner."
           }
         ],
-        "adel": "What are the requirements for a GACAR Part 61 Private Pilot Licence? Cite the section."
+        "adel": "What are the requirements for a GACAR Part 61 Private Pilot Licence? Cite the section.",
+        "takeaways": [
+          "Minimum age 17, a current Class 2 medical, and ICAO English Level 4.",
+          "Train with an approved instructor or ATO — dual, solo, cross-country and night.",
+          "Finish with the theory exams and a skill test with an authorized examiner."
+        ]
       },
       "saudi-cpl-requirements": {
         "name": "Saudi CPL requirements",
@@ -1742,7 +1754,12 @@
             "p": "Pass the CPL theory exams and the commercial skill test."
           }
         ],
-        "adel": "What are the GACAR Part 61 requirements for a Commercial Pilot Licence?"
+        "adel": "What are the GACAR Part 61 requirements for a Commercial Pilot Licence?",
+        "takeaways": [
+          "Builds on the PPL with a Class 1 medical and more flight experience.",
+          "Meet the total and specific hour requirements of Part 61 (PIC, night, instrument).",
+          "Pass the CPL theory exams and the commercial skill test."
+        ]
       },
       "saudi-instrument-rating": {
         "name": "Saudi instrument rating",
@@ -1762,7 +1779,12 @@
             "p": "Pass the instrument theory and the instrument-rating skill test."
           }
         ],
-        "adel": "What does GACAR Part 61 require for an instrument rating?"
+        "adel": "What does GACAR Part 61 require for an instrument rating?",
+        "takeaways": [
+          "Lets you fly under IFR in instrument meteorological conditions.",
+          "Requires instrument instruction and logged instrument time, including approaches.",
+          "Pass the instrument theory exam and the instrument skill test."
+        ]
       },
       "gaca-medical-class-1": {
         "name": "GACA Class 1 medical",
@@ -1782,7 +1804,12 @@
             "p": "Valid for a set period that shortens with age — confirm in GACAR Part 67."
           }
         ],
-        "adel": "What does a GACA Class 1 medical assess and how long is it valid under Part 67?"
+        "adel": "What does a GACA Class 1 medical assess and how long is it valid under Part 67?",
+        "takeaways": [
+          "Required to exercise commercial and airline pilot privileges.",
+          "Assesses vision, hearing, cardiovascular and general fitness.",
+          "Validity shortens with age — confirm the period in GACAR Part 67."
+        ]
       },
       "foreign-license-conversion-to-gaca": {
         "name": "Converting a foreign licence",
@@ -1802,7 +1829,12 @@
             "p": "Submit through GACA and confirm the current requirements before you start."
           }
         ],
-        "adel": "What is the process to convert a foreign pilot licence to a GACA licence?"
+        "adel": "What is the process to convert a foreign pilot licence to a GACA licence?",
+        "takeaways": [
+          "Bring a valid foreign licence, logbook, current medical and ID.",
+          "Expect an air-law exam, English proficiency check and a skill test.",
+          "Confirm the current GACA requirements before you apply."
+        ]
       },
       "icao-english-saelpt": {
         "name": "ICAO English & SAELPT",
@@ -1822,7 +1854,12 @@
             "p": "Level 4 is re-tested periodically; higher levels last longer."
           }
         ],
-        "adel": "What is the ICAO English language proficiency requirement and how is it tested?"
+        "adel": "What is the ICAO English language proficiency requirement and how is it tested?",
+        "takeaways": [
+          "ICAO Level 4 is the minimum to use English on the radio.",
+          "Six skills are scored: pronunciation, structure, vocabulary, fluency, comprehension, interaction.",
+          "Level 4 is re-tested periodically; higher levels last longer."
+        ]
       },
       "airspace-explained": {
         "name": "Saudi airspace explained",
@@ -1842,7 +1879,12 @@
             "p": "Check the VFR minima and the AIP for Saudi sector details."
           }
         ],
-        "adel": "Explain the airspace classes used in Saudi Arabia and the rules in each."
+        "adel": "Explain the airspace classes used in Saudi Arabia and the rules in each.",
+        "takeaways": [
+          "ICAO classes A–G set who may fly and the service provided.",
+          "Controlled airspace needs clearances and separation; uncontrolled gives information only.",
+          "Check VFR minima and the AIP for Saudi sector specifics."
+        ]
       },
       "reading-metar-taf": {
         "name": "Reading METAR & TAF",
@@ -1862,7 +1904,12 @@
             "p": "Paste real reports into the decoders to read them in plain language."
           }
         ],
-        "adel": "How do I read a METAR and a TAF?"
+        "adel": "How do I read a METAR and a TAF?",
+        "takeaways": [
+          "A METAR observes current conditions; a TAF forecasts them over a period.",
+          "Learn the fixed field order — wind, visibility, weather, cloud, temp, pressure.",
+          "FM, BECMG and TEMPO mark forecast changes in a TAF."
+        ]
       },
       "decoding-notams": {
         "name": "Decoding NOTAMs",
@@ -1882,7 +1929,12 @@
             "p": "Use the NOTAM decoder to expand the abbreviations."
           }
         ],
-        "adel": "How do I read a NOTAM and what does its Q-code mean?"
+        "adel": "How do I read a NOTAM and what does its Q-code mean?",
+        "takeaways": [
+          "Fields A) aerodrome, B) start, C) end and E) the plain text carry the message.",
+          "The Q-code summarises the subject and condition (ICAO Doc 8126).",
+          "Use the NOTAM decoder to expand the abbreviations."
+        ]
       },
       "the-airac-cycle": {
         "name": "The AIRAC cycle",
@@ -1902,7 +1954,212 @@
             "p": "Use the AIRAC tool for the current cycle and the countdown to the next."
           }
         ],
-        "adel": "What is the AIRAC cycle and why is it 28 days?"
+        "adel": "What is the AIRAC cycle and why is it 28 days?",
+        "takeaways": [
+          "Aeronautical data updates worldwide on fixed dates 28 days apart.",
+          "Everyone switches together, so charts and procedures stay consistent.",
+          "Use the AIRAC tool for the current cycle and the next effective date."
+        ]
+      },
+      "night-rating": {
+        "name": "Night rating",
+        "blurb": "Adding the privilege to fly after dark.",
+        "intro": "Flying at night brings different rules, lighting and currency. A night rating or night training adds the privilege under GACAR Part 61.",
+        "sections": [
+          {
+            "h": "What it adds",
+            "p": "Permission to act as pilot in command at night, beyond the day-only limits of a basic licence."
+          },
+          {
+            "h": "Training",
+            "p": "Dual night instruction covering takeoffs, circuits, landings and night navigation."
+          },
+          {
+            "h": "Currency",
+            "p": "Stay night-current by meeting the recent-experience rule before carrying passengers at night."
+          }
+        ],
+        "takeaways": [
+          "A night rating lifts the day-only limit on a basic licence.",
+          "Training covers night takeoffs, circuits, landings and navigation.",
+          "Recent-experience rules apply before carrying passengers at night."
+        ],
+        "adel": "What does GACAR Part 61 require for night flying privileges? Cite the section."
+      },
+      "atpl-requirements": {
+        "name": "ATPL requirements",
+        "blurb": "The highest pilot licence — the path to airline command.",
+        "intro": "The Airline Transport Pilot Licence is the senior pilot licence, required to act as pilot in command of large or multi-crew commercial aircraft.",
+        "sections": [
+          {
+            "h": "Prerequisites",
+            "p": "Hold a CPL with an instrument rating and a current Class 1 medical."
+          },
+          {
+            "h": "Experience",
+            "p": "Accumulate the substantial total time, plus PIC, cross-country, night and instrument hours required by Part 61."
+          },
+          {
+            "h": "Examinations",
+            "p": "Pass the full set of ATPL theory subjects and the relevant skill test."
+          }
+        ],
+        "takeaways": [
+          "The ATPL is needed to command large or multi-crew commercial aircraft.",
+          "It builds on a CPL with an instrument rating and a Class 1 medical.",
+          "It demands high total time and a complete set of theory exams."
+        ],
+        "adel": "What are the GACAR Part 61 requirements for an Airline Transport Pilot Licence?"
+      },
+      "flight-instructor-rating": {
+        "name": "Flight instructor rating",
+        "blurb": "Earning the privilege to teach.",
+        "intro": "A flight instructor rating lets you give the training and endorsements other pilots need. It sits on top of a commercial licence under GACAR Part 61.",
+        "sections": [
+          {
+            "h": "Prerequisites",
+            "p": "Hold a CPL (or higher) with the ratings you intend to teach and a valid medical."
+          },
+          {
+            "h": "Instructional training",
+            "p": "Learn the fundamentals of instructing — lesson planning, briefing and assessing — and demonstrate teaching from the right seat."
+          },
+          {
+            "h": "Test",
+            "p": "Pass the instructor theory and a skill test that assesses your ability to teach."
+          }
+        ],
+        "takeaways": [
+          "An instructor rating builds on a commercial licence and its ratings.",
+          "Training covers lesson planning, briefing and right-seat flying.",
+          "The skill test assesses your ability to teach, not just to fly."
+        ],
+        "adel": "What does GACAR Part 61 require to become a flight instructor?"
+      },
+      "radiotelephony-phraseology": {
+        "name": "Radiotelephony phraseology",
+        "blurb": "Standard words that keep the radio clear.",
+        "intro": "Standard phraseology makes radio calls short, clear and unambiguous. Using the right words — and the phonetic alphabet — prevents mistakes.",
+        "sections": [
+          {
+            "h": "The phonetic alphabet",
+            "p": "Spell letters with Alpha, Bravo, Charlie… so call signs and codes are never confused."
+          },
+          {
+            "h": "Standard words",
+            "p": "Use words like 'roger', 'wilco', 'say again' and 'readback' with their exact meanings."
+          },
+          {
+            "h": "Numbers & readbacks",
+            "p": "Speak numbers clearly and read back clearances so the controller can confirm them."
+          }
+        ],
+        "takeaways": [
+          "Standard phraseology keeps every call short and unambiguous.",
+          "The phonetic alphabet prevents confusion over letters and codes.",
+          "Read back clearances so the controller can confirm them."
+        ],
+        "adel": "Why is standard radiotelephony phraseology important and where is it defined?"
+      },
+      "drone-uas-rules-in-ksa": {
+        "name": "Drone & UAS rules in KSA",
+        "blurb": "Flying unmanned aircraft legally in Saudi Arabia.",
+        "intro": "Unmanned aircraft are regulated too. In the Kingdom, registration, authorisation and operating limits apply before you fly a drone.",
+        "sections": [
+          {
+            "h": "Register & authorise",
+            "p": "Register the aircraft and obtain the required authorisation before operating."
+          },
+          {
+            "h": "Where you can fly",
+            "p": "Respect height limits, keep clear of aerodromes and controlled airspace, and avoid restricted areas."
+          },
+          {
+            "h": "Operating limits",
+            "p": "Keep the drone in sight, fly within the stated limits, and follow the small-UAS rules in Part 107."
+          }
+        ],
+        "takeaways": [
+          "Register and get authorisation before flying a drone in the Kingdom.",
+          "Stay clear of aerodromes, controlled airspace and restricted areas.",
+          "Keep it in sight and within the Part 107 operating limits."
+        ],
+        "adel": "What are the rules for flying a small drone in Saudi Arabia under Part 107?"
+      },
+      "weight-and-balance-basics": {
+        "name": "Weight & balance basics",
+        "blurb": "Loading the aircraft within limits.",
+        "intro": "Every aircraft has weight and centre-of-gravity limits. Loading inside them keeps it controllable and within its performance figures.",
+        "sections": [
+          {
+            "h": "Weight limits",
+            "p": "Stay at or below the maximum take-off and landing weights for the aircraft."
+          },
+          {
+            "h": "Centre of gravity",
+            "p": "Keep the CG within the forward and aft limits for safe handling and stall behaviour."
+          },
+          {
+            "h": "Do the math",
+            "p": "Use the loading chart or the weight-and-balance tool before every flight that is close to limits."
+          }
+        ],
+        "takeaways": [
+          "Respect both the weight limits and the CG envelope.",
+          "An out-of-limits CG changes stability and stall behaviour.",
+          "Run the numbers before any flight that loads near the limits."
+        ],
+        "adel": "Why must a flight stay within its weight and centre-of-gravity limits?"
+      },
+      "density-altitude-and-performance": {
+        "name": "Density altitude & performance",
+        "blurb": "Why hot, high and humid days hurt performance.",
+        "intro": "Density altitude is pressure altitude corrected for temperature. As it rises, the air thins and aircraft performance falls — critical on hot Saudi days.",
+        "sections": [
+          {
+            "h": "What it is",
+            "p": "The altitude the air 'feels like' to the wing and engine after correcting for temperature."
+          },
+          {
+            "h": "Why it matters",
+            "p": "High density altitude lengthens the take-off roll, flattens the climb and reduces engine power."
+          },
+          {
+            "h": "Manage it",
+            "p": "Plan with the performance charts, reduce weight, and use the cooler part of the day."
+          }
+        ],
+        "takeaways": [
+          "Density altitude rises with heat, altitude and humidity.",
+          "It lengthens the take-off run and reduces climb performance.",
+          "Use performance charts and fly in cooler conditions to manage it."
+        ],
+        "adel": "How does density altitude affect take-off and climb performance?"
+      },
+      "fuel-planning-and-reserves": {
+        "name": "Fuel planning & reserves",
+        "blurb": "How much fuel the rules require you to carry.",
+        "intro": "Sound fuel planning keeps a flight legal and safe. The rules set minimum reserves on top of trip fuel, with more for IFR and commercial operations.",
+        "sections": [
+          {
+            "h": "Trip fuel",
+            "p": "Fuel to taxi, take off, climb, cruise, descend and land at the destination."
+          },
+          {
+            "h": "Reserves",
+            "p": "Add contingency, alternate and final-reserve fuel as the operating rules require."
+          },
+          {
+            "h": "IFR & commercial",
+            "p": "IFR and commercial flights carry extra alternate and holding fuel — see Part 91 and Part 121."
+          }
+        ],
+        "takeaways": [
+          "Always plan trip fuel plus the required reserves, never just trip fuel.",
+          "IFR and commercial operations carry alternate and holding fuel.",
+          "Final-reserve fuel is a floor you should never plan to use."
+        ],
+        "adel": "What are the minimum fuel reserve requirements under GACAR Part 91?"
       }
     },
     "searchPlaceholder": "Search guides…",
@@ -1919,7 +2176,8 @@
     "related": "Related guides",
     "level": {
       "beginner": "Beginner",
-      "intermediate": "Intermediate"
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
     },
     "topics": {
       "licensing": "Licensing",
@@ -1927,8 +2185,21 @@
       "language": "Language",
       "airspace": "Airspace",
       "weather": "Weather",
-      "planning": "Planning & cycles"
-    }
+      "planning": "Planning & cycles",
+      "operations": "Operations",
+      "performance": "Performance"
+    },
+    "bookmark": "Bookmark",
+    "unbookmark": "Bookmarked",
+    "saved": "Saved",
+    "markRead": "Mark as read",
+    "readDone": "Read",
+    "readProgress": "{{done}} of {{total}} read",
+    "keyTakeaways": "Key takeaways",
+    "copyLink": "Copy link to section",
+    "copied": "Copied",
+    "regsCited": "Regulations cited",
+    "regChip": "GACAR Part {{part}}"
   },
   "study": {
     "title": "Study",

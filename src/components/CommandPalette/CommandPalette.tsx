@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { loadJson } from '../../lib/content';
+import { GUIDE_SLUGS } from '../../pages/guides/guides';
 import { OPEN_CMDK_EVENT } from './openCommandPalette';
 import styles from './CommandPalette.module.css';
 
@@ -51,7 +52,7 @@ const TOOL_IDS = [
   'aerodromes',
 ];
 
-type Filter = 'all' | 'reg' | 'aero' | 'tool';
+type Filter = 'all' | 'reg' | 'aero' | 'tool' | 'guide';
 
 interface Item {
   group: Filter;
@@ -126,6 +127,19 @@ export function CommandPalette() {
         name: t(`tools.items.${id}.name`),
         tip: t(`tools.items.${id}.blurb`),
         to: `/tools/${id}`,
+      })),
+    [t],
+  );
+
+  // Guides are static too (names from i18n) — no fetch needed.
+  const guides = useMemo<Item[]>(
+    () =>
+      GUIDE_SLUGS.map((slug) => ({
+        group: 'guide' as const,
+        code: 'GD',
+        name: t(`guides.items.${slug}.name`),
+        tip: t(`guides.items.${slug}.blurb`),
+        to: `/guides/${slug}`,
       })),
     [t],
   );
@@ -211,14 +225,14 @@ export function CommandPalette() {
   }, [open]);
 
   const results = useMemo<Item[]>(() => {
-    const all = [...parts, ...aerodromes, ...tools];
+    const all = [...parts, ...aerodromes, ...tools, ...guides];
     const q = query.trim().toLowerCase();
     return all.filter((it) => {
       if (filter !== 'all' && it.group !== filter) return false;
       if (!q) return true;
       return `${it.code} ${it.name} ${it.tip}`.toLowerCase().includes(q);
     });
-  }, [parts, aerodromes, tools, query, filter]);
+  }, [parts, aerodromes, tools, guides, query, filter]);
 
   // Cap the rendered list (and keyboard navigation) to the first 50 matches so
   // the active index, aria-activedescendant, and scroll-into-view stay in sync.
@@ -291,6 +305,7 @@ export function CommandPalette() {
     { id: 'reg', label: t('cmdk.regulations') },
     { id: 'aero', label: t('cmdk.aerodromes') },
     { id: 'tool', label: t('cmdk.tools') },
+    { id: 'guide', label: t('cmdk.guides') },
   ];
 
   return (

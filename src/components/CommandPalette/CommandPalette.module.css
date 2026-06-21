@@ -154,6 +154,11 @@
   border-color: color-mix(in srgb, #e8c56d 30%, transparent);
   background: color-mix(in srgb, var(--gold) 12%, transparent);
 }
+.guide {
+  color: #c9a7e8;
+  border-color: color-mix(in srgb, #c9a7e8 30%, transparent);
+  background: color-mix(in srgb, #c9a7e8 12%, transparent);
+}
 
 .meta {
   display: flex;
