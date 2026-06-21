@@ -121,6 +121,7 @@ export function Header() {
               alt=""
               width={36}
               height={36}
+              decoding="async"
             />
             <span className={styles.wordmark} aria-hidden="true">
               <span className={styles.wmFly}>Fly</span>

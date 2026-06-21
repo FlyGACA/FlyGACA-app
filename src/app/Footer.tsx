@@ -21,7 +21,14 @@ export function Footer() {
         <div className={styles.top}>
           <div className={styles.brand}>
             <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
-              <img src="/img/flygaca-mark.png" alt="" width={34} height={34} loading="lazy" />
+              <img
+                src="/img/flygaca-mark.png"
+                alt=""
+                width={34}
+                height={34}
+                loading="lazy"
+                decoding="async"
+              />
               <span className={styles.wordmark} aria-hidden="true">
                 <span className={styles.wmFly}>Fly</span>
                 <span className={styles.wmGaca}>GACA</span>

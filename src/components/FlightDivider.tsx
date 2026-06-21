@@ -55,6 +55,8 @@ export function FlightDivider() {
         alt=""
         width="26"
         height="26"
+        loading="lazy"
+        decoding="async"
       />
     </div>
   );
