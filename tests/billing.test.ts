@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { canCheckout, startProCheckout } from '../src/lib/billing';
+import { FUNCTIONS_REGION } from '../src/lib/firebase';
+
+// The billing callables (createCheckoutSession / createBillingPortalSession)
+// deploy to me-central2 (functions/src/billing.ts, firebase.json webhook). The
+// httpsCallable client region MUST match or checkout 404s in production.
+describe('callable region', () => {
+  it('targets me-central2 where the billing functions live', () => {
+    expect(FUNCTIONS_REGION).toBe('me-central2');
+  });
+});
 
 // No Firebase config in tests → billing is unavailable and never reaches a
 // network call; the web build keeps the CTA disabled via canCheckout().

@@ -17,6 +17,12 @@ backend functions live in this repo; the entitlement is granted server-side and 
 
 ## Configure (Firebase project)
 
+**0. Create the product + prices in Stripe** (live mode for production). In the Stripe Dashboard →
+*Products* → create **Fly GACA Pro**, then add two recurring prices: one **monthly** and one **annual**
+(in SAR, to match the indicative figures on `/pricing`). Copy each `price_…` id — they become
+`STRIPE_PRICE_PRO_MONTHLY` / `STRIPE_PRICE_PRO_ANNUAL` below. Grab the secret key from *Developers → API keys*
+(`sk_live_…`).
+
 Secrets (Secret Manager):
 
 ```
@@ -36,17 +42,32 @@ In the Stripe Dashboard, create a **webhook endpoint** → `https://<host>/api/s
 to `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`; copy
 its signing secret into `STRIPE_WEBHOOK_SECRET`.
 
-> Region note: the billing functions deploy to **me-central2** (matching `chat`); the
-> `/api/stripe-webhook` rewrite in `firebase.json` points there.
+> Region note: the billing callables and the `stripeWebhook` deploy to **me-central2** (the
+> `/api/stripe-webhook` rewrite in `firebase.json` and the client's `FUNCTIONS_REGION` in
+> `src/lib/firebase.ts` both point there). The chat gateway (`/api/chat`) is a separate function in
+> `me-central1` reached by a hosting fetch — it does not use the callable region.
 
 ## Deploy
 
 ```
 cd functions && npm install        # pulls in `stripe`
-firebase deploy --only functions:createCheckoutSession,functions:createBillingPortalSession,functions:stripeWebhook
-firebase deploy --only firestore:rules
-firebase deploy --only hosting     # picks up the new rewrite
+npm run deploy:functions           # firebase deploy --only functions
+npm run deploy:rules               # firebase deploy --only firestore:rules
+npm run deploy                     # build + deploy hosting (picks up the rewrite)
+# …or all three at once:  npm run deploy:all
 ```
+
+## App Check (enable last)
+
+The client already attaches an App Check token to the callables when `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`
+is set (`src/lib/firebase.ts`), but the callables do **not** yet enforce it. Enable enforcement only **after**
+real traffic is sending valid tokens, or checkout will be blocked:
+
+1. Create a reCAPTCHA Enterprise key (Google Cloud console) and register it under Firebase → App Check.
+2. Set `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` in the production build (GitHub Actions secret) and deploy the client.
+3. Watch App Check request metrics until verified requests dominate.
+4. Only then add `enforceAppCheck: true` to `createCheckoutSession` / `createBillingPortalSession` (see
+   `docs/APP-CHECK-BACKEND.md`) and redeploy the functions.
 
 ## Verify end-to-end (test mode)
 
