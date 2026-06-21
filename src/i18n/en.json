@@ -2535,8 +2535,8 @@
     ],
     "contactTitle": "Contact",
     "stats": [
-      { "value": "70+", "label": "GACAR Parts" },
-      { "value": "50+", "label": "Flight tools" },
+      { "value": "74", "label": "GACAR Parts" },
+      { "value": "55", "label": "Flight tools" },
       { "value": "2", "label": "Languages · EN / AR" },
       { "value": "Free", "label": "Open reference" }
     ],
@@ -2562,6 +2562,79 @@
       {
         "label": "Privacy & data protection",
         "email": "privacy@flygaca.com"
+      }
+    ],
+    "howItWorks": {
+      "head": "How it works",
+      "steps": [
+        {
+          "h": "Find the rule",
+          "p": "Search every numbered GACAR Part, handbook, aerodrome and chart by keyword — full-text, in English or Arabic."
+        },
+        {
+          "h": "Ask Captain Adel",
+          "p": "Ask in plain language and get an answer that cites the exact Part and section, with a link straight to the source."
+        },
+        {
+          "h": "Verify at the source",
+          "p": "Every citation links back to GACA. Always confirm against the current official publication at gaca.gov.sa before you rely on it."
+        }
+      ]
+    },
+    "features": {
+      "head": "What you get",
+      "items": [
+        {
+          "h": "Bilingual & RTL",
+          "p": "Every screen in English and Arabic, with full right-to-left layout."
+        },
+        {
+          "h": "Works offline",
+          "p": "An installable PWA — save Parts and study material to read without a connection."
+        },
+        {
+          "h": "Cited answers",
+          "p": "Captain Adel never hand-waves: every answer points to the exact Part and section."
+        },
+        {
+          "h": "Open & free",
+          "p": "The regulatory library is free to browse — no account needed to read the rules."
+        },
+        {
+          "h": "Full-text search",
+          "p": "Search the entire GACAR corpus and handbooks in milliseconds."
+        },
+        {
+          "h": "Tools & study",
+          "p": "55 flight calculators, quizzes, flashcards and a full PPL ground-school path."
+        }
+      ]
+    },
+    "faqHead": "Frequently asked",
+    "faq": [
+      {
+        "q": "Is Fly GACA official?",
+        "a": "No. Fly GACA is an independent, educational platform. It is not affiliated with, endorsed by, or operated by GACA, and it does not replace any official publication."
+      },
+      {
+        "q": "Can I use it in the cockpit?",
+        "a": "No. Nothing here is for operational use. It is a study and reference aid — always fly by the current GACAR, AIP, AFM and operator manuals."
+      },
+      {
+        "q": "Where does the data come from?",
+        "a": "Content is extracted from GACA's own published PDFs into a clean, searchable form. Every regulation links back to the official source."
+      },
+      {
+        "q": "Is it free?",
+        "a": "Yes — the regulatory library, search and Captain Adel's core answers are free to use. Some study packs and advanced features are part of an optional Pro plan."
+      },
+      {
+        "q": "Does it work in Arabic?",
+        "a": "Yes. The whole app is bilingual with full right-to-left support; switch language any time from the header."
+      },
+      {
+        "q": "Does it work offline?",
+        "a": "Yes. Fly GACA is a Progressive Web App you can install, and you can save documents for offline reading."
       }
     ]
   },
