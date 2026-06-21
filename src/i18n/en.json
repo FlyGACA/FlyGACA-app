@@ -1612,21 +1612,12 @@
   "schools": {
     "title": "Fly GACA for schools",
     "subtitle": "Equip every student with the Saudi regulatory library, flight tools and Captain Adel.",
-    "sections": [
-      {
-        "h": "Seat licences",
-        "p": "Buy Pro access in bulk and assign it to your students and instructors."
-      },
-      {
-        "h": "Admin dashboard",
-        "p": "Onboard cohorts, track usage and manage seats from one place."
-      },
-      {
-        "h": "Built for the syllabus",
-        "p": "Ground school, quizzes and mock exams aligned to the GACAR."
-      }
-    ],
-    "cta": "Contact sales",
+    "cta": {
+      "title": "Ready to equip your cohort?",
+      "lead": "Compare the plans or talk to us about seat pricing for your academy.",
+      "plans": "See plans",
+      "contact": "Talk to us"
+    },
     "email": "sales@flygaca.com",
     "eyebrow": "For flight schools",
     "formHead": "Talk to us",
@@ -1663,7 +1654,59 @@
         "q": "How are we billed?",
         "a": "By invoice, annually, per seat."
       }
-    ]
+    ],
+    "featuresHead": "Everything your academy needs",
+    "features": [
+      {
+        "h": "Bulk seat licences",
+        "p": "Buy Pro access in bulk and assign it to students and instructors."
+      },
+      {
+        "h": "Admin dashboard",
+        "p": "Onboard cohorts, track usage and manage seats from one place."
+      },
+      {
+        "h": "Built for the syllabus",
+        "p": "Ground school, quizzes and mock exams aligned to the GACAR."
+      },
+      {
+        "h": "Fully bilingual",
+        "p": "Every page in English and Arabic, with right-to-left support throughout."
+      },
+      {
+        "h": "Usage tracking",
+        "p": "See who is studying and where cohorts need a hand — at a glance."
+      },
+      {
+        "h": "Captain Adel for cohorts",
+        "p": "An AI instructor that answers from the GACAR and cites the exact section."
+      }
+    ],
+    "includesLabel": "What every seat includes",
+    "includes": {
+      "parts": "GACAR Parts",
+      "tools": "Flight tools",
+      "modules": "Ground-school modules",
+      "languages": "Bilingual"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From enquiry to a flying cohort",
+      "steps": [
+        {
+          "h": "Tell us your numbers",
+          "p": "Share your school, cohort size and start date and we send seat pricing."
+        },
+        {
+          "h": "Assign the seats",
+          "p": "Activate Pro seats and invite students and instructors from the admin dashboard."
+        },
+        {
+          "h": "Cadets study & stay current",
+          "p": "Your cohort studies the library, practices, and asks Captain Adel — in English or Arabic."
+        }
+      ]
+    }
   },
   "account": {
     "title": "Account",
@@ -2746,7 +2789,7 @@
     "paths": "Guided reading paths through the Saudi GACAR — becoming a PPL, drone/UAS rules, the medical, licence conversion and more — Parts, handbooks and tools in order.",
     "packs": "Focused prep packs that bundle the right GACAR reading, tools and quizzes for each Saudi licence and rating. Plan your study with Fly GACA.",
     "pricing": "Fly GACA is free to study the Saudi GACAR; go Pro for offline access, exports and prep packs, or equip a whole flight school. Simple monthly or annual plans.",
-    "schools": "Equip your cadets with the Saudi GACAR library, 54 flight tools and Captain Adel — bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
+    "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel — bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA — it helps you find and study the rules.",
     "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel — an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
   },
