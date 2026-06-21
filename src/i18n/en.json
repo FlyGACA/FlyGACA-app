@@ -1369,12 +1369,15 @@
     },
     "viewMap": "View on map",
     "loadMore": "Load more",
+    "searchingWorldwide": "Searching worldwide…",
     "notFound": "Aerodrome not found.",
     "backToList": "Back to aerodromes",
     "country": "Country",
     "coordinates": "Coordinates",
     "magVar": "Magnetic variation",
     "services": "Services",
+    "runwayDiagram": "Runway orientation diagram",
+    "position": "Approximate position on the globe",
     "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data — runways and frequencies included — from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
   },
   "definitionsTool": {

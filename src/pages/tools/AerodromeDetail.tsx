@@ -1,10 +1,13 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { regionBadge } from '../../lib/aerodromes';
-import type { AirportsIndex } from '../../lib/content';
+import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
+import { AirportTypeIcon } from '../../components/aerodrome/AirportTypeIcon';
+import { RunwayDiagram } from '../../components/aerodrome/RunwayDiagram';
+import { PositionMarker } from '../../components/aerodrome/PositionMarker';
 import styles from './Aerodromes.module.css';
 
 export function AerodromeDetail() {
@@ -14,16 +17,30 @@ export function AerodromeDetail() {
   const code = icao.toUpperCase();
   const { data, error, loading } = useFetchJson<AirportsIndex>('/data/airports.json');
 
-  const airport = useMemo(() => data?.airports.find((a) => a.icao === code), [data, code]);
+  const inCore = useMemo(() => data?.airports.find((a) => a.icao === code), [data, code]);
+  // Long-tail airfields aren't in the eager core file; fetch the lazy tier and
+  // look there only when the core misses (so most lookups stay on the core file).
+  const [extra, setExtra] = useState<Airport[] | null>(null);
+  const [extraLoading, setExtraLoading] = useState(false);
+  useEffect(() => {
+    if (!data || inCore || extra || extraLoading) return;
+    setExtraLoading(true);
+    fetchJson<AirportsIndex>('/data/airports-extra.json')
+      .then((d) => setExtra(d.airports))
+      .catch(() => setExtra([]))
+      .finally(() => setExtraLoading(false));
+  }, [data, inCore, extra, extraLoading]);
 
-  if (loading) {
+  const airport = inCore ?? extra?.find((a) => a.icao === code);
+
+  if (loading || (!inCore && (extraLoading || (data && !extra)))) {
     return (
       <CalcShell title={code} category={t('tools.categories.directory')}>
         <p>{t('common.loading')}</p>
       </CalcShell>
     );
   }
-  if (error || (data && !airport)) {
+  if (error || !airport) {
     return (
       <CalcShell title={code} category={t('tools.categories.directory')}>
         <p role="alert">{error ? t('common.loadError') : t('aerodromesTool.notFound')}</p>
@@ -33,7 +50,6 @@ export function AerodromeDetail() {
       </CalcShell>
     );
   }
-  if (!airport) return null;
 
   const a = airport;
   const name = ar ? a.name_ar : a.name_en;
@@ -56,6 +72,7 @@ export function AerodromeDetail() {
       related={[{ to: '/tools/aerodromes', label: t('aerodromesTool.backToList') }]}
     >
       <div className={styles.detailHead}>
+        <AirportTypeIcon type={a.type} className={styles.detailTypeIcon} />
         <span className={styles.detailIcao}>{a.icao}</span>
         {a.iata && <span className={styles.iata}>{a.iata}</span>}
         <span className={`${styles.badge} ${styles[`badge_${badge}`]}`}>
@@ -63,43 +80,49 @@ export function AerodromeDetail() {
         </span>
       </div>
 
-      <dl className={styles.facts}>
-        {country && (
+      <div className={styles.overview}>
+        <dl className={styles.facts}>
+          {country && (
+            <div className={styles.fact}>
+              <dt>{t('aerodromesTool.country')}</dt>
+              <dd>{country}</dd>
+            </div>
+          )}
           <div className={styles.fact}>
-            <dt>{t('aerodromesTool.country')}</dt>
-            <dd>{country}</dd>
+            <dt>{t('aerodromesTool.elevation')}</dt>
+            <dd>{a.elev_ft.toLocaleString()} ft</dd>
           </div>
-        )}
-        <div className={styles.fact}>
-          <dt>{t('aerodromesTool.elevation')}</dt>
-          <dd>{a.elev_ft.toLocaleString()} ft</dd>
-        </div>
-        <div className={styles.fact}>
-          <dt>{t('aerodromesTool.coordinates')}</dt>
-          <dd className={styles.coords}>
-            {a.lat.toFixed(4)}, {a.lon.toFixed(4)}
-          </dd>
-        </div>
-        {a.mag && (
           <div className={styles.fact}>
-            <dt>{t('aerodromesTool.magVar')}</dt>
-            <dd>{a.mag}</dd>
+            <dt>{t('aerodromesTool.coordinates')}</dt>
+            <dd className={styles.coords}>
+              {a.lat.toFixed(4)}, {a.lon.toFixed(4)}
+            </dd>
           </div>
-        )}
-      </dl>
+          {a.mag && (
+            <div className={styles.fact}>
+              <dt>{t('aerodromesTool.magVar')}</dt>
+              <dd>{a.mag}</dd>
+            </div>
+          )}
+        </dl>
+        <PositionMarker lat={a.lat} lon={a.lon} />
+      </div>
 
       {a.rwys.length > 0 && (
         <section className={styles.detailSection}>
           <h2 className={styles.detailH2}>{t('aerodromesTool.runways')}</h2>
-          <ul className={styles.rwyList}>
-            {a.rwys.map((r, i) => (
-              <li key={i} className={styles.rwyRow}>
-                <span className={styles.rwyId}>{r.id}</span>
-                {r.len && <span className={styles.rwyMeta}>{r.len.toLocaleString()} ft</span>}
-                {r.surf && <span className={styles.rwyMeta}>{r.surf}</span>}
-              </li>
-            ))}
-          </ul>
+          <div className={styles.rwyLayout}>
+            <RunwayDiagram rwys={a.rwys} />
+            <ul className={styles.rwyList}>
+              {a.rwys.map((r, i) => (
+                <li key={i} className={styles.rwyRow}>
+                  <span className={styles.rwyId}>{r.id}</span>
+                  {r.len && <span className={styles.rwyMeta}>{r.len.toLocaleString()} ft</span>}
+                  {r.surf && <span className={styles.rwyMeta}>{r.surf}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
       )}
 
