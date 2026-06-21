@@ -68,3 +68,19 @@ export function canonicalRedirect(loc: {
   if (!DUPLICATE_HOSTS.has(loc.hostname)) return null;
   return `${SITE_ORIGIN}${loc.pathname}${loc.search}${loc.hash}`;
 }
+
+/**
+ * Host suffixes of the *mirror* fronts that serve the same build for redundancy
+ * (Firebase `*.web.app`, Vercel `*.vercel.app`, Netlify `*.netlify.app`,
+ * Cloudflare `*.pages.dev`) plus their PR previews. They must stay live but must
+ * NOT be indexed — otherwise Google treats them as duplicates of flygaca.com and
+ * may pick one as canonical. `flygaca.com` and `localhost` (the prerender host)
+ * are deliberately not matched, so neither the canonical site nor the baked
+ * snapshots ever get a noindex.
+ */
+const MIRROR_HOST_SUFFIXES = ['.web.app', '.vercel.app', '.netlify.app', '.pages.dev'];
+
+/** True if `hostname` is a non-canonical mirror/preview front that should noindex. */
+export function isMirrorHost(hostname: string): boolean {
+  return MIRROR_HOST_SUFFIXES.some((suffix) => hostname.endsWith(suffix));
+}

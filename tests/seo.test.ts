@@ -7,6 +7,7 @@ import {
   hreflangAlternates,
   ogLocale,
   canonicalRedirect,
+  isMirrorHost,
 } from '../src/lib/seo';
 
 describe('normalizePath', () => {
@@ -67,6 +68,25 @@ describe('canonicalRedirect', () => {
       'localhost',
     ]) {
       expect(canonicalRedirect({ hostname, pathname: '/tools', search: '', hash: '' })).toBeNull();
+    }
+  });
+});
+
+describe('isMirrorHost', () => {
+  it('matches the mirror/preview fronts that must noindex', () => {
+    for (const hostname of [
+      'flygaca-app.web.app',
+      'flygaca-app-git-claude-x.vercel.app',
+      'flygaca.netlify.app',
+      'flygaca.pages.dev',
+    ]) {
+      expect(isMirrorHost(hostname)).toBe(true);
+    }
+  });
+
+  it('does NOT match the canonical host or the prerender host', () => {
+    for (const hostname of ['flygaca.com', 'www.flygaca.com', 'localhost', '127.0.0.1']) {
+      expect(isMirrorHost(hostname)).toBe(false);
     }
   });
 });
