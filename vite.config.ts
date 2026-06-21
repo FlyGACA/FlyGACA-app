@@ -29,9 +29,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt' so a waiting service worker surfaces an in-app "reload to update"
+      // toast (see src/components/pwa/PwaPrompts) instead of swapping silently.
+      registerType: 'prompt',
       includeAssets: ['img/favicon.ico', 'img/flygaca-mark.png'],
       manifest: {
+        id: '/',
         name: 'Fly GACA — Saudi Aviation Library',
         short_name: 'Fly GACA',
         description:
@@ -43,9 +46,27 @@ export default defineConfig({
         theme_color: '#0A0E12',
         lang: 'en',
         dir: 'ltr',
+        categories: ['education', 'reference', 'travel'],
         icons: [
           { src: 'img/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
           { src: 'img/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+        ],
+        shortcuts: [
+          {
+            name: 'Library',
+            url: '/library',
+            icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
+          },
+          {
+            name: 'Captain Adel',
+            url: '/chat',
+            icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
+          },
+          {
+            name: 'Flight tools',
+            url: '/tools',
+            icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
+          },
         ],
       },
       workbox: {

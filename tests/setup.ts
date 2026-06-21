@@ -1,8 +1,16 @@
 import '@testing-library/jest-dom/vitest';
+import { afterEach } from 'vitest';
 import i18n from '../src/i18n';
 import { initReactI18next } from 'react-i18next';
+import { clearJsonCache } from '../src/lib/content';
 import en from '../src/i18n/en.json';
 import ar from '../src/i18n/ar.json';
+
+// The runtime JSON loader memoizes per path in a module-level cache; clear it
+// between tests so a stubbed fetch in one test never leaks into the next.
+afterEach(() => {
+  clearJsonCache();
+});
 import { applyDocumentLang, type Lang } from '../src/i18n';
 
 // Initialize i18n for components using translation hooks/functions under Vitest.
@@ -84,3 +92,9 @@ if (typeof window !== 'undefined') {
 
 
 
+
+// jsdom doesn't implement scrollIntoView; components that keep an active item in
+// view (e.g. the command palette) call it in an effect. Make it a no-op.
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}

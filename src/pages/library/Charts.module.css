@@ -86,17 +86,65 @@
 }
 .mapToolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
 }
+.toolbarMain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
 .activeLabel {
   font-weight: var(--fw-bold);
-}
-.open {
-  font-size: var(--fs-sm);
-  color: var(--link);
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+.toolbarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.navBtn,
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 36px;
+  min-inline-size: 36px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.navBtn:hover,
+.toolBtn:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  background: var(--brand-tint);
+  text-decoration: none;
+}
+
+.metaLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
 .map {
@@ -106,6 +154,106 @@
   background: var(--falcon-night);
   box-shadow: var(--clay-shadow);
   overflow: hidden;
+}
+
+/* Fullscreen viewer: cover the viewport; the map fills the remaining space. */
+.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 1000);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg);
+}
+.fullscreen .map {
+  flex: 1;
+  block-size: auto;
+}
+
+/* Thumbnail strip of the active region's variants. */
+.thumbs {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-block: var(--space-1);
+}
+.thumb {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  inline-size: 84px;
+  padding: var(--space-1);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.thumb img {
+  inline-size: 100%;
+  block-size: 60px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--falcon-night);
+}
+.thumb:hover {
+  border-color: var(--brand-hover);
+  color: var(--text);
+}
+.thumbActive {
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+
+/* Loading skeleton + error retry. */
+.skeleton {
+  block-size: 70dvh;
+  border-radius: var(--clay-radius);
+  background: linear-gradient(
+    100deg,
+    var(--surface) 30%,
+    var(--surface-raised) 50%,
+    var(--surface) 70%
+  );
+  background-size: 200% 100%;
+  animation: chart-shimmer 1.3s linear infinite;
+}
+@keyframes chart-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+.errorRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-error);
+}
+.retry {
+  min-block-size: 36px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.retry:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
 }
 
 /* Leaflet controls themed for the dark surface. */

@@ -58,6 +58,11 @@
   font-size: var(--fs-sm);
   margin: 0;
 }
+.notice {
+  color: var(--color-success);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
 .linkBtn {
   align-self: flex-start;
   background: none;
@@ -66,6 +71,30 @@
   color: var(--link);
   font-size: var(--fs-sm);
   cursor: pointer;
+}
+.linkBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.signInLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+.verifyBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+.verifySent {
+  font-size: var(--fs-sm);
+  color: var(--color-success);
 }
 .planBadge {
   display: inline-flex;

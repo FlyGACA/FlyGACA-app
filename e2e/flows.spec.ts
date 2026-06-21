@@ -85,8 +85,8 @@ test('VFR charts render a Leaflet image overlay', async ({ page }) => {
 test('study sheets embed a PDF', async ({ page }) => {
   await page.goto('/study/sheets');
   await expect(page.locator('h1').first()).toBeVisible();
-  const embed = page.locator('object[type="application/pdf"]');
-  await expect(embed).toHaveAttribute('data', /\.pdf$/);
+  const embed = page.locator('iframe[class*="embed"]');
+  await expect(embed).toHaveAttribute('src', /\.pdf$/);
 });
 
 test('met-brief builds official-source links for a route', async ({ page }) => {

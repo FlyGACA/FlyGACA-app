@@ -26,11 +26,15 @@ function initialLang(): Lang {
   return navigator.language?.startsWith('ar') ? 'ar' : 'en';
 }
 
-/** Mirrors <html lang/dir> so RTL flips for the whole document. */
+/** Mirrors <html lang/dir> so RTL flips for the whole document, and points the
+ *  install manifest at the matching language so an Arabic install shows Arabic. */
 export function applyDocumentLang(lang: Lang): void {
   const el = document.documentElement;
   el.lang = lang;
   el.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  const manifest = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+  if (manifest)
+    manifest.href = lang === 'ar' ? '/manifest-ar.webmanifest' : '/manifest.webmanifest';
 }
 
 /** Fetch + register a language's strings exactly once (idempotent). */

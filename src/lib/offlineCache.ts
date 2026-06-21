@@ -1,0 +1,79 @@
+/**
+ * "Save for offline" via the Cache API. Warms the SAME `flygaca-data` cache the
+ * workbox NetworkFirst runtime rule uses (see vite.config.ts), so a saved doc is
+ * served from cache when the network is gone. The pure list/format helpers live
+ * in src/calc/offlineManifest.ts; this module owns the DOM/Cache + persistence.
+ */
+import { addSaved, listSaved, removeSaved } from '../calc/offlineManifest';
+
+/** Must match the workbox runtimeCaching cacheName in vite.config.ts. */
+const CACHE = 'flygaca-data';
+const SAVED_KEY = 'flygaca:offline:saved';
+
+export function offlineSupported(): boolean {
+  return typeof caches !== 'undefined';
+}
+
+export function loadSaved(): string[] {
+  try {
+    return listSaved(JSON.parse(localStorage.getItem(SAVED_KEY) ?? '[]'));
+  } catch {
+    return [];
+  }
+}
+
+function persist(slugs: string[]): void {
+  try {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(slugs));
+  } catch {
+    /* quota / private mode — ignore */
+  }
+}
+
+/** Cache the given URLs and record the slug. Returns false on quota/other error. */
+export async function saveDoc(slug: string, urls: string[]): Promise<boolean> {
+  if (!offlineSupported()) return false;
+  try {
+    const cache = await caches.open(CACHE);
+    await cache.addAll(urls);
+    persist(addSaved(loadSaved(), slug));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Evict the given URLs from the cache and forget the slug. */
+export async function removeDoc(slug: string, urls: string[]): Promise<void> {
+  if (offlineSupported()) {
+    try {
+      const cache = await caches.open(CACHE);
+      await Promise.all(urls.map((u) => cache.delete(u)));
+    } catch {
+      /* ignore */
+    }
+  }
+  persist(removeSaved(loadSaved(), slug));
+}
+
+/** Drop the whole data cache and forget every saved doc. */
+export async function clearAll(): Promise<void> {
+  if (offlineSupported()) {
+    try {
+      await caches.delete(CACHE);
+    } catch {
+      /* ignore */
+    }
+  }
+  persist([]);
+}
+
+/** Best-effort estimate of total cached storage in bytes (0 when unavailable). */
+export async function storageEstimate(): Promise<number> {
+  try {
+    const est = await navigator.storage?.estimate?.();
+    return est?.usage ?? 0;
+  } catch {
+    return 0;
+  }
+}

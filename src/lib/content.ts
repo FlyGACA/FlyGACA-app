@@ -11,6 +11,43 @@ export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<
   return (await res.json()) as T;
 }
 
+/**
+ * Session-scoped, de-duplicated loader for the static `/data/*` indexes. Several
+ * surfaces read the same large files — e.g. the ~1.5 MB `airports.json` is used by
+ * the command palette and three flight tools — so without sharing, each mount
+ * re-fetches and (more expensively) re-parses the file on the main thread.
+ *
+ * Two complementary layers keep that cheap:
+ *  - this in-memory promise cache shares ONE fetch + parse per path for the life of
+ *    the tab (multiple callers await the same promise);
+ *  - the service worker's NetworkFirst `flygaca-data` runtime cache (vite.config.ts)
+ *    serves the bytes from disk across visits.
+ *
+ * A rejected load is evicted so a later caller can retry; pass `force` to refresh
+ * (e.g. a retry button). Intended for the static content indexes, not mutable data.
+ */
+const jsonCache = new Map<string, Promise<unknown>>();
+
+export function loadJson<T>(path: string, force = false): Promise<T> {
+  if (force) jsonCache.delete(path);
+  let promise = jsonCache.get(path);
+  if (!promise) {
+    // No per-caller AbortSignal: the promise is shared, so one caller unmounting
+    // must not cancel the load others are awaiting (callers guard their own setState).
+    promise = fetchJson<T>(path).catch((err) => {
+      jsonCache.delete(path);
+      throw err;
+    });
+    jsonCache.set(path, promise);
+  }
+  return promise as Promise<T>;
+}
+
+/** Test-only: drop the in-memory cache so each test starts from a clean slate. */
+export function clearJsonCache(): void {
+  jsonCache.clear();
+}
+
 export interface ToolEntry {
   id: string;
   route: string;
@@ -156,6 +193,10 @@ export interface Airport extends SourceProvenance {
   name_ar: string;
   city_en: string;
   city_ar: string;
+  /** Present on the worldwide rows; the original curated Saudi set omitted them. */
+  country_en?: string;
+  country_ar?: string;
+  region?: string;
   lat: number;
   lon: number;
   elev_ft: number;

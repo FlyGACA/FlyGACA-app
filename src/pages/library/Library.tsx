@@ -15,6 +15,7 @@ import type {
 } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
+import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
 import styles from './Library.module.css';
 
 const MIN_QUERY = 3;
@@ -197,6 +198,8 @@ export function Library() {
           {t('library.viewCharts')} →
         </Link>
       </header>
+
+      <OfflineDownloads />
 
       <div className={styles.tabs} role="tablist" aria-label={t('library.browse')}>
         {KINDS.map((k) => (
