@@ -41,6 +41,10 @@
   --surface-raised: #13212e; /* hover / raised card */
   --border: var(--falcon-mist);
   --border-bright: #26384a;
+  /* Form-control boundary — lighter than --border-bright so text inputs clear
+     the WCAG 1.4.11 3:1 non-text-contrast bar against --surface and --bg
+     (≈3.2:1 / 3.5:1). Inputs only; cards/pills keep --border-bright. */
+  --border-input: #5a6b7b;
 
   /* --- Text on dark --- */
   --text: #e8edf2; /* primary */
