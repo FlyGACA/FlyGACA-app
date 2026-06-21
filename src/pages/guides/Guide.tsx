@@ -6,11 +6,15 @@ import { adelLink } from '../../lib/adel';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { articleLd, breadcrumbLd } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
+import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '../../lib/guidePrefs';
 import {
   GUIDE_SLUGS,
   GUIDE_TOOLS,
+  GUIDE_REGS,
+  GUIDE_QUIZ,
   GUIDE_META,
   TOOL_NAME_KEY,
+  partNumber,
   sectionId,
   type GuideSlug,
 } from './guides';
@@ -28,6 +32,7 @@ export function Guide() {
   const { slug } = useParams<{ slug: string }>();
   const valid = !!slug && GUIDE_SLUGS.includes(slug as GuideSlug);
   const base = `guides.items.${slug}`;
+  const { bookmarks, read } = useGuidePrefs();
 
   // Hook must run before the early return; title is undefined for unknown slugs.
   usePageMeta(
@@ -51,6 +56,7 @@ export function Guide() {
   );
 
   const [progress, setProgress] = useState(0);
+  const [copied, setCopied] = useState<number | null>(null);
   const onScroll = useCallback(() => {
     const el = document.documentElement;
     const total = el.scrollHeight - el.clientHeight;
@@ -61,14 +67,35 @@ export function Guide() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [onScroll]);
 
+  // Auto-mark a guide read once the reader has scrolled (near) the end.
+  useEffect(() => {
+    if (valid && slug && progress >= 95) markRead(slug);
+  }, [valid, slug, progress]);
+
+  const copyLink = useCallback((i: number, anchor: string) => {
+    const href = `${window.location.origin}${window.location.pathname}#${anchor}`;
+    void navigator.clipboard?.writeText(href).then(() => {
+      setCopied(i);
+      window.setTimeout(() => setCopied((c) => (c === i ? null : c)), 1500);
+    });
+  }, []);
+
   if (!valid) return <NotFound />;
   const guideSlug = slug as GuideSlug;
   const sections = t(`${base}.sections`, { returnObjects: true }) as unknown as Section[];
+  const takeaways = t(`${base}.takeaways`, { returnObjects: true }) as unknown as string[];
   const intro = t(`${base}.intro`);
   const adel = adelLink(t(`${base}.adel`));
   const tools = GUIDE_TOOLS[guideSlug] ?? [];
+  const regs = GUIDE_REGS[guideSlug] ?? [];
+  const quizBank = GUIDE_QUIZ[guideSlug];
   const meta = GUIDE_META[guideSlug];
-  const minutes = readingMinutes([intro, ...sections.flatMap((s) => [s.h, s.p])].join(' '));
+  const minutes = readingMinutes(
+    [intro, ...sections.flatMap((s) => [s.h, s.p]), ...takeaways].join(' '),
+  );
+
+  const isSaved = bookmarks.includes(guideSlug);
+  const isRead = read.includes(guideSlug);
 
   const idx = GUIDE_SLUGS.indexOf(guideSlug);
   const prev = idx > 0 ? GUIDE_SLUGS[idx - 1] : null;
@@ -91,10 +118,30 @@ export function Guide() {
             {t(`guides.level.${meta.level}`)}
           </span>
           <span className={styles.metaDim}>{t('guides.readTime', { min: minutes })}</span>
+          <button
+            type="button"
+            className={`${styles.bookmarkBtn} ${isSaved ? styles.bookmarkOn : ''}`}
+            aria-pressed={isSaved}
+            onClick={() => toggleBookmark(guideSlug)}
+          >
+            <span aria-hidden="true">{isSaved ? '★' : '☆'}</span>{' '}
+            {t(isSaved ? 'guides.unbookmark' : 'guides.bookmark')}
+          </button>
         </span>
         <h1>{t(`${base}.name`)}</h1>
         <p className={prose.lead}>{intro}</p>
       </header>
+
+      {takeaways.length > 0 && (
+        <aside className={styles.takeaways} aria-label={t('guides.keyTakeaways')}>
+          <span className={styles.takeawaysLabel}>{t('guides.keyTakeaways')}</span>
+          <ul>
+            {takeaways.map((tk, i) => (
+              <li key={i}>{tk}</li>
+            ))}
+          </ul>
+        </aside>
+      )}
 
       {sections.length > 1 && (
         <nav className={styles.onThisPage} aria-label={t('guides.onThisPage')}>
@@ -109,14 +156,26 @@ export function Guide() {
         </nav>
       )}
 
-      {sections.map((s, i) => (
-        <section key={i}>
-          <h2 id={sectionId(i, s.h)} className={styles.sectionH}>
-            {s.h}
-          </h2>
-          <p>{s.p}</p>
-        </section>
-      ))}
+      {sections.map((s, i) => {
+        const anchor = sectionId(i, s.h);
+        return (
+          <section key={i}>
+            <h2 id={anchor} className={styles.sectionH}>
+              {s.h}
+              <button
+                type="button"
+                className={styles.copyLink}
+                aria-label={t('guides.copyLink')}
+                title={copied === i ? t('guides.copied') : t('guides.copyLink')}
+                onClick={() => copyLink(i, anchor)}
+              >
+                {copied === i ? '✓' : '🔗'}
+              </button>
+            </h2>
+            <p>{s.p}</p>
+          </section>
+        );
+      })}
 
       <nav className={styles.links} aria-label={t('guides.tools')}>
         {adel && (
@@ -129,7 +188,25 @@ export function Guide() {
             {t(TOOL_NAME_KEY[to] ?? to)}
           </Link>
         ))}
+        {quizBank && (
+          <Link to={`/study/quiz?bank=${quizBank}`} className={styles.toolChip}>
+            {t('guides.testYourself')}
+          </Link>
+        )}
       </nav>
+
+      {regs.length > 0 && (
+        <section className={styles.regs}>
+          <h2 className={styles.regsHead}>{t('guides.regsCited')}</h2>
+          <div className={styles.links}>
+            {regs.map((reg) => (
+              <Link key={reg} to={`/library/${reg}`} className={styles.regChip}>
+                {t('guides.regChip', { part: partNumber(reg) })}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {related.length > 0 && (
         <section className={styles.related}>
@@ -146,6 +223,18 @@ export function Guide() {
           </ul>
         </section>
       )}
+
+      <div className={styles.readToggleRow}>
+        <button
+          type="button"
+          className={`${styles.readToggle} ${isRead ? styles.readToggleOn : ''}`}
+          aria-pressed={isRead}
+          onClick={() => toggleRead(guideSlug)}
+        >
+          <span aria-hidden="true">{isRead ? '✓' : '○'}</span>{' '}
+          {t(isRead ? 'guides.readDone' : 'guides.markRead')}
+        </button>
+      </div>
 
       <nav className={styles.prevNext} aria-label={t('guides.title')}>
         {prev ? (

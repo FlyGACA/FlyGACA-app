@@ -104,6 +104,57 @@
 }
 .cardTitle {
   font-size: var(--fs-lg);
+  padding-inline-end: var(--space-6);
+}
+
+/* Grid item wraps the card so the bookmark star can sit over its top corner. */
+.cardWrap {
+  position: relative;
+  block-size: 100%;
+}
+.star {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  z-index: 2;
+  inline-size: 32px;
+  block-size: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.star:hover {
+  color: var(--gold);
+  background: var(--surface-raised);
+}
+.starOn {
+  color: var(--gold);
+}
+
+/* Read indicator on a guide card + the library read-count line. */
+.readBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--success);
+}
+.progress {
+  margin-block-start: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 .blurb {
   color: var(--text-muted);
@@ -143,6 +194,10 @@
 .level[data-level='intermediate'] {
   background: color-mix(in srgb, var(--gold) 20%, transparent);
   color: var(--gold);
+}
+.level[data-level='advanced'] {
+  background: color-mix(in srgb, var(--brand) 20%, transparent);
+  color: var(--brand-hover);
 }
 
 .empty {
@@ -284,4 +339,113 @@
 
 .footnote {
   margin-block-start: var(--space-8);
+}
+
+/* Key-takeaways callout at the top of a guide. */
+.takeaways {
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--brand);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface-raised));
+}
+.takeawaysLabel {
+  display: block;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-hover);
+  font-weight: var(--fw-bold);
+  margin-block-end: var(--space-2);
+}
+.takeaways ul {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.takeaways li {
+  color: var(--text);
+}
+
+/* Copy-link affordance on each section heading. */
+.copyLink {
+  margin-inline-start: var(--space-2);
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.sectionH:hover .copyLink,
+.sectionH:focus-within .copyLink,
+.copyLink:focus-visible {
+  opacity: 1;
+}
+.copyLink:hover {
+  color: var(--brand-hover);
+}
+
+/* "Regulations cited" block — chips deep-link into the library. */
+.regs {
+  margin-block-start: var(--space-6);
+}
+.regsHead {
+  font-size: var(--fs-h3);
+  margin-block-end: var(--space-3);
+}
+.regChip {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--brand-hover);
+}
+.regChip:hover {
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  text-decoration: none;
+}
+
+/* Bookmark toggle in the guide header + read toggle near prev/next. */
+.bookmarkBtn,
+.readToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.bookmarkBtn:hover,
+.readToggle:hover {
+  border-color: var(--brand-hover);
+  color: var(--text);
+}
+.bookmarkOn {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.readToggleRow {
+  margin-block-start: var(--space-6);
+}
+.readToggleOn {
+  border-color: var(--success);
+  color: var(--success);
 }

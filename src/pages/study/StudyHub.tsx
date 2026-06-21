@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, QuizData } from '../../lib/content';
 import { useStudyProgress } from '../../lib/studyProgress';
-import { masteredCount } from '../../calc/srs';
+import { masteredCount, dueCount } from '../../calc/srs';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { OutputGrid } from '../../components/calc/Grids';
+import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './Study.module.css';
@@ -25,9 +26,11 @@ export function StudyHub() {
   usePageMeta(t('meta.study'));
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
-  const { quizBest, gsDone, fcSrs, streak } = useStudyProgress();
+  const { quizBest, gsDone, fcSrs, streak, examHistory, flagged, lastBank } = useStudyProgress();
 
+  const now = new Date();
   const banks = quiz.data?.banks ?? [];
+  const keysFor = (n: number) => Array.from({ length: n }, (_, i) => String(i));
   const attempted = banks.filter((b) => quizBest[b.id] != null).length;
   const bestValues = banks.map((b) => quizBest[b.id]).filter((v): v is number => v != null);
   const avgBest = bestValues.length
@@ -35,9 +38,21 @@ export function StudyHub() {
     : 0;
   const totalCards = banks.reduce((s, b) => s + b.questions.length, 0);
   const knownCards = Object.values(fcSrs).reduce((s, m) => s + masteredCount(m), 0);
+  const dueTotal = banks.reduce(
+    (s, b) => s + dueCount(fcSrs[b.id] ?? {}, keysFor(b.questions.length), now),
+    0,
+  );
+  const flaggedTotal = Object.values(flagged).reduce((s, a) => s + a.length, 0);
 
   const lessons = gs.data?.modules.flatMap((m) => m.lessons) ?? [];
   const doneLessons = lessons.filter((l) => gsDone[l.id]).length;
+
+  // Lowest scores first (unattempted sorts first as "start here") — top 3 focus areas.
+  const weakest = banks
+    .map((b) => ({ b, best: quizBest[b.id] ?? -1 }))
+    .sort((a, z) => a.best - z.best)
+    .slice(0, 3);
+  const resumeBank = banks.find((b) => b.id === lastBank);
 
   // The highest streak milestone reached, for a small celebratory nudge.
   const milestone = [365, 100, 30, 7].find((m) => streak.count >= m);
@@ -67,7 +82,11 @@ export function StudyHub() {
           tone={streak.count > 0 ? 'good' : undefined}
         />
         <ResultStat label={t('study.avgBest')} value={`${avgBest}%`} />
-        <ResultStat label={t('study.banksDone')} value={`${attempted}/${banks.length}`} />
+        <ResultStat
+          label={t('study.dueToday')}
+          value={dueTotal}
+          tone={dueTotal > 0 ? 'headline' : undefined}
+        />
         <ResultStat label={t('study.lessonsDone')} value={`${doneLessons}/${lessons.length}`} />
       </OutputGrid>
 
@@ -75,6 +94,81 @@ export function StudyHub() {
         <p className={styles.milestone} role="status">
           {t('study.streakMilestone', { n: milestone })}
         </p>
+      )}
+
+      {/* Quick actions: resume the last bank, drill the flagged review deck, clear due cards. */}
+      {(resumeBank || flaggedTotal > 0 || dueTotal > 0) && (
+        <div className={styles.quickRow}>
+          {resumeBank && (
+            <Link to={`/study/quiz?bank=${resumeBank.id}`} className={styles.quickChip}>
+              {t('study.resume')}: {resumeBank.title}
+            </Link>
+          )}
+          {dueTotal > 0 && (
+            <Link to="/study/flashcards" className={styles.quickChip}>
+              {t('study.dueToday')} · {dueTotal}
+            </Link>
+          )}
+          {flaggedTotal > 0 && (
+            <Link to="/study/quiz?review=flagged" className={styles.quickChip}>
+              {t('study.reviewFlagged', { n: flaggedTotal })}
+            </Link>
+          )}
+        </div>
+      )}
+
+      {attempted < banks.length && weakest.length > 0 && (
+        <section className={styles.analytics}>
+          <h2 className={styles.analyticsHead}>{t('study.weakest')}</h2>
+          <ul className={styles.weakList}>
+            {weakest.map(({ b, best }) => (
+              <li key={b.id}>
+                <Link to={`/study/quiz?bank=${b.id}`} className={styles.weakChip}>
+                  {b.title}
+                  <span className={styles.weakPct}>{best < 0 ? '—' : `${best}%`}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {bestValues.length > 0 && (
+        <section className={styles.analytics}>
+          <h2 className={styles.analyticsHead}>{t('study.byTopic')}</h2>
+          <ul className={styles.topicList}>
+            {banks
+              .filter((b) => quizBest[b.id] != null)
+              .map((b) => {
+                const learned = masteredCount(fcSrs[b.id] ?? {});
+                return (
+                  <li key={b.id} className={styles.topicRow}>
+                    <span className={styles.topicName}>{b.title}</span>
+                    <ProgressBar percent={quizBest[b.id]} label={b.title} />
+                    <span className={styles.topicMeta}>
+                      {quizBest[b.id]}% · {t('study.masteredCount', { n: learned })}
+                    </span>
+                  </li>
+                );
+              })}
+          </ul>
+        </section>
+      )}
+
+      {examHistory.length > 0 && (
+        <section className={styles.analytics}>
+          <h2 className={styles.analyticsHead}>{t('study.examHistory')}</h2>
+          <div className={styles.examBars} role="img" aria-label={t('study.examHistory')}>
+            {examHistory.map((r, i) => (
+              <span
+                key={i}
+                className={`${styles.examBar} ${r.passed ? styles.examBarPass : styles.examBarFail}`}
+                style={{ blockSize: `${Math.max(8, r.pct)}%` }}
+                title={`${r.pct}% · ${r.date}`}
+              />
+            ))}
+          </div>
+        </section>
       )}
 
       <ul className={`${styles.modes} stagger-grid`}>

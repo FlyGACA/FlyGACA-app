@@ -95,6 +95,7 @@ const GroundSchool = lazyNamed(() => import('./pages/study/GroundSchool'), 'Grou
 const MockExam = lazyNamed(() => import('./pages/study/MockExam'), 'MockExam');
 const Paths = lazyNamed(() => import('./pages/study/Paths'), 'Paths');
 const Packs = lazyNamed(() => import('./pages/study/Packs'), 'Packs');
+const PackDetail = lazyNamed(() => import('./pages/study/PackDetail'), 'PackDetail');
 const StudySheets = lazyNamed(() => import('./pages/study/StudySheets'), 'StudySheets');
 
 // Account
@@ -191,6 +192,7 @@ export const router = createBrowserRouter([
       { path: 'study/exam', element: <MockExam /> },
       { path: 'study/paths', element: <Paths /> },
       { path: 'study/packs', element: <Packs /> },
+      { path: 'study/packs/:id', element: <PackDetail /> },
       { path: 'study/sheets', element: <StudySheets /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },

@@ -11,6 +11,17 @@ import { adelLink } from '../../lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
 import { share } from '../../lib/native-bridge';
 import { usePageMeta } from '../../lib/usePageMeta';
+import {
+  useLibraryPrefs,
+  toggleBookmark,
+  recordView,
+  addNote,
+  removeNote,
+  isBookmarked,
+  docKey,
+  type LibNote,
+} from '../../lib/libraryPrefs';
+import { SelectionPopover, type SelectionRect } from '../../components/library/SelectionPopover';
 import { breadcrumbLd, techArticleLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Document.module.css';
@@ -74,6 +85,65 @@ function clearHighlights(root: HTMLElement): void {
   root.normalize();
 }
 
+/** The id of the nearest heading at or above `node`, for anchoring an annotation. */
+function nearestSectionId(root: HTMLElement, node: Node): string {
+  let id = '';
+  for (const h of Array.from(root.querySelectorAll<HTMLElement>('h2[id],h3[id]'))) {
+    if (h.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) id = h.id;
+    else break;
+  }
+  return id;
+}
+
+/** Remove every annotation `<mark>` (leaving search marks untouched). */
+function clearAnnotations(root: HTMLElement): void {
+  root.querySelectorAll('mark[data-annot]').forEach((m) => {
+    m.replaceWith(document.createTextNode(m.textContent ?? ''));
+  });
+  root.normalize();
+}
+
+/**
+ * Best-effort re-anchor of a saved annotation: find the first text node inside
+ * its section that contains the stored quote and wrap that run in
+ * `<mark data-annot=id>`. Single-text-node match keeps it robust and cheap;
+ * a selection that spanned elements simply isn't re-highlighted (the note still
+ * lives in the panel). Returns true when the highlight was placed.
+ */
+function wrapAnnotation(root: HTMLElement, note: LibNote, markClass: string): boolean {
+  const q = note.quote.trim();
+  if (!q) return false;
+  const heads = Array.from(root.querySelectorAll<HTMLElement>('h2[id],h3[id]'));
+  const hIdx = heads.findIndex((h) => h.id === note.sectionId);
+  const startEl = hIdx >= 0 ? heads[hIdx] : null;
+  const endEl = hIdx >= 0 ? (heads[hIdx + 1] ?? null) : null;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node: Node | null;
+  while ((node = walker.nextNode())) {
+    const tn = node as Text;
+    if (tn.parentElement?.closest('mark')) continue;
+    if (startEl && !(startEl.compareDocumentPosition(tn) & Node.DOCUMENT_POSITION_FOLLOWING)) continue;
+    if (endEl && !(endEl.compareDocumentPosition(tn) & Node.DOCUMENT_POSITION_PRECEDING)) continue;
+    const text = tn.nodeValue ?? '';
+    const idx = text.indexOf(q);
+    if (idx < 0) continue;
+    const frag = document.createDocumentFragment();
+    if (idx > 0) frag.appendChild(document.createTextNode(text.slice(0, idx)));
+    const mark = document.createElement('mark');
+    mark.dataset.annot = note.id;
+    mark.className = markClass;
+    if (note.note) mark.title = note.note;
+    mark.textContent = text.slice(idx, idx + q.length);
+    frag.appendChild(mark);
+    if (idx + q.length < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(idx + q.length)));
+    }
+    tn.parentNode?.replaceChild(frag, tn);
+    return true;
+  }
+  return false;
+}
+
 export function Document({ kind = 'regulations' }: DocumentProps) {
   const { t, i18n } = useTranslation();
   const { hash, pathname } = useLocation();
@@ -85,6 +155,10 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);
   const doc = docs.find((d) => d.slug === slug);
   const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
+  const prefs = useLibraryPrefs();
+  const dk = docKey({ kind, slug: slug ?? '' });
+  const notesForDoc = prefs.notes[dk];
+  const docBookmarked = !!slug && isBookmarked(prefs, kind, slug);
   const [filter, setFilter] = useState('');
   const [progress, setProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
@@ -139,12 +213,22 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const [activeMatch, setActiveMatch] = useState(0);
   const marksRef = useRef<HTMLElement[]>([]);
 
+  // ── Text selection → highlight / note popover ──
+  const [sel, setSel] = useState<{ rect: SelectionRect; quote: string; sectionId: string } | null>(
+    null,
+  );
+  const closeSel = useCallback(() => {
+    setSel(null);
+    window.getSelection()?.removeAllRanges();
+  }, []);
+
   // ── Reading progress + back-to-top ──
   const onScroll = useCallback(() => {
     const el = document.documentElement;
     const total = el.scrollHeight - el.clientHeight;
     setProgress(total > 0 ? Math.round((el.scrollTop / total) * 100) : 0);
     setShowTop(el.scrollTop > 600);
+    setSel((s) => (s ? null : s)); // a moved selection rect would be stale
   }, []);
   useEffect(() => {
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -252,6 +336,56 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [html, copyLink]);
+
+  // Record this document in "recently viewed" once its metadata resolves.
+  useEffect(() => {
+    if (doc && slug) recordView({ kind, slug, title: doc.title });
+  }, [doc, slug, kind]);
+
+  // Capture a text selection inside the reader to offer highlight / note.
+  useEffect(() => {
+    const onMouseUp = () => {
+      const root = contentRef.current;
+      const selection = window.getSelection();
+      if (!root || !selection || selection.isCollapsed || !selection.rangeCount) return;
+      const range = selection.getRangeAt(0);
+      if (!root.contains(range.commonAncestorContainer)) return;
+      const quote = selection.toString().trim();
+      if (quote.length < 3 || quote.length > 400) return;
+      const r = range.getBoundingClientRect();
+      setSel({
+        rect: { top: r.top, left: r.left, width: r.width, height: r.height },
+        quote,
+        sectionId: nearestSectionId(root, range.startContainer),
+      });
+    };
+    document.addEventListener('mouseup', onMouseUp);
+    return () => document.removeEventListener('mouseup', onMouseUp);
+  }, [html]);
+
+  // Re-anchor saved annotations into the rendered content (best-effort).
+  useEffect(() => {
+    const root = contentRef.current;
+    if (!root || !html) return;
+    clearAnnotations(root);
+    for (const n of notesForDoc ?? []) wrapAnnotation(root, n, styles.annot);
+  }, [html, notesForDoc]);
+
+  const saveAnnotation = useCallback(
+    (note: string) => {
+      if (!sel || !slug) return;
+      const entry: LibNote = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        sectionId: sel.sectionId,
+        quote: sel.quote,
+        note,
+        created: new Date().toISOString(),
+      };
+      addNote(dk, entry);
+      closeSel();
+    },
+    [sel, slug, dk, closeSel],
+  );
 
   const { prev, next } = docNeighbors(docs, slug);
   const related = relatedDocs(docs, slug);
@@ -371,6 +505,16 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                   A+
                 </button>
               </div>
+              {doc && (
+                <button
+                  type="button"
+                  className={`${styles.toolPill} ${docBookmarked ? styles.toolPillOn : ''}`}
+                  aria-pressed={docBookmarked}
+                  onClick={() => toggleBookmark({ kind, slug: slug as string, title: doc.title })}
+                >
+                  {docBookmarked ? `★ ${t('library.bookmarked')}` : `☆ ${t('library.bookmark')}`}
+                </button>
+              )}
               {offlineSupported() && (
                 <button
                   type="button"
@@ -436,6 +580,26 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                     </a>
                     <button
                       type="button"
+                      className={`${styles.tocStar} ${
+                        slug && isBookmarked(prefs, kind, slug, e.id) ? styles.tocStarOn : ''
+                      }`}
+                      aria-pressed={!!slug && isBookmarked(prefs, kind, slug, e.id)}
+                      aria-label={t('library.bookmarkSection')}
+                      title={t('library.bookmarkSection')}
+                      onClick={() =>
+                        toggleBookmark({
+                          kind,
+                          slug: slug as string,
+                          title: doc?.title ?? e.title,
+                          anchor: e.id,
+                          anchorText: e.title,
+                        })
+                      }
+                    >
+                      {slug && isBookmarked(prefs, kind, slug, e.id) ? '★' : '☆'}
+                    </button>
+                    <button
+                      type="button"
                       className={styles.tocCopy}
                       aria-label={t('document.copyLink')}
                       title={copiedId === e.id ? t('document.copied') : t('document.copyLink')}
@@ -457,6 +621,49 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
               dangerouslySetInnerHTML={{ __html: html }}
             />
           </div>
+
+          {sel && (
+            <SelectionPopover
+              rect={sel.rect}
+              onHighlight={() => saveAnnotation('')}
+              onSaveNote={saveAnnotation}
+              onClose={closeSel}
+            />
+          )}
+
+          {notesForDoc && notesForDoc.length > 0 && (
+            <section className={styles.notes}>
+              <h2 className={styles.notesHead}>
+                {t('document.notes', { n: notesForDoc.length })}
+              </h2>
+              <ul className={styles.notesList}>
+                {notesForDoc.map((n) => (
+                  <li key={n.id} className={styles.noteItem}>
+                    <button
+                      type="button"
+                      className={styles.noteQuote}
+                      onClick={() =>
+                        contentRef.current
+                          ?.querySelector(`mark[data-annot="${n.id}"]`)
+                          ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+                      }
+                    >
+                      “{n.quote}”
+                    </button>
+                    {n.note && <p className={styles.noteText}>{n.note}</p>}
+                    <button
+                      type="button"
+                      className={styles.noteRemove}
+                      aria-label={t('document.removeNote')}
+                      onClick={() => removeNote(dk, n.id)}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {related.length > 0 && (
             <section className={styles.related}>

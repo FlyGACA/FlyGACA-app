@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
@@ -25,6 +26,21 @@ export function Flashcards() {
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { fcSrs } = useStudyProgress();
   const [bank, setBank] = useState<QuizBank | null>(null);
+  const [params, setParams] = useSearchParams();
+
+  // Deep-link straight into one bank's deck via ?bank=<id> (e.g. from a pack or
+  // the hub's weak-topics list). Decks stay per-bank so SRS attribution is exact.
+  useEffect(() => {
+    if (!data || bank) return;
+    const id = params.get('bank');
+    const found = id ? data.banks.find((b) => b.id === id) : null;
+    if (found) setBank(found);
+  }, [data, params, bank]);
+
+  const backToBanks = () => {
+    setBank(null);
+    if ([...params.keys()].length) setParams({}, { replace: true });
+  };
 
   if (loading)
     return <section className={`container-narrow ${styles.page}`}>{t('common.loading')}</section>;
@@ -70,7 +86,7 @@ export function Flashcards() {
     );
   }
 
-  return <Deck bank={bank} onBack={() => setBank(null)} />;
+  return <Deck bank={bank} onBack={backToBanks} />;
 }
 
 type Card = QuizQuestion & { key: string };

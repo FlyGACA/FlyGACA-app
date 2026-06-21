@@ -6,6 +6,7 @@ import { RadarWidget } from './widgets/RadarWidget';
 import { RegStreamWidget } from './widgets/RegStreamWidget';
 import { ComplianceWidget } from './widgets/ComplianceWidget';
 import { ToolsWidget } from './widgets/ToolsWidget';
+import { GuidesWidget } from './widgets/GuidesWidget';
 import { StudyWidget } from './widgets/StudyWidget';
 import styles from './HomeDashboard.module.css';
 
@@ -29,6 +30,7 @@ export default function HomeDashboard() {
         <RegStreamWidget />
         <ComplianceWidget />
         <ToolsWidget />
+        <GuidesWidget />
         <StudyWidget />
       </BentoGrid>
     </div>

@@ -15,7 +15,13 @@ const FC_KEY = 'flygaca:study:flashcards';
 const SRS_KEY = 'flygaca:study:srs';
 const STREAK_KEY = 'flygaca:study:streak';
 const EXAM_KEY = 'flygaca:study:exam';
+const HISTORY_KEY = 'flygaca:study:exam-history';
 const PATHS_KEY = 'flygaca:study:paths';
+const FLAG_KEY = 'flygaca:study:flagged';
+const LAST_BANK_KEY = 'flygaca:study:last-bank';
+
+/** How many recent exam results to retain for the history sparkline. */
+export const EXAM_HISTORY_MAX = 10;
 
 export interface Streak {
   /** ISO yyyy-mm-dd of the most recent study day. */
@@ -38,6 +44,12 @@ export interface StudyState {
   pathDone: Record<string, number[]>;
   streak: Streak;
   exam: ExamResult | null;
+  /** Recent mock-exam results, oldest-first, capped at EXAM_HISTORY_MAX. */
+  examHistory: ExamResult[];
+  /** bankId → flagged question indices (persistent "review" deck). */
+  flagged: Record<string, number[]>;
+  /** Last quiz bank opened, for the "resume" affordance on the hub. */
+  lastBank: string | null;
 }
 
 // ── Pure helpers (unit-tested) ──
@@ -49,6 +61,14 @@ export function nextStreak(prev: Streak, today: string, yesterday: string): Stre
   if (prev.day === today) return prev;
   if (prev.day === yesterday) return { day: today, count: prev.count + 1 };
   return { day: today, count: 1 };
+}
+/** Append a result to the history, keeping only the most recent `max`. */
+export function pushHistory(list: ExamResult[], result: ExamResult, max = EXAM_HISTORY_MAX): ExamResult[] {
+  return [...list, result].slice(-max);
+}
+/** Toggle membership of a numeric index in a sorted list. */
+export function toggleIndex(list: number[], n: number): number[] {
+  return list.includes(n) ? list.filter((x) => x !== n) : [...list, n].sort((a, b) => a - b);
 }
 
 function scanKeys(prefix: string): string[] {
@@ -104,6 +124,9 @@ function load(): StudyState {
     pathDone: readJson<Record<string, number[]>>(PATHS_KEY, {}),
     streak: readJson<Streak>(STREAK_KEY, { day: '', count: 0 }),
     exam: readJson<ExamResult | null>(EXAM_KEY, null),
+    examHistory: readJson<ExamResult[]>(HISTORY_KEY, []),
+    flagged: readJson<Record<string, number[]>>(FLAG_KEY, {}),
+    lastBank: readJson<string | null>(LAST_BANK_KEY, null),
   };
 }
 
@@ -198,6 +221,25 @@ export function togglePathStep(pathId: string, step: number): void {
 
 export function setExamResult(result: ExamResult): void {
   recordStudyDay();
+  const examHistory = pushHistory(state.examHistory, result);
   save(EXAM_KEY, JSON.stringify(result));
-  commit({ ...state, exam: result });
+  save(HISTORY_KEY, JSON.stringify(examHistory));
+  commit({ ...state, exam: result, examHistory });
+}
+
+/** Remember the last quiz bank opened so the hub can offer a "resume" link. */
+export function setLastBank(bankId: string): void {
+  if (state.lastBank === bankId) return;
+  save(LAST_BANK_KEY, JSON.stringify(bankId));
+  commit({ ...state, lastBank: bankId });
+}
+
+/** Toggle a flag on a quiz question, building a persistent review deck. */
+export function toggleFlag(bankId: string, idx: number): void {
+  const next = toggleIndex(state.flagged[bankId] ?? [], idx);
+  const flagged = { ...state.flagged };
+  if (next.length) flagged[bankId] = next;
+  else delete flagged[bankId];
+  save(FLAG_KEY, JSON.stringify(flagged));
+  commit({ ...state, flagged });
 }

@@ -5,6 +5,7 @@ import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { readingMinutes } from '../../lib/readingTime';
+import { useGuidePrefs, toggleBookmark } from '../../lib/guidePrefs';
 import { GUIDE_SLUGS, GUIDE_META, GUIDE_TOPICS, type GuideLevel, type GuideTopic } from './guides';
 import styles from './Guides.module.css';
 
@@ -18,6 +19,8 @@ const TOPIC_ICON: Record<GuideTopic, string> = {
   medical: '🩺',
   language: '🗣️',
   airspace: '🗺️',
+  operations: '🛫',
+  performance: '📈',
   weather: '🌦️',
   planning: '🗓️',
 };
@@ -27,11 +30,13 @@ const TOPIC_TONE: Record<GuideTopic, string> = {
   medical: 'var(--cat-2)',
   language: 'var(--cat-3)',
   airspace: 'var(--cat-4)',
+  operations: 'var(--cat-5)',
+  performance: 'var(--cat-2)',
   weather: 'var(--cat-5)',
   planning: 'var(--cat-1)',
 };
 
-const LEVELS: GuideLevel[] = ['beginner', 'intermediate'];
+const LEVELS: GuideLevel[] = ['beginner', 'intermediate', 'advanced'];
 
 export function GuidesIndex() {
   const { t } = useTranslation();
@@ -39,6 +44,7 @@ export function GuidesIndex() {
   const [query, setQuery] = useState('');
   const [topic, setTopic] = useState<GuideTopic | 'all'>('all');
   const [level, setLevel] = useState<GuideLevel | 'all'>('all');
+  const { bookmarks, read } = useGuidePrefs();
   const q = query.trim().toLowerCase();
 
   const guides = useMemo(
@@ -48,7 +54,8 @@ export function GuidesIndex() {
         const blurb = t(`guides.items.${slug}.blurb`);
         const intro = t(`guides.items.${slug}.intro`);
         const sections = t(`guides.items.${slug}.sections`, { returnObjects: true }) as Section[];
-        const text = [intro, ...sections.flatMap((s) => [s.h, s.p])].join(' ');
+        const takeaways = t(`guides.items.${slug}.takeaways`, { returnObjects: true }) as string[];
+        const text = [intro, ...sections.flatMap((s) => [s.h, s.p]), ...takeaways].join(' ');
         return {
           slug,
           name,
@@ -70,36 +77,60 @@ export function GuidesIndex() {
       (!q || g.haystack.includes(q)),
   );
 
-  const grouped = topic === 'all' && !q;
+  const grouped = topic === 'all' && level === 'all' && !q;
   const groups = GUIDE_TOPICS.map((tp) => ({
     topic: tp,
     items: filtered.filter((g) => g.topic === tp),
   })).filter((grp) => grp.items.length > 0);
 
+  const saved = grouped ? guides.filter((g) => bookmarks.includes(g.slug)) : [];
+  const readCount = read.length;
+
   type GuideRow = (typeof guides)[number];
-  const card = (g: GuideRow) => (
-    <li key={g.slug}>
-      <Link to={`/guides/${g.slug}`} className={styles.card}>
-        <h3 className={styles.cardTitle}>{g.name}</h3>
-        <p className={styles.blurb}>{g.blurb}</p>
-        <span className={styles.metaRow}>
-          <span className={styles.level} data-level={g.level}>
-            {t(`guides.level.${g.level}`)}
+  const card = (g: GuideRow) => {
+    const isSaved = bookmarks.includes(g.slug);
+    const isRead = read.includes(g.slug);
+    return (
+      <li key={g.slug} className={styles.cardWrap}>
+        <button
+          type="button"
+          className={`${styles.star} ${isSaved ? styles.starOn : ''}`}
+          aria-label={t(isSaved ? 'guides.unbookmark' : 'guides.bookmark')}
+          aria-pressed={isSaved}
+          onClick={() => toggleBookmark(g.slug)}
+        >
+          {isSaved ? '★' : '☆'}
+        </button>
+        <Link to={`/guides/${g.slug}`} className={styles.card}>
+          <h3 className={styles.cardTitle}>{g.name}</h3>
+          <p className={styles.blurb}>{g.blurb}</p>
+          <span className={styles.metaRow}>
+            <span className={styles.level} data-level={g.level}>
+              {t(`guides.level.${g.level}`)}
+            </span>
+            <span className={styles.metaDim}>{t('guides.readTime', { min: g.minutes })}</span>
+            <span className={styles.metaDim}>
+              {t('guides.sectionCount', { count: g.sectionCount })}
+            </span>
+            {isRead && (
+              <span className={styles.readBadge}>
+                <span aria-hidden="true">✓</span> {t('guides.readDone')}
+              </span>
+            )}
           </span>
-          <span className={styles.metaDim}>{t('guides.readTime', { min: g.minutes })}</span>
-          <span className={styles.metaDim}>
-            {t('guides.sectionCount', { count: g.sectionCount })}
-          </span>
-        </span>
-      </Link>
-    </li>
-  );
+        </Link>
+      </li>
+    );
+  };
 
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>
         <h1>{t('guides.title')}</h1>
         <p className={styles.subtitle}>{t('guides.subtitle')}</p>
+        <p className={styles.progress} role="status">
+          {t('guides.readProgress', { done: readCount, total: GUIDE_SLUGS.length })}
+        </p>
         <input
           className={styles.search}
           type="search"
@@ -156,16 +187,28 @@ export function GuidesIndex() {
           {t('guides.empty')}
         </p>
       ) : grouped ? (
-        groups.map((grp) => (
-          <section key={grp.topic} className={styles.group}>
-            <SectionHeader
-              title={`${TOPIC_ICON[grp.topic]} ${t(`guides.topics.${grp.topic}`)}`}
-              tone={TOPIC_TONE[grp.topic]}
-              count={t('guides.guideCount', { count: grp.items.length })}
-            />
-            <ul className={`${styles.grid} stagger-grid`}>{grp.items.map(card)}</ul>
-          </section>
-        ))
+        <>
+          {saved.length > 0 && (
+            <section className={styles.group}>
+              <SectionHeader
+                title={`★ ${t('guides.saved')}`}
+                tone="var(--gold)"
+                count={t('guides.guideCount', { count: saved.length })}
+              />
+              <ul className={`${styles.grid} stagger-grid`}>{saved.map(card)}</ul>
+            </section>
+          )}
+          {groups.map((grp) => (
+            <section key={grp.topic} className={styles.group}>
+              <SectionHeader
+                title={`${TOPIC_ICON[grp.topic]} ${t(`guides.topics.${grp.topic}`)}`}
+                tone={TOPIC_TONE[grp.topic]}
+                count={t('guides.guideCount', { count: grp.items.length })}
+              />
+              <ul className={`${styles.grid} stagger-grid`}>{grp.items.map(card)}</ul>
+            </section>
+          ))}
+        </>
       ) : (
         <ul className={`${styles.grid} stagger-grid`}>{filtered.map(card)}</ul>
       )}

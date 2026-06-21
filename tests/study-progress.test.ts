@@ -1,5 +1,35 @@
 import { describe, expect, it } from 'vitest';
-import { dayStr, nextStreak } from '../src/lib/studyProgress';
+import {
+  dayStr,
+  nextStreak,
+  pushHistory,
+  toggleIndex,
+  EXAM_HISTORY_MAX,
+  type ExamResult,
+} from '../src/lib/studyProgress';
+
+describe('pushHistory', () => {
+  const mk = (pct: number): ExamResult => ({ pct, passed: pct >= 75, date: '2026-06-21' });
+
+  it('appends oldest-first', () => {
+    expect(pushHistory([mk(80)], mk(60)).map((r) => r.pct)).toEqual([80, 60]);
+  });
+
+  it('caps at the max, dropping the oldest', () => {
+    const full = Array.from({ length: EXAM_HISTORY_MAX }, (_, i) => mk(i));
+    const next = pushHistory(full, mk(99));
+    expect(next).toHaveLength(EXAM_HISTORY_MAX);
+    expect(next[next.length - 1].pct).toBe(99);
+    expect(next[0].pct).toBe(1); // the first (pct 0) was dropped
+  });
+});
+
+describe('toggleIndex', () => {
+  it('adds when absent (kept sorted) and removes when present', () => {
+    expect(toggleIndex([2, 5], 3)).toEqual([2, 3, 5]);
+    expect(toggleIndex([2, 3, 5], 3)).toEqual([2, 5]);
+  });
+});
 
 describe('dayStr', () => {
   it('formats a date as ISO yyyy-mm-dd (UTC)', () => {
