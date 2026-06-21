@@ -78,6 +78,7 @@ const Oxygen = lazyNamed(() => import('./pages/tools/RegLookup'), 'Oxygen');
 const FuelReserves = lazyNamed(() => import('./pages/tools/RegLookup'), 'FuelReserves');
 const ConversionChecker = lazyNamed(() => import('./pages/tools/RegLookup'), 'ConversionChecker');
 const Aerodromes = lazyNamed(() => import('./pages/tools/Aerodromes'), 'Aerodromes');
+const AerodromeDetail = lazyNamed(() => import('./pages/tools/AerodromeDetail'), 'AerodromeDetail');
 const Airspace = lazyNamed(() => import('./pages/tools/Airspace'), 'Airspace');
 const Definitions = lazyNamed(() => import('./pages/tools/Definitions'), 'Definitions');
 const RoutePlanner = lazyNamed(() => import('./pages/tools/RoutePlanner'), 'RoutePlanner');
@@ -178,6 +179,7 @@ export const router = createBrowserRouter([
       { path: 'tools/fuel-reserves', element: <FuelReserves /> },
       { path: 'tools/conversion-checker', element: <ConversionChecker /> },
       { path: 'tools/aerodromes', element: <Aerodromes /> },
+      { path: 'tools/aerodromes/:icao', element: <AerodromeDetail /> },
       { path: 'tools/airspace', element: <Airspace /> },
       { path: 'tools/definitions', element: <Definitions /> },
       { path: 'tools/route-planner', element: <RoutePlanner /> },

@@ -203,6 +203,10 @@ export interface Airport extends SourceProvenance {
   /** Runway designators; worldwide rows add length (ft) and surface where known. */
   rwys: { id: string; len?: number; surf?: string }[];
   freqs: { l: string; v: string }[];
+  /** Magnetic variation, present on the curated Saudi (AIP-KSA) records only. */
+  mag?: string;
+  /** Aerodrome services (type, runway summary, …) — curated Saudi records only. */
+  services?: { l: string; v: string }[];
 }
 
 export interface AirportsIndex {
