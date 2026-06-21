@@ -237,7 +237,7 @@ button {
   inline-size: 100%;
   min-height: 44px;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: 1px solid var(--border-input);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
@@ -287,6 +287,12 @@ button {
   content: '⚠';
   font-size: 0.85em;
   flex-shrink: 0;
+}
+
+/* The skip-link target is programmatically focusable (tabindex="-1") so focus
+   reliably lands in <main>; suppress the page-wide ring that focus would draw. */
+#main:focus {
+  outline: none;
 }
 
 /* Skip-link for keyboard users */

@@ -10,7 +10,9 @@
     "empty": "No matches — try a Part number, ICAO code, or tool.",
     "navigate": "navigate",
     "openHint": "open",
-    "closeHint": "close"
+    "closeHint": "close",
+    "resultsLabel": "Results",
+    "resultCount": "{{count}} results"
   },
   "common": {
     "appName": "Fly GACA",

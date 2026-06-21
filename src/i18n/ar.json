@@ -10,7 +10,9 @@
     "empty": "لا نتائج — جرّب رقم جزء أو رمز ICAO أو أداة.",
     "navigate": "تنقّل",
     "openHint": "فتح",
-    "closeHint": "إغلاق"
+    "closeHint": "إغلاق",
+    "resultsLabel": "النتائج",
+    "resultCount": "{{count}} نتيجة"
   },
   "common": {
     "appName": "فلاي جاكا",
