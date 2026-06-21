@@ -9,11 +9,13 @@ import { BarSparkline } from '../../components/BarSparkline';
 import { BentoGrid } from '../../components/bento/BentoGrid';
 import { BentoCard } from '../../components/bento/BentoCard';
 import { StatValue } from '../../components/bento/widgets/StatValue';
+import { StatusPill } from '../../components/StatusPill';
 import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { computeCurrency, recordCurrency, actionNeeded } from '../../calc/currency';
 import { summarizeLogbook, monthlyHours } from '../../calc/logbook';
+import { achievements, earnedCount } from '../../calc/achievements';
 import { profileCompleteness } from '../../calc/onboarding';
 import { buildIcs } from '../../calc/ics';
 import styles from './dashboard.module.css';
@@ -61,6 +63,10 @@ function Inner() {
   }
 
   const totalTrend = trend.reduce((s, b) => s + b.hours, 0);
+
+  // Earned milestones first; lock the rest with a progress hint.
+  const badges = achievements(flights).sort((a, b) => Number(b.earned) - Number(a.earned));
+  const earned = earnedCount(badges);
 
   return (
     <section className={`container ${styles.page}`}>
@@ -180,6 +186,33 @@ function Inner() {
             <Link to="/settings" className={styles.quickLink}>
               {t('account.settings')}
             </Link>
+          </div>
+        </BentoCard>
+
+        <BentoCard span="wide">
+          <div className={styles.tileHead}>
+            <h2>{t('dashboard.achievements')}</h2>
+            <span className={styles.cardLink}>
+              {t('dashboard.achievementsEarned', { earned, total: badges.length })}
+            </span>
+          </div>
+          <div className={styles.badges}>
+            {badges.map((b) => (
+              <StatusPill
+                key={b.id}
+                tone={b.earned ? 'success' : 'data'}
+                title={b.earned ? undefined : `${b.have} / ${b.target}`}
+              >
+                {b.earned ? '★ ' : ''}
+                {t(`dashboard.achievementItems.${b.id}`)}
+                {!b.earned && (
+                  <span className={styles.badgeProg}>
+                    {' '}
+                    · {b.have}/{b.target}
+                  </span>
+                )}
+              </StatusPill>
+            ))}
           </div>
         </BentoCard>
       </BentoGrid>

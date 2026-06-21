@@ -336,3 +336,76 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
+
+/* ── Logbook filter bar ── */
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-end: var(--space-4);
+}
+.filterInput,
+.filterSelect,
+.filterDate {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+}
+.filterInput {
+  flex: 1;
+  min-inline-size: 12ch;
+}
+.filterInput:focus,
+.filterSelect:focus,
+.filterDate:focus {
+  border-color: var(--brand-hover);
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* Sortable column header button. */
+.sortBtn {
+  inline-size: 100%;
+  text-align: start;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sortBtn:hover {
+  color: var(--brand-hover);
+}
+
+/* ── Logbook breakdown ── */
+.breakdown {
+  margin-block-start: var(--space-5);
+}
+.breakdown > summary {
+  cursor: pointer;
+  font-weight: var(--fw-semibold);
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+.breakdownGrids {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+  margin-block-start: var(--space-3);
+}
+.breakdownHead {
+  font-size: var(--fs-lg);
+  margin-block-end: var(--space-2);
+}
+.last {
+  white-space: nowrap;
+}

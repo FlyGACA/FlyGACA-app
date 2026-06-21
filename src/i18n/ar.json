@@ -1764,7 +1764,23 @@
     "saved": "تم الحفظ ✓",
     "homeBaseHint": "رمز ICAO، مثل OERK",
     "licenceHint": "PPL · CPL · ATPL",
-    "records": "السجلات والتصاريح"
+    "records": "السجلات والتصاريح",
+    "filter": "تصفية",
+    "filterSearch": "ابحث في التسجيل والنوع والمسار…",
+    "allTypes": "كل الأنواع",
+    "dateFrom": "من تاريخ",
+    "dateTo": "إلى تاريخ",
+    "sortBy": "ترتيب حسب {{col}}",
+    "showingCount": "عرض {{shown}} من {{total}}",
+    "importCsv": "استيراد CSV",
+    "imported": "تم استيراد {{n}} رحلة",
+    "importEmpty": "لا توجد رحلات في هذا الملف",
+    "breakdown": "تفصيل",
+    "byAircraft": "حسب الطائرة",
+    "byMonth": "حسب الشهر",
+    "flightsCol": "الرحلات",
+    "last": "الأخيرة",
+    "month": "الشهر"
   },
   "guides": {
     "title": "الأدلة",
@@ -2729,7 +2745,24 @@
     "last6Months": "٦ أشهر",
     "hoursTrendSummary": "{{hours}} ساعة طيران خلال آخر ٦ أشهر",
     "quickActions": "إجراءات سريعة",
-    "logFlight": "سجّل رحلة"
+    "logFlight": "سجّل رحلة",
+    "achievements": "الإنجازات",
+    "achievementsEarned": "{{earned}} من {{total}}",
+    "achievementItems": {
+      "flights-100": "100 رحلة",
+      "hours-50": "50 ساعة",
+      "hours-100": "100 ساعة",
+      "hours-500": "500 ساعة",
+      "hours-1000": "1000 ساعة",
+      "pic-50": "50 ساعة قيادة",
+      "pic-100": "100 ساعة قيادة",
+      "night-first": "أول طيران ليلي",
+      "night-50": "50 ساعة ليلية",
+      "ifr-first": "أول طيران آلي",
+      "ldg-100": "100 هبوط",
+      "ldg-500": "500 هبوط",
+      "xc-first": "أول رحلة بين المدن"
+    }
   },
   "currency": {
     "title": "متابعة الصلاحيات",

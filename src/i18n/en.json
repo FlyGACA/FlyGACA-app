@@ -1764,7 +1764,23 @@
     "saved": "Saved ✓",
     "homeBaseHint": "ICAO code, e.g. OERK",
     "licenceHint": "PPL · CPL · ATPL",
-    "records": "Records & ratings"
+    "records": "Records & ratings",
+    "filter": "Filter",
+    "filterSearch": "Search reg, type, route…",
+    "allTypes": "All types",
+    "dateFrom": "From date",
+    "dateTo": "To date",
+    "sortBy": "Sort by {{col}}",
+    "showingCount": "Showing {{shown}} of {{total}}",
+    "importCsv": "Import CSV",
+    "imported": "Imported {{n}} flights",
+    "importEmpty": "No flights found in that file",
+    "breakdown": "Breakdown",
+    "byAircraft": "By aircraft",
+    "byMonth": "By month",
+    "flightsCol": "Flights",
+    "last": "Last",
+    "month": "Month"
   },
   "guides": {
     "title": "Guides",
@@ -2729,7 +2745,24 @@
     "last6Months": "6 months",
     "hoursTrendSummary": "{{hours}} hours flown in the last 6 months",
     "quickActions": "Quick actions",
-    "logFlight": "Log a flight"
+    "logFlight": "Log a flight",
+    "achievements": "Achievements",
+    "achievementsEarned": "{{earned}} of {{total}} earned",
+    "achievementItems": {
+      "flights-100": "100 flights",
+      "hours-50": "50 hours",
+      "hours-100": "100 hours",
+      "hours-500": "500 hours",
+      "hours-1000": "1,000 hours",
+      "pic-50": "50 PIC hours",
+      "pic-100": "100 PIC hours",
+      "night-first": "First night flight",
+      "night-50": "50 night hours",
+      "ifr-first": "First IFR",
+      "ldg-100": "100 landings",
+      "ldg-500": "500 landings",
+      "xc-first": "First cross-country"
+    }
   },
   "currency": {
     "title": "Currency Tracker",
