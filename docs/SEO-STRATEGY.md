@@ -198,10 +198,15 @@ app-shell precache, `/data/*` network-first) already helps repeat visits; the fo
 | **INP** | Calculators recompute on input | Keep `calc/*` pure & cheap (already the case); debounce expensive find-in-page (already 200 ms); avoid long tasks on keystroke. |
 | **CLS** | `usePageMeta` injects late; fonts swap | Reserve space for the reading-progress bar & toolbar; `font-display: swap` with metric-matched fallbacks; avoid injecting layout-affecting banners after paint. |
 
-Add field monitoring with `web-vitals` reporting into the **existing Firebase GA4** (gated on
-`VITE_FIREBASE_MEASUREMENT_ID`) — `onLCP/onINP/onCLS → logEvent('web_vitals', …)`. (We intentionally
-do **not** wire `@vercel/analytics`/`@vercel/speed-insights`: the app deploys to Firebase Hosting,
-where they are inert.)
+Add field monitoring for CWV, **host-aware** (the repo ships both Firebase Hosting scripts in
+`package.json` *and* an active Vercel integration — PRs build a Vercel preview, so the production
+target should be confirmed before choosing):
+
+- **If production is Vercel** — wire the already-installed `@vercel/analytics` + `@vercel/speed-insights`
+  (`<Analytics />` + `<SpeedInsights />` in the app root). Zero new deps; near-zero effort.
+- **If production is Firebase Hosting** — those two packages are inert there; instead report
+  `web-vitals` into the **existing Firebase GA4** (gated on `VITE_FIREBASE_MEASUREMENT_ID`):
+  `onLCP/onINP/onCLS → logEvent('web_vitals', …)`.
 
 ### 3.2 Structured data (Schema.org) — implementation plan
 
@@ -317,7 +322,7 @@ future initiative, not a blocker.
 | Sitemap: priority tiers + per-URL hreflang + real `lastmod` | **Done** | `scripts/build-sitemap.mjs` |
 | `Course` / `FAQPage` builders | **Ready, wire on real content** | `src/lib/jsonld.ts` |
 | Static prerender of public routes | **Planned** | §3.3 (`scripts/prerender.mjs`) |
-| `web-vitals` → Firebase GA4 | **Recommended** | §3.1 |
+| CWV field monitoring (Vercel Analytics *or* web-vitals → GA4, host-dependent) | **Recommended** | §3.1 |
 | Locale path URLs (`/en`,`/ar`) | **Future** | §3.5 |
 
 ### Production env to set
