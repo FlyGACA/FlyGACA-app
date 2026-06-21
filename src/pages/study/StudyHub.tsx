@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, QuizData } from '../../lib/content';
 import { useStudyProgress } from '../../lib/studyProgress';
+import { masteredCount } from '../../calc/srs';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { OutputGrid } from '../../components/calc/Grids';
 import { Disclaimer } from '../../components/Disclaimer';
@@ -24,7 +25,7 @@ export function StudyHub() {
   usePageMeta(t('meta.study'));
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
-  const { quizBest, gsDone, fcKnown, streak } = useStudyProgress();
+  const { quizBest, gsDone, fcSrs, streak } = useStudyProgress();
 
   const banks = quiz.data?.banks ?? [];
   const attempted = banks.filter((b) => quizBest[b.id] != null).length;
@@ -33,10 +34,13 @@ export function StudyHub() {
     ? Math.round(bestValues.reduce((s, v) => s + v, 0) / bestValues.length)
     : 0;
   const totalCards = banks.reduce((s, b) => s + b.questions.length, 0);
-  const knownCards = Object.values(fcKnown).reduce((s, arr) => s + arr.length, 0);
+  const knownCards = Object.values(fcSrs).reduce((s, m) => s + masteredCount(m), 0);
 
   const lessons = gs.data?.modules.flatMap((m) => m.lessons) ?? [];
   const doneLessons = lessons.filter((l) => gsDone[l.id]).length;
+
+  // The highest streak milestone reached, for a small celebratory nudge.
+  const milestone = [365, 100, 30, 7].find((m) => streak.count >= m);
 
   const progressFor = (key: string): string | null => {
     if (key === 'quiz' && banks.length)
@@ -66,6 +70,12 @@ export function StudyHub() {
         <ResultStat label={t('study.banksDone')} value={`${attempted}/${banks.length}`} />
         <ResultStat label={t('study.lessonsDone')} value={`${doneLessons}/${lessons.length}`} />
       </OutputGrid>
+
+      {milestone && (
+        <p className={styles.milestone} role="status">
+          {t('study.streakMilestone', { n: milestone })}
+        </p>
+      )}
 
       <ul className={`${styles.modes} stagger-grid`}>
         {MODES.map((m) => {

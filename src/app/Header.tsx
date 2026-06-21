@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
+import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import styles from './Header.module.css';
 
@@ -161,6 +162,7 @@ export function Header() {
             </kbd>
           </button>
           <LangToggle className={styles.langToggle} />
+          <InstallButton />
           <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
             {t('common.goPro')}
           </Link>

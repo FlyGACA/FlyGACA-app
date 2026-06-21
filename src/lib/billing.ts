@@ -42,3 +42,28 @@ export async function startProCheckout(plan: ProPlan = 'annual'): Promise<void> 
   if (!url) throw new Error('no-url');
   window.location.assign(url);
 }
+
+/**
+ * Open the Stripe customer portal so a subscriber can manage/cancel. Web only
+ * (native manages subscriptions through the App Store). Throws the same stable
+ * error codes as {@link startProCheckout}.
+ */
+export async function startBillingPortal(): Promise<void> {
+  if (billingChannel() === 'revenuecat' || isNative()) throw new Error('native-billing');
+  if (!isFirebaseConfigured()) throw new Error('billing-unavailable');
+
+  const auth = await getFirebaseAuth();
+  if (!auth?.currentUser) throw new Error('sign-in-required');
+
+  const fns = await getFns();
+  if (!fns) throw new Error('billing-unavailable');
+  const { httpsCallable } = await import('firebase/functions');
+  const portal = httpsCallable<Record<string, never>, { url?: string }>(
+    fns,
+    'createBillingPortalSession',
+  );
+  const res = await portal({});
+  const url = res.data?.url;
+  if (!url) throw new Error('no-url');
+  window.location.assign(url);
+}

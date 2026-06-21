@@ -1,0 +1,92 @@
+/**
+ * A tiny, conservative Markdown subset parser. Pure (no DOM, no deps): it turns
+ * a model answer into a small block tree that {@link ../components/chat/RichText}
+ * renders as React elements — never as HTML — so hostile or malformed output is
+ * inert by construction.
+ *
+ * Supported: paragraphs (blank-line separated), `#`–`###` headings, unordered
+ * lists (`-`/`*`/`+`) and ordered lists (`1.`), `**bold**`, and `` `code` ``.
+ * Anything else stays as literal text.
+ */
+
+export type Inline =
+  | { type: 'text'; value: string }
+  | { type: 'bold'; value: string }
+  | { type: 'code'; value: string };
+
+export type Block =
+  | { type: 'paragraph'; spans: Inline[] }
+  | { type: 'heading'; level: number; spans: Inline[] }
+  | { type: 'ul'; items: Inline[][] }
+  | { type: 'ol'; items: Inline[][] };
+
+const BULLET = /^\s*[-*+]\s+(.*)$/;
+const ORDERED = /^\s*\d+[.)]\s+(.*)$/;
+const HEADING = /^(#{1,3})\s+(.*)$/;
+
+/** Split a line into inline spans, honouring `**bold**` and `` `code` ``. */
+export function parseInline(text: string): Inline[] {
+  const spans: Inline[] = [];
+  // Alternate matches for `code` (backticks) and **bold**; first match wins.
+  const re = /`([^`]+)`|\*\*([^*]+)\*\*/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) spans.push({ type: 'text', value: text.slice(last, m.index) });
+    if (m[1] !== undefined) spans.push({ type: 'code', value: m[1] });
+    else if (m[2] !== undefined) spans.push({ type: 'bold', value: m[2] });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) spans.push({ type: 'text', value: text.slice(last) });
+  // Empty input → a single empty text span so callers always get something.
+  return spans.length ? spans : [{ type: 'text', value: text }];
+}
+
+/** Parse a Markdown-ish string into a flat list of blocks. */
+export function parseMarkdown(input: string): Block[] {
+  const lines = (input ?? '').replace(/\r\n?/g, '\n').split('\n');
+  const blocks: Block[] = [];
+  let para: string[] = [];
+
+  const flushPara = () => {
+    if (para.length) {
+      blocks.push({ type: 'paragraph', spans: parseInline(para.join(' ')) });
+      para = [];
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (line.trim() === '') {
+      flushPara();
+      continue;
+    }
+
+    const heading = HEADING.exec(line);
+    if (heading) {
+      flushPara();
+      blocks.push({ type: 'heading', level: heading[1].length, spans: parseInline(heading[2]) });
+      continue;
+    }
+
+    if (BULLET.test(line) || ORDERED.test(line)) {
+      flushPara();
+      const ordered = !BULLET.test(line) && ORDERED.test(line);
+      const matcher = ordered ? ORDERED : BULLET;
+      const items: Inline[][] = [];
+      // Consume the contiguous run of list items of the same kind.
+      while (i < lines.length && matcher.test(lines[i])) {
+        items.push(parseInline(matcher.exec(lines[i])![1]));
+        i++;
+      }
+      i--; // step back; the for-loop will advance past the last item
+      blocks.push(ordered ? { type: 'ol', items } : { type: 'ul', items });
+      continue;
+    }
+
+    para.push(line.trim());
+  }
+  flushPara();
+  return blocks;
+}

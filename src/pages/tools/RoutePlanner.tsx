@@ -14,7 +14,7 @@ import table from './WindTable.module.css';
 
 export function RoutePlanner() {
   const { t } = useTranslation();
-  const { data } = useFetchJson<AirportsIndex>('/data/airports.json');
+  const { data, loading, error } = useFetchJson<AirportsIndex>('/data/airports.json');
   const [inputs, set] = useUrlState({ route: '', gs: '', burn: '' });
 
   const byIcao = useMemo(() => {
@@ -66,6 +66,8 @@ export function RoutePlanner() {
         { to: '/tools/aerodromes', label: t('tools.items.aerodromes.name') },
       ]}
     >
+      {loading && <p>{t('common.loading')}</p>}
+      {error && <p role="alert">{t('common.loadError')}</p>}
       <FieldGrid>
         <TextField
           label={t('routePlanner.route')}

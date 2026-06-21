@@ -20,8 +20,13 @@ import type { Functions } from 'firebase/functions';
 
 const env = import.meta.env;
 
-/** Functions region — must match the deployed gateway (functions/region.js). */
-export const FUNCTIONS_REGION = 'me-central1';
+/**
+ * Region for `httpsCallable` functions. Must match where the billing callables
+ * deploy — `me-central2` (see functions/src/billing.ts + index.ts and the
+ * /api/stripe-webhook rewrite in firebase.json). The chat gateway (/api/chat) is
+ * reached by a hosting fetch, not this region, so it is unaffected.
+ */
+export const FUNCTIONS_REGION = 'me-central2';
 
 export const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY as string | undefined,

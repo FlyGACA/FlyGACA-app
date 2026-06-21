@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { usePageMeta } from '../lib/usePageMeta';
-import { canCheckout, startProCheckout } from '../lib/billing';
+import { canCheckout, startBillingPortal, startProCheckout } from '../lib/billing';
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
 import { annualSavingsPct } from '../lib/pricing';
@@ -54,7 +54,19 @@ export function Pricing() {
     }
   }
 
-  // A paid plan already covers Pro, so the Pro CTA becomes "Your plan".
+  async function manage() {
+    setBusy(true);
+    setError('');
+    try {
+      await startBillingPortal();
+    } catch {
+      setError(t('pricing.checkoutError'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // A paid plan already covers Pro, so the Pro CTA manages the subscription.
   const isPaid = plan !== 'free';
 
   return (
@@ -99,12 +111,18 @@ export function Pricing() {
           price={annual ? t('pricing.plans.pro.priceYr') : t('pricing.plans.pro.priceMo')}
           features={f('pricing.plans.pro')}
           cta={
-            isPaid ? t('pricing.yourPlan') : busy ? t('pricing.checkoutBusy') : t('pricing.goPro')
+            isPaid
+              ? t('account.subscription.manage')
+              : busy
+                ? t('pricing.checkoutBusy')
+                : t('pricing.goPro')
           }
           highlight
           badge={t('pricing.popular')}
-          ctaOnClick={!isPaid && canCheckout() ? () => void goPro() : undefined}
-          ctaDisabled={isPaid || busy || !canCheckout()}
+          ctaOnClick={
+            canCheckout() ? (isPaid ? () => void manage() : () => void goPro()) : undefined
+          }
+          ctaDisabled={busy || !canCheckout()}
           current={plan === 'pro'}
           currentLabel={t('pricing.yourPlan')}
           note={`${t('pricing.indicative')} ${t('pricing.billingNote')}`}
