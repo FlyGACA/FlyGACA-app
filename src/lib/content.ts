@@ -200,7 +200,8 @@ export interface Airport extends SourceProvenance {
   lat: number;
   lon: number;
   elev_ft: number;
-  rwys: { id: string }[];
+  /** Runway designators; worldwide rows add length (ft) and surface where known. */
+  rwys: { id: string; len?: number; surf?: string }[];
   freqs: { l: string; v: string }[];
 }
 

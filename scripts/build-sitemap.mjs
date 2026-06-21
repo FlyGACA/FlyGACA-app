@@ -20,23 +20,45 @@ const readJson = (p) => JSON.parse(read(p));
 const routerPaths = [...read('src/router.tsx').matchAll(/path:\s*'([^']+)'/g)].map((m) => m[1]);
 
 // Session-gated, user-private routes carry no SEO value — keep them out.
-const PRIVATE = new Set(['/account', '/dashboard', '/currency', '/logbook', '/records', '/settings']);
+const PRIVATE = new Set([
+  '/account',
+  '/dashboard',
+  '/currency',
+  '/logbook',
+  '/records',
+  '/settings',
+]);
 const norm = (p) => (p === '/' ? '/' : `/${p.replace(/^\//, '')}`);
+
+const today = new Date().toISOString().slice(0, 10);
+const isDate = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v);
 
 const staticPaths = routerPaths
   .filter((p) => !p.includes(':') && p !== '*')
   .map(norm)
   .filter((p) => !PRIVATE.has(p));
-const urls = new Set(['/', ...staticPaths]);
+// url -> lastmod (ISO date). Default everything to the build date; corpus pages
+// override with their own freshness signal below.
+const urls = new Map(['/', ...staticPaths].map((p) => [p, today]));
 
-// Expand the dynamic routes we can enumerate from data.
+// Expand the dynamic routes we can enumerate from data, dating each entry from
+// the source document's effectiveDate/revision (or the index's generated date).
 const corpora = [
   ['/library', 'public/data/gacar-index.json'],
   ['/library/reference', 'public/data/reference-index.json'],
   ['/library/handbook', 'public/data/ebooks-index.json'],
 ];
 for (const [base, file] of corpora) {
-  for (const d of readJson(file).documents) urls.add(`${base}/${d.slug}`);
+  const idx = readJson(file);
+  const fallback = isDate(idx.generated) ? idx.generated.slice(0, 10) : today;
+  for (const d of idx.documents) {
+    const lastmod = isDate(d.effectiveDate)
+      ? d.effectiveDate.slice(0, 10)
+      : isDate(d.revision)
+        ? d.revision.slice(0, 10)
+        : fallback;
+    urls.set(`${base}/${d.slug}`, lastmod);
+  }
 }
 
 const guideSlugs = [
@@ -44,20 +66,41 @@ const guideSlugs = [
     .match(/GUIDE_SLUGS\s*=\s*\[([\s\S]*?)\]/)[1]
     .matchAll(/'([^']+)'/g),
 ].map((m) => m[1]);
-for (const slug of guideSlugs) urls.add(`/guides/${slug}`);
+for (const slug of guideSlugs) urls.set(`/guides/${slug}`, today);
 
-const today = new Date().toISOString().slice(0, 10);
-const sorted = [...urls].sort();
+// Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
+const HUBS = new Set(['/library', '/tools', '/guides', '/study']);
+const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/safety']);
+function priority(u) {
+  if (u === '/') return '1.0';
+  if (HUBS.has(u)) return '0.9';
+  if (u.startsWith('/library/') || u.startsWith('/guides/')) return '0.8';
+  if (u.startsWith('/tools/')) return '0.7';
+  if (LEGAL.has(u)) return '0.3';
+  return '0.6';
+}
+
+// Per-URL hreflang alternates mirror src/lib/seo.ts: ?lang= variants + x-default.
+function alternates(u) {
+  const loc = `${SITE}${u}`;
+  return (
+    `<xhtml:link rel="alternate" hreflang="en" href="${loc}?lang=en"/>` +
+    `<xhtml:link rel="alternate" hreflang="ar" href="${loc}?lang=ar"/>` +
+    `<xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>`
+  );
+}
+
+const sorted = [...urls.keys()].sort();
 const body = sorted
   .map(
     (u) =>
-      `  <url><loc>${SITE}${u}</loc><lastmod>${today}</lastmod>` +
-      `<priority>${u === '/' ? '1.0' : '0.7'}</priority></url>`,
+      `  <url><loc>${SITE}${u}</loc><lastmod>${urls.get(u)}</lastmod>` +
+      `<priority>${priority(u)}</priority>${alternates(u)}</url>`,
   )
   .join('\n');
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${body}
 </urlset>
 `;

@@ -1334,8 +1334,19 @@
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
     "count": "{{n}} aerodromes — Saudi in full detail, plus MENA & worldwide",
-    "showing": "Showing {{n}} of {{total}} — refine your search",
-    "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
+    "matched": "{{n}} aerodromes",
+    "showing": "Showing {{n}} of {{total}} — refine your search or load more",
+    "regionLabel": "Filter by region",
+    "regions": {
+      "all": "All",
+      "saudi": "Saudi",
+      "gcc": "GCC",
+      "mena": "MENA",
+      "world": "World"
+    },
+    "viewMap": "View on map",
+    "loadMore": "Load more",
+    "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data — runways and frequencies included — from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
   },
   "definitionsTool": {
     "search": "Search the GACAR Part 1 glossary",

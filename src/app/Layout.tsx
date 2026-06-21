@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { ScrollToTop } from './ScrollToTop';
 import { RouteFallback } from './RouteFallback';
 import { ScrollProgress } from '../components/ScrollProgress';
 import { CommandPalette } from '../components/CommandPalette/CommandPalette';
@@ -22,6 +23,7 @@ export function Layout() {
       <a className="skip-link" href="#main">
         {t('common.skipToContent')}
       </a>
+      <ScrollToTop />
       <ScrollProgress />
       <CommandPalette />
       <Header />
