@@ -1,6 +1,10 @@
 # Cloudflare Pages headers (copied verbatim into dist/ by Vite; also honored by
 # Netlify). Mirrored from firebase.json so every front behaves identically.
+# Cloudflare Pages + Netlify are *mirror* fronts (never the canonical
+# flygaca.com, which is on Firebase), so they noindex to avoid being indexed as
+# duplicates. Firebase/Vercel ignore this file and set their own headers.
 /*
+  X-Robots-Tag: noindex, follow
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin

@@ -7,7 +7,19 @@ import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
-import { canonicalRedirect } from './lib/seo';
+import { canonicalRedirect, isMirrorHost } from './lib/seo';
+
+// Mirror/preview fronts (*.web.app, *.vercel.app, *.netlify.app, *.pages.dev)
+// serve the same build for redundancy but must not be indexed as duplicates of
+// flygaca.com. Emit noindex (still follow links so equity flows to the canonical).
+// Host-conditional at runtime, so flygaca.com and the prerender host stay
+// indexable. Belt-and-suspenders to the static X-Robots-Tag headers on the mirrors.
+if (isMirrorHost(window.location.hostname)) {
+  const robots = document.createElement('meta');
+  robots.name = 'robots';
+  robots.content = 'noindex, follow';
+  document.head.appendChild(robots);
+}
 
 // A duplicate host (e.g. captadel.com) serves this same build — fold it straight
 // onto the canonical origin, preserving the path, before booting anything. This
