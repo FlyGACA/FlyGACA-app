@@ -45,6 +45,8 @@ const COLS: (keyof FlightDraft)[] = [
 ];
 
 export function Logbook() {
+  const { t } = useTranslation();
+  usePageMeta(t('meta.logbook'));
   return (
     <RequireSession>
       <Inner />
@@ -55,7 +57,6 @@ export function Logbook() {
 function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  usePageMeta(t('meta.logbook'));
   const { flights, entitlement, syncError } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
   const [adding, setAdding] = useState(false);

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizData, QuizQuestion } from '../../lib/content';
 import { setExamResult, useStudyProgress } from '../../lib/studyProgress';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Study.module.css';
 
@@ -30,6 +31,7 @@ function byBank(questions: ExamQuestion[], answers: (number | null)[]) {
 
 export function MockExam() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.exam'));
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { exam } = useStudyProgress();

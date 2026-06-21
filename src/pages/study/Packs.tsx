@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Study.module.css';
 
@@ -10,6 +11,7 @@ interface Pack {
 
 export function Packs() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.packs'));
   const packs = t('study.packItems', { returnObjects: true }) as unknown as Pack[];
 
   return (

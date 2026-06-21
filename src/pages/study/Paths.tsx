@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { PathsIndex } from '../../lib/content';
 import { useStudyProgress, togglePathStep } from '../../lib/studyProgress';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Paths.module.css';
@@ -15,6 +16,7 @@ function partHref(url: string): string | null {
 
 export function Paths() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.paths'));
   const { data, error, loading } = useFetchJson<PathsIndex>('/data/paths-index.json');
   const { pathDone } = useStudyProgress();
 

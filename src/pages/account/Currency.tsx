@@ -13,6 +13,8 @@ import { adelLink } from '../../lib/adel';
 import styles from './account.module.css';
 
 export function Currency() {
+  const { t } = useTranslation();
+  usePageMeta(t('meta.currency'));
   return (
     <RequireSession>
       <Inner />
@@ -23,7 +25,6 @@ export function Currency() {
 function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  usePageMeta(t('meta.currency'));
   const { profile, flights, records, entitlement } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
   const items = [...computeCurrency(profile, flights), ...recordCurrency(records)];
