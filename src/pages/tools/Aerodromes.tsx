@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
@@ -6,8 +6,8 @@ import { TextField } from '../../components/calc/TextField';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { useUrlState } from '../../lib/useUrlState';
+import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
 import { REGION_FILTERS, inRegion, regionBadge, type RegionFilter } from '../../lib/aerodromes';
-import type { AirportsIndex } from '../../lib/content';
 import styles from './Aerodromes.module.css';
 
 const PAGE = 60;
@@ -23,10 +23,31 @@ export function Aerodromes() {
   const [visible, setVisible] = useState(PAGE);
   const query = useDebouncedValue(urlState.q.trim(), 200);
 
+  // The long tail (small strips, heliports — ~66k airfields) ships in a separate
+  // file fetched lazily the first time a search or a region filter is active, so
+  // the default "All" view only pays for the ~6k rich core. Mirrors the Library's
+  // lazy search-index pattern.
+  const needExtra = region !== 'all' || query.length > 0;
+  const [extra, setExtra] = useState<Airport[] | null>(null);
+  const [extraLoading, setExtraLoading] = useState(false);
+  useEffect(() => {
+    if (!needExtra || extra || extraLoading) return;
+    setExtraLoading(true);
+    fetchJson<AirportsIndex>('/data/airports-extra.json')
+      .then((d) => setExtra(d.airports))
+      .catch(() => setExtra([]))
+      .finally(() => setExtraLoading(false));
+  }, [needExtra, extra, extraLoading]);
+
+  const pool = useMemo(() => {
+    const base = data?.airports ?? [];
+    return extra ? base.concat(extra) : base;
+  }, [data, extra]);
+
   const matches = useMemo(() => {
     if (!data) return [];
     const needle = query.toLowerCase();
-    return data.airports
+    return pool
       .filter((a) => inRegion(a, region))
       .filter(
         (a) =>
@@ -39,7 +60,7 @@ export function Aerodromes() {
           (a.country_en?.toLowerCase().includes(needle) ?? false),
       )
       .sort((a, b) => a.icao.localeCompare(b.icao));
-  }, [data, query, region]);
+  }, [data, pool, query, region]);
 
   const list = useMemo(() => matches.slice(0, visible), [matches, visible]);
 
@@ -94,9 +115,11 @@ export function Aerodromes() {
       {data && (
         <>
           <p className={styles.count}>
-            {matches.length > list.length
-              ? t('aerodromesTool.showing', { n: list.length, total: matches.length })
-              : t('aerodromesTool.matched', { n: matches.length })}
+            {extraLoading
+              ? t('aerodromesTool.searchingWorldwide')
+              : matches.length > list.length
+                ? t('aerodromesTool.showing', { n: list.length, total: matches.length })
+                : t('aerodromesTool.matched', { n: matches.length })}
           </p>
           {list.length === 0 ? (
             <p className={styles.count}>{t('aerodromesTool.empty')}</p>
@@ -107,7 +130,10 @@ export function Aerodromes() {
                   const badge = regionBadge(a);
                   return (
                     <li key={a.icao} className={styles.card}>
-                      <Link to={`/tools/aerodromes/${a.icao}`} className={styles.cardLink}>
+                      <Link
+                        to={`/tools/aerodromes/${encodeURIComponent(a.icao)}`}
+                        className={styles.cardLink}
+                      >
                         <span className={styles.head}>
                           <span className={styles.icao}>{a.icao}</span>
                           {a.iata && <span className={styles.iata}>{a.iata}</span>}

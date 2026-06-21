@@ -60,7 +60,11 @@ export function PackDetail() {
       </header>
 
       {banks.length > 0 && (
-        <Link to={`/study/quiz?pack=${pack.id}`} className={styles.primary} style={{ textDecoration: 'none' }}>
+        <Link
+          to={`/study/quiz?pack=${pack.id}`}
+          className={styles.primary}
+          style={{ textDecoration: 'none' }}
+        >
           {t('study.startPackQuiz')}
         </Link>
       )}

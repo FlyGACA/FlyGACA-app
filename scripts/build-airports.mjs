@@ -1,24 +1,31 @@
 /**
- * Generate public/data/airports.json from the open OurAirports dataset, merged
- * on top of the hand-curated Saudi records (scripts/airports-ksa.json).
+ * Generate the aerodrome directory data from the open OurAirports dataset,
+ * merged on top of the hand-curated overlays (scripts/airports-ksa.json and
+ * scripts/airports-hubs.json).
  *
- * Coverage: ALL non-closed airports in the MENA region (large/medium/small) +
- * every large/medium airport worldwide. Runways and frequencies are joined from
- * the OurAirports runways.csv / airport-frequencies.csv for GCC + MENA airports
- * and for large worldwide hubs (kept narrow so the artifact stays well under the
- * size budget). The curated Saudi set always wins on merge — it additionally
- * carries Arabic names, magnetic variation, timezone and services.
+ * Two tiers are emitted so the worldwide directory stays fast:
+ *   • public/data/airports.json       — CORE, fetched eagerly by the page.
+ *       MENA (incl. GCC) airports that carry a 4-char ICAO ident, every
+ *       worldwide large/medium airport, and worldwide small airports with
+ *       scheduled passenger service. Runways (len/surface) and frequencies are
+ *       joined from runways.csv / airport-frequencies.csv. The curated overlays
+ *       win on merge — they add Arabic names, magnetic variation and services.
+ *   • public/data/airports-extra.json — LONG TAIL, fetched lazily on demand.
+ *       Every other non-closed airfield worldwide (small strips, heliports,
+ *       seaplane bases …), keyed by the OurAirports `ident` (which may be a
+ *       local/GPS code rather than an ICAO code). Same shape + enrichment where
+ *       the join has it.
  *
  * Region tags: GCC countries → 'GCC', other MENA countries → 'MENA', otherwise
- * the OurAirports continent code. The curated Saudi rows keep their own 'KSA'.
+ * the OurAirports continent code. The curated rows keep their own 'KSA'.
  *
  * NETWORK: this environment only reaches OurAirports via the raw.githubusercontent
- * mirror (the ourairports.com host is blocked). The artifact (public/data/airports.json)
- * is committed; this script just reproduces it.
+ * mirror (the ourairports.com host is blocked). The artifacts are committed; this
+ * script just reproduces them.
  *
  *   node scripts/build-airports.mjs   (or: npm run build:airports)
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -27,8 +34,9 @@ const RAW = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/m
 const CSV_URL = `${RAW}/airports.csv`;
 const RWY_URL = `${RAW}/runways.csv`;
 const FREQ_URL = `${RAW}/airport-frequencies.csv`;
-const OUT = join(root, 'public/data/airports.json');
-const KSA = join(root, 'scripts/airports-ksa.json');
+const OUT_CORE = join(root, 'public/data/airports.json');
+const OUT_EXTRA = join(root, 'public/data/airports-extra.json');
+const OVERLAYS = [join(root, 'scripts/airports-ksa.json'), join(root, 'scripts/airports-hubs.json')];
 
 // Gulf Cooperation Council (ISO-3166 alpha-2) — tagged 'GCC' for the region filter.
 const GCC = new Set(['SA', 'AE', 'QA', 'BH', 'KW', 'OM']);
@@ -148,6 +156,25 @@ function indexFreqs({ rows, col }) {
   return map;
 }
 
+/** Short type tag for the UI (large/medium/small/heliport/seaplane/balloonport). */
+function shortType(type) {
+  return (type || '').replace(/_airport$/, '').replace(/_base$/, '');
+}
+
+function writeArtifact(path, airports, source) {
+  airports.sort((a, b) => a.icao.localeCompare(b.icao));
+  const out = {
+    generated: new Date().toISOString().slice(0, 10),
+    source,
+    sourceUrl: 'https://ourairports.com/data/',
+    count: airports.length,
+    airports,
+  };
+  const json = JSON.stringify(out);
+  writeFileSync(path, json + '\n');
+  return Buffer.byteLength(json);
+}
+
 async function main() {
   const [airportsCsv, runwaysCsv, freqsCsv] = await Promise.all([
     fetchCsv(CSV_URL),
@@ -158,44 +185,38 @@ async function main() {
   const runwaysByIdent = indexRunways(runwaysCsv);
   const freqsByIdent = indexFreqs(freqsCsv);
 
-  const byIcao = new Map();
-  let scanned = 0;
+  const core = new Map();
+  const extra = new Map();
   let enriched = 0;
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
     const type = row[col.type];
+    if (type === 'closed') continue;
     const iso = row[col.iso_country];
     const ident = (row[col.ident] ?? '').toUpperCase();
-    if (type === 'closed') continue;
-    if (!ICAO.test(ident)) continue;
-    const inMena = MENA.has(iso);
-    const isLarge = type === 'large_airport';
-    const scheduled = row[col.scheduled_service] === 'yes';
-    // MENA (incl. GCC) keeps everything down to small airfields. Worldwide keeps
-    // large + medium hubs, plus small airports that carry scheduled passenger
-    // service (real commercial fields, minus the noise of ~40k private airstrips).
-    const isWorldKeep =
-      isLarge ||
-      type === 'medium_airport' ||
-      (type === 'small_airport' && scheduled);
-    if (!inMena && !isWorldKeep) continue;
-    scanned++;
-
+    if (!ident) continue;
     const lat = parseFloat(row[col.latitude_deg]);
     const lon = parseFloat(row[col.longitude_deg]);
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+
+    const hasIcao = ICAO.test(ident);
+    const inMena = MENA.has(iso);
+    const isLarge = type === 'large_airport';
+    const scheduled = row[col.scheduled_service] === 'yes';
+    // CORE: MENA airports with a real ICAO ident, plus worldwide large/medium
+    // hubs and scheduled small airports. Everything else non-closed is LONG TAIL.
+    const coreKeep =
+      hasIcao &&
+      (inMena || isLarge || type === 'medium_airport' || (type === 'small_airport' && scheduled));
+
     const elev = parseInt(row[col.elevation_ft], 10);
     const name = row[col.name] ?? ident;
     const muni = row[col.municipality] ?? '';
-
-    // Enrich runways/frequencies for GCC + MENA airports, large worldwide hubs,
-    // and worldwide small airports that carry scheduled service.
-    const wantDetail = inMena || isLarge || scheduled;
-    const rwys = wantDetail ? runwaysByIdent.get(ident) ?? [] : [];
-    const freqs = wantDetail ? freqsByIdent.get(ident) ?? [] : [];
+    const rwys = runwaysByIdent.get(ident) ?? [];
+    const freqs = freqsByIdent.get(ident) ?? [];
     if (rwys.length || freqs.length) enriched++;
 
-    byIcao.set(ident, {
+    const record = {
       icao: ident,
       iata: row[col.iata_code] ?? '',
       name_en: name,
@@ -205,36 +226,48 @@ async function main() {
       country_en: countryName(iso, enRegion),
       country_ar: countryName(iso, arRegion),
       region: GCC.has(iso) ? 'GCC' : inMena ? 'MENA' : row[col.continent] ?? '',
+      type: shortType(type),
       lat: Math.round(lat * 1e5) / 1e5,
       lon: Math.round(lon * 1e5) / 1e5,
       elev_ft: Number.isFinite(elev) ? elev : 0,
       rwys,
       freqs,
-    });
+    };
+    (coreKeep ? core : extra).set(ident, record);
   }
 
-  // Curated Saudi records win: they carry runways, frequencies and Arabic names.
-  const curated = JSON.parse(readFileSync(KSA, 'utf8')).airports;
-  for (const a of curated) byIcao.set(a.icao, a);
+  // Curated overlays win, and land in CORE. Merge field-wise so the generated
+  // `type` survives while curated Arabic names / services / region override.
+  let curatedCount = 0;
+  for (const file of OVERLAYS) {
+    if (!existsSync(file)) continue;
+    const records = JSON.parse(readFileSync(file, 'utf8')).airports ?? [];
+    for (const a of records) {
+      core.set(a.icao, { ...(core.get(a.icao) ?? {}), ...a });
+      extra.delete(a.icao);
+      curatedCount++;
+    }
+  }
 
-  const airports = [...byIcao.values()].sort((a, b) => a.icao.localeCompare(b.icao));
-  const out = {
-    generated: new Date().toISOString().slice(0, 10),
-    source: 'OurAirports (raw mirror) + curated Saudi records',
-    sourceUrl: 'https://ourairports.com/data/',
-    count: airports.length,
-    airports,
-  };
-  const json = JSON.stringify(out);
-  writeFileSync(OUT, json + '\n');
-
-  const mb = (Buffer.byteLength(json) / 1e6).toFixed(2);
-  process.stdout.write(
-    `Wrote ${airports.length} airports (${mb} MB) → public/data/airports.json\n` +
-      `  scanned-kept ${scanned}, enriched ${enriched}, curated ${curated.length}\n`,
+  const coreBytes = writeArtifact(
+    OUT_CORE,
+    [...core.values()],
+    'OurAirports (raw mirror) + curated Saudi/hub records — core tier',
   );
-  if (Buffer.byteLength(json) > 4e6) {
-    process.stdout.write('  ⚠ output > 4 MB — consider tightening the worldwide filter.\n');
+  const extraBytes = writeArtifact(
+    OUT_EXTRA,
+    [...extra.values()],
+    'OurAirports (raw mirror) — long-tail tier (lazy)',
+  );
+
+  const mb = (n) => (n / 1e6).toFixed(2);
+  process.stdout.write(
+    `Wrote core ${core.size} airports (${mb(coreBytes)} MB) → public/data/airports.json\n` +
+      `Wrote extra ${extra.size} airports (${mb(extraBytes)} MB) → public/data/airports-extra.json\n` +
+      `  total ${core.size + extra.size}, enriched ${enriched}, curated overlays ${curatedCount}\n`,
+  );
+  if (coreBytes > 4e6) {
+    process.stdout.write('  ⚠ core output > 4 MB — consider tightening the core filter.\n');
   }
 }
 

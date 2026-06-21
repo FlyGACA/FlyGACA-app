@@ -197,6 +197,8 @@ export interface Airport extends SourceProvenance {
   country_en?: string;
   country_ar?: string;
   region?: string;
+  /** Short OurAirports type: large | medium | small | heliport | seaplane | balloonport. */
+  type?: string;
   lat: number;
   lon: number;
   elev_ft: number;

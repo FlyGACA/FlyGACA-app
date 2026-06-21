@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { regionBadge } from '../../lib/aerodromes';
-import type { AirportsIndex } from '../../lib/content';
+import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
 import styles from './Aerodromes.module.css';
 
 export function AerodromeDetail() {
@@ -14,16 +14,30 @@ export function AerodromeDetail() {
   const code = icao.toUpperCase();
   const { data, error, loading } = useFetchJson<AirportsIndex>('/data/airports.json');
 
-  const airport = useMemo(() => data?.airports.find((a) => a.icao === code), [data, code]);
+  const inCore = useMemo(() => data?.airports.find((a) => a.icao === code), [data, code]);
+  // Long-tail airfields aren't in the eager core file; fetch the lazy tier and
+  // look there only when the core misses (so most lookups stay on the core file).
+  const [extra, setExtra] = useState<Airport[] | null>(null);
+  const [extraLoading, setExtraLoading] = useState(false);
+  useEffect(() => {
+    if (!data || inCore || extra || extraLoading) return;
+    setExtraLoading(true);
+    fetchJson<AirportsIndex>('/data/airports-extra.json')
+      .then((d) => setExtra(d.airports))
+      .catch(() => setExtra([]))
+      .finally(() => setExtraLoading(false));
+  }, [data, inCore, extra, extraLoading]);
 
-  if (loading) {
+  const airport = inCore ?? extra?.find((a) => a.icao === code);
+
+  if (loading || (!inCore && (extraLoading || (data && !extra)))) {
     return (
       <CalcShell title={code} category={t('tools.categories.directory')}>
         <p>{t('common.loading')}</p>
       </CalcShell>
     );
   }
-  if (error || (data && !airport)) {
+  if (error || !airport) {
     return (
       <CalcShell title={code} category={t('tools.categories.directory')}>
         <p role="alert">{error ? t('common.loadError') : t('aerodromesTool.notFound')}</p>
@@ -33,7 +47,6 @@ export function AerodromeDetail() {
       </CalcShell>
     );
   }
-  if (!airport) return null;
 
   const a = airport;
   const name = ar ? a.name_ar : a.name_en;

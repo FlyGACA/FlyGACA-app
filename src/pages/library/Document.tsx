@@ -122,7 +122,8 @@ function wrapAnnotation(root: HTMLElement, note: LibNote, markClass: string): bo
   while ((node = walker.nextNode())) {
     const tn = node as Text;
     if (tn.parentElement?.closest('mark')) continue;
-    if (startEl && !(startEl.compareDocumentPosition(tn) & Node.DOCUMENT_POSITION_FOLLOWING)) continue;
+    if (startEl && !(startEl.compareDocumentPosition(tn) & Node.DOCUMENT_POSITION_FOLLOWING))
+      continue;
     if (endEl && !(endEl.compareDocumentPosition(tn) & Node.DOCUMENT_POSITION_PRECEDING)) continue;
     const text = tn.nodeValue ?? '';
     const idx = text.indexOf(q);
@@ -633,9 +634,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
 
           {notesForDoc && notesForDoc.length > 0 && (
             <section className={styles.notes}>
-              <h2 className={styles.notesHead}>
-                {t('document.notes', { n: notesForDoc.length })}
-              </h2>
+              <h2 className={styles.notesHead}>{t('document.notes', { n: notesForDoc.length })}</h2>
               <ul className={styles.notesList}>
                 {notesForDoc.map((n) => (
                   <li key={n.id} className={styles.noteItem}>
