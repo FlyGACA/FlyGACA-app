@@ -63,7 +63,11 @@ export function nextStreak(prev: Streak, today: string, yesterday: string): Stre
   return { day: today, count: 1 };
 }
 /** Append a result to the history, keeping only the most recent `max`. */
-export function pushHistory(list: ExamResult[], result: ExamResult, max = EXAM_HISTORY_MAX): ExamResult[] {
+export function pushHistory(
+  list: ExamResult[],
+  result: ExamResult,
+  max = EXAM_HISTORY_MAX,
+): ExamResult[] {
   return [...list, result].slice(-max);
 }
 /** Toggle membership of a numeric index in a sorted list. */
