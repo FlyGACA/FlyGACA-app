@@ -14,13 +14,13 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 
 All `VITE_*` are public, non-secret (values in `.env.example`):
 
-| Var | Value | Notes |
-| --- | --- | --- |
-| `VITE_FIREBASE_API_KEY` … `VITE_FIREBASE_MEASUREMENT_ID` | from `.env.example` | turns on Auth/Firestore/Analytics |
-| `VITE_API_BASE` | `/api` (default) | leave as-is — each host proxies `/api/*` to Firebase |
-| `VITE_SITE_URL` | `https://flygaca.com` | canonical origin for sitemap/SEO |
-| `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` | (optional) | App Check; also enforce on the Functions |
-| `VITE_FIREBASE_EMULATOR` | **unset** | never set in production |
+| Var                                                      | Value                 | Notes                                                |
+| -------------------------------------------------------- | --------------------- | ---------------------------------------------------- |
+| `VITE_FIREBASE_API_KEY` … `VITE_FIREBASE_MEASUREMENT_ID` | from `.env.example`   | turns on Auth/Firestore/Analytics                    |
+| `VITE_API_BASE`                                          | `/api` (default)      | leave as-is — each host proxies `/api/*` to Firebase |
+| `VITE_SITE_URL`                                          | `https://flygaca.com` | canonical origin for sitemap/SEO                     |
+| `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`                     | (optional)            | App Check; also enforce on the Functions             |
+| `VITE_FIREBASE_EMULATOR`                                 | **unset**             | never set in production                              |
 
 ## Verify before deploying (any host)
 
@@ -35,10 +35,10 @@ npx playwright install --with-deps chromium && npm run test:e2e
 ## Firebase Hosting (canonical)
 
 **Automated (preferred):** `.github/workflows/deploy.yml` builds and deploys hosting +
-`firestore.rules` on every push to `main`, and on demand via Actions → **Deploy** → *Run
-workflow*. It authenticates with a service account — add the JSON key as the repo secret
+`firestore.rules` on every push to `main`, and on demand via Actions → **Deploy** → _Run
+workflow_. It authenticates with a service account — add the JSON key as the repo secret
 **`FIREBASE_SERVICE_ACCOUNT`** (Firebase console → Project Settings → Service accounts →
-*Generate new private key*). Optionally add **`VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`** to enable
+_Generate new private key_). Optionally add **`VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`** to enable
 App Check at build time (see `APP-CHECK-BACKEND.md`). The `VITE_FIREBASE_*` web config is public
 and comes from `.env.example` at build time.
 
@@ -50,7 +50,16 @@ firebase hosting:channel:deploy preview --expires 7d   # optional preview URL
 firebase deploy --only hosting                          # publish live
 npm run deploy:rules                                    # deploy firestore.rules
 ```
+
 Config: `firebase.json`, `.firebaserc`, `firestore.rules`. DNS cutover is in `RUNBOOK-cutover.md`.
+
+**Prerender:** the deploy workflow runs `npm run prerender` after the build, snapshotting the
+high-value routes (home + hubs + every tool/guide) into `dist/<route>/index.html` so Firebase serves
+real HTML, not just the SPA shell (static files win over the `**` → `/index.html` rewrite). It's
+**non-fatal** (a failure never blocks the deploy). For a **manual** `npm run deploy`, install the
+browser once first: `npx playwright install chromium` (otherwise prerender silently no-ops and you
+ship the shell-only build). Mirror fronts (Vercel already wired; Cloudflare/Netlify) get the same by
+adding `&& npm run prerender` to their build.
 
 ## Vercel (mirror) — `vercel login` first
 
@@ -59,16 +68,17 @@ npm i -g vercel
 vercel link            # link to the Vercel project (first time)
 vercel deploy --prod   # uses vercel.json (build + rewrites + headers)
 ```
+
 Config: `vercel.json` (proxies `/api/(.*)` → Firebase, SPA fallback, mirrored headers/CSP).
 
 ## Cloudflare Pages (mirror)
 
 **Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys `dist/`
 to the `flygaca-app` Pages project on every push to `main` (and on demand via Actions → **Deploy
-(Cloudflare Pages mirror)** → *Run workflow*). The deploy step is **gated on secrets**, so it builds
+(Cloudflare Pages mirror)** → _Run workflow_). The deploy step is **gated on secrets**, so it builds
 but skips publishing until you add both in repo Settings → Secrets → Actions:
 
-- **`CLOUDFLARE_API_TOKEN`** — a token with the *Cloudflare Pages: Edit* permission.
+- **`CLOUDFLARE_API_TOKEN`** — a token with the _Cloudflare Pages: Edit_ permission.
 - **`CLOUDFLARE_ACCOUNT_ID`** — the account that owns the `flygaca-app` Pages project.
 
 **Manual (`wrangler login` first):**
@@ -78,6 +88,7 @@ npm i -g wrangler
 npm run build
 npx wrangler pages deploy dist --project-name flygaca-app
 ```
+
 Config: `wrangler.toml`, `functions/api/[[path]].ts` (proxies `/api/*` → Firebase, preserves SSE),
 `public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) — both copied into `dist/`.
 
@@ -87,6 +98,7 @@ Config: `wrangler.toml`, `functions/api/[[path]].ts` (proxies `/api/*` → Fireb
 npm i -g netlify-cli
 netlify deploy --build --prod   # uses netlify.toml
 ```
+
 Config: `netlify.toml` (build, `/api/*` proxy → Firebase, SPA fallback, mirrored headers/CSP).
 (Netlify also honors the `_redirects`/`_headers` files — identical values, harmless overlap.)
 

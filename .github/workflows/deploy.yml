@@ -52,6 +52,14 @@ jobs:
       - name: Bundle budget
         run: npm run check:bundle
 
+      # Snapshot the high-value routes into dist/<route>/index.html so production
+      # (Firebase, the canonical host) serves prerendered HTML, not just the SPA
+      # shell. Non-fatal by design — a prerender failure never blocks the deploy.
+      - name: Prerender static routes
+        run: |
+          npx playwright install --with-deps chromium
+          npm run prerender
+
       - name: Authenticate to Firebase
         run: |
           if [ -z "${FIREBASE_SERVICE_ACCOUNT}" ]; then
