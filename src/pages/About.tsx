@@ -20,7 +20,7 @@ interface Stat {
 
 export function About() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.about'));
+  usePageMeta(t('meta.about'), t('metaDesc.about'));
   const sections = t('about.sections', { returnObjects: true }) as unknown as Section[];
   const contacts = t('about.contacts', { returnObjects: true }) as unknown as Contact[];
   const stats = t('about.stats', { returnObjects: true }) as unknown as Stat[];

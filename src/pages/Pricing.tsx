@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { usePageMeta } from '../lib/usePageMeta';
+import { faqLd } from '../lib/jsonld';
 import { canCheckout, startBillingPortal, startProCheckout } from '../lib/billing';
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
@@ -26,7 +27,11 @@ interface Faq {
 export function Pricing() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  usePageMeta(t('meta.pricing'));
+  usePageMeta(
+    t('meta.pricing'),
+    t('metaDesc.pricing'),
+    faqLd(t('pricing.faq', { returnObjects: true }) as unknown as Faq[]),
+  );
   const { entitlement } = useAccount();
   const plan = effectivePlan(entitlement);
   const [annual, setAnnual] = useState(false);

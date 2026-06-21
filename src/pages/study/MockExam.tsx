@@ -31,7 +31,7 @@ function byBank(questions: ExamQuestion[], answers: (number | null)[]) {
 
 export function MockExam() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.exam'));
+  usePageMeta(t('meta.exam'), t('metaDesc.exam'));
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { exam } = useStudyProgress();

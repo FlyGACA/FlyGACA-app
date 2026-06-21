@@ -40,7 +40,7 @@ const LEVELS: GuideLevel[] = ['beginner', 'intermediate', 'advanced'];
 
 export function GuidesIndex() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.guides'));
+  usePageMeta(t('meta.guides'), t('metaDesc.guides'));
   const [query, setQuery] = useState('');
   const [topic, setTopic] = useState<GuideTopic | 'all'>('all');
   const [level, setLevel] = useState<GuideLevel | 'all'>('all');

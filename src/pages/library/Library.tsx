@@ -57,7 +57,7 @@ function highlight(text: string, needle: string) {
 
 export function Library() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.library'));
+  usePageMeta(t('meta.library'), t('metaDesc.library'));
   const [kind, setKind] = useState<LibraryKind>('regulations');
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index, reload);

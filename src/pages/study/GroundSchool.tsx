@@ -21,7 +21,7 @@ function readHref(url: string | undefined): string | null {
 
 export function GroundSchool() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.groundschool'));
+  usePageMeta(t('meta.groundschool'), t('metaDesc.groundschool'));
   const { data, error, loading } = useFetchJson<GroundSchoolData>('/data/groundschool.json');
   const { gsDone } = useStudyProgress();
   const isDone = (id: string) => Boolean(gsDone[id]);

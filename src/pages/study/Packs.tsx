@@ -9,7 +9,7 @@ import styles from './Study.module.css';
 
 export function Packs() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.packs'));
+  usePageMeta(t('meta.packs'), t('metaDesc.packs'));
   const { entitlement } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
 
