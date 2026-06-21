@@ -98,6 +98,12 @@ directly.
   renders correctly; these are warnings, not app errors.
 - **Don't use a foreground `sleep` to wait for the server** — it's blocked in this
   harness. Poll with `curl` (as above) instead.
+- **Library document pages render huge DOMs** (a full GACAR Part is ~13k nodes /
+  ~500 KB of text). A full-page screenshot of those can exceed the timeout, so the
+  driver falls back to a clipped top-of-page shot — and, failing that, skips the
+  image while still verifying the DOM mounted. The route is reported `✓`, with a
+  note on the screenshot; it is **not** a failure. Each route also runs in its own
+  browser context so a giant document can't degrade later navigations.
 
 ## Troubleshooting
 

@@ -49,6 +49,8 @@ function expiryStatus(expires: string): { tone: StatusTone; key: string } | null
 }
 
 export function Records() {
+  const { t } = useTranslation();
+  usePageMeta(t('records.title'));
   return (
     <RequireSession>
       <Inner />
@@ -58,7 +60,6 @@ export function Records() {
 
 function Inner() {
   const { t } = useTranslation();
-  usePageMeta(t('records.title'));
   const { records } = useAccount();
   const [cat, setCat] = useState<RecordCategory>('rating');
   const [adding, setAdding] = useState(false);

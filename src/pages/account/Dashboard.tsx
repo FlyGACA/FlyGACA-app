@@ -19,6 +19,8 @@ import { buildIcs } from '../../calc/ics';
 import styles from './dashboard.module.css';
 
 export function Dashboard() {
+  const { t } = useTranslation();
+  usePageMeta(t('meta.dashboard'));
   return (
     <RequireSession>
       <Inner />
@@ -29,7 +31,6 @@ export function Dashboard() {
 function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  usePageMeta(t('meta.dashboard'));
   const { profile, flights, records, entitlement } = useAccount();
   const plan = effectivePlan(entitlement);
   const isPro = plan !== 'free';

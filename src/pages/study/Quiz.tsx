@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
 import { useStudyProgress, setQuizBest } from '../../lib/studyProgress';
+import { usePageMeta } from '../../lib/usePageMeta';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Study.module.css';
@@ -23,6 +24,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 export function Quiz() {
   const { t } = useTranslation();
+  usePageMeta(t('meta.quiz'));
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { quizBest } = useStudyProgress();
