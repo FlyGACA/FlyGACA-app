@@ -7,7 +7,13 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { useUrlState } from '../../lib/useUrlState';
 import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
-import { REGION_FILTERS, inRegion, regionBadge, type RegionFilter } from '../../lib/aerodromes';
+import {
+  REGION_FILTERS,
+  inRegion,
+  regionBadge,
+  compareAirports,
+  type RegionFilter,
+} from '../../lib/aerodromes';
 import { AerodromesHero } from '../../components/aerodrome/AerodromesHero';
 import { AirportTypeIcon } from '../../components/aerodrome/AirportTypeIcon';
 import styles from './Aerodromes.module.css';
@@ -61,7 +67,7 @@ export function Aerodromes() {
           a.city_en.toLowerCase().includes(needle) ||
           (a.country_en?.toLowerCase().includes(needle) ?? false),
       )
-      .sort((a, b) => a.icao.localeCompare(b.icao));
+      .sort(compareAirports);
   }, [data, pool, query, region]);
 
   const list = useMemo(() => matches.slice(0, visible), [matches, visible]);
@@ -120,9 +126,11 @@ export function Aerodromes() {
           <p className={styles.count}>
             {extraLoading
               ? t('aerodromesTool.searchingWorldwide')
-              : matches.length > list.length
-                ? t('aerodromesTool.showing', { n: list.length, total: matches.length })
-                : t('aerodromesTool.matched', { n: matches.length })}
+              : region === 'all' && !query
+                ? t('aerodromesTool.count', { n: matches.length })
+                : matches.length > list.length
+                  ? t('aerodromesTool.showing', { n: list.length, total: matches.length })
+                  : t('aerodromesTool.matched', { n: matches.length })}
           </p>
           {list.length === 0 ? (
             <p className={styles.count}>{t('aerodromesTool.empty')}</p>
