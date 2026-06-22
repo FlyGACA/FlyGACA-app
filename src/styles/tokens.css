@@ -94,12 +94,16 @@
   --glow-teal: radial-gradient(closest-side, rgba(45, 110, 138, 0.55), rgba(45, 110, 138, 0) 70%);
   --glow-sage: radial-gradient(closest-side, rgba(143, 201, 168, 0.4), rgba(143, 201, 168, 0) 70%);
 
-  /* --- Typography --- */
+  /* --- Typography ---
+     One family across the whole app. Readex Pro carries BOTH Latin and Arabic,
+     so EN and AR render in the same face — headings, body and brand all match
+     (no more Cairo/Atkinson split). JetBrains Mono carries the technical/data
+     labels. --font-sans and --font-body are intentionally the same family. */
   --font-sans:
-    'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif; /* headings, brand, Arabic body */
+    'Readex Pro', system-ui, -apple-system, 'Segoe UI', sans-serif; /* headings, brand, UI */
   --font-body:
-    'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif; /* high-legibility body text */
-  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+    'Readex Pro', system-ui, -apple-system, sans-serif; /* body — same face as --font-sans */
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   /* Fluid type scale */
   --fs-display: clamp(2.6rem, 1.5rem + 4.6vw, 4.6rem);
