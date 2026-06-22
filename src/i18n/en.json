@@ -593,6 +593,8 @@
     "openInLibrary": "Open in Library",
     "copy": "Copy",
     "copied": "Copied",
+    "speak": "Listen",
+    "stopSpeaking": "Stop",
     "regenerate": "Regenerate",
     "retry": "Retry",
     "stop": "Stop",
@@ -634,6 +636,7 @@
     "exportCopied": "Copied",
     "download": "Download .md",
     "referenced": "Referenced in this conversation",
+    "alsoReferenced": "Also referenced",
     "partLabel": "Part {{n}}",
     "capabilities": {
       "cites": "Cites the exact Part & section",

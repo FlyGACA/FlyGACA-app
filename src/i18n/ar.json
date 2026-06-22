@@ -593,6 +593,8 @@
     "openInLibrary": "افتح في المكتبة",
     "copy": "نسخ",
     "copied": "تم النسخ",
+    "speak": "استماع",
+    "stopSpeaking": "إيقاف",
     "regenerate": "إعادة توليد",
     "retry": "إعادة المحاولة",
     "stop": "إيقاف",
@@ -634,6 +636,7 @@
     "exportCopied": "تم النسخ",
     "download": "تنزيل .md",
     "referenced": "المراجع في هذه المحادثة",
+    "alsoReferenced": "مراجع أخرى",
     "partLabel": "الباب {{n}}",
     "capabilities": {
       "cites": "يستشهد بالباب والمادة بدقّة",
