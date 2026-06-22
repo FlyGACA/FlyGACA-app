@@ -639,7 +639,9 @@ export function Chat() {
               placeholder={t('chat.placeholder')}
               aria-label={t('chat.placeholder')}
             />
-            <VoiceButton onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))} />
+            <VoiceButton
+              onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))}
+            />
             {busy ? (
               <button className="btn btn-primary" type="button" onClick={stop}>
                 {t('chat.stop')}

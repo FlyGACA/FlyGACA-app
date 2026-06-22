@@ -83,9 +83,7 @@ export function togglePin<M extends ArchivedMessage>(
   list: Conversation<M>[],
   id: string,
 ): Conversation<M>[] {
-  return list
-    .map((c) => (c.id === id ? { ...c, pinned: !c.pinned } : c))
-    .sort(byPinnedThenRecent);
+  return list.map((c) => (c.id === id ? { ...c, pinned: !c.pinned } : c)).sort(byPinnedThenRecent);
 }
 
 /**
@@ -100,8 +98,7 @@ export function filterConversations<M extends ArchivedMessage>(
   if (!q) return list;
   return list.filter(
     (c) =>
-      c.title.toLowerCase().includes(q) ||
-      c.messages.some((m) => m.text.toLowerCase().includes(q)),
+      c.title.toLowerCase().includes(q) || c.messages.some((m) => m.text.toLowerCase().includes(q)),
   );
 }
 
