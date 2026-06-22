@@ -11,7 +11,10 @@
 import { billingChannel, isNative } from './native-bridge';
 import { isFirebaseConfigured, getFns, getFirebaseAuth } from './firebase';
 
-export type ProPlan = 'monthly' | 'annual';
+// 'monthly' / 'annual' are the standard Pro cadences; 'student' is the verified
+// student rate and 'pass' the 90-day Exam Season Pass — both resolve to a Pro
+// entitlement server-side (the Cloud Function maps the variant to a price).
+export type ProPlan = 'monthly' | 'annual' | 'student' | 'pass';
 
 /** Whether the web Stripe checkout can run in this runtime. */
 export function canCheckout(): boolean {

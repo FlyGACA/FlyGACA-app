@@ -1,11 +1,30 @@
 import { useState, type ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
 import { usePageMeta } from '../lib/usePageMeta';
 import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
+import { useAccount } from '../lib/account';
+import { effectivePlan } from '../lib/entitlements';
+import {
+  addPreset,
+  removePreset,
+  presetsFor,
+  normalizePresets,
+  type Preset,
+} from '../calc/toolPresets';
 import styles from './CalcShell.module.css';
+
+const PRESETS_KEY = 'flygaca:tool-presets';
+
+function loadPresets(): Preset[] {
+  try {
+    return normalizePresets(JSON.parse(localStorage.getItem(PRESETS_KEY) ?? 'null'));
+  } catch {
+    return [];
+  }
+}
 
 export interface RelatedTool {
   to: string;
@@ -45,8 +64,31 @@ export function CalcShell({
   related,
 }: CalcShellProps) {
   const { t } = useTranslation();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
+  const { entitlement } = useAccount();
+  const isPro = effectivePlan(entitlement) !== 'free';
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
+  const [presets, setPresets] = useState<Preset[]>(loadPresets);
+  const [naming, setNaming] = useState(false);
+  const [presetName, setPresetName] = useState('');
+  const mine = presetsFor(presets, pathname);
+
+  function persistPresets(next: Preset[]) {
+    setPresets(next);
+    try {
+      localStorage.setItem(PRESETS_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore quota / private-mode errors */
+    }
+  }
+  function saveCurrentPreset() {
+    const name = presetName.trim();
+    if (!name) return;
+    persistPresets(addPreset(presets, { path: pathname, name, query: search.replace(/^\?/, '') }));
+    setPresetName('');
+    setNaming(false);
+  }
   usePageMeta(title, intro, [
     softwareAppLd({ title, description: intro, path: pathname }),
     breadcrumbLd([
@@ -105,8 +147,72 @@ export function CalcShell({
             {t('calc.askAdel')}
           </Link>
         )}
+        {!isPro ? (
+          <Link className={styles.action} to="/pricing">
+            {t('calc.savePreset')}
+            <span className={styles.proTag}>{t('upsell.proOnly')}</span>
+          </Link>
+        ) : naming ? (
+          <span className={styles.presetForm}>
+            <input
+              className={styles.presetInput}
+              value={presetName}
+              onChange={(e) => setPresetName(e.target.value)}
+              placeholder={t('calc.presetName')}
+              aria-label={t('calc.presetName')}
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  saveCurrentPreset();
+                } else if (e.key === 'Escape') {
+                  setNaming(false);
+                }
+              }}
+            />
+            <button
+              type="button"
+              className={styles.action}
+              onClick={saveCurrentPreset}
+              disabled={!presetName.trim()}
+            >
+              {t('calc.presetSave')}
+            </button>
+          </span>
+        ) : (
+          <button type="button" className={styles.action} onClick={() => setNaming(true)}>
+            {t('calc.savePreset')}
+          </button>
+        )}
         <span className={styles.note}>{t('calc.shareNote')}</span>
       </div>
+
+      {mine.length > 0 && (
+        <details className={styles.presets}>
+          <summary>{t('calc.presets')}</summary>
+          <ul className={styles.presetList}>
+            {mine.map((p) => (
+              <li key={p.name} className={styles.presetRow}>
+                <button
+                  type="button"
+                  className={styles.presetLoad}
+                  onClick={() => navigate(`${pathname}${p.query ? `?${p.query}` : ''}`)}
+                >
+                  {p.name}
+                </button>
+                <button
+                  type="button"
+                  className={styles.presetRemove}
+                  aria-label={t('calc.removePreset')}
+                  onClick={() => persistPresets(removePreset(presets, pathname, p.name))}
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
 
       <span className="sr-only" role="status" aria-live="polite">
         {copyStatus}

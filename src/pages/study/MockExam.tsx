@@ -4,7 +4,10 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizData, QuizQuestion } from '../../lib/content';
 import { setExamResult, useStudyProgress } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { useAccount } from '../../lib/account';
+import { effectivePlan } from '../../lib/entitlements';
 import { Disclaimer } from '../../components/Disclaimer';
+import { UpsellCard } from '../../components/UpsellCard';
 import styles from './Study.module.css';
 
 type ExamQuestion = QuizQuestion & { bank: string };
@@ -35,6 +38,8 @@ export function MockExam() {
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { exam } = useStudyProgress();
+  const { entitlement } = useAccount();
+  const isPro = effectivePlan(entitlement) !== 'free';
   const [started, setStarted] = useState(false);
 
   if (loading)
@@ -65,9 +70,16 @@ export function MockExam() {
             </span>
           </p>
         )}
-        <button type="button" className={styles.primary} onClick={() => setStarted(true)}>
-          {t('study.examStart')}
-        </button>
+        {isPro ? (
+          <button type="button" className={styles.primary} onClick={() => setStarted(true)}>
+            {t('study.examStart')}
+          </button>
+        ) : (
+          <div className={styles.examGate}>
+            <p className={styles.examGateNote}>{t('study.examProGate')}</p>
+            <UpsellCard variant="inline" />
+          </div>
+        )}
         <Disclaimer compact />
       </section>
     );

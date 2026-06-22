@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { usePageMeta } from '../lib/usePageMeta';
 import { faqLd } from '../lib/jsonld';
-import { canCheckout, startBillingPortal, startProCheckout } from '../lib/billing';
+import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from '../lib/billing';
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
-import { annualSavingsPct } from '../lib/pricing';
+import { annualSavingsPct, monthlyEquivalent } from '../lib/pricing';
 import styles from './Pricing.module.css';
 
-/** Indicative Pro pricing (SAR). Drives the computed savings badge. */
-const PRO_PRICE = { monthly: 59, annual: 349 };
+/**
+ * Indicative pricing (SAR). One source of truth — the display strings are
+ * templated from these numbers so they can never drift. Reading the regulatory
+ * library is always free; these gate acceleration, AI depth, proof and ops.
+ */
+const PRO_PRICE = { monthly: 59, annual: 449 };
+const STUDENT_PRICE = { monthly: 39, annual: 299 };
+const PASS_PRICE = 149;
+const SCHOOL_FROM = 250;
 
 interface CompareRow {
   feature: string;
@@ -34,19 +41,28 @@ export function Pricing() {
   );
   const { entitlement } = useAccount();
   const plan = effectivePlan(entitlement);
-  const [annual, setAnnual] = useState(false);
+  // Annual is the default — it's the better LTV/cash outcome and the headline saving.
+  const [annual, setAnnual] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const f = (base: string) => t(`${base}.features`, { returnObjects: true }) as unknown as string[];
   const savePct = annualSavingsPct(PRO_PRICE.monthly, PRO_PRICE.annual);
   const compare = t('pricing.compare', { returnObjects: true }) as unknown as CompareRow[];
   const faqs = t('pricing.faq', { returnObjects: true }) as unknown as Faq[];
+  const schoolPoints = t('pricing.schoolsPoints', { returnObjects: true }) as unknown as string[];
 
-  async function goPro() {
+  const proPrice = annual
+    ? t('pricing.perYr', { n: PRO_PRICE.annual, eq: monthlyEquivalent(PRO_PRICE.annual) })
+    : t('pricing.perMo', { n: PRO_PRICE.monthly });
+  const studentPrice = annual
+    ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
+    : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
+
+  async function checkout(variant: ProPlan) {
     setBusy(true);
     setError('');
     try {
-      await startProCheckout(annual ? 'annual' : 'monthly');
+      await startProCheckout(variant);
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {
@@ -101,6 +117,9 @@ export function Pricing() {
         </div>
       </header>
 
+      <p className={styles.trustBanner}>{t('pricing.trustBanner')}</p>
+      <p className={styles.planIntro}>{t(`pricing.planIntro.${plan}`)}</p>
+
       <div className={styles.plans}>
         <Plan
           name={t('pricing.plans.free.name')}
@@ -113,7 +132,8 @@ export function Pricing() {
         />
         <Plan
           name={t('pricing.plans.pro.name')}
-          price={annual ? t('pricing.plans.pro.priceYr') : t('pricing.plans.pro.priceMo')}
+          price={proPrice}
+          priceNote={t('pricing.vatIncl')}
           features={f('pricing.plans.pro')}
           cta={
             isPaid
@@ -125,16 +145,37 @@ export function Pricing() {
           highlight
           badge={t('pricing.popular')}
           ctaOnClick={
-            canCheckout() ? (isPaid ? () => void manage() : () => void goPro()) : undefined
+            canCheckout()
+              ? isPaid
+                ? () => void manage()
+                : () => void checkout(annual ? 'annual' : 'monthly')
+              : undefined
           }
           ctaDisabled={busy || !canCheckout()}
           current={plan === 'pro'}
           currentLabel={t('pricing.yourPlan')}
           note={`${t('pricing.indicative')} ${t('pricing.billingNote')}`}
+          belowCta={
+            !isPaid && (
+              <>
+                <p className={styles.proExtras}>
+                  <span>{t('pricing.trial')}</span>
+                  <span>{t('pricing.moneyBack')}</span>
+                </p>
+                <details className={styles.studentDisc}>
+                  <summary>{t('pricing.studentToggle')}</summary>
+                  <p>
+                    <bdi dir="ltr">{studentPrice}</bdi> · {t('pricing.studentNote')}
+                  </p>
+                </details>
+              </>
+            )
+          }
         />
         <Plan
           name={t('pricing.plans.school.name')}
-          price={t('pricing.plans.school.price')}
+          price={t('pricing.perSeat', { n: SCHOOL_FROM })}
+          priceNote={t('pricing.vatExcl')}
           features={f('pricing.plans.school')}
           cta={plan === 'school' ? t('pricing.yourPlan') : t('pricing.contact')}
           ctaHref="/schools"
@@ -148,6 +189,29 @@ export function Pricing() {
           {error}
         </p>
       )}
+
+      {/* Exam Season Pass — serves "just need it until my checkride" buyers. */}
+      <section className={styles.passBand} aria-labelledby="pass-head">
+        <div>
+          <h2 id="pass-head" className={styles.passHead}>
+            {t('pricing.passHead')}
+          </h2>
+          <p className={styles.passLead}>{t('pricing.passLead')}</p>
+        </div>
+        <div className={styles.passAside}>
+          <span className={styles.passPrice}>
+            <bdi dir="ltr">{t('pricing.pass', { n: PASS_PRICE })}</bdi>
+          </span>
+          <button
+            type="button"
+            className={styles.passCta}
+            onClick={canCheckout() ? () => void checkout('pass') : undefined}
+            disabled={busy || !canCheckout()}
+          >
+            {t('pricing.passCta')}
+          </button>
+        </div>
+      </section>
 
       <section className={styles.compareSection} aria-labelledby="compare-head">
         <h2 id="compare-head" className={styles.sectionHead}>
@@ -177,6 +241,28 @@ export function Pricing() {
         </div>
       </section>
 
+      {/* B2B band — route the highest-value buyer to the schools sales path. */}
+      <section className={styles.schoolsBand} aria-labelledby="schools-head">
+        <div className={styles.schoolsText}>
+          <p className={styles.eyebrow}>{t('pricing.schoolsEyebrow')}</p>
+          <h2 id="schools-head" className={styles.schoolsHead}>
+            {t('pricing.schoolsHead')}
+          </h2>
+          <ul className={styles.schoolsPoints}>
+            {schoolPoints.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+          <p className={styles.schoolsPrice}>
+            <bdi dir="ltr">{t('pricing.perSeat', { n: SCHOOL_FROM })}</bdi> ·{' '}
+            {t('pricing.schoolsMin')}
+          </p>
+        </div>
+        <Link to="/schools" className={styles.schoolsCta}>
+          {t('pricing.schoolsCta')}
+        </Link>
+      </section>
+
       <section className={styles.faqSection} aria-labelledby="faq-head">
         <h2 id="faq-head" className={styles.sectionHead}>
           {t('pricing.faqHead')}
@@ -199,6 +285,7 @@ export function Pricing() {
 interface PlanProps {
   name: string;
   price: string;
+  priceNote?: string;
   features: string[];
   cta: string;
   highlight?: boolean;
@@ -207,6 +294,7 @@ interface PlanProps {
   ctaHref?: string;
   ctaOnClick?: () => void;
   note?: string;
+  belowCta?: ReactNode;
   current?: boolean;
   currentLabel?: string;
 }
@@ -214,6 +302,7 @@ interface PlanProps {
 function Plan({
   name,
   price,
+  priceNote,
   features,
   cta,
   highlight,
@@ -222,6 +311,7 @@ function Plan({
   ctaHref,
   ctaOnClick,
   note,
+  belowCta,
   current,
   currentLabel,
 }: PlanProps) {
@@ -232,7 +322,10 @@ function Plan({
       {badge && !current && <span className={styles.popularBadge}>{badge}</span>}
       {current && currentLabel && <span className={styles.currentBadge}>{currentLabel}</span>}
       <h2 className={styles.planName}>{name}</h2>
-      <p className={styles.price}>{price}</p>
+      <p className={styles.price}>
+        <bdi dir="ltr">{price}</bdi>
+      </p>
+      {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
       <ul className={styles.features}>
         {features.map((x) => (
           <li key={x}>{x}</li>
@@ -247,6 +340,7 @@ function Plan({
           {cta}
         </button>
       )}
+      {belowCta}
       {note && <p className={styles.note}>{note}</p>}
     </div>
   );
