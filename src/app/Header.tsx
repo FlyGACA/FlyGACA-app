@@ -32,6 +32,10 @@ const PRIMARY_KEYS = new Set(['/library', '/chat', '/tools', '/study']);
 const PRIMARY = NAV.filter((item) => PRIMARY_KEYS.has(item.to));
 const MORE = NAV.filter((item) => !PRIMARY_KEYS.has(item.to));
 
+// Per-route label overrides for the compact dock tabs, where the full nav label
+// would truncate in the 5-up row ("Captain Adel" → "Adel").
+const DOCK_LABEL: Record<string, string> = { '/chat': 'nav.captainShort' };
+
 /** True once the page has scrolled past `threshold`px — drives the header's
  *  elevated state (hairline + shadow appear, background firms up). Passive
  *  listener; the global reduced-motion rule already neutralises the transition. */
@@ -187,7 +191,7 @@ export function Header() {
             }
           >
             <DockIcon route={item.to} />
-            <span>{t(item.key)}</span>
+            <span>{t(DOCK_LABEL[item.to] ?? item.key)}</span>
           </NavLink>
         ))}
         <button
@@ -219,21 +223,40 @@ export function Header() {
         className={`${styles.sheet} ${open ? styles.open : ''}`}
         aria-label={t('nav.more')}
       >
-        {MORE.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) => (isActive ? styles.active : undefined)}
-            onClick={() => setOpen(false)}
+        <p className={styles.sheetLabel} aria-hidden="true">
+          {t('nav.menu')}
+        </p>
+        <ul className={styles.sheetList}>
+          {MORE.map((item) => (
+            <li key={item.to}>
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  isActive ? `${styles.sheetLink} ${styles.sheetActive}` : styles.sheetLink
+                }
+                onClick={() => setOpen(false)}
+              >
+                <span className={styles.sheetIcon}>
+                  <DockIcon route={item.to} />
+                </span>
+                {t(item.key)}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+        <div className={styles.sheetDivider} aria-hidden="true" />
+        <Link className={styles.sheetCta} to="/pricing" onClick={() => setOpen(false)}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
           >
-            {t(item.key)}
-          </NavLink>
-        ))}
-        <Link
-          className={`btn btn-primary ${styles.sheetCta}`}
-          to="/pricing"
-          onClick={() => setOpen(false)}
-        >
+            <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
+          </svg>
           {t('common.goPro')}
         </Link>
       </nav>

@@ -55,11 +55,44 @@ export const MoreIcon: FC<IconProps> = (p) => (
   </Svg>
 );
 
+const GuidesIcon: FC<IconProps> = (p) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="10" />
+    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+  </Svg>
+);
+
+const PricingIcon: FC<IconProps> = (p) => (
+  <Svg {...p}>
+    <path d="M3 3.5h7l9.5 9.5a2 2 0 0 1 0 2.8l-4.7 4.7a2 2 0 0 1-2.8 0L3 11z" />
+    <circle cx="7.5" cy="7.5" r="1.3" />
+  </Svg>
+);
+
+const AboutIcon: FC<IconProps> = (p) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="11" x2="12" y2="16" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </Svg>
+);
+
+const AccountIcon: FC<IconProps> = (p) => (
+  <Svg {...p}>
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </Svg>
+);
+
 const BY_ROUTE: Record<string, FC<IconProps>> = {
   '/library': LibraryIcon,
   '/chat': AdelIcon,
   '/tools': ToolsIcon,
   '/study': StudyIcon,
+  '/guides': GuidesIcon,
+  '/pricing': PricingIcon,
+  '/about': AboutIcon,
+  '/account': AccountIcon,
 };
 
 /** Renders the dock glyph for a primary route (nothing if the route is unmapped). */

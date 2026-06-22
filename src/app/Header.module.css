@@ -415,34 +415,97 @@
     visibility: visible;
     transform: translateY(0) scale(1);
   }
-  .sheet a {
-    display: inline-flex;
+  /* Section label atop the sheet. */
+  .sheetLabel {
+    margin-block: var(--space-1) var(--space-2);
+    margin-inline: var(--space-2);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+  .sheetList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  /* Icon + label row — mirrors the dock's iconography. */
+  .sheetLink {
+    display: flex;
     align-items: center;
+    gap: var(--space-3);
     inline-size: 100%;
     min-block-size: 48px;
     padding-inline: var(--space-3);
     border-radius: var(--radius-md);
     color: color-mix(in srgb, var(--text-muted) 30%, var(--text));
-    font-size: var(--fs-sm);
+    font-size: var(--fs-base);
     font-weight: var(--fw-medium);
     transition:
       color var(--dur) var(--ease),
       background var(--dur) var(--ease);
   }
-  .sheet a:hover {
+  .sheetLink:hover {
     color: var(--text);
     background: var(--brand-tint);
     text-decoration: none;
   }
-  .sheet a.active {
+  .sheetActive {
     color: var(--brand-hover);
     background: var(--brand-tint);
     font-weight: var(--fw-semibold);
   }
-  .sheet .sheetCta {
+  .sheetIcon {
     display: inline-flex;
+    flex: none;
+    color: var(--brand-hover);
+  }
+  .sheetIcon svg {
+    inline-size: 20px;
+    block-size: 20px;
+  }
+  /* Hairline between the destinations and the upsell. */
+  .sheetDivider {
+    block-size: 1px;
+    margin-block: var(--space-2);
+    margin-inline: var(--space-2);
+    background: var(--border);
+  }
+  /* Go Pro — a gradient pill, not a flat slab. */
+  .sheetCta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
     inline-size: 100%;
-    margin-block-start: var(--space-2);
+    min-block-size: 48px;
+    padding-inline: var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--grad-brand);
+    color: var(--text-on-brand);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    box-shadow: var(--clay-shadow);
+    transition:
+      box-shadow var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  .sheetCta svg {
+    inline-size: 18px;
+    block-size: 18px;
+    flex: none;
+  }
+  .sheetCta:hover {
+    box-shadow: var(--clay-shadow-hover);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  .sheetCta:active {
+    transform: scale(0.98);
   }
 
   /* Dimmed backdrop behind the sheet (sits above the dock when open). */
