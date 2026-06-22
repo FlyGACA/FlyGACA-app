@@ -77,6 +77,8 @@ export interface ArticleInput {
   path: string;
   /** BCP-47 language of the current rendering (e.g. 'en' | 'ar'). */
   lang?: string;
+  /** ISO date the content was last revised (emitted as schema.org dateModified). */
+  dateModified?: string;
 }
 
 function articleOfType(type: 'TechArticle' | 'Article', a: ArticleInput): JsonLd {
@@ -86,6 +88,7 @@ function articleOfType(type: 'TechArticle' | 'Article', a: ArticleInput): JsonLd
     '@type': type,
     headline: a.title,
     ...(a.description ? { description: a.description } : {}),
+    ...(a.dateModified ? { dateModified: a.dateModified } : {}),
     inLanguage: a.lang ?? 'en',
     url,
     mainEntityOfPage: url,
