@@ -184,3 +184,33 @@ export async function* sendChatStream(
     if (drained.done) return;
   }
 }
+
+/** A 👍/👎 on an answer, sent to the gateway for offline quality review. */
+export interface FeedbackRequest {
+  rating: 'up' | 'down';
+  session?: string;
+  question?: string;
+  answer?: string;
+}
+
+/**
+ * Report answer feedback to the gateway (`POST /api/feedback`). Best-effort: the
+ * caller fires this and ignores the outcome, so a 4xx/5xx/offline never disrupts
+ * the chat. Throws on a non-OK response so tests can assert the wiring.
+ */
+export async function sendFeedback(
+  req: FeedbackRequest,
+  authToken?: string,
+  appCheckToken?: string,
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/feedback`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
+    },
+    body: JSON.stringify(req),
+  });
+  if (!res.ok) throw new Error(`Feedback request failed: ${res.status}`);
+}
