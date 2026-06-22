@@ -85,4 +85,27 @@ describe('parseMarkdown', () => {
     expect(parseMarkdown('')).toEqual([]);
     expect(parseMarkdown('   \n  \n')).toEqual([]);
   });
+
+  it('parses a blockquote, stripping the marker and parsing inline spans', () => {
+    const blocks = parseMarkdown('> In practice: revise **Part 91** before the exam.');
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({ type: 'blockquote' });
+    expect(blocks[0].type === 'blockquote' && blocks[0].spans).toContainEqual({
+      type: 'bold',
+      value: 'Part 91',
+    });
+  });
+
+  it('joins a multi-line blockquote into one block', () => {
+    const blocks = parseMarkdown('> line one\n> line two');
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0].type).toBe('blockquote');
+  });
+
+  it('keeps a paragraph and a following blockquote separate', () => {
+    expect(parseMarkdown('Answer text\n> note').map((b) => b.type)).toEqual([
+      'paragraph',
+      'blockquote',
+    ]);
+  });
 });

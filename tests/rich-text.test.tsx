@@ -1,5 +1,6 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { RichText } from '../src/components/chat/RichText';
 
 afterEach(cleanup);
@@ -24,6 +25,21 @@ describe('<RichText />', () => {
   it('separates paragraphs on blank lines', () => {
     const { container } = render(<RichText text={'first\n\nsecond'} />);
     expect(container.querySelectorAll('p')).toHaveLength(2);
+  });
+
+  it('renders a blockquote for the "In practice" takeaway', () => {
+    const { container } = render(<RichText text={'> In practice: study Part 91.'} />);
+    expect(container.querySelector('blockquote')?.textContent).toContain('In practice');
+  });
+
+  it('linkifies a cited Part inside a blockquote when a resolver is given', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <RichText text={'> See Part 91 here.'} resolveCitation={() => '/library/part-91'} />
+      </MemoryRouter>,
+    );
+    const a = container.querySelector('blockquote a');
+    expect(a).toHaveAttribute('href', '/library/part-91');
   });
 
   it('renders hostile HTML as inert text (no injection)', () => {

@@ -90,6 +90,12 @@ export function RichText({
                 ))}
               </ol>
             );
+          case 'blockquote':
+            return (
+              <blockquote key={i}>
+                <Spans spans={decorate(b.spans)} />
+              </blockquote>
+            );
           default:
             return (
               <p key={i}>

@@ -669,6 +669,8 @@ export function Chat() {
 /** Citation chips; rows with a verbatim passage expand via a native <details>. */
 function SourceList({ sources, valid }: { sources: ChatSource[]; valid: Set<string> }) {
   const { t } = useTranslation();
+  // Surface the most-relevant rule text up front: open the first verbatim passage.
+  const firstVerbatim = sources.findIndex((s) => s.verbatim);
   return (
     <div className={styles.sourcesWrap}>
       <span className={styles.sourcesLabel}>{t('chat.sourcesLabel')}</span>
@@ -678,11 +680,12 @@ function SourceList({ sources, valid }: { sources: ChatSource[]; valid: Set<stri
           return (
             <li key={j} className={styles.srcRow}>
               {s.verbatim ? (
-                <details className={styles.srcDetails}>
+                <details className={styles.srcDetails} open={j === firstVerbatim}>
                   <summary className={styles.srcCite}>
                     <bdi dir="ltr" lang="en">
                       {s.citation || s.url}
                     </bdi>
+                    <span className={styles.srcExact}>{t('chat.exactText')}</span>
                   </summary>
                   <p className={styles.srcVerbatim}>{s.verbatim}</p>
                   {s.corpusVersion && (

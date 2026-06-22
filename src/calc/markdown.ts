@@ -32,11 +32,13 @@ export type Block =
   | { type: 'paragraph'; spans: Inline[] }
   | { type: 'heading'; level: number; spans: Inline[] }
   | { type: 'ul'; items: Inline[][] }
-  | { type: 'ol'; items: Inline[][] };
+  | { type: 'ol'; items: Inline[][] }
+  | { type: 'blockquote'; spans: Inline[] };
 
 const BULLET = /^\s*[-*+]\s+(.*)$/;
 const ORDERED = /^\s*\d+[.)]\s+(.*)$/;
 const HEADING = /^(#{1,3})\s+(.*)$/;
+const QUOTE = /^\s*>\s?(.*)$/;
 
 /**
  * Split a line into inline spans, honouring `` `code` ``, `**bold**`, and
@@ -90,6 +92,19 @@ export function parseMarkdown(input: string): Block[] {
     if (heading) {
       flushPara();
       blocks.push({ type: 'heading', level: heading[1].length, spans: parseInline(heading[2]) });
+      continue;
+    }
+
+    if (QUOTE.test(line)) {
+      flushPara();
+      const quoted: string[] = [];
+      // Consume the contiguous run of `>` lines into one blockquote.
+      while (i < lines.length && QUOTE.test(lines[i])) {
+        quoted.push(QUOTE.exec(lines[i])![1].trim());
+        i++;
+      }
+      i--; // step back; the for-loop advances past the last quoted line
+      blocks.push({ type: 'blockquote', spans: parseInline(quoted.join(' ')) });
       continue;
     }
 

@@ -9,11 +9,12 @@
  * refusal and the model is not even called, so we never emit a fabricated
  * GACAR figure. This is the server-side twin of the site-wide <Disclaimer/>.
  */
-import { genkit, z } from "genkit";
-import { googleAI } from "@genkit-ai/google-genai";
-import { enableFirebaseTelemetry } from "@genkit-ai/firebase";
-import { getIndex, toChatSource } from "./corpus.js";
-import type { ChatTurn, GroundingKind } from "./contract.js";
+import { genkit, z } from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
+import { enableFirebaseTelemetry } from '@genkit-ai/firebase';
+import { getIndex, toChatSource } from './corpus.js';
+import { buildSystem } from './captain-adel-prompt.js';
+import type { ChatTurn, GroundingKind } from './contract.js';
 
 enableFirebaseTelemetry();
 
@@ -40,7 +41,7 @@ const SOURCE_SCHEMA = z.object({
 const INPUT_SCHEMA = z.object({
   message: z.string(),
   history: z
-    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string() }))
+    .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string() }))
     .optional(),
   product: z.string().optional(),
   provider: z.string().optional(),
@@ -50,7 +51,7 @@ const INPUT_SCHEMA = z.object({
 const OUTPUT_SCHEMA = z.object({
   answer: z.string(),
   sources: z.array(SOURCE_SCHEMA),
-  kind: z.enum(["grounded", "partial", "refusal", "na"]),
+  kind: z.enum(['grounded', 'partial', 'refusal', 'na']),
   refusalClass: z.string().optional(),
   meta: z.object({
     provider: z.string(),
@@ -63,36 +64,23 @@ export type CaptainAdelOutput = z.infer<typeof OUTPUT_SCHEMA>;
 
 /** Map the request's `provider` (Gemini tier) to a concrete model id. */
 function modelFor(provider: string | undefined): string {
-  const tier = (provider ?? "flash").toLowerCase();
-  return tier === "pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+  const tier = (provider ?? 'flash').toLowerCase();
+  return tier === 'pro' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
 }
 
 function refusalMessage(): string {
   return (
     "I couldn't find this in the GACAR regulatory corpus I have access to. " +
-    "Please verify against the official GACA source, or rephrase your question. " +
-    "(Fly GACA is an independent, educational tool and is not affiliated with GACA.)\n\n" +
-    "لم أتمكن من العثور على ذلك في نصوص اللوائح المتاحة لي. " +
-    "يرجى التحقق من المصدر الرسمي للهيئة العامة للطيران المدني أو إعادة صياغة سؤالك."
+    'Please verify against the official GACA source, or rephrase your question. ' +
+    '(Fly GACA is an independent, educational tool and is not affiliated with GACA.)\n\n' +
+    'لم أتمكن من العثور على ذلك في نصوص اللوائح المتاحة لي. ' +
+    'يرجى التحقق من المصدر الرسمي للهيئة العامة للطيران المدني أو إعادة صياغة سؤالك.'
   );
-}
-
-function buildSystem(contextBlock: string): string {
-  return [
-    "You are Captain Adel, an educational assistant for Fly GACA — an independent platform that is NOT affiliated with GACA (the General Authority of Civil Aviation).",
-    "Answer ONLY using the CONTEXT passages below, which are excerpts from the Saudi GACAR regulatory corpus.",
-    "Cite the relevant Part and section inline (e.g. \"GACAR Part 91 §91.155\"). Be concise and precise.",
-    "If the CONTEXT does not contain the answer, say you cannot find it in the regulations and advise verifying against the official GACA source — never invent rule numbers, limits, or figures.",
-    "Mirror the user's language (Arabic or English). You help users find and study the regulation; you never replace it.",
-    "",
-    "CONTEXT:",
-    contextBlock,
-  ].join("\n");
 }
 
 function toGenkitMessages(history: ChatTurn[] | undefined) {
   return (history ?? []).map((t) => ({
-    role: t.role === "assistant" ? ("model" as const) : ("user" as const),
+    role: t.role === 'assistant' ? ('model' as const) : ('user' as const),
     content: [{ text: t.content }],
   }));
 }
@@ -103,7 +91,7 @@ function toGenkitMessages(history: ChatTurn[] | undefined) {
  */
 export const captainAdelFlow = ai.defineFlow(
   {
-    name: "captainAdelFlow",
+    name: 'captainAdelFlow',
     inputSchema: INPUT_SCHEMA,
     outputSchema: OUTPUT_SCHEMA,
     streamSchema: z.string(),
@@ -117,11 +105,13 @@ export const captainAdelFlow = ai.defineFlow(
 
     // Low retrieval confidence ⇒ deterministic refusal; do not call the model.
     if (hits.length === 0 || top < MIN_SCORE) {
-      const refusalClass = hits[0] ? toChatSource(hits[0].entry, index.generated).section : undefined;
+      const refusalClass = hits[0]
+        ? toChatSource(hits[0].entry, index.generated).section
+        : undefined;
       return {
         answer: refusalMessage(),
         sources: [],
-        kind: "refusal",
+        kind: 'refusal',
         refusalClass,
         meta: { provider, retrieved: hits.length, corpusVersion },
       };
@@ -131,9 +121,9 @@ export const captainAdelFlow = ai.defineFlow(
     const contextBlock = hits
       .map((h, i) => {
         const s = sources[i];
-        return `[${i + 1}] (${s.citation}) ${h.entry.x ?? ""}`.trim();
+        return `[${i + 1}] (${s.citation}) ${h.entry.x ?? ''}`.trim();
       })
-      .join("\n\n");
+      .join('\n\n');
 
     const { response, stream } = ai.generateStream({
       model: googleAI.model(provider),
@@ -148,7 +138,7 @@ export const captainAdelFlow = ai.defineFlow(
     }
     const answer = (await response).text;
 
-    const kind: GroundingKind = top >= GROUNDED_SCORE ? "grounded" : "partial";
+    const kind: GroundingKind = top >= GROUNDED_SCORE ? 'grounded' : 'partial';
     return {
       answer,
       sources,
