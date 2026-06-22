@@ -614,8 +614,12 @@
     "followups": {
       "section": "Cite the exact GACAR section",
       "simple": "Explain that more simply",
-      "example": "Give a practical example"
+      "example": "Give a practical example",
+      "exactText": "Show the exact text of {{cite}}",
+      "related": "What else does Part {{part}} cover?"
     },
+    "proModel": "Pro model",
+    "proModelHint": "Higher-quality answers",
     "suggestions": {
       "s1": "What are the VFR weather minima in controlled airspace?",
       "s2": "What's required for a GACAR commercial pilot licence?",

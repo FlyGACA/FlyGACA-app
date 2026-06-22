@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { sendChatStream, type ChatSource, type ChatTurn, type GroundingKind } from '../../lib/api';
+import {
+  sendChatStream,
+  sendFeedback,
+  type ChatSource,
+  type ChatTurn,
+  type GroundingKind,
+} from '../../lib/api';
 import { getIdToken } from '../../lib/auth';
 import { getAppCheckToken } from '../../lib/firebase';
 import { sessionId } from '../../lib/session';
@@ -19,6 +25,7 @@ import {
   type Usage,
 } from '../../calc/chatQuota';
 import { partSlug, conversationParts } from '../../calc/chatSources';
+import { followupSuggestions } from '../../calc/chatFollowups';
 import {
   feedbackKey,
   getFeedback,
@@ -74,13 +81,11 @@ const CAPABILITIES = [
   { id: 'bilingual', tone: 'data' as const },
   { id: 'verify', tone: 'warning' as const },
 ];
-/** Contextual follow-ups offered under the latest grounded answer. */
-const FOLLOWUPS = ['section', 'simple', 'example'] as const;
-
 const TRANSCRIPT_KEY = 'flygaca:adel-transcript';
 const CONV_KEY = 'flygaca:adel-conversations';
 const QUOTA_KEY = 'flygaca:adel-quota';
 const FEEDBACK_KEY = 'flygaca:adel-feedback';
+const PRO_KEY = 'flygaca:adel-pro';
 
 function newId(): string {
   return (
@@ -140,6 +145,14 @@ function loadFeedback(): FeedbackMap {
   }
 }
 
+function loadProPref(): boolean {
+  try {
+    return localStorage.getItem(PRO_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export function Chat() {
   const { t } = useTranslation();
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
@@ -151,6 +164,7 @@ export function Chat() {
   const [busy, setBusy] = useState(false);
   const [usage, setUsage] = useState<Usage>(loadUsage);
   const [feedback, setFeedback] = useState<FeedbackMap>(loadFeedback);
+  const [usePro, setUsePro] = useState<boolean>(loadProPref);
   const [atBottom, setAtBottom] = useState(true);
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -175,15 +189,46 @@ export function Chat() {
     return slug ? `/library/${slug}` : null;
   }
 
-  /** Record (or toggle off) a 👍/👎 on the answer at `idx` and persist locally. */
+  /** Record (or toggle off) a 👍/👎 on the answer at `idx`, persist, and report it. */
   function rateAnswer(idx: number, rating: Rating) {
     const text = messages[idx]?.text;
     if (!text) return;
-    // future: forward to the gateway so weak groundings can be learned from.
+    const key = feedbackKey(text);
+    // Re-clicking the same thumb clears it; only forward genuine ratings.
+    const cleared = getFeedback(feedback, key) === rating;
     setFeedback((prev) => {
-      const next = recordFeedback(prev, feedbackKey(text), rating);
+      const next = recordFeedback(prev, key, rating);
       try {
         localStorage.setItem(FEEDBACK_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore quota / private-mode errors */
+      }
+      return next;
+    });
+    if (cleared) return;
+    const question = messages[idx - 1]?.role === 'user' ? messages[idx - 1].text : undefined;
+    void Promise.all([
+      getIdToken().then((tok) => tok ?? undefined),
+      getAppCheckToken().then((tok) => tok ?? undefined),
+    ])
+      .then(([token, appCheckToken]) =>
+        sendFeedback(
+          { rating, session: sessionId(), question, answer: text },
+          token,
+          appCheckToken,
+        ),
+      )
+      .catch(() => {
+        /* feedback is non-critical; never disrupt the chat */
+      });
+  }
+
+  /** Persisted toggle for the higher-quality "Pro" model (Pro/School plans only). */
+  function togglePro() {
+    setUsePro((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(PRO_KEY, next ? '1' : '0');
       } catch {
         /* ignore quota / private-mode errors */
       }
@@ -238,7 +283,12 @@ export function Chat() {
         getAppCheckToken().then((tok) => tok ?? undefined),
       ]);
       for await (const ev of sendChatStream(
-        { message: q, history, session: sessionId() },
+        {
+          message: q,
+          history,
+          session: sessionId(),
+          provider: isPro && usePro ? 'pro' : undefined,
+        },
         token,
         appCheckToken,
         controller.signal,
@@ -581,16 +631,19 @@ export function Chat() {
 
           {showFollowups && (
             <div className={styles.followups}>
-              {FOLLOWUPS.map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  className={styles.followup}
-                  onClick={() => void ask(t(`chat.followups.${f}`))}
-                >
-                  {t(`chat.followups.${f}`)}
-                </button>
-              ))}
+              {followupSuggestions(last).map((f) => {
+                const label = t(`chat.followups.${f.id}`, { cite: f.cite, part: f.part });
+                return (
+                  <button
+                    key={f.id}
+                    type="button"
+                    className={styles.followup}
+                    onClick={() => void ask(label)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -652,7 +705,13 @@ export function Chat() {
               </button>
             )}
           </form>
-          {!isPro && (
+          {isPro ? (
+            <label className={styles.proToggle}>
+              <input type="checkbox" checked={usePro} onChange={togglePro} />
+              <span>{t('chat.proModel')}</span>
+              <span className={styles.proHint}>{t('chat.proModelHint')}</span>
+            </label>
+          ) : (
             <p className={styles.quota}>
               {t('chat.quota.left', { n: left, limit: FREE_DAILY_LIMIT })}
             </p>
