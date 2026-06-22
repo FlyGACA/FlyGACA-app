@@ -9,11 +9,6 @@
         "region": "me-central2"
       },
       {
-        "source": "/api/content",
-        "function": "protectedContent",
-        "region": "me-central2"
-      },
-      {
         "source": "/api/stripe-webhook",
         "function": "stripeWebhook",
         "region": "me-central2"
