@@ -391,3 +391,188 @@
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
 }
+
+/* ── Trust banner + plan-aware intro ── */
+.trustBanner {
+  text-align: center;
+  max-inline-size: 64ch;
+  margin-inline: auto;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--success) 40%, transparent);
+  border-radius: var(--clay-radius);
+  background: color-mix(in srgb, var(--success) 8%, var(--surface));
+  color: var(--text);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+}
+.planIntro {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+
+/* VAT line under each price. */
+.priceNote {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  margin-block: calc(-1 * var(--space-2)) 0;
+}
+
+/* Pro card: trial + money-back, and the student-pricing disclosure. */
+.proExtras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--accent-bright);
+  font-weight: var(--fw-semibold);
+}
+.studentDisc {
+  font-size: var(--fs-xs);
+}
+.studentDisc summary {
+  cursor: pointer;
+  color: var(--link);
+}
+.studentDisc p {
+  margin-block: var(--space-2) 0;
+  color: var(--text-muted);
+}
+
+/* ── Exam Season Pass band ── */
+.passBand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.passHead {
+  font-size: var(--fs-h3);
+  margin: 0 0 var(--space-1);
+}
+.passLead {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  margin: 0;
+  max-inline-size: 52ch;
+}
+.passAside {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.passPrice {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-black);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.passCta {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-5);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  white-space: nowrap;
+  transition:
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.passCta:hover:not(:disabled) {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+}
+.passCta:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* ── For Flight Schools band ── */
+.schoolsBand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+  box-shadow:
+    var(--clay-shadow),
+    0 0 40px color-mix(in srgb, var(--brand) 12%, transparent);
+}
+.schoolsText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+.schoolsHead {
+  font-size: var(--fs-h3);
+  margin: 0;
+}
+.schoolsPoints {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.schoolsPoints li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.schoolsPoints li::before {
+  content: '✓';
+  color: var(--accent-bright);
+  font-weight: var(--fw-bold);
+}
+.schoolsPrice {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.schoolsCta {
+  flex-shrink: 0;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--clay-radius);
+  background: var(--brand);
+  color: var(--text-on-brand);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  box-shadow: var(--clay-shadow);
+  transition:
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.schoolsCta:hover {
+  background: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}

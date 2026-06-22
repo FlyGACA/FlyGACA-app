@@ -785,3 +785,15 @@
     grid-column: 1 / -1;
   }
 }
+
+/* Pro gate on the mock-exam start screen. */
+.examGate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block: var(--space-3);
+}
+.examGateNote {
+  color: var(--text-muted);
+  margin: 0;
+}

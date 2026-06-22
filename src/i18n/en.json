@@ -1516,33 +1516,30 @@
         "name": "Free",
         "price": "SAR 0",
         "features": [
-          "The full regulatory library",
-          "Every flight tool — 3 runs / day",
-          "Captain Adel — 5 questions / month",
-          "Study quizzes & flashcards"
+          "The full regulatory library — free, forever",
+          "All 55 flight tools",
+          "Captain Adel — 5 questions / day",
+          "Ground school, quizzes & flashcards"
         ]
       },
       "pro": {
         "name": "Pro",
-        "priceMo": "SAR 59 / mo",
-        "priceYr": "SAR 349 / yr · ≈ 29 / mo",
         "features": [
           "Everything in Free",
           "Unlimited Captain Adel",
-          "Ground school & mock exams",
-          "Logbook export & offline access",
-          "Priority updates"
+          "Mock exams & progress analytics",
+          "Saved tool presets",
+          "Logbook export, currency reminders & offline pack"
         ]
       },
       "school": {
         "name": "Schools",
-        "price": "From SAR 199 / seat / yr",
         "features": [
           "Seat licences for your students",
           "Minimum 10 seats",
-          "Admin dashboard",
-          "Bulk onboarding",
-          "Invoiced billing"
+          "Admin dashboard & bulk onboarding",
+          "Syllabus-aligned to the GACAR",
+          "Invoiced annually"
         ]
       }
     },
@@ -1561,24 +1558,36 @@
       },
       {
         "feature": "Flight tools",
-        "free": "3 / day",
-        "pro": "Unlimited",
-        "school": "Unlimited"
+        "free": "All",
+        "pro": "All + presets",
+        "school": "All + presets"
       },
       {
         "feature": "Captain Adel",
-        "free": "5 / mo",
+        "free": "5 / day",
         "pro": "Unlimited",
         "school": "Unlimited"
       },
       {
-        "feature": "Ground school & mock exams",
+        "feature": "Mock exams",
         "free": "—",
         "pro": "✓",
         "school": "✓"
       },
       {
-        "feature": "Logbook export & offline",
+        "feature": "Ground school & quizzes",
+        "free": "✓",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Logbook export & reminders",
+        "free": "—",
+        "pro": "✓",
+        "school": "✓"
+      },
+      {
+        "feature": "Offline library pack",
         "free": "—",
         "pro": "✓",
         "school": "✓"
@@ -1592,22 +1601,58 @@
     ],
     "faq": [
       {
+        "q": "Is the regulatory library really free?",
+        "a": "Yes — the full GACAR library, search and charts are free forever. Pro adds AI depth, study tools, exports and offline; it never paywalls reading the rule."
+      },
+      {
         "q": "Can I cancel anytime?",
         "a": "Yes — Pro is month-to-month or annual. Cancel whenever and keep access until the period ends."
       },
       {
         "q": "Do you offer refunds?",
-        "a": "Contact us within 14 days of an annual purchase and we will sort it out."
+        "a": "Yes — a 30-day money-back guarantee on any plan. Email us and we'll sort it out."
       },
       {
-        "q": "What happens to my data if I downgrade?",
-        "a": "Your logbook and progress stay on your device; Pro-only exports pause until you re-subscribe."
+        "q": "What happens to my logbook if I cancel?",
+        "a": "It stays — your logbook and progress are stored on your device. Pro-only exports pause until you re-subscribe."
+      },
+      {
+        "q": "How does billing work for flight schools?",
+        "a": "Per seat, per year, invoiced annually, from 10 seats. Seats are reassignable; book a demo from the Schools page."
       },
       {
         "q": "Is Fly GACA affiliated with GACA?",
         "a": "No. Fly GACA is an independent educational tool — always verify against the official GACA sources."
       }
-    ]
+    ],
+    "planIntro": {
+      "free": "You're on the Free plan — here's what Pro unlocks.",
+      "pro": "You're on Pro — thank you. Manage your subscription anytime.",
+      "school": "Your school plan is active across your seats."
+    },
+    "schoolsPoints": [
+      "Bulk seat licences",
+      "Admin dashboard & usage",
+      "Syllabus-aligned study"
+    ],
+    "perMo": "SAR {{n}} / mo",
+    "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
+    "perSeat": "from SAR {{n}} / seat / yr",
+    "pass": "SAR {{n}} / 90 days",
+    "vatIncl": "incl. 15% VAT",
+    "vatExcl": "Invoiced annually · VAT-exclusive",
+    "trustBanner": "The full regulatory library is free, forever. Fly GACA is independent and not affiliated with GACA — always verify against the official source.",
+    "trial": "7-day free trial — no card",
+    "moneyBack": "30-day money-back guarantee",
+    "studentToggle": "Studying full-time? Get student pricing",
+    "studentNote": "verified at checkout",
+    "passHead": "Exam Season Pass",
+    "passLead": "Just need it until your checkride? Full Pro access for 90 days — no subscription.",
+    "passCta": "Get the pass",
+    "schoolsEyebrow": "For flight schools & universities",
+    "schoolsHead": "Equip a whole cohort",
+    "schoolsMin": "min 10 seats",
+    "schoolsCta": "Book a demo"
   },
   "schools": {
     "title": "Fly GACA for schools",
@@ -2453,7 +2498,8 @@
     "weakest": "Focus areas",
     "dueToday": "Due today",
     "examHistory": "Recent exams",
-    "resume": "Resume"
+    "resume": "Resume",
+    "examProGate": "Mock exams are part of Pro — unlimited timed exams with a per-bank breakdown."
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
@@ -2753,7 +2799,12 @@
     "askAdel": "Ask Captain Adel to explain",
     "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",
     "howItWorks": "How it works",
-    "related": "Related tools"
+    "related": "Related tools",
+    "savePreset": "Save preset",
+    "presets": "Saved presets",
+    "presetName": "Preset name",
+    "presetSave": "Save",
+    "removePreset": "Remove preset"
   },
   "meta": {
     "home": "Saudi Aviation Library",
