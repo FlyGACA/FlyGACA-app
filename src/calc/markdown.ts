@@ -5,14 +5,28 @@
  * inert by construction.
  *
  * Supported: paragraphs (blank-line separated), `#`–`###` headings, unordered
- * lists (`-`/`*`/`+`) and ordered lists (`1.`), `**bold**`, and `` `code` ``.
- * Anything else stays as literal text.
+ * lists (`-`/`*`/`+`) and ordered lists (`1.`), `**bold**`, `` `code` ``, and
+ * `[text](href)` links (with a sanitized href). Anything else stays as literal text.
  */
 
 export type Inline =
   | { type: 'text'; value: string }
   | { type: 'bold'; value: string }
-  | { type: 'code'; value: string };
+  | { type: 'code'; value: string }
+  | { type: 'link'; value: string; href: string };
+
+/**
+ * Allow only hrefs we can render safely: site-relative paths and http(s)/mailto
+ * URLs. Anything else (e.g. `javascript:`, `data:`) returns `null` so the caller
+ * can fall back to plain text — defence in depth alongside React's escaping.
+ */
+export function safeHref(raw: string): string | null {
+  const href = raw.trim();
+  if (!href) return null;
+  if (href.startsWith('/') && !href.startsWith('//')) return href;
+  if (/^https?:\/\//i.test(href) || /^mailto:/i.test(href)) return href;
+  return null;
+}
 
 export type Block =
   | { type: 'paragraph'; spans: Inline[] }
@@ -24,17 +38,26 @@ const BULLET = /^\s*[-*+]\s+(.*)$/;
 const ORDERED = /^\s*\d+[.)]\s+(.*)$/;
 const HEADING = /^(#{1,3})\s+(.*)$/;
 
-/** Split a line into inline spans, honouring `**bold**` and `` `code` ``. */
+/**
+ * Split a line into inline spans, honouring `` `code` ``, `**bold**`, and
+ * `[text](href)` links. First match wins; a link with an unsafe href degrades
+ * to its literal text so nothing dangerous is ever rendered.
+ */
 export function parseInline(text: string): Inline[] {
   const spans: Inline[] = [];
-  // Alternate matches for `code` (backticks) and **bold**; first match wins.
-  const re = /`([^`]+)`|\*\*([^*]+)\*\*/g;
+  // Alternate matches for `code`, **bold**, and [text](href); first match wins.
+  const re = /`([^`]+)`|\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) spans.push({ type: 'text', value: text.slice(last, m.index) });
     if (m[1] !== undefined) spans.push({ type: 'code', value: m[1] });
     else if (m[2] !== undefined) spans.push({ type: 'bold', value: m[2] });
+    else if (m[3] !== undefined) {
+      const href = safeHref(m[4]);
+      // Unsafe/unsupported href → keep the raw markdown text, inert.
+      spans.push(href ? { type: 'link', value: m[3], href } : { type: 'text', value: m[0] });
+    }
     last = m.index + m[0].length;
   }
   if (last < text.length) spans.push({ type: 'text', value: text.slice(last) });

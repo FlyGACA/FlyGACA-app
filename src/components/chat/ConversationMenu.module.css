@@ -66,6 +66,21 @@
   box-shadow: var(--clay-shadow-hover);
 }
 
+.search {
+  inline-size: 100%;
+  margin-block-end: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-xs);
+}
+.search:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
 .empty {
   margin: 0;
   padding: var(--space-3);
@@ -117,6 +132,35 @@
 .when {
   font-size: var(--fs-xs);
   color: var(--text-dim);
+}
+
+.rename {
+  flex: 1;
+  min-inline-size: 0;
+  margin: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.icon {
+  flex-shrink: 0;
+  inline-size: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.icon:hover,
+.icon[aria-pressed='true'] {
+  color: var(--brand-hover);
 }
 
 .del {

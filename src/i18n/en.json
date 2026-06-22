@@ -642,7 +642,23 @@
     "history": "History",
     "untitled": "Untitled chat",
     "deleteConversation": "Delete conversation",
-    "historyEmpty": "No saved conversations yet"
+    "historyEmpty": "No saved conversations yet",
+    "searchHistory": "Search conversations",
+    "noMatches": "No conversations match your search",
+    "rename": "Rename",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "share": "Share",
+    "feedback": {
+      "up": "Helpful answer",
+      "down": "Not helpful",
+      "thanks": "Thanks for the feedback"
+    },
+    "voice": {
+      "start": "Dictate your question",
+      "stop": "Stop dictation",
+      "listening": "Listening…"
+    }
   },
   "sheets": {
     "title": "Study Sheets",

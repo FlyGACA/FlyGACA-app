@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseInline, parseMarkdown } from '../src/calc/markdown';
+import { parseInline, parseMarkdown, safeHref } from '../src/calc/markdown';
 
 describe('parseInline', () => {
   it('splits bold and code out of surrounding text', () => {
@@ -14,6 +14,41 @@ describe('parseInline', () => {
 
   it('returns a single text span for plain input', () => {
     expect(parseInline('just words')).toEqual([{ type: 'text', value: 'just words' }]);
+  });
+
+  it('parses a markdown link with a safe href', () => {
+    expect(parseInline('see [Part 91](/library/part-91) for rules')).toEqual([
+      { type: 'text', value: 'see ' },
+      { type: 'link', value: 'Part 91', href: '/library/part-91' },
+      { type: 'text', value: ' for rules' },
+    ]);
+  });
+
+  it('parses an external https link', () => {
+    expect(parseInline('[GACA](https://gaca.gov.sa)')).toEqual([
+      { type: 'link', value: 'GACA', href: 'https://gaca.gov.sa' },
+    ]);
+  });
+
+  it('degrades a javascript: link to inert literal text (no link span)', () => {
+    const spans = parseInline('[x](javascript:void)');
+    expect(spans.some((s) => s.type === 'link')).toBe(false);
+    expect(spans.map((s) => s.value).join('')).toBe('[x](javascript:void)');
+  });
+});
+
+describe('safeHref', () => {
+  it('allows site-relative paths and http(s)/mailto', () => {
+    expect(safeHref('/library/part-61')).toBe('/library/part-61');
+    expect(safeHref('https://gaca.gov.sa')).toBe('https://gaca.gov.sa');
+    expect(safeHref('mailto:info@example.com')).toBe('mailto:info@example.com');
+  });
+
+  it('rejects protocol-relative and dangerous schemes', () => {
+    expect(safeHref('//evil.example')).toBeNull();
+    expect(safeHref('javascript:alert(1)')).toBeNull();
+    expect(safeHref('data:text/html;base64,xxx')).toBeNull();
+    expect(safeHref('')).toBeNull();
   });
 });
 

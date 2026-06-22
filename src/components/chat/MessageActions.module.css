@@ -26,6 +26,19 @@
   background: var(--surface-raised);
 }
 
+/* A selected thumb stays lit so the reader's rating is visible at a glance. */
+.action.active {
+  color: var(--brand);
+  background: var(--surface-raised);
+}
+
 .label {
   line-height: 1;
+}
+
+.thanks {
+  align-self: center;
+  margin-inline-start: var(--space-1);
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
 }

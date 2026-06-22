@@ -17,10 +17,23 @@ export interface Conversation<M extends ArchivedMessage = ArchivedMessage> {
   messages: M[];
   /** Epoch millis of the last settled turn; drives newest-first ordering. */
   updatedAt: number;
+  /** Pinned threads float to the top and survive the prune. */
+  pinned?: boolean;
+  /** True once the reader set the title by hand, so auto-titling won't clobber it. */
+  renamed?: boolean;
 }
 
 /** Default cap on how many conversations the archive keeps. */
 export const MAX_CONVERSATIONS = 20;
+
+/** Pinned first, then most-recently-updated; ties broken by id for stability. */
+function byPinnedThenRecent<M extends ArchivedMessage>(
+  a: Conversation<M>,
+  b: Conversation<M>,
+): number {
+  if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+  return b.updatedAt - a.updatedAt || a.id.localeCompare(b.id);
+}
 
 /**
  * A short title from the first user message (collapsed whitespace, trimmed to
@@ -44,7 +57,7 @@ export function upsertConversation<M extends ArchivedMessage>(
   max = MAX_CONVERSATIONS,
 ): Conversation<M>[] {
   const without = list.filter((c) => c.id !== conv.id);
-  return [conv, ...without].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, max);
+  return [conv, ...without].sort(byPinnedThenRecent).slice(0, max);
 }
 
 /** Drop the conversation with `id` (pure). */
@@ -53,6 +66,43 @@ export function removeConversation<M extends ArchivedMessage>(
   id: string,
 ): Conversation<M>[] {
   return list.filter((c) => c.id !== id);
+}
+
+/** Set a hand-typed title on `id` (marks it `renamed` so auto-titling backs off). */
+export function renameConversation<M extends ArchivedMessage>(
+  list: Conversation<M>[],
+  id: string,
+  title: string,
+): Conversation<M>[] {
+  const clean = title.replace(/\s+/g, ' ').trim();
+  return list.map((c) => (c.id === id ? { ...c, title: clean, renamed: true } : c));
+}
+
+/** Flip the pinned flag on `id`, then re-sort so pins float to the top. */
+export function togglePin<M extends ArchivedMessage>(
+  list: Conversation<M>[],
+  id: string,
+): Conversation<M>[] {
+  return list
+    .map((c) => (c.id === id ? { ...c, pinned: !c.pinned } : c))
+    .sort(byPinnedThenRecent);
+}
+
+/**
+ * Conversations whose title or any message text contains `query`
+ * (case-insensitive). A blank query returns the list unchanged.
+ */
+export function filterConversations<M extends ArchivedMessage>(
+  list: Conversation<M>[],
+  query: string,
+): Conversation<M>[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return list;
+  return list.filter(
+    (c) =>
+      c.title.toLowerCase().includes(q) ||
+      c.messages.some((m) => m.text.toLowerCase().includes(q)),
+  );
 }
 
 /**
@@ -79,7 +129,9 @@ export function normalizeConversations(raw: unknown): Conversation[] {
       title: typeof c.title === 'string' ? c.title : '',
       messages,
       updatedAt: typeof c.updatedAt === 'number' && c.updatedAt >= 0 ? c.updatedAt : 0,
+      ...(c.pinned === true ? { pinned: true } : {}),
+      ...(c.renamed === true ? { renamed: true } : {}),
     });
   }
-  return out.sort((a, b) => b.updatedAt - a.updatedAt);
+  return out.sort(byPinnedThenRecent);
 }
