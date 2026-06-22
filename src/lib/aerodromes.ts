@@ -38,3 +38,27 @@ export function regionBadge(a: Airport): RegionBadge {
   if (r === 'MENA') return 'mena';
   return 'world';
 }
+
+/**
+ * Sort rank for a single airport: Saudi first, then GCC, MENA, the wider world.
+ * Keeps the directory Saudi-first in the "All" view instead of leading with the
+ * lowest ICAO identifiers (numeric US airparks like 05AK). Derived from
+ * regionBadge so the bucketing stays a single source of truth.
+ */
+export function regionRank(a: Airport): number {
+  switch (regionBadge(a)) {
+    case 'saudi':
+      return 0;
+    case 'gcc':
+      return 1;
+    case 'mena':
+      return 2;
+    case 'world':
+      return 3;
+  }
+}
+
+/** Directory sort: by region rank (Saudi → GCC → MENA → World), then ICAO. */
+export function compareAirports(a: Airport, b: Airport): number {
+  return regionRank(a) - regionRank(b) || a.icao.localeCompare(b.icao);
+}

@@ -1377,7 +1377,7 @@
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
-    "count": "{{n}} aerodromes — Saudi in full detail, plus MENA & worldwide",
+    "count": "{{n}} aerodromes worldwide — Saudi listed first",
     "matched": "{{n}} aerodromes",
     "showing": "Showing {{n}} of {{total}} — refine your search or load more",
     "regionLabel": "Filter by region",
