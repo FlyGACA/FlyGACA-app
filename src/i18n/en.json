@@ -2588,7 +2588,13 @@
           "p": "Spotted a mistake or a safety-relevant issue? Tell us at i@flygaca.com so we can correct it. Reporting it here does not discharge any reporting duty you owe to GACA or your operator."
         }
       ]
-    }
+    },
+    "eyebrow": "Legal",
+    "lastUpdated": "Last updated {{date}}",
+    "onThisPage": "On this page",
+    "copyLink": "Copy link to section",
+    "copied": "Link copied",
+    "docsNav": "Legal documents"
   },
   "about": {
     "eyebrow": "About",

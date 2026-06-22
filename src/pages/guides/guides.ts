@@ -67,14 +67,10 @@ export const GUIDE_META: Record<GuideSlug, { topic: GuideTopic; level: GuideLeve
   'the-airac-cycle': { topic: 'planning', level: 'intermediate' },
 };
 
-/** Stable DOM id for a guide section heading (for the TOC + progress anchors). */
-export function sectionId(index: number, heading: string): string {
-  const base = heading
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-  return `sec-${index}-${base || 'section'}`;
-}
+// The section-anchor scheme now lives in a shared, unit-tested module so the
+// legal pages reuse the exact same ids; re-exported here so guide call sites
+// (and the TOC/copy-link) keep importing it from this module.
+export { sectionId } from '../../calc/anchor';
 
 /** Related tool routes per guide (label comes from the tool's i18n name). */
 export const GUIDE_TOOLS: Record<string, string[]> = {

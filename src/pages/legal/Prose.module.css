@@ -12,6 +12,89 @@
   letter-spacing: 0.1em;
   color: var(--accent-bright);
   font-weight: var(--fw-semibold);
+  margin-block-end: var(--space-2);
+}
+
+/* Cross-document nav — move between the four legal docs without the footer. */
+.docsNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-6);
+}
+.docLink {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.docLink:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+}
+.docLinkActive {
+  border-color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  color: var(--text);
+}
+
+/* "On this page" table of contents. */
+.onThisPage {
+  margin-block: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+.onThisPageLabel {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+.onThisPage ol {
+  margin: var(--space-2) 0 0;
+  padding-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.onThisPage a {
+  color: var(--link);
+  font-size: var(--fs-sm);
+}
+
+/* Anchored section heading + reveal-on-hover copy-link (mirrors the guides). */
+.sectionH {
+  scroll-margin-block-start: calc(var(--nav-h) + var(--space-4));
+}
+.copyLink {
+  margin-inline-start: var(--space-2);
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.sectionH:hover .copyLink,
+.sectionH:focus-within .copyLink,
+.copyLink:focus-visible {
+  opacity: 1;
+}
+.copyLink:hover {
+  color: var(--brand-hover);
 }
 
 .updated {
