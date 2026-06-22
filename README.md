@@ -67,13 +67,16 @@ Aviation Regulations) into something you can actually *navigate, study, and trus
 
 This repository is the **modern frontend rebuild** — a fast, offline-capable Progressive Web App
 (and native iOS/Android shell) that replaces the legacy no-build vanilla PWA. It ships the
-regulatory corpus, interactive flight calculators, charts, ground-school study tools, and a
-direct line to **Captain Adel**, a Retrieval-Augmented AI instructor that answers with citations
-to the exact regulation — never guesswork.
+regulatory corpus, **50+ flight tools** (calculators, weather decoders, charts), a full
+ground-school suite, a pilot logbook, and a direct line to **Captain Adel**, a
+Retrieval-Augmented AI instructor that answers with citations to the exact regulation — never
+guesswork. It is paired with a thin Firebase **Functions gateway** (`functions/`) for chat and
+billing.
 
 > [!NOTE]
-> This repo is **frontend only**. The chat (`/api/chat`) and content (`/api/content`) endpoints are
-> served by a separate backend gateway and are not part of this codebase.
+> The gateway (`functions/`, Genkit) proxies `/api/chat` to **Captain Adel** and handles Stripe
+> billing (`/api/stripe-webhook`); the regulatory corpus ships as static JSON under `public/data/`.
+> The Captain Adel **RAG brain** the gateway calls is a separate, unchanged service.
 
 ---
 
@@ -82,15 +85,22 @@ to the exact regulation — never guesswork.
 - 📚 **Open GACAR Library** — the full regulatory corpus, browsable and searchable, shipped as a
   static JSON library that streams at runtime (the heavy corpus never bloats the JS bundle).
 - 🤖 **Captain Adel — AI Flight Instructor** — a citation-first assistant that grounds every answer
-  in the exact Part/section, so you can study with confidence and always trace the source.
-- 🌍 **Bilingual & RTL-Native** — every string lives in both `en.json` and `ar.json`; the document
-  `dir` flips end-to-end, and CSS logical properties mirror the entire UI automatically.
-- 🧮 **Interactive Flight Calculators** — pure, unit-tested aviation math (crosswind components and
-  more) wrapped in a shared, shareable-by-URL calculator shell.
+  in the exact Part/section, with grounding badges, saved chats, and conversation export.
+- 🧮 **50+ Flight Tools** — pure, unit-tested aviation math wrapped in a shared, shareable-by-URL
+  calculator shell: crosswind, E6B/wind triangle, weight & balance, TAS/Mach, density &
+  pressure altitude, ISA, climb/descent profiles, holding, fuel, great-circle, and many more.
+- 🌦️ **Weather & Ops Briefings** — METAR/TAF decoders, NOTAM parsing, VFR/MET brief builders, and
+  the current AIRAC cycle at a glance.
 - 🗺️ **Charts, Aerodromes & Airspace** — interactive Leaflet maps plus indexed aerodrome, airspace,
   and approach-chart data for Saudi airfields.
-- 🎓 **Ground-School Study Tools** — quizzes, definitions, study sheets, and reference ebooks for
-  exam prep and continued learning.
+- 🎓 **Ground School** — flashcards with spaced repetition, mock exams, quizzes, study packs,
+  learning paths, and study sheets for exam prep and continued learning.
+- 🧳 **Pilot Logbook & Currency** — a logbook with CSV import, recency/currency tracking,
+  achievements, and a personal dashboard.
+- 🌍 **Bilingual & RTL-Native** — every string lives in both `en.json` and `ar.json`; the document
+  `dir` flips end-to-end, and CSS logical properties mirror the entire UI automatically.
+- ⭐ **Free + Pro** — a Stripe-backed Pro tier; entitlements gate UI only (the server is the sole
+  source of truth for what's granted).
 - 📲 **Installable PWA + Native Apps** — app-shell precaching via Workbox for offline use, wrapped
   by Capacitor into first-class iOS and Android builds.
 - ⚡ **Built for Speed** — Vite 6 + React 18, strict TypeScript, and an enforced initial-JS budget.
@@ -112,7 +122,10 @@ to the exact regulation — never guesswork.
 | **Maps** | [Leaflet](https://leafletjs.com) | Aerodrome / airspace visualisation |
 | **PWA** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app) (Workbox) | App shell precached, `/data/*` network-first |
 | **Native** | [Capacitor](https://capacitorjs.com) | iOS & Android shells |
-| **Backend Services** | [Firebase](https://firebase.google.com) | Hosting (canonical) + Functions gateway |
+| **Gateway** | [Firebase Functions](https://firebase.google.com/docs/functions) + [Genkit](https://firebase.google.com/docs/genkit) | `functions/` — proxies `/api/chat`, Stripe webhook |
+| **Billing** | [Stripe](https://stripe.com) | Pro-tier checkout + webhook (server-granted entitlements) |
+| **Hosting** | [Firebase](https://firebase.google.com) | Hosting (canonical) · Firestore · App Check |
+| **Analytics** | [Vercel Analytics](https://vercel.com/analytics) + Speed Insights | Privacy-light usage + Core Web Vitals |
 | **Testing** | [Vitest](https://vitest.dev) + [Playwright](https://playwright.dev) | Pure-logic & i18n parity · e2e + a11y |
 
 ---
@@ -207,8 +220,11 @@ src/app/          Shared chrome: Layout, Header, Footer
 src/components/   Reusable UI: LangToggle, Disclaimer, CalcShell
 src/lib/          Typed services: api, auth, firebase, entitlements, content, hooks
 src/calc/         Pure, unit-tested flight math (crosswind is the reference impl)
-src/pages/        One folder per route
+src/pages/        One folder per route — tools · study · library · chat · account · guides · legal
 src/router.tsx    The single route table
+functions/        Firebase Functions gateway (Genkit): chat proxy, Stripe billing
+scripts/          Build/data pipelines: sitemap, airports, prerender, GACA sync
+docs/             Runbooks (deploy · firebase · cutover · native) + strategy notes
 tests/  ·  e2e/   Vitest specs  ·  Playwright specs
 ```
 
@@ -242,7 +258,8 @@ content keep working with the strict CSP unchanged.
 
 ```bash
 # Firebase (canonical)
-npm run build && firebase deploy --only hosting   # + npm run deploy:rules
+npm run deploy        # build + prerender → deploy hosting
+npm run deploy:all    # hosting + functions + firestore rules
 
 # Vercel       vercel deploy --prod
 # Cloudflare   npx wrangler pages deploy dist --project-name flygaca-app
