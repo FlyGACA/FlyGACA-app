@@ -593,6 +593,8 @@
     "openInLibrary": "افتح في المكتبة",
     "copy": "نسخ",
     "copied": "تم النسخ",
+    "speak": "استماع",
+    "stopSpeaking": "إيقاف",
     "regenerate": "إعادة توليد",
     "retry": "إعادة المحاولة",
     "stop": "إيقاف",
