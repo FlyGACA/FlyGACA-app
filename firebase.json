@@ -11,7 +11,7 @@
       {
         "source": "/api/content",
         "function": "protectedContent",
-        "region": "me-central1"
+        "region": "me-central2"
       },
       {
         "source": "/api/stripe-webhook",
