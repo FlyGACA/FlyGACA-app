@@ -19,6 +19,7 @@ import {
   type Usage,
 } from '../../calc/chatQuota';
 import { partSlug, conversationParts } from '../../calc/chatSources';
+import { crossRefParts } from '../../calc/chatCrossRefs';
 import {
   feedbackKey,
   getFeedback,
@@ -47,6 +48,7 @@ import { MessageActions } from '../../components/chat/MessageActions';
 import { ConversationMenu } from '../../components/chat/ConversationMenu';
 import { ExportActions } from '../../components/chat/ExportActions';
 import { SourcesDigest } from '../../components/chat/SourcesDigest';
+import { CrossRefChips } from '../../components/chat/CrossRefChips';
 import { VoiceButton } from '../../components/chat/VoiceButton';
 import styles from './Chat.module.css';
 
@@ -563,6 +565,9 @@ export function Chat() {
                   </div>
                   {m.sources && m.sources.length > 0 && (
                     <SourceList sources={m.sources} valid={validSlugs.current} />
+                  )}
+                  {isAdel && !m.pending && !m.streaming && !m.error && (
+                    <CrossRefChips refs={crossRefParts(m.text, m.sources, validSlugs.current)} />
                   )}
                   {isAdel && !m.pending && !m.streaming && (
                     <MessageActions

@@ -630,6 +630,7 @@
     "exportCopied": "تم النسخ",
     "download": "تنزيل .md",
     "referenced": "المراجع في هذه المحادثة",
+    "alsoReferenced": "مراجع أخرى",
     "partLabel": "الباب {{n}}",
     "capabilities": {
       "cites": "يستشهد بالباب والمادة بدقّة",

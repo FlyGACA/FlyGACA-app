@@ -630,6 +630,7 @@
     "exportCopied": "Copied",
     "download": "Download .md",
     "referenced": "Referenced in this conversation",
+    "alsoReferenced": "Also referenced",
     "partLabel": "Part {{n}}",
     "capabilities": {
       "cites": "Cites the exact Part & section",
