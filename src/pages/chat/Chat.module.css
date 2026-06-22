@@ -304,6 +304,22 @@
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.92em;
 }
+/* "In practice" takeaway and quoted rule text — a calm, accented callout. */
+.bubble blockquote {
+  margin-block: var(--space-2);
+  margin-inline: 0;
+  padding: var(--space-2) var(--space-3);
+  border-inline-start: 3px solid var(--brand);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+}
+.bubble blockquote:first-child {
+  margin-block-start: 0;
+}
+.bubble blockquote:last-child {
+  margin-block-end: 0;
+}
 
 /* Thinking-dots replace the pending bubble text */
 .thinkingDots {
@@ -419,6 +435,18 @@
 }
 .srcDetails[open] summary.srcCite::before {
   content: '▾';
+}
+/* Small "exact text" hint on a verbatim citation summary. */
+.srcExact {
+  margin-inline-start: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  color: var(--text-dim);
+  font-size: var(--fs-2xs, 0.7rem);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .srcVerbatim {
   margin-block: var(--space-2) var(--space-1);

@@ -1,21 +1,29 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { share } from '../../lib/native-bridge';
+import type { Rating } from '../../calc/chatFeedback';
 import styles from './MessageActions.module.css';
 
 /**
- * The row of icon actions under a finalized Captain Adel reply: copy the text
- * and regenerate (re-ask the preceding question). For an errored turn the same
- * regenerate slot reads as "Retry". Pure presentational — the page owns the
- * regenerate logic and clipboard text.
+ * The row of actions under a finalized Captain Adel reply: copy, share, 👍/👎
+ * feedback, and regenerate (re-ask the preceding question). For an errored turn
+ * only the regenerate slot shows, reading as "Retry". Mostly presentational — the
+ * page owns regenerate, the clipboard/share text, and persisted feedback.
  */
 export function MessageActions({
   text,
   onRegenerate,
   isError,
+  rating,
+  onFeedback,
+  shareTitle,
 }: {
   text: string;
   onRegenerate: () => void;
   isError?: boolean;
+  rating?: Rating;
+  onFeedback?: (rating: Rating) => void;
+  shareTitle?: string;
 }) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
@@ -27,6 +35,15 @@ export function MessageActions({
       setTimeout(() => setCopied(false), 1500);
     } catch {
       /* clipboard blocked (insecure context / permissions) — ignore */
+    }
+  }
+
+  // Capacitor Share on native · Web Share · clipboard fallback (all in `share`).
+  async function shareReply() {
+    try {
+      await share({ title: shareTitle ?? t('chat.title'), text, url: window.location.href });
+    } catch {
+      /* user dismissed the sheet, or sharing unavailable — ignore */
     }
   }
 
@@ -42,6 +59,40 @@ export function MessageActions({
           <span aria-hidden="true">{copied ? '✓' : '⧉'}</span>
           <span className={styles.label}>{copied ? t('chat.copied') : t('chat.copy')}</span>
         </button>
+      )}
+      {!isError && (
+        <button
+          type="button"
+          className={styles.action}
+          onClick={() => void shareReply()}
+          aria-label={t('chat.share')}
+        >
+          <span aria-hidden="true">↗</span>
+          <span className={styles.label}>{t('chat.share')}</span>
+        </button>
+      )}
+      {!isError && onFeedback && (
+        <>
+          <button
+            type="button"
+            className={`${styles.action} ${rating === 'up' ? styles.active : ''}`}
+            onClick={() => onFeedback('up')}
+            aria-label={t('chat.feedback.up')}
+            aria-pressed={rating === 'up'}
+          >
+            <span aria-hidden="true">👍</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.action} ${rating === 'down' ? styles.active : ''}`}
+            onClick={() => onFeedback('down')}
+            aria-label={t('chat.feedback.down')}
+            aria-pressed={rating === 'down'}
+          >
+            <span aria-hidden="true">👎</span>
+          </button>
+          {rating && <span className={styles.thanks}>{t('chat.feedback.thanks')}</span>}
+        </>
       )}
       <button
         type="button"

@@ -3,6 +3,9 @@ import {
   conversationTitle,
   upsertConversation,
   removeConversation,
+  renameConversation,
+  togglePin,
+  filterConversations,
   normalizeConversations,
   type Conversation,
 } from '../src/calc/conversations';
@@ -52,6 +55,52 @@ describe('removeConversation', () => {
   });
 });
 
+describe('renameConversation', () => {
+  it('sets a cleaned title and marks it renamed', () => {
+    const next = renameConversation([conv('a', 1)], 'a', '  My  chat ');
+    expect(next[0]).toMatchObject({ title: 'My chat', renamed: true });
+  });
+});
+
+describe('togglePin', () => {
+  it('pins a conversation and floats it above more-recent ones', () => {
+    const list = [conv('a', 100), conv('b', 200)];
+    const next = togglePin(list, 'a');
+    expect(next.map((c) => c.id)).toEqual(['a', 'b']);
+    expect(next[0].pinned).toBe(true);
+  });
+
+  it('unpins on a second toggle', () => {
+    const pinned = togglePin([conv('a', 1)], 'a');
+    expect(togglePin(pinned, 'a')[0].pinned).toBe(false);
+  });
+
+  it('keeps pinned threads through the prune', () => {
+    const list = togglePin([conv('a', 1), conv('b', 2), conv('c', 3)], 'a');
+    const next = upsertConversation(list, conv('d', 400), 2);
+    expect(next.map((c) => c.id)).toContain('a'); // pinned survived
+  });
+});
+
+describe('filterConversations', () => {
+  const list = [
+    { id: 'a', title: 'Weather minima', messages: [{ role: 'user' as const, text: 'VFR' }], updatedAt: 2 },
+    { id: 'b', title: 'Licensing', messages: [{ role: 'user' as const, text: 'CPL hours' }], updatedAt: 1 },
+  ];
+
+  it('matches on title, case-insensitively', () => {
+    expect(filterConversations(list, 'weather').map((c) => c.id)).toEqual(['a']);
+  });
+
+  it('matches on message text', () => {
+    expect(filterConversations(list, 'cpl').map((c) => c.id)).toEqual(['b']);
+  });
+
+  it('returns the whole list for a blank query', () => {
+    expect(filterConversations(list, '   ')).toHaveLength(2);
+  });
+});
+
 describe('normalizeConversations', () => {
   it('keeps valid entries, drops malformed ones, sorts newest-first', () => {
     const raw = [
@@ -80,5 +129,15 @@ describe('normalizeConversations', () => {
   it('returns an empty list for non-arrays', () => {
     expect(normalizeConversations(null)).toEqual([]);
     expect(normalizeConversations({})).toEqual([]);
+  });
+
+  it('preserves pinned/renamed flags and sorts pinned first', () => {
+    const raw = [
+      { id: 'a', title: 'A', messages: [{ role: 'user', text: 'hi' }], updatedAt: 100 },
+      { id: 'b', title: 'B', messages: [{ role: 'user', text: 'yo' }], updatedAt: 1, pinned: true, renamed: true },
+    ];
+    const out = normalizeConversations(raw);
+    expect(out.map((c) => c.id)).toEqual(['b', 'a']); // pinned floats up despite older
+    expect(out[0]).toMatchObject({ pinned: true, renamed: true });
   });
 });

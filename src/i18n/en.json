@@ -588,6 +588,7 @@
     "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source — not for operational use.",
     "clear": "Clear chat",
     "sourcesLabel": "Sources",
+    "exactText": "Exact text",
     "open": "Open ↗",
     "openInLibrary": "Open in Library",
     "copy": "Copy",
@@ -642,7 +643,23 @@
     "history": "History",
     "untitled": "Untitled chat",
     "deleteConversation": "Delete conversation",
-    "historyEmpty": "No saved conversations yet"
+    "historyEmpty": "No saved conversations yet",
+    "searchHistory": "Search conversations",
+    "noMatches": "No conversations match your search",
+    "rename": "Rename",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "share": "Share",
+    "feedback": {
+      "up": "Helpful answer",
+      "down": "Not helpful",
+      "thanks": "Thanks for the feedback"
+    },
+    "voice": {
+      "start": "Dictate your question",
+      "stop": "Stop dictation",
+      "listening": "Listening…"
+    }
   },
   "sheets": {
     "title": "Study Sheets",

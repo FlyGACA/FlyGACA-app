@@ -3,6 +3,7 @@ import { render, screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '../src/i18n';
 import { MessageActions } from '../src/components/chat/MessageActions';
+import * as nativeBridge from '../src/lib/native-bridge';
 
 afterEach(() => {
   cleanup();
@@ -33,5 +34,32 @@ describe('<MessageActions />', () => {
     render(<MessageActions text="x" isError onRegenerate={() => {}} />);
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Copy' })).toBeNull();
+  });
+
+  it('shares the reply through the native bridge', async () => {
+    const user = userEvent.setup();
+    const shareSpy = vi.spyOn(nativeBridge, 'share').mockResolvedValue();
+    render(<MessageActions text="grounded answer" onRegenerate={() => {}} />);
+    await user.click(screen.getByRole('button', { name: 'Share' }));
+    expect(shareSpy).toHaveBeenCalledWith(expect.objectContaining({ text: 'grounded answer' }));
+    shareSpy.mockRestore();
+  });
+
+  it('reports a feedback rating and reflects the selected state', async () => {
+    const user = userEvent.setup();
+    const onFeedback = vi.fn();
+    render(<MessageActions text="x" onRegenerate={() => {}} onFeedback={onFeedback} />);
+    await user.click(screen.getByRole('button', { name: 'Helpful answer' }));
+    expect(onFeedback).toHaveBeenCalledWith('up');
+  });
+
+  it('lights the chosen thumb via aria-pressed', () => {
+    render(
+      <MessageActions text="x" rating="down" onRegenerate={() => {}} onFeedback={() => {}} />,
+    );
+    expect(screen.getByRole('button', { name: 'Not helpful' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
   });
 });

@@ -19,11 +19,21 @@ import {
   type Usage,
 } from '../../calc/chatQuota';
 import { partSlug, conversationParts } from '../../calc/chatSources';
+import {
+  feedbackKey,
+  getFeedback,
+  recordFeedback,
+  normalizeFeedback,
+  type FeedbackMap,
+  type Rating,
+} from '../../calc/chatFeedback';
 import { transcriptToMarkdown } from '../../calc/transcript';
 import {
   conversationTitle,
   upsertConversation,
   removeConversation,
+  renameConversation,
+  togglePin,
   normalizeConversations,
   type Conversation,
 } from '../../calc/conversations';
@@ -37,6 +47,7 @@ import { MessageActions } from '../../components/chat/MessageActions';
 import { ConversationMenu } from '../../components/chat/ConversationMenu';
 import { ExportActions } from '../../components/chat/ExportActions';
 import { SourcesDigest } from '../../components/chat/SourcesDigest';
+import { VoiceButton } from '../../components/chat/VoiceButton';
 import styles from './Chat.module.css';
 
 interface Message {
@@ -69,6 +80,7 @@ const FOLLOWUPS = ['section', 'simple', 'example'] as const;
 const TRANSCRIPT_KEY = 'flygaca:adel-transcript';
 const CONV_KEY = 'flygaca:adel-conversations';
 const QUOTA_KEY = 'flygaca:adel-quota';
+const FEEDBACK_KEY = 'flygaca:adel-feedback';
 
 function newId(): string {
   return (
@@ -120,6 +132,14 @@ function loadUsage(): Usage {
   }
 }
 
+function loadFeedback(): FeedbackMap {
+  try {
+    return normalizeFeedback(JSON.parse(localStorage.getItem(FEEDBACK_KEY) ?? 'null'));
+  } catch {
+    return {};
+  }
+}
+
 export function Chat() {
   const { t } = useTranslation();
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
@@ -130,8 +150,10 @@ export function Chat() {
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [usage, setUsage] = useState<Usage>(loadUsage);
+  const [feedback, setFeedback] = useState<FeedbackMap>(loadFeedback);
   const [atBottom, setAtBottom] = useState(true);
   const logRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const atBottomRef = useRef(true);
   const abortRef = useRef<AbortController | null>(null);
   const sentInitial = useRef(false);
@@ -145,6 +167,28 @@ export function Chat() {
   const validSlugs = useRef<Set<string>>(new Set());
   if (gacar.data && validSlugs.current.size === 0) {
     validSlugs.current = new Set(gacar.data.documents.map((d) => d.slug));
+  }
+
+  /** Resolve a Part number cited in prose to an in-app Library link (or null). */
+  function resolveCitation(partNumber: string): string | null {
+    const slug = partSlug(validSlugs.current, partNumber);
+    return slug ? `/library/${slug}` : null;
+  }
+
+  /** Record (or toggle off) a 👍/👎 on the answer at `idx` and persist locally. */
+  function rateAnswer(idx: number, rating: Rating) {
+    const text = messages[idx]?.text;
+    if (!text) return;
+    // future: forward to the gateway so weak groundings can be learned from.
+    setFeedback((prev) => {
+      const next = recordFeedback(prev, feedbackKey(text), rating);
+      try {
+        localStorage.setItem(FEEDBACK_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore quota / private-mode errors */
+      }
+      return next;
+    });
   }
 
   async function ask(question: string, base: Message[] = messages) {
@@ -294,6 +338,24 @@ export function Chat() {
     }
   }
 
+  /** Give a saved conversation a hand-typed title. */
+  function rename(id: string, title: string) {
+    setConversations((prev) => {
+      const next = renameConversation(prev, id, title);
+      persistConversations(next);
+      return next;
+    });
+  }
+
+  /** Pin/unpin a saved conversation so it floats to the top of History. */
+  function pin(id: string) {
+    setConversations((prev) => {
+      const next = togglePin(prev, id);
+      persistConversations(next);
+      return next;
+    });
+  }
+
   function scrollToLatest() {
     const el = logRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
@@ -317,19 +379,31 @@ export function Chat() {
     }
   }, [messages]);
 
+  // Grow the composer to fit its content (capped), and snap back when cleared.
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  }, [input]);
+
   // Persist the active thread into the archive once a turn settles (not mid-stream).
   useEffect(() => {
     if (busy) return;
     const keep = messages.filter((m) => !m.pending && !m.error);
     setConversations((prev) => {
+      const prior = prev.find((c) => c.id === activeId);
       const next =
         keep.length === 0
           ? removeConversation(prev, activeId)
           : upsertConversation(prev, {
               id: activeId,
-              title: conversationTitle(keep),
+              // A hand-typed title wins; otherwise auto-title from the first turn.
+              title: prior?.renamed ? prior.title : conversationTitle(keep),
               messages: keep,
               updatedAt: Date.now(),
+              ...(prior?.pinned ? { pinned: true } : {}),
+              ...(prior?.renamed ? { renamed: true } : {}),
             });
       persistConversations(next);
       return next;
@@ -378,6 +452,8 @@ export function Chat() {
             onNew={newChat}
             onSelect={selectConversation}
             onDelete={deleteConversation}
+            onRename={rename}
+            onTogglePin={pin}
           />
         </div>
       </header>
@@ -477,7 +553,7 @@ export function Chat() {
                         <span aria-hidden="true" />
                       </span>
                     ) : isAdel && !m.streaming && !m.error ? (
-                      <RichText text={m.text} />
+                      <RichText text={m.text} resolveCitation={resolveCitation} />
                     ) : (
                       <>
                         {m.text}
@@ -493,6 +569,9 @@ export function Chat() {
                       text={m.text}
                       isError={m.error}
                       onRegenerate={() => regenerate(i)}
+                      shareTitle={t('chat.title')}
+                      rating={m.error ? undefined : getFeedback(feedback, feedbackKey(m.text))}
+                      onFeedback={m.error ? undefined : (r) => rateAnswer(i, r)}
                     />
                   )}
                 </div>
@@ -546,6 +625,7 @@ export function Chat() {
             }}
           >
             <textarea
+              ref={inputRef}
               className={styles.input}
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -558,6 +638,9 @@ export function Chat() {
               rows={2}
               placeholder={t('chat.placeholder')}
               aria-label={t('chat.placeholder')}
+            />
+            <VoiceButton
+              onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))}
             />
             {busy ? (
               <button className="btn btn-primary" type="button" onClick={stop}>
@@ -586,6 +669,8 @@ export function Chat() {
 /** Citation chips; rows with a verbatim passage expand via a native <details>. */
 function SourceList({ sources, valid }: { sources: ChatSource[]; valid: Set<string> }) {
   const { t } = useTranslation();
+  // Surface the most-relevant rule text up front: open the first verbatim passage.
+  const firstVerbatim = sources.findIndex((s) => s.verbatim);
   return (
     <div className={styles.sourcesWrap}>
       <span className={styles.sourcesLabel}>{t('chat.sourcesLabel')}</span>
@@ -595,11 +680,12 @@ function SourceList({ sources, valid }: { sources: ChatSource[]; valid: Set<stri
           return (
             <li key={j} className={styles.srcRow}>
               {s.verbatim ? (
-                <details className={styles.srcDetails}>
+                <details className={styles.srcDetails} open={j === firstVerbatim}>
                   <summary className={styles.srcCite}>
                     <bdi dir="ltr" lang="en">
                       {s.citation || s.url}
                     </bdi>
+                    <span className={styles.srcExact}>{t('chat.exactText')}</span>
                   </summary>
                   <p className={styles.srcVerbatim}>{s.verbatim}</p>
                   {s.corpusVersion && (
