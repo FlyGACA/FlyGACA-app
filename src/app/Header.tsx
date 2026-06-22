@@ -172,6 +172,17 @@ export function Header() {
             <LangToggle className={styles.langToggle} />
             <InstallButton />
             <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
+              </svg>
               {t('common.goPro')}
             </Link>
           </div>
