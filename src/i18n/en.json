@@ -593,6 +593,8 @@
     "openInLibrary": "Open in Library",
     "copy": "Copy",
     "copied": "Copied",
+    "speak": "Listen",
+    "stopSpeaking": "Stop",
     "regenerate": "Regenerate",
     "retry": "Retry",
     "stop": "Stop",

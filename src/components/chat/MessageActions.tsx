@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { share } from '../../lib/native-bridge';
 import type { Rating } from '../../calc/chatFeedback';
+import { SpeakButton } from './SpeakButton';
 import styles from './MessageActions.module.css';
 
 /**
@@ -71,6 +72,7 @@ export function MessageActions({
           <span className={styles.label}>{t('chat.share')}</span>
         </button>
       )}
+      {!isError && <SpeakButton text={text} />}
       {!isError && onFeedback && (
         <>
           <button
