@@ -412,12 +412,23 @@
   border-color: var(--brand-hover);
   background: color-mix(in srgb, var(--brand) 6%, var(--surface));
 }
+/* A verbatim citation is a readable, full-width passage on its own row — never a
+   shrunk inline chip that wraps the quoted rule one word per line. */
+.srcRowFull {
+  flex-direction: column;
+  align-items: stretch;
+  inline-size: 100%;
+}
 .srcCite {
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   color: var(--text);
   min-inline-size: 0;
   overflow-wrap: anywhere;
+}
+.srcDetails {
+  min-inline-size: 0;
+  inline-size: 100%;
 }
 .srcDetails summary.srcCite {
   cursor: pointer;
@@ -455,6 +466,8 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-inline-size: 100%;
 }
 .srcVer {
   font-size: var(--fs-xs);
@@ -572,6 +585,23 @@
   color: var(--text-muted);
   text-align: center;
   margin: 0;
+}
+
+/* ── Mobile ── give answers (and their sources) the full column ── */
+@media (max-width: 640px) {
+  .page {
+    padding-block: var(--space-5);
+  }
+  .log {
+    padding: var(--space-3);
+  }
+  .msg {
+    max-inline-size: 92%;
+  }
+  /* Captain Adel's replies carry long answers + citations — let them breathe. */
+  .adel {
+    max-inline-size: 100%;
+  }
 }
 
 /* ── Reduced motion ── */

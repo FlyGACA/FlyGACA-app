@@ -26,6 +26,8 @@ interface CaptainAvatarProps {
   pose?: AvatarPose;
   /** Adds the live "online" ring glow — for surfaces that present him as active. */
   glow?: boolean;
+  /** Presents him as live: a subtle idle "breathing" motion + an online status dot. */
+  live?: boolean;
   /** Decorative use (label already supplied by adjacent text) hides it from AT. */
   decorative?: boolean;
   className?: string;
@@ -43,6 +45,7 @@ export function CaptainAvatar({
   size = 'md',
   pose = 'default',
   glow = false,
+  live = false,
   decorative = false,
   className,
 }: CaptainAvatarProps) {
@@ -55,7 +58,7 @@ export function CaptainAvatar({
         : '/img/captain/avatar-256.png';
   const alt = decorative ? '' : t('chat.avatarAlt');
 
-  return (
+  const img = (
     <img
       src={src}
       alt={alt}
@@ -65,7 +68,22 @@ export function CaptainAvatar({
       loading="lazy"
       decoding="async"
       draggable={false}
-      className={`${styles.avatar} ${sizeClass[size]} ${glow ? styles.glow : ''} ${className ?? ''}`}
+      className={`${styles.avatar} ${sizeClass[size]} ${glow ? styles.glow : ''} ${
+        live ? styles.alive : ''
+      } ${live ? '' : (className ?? '')}`}
     />
   );
+
+  // When live, wrap so we can anchor an "online" status dot in the corner; the
+  // wrapper carries the caller's layout className so existing margins still apply.
+  if (live) {
+    return (
+      <span className={`${styles.liveWrap} ${sizeClass[size]} ${className ?? ''}`}>
+        {img}
+        <span className={styles.statusDot} aria-hidden="true" />
+      </span>
+    );
+  }
+
+  return img;
 }
