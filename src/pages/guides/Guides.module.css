@@ -199,6 +199,16 @@
   background: color-mix(in srgb, var(--brand) 20%, transparent);
   color: var(--brand-hover);
 }
+.draftBadge {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--warning) 22%, transparent);
+  color: var(--warning);
+}
 
 .empty {
   color: var(--text-muted);

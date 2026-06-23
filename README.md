@@ -294,6 +294,10 @@ Any contributions you make are **greatly appreciated**. 🛫
 > Found a bug or have an idea? [Open an issue](https://github.com/gacafly/FlyGACA-app/issues) — clear,
 > reproducible reports help everyone.
 
+> [!TIP]
+> Writing **guide content** (no coding required)? See [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md) —
+> `npm run new:guide` scaffolds a new guide, and you fill in the bilingual prose.
+
 ---
 
 ## License

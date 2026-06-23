@@ -73,6 +73,43 @@ export const GUIDE_META: Record<GuideSlug, { topic: GuideTopic; level: GuideLeve
   'the-airac-cycle': { topic: 'planning', level: 'intermediate' },
 };
 
+export type GuideStatus = 'draft' | 'live';
+
+/**
+ * Publication state per guide. A 'draft' still renders by direct URL (with a
+ * "Draft" badge) but is unlisted — excluded from the index, the catalog
+ * structured data, and the sitemap — so reviewers can preview it on the PR's
+ * Vercel deployment without it going public. Flip to 'live' to publish.
+ * `scripts/new-guide.mjs` seeds every new guide as 'draft'.
+ */
+export const GUIDE_STATUS: Record<GuideSlug, GuideStatus> = {
+  'how-to-become-a-pilot-in-saudi-arabia': 'live',
+  'gacar-explained': 'live',
+  'saudi-ppl-requirements': 'live',
+  'saudi-cpl-requirements': 'live',
+  'saudi-instrument-rating': 'live',
+  'night-rating': 'live',
+  'atpl-requirements': 'live',
+  'flight-instructor-rating': 'live',
+  'gaca-medical-class-1': 'live',
+  'foreign-license-conversion-to-gaca': 'live',
+  'icao-english-saelpt': 'live',
+  'radiotelephony-phraseology': 'live',
+  'airspace-explained': 'live',
+  'drone-uas-rules-in-ksa': 'live',
+  'weight-and-balance-basics': 'live',
+  'density-altitude-and-performance': 'live',
+  'fuel-planning-and-reserves': 'live',
+  'reading-metar-taf': 'live',
+  'decoding-notams': 'live',
+  'the-airac-cycle': 'live',
+};
+
+export const isLiveGuide = (slug: GuideSlug): boolean => GUIDE_STATUS[slug] === 'live';
+
+/** Published guides, in index order — drafts filtered out. */
+export const LIVE_GUIDE_SLUGS: readonly GuideSlug[] = GUIDE_SLUGS.filter(isLiveGuide);
+
 // The section-anchor scheme now lives in a shared, unit-tested module so the
 // legal pages reuse the exact same ids; re-exported here so guide call sites
 // (and the TOC/copy-link) keep importing it from this module.

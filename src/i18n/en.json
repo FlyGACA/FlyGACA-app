@@ -2470,6 +2470,7 @@
     "saved": "Saved",
     "markRead": "Mark as read",
     "readDone": "Read",
+    "draft": "Draft",
     "readProgress": "{{done}} of {{total}} read",
     "keyTakeaways": "Key takeaways",
     "copyLink": "Copy link to section",
