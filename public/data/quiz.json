@@ -653,6 +653,84 @@
           "explain": "AIRAC cycles are labelled YYNN — the two-digit year and the ordinal cycle within it. 2605 is the fifth cycle of 2026.",
           "cite": "ICAO Annex 15",
           "citeUrl": ""
+        },
+        {
+          "q": "The Aeronautical Information Publication (AIP) is organised into which three main parts?",
+          "options": [
+            "GEN, ENR, AD",
+            "VFR, IFR, SVFR",
+            "A, B, C",
+            "NOTAM, AIC, AIP"
+          ],
+          "answer": 0,
+          "explain": "An AIP is divided into GEN (general), ENR (en-route) and AD (aerodromes), per ICAO Annex 15.",
+          "cite": "Aeronautical Information Manual",
+          "citeUrl": "../document.html?type=reference&id=aeronautical-information-manual-aim"
+        },
+        {
+          "q": "A NOTAM is:",
+          "options": [
+            "A permanent chart amendment",
+            "A notice of information essential to operations, distributed by telecommunication",
+            "A weather forecast",
+            "A type of flight plan"
+          ],
+          "answer": 1,
+          "explain": "A NOTAM is a notice distributed by telecommunication containing time-critical aeronautical information.",
+          "cite": "Aeronautical Information Manual",
+          "citeUrl": "../document.html?type=reference&id=aeronautical-information-manual-aim"
+        },
+        {
+          "q": "How long is one AIRAC cycle?",
+          "options": [
+            "7 days",
+            "14 days",
+            "28 days",
+            "30 days"
+          ],
+          "answer": 2,
+          "explain": "AIRAC information is published on a fixed 28-day cycle, per ICAO Annex 15.",
+          "cite": "Aeronautical Information Manual",
+          "citeUrl": "../document.html?type=reference&id=aeronautical-information-manual-aim"
+        },
+        {
+          "q": "Where would you find runway and aerodrome frequency data in the AIP?",
+          "options": [
+            "GEN section",
+            "ENR section",
+            "AD section",
+            "The NOTAM list"
+          ],
+          "answer": 2,
+          "explain": "Aerodrome data, including runways and frequencies, is in the AD (Aerodromes) section.",
+          "cite": "Aeronautical Information Manual",
+          "citeUrl": "../document.html?type=reference&id=aeronautical-information-manual-aim"
+        },
+        {
+          "q": "The ENR section of the AIP contains:",
+          "options": [
+            "Aerodrome charts",
+            "En-route information such as airways and airspace",
+            "Medical standards",
+            "Customs rules only"
+          ],
+          "answer": 1,
+          "explain": "ENR (en-route) holds airway, airspace and en-route navigation information.",
+          "cite": "Aeronautical Information Manual",
+          "citeUrl": "../document.html?type=reference&id=aeronautical-information-manual-aim"
+        },
+        {
+          "q": "In the Kingdom of Saudi Arabia, the AIP is published by:",
+          "options": [
+            "ICAO directly",
+            "Each airline",
+            "The State Aeronautical Information Service (GACA AIS)",
+            "The aircraft manufacturer"
+          ],
+          "answer": 2,
+          "explain": "Each State publishes its AIP through its Aeronautical Information Service; in KSA this is GACA AIS, per ICAO Annex 15.",
+          "cite": "Aeronautical Information Manual",
+          "citeUrl": "../document.html?type=reference&id=aeronautical-information-manual-aim"
         }
       ]
     },
@@ -817,6 +895,78 @@
           "explain": "'ROGER' means 'I have received all of your last transmission'. It is not a substitute for 'AFFIRM' (yes) or a read-back.",
           "cite": "ICAO Annex 10",
           "citeUrl": ""
+        },
+        {
+          "q": "What is the minimum ICAO language proficiency rating for international operations?",
+          "options": [
+            "Level 3",
+            "Level 4 (Operational)",
+            "Level 5",
+            "Level 6"
+          ],
+          "answer": 1,
+          "explain": "ICAO sets Level 4 (Operational) as the minimum language proficiency for flight crew, per ICAO Annex 1.",
+          "cite": "ICAO Annex 1 — Personnel Licensing"
+        },
+        {
+          "q": "In the ICAO phonetic alphabet, the letter \"R\" is spoken as:",
+          "options": [
+            "Romeo",
+            "Roger",
+            "Rascal",
+            "Radio"
+          ],
+          "answer": 0,
+          "explain": "\"R\" is \"Romeo\" in the ICAO spelling alphabet (ICAO Annex 10).",
+          "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+        },
+        {
+          "q": "Which transponder code indicates a radio-communication failure?",
+          "options": [
+            "7500",
+            "7600",
+            "7700",
+            "7000"
+          ],
+          "answer": 1,
+          "explain": "Squawk 7600 indicates a radio (communication) failure.",
+          "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+        },
+        {
+          "q": "Which transponder code indicates an emergency?",
+          "options": [
+            "7500",
+            "7600",
+            "7700",
+            "2000"
+          ],
+          "answer": 2,
+          "explain": "Squawk 7700 indicates a general emergency.",
+          "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+        },
+        {
+          "q": "On the radio, the word \"ROGER\" means:",
+          "options": [
+            "I will comply",
+            "I have received all of your last transmission",
+            "Affirmative / yes",
+            "Say again"
+          ],
+          "answer": 1,
+          "explain": "\"ROGER\" means the transmission was received in full — it does not mean yes or that you will comply.",
+          "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+        },
+        {
+          "q": "On the radio, the word \"WILCO\" means:",
+          "options": [
+            "Wait",
+            "I do not understand",
+            "I understand your message and will comply",
+            "Stand by"
+          ],
+          "answer": 2,
+          "explain": "\"WILCO\" means \"will comply\" — message understood and will be acted on.",
+          "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
         }
       ]
     },
@@ -1223,6 +1373,84 @@
           "explain": "GACAR §61.55 allows a person holding a foreign licence at private pilot level or higher from an ICAO Contracting State to be issued a Saudi Arabian private pilot certificate with the appropriate ratings.",
           "cite": "GACAR Part 61, §61.55",
           "citeUrl": "../document.html?type=regulations&id=part-61#sec-61-55"
+        },
+        {
+          "q": "What is the minimum age to be issued a Private Pilot Licence (aeroplane) under GACAR Part 61?",
+          "options": [
+            "16",
+            "17",
+            "18",
+            "21"
+          ],
+          "answer": 1,
+          "explain": "GACAR Part 61 sets the minimum age for a PPL (aeroplane) at 17, in line with ICAO Annex 1.",
+          "cite": "GACAR Part 61",
+          "citeUrl": "../document.html?type=regulations&id=part-61"
+        },
+        {
+          "q": "What is the minimum total flight time required for a PPL (aeroplane)?",
+          "options": [
+            "25 hours",
+            "40 hours",
+            "60 hours",
+            "100 hours"
+          ],
+          "answer": 1,
+          "explain": "A PPL (aeroplane) requires at least 40 hours of flight time under GACAR Part 61.",
+          "cite": "GACAR Part 61",
+          "citeUrl": "../document.html?type=regulations&id=part-61"
+        },
+        {
+          "q": "A student pilot flying solo may:",
+          "options": [
+            "Carry one passenger",
+            "Carry passengers for hire",
+            "Not carry any passengers",
+            "Fly for remuneration"
+          ],
+          "answer": 2,
+          "explain": "Student-pilot privileges under GACAR Part 61 do not permit carrying passengers.",
+          "cite": "GACAR Part 61",
+          "citeUrl": "../document.html?type=regulations&id=part-61"
+        },
+        {
+          "q": "To carry passengers, a pilot must have made at least how many take-offs and landings in the preceding 90 days?",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "5"
+          ],
+          "answer": 2,
+          "explain": "Recency of experience under GACAR Part 61 requires 3 take-offs and 3 landings in the preceding 90 days.",
+          "cite": "GACAR Part 61",
+          "citeUrl": "../document.html?type=regulations&id=part-61"
+        },
+        {
+          "q": "Which licence is the minimum required to be paid to act as a pilot?",
+          "options": [
+            "Student Pilot Licence",
+            "Private Pilot Licence",
+            "Commercial Pilot Licence",
+            "No licence is needed"
+          ],
+          "answer": 2,
+          "explain": "A Commercial Pilot Licence (CPL) is the minimum to exercise pilot privileges for remuneration or hire.",
+          "cite": "GACAR Part 61",
+          "citeUrl": "../document.html?type=regulations&id=part-61"
+        },
+        {
+          "q": "A separate class rating is generally required to act as pilot-in-command of:",
+          "options": [
+            "A different colour of aircraft",
+            "A single- versus multi-engine aeroplane",
+            "A heavier fuel load",
+            "A night flight"
+          ],
+          "answer": 1,
+          "explain": "Class ratings (e.g. single-engine vs multi-engine) are required under GACAR Part 61 for different classes of aircraft.",
+          "cite": "GACAR Part 61",
+          "citeUrl": "../document.html?type=regulations&id=part-61"
         }
       ]
     },
@@ -1387,6 +1615,84 @@
           "explain": "GACAR §67.97 requires the holder of any suspended or revoked medical certificate to return it to the President upon his request.",
           "cite": "GACAR Part 67, §67.97",
           "citeUrl": "../document.html?type=regulations&id=part-67#sec-67-97"
+        },
+        {
+          "q": "What is the minimum class of medical certificate for a Private Pilot Licence?",
+          "options": [
+            "Class 1",
+            "Class 2",
+            "Class 3",
+            "No medical needed"
+          ],
+          "answer": 1,
+          "explain": "A Class 2 medical certificate is the minimum for a PPL under GACAR Part 67.",
+          "cite": "GACAR Part 67",
+          "citeUrl": "../document.html?type=regulations&id=part-67"
+        },
+        {
+          "q": "What class of medical certificate is required for commercial flying (CPL/ATPL)?",
+          "options": [
+            "Class 1",
+            "Class 2",
+            "Class 3",
+            "Any class"
+          ],
+          "answer": 0,
+          "explain": "Commercial operations require a Class 1 medical certificate under GACAR Part 67.",
+          "cite": "GACAR Part 67",
+          "citeUrl": "../document.html?type=regulations&id=part-67"
+        },
+        {
+          "q": "Who is authorised to conduct an aviation medical examination?",
+          "options": [
+            "Any general practitioner",
+            "An approved Aviation Medical Examiner",
+            "The chief flight instructor",
+            "The pilot themselves"
+          ],
+          "answer": 1,
+          "explain": "Only a GACA-approved Aviation Medical Examiner (AME) may conduct the examination under GACAR Part 67.",
+          "cite": "GACAR Part 67",
+          "citeUrl": "../document.html?type=regulations&id=part-67"
+        },
+        {
+          "q": "If a pilot develops a medical condition likely to affect fitness to fly, they must:",
+          "options": [
+            "Keep flying until the next renewal",
+            "Not exercise licence privileges until assessed",
+            "Only fly with a passenger",
+            "Reduce flight time by half"
+          ],
+          "answer": 1,
+          "explain": "A pilot must not exercise the privileges of the licence when a condition could make them unfit, pending assessment, under GACAR Part 67.",
+          "cite": "GACAR Part 67",
+          "citeUrl": "../document.html?type=regulations&id=part-67"
+        },
+        {
+          "q": "In which GACAR Part are the medical fitness standards found?",
+          "options": [
+            "Part 61",
+            "Part 67",
+            "Part 91",
+            "Part 43"
+          ],
+          "answer": 1,
+          "explain": "Medical standards and certification are contained in GACAR Part 67.",
+          "cite": "GACAR Part 67",
+          "citeUrl": "../document.html?type=regulations&id=part-67"
+        },
+        {
+          "q": "An aviation medical certificate is:",
+          "options": [
+            "Valid for life once issued",
+            "Valid only with a logbook",
+            "Valid for a defined period that must be kept current",
+            "Only required for night flying"
+          ],
+          "answer": 2,
+          "explain": "A medical certificate has a defined validity period that the holder must keep current under GACAR Part 67.",
+          "cite": "GACAR Part 67",
+          "citeUrl": "../document.html?type=regulations&id=part-67"
         }
       ]
     },
@@ -1551,6 +1857,84 @@
           "explain": "GACAR §43.19 requires the work to be done so the condition of the item is at least equal to its original or properly altered condition with regard to airworthiness.",
           "cite": "GACAR Part 43, §43.19",
           "citeUrl": "../document.html?type=regulations&id=part-43#sec-mathbf-43-19-performance-rules-general"
+        },
+        {
+          "q": "Which instruments are required for VFR day flight?",
+          "options": [
+            "Airspeed indicator, altimeter and magnetic compass",
+            "Weather radar and autopilot",
+            "HF radio and oxygen",
+            "A second attitude indicator"
+          ],
+          "answer": 0,
+          "explain": "Basic VFR-day equipment under GACAR Part 91 includes an airspeed indicator, altimeter and magnetic compass.",
+          "cite": "GACAR Part 91",
+          "citeUrl": "../document.html?type=regulations&id=part-91"
+        },
+        {
+          "q": "An ELT is:",
+          "options": [
+            "An engine limit timer",
+            "An emergency locator transmitter",
+            "An electronic logbook tool",
+            "An exterior light test"
+          ],
+          "answer": 1,
+          "explain": "An ELT (Emergency Locator Transmitter) transmits a distress signal to aid search and rescue.",
+          "cite": "GACAR Part 91",
+          "citeUrl": "../document.html?type=regulations&id=part-91"
+        },
+        {
+          "q": "Rules for maintenance and return to service are found in GACAR:",
+          "options": [
+            "Part 61",
+            "Part 67",
+            "Part 43",
+            "Part 71"
+          ],
+          "answer": 2,
+          "explain": "Maintenance, preventive maintenance and return to service are governed by GACAR Part 43.",
+          "cite": "GACAR Part 43",
+          "citeUrl": "../document.html?type=regulations&id=part-43"
+        },
+        {
+          "q": "The pitot-static system supplies:",
+          "options": [
+            "The airspeed indicator, altimeter and vertical speed indicator",
+            "The tachometer and oil gauge",
+            "The radios",
+            "The landing gear"
+          ],
+          "answer": 0,
+          "explain": "The pitot-static system drives the airspeed indicator, altimeter and VSI.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "A blocked pitot tube (with the static port clear) primarily affects the:",
+          "options": [
+            "Altimeter",
+            "Airspeed indicator",
+            "Magnetic compass",
+            "Tachometer"
+          ],
+          "answer": 1,
+          "explain": "A blocked pitot tube directly affects the airspeed indicator.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Continued airworthiness of an aircraft is maintained by:",
+          "options": [
+            "Flying it less",
+            "Completing the required inspections and maintenance",
+            "Repainting it yearly",
+            "Carrying spare parts"
+          ],
+          "answer": 1,
+          "explain": "Airworthiness is maintained by the inspections and maintenance required under GACAR Part 43.",
+          "cite": "GACAR Part 43",
+          "citeUrl": "../document.html?type=regulations&id=part-43"
         }
       ]
     },
@@ -1713,6 +2097,84 @@
           ],
           "answer": 1,
           "explain": "The FAA Aviation Weather Handbook calls the arc-shaped leading edge of downdraft air a gust front; uplift along it can trigger new cells ahead of the parent cell.",
+          "cite": "FAA Aviation Weather Handbook",
+          "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
+        },
+        {
+          "q": "A sea breeze typically blows:",
+          "options": [
+            "From land to sea by day",
+            "From sea to land by day",
+            "Only at night",
+            "Vertically upward"
+          ],
+          "answer": 1,
+          "explain": "By day the land heats faster than the sea, so the surface wind (sea breeze) blows from sea to land.",
+          "cite": "FAA Aviation Weather Handbook",
+          "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
+        },
+        {
+          "q": "Fog forms when:",
+          "options": [
+            "Air is heated above its dew point",
+            "Air is cooled to its dew point",
+            "Pressure rises rapidly",
+            "Wind exceeds 30 knots"
+          ],
+          "answer": 1,
+          "explain": "Fog forms when air is cooled to its dew point and water vapour condenses near the surface.",
+          "cite": "FAA Aviation Weather Handbook",
+          "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
+        },
+        {
+          "q": "Structural icing requires:",
+          "options": [
+            "Clear skies and dry air",
+            "Visible moisture and a temperature at or below freezing",
+            "High pressure only",
+            "Temperatures above 10°C"
+          ],
+          "answer": 1,
+          "explain": "Airframe icing needs visible moisture and a temperature at or below 0°C.",
+          "cite": "FAA Aviation Weather Handbook",
+          "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
+        },
+        {
+          "q": "A temperature inversion is a layer in which:",
+          "options": [
+            "Temperature decreases with height",
+            "Temperature increases with height",
+            "Pressure is constant",
+            "No wind exists"
+          ],
+          "answer": 1,
+          "explain": "In an inversion, temperature increases with altitude, often trapping haze and stabilising the air.",
+          "cite": "FAA Aviation Weather Handbook",
+          "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
+        },
+        {
+          "q": "Wind shear is:",
+          "options": [
+            "A steady crosswind",
+            "A sudden change in wind speed or direction over a short distance",
+            "A type of cloud",
+            "High-altitude cruise wind"
+          ],
+          "answer": 1,
+          "explain": "Wind shear is a rapid change in wind velocity over a small change in position, hazardous near the ground.",
+          "cite": "FAA Aviation Weather Handbook",
+          "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
+        },
+        {
+          "q": "A METAR is:",
+          "options": [
+            "A forecast for the next 24 hours",
+            "A routine, observed aviation weather report",
+            "A chart of airspace",
+            "A NOTAM"
+          ],
+          "answer": 1,
+          "explain": "A METAR is a routine observation of current conditions at an aerodrome (a TAF is the forecast).",
           "cite": "FAA Aviation Weather Handbook",
           "citeUrl": "../document.html?type=reference&id=aviation-weather-handbook-faa-h-8083-28b"
         }
@@ -1879,6 +2341,84 @@
           "explain": "The FAA Pilot's Handbook of Aeronautical Knowledge explains the ignition system uses magnetos, spark plugs and leads to provide the spark that ignites the fuel-air mixture in the cylinders.",
           "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
           "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Aerodynamic lift acts:",
+          "options": [
+            "Parallel to the relative wind",
+            "Perpendicular to the relative wind",
+            "Always straight up",
+            "Toward the tail"
+          ],
+          "answer": 1,
+          "explain": "Lift acts perpendicular to the relative airflow; drag acts parallel to it.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Induced drag is greatest:",
+          "options": [
+            "At high speed",
+            "At low speed and high angle of attack",
+            "In the cruise",
+            "At idle on the ground"
+          ],
+          "answer": 1,
+          "explain": "Induced drag rises as angle of attack increases, so it is greatest at low speed.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "An aeroplane stalls when it exceeds:",
+          "options": [
+            "Its maximum speed",
+            "The critical angle of attack",
+            "Its service ceiling",
+            "The transition altitude"
+          ],
+          "answer": 1,
+          "explain": "A stall is caused by exceeding the critical angle of attack, and can occur at any airspeed or attitude.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "In a level turn, load factor:",
+          "options": [
+            "Stays at 1g",
+            "Decreases with bank angle",
+            "Increases with bank angle",
+            "Depends only on weight"
+          ],
+          "answer": 2,
+          "explain": "As bank angle increases in a level turn, load factor (and stall speed) increases.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Ground effect causes:",
+          "options": [
+            "Increased induced drag near the surface",
+            "Reduced induced drag near the surface",
+            "A higher stall speed",
+            "Loss of all lift"
+          ],
+          "answer": 1,
+          "explain": "Within about one wingspan of the surface, induced drag is reduced, which can cause floating in the flare.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "As aircraft weight decreases, manoeuvring speed (Va):",
+          "options": [
+            "Increases",
+            "Decreases",
+            "Stays the same",
+            "Becomes zero"
+          ],
+          "answer": 1,
+          "explain": "Va decreases as weight decreases, because a lighter aircraft reaches limiting load factor at a lower speed.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         }
       ]
     },
@@ -2043,6 +2583,84 @@
           "explain": "The FAA Risk Management Handbook presents the PAVE checklist as a tool for risk management analysis, helping the pilot identify hazards to decide on the desirability of undertaking or continuing a flight.",
           "cite": "FAA Risk Management Handbook",
           "citeUrl": "../document.html?type=reference&id=risk-management-handbook-faa-h-8083-2a"
+        },
+        {
+          "q": "The first action for a pilot experiencing hypoxia is to:",
+          "options": [
+            "Climb higher",
+            "Use supplemental oxygen and/or descend",
+            "Increase speed",
+            "Ignore it"
+          ],
+          "answer": 1,
+          "explain": "Hypoxia is treated by supplemental oxygen and descending to a lower altitude.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Hyperventilation is best corrected by:",
+          "options": [
+            "Breathing faster",
+            "Slowing the breathing rate",
+            "Climbing",
+            "Holding the controls tighter"
+          ],
+          "answer": 1,
+          "explain": "Hyperventilation (over-breathing) is corrected by consciously slowing the breathing rate.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Spatial disorientation is best overcome by:",
+          "options": [
+            "Looking outside only",
+            "Trusting and relying on the flight instruments",
+            "Closing the eyes",
+            "Banking steeply"
+          ],
+          "answer": 1,
+          "explain": "When disoriented, the pilot should trust the flight instruments rather than bodily sensations.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "The \"IM SAFE\" checklist is used to assess:",
+          "options": [
+            "The aircraft",
+            "The weather",
+            "The pilot’s personal fitness to fly",
+            "The fuel state"
+          ],
+          "answer": 2,
+          "explain": "IM SAFE (Illness, Medication, Stress, Alcohol, Fatigue, Emotion/Eating) checks the pilot’s fitness to fly.",
+          "cite": "FAA Aeronautical Decision-Making (AC 60-22)",
+          "citeUrl": "../document.html?type=reference&id=ac-60-22-aeronautical-decision-making"
+        },
+        {
+          "q": "Carbon monoxide poisoning in a light aircraft most often comes from:",
+          "options": [
+            "The fuel tanks",
+            "A faulty exhaust/cabin heater",
+            "The battery",
+            "The tyres"
+          ],
+          "answer": 1,
+          "explain": "CO can leak from a cracked exhaust into the cabin-heat system; a CO detector and fresh air are key defences.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Which is one of the five hazardous attitudes in aeronautical decision-making?",
+          "options": [
+            "Curiosity",
+            "Invulnerability",
+            "Patience",
+            "Humility"
+          ],
+          "answer": 1,
+          "explain": "The five hazardous attitudes are anti-authority, impulsivity, invulnerability, macho and resignation.",
+          "cite": "FAA Aeronautical Decision-Making (AC 60-22)",
+          "citeUrl": "../document.html?type=reference&id=ac-60-22-aeronautical-decision-making"
         }
       ]
     },
@@ -2207,6 +2825,84 @@
           "explain": "The FAA Pilot's Handbook of Aeronautical Knowledge defines groundspeed as the actual speed over the ground - true airspeed adjusted for wind; it decreases with a headwind and increases with a tailwind.",
           "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
           "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Magnetic variation is the angle between:",
+          "options": [
+            "True north and magnetic north",
+            "The runway and the wind",
+            "Two VOR radials",
+            "Heading and track"
+          ],
+          "answer": 0,
+          "explain": "Variation is the angular difference between true north and magnetic north at a location.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Compass deviation is caused by:",
+          "options": [
+            "The Earth’s magnetic field only",
+            "Magnetic fields within the aircraft",
+            "Wind",
+            "Altitude"
+          ],
+          "answer": 1,
+          "explain": "Deviation is the compass error produced by the aircraft’s own electrical and metallic components.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "One degree of latitude equals approximately:",
+          "options": [
+            "30 NM",
+            "60 NM",
+            "90 NM",
+            "120 NM"
+          ],
+          "answer": 1,
+          "explain": "One degree of latitude is about 60 nautical miles (1 minute ≈ 1 NM).",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "A VOR provides the pilot with:",
+          "options": [
+            "Distance only",
+            "Bearing/radial information from the station",
+            "Weather",
+            "Engine data"
+          ],
+          "answer": 1,
+          "explain": "A VOR gives bearing information as radials from the station; DME adds distance.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Isogonic lines on a chart connect points of equal:",
+          "options": [
+            "Elevation",
+            "Magnetic variation",
+            "Pressure",
+            "Temperature"
+          ],
+          "answer": 1,
+          "explain": "Isogonic lines join points of equal magnetic variation (an agonic line has zero variation).",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Dead-reckoning navigation estimates position using:",
+          "options": [
+            "GPS only",
+            "Heading, airspeed, wind and time",
+            "ATC instructions",
+            "Fuel flow"
+          ],
+          "answer": 1,
+          "explain": "Dead reckoning computes position from a known start using heading, speed, wind and elapsed time.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         }
       ]
     },
@@ -2225,7 +2921,9 @@
             "25°C"
           ],
           "answer": 1,
-          "explain": "The ICAO Standard Atmosphere defines sea level as 15°C and 1013.25 hPa."
+          "explain": "The ICAO Standard Atmosphere defines sea level as 15°C and 1013.25 hPa.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "What is the approximate ISA temperature lapse rate in the troposphere?",
@@ -2236,7 +2934,9 @@
             "2°C per 100 ft"
           ],
           "answer": 1,
-          "explain": "Temperature falls about 2°C (1.98°C) per 1,000 ft up to the tropopause."
+          "explain": "Temperature falls about 2°C (1.98°C) per 1,000 ft up to the tropopause.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "How does a high density altitude affect take-off performance?",
@@ -2247,7 +2947,9 @@
             "Improves the rate of climb"
           ],
           "answer": 1,
-          "explain": "Thinner air reduces engine thrust and lift, lengthening the take-off roll and flattening the climb."
+          "explain": "Thinner air reduces engine thrust and lift, lengthening the take-off roll and flattening the climb.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "Loading an aircraft aft of its centre-of-gravity limit mainly affects what?",
@@ -2258,7 +2960,9 @@
             "Radio range"
           ],
           "answer": 1,
-          "explain": "An aft CG reduces longitudinal stability and can make stall recovery difficult."
+          "explain": "An aft CG reduces longitudinal stability and can make stall recovery difficult.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "Final reserve fuel is best described as fuel that…",
@@ -2269,7 +2973,9 @@
             "replaces alternate fuel"
           ],
           "answer": 1,
-          "explain": "Final reserve is a protected minimum on landing — it is never planned to be consumed en route."
+          "explain": "Final reserve is a protected minimum on landing — it is never planned to be consumed en route.",
+          "cite": "GACAR Part 91",
+          "citeUrl": "../document.html?type=regulations&id=part-91"
         },
         {
           "q": "One nautical mile is approximately how many metres?",
@@ -2280,7 +2986,9 @@
             "2,000 m"
           ],
           "answer": 2,
-          "explain": "By definition 1 NM = 1,852 m (1,609 m is a statute mile)."
+          "explain": "By definition 1 NM = 1,852 m (1,609 m is a statute mile).",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "With a true airspeed of 120 kt and a 20 kt direct headwind, the groundspeed is…",
@@ -2291,7 +2999,9 @@
             "80 kt"
           ],
           "answer": 0,
-          "explain": "A headwind subtracts from TAS: 120 − 20 = 100 kt groundspeed."
+          "explain": "A headwind subtracts from TAS: 120 − 20 = 100 kt groundspeed.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "To convert a fuel volume in litres to a mass, you multiply by its…",
@@ -2302,7 +3012,9 @@
             "viscosity"
           ],
           "answer": 1,
-          "explain": "Mass = volume × density. Avgas density is roughly 0.72 kg/L."
+          "explain": "Mass = volume × density. Avgas density is roughly 0.72 kg/L.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "A stronger headwind component has what effect on take-off and landing distance?",
@@ -2313,7 +3025,9 @@
             "Affects landing only"
           ],
           "answer": 1,
-          "explain": "A headwind reduces the ground run required for both take-off and landing."
+          "explain": "A headwind reduces the ground run required for both take-off and landing.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         },
         {
           "q": "Density altitude equals pressure altitude when…",
@@ -2324,7 +3038,113 @@
             "flying at night"
           ],
           "answer": 1,
-          "explain": "When the actual temperature matches the ISA value for that level, density altitude equals pressure altitude."
+          "explain": "When the actual temperature matches the ISA value for that level, density altitude equals pressure altitude.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Pressure altitude is the altitude read when the altimeter sub-scale is set to:",
+          "options": [
+            "QNH",
+            "QFE",
+            "1013.25 hPa (29.92 inHg)",
+            "Field elevation"
+          ],
+          "answer": 2,
+          "explain": "Pressure altitude is indicated when the altimeter is set to the standard 1013.25 hPa / 29.92 inHg.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "The crosswind component is greatest when the wind is:",
+          "options": [
+            "Straight down the runway",
+            "30° off the runway",
+            "45° off the runway",
+            "90° to the runway"
+          ],
+          "answer": 3,
+          "explain": "A wind at 90° to the runway is entirely crosswind; aligned with the runway it is all headwind.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "Increasing aircraft weight will:",
+          "options": [
+            "Shorten the take-off run",
+            "Increase take-off and landing distance",
+            "Have no effect",
+            "Lower the stall speed"
+          ],
+          "answer": 1,
+          "explain": "Greater weight increases both take-off and landing distance and raises the stall speed.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "On a hot, high-elevation aerodrome, density altitude is:",
+          "options": [
+            "Lower than pressure altitude",
+            "Equal to true altitude",
+            "Higher than pressure altitude",
+            "Always zero"
+          ],
+          "answer": 2,
+          "explain": "High temperature raises density altitude above pressure altitude, degrading performance.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "A VFR flight must plan to carry fuel to the destination plus:",
+          "options": [
+            "No reserve",
+            "A defined reserve",
+            "Only taxi fuel",
+            "Double the trip fuel"
+          ],
+          "answer": 1,
+          "explain": "Fuel planning must include trip fuel plus the required reserves under GACAR Part 91.",
+          "cite": "GACAR Part 91",
+          "citeUrl": "../document.html?type=regulations&id=part-91"
+        },
+        {
+          "q": "Contingency (or extra) fuel is carried to allow for:",
+          "options": [
+            "Passenger comfort",
+            "Unforeseen factors such as wind or re-routing",
+            "Heavier baggage",
+            "A faster taxi"
+          ],
+          "answer": 1,
+          "explain": "Contingency fuel covers unforeseen deviations from the plan, such as stronger winds or re-routing.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "For a fixed indicated airspeed, true airspeed:",
+          "options": [
+            "Decreases with altitude",
+            "Increases with altitude",
+            "Is unaffected by altitude",
+            "Equals groundspeed"
+          ],
+          "answer": 1,
+          "explain": "As air density falls with altitude, true airspeed is higher than indicated airspeed for the same IAS.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+        },
+        {
+          "q": "A wind correction angle is applied to the:",
+          "options": [
+            "Altitude",
+            "Heading, to maintain the desired track",
+            "Fuel load",
+            "Transponder code"
+          ],
+          "answer": 1,
+          "explain": "The pilot turns the heading into wind by the wind correction angle to track the desired course.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge",
+          "citeUrl": "../document.html?type=reference&id=pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
         }
       ]
     }
