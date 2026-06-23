@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { itemListLd } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
 import { useGuidePrefs, toggleBookmark } from '../../lib/guidePrefs';
 import { GUIDE_SLUGS, GUIDE_META, GUIDE_TOPICS, type GuideLevel, type GuideTopic } from './guides';
@@ -40,7 +41,19 @@ const LEVELS: GuideLevel[] = ['beginner', 'intermediate', 'advanced'];
 
 export function GuidesIndex() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.guides'), t('metaDesc.guides'));
+  // Expose the guides as an ItemList so the index reads as a catalog of its
+  // article pages for crawlers.
+  const guideListLd = useMemo(
+    () =>
+      itemListLd(
+        GUIDE_SLUGS.map((slug) => ({
+          name: t(`guides.items.${slug}.name`),
+          path: `/guides/${slug}`,
+        })),
+      ),
+    [t],
+  );
+  usePageMeta(t('meta.guides'), t('metaDesc.guides'), guideListLd);
   const [query, setQuery] = useState('');
   const [topic, setTopic] = useState<GuideTopic | 'all'>('all');
   const [level, setLevel] = useState<GuideLevel | 'all'>('all');
