@@ -107,7 +107,7 @@ export default defineConfig(({ mode }) => {
           // The regulatory JSON corpus is large; precache the app shell only and
           // serve data with a network-first runtime strategy so it stays fresh
           // but remains available offline (mirrors the old freshness-aware sw.js).
-          globPatterns: ['**/*.{js,css,woff2,png,svg,ico}', 'index.html'],
+          globPatterns: ['**/*.{js,css,woff2,png,svg,ico,webp}', 'index.html'],
           globIgnores: ['**/data/**'],
           maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
           runtimeCaching: [

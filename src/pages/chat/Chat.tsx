@@ -463,6 +463,11 @@ export function Chat() {
   }, [messages, busy, activeId]);
 
   const last = messages[messages.length - 1];
+  // Only the newest reply animates his portrait — one focal loop, never a wall of them.
+  let lastAssistantIndex = -1;
+  for (let k = 0; k < messages.length; k++) {
+    if (messages[k].role === 'assistant') lastAssistantIndex = k;
+  }
   const showFollowups =
     !gated &&
     !busy &&
@@ -525,7 +530,14 @@ export function Chat() {
         >
           {messages.length === 0 && (
             <div className={styles.welcome}>
-              <CaptainAvatar size="xl" glow live pose="wave" className={styles.welcomeAvatar} />
+              <CaptainAvatar
+                size="xl"
+                glow
+                live
+                animated
+                pose="wave"
+                className={styles.welcomeAvatar}
+              />
               <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
               <div className={styles.capabilities}>
                 {CAPABILITIES.map((c) => (
@@ -591,6 +603,7 @@ export function Chat() {
                     size="sm"
                     pose={pose}
                     live
+                    animated={i === lastAssistantIndex && pose === 'default'}
                     decorative
                     className={styles.msgAvatar}
                   />
