@@ -26,8 +26,9 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   price IDs — and deploy `firestore.rules`. See `docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
-- **[product]** Regenerate the **social/OG card** in the new typeface — `scripts/build-og-card.mjs`
-  still renders the old Cairo font (needs network font access to rebuild the PNG).
+- **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
+  now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
+  needs Google Fonts (`fonts.gstatic.com`) network access: `node scripts/build-og-card.mjs`.
 
 ## Next — this quarter-ish
 
