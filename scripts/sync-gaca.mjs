@@ -6,18 +6,21 @@
  * public/data/sources.json: gacar, advisory-circulars, aerodromes, charts,
  * airspace, notam). Those agents emit a normalised `records.json`; this script
  * DIFFS those records against the live indexes under public/data/ and reports
- * what is new / changed / unchanged — and (with --apply, Phase 1+) converts and
- * writes the deltas.
+ * what is new / changed / unchanged — and (with --apply) merges the deltas.
  *
- * PHASE 0 (this file): diff + report only. Default mode is a dry run — it never
- * writes. `--apply` is reserved for the convert/write step landed in Phase 1 and
- * currently aborts with a pointer, so the script is strictly read-only today.
+ * Default mode is a dry run — it never writes. `--apply` merges metadata-only
+ * deltas (records with no raw `body`: new index entries and revisions) into the
+ * target index JSON, persisting each record's provenance fingerprint so future
+ * diffs can detect the next revision. Body-bearing records (those carrying a raw
+ * PDF/eAIP asset) still need the Phase-1 conversion step and are reported as
+ * deferred rather than written.
  *
  * Usage:
  *   node scripts/sync-gaca.mjs [--input <path>] [--apply] [--limit N]
  *     --input <path>  records bundle to ingest (default: sync-input/records.json,
  *                     falling back to sync-input/records.sample.json)
- *     --apply         write deltas (Phase 1+; not yet implemented)
+ *     --apply         merge metadata-only deltas into the indexes (body-bearing
+ *                     records await Phase-1 conversion). Refuses the sample fixture.
  *     --limit N       cap per-section listing in the report (default 25)
  *
  * records.json contract (what the Nimble agents hand off):
@@ -30,9 +33,10 @@
  *                  ... ] }
  *   A bare top-level array is also accepted.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { COLLECTIONS, partitionByBody, mergeIndex } from './lib/sync-merge.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(root, p), 'utf8');
@@ -55,52 +59,6 @@ const INPUT_CANDIDATES = [
 ].filter(Boolean);
 const inputPath = INPUT_CANDIDATES.find((p) => existsSync(join(root, p)));
 
-// --- collection config: one entry per content type the agents produce ------
-// `diffKey` is the stable identity; `changeKey` is the provenance fingerprint
-// used to tell a re-import of the same item apart from a genuine revision.
-const COLLECTIONS = {
-  part: {
-    label: 'GACAR Parts',
-    index: 'public/data/gacar-index.json',
-    arrayKey: 'documents',
-    diffKey: (r) => r.slug ?? (r.partNum != null ? `part-${r.partNum}` : `part-${r.part}`),
-    changeKey: (r) => r.contentHash ?? r.revision ?? r.effectiveDate ?? null,
-    describe: (r) => `${r.slug ?? `part-${r.partNum ?? r.part}`} — ${r.title ?? ''}`.trim(),
-  },
-  ac: {
-    label: 'Advisory Circulars',
-    index: 'public/data/reference-index.json',
-    arrayKey: 'documents',
-    diffKey: (r) => r.slug,
-    changeKey: (r) => r.contentHash ?? r.revision ?? r.effectiveDate ?? r.date ?? null,
-    describe: (r) => `${r.slug} — ${r.title ?? ''}`.trim(),
-  },
-  airport: {
-    label: 'Aerodromes (AIP AD 2)',
-    index: 'public/data/airports.json',
-    arrayKey: 'airports',
-    diffKey: (r) => r.icao,
-    changeKey: (r) => r.contentHash ?? r.effectiveDate ?? r.airac ?? null,
-    describe: (r) => `${r.icao} — ${r.name_en ?? ''}`.trim(),
-  },
-  airspace: {
-    label: 'Airspaces (AIP ENR 2)',
-    index: 'public/data/airspaces-index.json',
-    arrayKey: 'airspaces',
-    diffKey: (r) => r.id,
-    changeKey: (r) => r.contentHash ?? r.effectiveDate ?? r.airac ?? null,
-    describe: (r) => `${r.id} — ${r.name ?? ''}`.trim(),
-  },
-  chart: {
-    label: 'Visual charts (AIP)',
-    index: 'public/data/charts-index.json',
-    arrayKey: 'documents',
-    diffKey: (r) => r.slug,
-    changeKey: (r) => r.date ?? r.airacDate ?? r.effectiveDate ?? r.contentHash ?? null,
-    describe: (r) => `${r.slug} — ${r.label ?? ''}`.trim(),
-  },
-};
-
 // --- load + normalise input ------------------------------------------------
 if (!inputPath) {
   console.error(
@@ -109,6 +67,16 @@ if (!inputPath) {
       '\nProvide one with --input <path> (see the records.json contract in this file).',
   );
   process.exit(1);
+}
+
+// The synthetic sample fixture is for exercising the diff engine only — never
+// let it write its [SAMPLE] records into the real corpus.
+if (APPLY && inputPath.endsWith('records.sample.json')) {
+  console.error(
+    'sync-gaca: refusing to --apply the synthetic sample fixture. Provide a real ' +
+      'bundle via --input <path> or sync-input/records.json.',
+  );
+  process.exit(2);
 }
 
 const bundle = readJson(inputPath);
@@ -193,13 +161,54 @@ if (skipped.length) {
 
 console.log(`Σ ${totalNew} new + ${totalChanged} changed across ${plan.length} content type(s).`);
 
-if (APPLY) {
-  console.error(
-    '\nsync-gaca: --apply (convert + write) is not implemented yet — that lands in ' +
-      'Phase 1 (PDF/eAIP → sanitized HTML, index patch, search/related/sitemap rebuild). ' +
-      'Re-run without --apply for the dry-run diff.',
-  );
-  process.exit(2);
+if (!APPLY) {
+  console.log('\nDry run only — nothing written. Re-run with --apply to merge the deltas.\n');
+  process.exit(0);
 }
 
-console.log('\nDry run only — nothing written. Re-run with --apply once Phase 1 lands.\n');
+// --- apply: merge metadata-only deltas into the indexes ---------------------
+// Records carrying a raw `body` (PDF/eAIP) need the Phase-1 conversion step
+// before they can be published, so they are deferred, not written.
+const today = new Date().toISOString().slice(0, 10);
+let wroteAdded = 0;
+let wroteUpdated = 0;
+const deferred = [];
+
+console.log('\nsync-gaca — applying metadata-only deltas\n');
+
+for (const { kind, d } of plan) {
+  const { metadata, deferred: bodyBearing } = partitionByBody([...d.new, ...d.changed]);
+  for (const r of bodyBearing) deferred.push({ kind, r });
+  if (metadata.length === 0) continue;
+
+  const changedKeys = new Set(d.changed.map((r) => d.cfg.diffKey(r)));
+  const newRecs = metadata.filter((r) => !changedKeys.has(d.cfg.diffKey(r)));
+  const changedRecs = metadata.filter((r) => changedKeys.has(d.cfg.diffKey(r)));
+
+  const idx = readJson(d.cfg.index);
+  const { index, added, updated } = mergeIndex(idx, d.cfg, { newRecs, changedRecs });
+  index.generated = bundle.generated ?? today;
+  // Indexes are stored with 1-space indentation + trailing newline; preserve it.
+  writeFileSync(join(root, d.cfg.index), JSON.stringify(index, null, 1) + '\n');
+
+  wroteAdded += added;
+  wroteUpdated += updated;
+  console.log(`✔ ${d.cfg.label}  → wrote ${added} new · ${updated} changed  (${d.cfg.index})`);
+}
+
+console.log(`\nΣ wrote ${wroteAdded} new + ${wroteUpdated} changed.`);
+
+if (deferred.length) {
+  console.log(
+    `\n⚠ deferred ${deferred.length} body-bearing record(s) — these carry a raw asset and ` +
+      'await the Phase-1 conversion step (PDF/eAIP → sanitized HTML); not written:',
+  );
+  for (const { kind, r } of deferred.slice(0, LIMIT)) {
+    console.log(`      · ${COLLECTIONS[kind].describe(r)}`);
+  }
+  if (deferred.length > LIMIT) {
+    console.log(`      … and ${deferred.length - LIMIT} more (raise --limit)`);
+  }
+}
+
+console.log('');
