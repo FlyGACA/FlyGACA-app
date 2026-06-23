@@ -16,6 +16,7 @@ interface Section {
 }
 
 const TOPIC_ICON: Record<GuideTopic, string> = {
+  regulation: '📋',
   licensing: '🪪',
   medical: '🩺',
   language: '🗣️',
@@ -27,6 +28,7 @@ const TOPIC_ICON: Record<GuideTopic, string> = {
 };
 
 const TOPIC_TONE: Record<GuideTopic, string> = {
+  regulation: 'var(--cat-4)',
   licensing: 'var(--cat-1)',
   medical: 'var(--cat-2)',
   language: 'var(--cat-3)',

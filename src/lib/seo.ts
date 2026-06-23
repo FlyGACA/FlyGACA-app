@@ -45,6 +45,19 @@ export function ogLocale(lang: string): string {
   return OG_LOCALE[lang] ?? 'en_US';
 }
 
+/** Sections that ship a dedicated social card (see scripts/build-og-images.mjs). */
+const OG_SECTIONS = new Set(['tools', 'guides', 'library', 'study', 'pricing']);
+
+/**
+ * The Open Graph image for a path: a branded per-section card when one exists
+ * (e.g. `/tools/...` → `og-tools.png`), otherwise the default site card. The
+ * section is the first path segment, so leaf pages share their section's card.
+ */
+export function ogImageFor(path: string): string {
+  const section = normalizePath(path).split('/')[1] ?? '';
+  return OG_SECTIONS.has(section) ? `${SITE_ORIGIN}/img/og-${section}.png` : OG_IMAGE;
+}
+
 /**
  * Non-canonical production hosts that serve the *same* build under a different
  * brand/domain. Left indexable they split ranking signals and clutter the

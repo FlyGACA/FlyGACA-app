@@ -22,8 +22,9 @@ import {
   type LibNote,
 } from '../../lib/libraryPrefs';
 import { SelectionPopover, type SelectionRect } from '../../components/library/SelectionPopover';
-import { breadcrumbLd, techArticleLd } from '../../lib/jsonld';
+import { breadcrumbLd, techArticleLd, type Crumb } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
+import { Breadcrumbs } from '../../components/Breadcrumbs';
 import styles from './Document.module.css';
 
 interface DocumentProps {
@@ -168,6 +169,14 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const [copiedId, setCopiedId] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
   const docDesc = doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined;
+  // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>.
+  const crumbs: Crumb[] = doc?.title
+    ? [
+        { name: t('nav.home'), path: '/' },
+        { name: t('nav.library'), path: '/library' },
+        { name: doc.title, path: pathname },
+      ]
+    : [];
   usePageMeta(
     doc?.title,
     docDesc,
@@ -179,11 +188,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             path: pathname,
             lang: i18n.language,
           }),
-          breadcrumbLd([
-            { name: t('nav.home'), path: '/' },
-            { name: t('nav.library'), path: '/library' },
-            { name: doc.title, path: pathname },
-          ]),
+          breadcrumbLd(crumbs),
         ]
       : undefined,
   );
@@ -427,6 +432,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
           <div className={styles.readingBar} style={{ inlineSize: `${progress}%` }} />
         </div>
       )}
+      <Breadcrumbs items={crumbs} />
       <p className={styles.back}>
         <Link to="/library">← {t('library.title')}</Link>
       </p>
