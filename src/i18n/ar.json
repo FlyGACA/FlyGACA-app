@@ -2470,6 +2470,7 @@
     "saved": "المحفوظة",
     "markRead": "وضع علامة مقروء",
     "readDone": "مقروء",
+    "draft": "مسودة",
     "readProgress": "قرأت {{done}} من {{total}}",
     "keyTakeaways": "أبرز النقاط",
     "copyLink": "انسخ رابط القسم",

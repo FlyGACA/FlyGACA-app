@@ -61,12 +61,21 @@ for (const [base, file] of corpora) {
   }
 }
 
+const guidesSrc = read('src/pages/guides/guides.ts');
 const guideSlugs = [
-  ...read('src/pages/guides/guides.ts')
-    .match(/GUIDE_SLUGS\s*=\s*\[([\s\S]*?)\]/)[1]
-    .matchAll(/'([^']+)'/g),
+  ...guidesSrc.match(/GUIDE_SLUGS\s*=\s*\[([\s\S]*?)\]/)[1].matchAll(/'([^']+)'/g),
 ].map((m) => m[1]);
-for (const slug of guideSlugs) urls.set(`/guides/${slug}`, today);
+// Drafts are unlisted — omit any guide whose GUIDE_STATUS entry is 'draft'.
+const draftGuides = new Set(
+  [
+    ...(guidesSrc.match(/GUIDE_STATUS[^{]*\{([\s\S]*?)\n\};/)?.[1] ?? '').matchAll(
+      /'([^']+)':\s*'draft'/g,
+    ),
+  ].map((m) => m[1]),
+);
+for (const slug of guideSlugs) {
+  if (!draftGuides.has(slug)) urls.set(`/guides/${slug}`, today);
+}
 
 // Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
 const HUBS = new Set(['/library', '/tools', '/guides', '/study']);

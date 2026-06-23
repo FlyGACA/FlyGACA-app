@@ -7,7 +7,13 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
 import { useGuidePrefs, toggleBookmark } from '../../lib/guidePrefs';
-import { GUIDE_SLUGS, GUIDE_META, GUIDE_TOPICS, type GuideLevel, type GuideTopic } from './guides';
+import {
+  LIVE_GUIDE_SLUGS,
+  GUIDE_META,
+  GUIDE_TOPICS,
+  type GuideLevel,
+  type GuideTopic,
+} from './guides';
 import styles from './Guides.module.css';
 
 interface Section {
@@ -48,7 +54,7 @@ export function GuidesIndex() {
   const guideListLd = useMemo(
     () =>
       itemListLd(
-        GUIDE_SLUGS.map((slug) => ({
+        LIVE_GUIDE_SLUGS.map((slug) => ({
           name: t(`guides.items.${slug}.name`),
           path: `/guides/${slug}`,
         })),
@@ -64,7 +70,7 @@ export function GuidesIndex() {
 
   const guides = useMemo(
     () =>
-      GUIDE_SLUGS.map((slug) => {
+      LIVE_GUIDE_SLUGS.map((slug) => {
         const name = t(`guides.items.${slug}.name`);
         const blurb = t(`guides.items.${slug}.blurb`);
         const intro = t(`guides.items.${slug}.intro`);
@@ -144,7 +150,7 @@ export function GuidesIndex() {
         <h1>{t('guides.title')}</h1>
         <p className={styles.subtitle}>{t('guides.subtitle')}</p>
         <p className={styles.progress} role="status">
-          {t('guides.readProgress', { done: readCount, total: GUIDE_SLUGS.length })}
+          {t('guides.readProgress', { done: readCount, total: LIVE_GUIDE_SLUGS.length })}
         </p>
         <input
           className={styles.search}

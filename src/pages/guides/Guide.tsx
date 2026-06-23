@@ -14,6 +14,7 @@ import {
   GUIDE_REGS,
   GUIDE_QUIZ,
   GUIDE_META,
+  GUIDE_STATUS,
   TOOL_NAME_KEY,
   partNumber,
   sectionId,
@@ -122,6 +123,9 @@ export function Guide() {
       </p>
       <header>
         <span className={styles.headMeta}>
+          {GUIDE_STATUS[guideSlug] === 'draft' && (
+            <span className={styles.draftBadge}>{t('guides.draft')}</span>
+          )}
           <span className={styles.level} data-level={meta.level}>
             {t(`guides.level.${meta.level}`)}
           </span>
