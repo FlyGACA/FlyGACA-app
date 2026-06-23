@@ -587,7 +587,13 @@ export function Chat() {
                 }`}
               >
                 {isAdel && (
-                  <CaptainAvatar size="sm" pose={pose} live decorative className={styles.msgAvatar} />
+                  <CaptainAvatar
+                    size="sm"
+                    pose={pose}
+                    live
+                    decorative
+                    className={styles.msgAvatar}
+                  />
                 )}
                 <div className={styles.msgBody}>
                   {isAdel && !m.pending && (
