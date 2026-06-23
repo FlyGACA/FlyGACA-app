@@ -1,66 +1,86 @@
-# Fly GACA App — Build Roadmap
+# Fly GACA App — Roadmap
 
-The full program plan for rebuilding the legacy Fly GACA PWA (`flygaca/flygaca`) into this
-TypeScript/React/Vite app. Frontend only — the Firebase Functions gateway and the Captain Adel RAG
-brain are unchanged; the app calls the same `/api/chat`, `/api/content`, and Firebase project
-(`flygaca-app`, `me-central2`). Day-to-day progress is tracked in [`MIGRATION.md`](./MIGRATION.md).
+What's coming next for the Fly GACA frontend app. The legacy→TypeScript/React/Vite **rebuild is
+complete and live** — all 55 tools, the full regulatory library + search, Captain Adel chat, the
+study hub, account/commerce, and guides are shipped and deploying to production on every merge to
+`main`. This file looks **forward**; the stage-by-stage rebuild history lives in
+[`MIGRATION.md`](./MIGRATION.md).
 
-## Status — rebuild complete (parity-ready)
+Scope is unchanged: this repo is **frontend only**. The Firebase Functions gateway and the Captain
+Adel RAG brain are separate and untouched — the app calls the same `/api/chat` / `/api/content`
+endpoints and the `flygaca-app` Firebase project (`me-central2`).
 
-All stages are implemented and CI-green on PR #1: 0–2 (infra + 54 tools), 3 (Firebase + billing,
-emulator-first), 4–5 (account · study), 6 (library + charts + PDF sheets), 7 (chat streaming),
-8 (native Capacitor), 9 (code-splitting · SEO · E2E/a11y · cutover runbook). The only remaining gate
-before DNS cutover is the **production secret flip** (Firebase config · App Check · Stripe price IDs ·
-deploy rules) — see `docs/RUNBOOK-cutover.md`. Live progress detail in `MIGRATION.md`.
+## How to read this
 
-## Decisions
+- **Now / Next / Later** are horizon buckets, not date commitments — priorities shift as we learn.
+- Each item is tagged **[product]** (something users see) or **[platform]** (under-the-hood,
+  launch, or infra) so both audiences can scan to what they care about.
+- Every item links to the runbook/doc that already describes the work where one exists.
 
-- **Cutover: parity-first** — reach full feature parity before the new app replaces flygaca.com.
-- **Host: Firebase Hosting** — co-located with Functions/Firestore.
-- **CI from the start**, **reuse the existing Firebase backend** (frontend SDK only), **Playwright E2E**.
+## Now — production hardening & go-live confidence
+
+The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/Cloudflare/Netlify
+mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
+
+- **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
+  price IDs — and deploy `firestore.rules`. See `docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+- **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
+  sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
+- **[product]** Regenerate the **social/OG card** in the new typeface — `scripts/build-og-card.mjs`
+  still renders the old Cairo font (needs network font access to rebuild the PNG).
+
+## Next — this quarter-ish
+
+- **[platform]** **Native iOS/Android.** Generate the Capacitor platform projects (needs a Mac),
+  then wire native Apple/Google sign-in, RevenueCat IAP (the `native-billing` branch), deep links,
+  and app icons/splash. See `docs/RUNBOOK-native.md`.
+- **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
+  initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (160 kB gzip).
+- **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
+  axe a11y checks to cover more critical flows.
+- **[product]** **Global ⌘K search / command palette.** The header already shows a ⌘K search pill;
+  wire it to a real app-wide palette (jump to any tool, guide, Part, or page).
+- **[product]** **Offline page.** A graceful PWA offline fallback (the app shell + network-first
+  `/data/*` caching are already in place).
+- **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
+  the sitemap, and tool↔library cross-links. See `docs/SEO-STRATEGY.md`.
+
+## Later — exploratory / post-launch
+
+- **[product]** Content & tools expansion — more guides, quiz banks, and reading paths, deeper
+  ground school, and new calculators as the corpus grows.
+- **[product]** Captain Adel enhancements — richer grounding, exam-mode ties, and saved-chat UX.
+- **[product]** Study analytics & progress insights beyond the current streak/mastery rollups.
+- **[platform]** Push notifications and native polish once the mobile shells ship.
+- **[docs]** README screenshots (`docs/screenshots/`) and marketing assets.
+
+## How we ship (Definition of Done)
+
+Carried over from the rebuild — these gates still apply to everything above.
+
+- Local gate before every commit: `npm run typecheck && npm run lint && npm run test && npm run build`.
+- Every surface is **routed + bilingual + disclaimered**: a key in **both** `src/i18n/{en,ar}.json`
+  (`tests/i18n-parity.test.ts` is the gate), and the not-affiliated **`<Disclaimer />`** is used,
+  never inlined or reworded.
+- **Tokens + CSS Modules + logical properties only** — no hard-coded colours, no physical
+  `left`/`right`.
+- Respect the bundle budget; keep heavy assets (the ~19 MB `library-search.json`, ebooks, charts)
+  lazy/streamed.
+- Push; CI runs; address review/CI events. Preview smoke (routes 200) before merge.
 
 ## Conventions (reuse — do not reinvent)
 
 - **Tools** = pure math in `src/calc/<tool>.ts` (+ Vitest spec) rendered via `CalcShell` +
   `useUrlState`. Reference: `src/calc/crosswind.ts` + `src/pages/tools/Crosswind.tsx`.
-- **Data pages** fetch JSON via `useFetchJson` → typed shapes in `src/lib/content.ts`; heavy assets stay lazy.
-- **Bilingual**: every string in `src/i18n/{en,ar}.json`; `tests/i18n-parity.test.ts` is the gate.
-  The not-affiliated **`<Disclaimer />`** appears on every surface, never inlined.
-- **Styling**: design tokens + CSS Modules + logical properties only.
-
-## Workflow (per batch)
-
-1. Continue on `claude/flygaca-refactor-rebuild-r5lt6e`; **one PR per stage**, batches as commits.
-2. Local gate before every commit: `npm run typecheck && npm run lint && npm run test && npm run build`.
-3. Push; CI runs; address review/CI events. Update `MIGRATION.md`.
-4. **Stage DoD**: every page routed + bilingual + disclaimered; unit/E2E green; preview smoke (routes 200).
-
-## Stages
-
-| # | Stage | Scope | Notes |
-|---|-------|-------|-------|
-| 0 | **Infra & CI** | GitHub Actions (typecheck/lint/test/build), `firebase.json` (SPA + `/api` rewrites + CSP), `.firebaserc`, port `firestore.rules`, `.env` | Do first |
-| 1 | **Pure-math tools** (~17) | E6B, units, fuel, TSD, TOD, holding, AIRAC, procsep, cloudbase, suntimes, currency, performance, W&B, conversion-checker, VFR, readback, LOA | Reuse `calc-tools/holding-core/airac-core/currency/isa-core` |
-| 2 | **Data tools** (~12) | aerodromes, route-planner, flightplan, definitions, airspace, notam/metar decoders, chart-symbols, elpt/elp-check, daily, doc-study | `useFetchJson` + typed JSON |
-| 3 | **Service layer** | `lib/firebase` (Auth, Firestore, App Check), real `lib/auth`, `lib/store` (logbook), `lib/entitlements`, `lib/billing` (Stripe), `lib/native-bridge` (RevenueCat) | Riskiest; gates 4–5 |
-| 4 | **Account & commerce** | account, dashboard, logbook, settings, pricing, schools | Route guards + paywall |
-| 5 | **Study & guides** | groundschool, flashcards, quiz, checkride, 11 guides, packs (gated), paths/lessons/exam | `groundschool.json`, `quiz.json` |
-| 6 | **Library & heavy assets** | full Part reader (`parts/`), aerodromes/airspace/charts/ebooks/reference tabs, lazy full-text search (~19 MB), Leaflet charts | Code-split + Workbox cache |
-| 7 | **Chat completeness** | SSE streaming, grounding badges, sources/verbatim, tool-chips, transcript, exam mode, App Check header | Upgrade the JSON chat |
-| 8 | **PWA / native** | offline page, `cap add ios`, Firebase Auth + RevenueCat plugins, native bridge wiring | Native build needs a Mac |
-| 9 | **Hardening & cutover** | finalize CSP/HSTS, perf/bundle budget, a11y, SEO/meta/sitemap/hreflang, Playwright E2E, content QA, cutover runbook | Cut DNS when 1–9 DoD pass |
-
-Stages 1–2 are parallelizable and low-risk; Stage 3 gates 4/5; Stages 6–7 are the heaviest UI work.
-
-## Verification
-
-- Per batch: `typecheck && lint && test && build` + `preview` smoke (routes 200) + `MIGRATION.md` updated + CI green.
-- Service/auth stages: manual sign-in/out + Firestore read/write against the real project; pure-predicate unit tests.
-- Heavy stages: confirm lazy-load + Workbox caching; respect the bundle budget.
-- Cutover: full Playwright suite green + manual prod smoke on a Firebase preview channel before DNS.
+- **Data pages** fetch JSON via `useFetchJson` → typed shapes in `src/lib/content.ts`; heavy assets
+  stay lazy.
+- **Routing** is the single table in `src/router.tsx`; pages live one-per-folder under `src/pages/`.
+- **i18n / RTL**: `src/i18n/index.ts` mirrors the language choice onto `<html lang/dir>` so RTL
+  flips document-wide.
 
 ## Legacy sources of truth
 
+The original no-build PWA (`flygaca/flygaca`) remains the reference when porting anything new:
 `flygaca/assets/js/{auth,store,entitlements,billing,native-bridge,firebase-*}.js`,
 `flygaca/config/routes.js` (CSP), `flygaca/firestore.rules`, the `tools-*.js` family and `*-core.js`
 math, and `flygaca/assets/data/*`.

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import i18n from '../i18n';
-import { OG_IMAGE, canonicalUrl, hreflangAlternates, ogLocale } from './seo';
+import { canonicalUrl, hreflangAlternates, ogImageFor, ogLocale } from './seo';
 import type { JsonLd } from './jsonld';
 
 const LD_ATTR = 'data-managed-ld';
@@ -73,7 +73,7 @@ export function usePageMeta(title?: string, description?: string, jsonLd?: JsonL
       setMeta('meta[property="og:description"]', 'property', 'og:description', desc);
       setMeta('meta[property="og:type"]', 'property', 'og:type', 'website');
       setMeta('meta[property="og:url"]', 'property', 'og:url', canonical);
-      setMeta('meta[property="og:image"]', 'property', 'og:image', OG_IMAGE);
+      setMeta('meta[property="og:image"]', 'property', 'og:image', ogImageFor(path));
       setMeta('meta[property="og:locale"]', 'property', 'og:locale', ogLocale(i18n.language));
 
       setLink('canonical', canonical);

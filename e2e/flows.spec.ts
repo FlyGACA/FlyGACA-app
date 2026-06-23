@@ -54,7 +54,8 @@ test('chat renders a streamed answer, grounding badge and source', async ({ page
 
   await expect(page.getByText('VFR minima apply here.')).toBeVisible();
   await expect(page.getByRole('status')).toContainText('Grounded');
-  await expect(page.getByText('§91.155')).toBeVisible();
+  // `exact` so this matches the source citation, not the "Show the exact text of §91.155" follow-up.
+  await expect(page.getByText('§91.155', { exact: true })).toBeVisible();
 });
 
 test('account local sign-in and sign-out round-trip', async ({ page }) => {

@@ -1,5 +1,7 @@
 /** Guide slugs (order shown in the index) and the tools each guide links to. */
 export const GUIDE_SLUGS = [
+  'how-to-become-a-pilot-in-saudi-arabia',
+  'gacar-explained',
   'saudi-ppl-requirements',
   'saudi-cpl-requirements',
   'saudi-instrument-rating',
@@ -23,6 +25,7 @@ export const GUIDE_SLUGS = [
 export type GuideSlug = (typeof GUIDE_SLUGS)[number];
 
 export type GuideTopic =
+  | 'regulation'
   | 'licensing'
   | 'medical'
   | 'language'
@@ -35,6 +38,7 @@ export type GuideLevel = 'beginner' | 'intermediate' | 'advanced';
 
 /** Topic display order in the index. */
 export const GUIDE_TOPICS: GuideTopic[] = [
+  'regulation',
   'licensing',
   'medical',
   'language',
@@ -47,6 +51,8 @@ export const GUIDE_TOPICS: GuideTopic[] = [
 
 /** Per-guide classification — structure only; labels are localized in i18n. */
 export const GUIDE_META: Record<GuideSlug, { topic: GuideTopic; level: GuideLevel }> = {
+  'how-to-become-a-pilot-in-saudi-arabia': { topic: 'licensing', level: 'beginner' },
+  'gacar-explained': { topic: 'regulation', level: 'beginner' },
   'saudi-ppl-requirements': { topic: 'licensing', level: 'beginner' },
   'saudi-cpl-requirements': { topic: 'licensing', level: 'intermediate' },
   'saudi-instrument-rating': { topic: 'licensing', level: 'intermediate' },
@@ -74,6 +80,7 @@ export { sectionId } from '../../calc/anchor';
 
 /** Related tool routes per guide (label comes from the tool's i18n name). */
 export const GUIDE_TOOLS: Record<string, string[]> = {
+  'how-to-become-a-pilot-in-saudi-arabia': ['/tools/medical-validity', '/tools/part61-currency'],
   'gaca-medical-class-1': ['/tools/medical-validity'],
   'foreign-license-conversion-to-gaca': ['/tools/conversion-checker'],
   'airspace-explained': ['/tools/airspace', '/tools/vfr-minima'],
@@ -113,6 +120,8 @@ export const TOOL_NAME_KEY: Record<string, string> = {
 
 /** GACAR library doc slugs each guide cites (see public/data/gacar-index.json). */
 export const GUIDE_REGS: Record<string, string[]> = {
+  'how-to-become-a-pilot-in-saudi-arabia': ['part-61', 'part-67'],
+  'gacar-explained': ['part-1', 'part-61', 'part-91'],
   'saudi-ppl-requirements': ['part-61', 'part-91'],
   'saudi-cpl-requirements': ['part-61'],
   'saudi-instrument-rating': ['part-61', 'part-91'],
@@ -138,6 +147,8 @@ export const partNumber = (slug: string): string => slug.replace(/^part-/, '');
 
 /** Guide → quiz bank id (quiz.json) for the "Test yourself" cross-link. */
 export const GUIDE_QUIZ: Record<string, string> = {
+  'how-to-become-a-pilot-in-saudi-arabia': 'pilot-licensing',
+  'gacar-explained': 'air-law',
   'saudi-ppl-requirements': 'pilot-licensing',
   'saudi-cpl-requirements': 'pilot-licensing',
   'saudi-instrument-rating': 'pilot-licensing',

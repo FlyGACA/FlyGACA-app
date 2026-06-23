@@ -70,6 +70,31 @@ export function breadcrumbLd(items: Crumb[]): JsonLd {
   };
 }
 
+export interface ListItem {
+  name: string;
+  /** Router path of the listed item (canonicalized internally). */
+  path: string;
+}
+
+/**
+ * ItemList — for catalog / hub pages that enumerate their child pages (the
+ * tools and guides indexes). It lets crawlers read the page as an ordered list
+ * of its leaf pages and can surface as a rich list result.
+ */
+export function itemListLd(items: ListItem[]): JsonLd {
+  return {
+    '@context': CONTEXT,
+    '@type': 'ItemList',
+    numberOfItems: items.length,
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      url: canonicalUrl(it.path),
+    })),
+  };
+}
+
 export interface ArticleInput {
   title: string;
   description?: string;
