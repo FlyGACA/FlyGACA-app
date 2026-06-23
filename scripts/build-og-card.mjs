@@ -2,8 +2,8 @@
 /**
  * Renders the social share card → public/img/og-card.png (1200×630), the image
  * behind `og:image` / `twitter:image` (see src/lib/seo.ts). Composes the brand
- * lockup (Falcon palette + Cairo) with Captain Adel's portrait, so link previews
- * lead with the mascot.
+ * lockup (Falcon palette + Readex Pro) with Captain Adel's portrait, so link
+ * previews lead with the mascot.
  *
  * Headless-Chrome composition (no image-editing deps): renders an HTML template
  * at 2× then downsamples with `sips` for crisp text. Re-run after changing copy
@@ -31,13 +31,13 @@ const dataUri = (p) => (p && existsSync(p) ? `data:image/png;base64,${readFileSy
 const html = `<!doctype html><html><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:1200px;height:630px}
   .card{
     position:relative;width:1200px;height:630px;overflow:hidden;
-    font-family:'Cairo',system-ui,sans-serif;color:#f5f2ed;
+    font-family:'Readex Pro',system-ui,sans-serif;color:#f5f2ed;
     background:
       radial-gradient(900px 520px at 86% 50%, rgba(45,110,138,.42), transparent 70%),
       radial-gradient(700px 480px at 88% 60%, rgba(143,201,168,.14), transparent 72%),
@@ -52,8 +52,8 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
   .text{position:absolute;left:84px;top:0;height:630px;width:680px;
     display:flex;flex-direction:column;justify-content:center;gap:6px;z-index:2}
   .eyebrow{color:#c8a04a;font-weight:700;font-size:25px;letter-spacing:.22em;text-transform:uppercase}
-  .title{font-weight:800;font-size:104px;line-height:1.02;margin:14px 0 6px;letter-spacing:-.01em}
-  .title b{color:#f5f2ed;font-weight:800}
+  .title{font-weight:700;font-size:104px;line-height:1.02;margin:14px 0 6px;letter-spacing:-.01em}
+  .title b{color:#f5f2ed;font-weight:700}
   .title span{color:#8fc9a8}
   .tagline{font-weight:700;font-size:42px;line-height:1.18;color:#eef2f6}
   .foot{margin-top:30px;font-weight:600;font-size:25px;color:#9db0bf}
