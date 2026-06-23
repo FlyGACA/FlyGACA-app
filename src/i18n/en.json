@@ -65,7 +65,8 @@
     "home": "Fly GACA — home",
     "primary": "Primary",
     "menu": "Menu",
-    "more": "More"
+    "more": "More",
+    "breadcrumb": "Breadcrumb"
   },
   "command": {
     "title": "Search & jump",
@@ -1921,6 +1922,70 @@
     "askAdel": "Learn more with Captain Adel",
     "tools": "Related tools",
     "items": {
+      "how-to-become-a-pilot-in-saudi-arabia": {
+        "name": "How to become a pilot in Saudi Arabia",
+        "blurb": "The full path to a Saudi pilot licence — medical, training, exams and the GACAR Parts that govern each step.",
+        "intro": "Becoming a pilot in the Kingdom follows a clear path set out in the GACA Civil Aviation Regulations (GACAR). This guide maps the journey end to end — from your first medical to a commercial licence — and links each step to the rule that governs it. It is an educational overview, not a substitute for the regulation: always confirm the current requirements with GACA or an approved training organisation.",
+        "sections": [
+          {
+            "h": "1. Meet the basics",
+            "p": "Decide why you want to fly — for pleasure (a Private Pilot Licence) or for a career (a Commercial, then Airline Transport, licence). You must be old enough for the licence you want, hold a valid aviation medical, and meet the ICAO English language standard. These eligibility rules live in GACAR Part 61."
+          },
+          {
+            "h": "2. Get an aviation medical",
+            "p": "Hold a medical certificate from a GACA-approved aviation medical examiner — Class 2 is the minimum for a PPL, Class 1 for commercial flying. The medical standards sit in GACAR Part 67, and the certificate has a validity period you must keep current."
+          },
+          {
+            "h": "3. Train with an approved organisation",
+            "p": "Fly with an authorised instructor or Approved Training Organisation (ATO). You build dual and solo hours — including cross-country and night where required — toward the experience the licence demands."
+          },
+          {
+            "h": "4. Pass the exams",
+            "p": "Complete the theoretical-knowledge exams for your licence and pass a practical skill test with an authorised examiner. Ratings such as instrument or night flying are added the same way: training, then a test."
+          },
+          {
+            "h": "5. Build toward a career",
+            "p": "From a PPL you can add an instrument rating, then a Commercial Pilot Licence (with a Class 1 medical and more experience), and ultimately an Airline Transport Pilot Licence for airline command. Each rung raises the hour and standard requirements in Part 61."
+          }
+        ],
+        "adel": "I want to become a pilot in Saudi Arabia. Walk me through the GACAR Part 61 path from medical to commercial licence, and cite the relevant sections.",
+        "takeaways": [
+          "The path is set out in GACAR Part 61 (licensing) and Part 67 (medical).",
+          "Start with an aviation medical — Class 2 for a PPL, Class 1 for commercial.",
+          "Train with an approved instructor or ATO, then pass theory exams and a skill test.",
+          "Add ratings and higher licences (IR → CPL → ATPL) as your experience grows."
+        ]
+      },
+      "gacar-explained": {
+        "name": "GACAR explained",
+        "blurb": "What the Saudi civil-aviation regulations are, how they are organised into Parts, and how to find the rule you need.",
+        "intro": "GACAR — the GACA Civil Aviation Regulations — is the body of rules that governs civil aviation in Saudi Arabia. It is organised into numbered Parts, each covering one area, much like the FAA's Federal Aviation Regulations. This guide explains how the library is structured so you can find the exact Part and section that applies. It is an educational overview; the regulation itself is always the authority.",
+        "sections": [
+          {
+            "h": "What GACAR is",
+            "p": "GACAR is published by the General Authority of Civil Aviation and carries the force of regulation in the Kingdom. It is modelled on international (ICAO) standards and is closely aligned with the structure of the US FARs, which makes it familiar to pilots trained elsewhere."
+          },
+          {
+            "h": "How it is organised",
+            "p": "The rules are split into numbered Parts. Each Part covers one subject — for example Part 1 holds definitions and abbreviations, Part 61 covers pilot licensing, and Part 91 covers general operating and flight rules. Within a Part, content is divided into subparts and numbered sections."
+          },
+          {
+            "h": "Finding a rule",
+            "p": "Identify the subject, open the matching Part, then drill to the subpart and section. A reference like \"§61.57\" means Part 61, section 57. The library search and Captain Adel both return the exact Part and section so you can verify the wording at source."
+          },
+          {
+            "h": "Reading it safely",
+            "p": "Definitions in Part 1 change how every other Part is read, so check a term there first. Always read the current text — regulations are amended over time — and treat summaries (including this one) as a pointer to the rule, never a replacement for it."
+          }
+        ],
+        "adel": "Explain how the GACAR is structured into Parts and how I find a specific rule, with an example citation.",
+        "takeaways": [
+          "GACAR is Saudi Arabia's civil-aviation regulation, organised into numbered Parts.",
+          "Each Part covers one subject — e.g. Part 1 definitions, Part 61 licensing, Part 91 operations.",
+          "A citation like §61.57 means Part 61, section 57.",
+          "Start with Part 1 definitions, and always read the current text at source."
+        ]
+      },
       "saudi-ppl-requirements": {
         "name": "Saudi PPL requirements",
         "blurb": "What it takes to earn a Private Pilot Licence under GACAR Part 61.",
@@ -2390,6 +2455,7 @@
       "advanced": "Advanced"
     },
     "topics": {
+      "regulation": "Regulation",
       "licensing": "Licensing",
       "medical": "Medical",
       "language": "Language",

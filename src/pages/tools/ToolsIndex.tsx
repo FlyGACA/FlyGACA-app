@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { TOOLS, TOOL_CATEGORIES, type ToolCategoryId, type ToolMeta } from '../../lib/tools';
 import { useToolPrefs, toggleFavorite, pushRecent } from '../../lib/toolPrefs';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { itemListLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import styles from './ToolsIndex.module.css';
@@ -50,7 +51,19 @@ function highlight(text: string, needle: string) {
 
 export function ToolsIndex() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.tools'), t('metaDesc.tools'));
+  // Expose the live tools as an ItemList so the hub reads as a catalog of its
+  // leaf pages for crawlers (the names resolve from i18n by id).
+  const toolListLd = useMemo(
+    () =>
+      itemListLd(
+        TOOLS.filter((x) => x.status === 'live').map((x) => ({
+          name: t(`tools.items.${x.id}.name`),
+          path: x.route,
+        })),
+      ),
+    [t],
+  );
+  usePageMeta(t('meta.tools'), t('metaDesc.tools'), toolListLd);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ToolCategoryId | 'all'>('all');
   const { favorites, recents } = useToolPrefs();

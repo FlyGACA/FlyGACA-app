@@ -6,6 +6,7 @@ import {
   langUrl,
   hreflangAlternates,
   ogLocale,
+  ogImageFor,
   canonicalRedirect,
   isMirrorHost,
 } from '../src/lib/seo';
@@ -42,6 +43,19 @@ describe('ogLocale', () => {
     expect(ogLocale('ar')).toBe('ar_SA');
     expect(ogLocale('en')).toBe('en_US');
     expect(ogLocale('zz')).toBe('en_US');
+  });
+});
+
+describe('ogImageFor', () => {
+  it('returns the per-section card for a known section (incl. leaf pages)', () => {
+    expect(ogImageFor('/tools')).toBe(`${SITE_ORIGIN}/img/og-tools.png`);
+    expect(ogImageFor('/tools/crosswind?foo=1')).toBe(`${SITE_ORIGIN}/img/og-tools.png`);
+    expect(ogImageFor('/guides/saudi-ppl-requirements')).toBe(`${SITE_ORIGIN}/img/og-guides.png`);
+    expect(ogImageFor('/study/quiz')).toBe(`${SITE_ORIGIN}/img/og-study.png`);
+  });
+  it('falls back to the default card elsewhere', () => {
+    expect(ogImageFor('/')).toBe(`${SITE_ORIGIN}/img/og-card.png`);
+    expect(ogImageFor('/about')).toBe(`${SITE_ORIGIN}/img/og-card.png`);
   });
 });
 

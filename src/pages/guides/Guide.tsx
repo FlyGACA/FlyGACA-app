@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
+import { Breadcrumbs } from '../../components/Breadcrumbs';
 import { adelLink } from '../../lib/adel';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { articleLd, breadcrumbLd } from '../../lib/jsonld';
+import { articleLd, breadcrumbLd, type Crumb } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
 import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '../../lib/guidePrefs';
 import {
@@ -34,6 +35,16 @@ export function Guide() {
   const base = `guides.items.${slug}`;
   const { bookmarks, read } = useGuidePrefs();
 
+  // One crumb trail feeds both the JSON-LD and the visible <Breadcrumbs/> so they
+  // can never drift. Empty for unknown slugs (the page renders <NotFound/>).
+  const crumbs: Crumb[] = valid
+    ? [
+        { name: t('nav.home'), path: '/' },
+        { name: t('guides.title'), path: '/guides' },
+        { name: t(`${base}.name`), path: `/guides/${slug}` },
+      ]
+    : [];
+
   // Hook must run before the early return; title is undefined for unknown slugs.
   usePageMeta(
     valid ? t(`${base}.name`) : undefined,
@@ -46,11 +57,7 @@ export function Guide() {
             path: `/guides/${slug}`,
             lang: i18n.language,
           }),
-          breadcrumbLd([
-            { name: t('nav.home'), path: '/' },
-            { name: t('guides.title'), path: '/guides' },
-            { name: t(`${base}.name`), path: `/guides/${slug}` },
-          ]),
+          breadcrumbLd(crumbs),
         ]
       : undefined,
   );
@@ -109,6 +116,7 @@ export function Guide() {
       <div className={styles.readingTrack} aria-hidden="true">
         <div className={styles.readingBar} style={{ inlineSize: `${progress}%` }} />
       </div>
+      <Breadcrumbs items={crumbs} />
       <p className={styles.back}>
         <Link to="/guides">← {t('guides.title')}</Link>
       </p>

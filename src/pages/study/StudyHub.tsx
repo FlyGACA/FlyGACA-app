@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, QuizData } from '../../lib/content';
 import { useStudyProgress } from '../../lib/studyProgress';
@@ -9,6 +10,7 @@ import { OutputGrid } from '../../components/calc/Grids';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { itemListLd } from '../../lib/jsonld';
 import styles from './Study.module.css';
 
 const MODES = [
@@ -23,7 +25,13 @@ const MODES = [
 
 export function StudyHub() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.study'), t('metaDesc.study'));
+  // Expose the study modes as an ItemList so the hub reads as a catalog of its
+  // study-mode pages for crawlers.
+  const modeListLd = useMemo(
+    () => itemListLd(MODES.map((m) => ({ name: t(`study.${m.key}`), path: m.to }))),
+    [t],
+  );
+  usePageMeta(t('meta.study'), t('metaDesc.study'), modeListLd);
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
   const { quizBest, gsDone, fcSrs, streak, examHistory, flagged, lastBank } = useStudyProgress();

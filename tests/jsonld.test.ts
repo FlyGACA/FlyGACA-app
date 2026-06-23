@@ -7,6 +7,7 @@ import {
   breadcrumbLd,
   courseLd,
   faqLd,
+  itemListLd,
   organizationLd,
   softwareAppLd,
   techArticleLd,
@@ -38,6 +39,20 @@ describe('breadcrumbLd', () => {
     const items = ld.itemListElement as Array<{ position: number; name: string; item: string }>;
     expect(items.map((i) => i.position)).toEqual([1, 2, 3]);
     expect(items[2].item).toBe(`${SITE_ORIGIN}/library/part-91`);
+  });
+});
+
+describe('itemListLd', () => {
+  it('numbers positions, counts items and canonicalizes each url', () => {
+    const ld = itemListLd([
+      { name: 'Crosswind', path: '/tools/crosswind' },
+      { name: 'Density altitude', path: '/tools/density-altitude' },
+    ]);
+    expect(ld['@type']).toBe('ItemList');
+    expect(ld.numberOfItems).toBe(2);
+    const items = ld.itemListElement as Array<{ position: number; name: string; url: string }>;
+    expect(items.map((i) => i.position)).toEqual([1, 2]);
+    expect(items[0].url).toBe(`${SITE_ORIGIN}/tools/crosswind`);
   });
 });
 
