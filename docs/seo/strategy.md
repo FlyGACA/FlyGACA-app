@@ -72,14 +72,17 @@ Each item: _target cluster · page · effort · expected impact_. Keep all new c
 
 **P3 — fill Saudi-specific guide gaps**
 6. **"How to become a pilot in Saudi Arabia"** (EN + AR) — high-intent, low local competition.
-   _Licensing/Commercial · GAP guide · M · Med–High._
-7. **"How to become a commercial pilot in Saudi Arabia"** (EN + AR). _GAP guide · M · Med._
+   _Licensing · GAP guide · M · Med–High._ ✅ **Shipped.**
+7. **"GACAR explained"** (EN + AR) — pillar for the regulation moat (new `regulation` topic).
+   _Regulation · GAP guide · M · Med–High._ ✅ **Shipped.**
 8. **ICAO English / class-1 medical explainers** tuned to the Saudi pathway. _GAP/expand
-   existing guides · M · Med._
+   existing guides · M · Med._ (Existing guides `icao-english-saelpt`, `gaca-medical-class-1`
+   already cover the basics; expand as needed.)
 
-**P4 — supporting / technical polish** (see audit items 2–5)
-9. `ItemList`/`CollectionPage` on the Study hub and Library section hubs.
-10. Per-section OG images (needs design assets) for better social CTR.
+**P4 — supporting / technical polish** (see audit "Changes made")
+9. `ItemList` on the Study hub. ✅ **Shipped** (Library sections are tabs, not routes — n/a).
+10. Per-section OG images. ✅ **Shipped** (generated via `sharp`).
+11. Visible breadcrumbs on leaf pages. ✅ **Shipped.**
 11. Visible HTML breadcrumbs on leaf pages; preload the primary font.
 
 ## Information architecture & internal linking

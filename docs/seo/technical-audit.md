@@ -48,25 +48,33 @@ Two findings circulated earlier that are **false** and should be disregarded:
 2. _"FAQ JSON-LD only on Home."_ Incorrect — `About.tsx` and `Pricing.tsx` already emit
    `faqLd(...)` from their visible Q&A copy.
 
-## Change made in this pass
+## Changes made
 
-- **Added `ItemList` structured data to the catalog hubs.** New `itemListLd()` builder in
-  `src/lib/jsonld.ts` (unit-tested in `tests/jsonld.test.ts`), wired into the Tools index
-  (`src/pages/tools/ToolsIndex.tsx`, live tools) and Guides index
-  (`src/pages/guides/GuidesIndex.tsx`, all guides). This was the single clearest
-  structured-data gap: the catalog pages previously exposed no list schema, so crawlers
-  could not read them as ordered lists of their leaf pages. Low-risk, additive, no new copy
-  or assets.
+- **`ItemList` structured data on the catalog hubs.** New `itemListLd()` builder in
+  `src/lib/jsonld.ts` (unit-tested in `tests/jsonld.test.ts`), wired into the Tools, Guides
+  and Study indexes. The catalog pages previously exposed no list schema, so crawlers could
+  not read them as ordered lists of their leaf pages.
+- **Visible breadcrumb nav** (`src/components/Breadcrumbs.tsx`) on guide and library-document
+  pages, fed by the same crumb array as the breadcrumb JSON-LD so the on-page nav and the
+  structured data never drift.
+- **Per-section Open Graph cards** for `/tools`, `/guides`, `/library`, `/study`, `/pricing`,
+  generated from a branded SVG with `sharp` (`scripts/build-og-images.mjs`, `npm run gen:og`);
+  `ogImageFor()` in `src/lib/seo.ts` selects the card per path and `usePageMeta` applies it.
+- **Two new content guides** (`how-to-become-a-pilot-in-saudi-arabia`, `gacar-explained`),
+  bilingual, interlinking the licensing cluster, library Parts and tools — executing the
+  highest-priority gaps from `strategy.md`.
+
+All additive and low-risk; `typecheck`/`lint`/`test`/`build` stay green and i18n parity holds.
 
 ## Genuine remaining opportunities (prioritized, mostly optional)
 
 | # | Opportunity | Why it matters | Effort | Status |
 | --- | --- | --- | --- | --- |
-| 1 | `ItemList` on the Tools and Guides hubs | Lets catalog pages surface as rich lists; helps crawlers map hub → leaf | S | **Done this pass** |
-| 2 | `ItemList` / `CollectionPage` on the Study hub (`/study`) and Library section hubs | Same benefit for the other two catalog surfaces | S | Recommended |
-| 3 | Per-section Open Graph images (tools / guides / library / study / pricing) | All pages currently share `/img/og-card.png`; differentiated cards lift social/share CTR | M (needs design assets) | Recommended — needs design |
-| 4 | Visible HTML breadcrumb nav (not only JSON-LD) on Library/Guides leaf pages | Reinforces IA for users and crawlers; the breadcrumb data already exists | S–M | Recommended |
-| 5 | Preload the primary web font in `index.html` | Minor LCP/CLS improvement (Core Web Vitals); fonts are preconnected but not preloaded | S | Recommended |
+| 1 | `ItemList` on the Tools and Guides hubs | Lets catalog pages surface as rich lists; helps crawlers map hub → leaf | S | **Done** |
+| 2 | `ItemList` on the Study hub (`/study`) | Same benefit for the third catalog surface. (Library section hubs are in-page tabs, not routes, so not applicable.) | S | **Done** |
+| 3 | Per-section Open Graph images (tools / guides / library / study / pricing) | Pages previously shared `/img/og-card.png`; differentiated cards lift social/share CTR | M | **Done** — generated from SVG via `sharp` (`scripts/build-og-images.mjs`) |
+| 4 | Visible HTML breadcrumb nav (not only JSON-LD) on Library/Guides leaf pages | Reinforces IA for users and crawlers; reuses the existing crumb data | S–M | **Done** — `src/components/Breadcrumbs.tsx` |
+| 5 | Preload the primary web font in `index.html` | Minor LCP/CLS improvement (Core Web Vitals) | S | Skipped — fonts already load non-blocking (preconnect + `media=print` flip + `display=swap`); a font-file preload risks Google Fonts URL churn for little gain |
 | 6 | Ensure prerender runs (or an equivalent SSR/snapshot path) on the production host | The SPA depends on JS rendering for most routes; prerender is Vercel-only and non-fatal, so non-prerendered hosts serve a thinner initial HTML to crawlers | M–L | Monitor — verify on the live host |
 | 7 | `HowTo` schema on calculators | Could match "how to calculate X" intent — but Google has largely deprecated HowTo rich results, so low ROI | S | Not recommended (low value) |
 
