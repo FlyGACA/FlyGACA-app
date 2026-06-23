@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import styles from './CaptainAvatar.module.css';
 
@@ -19,6 +21,9 @@ const poseSrc: Record<Exclude<AvatarPose, 'default'>, string> = {
   smile: '/img/captain/smile-256.png',
 };
 
+/** The idle loop — his canonical neutral portrait, breathing/blinking. */
+const liveSrc = '/img/captain/avatar-live.webp';
+
 interface CaptainAvatarProps {
   /** Visual footprint: sm (chat reply), md (cards), lg/xl (hero/welcome). */
   size?: AvatarSize;
@@ -28,6 +33,14 @@ interface CaptainAvatarProps {
   glow?: boolean;
   /** Presents him as live: a subtle idle "breathing" motion + an online status dot. */
   live?: boolean;
+  /**
+   * Plays the animated idle loop (`avatar-live.webp`) instead of the still — the
+   * real "alive" portrait. Only takes effect when `live` and motion is allowed;
+   * reserve it for a single focal avatar (welcome / the most-recent reply) so a
+   * long thread never runs many photoreal loops at once. Falls back to the still
+   * under reduced-motion or if the loop fails to load.
+   */
+  animated?: boolean;
   /** Decorative use (label already supplied by adjacent text) hides it from AT. */
   decorative?: boolean;
   className?: string;
@@ -46,16 +59,26 @@ export function CaptainAvatar({
   pose = 'default',
   glow = false,
   live = false,
+  animated = false,
   decorative = false,
   className,
 }: CaptainAvatarProps) {
   const { t } = useTranslation();
-  const src =
+  const reduceMotion = useReducedMotion();
+  // If the loop ever fails to load (missing/oversized), drop to the still for good.
+  const [loopFailed, setLoopFailed] = useState(false);
+
+  const stillSrc =
     pose !== 'default'
       ? poseSrc[pose]
       : size === 'lg' || size === 'xl'
         ? '/img/captain/avatar.png'
         : '/img/captain/avatar-256.png';
+
+  // The animated idle is the neutral portrait, so it overrides the pose still
+  // only when asked for, the surface is live, motion is allowed, and it loads.
+  const playLoop = live && animated && !reduceMotion && !loopFailed;
+  const src = playLoop ? liveSrc : stillSrc;
   const alt = decorative ? '' : t('chat.avatarAlt');
 
   const img = (
@@ -68,8 +91,11 @@ export function CaptainAvatar({
       loading="lazy"
       decoding="async"
       draggable={false}
+      onError={playLoop ? () => setLoopFailed(true) : undefined}
+      // CSS breathing only when live but *not* playing the loop — the WebP carries
+      // its own motion, so layering the keyframe on top would double it up.
       className={`${styles.avatar} ${sizeClass[size]} ${glow ? styles.glow : ''} ${
-        live ? styles.alive : ''
+        live && !playLoop ? styles.alive : ''
       } ${live ? '' : (className ?? '')}`}
     />
   );
