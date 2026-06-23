@@ -49,6 +49,21 @@
   transition: inline-size 0.4s var(--ease-entry);
 }
 
+/* Module-level "test yourself" CTA → the matching quiz bank. */
+.moduleQuiz {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 36px;
+  margin-block-end: var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--brand-hover);
+}
+.moduleQuiz:hover {
+  text-decoration: underline;
+}
+
 .lessons {
   list-style: none;
   padding: 0;
