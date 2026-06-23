@@ -525,7 +525,7 @@ export function Chat() {
         >
           {messages.length === 0 && (
             <div className={styles.welcome}>
-              <CaptainAvatar size="xl" glow pose="wave" className={styles.welcomeAvatar} />
+              <CaptainAvatar size="xl" glow live pose="wave" className={styles.welcomeAvatar} />
               <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
               <div className={styles.capabilities}>
                 {CAPABILITIES.map((c) => (
@@ -587,7 +587,7 @@ export function Chat() {
                 }`}
               >
                 {isAdel && (
-                  <CaptainAvatar size="sm" pose={pose} decorative className={styles.msgAvatar} />
+                  <CaptainAvatar size="sm" pose={pose} live decorative className={styles.msgAvatar} />
                 )}
                 <div className={styles.msgBody}>
                   {isAdel && !m.pending && (
@@ -742,7 +742,7 @@ function SourceList({ sources, valid }: { sources: ChatSource[]; valid: Set<stri
         {sources.map((s, j) => {
           const slug = partSlug(valid, s.part, s.section, s.citation);
           return (
-            <li key={j} className={styles.srcRow}>
+            <li key={j} className={`${styles.srcRow} ${s.verbatim ? styles.srcRowFull : ''}`}>
               {s.verbatim ? (
                 <details className={styles.srcDetails} open={j === firstVerbatim}>
                   <summary className={styles.srcCite}>

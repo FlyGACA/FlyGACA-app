@@ -52,8 +52,68 @@
   }
 }
 
+/* "Live" presentation — a subtle idle breathing so he reads as present, plus an
+   online status dot anchored to the portrait. */
+.liveWrap {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.alive {
+  animation: captain-breathe 6s var(--ease, ease-in-out) infinite;
+  /* The transform-driven breathing keeps a clean circular edge while moving. */
+  will-change: transform;
+}
+
+@keyframes captain-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1.5px) scale(1.02);
+  }
+}
+
+/* Neon-green "online" dot — same live language as the chat header status. */
+.statusDot {
+  position: absolute;
+  inset-block-end: 4%;
+  inset-inline-end: 4%;
+  inline-size: 26%;
+  block-size: 26%;
+  max-inline-size: 14px;
+  max-block-size: 14px;
+  min-inline-size: 8px;
+  min-block-size: 8px;
+  border-radius: 50%;
+  background: var(--neon-green);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 6px var(--neon-green);
+  animation: captain-online 2.5s ease-in-out infinite;
+}
+
+@keyframes captain-online {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 6px var(--neon-green);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 14px var(--neon-green);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .glow {
+  .glow,
+  .alive,
+  .statusDot {
     animation: none;
+  }
+  .statusDot {
+    box-shadow: 0 0 6px var(--neon-green);
   }
 }
