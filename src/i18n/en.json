@@ -281,11 +281,26 @@
   "tools": {
     "title": "Flight tools",
     "subtitle": "A growing suite of fast, shareable calculators and references for everyday flying. Every result links to Captain Adel for an explanation grounded in GACAR.",
+    "eyebrow": "Flight tools",
     "open": "Open",
     "new": "New",
     "empty": "No tools match that search.",
     "searchPlaceholder": "Search {{count}}+ tools — wind, fuel, currency…",
     "jumpNav": "Jump to category",
+    "popular": "Popular",
+    "sortBy": "Sort",
+    "sort": {
+      "category": "By category",
+      "name": "Name A–Z"
+    },
+    "view": "View",
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "stats": {
+      "tools": "Tools",
+      "categories": "Categories",
+      "soon": "Coming soon"
+    },
     "categories": {
       "wind-runway": "Wind & runway",
       "atmosphere": "Atmosphere & altitude",
