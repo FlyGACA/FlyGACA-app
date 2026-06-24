@@ -11,6 +11,7 @@
     "optimize:img": "node scripts/optimize-images.mjs",
     "gen:og": "node scripts/build-og-images.mjs",
     "build": "npm run build:sitemap && tsc -b && vite build",
+    "postbuild": "node scripts/prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply",
@@ -26,13 +27,13 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "cap:sync": "npm run build && cap sync",
+    "cap:sync": "SKIP_PRERENDER=1 npm run build && cap sync",
     "cap:open": "cap open ios",
     "serve": "npm run build && firebase emulators:start --only hosting",
-    "deploy": "npm run build && npm run prerender && firebase deploy --only hosting",
+    "deploy": "npm run build && firebase deploy --only hosting",
     "deploy:rules": "firebase deploy --only firestore:rules",
     "deploy:functions": "firebase deploy --only functions",
-    "deploy:all": "npm run build && npm run prerender && firebase deploy --only hosting,functions,firestore:rules"
+    "deploy:all": "npm run build && firebase deploy --only hosting,functions,firestore:rules"
   },
   "dependencies": {
     "@capacitor/android": "^6.2.1",

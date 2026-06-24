@@ -2,60 +2,10 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { loadJson } from '../../lib/content';
+import { liveTools } from '../../lib/tools';
 import { GUIDE_SLUGS } from '../../pages/guides/guides';
 import { OPEN_CMDK_EVENT } from './openCommandPalette';
 import styles from './CommandPalette.module.css';
-
-/** Every tool route in the app (mirrors router.tsx). Each maps to /tools/{id}
- *  with its name pulled from i18n `tools.items.{id}.name`. */
-const TOOL_IDS = [
-  'crosswind',
-  'density-altitude',
-  'tas',
-  'pressure-altitude',
-  'isa',
-  'altimeter',
-  'cloud-base',
-  'mach',
-  'climb-gradient',
-  'standard-rate-turn',
-  'wind-table',
-  'hydroplaning',
-  'takeoff-landing',
-  'wind-triangle',
-  'great-circle',
-  'one-in-sixty',
-  'tsd',
-  'top-of-descent',
-  'descent-vdp',
-  'fuel',
-  'specific-range',
-  'weight-balance',
-  'zulu-clock',
-  'airac',
-  'sun-times',
-  'medical-validity',
-  'flight-review',
-  'holding',
-  'procedural-separation',
-  'vfr-brief',
-  'loa',
-  'units',
-  'transponder',
-  'phonetic',
-  'metar',
-  'taf',
-  'notam',
-  'met-brief',
-  'chart-symbols',
-  'vfr-minima',
-  'aerodromes',
-  'critical-point',
-  'top-of-climb',
-  'turn-performance',
-  'pivotal-altitude',
-  'true-altitude',
-];
 
 type Filter = 'all' | 'reg' | 'aero' | 'tool' | 'guide';
 
@@ -123,15 +73,17 @@ export function CommandPalette() {
   const listboxId = useId();
   const optionId = (idx: number) => `${listboxId}-opt-${idx}`;
 
-  // Tools are static (names from i18n) so they need no fetch.
+  // Tools come straight from the registry (the single source of truth in
+  // src/lib/tools.ts) so the palette can never drift from the live catalog;
+  // names are resolved from i18n by id.
   const tools = useMemo<Item[]>(
     () =>
-      TOOL_IDS.map((id) => ({
+      liveTools().map((tool) => ({
         group: 'tool' as const,
-        code: toolCode(id),
-        name: t(`tools.items.${id}.name`),
-        tip: t(`tools.items.${id}.blurb`),
-        to: `/tools/${id}`,
+        code: toolCode(tool.id),
+        name: t(`tools.items.${tool.id}.name`),
+        tip: t(`tools.items.${tool.id}.blurb`),
+        to: tool.route,
       })),
     [t],
   );

@@ -1,17 +1,20 @@
 /**
- * Post-build static prerender for the high-value, JS-light landing routes. Boots
- * `vite preview` over the built dist/, drives Playwright's Chromium to each route,
- * waits for the real app to render, and writes the rendered HTML to
- * dist/<route>/index.html. Hosts then serve that snapshot (content paints at
- * CSS-load time, no JS) and the bundle still hydrates over it for interactivity.
+ * Static prerender: boots `vite preview` over the built dist/, drives Playwright's
+ * Chromium to each route, waits for the real app to render, and writes the
+ * rendered HTML to dist/<route>/index.html. Hosts then serve that snapshot
+ * (content + per-route meta/canonical/hreflang/JSON-LD paint at CSS-load time,
+ * no JS) and the bundle still hydrates over it for interactivity.
  *
- * Deliberately NOT part of `npm run build`: it's wired only into the Vercel
- * buildCommand (the host whose preview we can measure), and it is **non-fatal** —
- * any failure (e.g. the Chromium binary isn't installed) logs a warning and exits
- * 0, leaving Vite's own SPA/shell HTML in place. So it can never break a deploy.
+ * Runs from the npm `postbuild` hook, so EVERY `npm run build` produces snapshots
+ * regardless of host (Firebase App Hosting / classic Hosting / Vercel) — there's
+ * no per-host wiring to forget. It stays **non-fatal**: any failure (Chromium
+ * missing and un-installable, a route timing out) logs a warning and exits 0,
+ * leaving Vite's SPA/shell HTML in place, so it can never break a deploy. Set
+ * SKIP_PRERENDER=1 to opt out (e.g. native `cap:sync`, which needs no snapshots).
  *
- * Route set mirrors scripts/build-sitemap.mjs (router path literals + guide slugs),
- * minus private routes and the heavy library reader corpus.
+ * Route set mirrors scripts/build-sitemap.mjs: static router paths + guide slugs
+ * (always), plus the dynamic library reader corpus (GACAR parts / reference /
+ * handbook) up to PRERENDER_MAX snapshots (default 400; 0 = the whole corpus).
  */
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -19,11 +22,17 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { get } from 'node:http';
 
+if (process.env.SKIP_PRERENDER) {
+  console.log('prerender: skipped (SKIP_PRERENDER set)');
+  process.exit(0);
+}
+
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PRERENDER_PORT ?? 4181);
 const BASE = `http://localhost:${PORT}`;
 
 const read = (p) => readFileSync(join(root, p), 'utf8');
+const readJson = (p) => JSON.parse(read(p));
 
 // --- Route list (same source of truth as the sitemap) --------------------------
 const PRIVATE = new Set([
@@ -41,14 +50,39 @@ const guideSlugs = [
     .matchAll(/'([^']+)'/g),
 ].map((m) => m[1]);
 
-const routes = new Set(['/']);
+// High-value, finite landing routes — always prerendered.
+const baseRoutes = new Set(['/']);
 for (const p of routerPaths) {
   if (p.includes(':') || p === '*') continue; // skip dynamic + catch-all
   const norm = p === '/' ? '/' : `/${p.replace(/^\//, '')}`;
-  if (!PRIVATE.has(norm)) routes.add(norm);
+  if (!PRIVATE.has(norm)) baseRoutes.add(norm);
 }
-for (const slug of guideSlugs) routes.add(`/guides/${slug}`);
-const routeList = [...routes].sort();
+for (const slug of guideSlugs) baseRoutes.add(`/guides/${slug}`);
+
+// The dynamic reader corpus, enumerated from the same indexes the sitemap uses.
+// Ordered parts → reference → handbook so the highest-value docs win the budget.
+const corpus = [];
+for (const [seg, file] of [
+  ['/library', 'public/data/gacar-index.json'],
+  ['/library/reference', 'public/data/reference-index.json'],
+  ['/library/handbook', 'public/data/ebooks-index.json'],
+]) {
+  for (const d of readJson(file).documents) corpus.push(`${seg}/${d.slug}`);
+}
+
+// Cap total snapshots so the build stays bounded; base routes are never dropped,
+// the cap only trims the corpus tail (which the sitemap + static floor still cover).
+const MAX = Number(process.env.PRERENDER_MAX ?? 400);
+const baseList = [...baseRoutes];
+const budget = MAX === 0 ? corpus.length : Math.max(0, MAX - baseList.length);
+const corpusIncluded = corpus.slice(0, budget);
+const skipped = corpus.length - corpusIncluded.length;
+if (skipped > 0) {
+  console.log(
+    `prerender: corpus capped at PRERENDER_MAX=${MAX} — ${corpusIncluded.length}/${corpus.length} reader pages prerendered, ${skipped} left to the sitemap`,
+  );
+}
+const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();
 
 // --- Helpers -------------------------------------------------------------------
 function waitForServer(timeoutMs = 20000) {
@@ -73,6 +107,23 @@ function outPath(route) {
     : join(root, 'dist', route.replace(/^\//, ''), 'index.html');
 }
 
+// Launch Chromium; on a fresh CI image the browser binary may be absent, so try
+// a one-off `playwright install chromium` and retry once. A still-failing launch
+// throws up to the non-fatal catch, which ships the SPA/shell HTML as before.
+async function launchChromium(chromium) {
+  try {
+    return await chromium.launch();
+  } catch (err) {
+    console.warn(`prerender: chromium launch failed (${err.message}); installing browser…`);
+    await new Promise((resolve) => {
+      const inst = spawn('npx', ['playwright', 'install', 'chromium'], { cwd: root, stdio: 'ignore' });
+      inst.on('exit', resolve);
+      inst.on('error', resolve);
+    });
+    return chromium.launch();
+  }
+}
+
 // --- Main (non-fatal) ----------------------------------------------------------
 let preview;
 let browser;
@@ -85,7 +136,7 @@ try {
   });
   await waitForServer();
 
-  browser = await chromium.launch();
+  browser = await launchChromium(chromium);
   const page = await browser.newPage();
   let done = 0;
   for (const route of routeList) {
