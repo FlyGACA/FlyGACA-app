@@ -10,15 +10,36 @@
   gap: var(--space-8);
 }
 
-/* ── Hero header ── */
+/* ── Hero header — the signature falcon-stroke band (mirrors About/Schools). ── */
 .head {
+  position: relative;
+  overflow: hidden;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
+  padding: clamp(var(--space-6), 4vw, var(--space-10)) var(--space-6);
+  border-radius: var(--radius-xl);
+  border-block-end: 4px solid var(--gold);
+  background-color: var(--falcon-night);
+  background-image: var(--falcon-stroke);
+  color: var(--moon);
+}
+.glow {
+  position: absolute;
+  inset-block: -50%;
+  inset-inline-end: -15%;
+  inline-size: 60%;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--accent) 20%, transparent),
+    transparent 60%
+  );
+  pointer-events: none;
 }
 .eyebrow {
+  position: relative;
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.1em;
@@ -26,15 +47,14 @@
   color: var(--accent-bright);
 }
 .head h1 {
+  position: relative;
   font-size: var(--fs-h1);
-  background: var(--grad-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--moon);
   margin: 0;
 }
 .subtitle {
-  color: var(--text-muted);
+  position: relative;
+  color: var(--moon-soft);
   font-size: var(--fs-lg);
   line-height: var(--lh-snug);
   max-inline-size: 52ch;
@@ -43,12 +63,13 @@
 
 /* ── Monthly / Annual toggle ── */
 .toggle {
+  position: relative;
   display: inline-flex;
   gap: 2px;
   padding: 3px;
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--bento-surface) 88%, transparent);
   margin-block-start: var(--space-2);
 }
 .toggle button {
@@ -302,13 +323,6 @@
   letter-spacing: 0.05em;
   white-space: nowrap;
   box-shadow: var(--clay-shadow);
-}
-
-/* ── Section headings (compare / FAQ) ── */
-.sectionHead {
-  text-align: center;
-  font-size: var(--fs-h2);
-  margin-block-end: var(--space-5);
 }
 
 /* ── Comparison table ── */
