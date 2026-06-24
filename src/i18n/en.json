@@ -1937,6 +1937,23 @@
   "guides": {
     "title": "Guides",
     "subtitle": "Plain-English explainers for the Saudi licences, medicals, weather and airspace — each pointing you to the regulation and to Captain Adel for depth.",
+    "eyebrow": "Learn",
+    "popular": "Popular topics",
+    "sortBy": "Sort",
+    "sort": {
+      "topic": "By topic",
+      "title": "Title A–Z",
+      "time": "Reading time",
+      "level": "Level"
+    },
+    "view": "View",
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "stats": {
+      "guides": "Guides",
+      "sections": "Sections",
+      "topics": "Topics"
+    },
     "askAdel": "Learn more with Captain Adel",
     "tools": "Related tools",
     "items": {
