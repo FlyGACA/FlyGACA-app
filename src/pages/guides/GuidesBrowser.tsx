@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SectionHeader } from '../../components/SectionHeader';
+import { ViewToggle } from '../../components/hub/ViewToggle';
+import { SortSelect } from '../../components/hub/SortSelect';
+import { useViewMode } from '../../lib/useViewMode';
 import { readingMinutes } from '../../lib/readingTime';
 import { useGuidePrefs, toggleBookmark } from '../../lib/guidePrefs';
 import {
@@ -12,6 +15,7 @@ import {
   type GuideTopic,
 } from './guides';
 import styles from './Guides.module.css';
+import hub from '../../components/hub/hubList.module.css';
 
 interface Section {
   h: string;
@@ -49,16 +53,7 @@ const LEVEL_ORDER: Record<GuideLevel, number> = { beginner: 0, intermediate: 1, 
 type SortKey = 'topic' | 'title' | 'time' | 'level';
 const SORTS: SortKey[] = ['topic', 'title', 'time', 'level'];
 
-/** Grid vs list layout, persisted across visits (mirrors the Library hub). */
-type ViewMode = 'grid' | 'list';
 const VIEW_KEY = 'flygaca:guides-view';
-function readView(): ViewMode {
-  try {
-    return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'grid';
-  } catch {
-    return 'grid';
-  }
-}
 
 interface GuidesBrowserProps {
   /** Live search value (owned by the Learn hub so the hero search drives it). */
@@ -79,18 +74,9 @@ export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProp
   const { t } = useTranslation();
   const [level, setLevel] = useState<GuideLevel | 'all'>('all');
   const [sort, setSort] = useState<SortKey>('topic');
-  const [view, setView] = useState<ViewMode>(readView);
+  const [view, setView] = useViewMode(VIEW_KEY);
   const { bookmarks, read } = useGuidePrefs();
   const q = query.trim().toLowerCase();
-
-  // Persist the chosen view so it survives reloads.
-  useEffect(() => {
-    try {
-      localStorage.setItem(VIEW_KEY, view);
-    } catch {
-      /* storage unavailable — keep in-memory */
-    }
-  }, [view]);
 
   const guides = useMemo(
     () =>
@@ -190,7 +176,7 @@ export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProp
     const isSaved = bookmarks.includes(g.slug);
     const isRead = read.includes(g.slug);
     return (
-      <li key={g.slug} className={styles.rowWrap}>
+      <li key={g.slug} className={hub.rowWrap}>
         <Link to={`/guides/${g.slug}`} className={styles.row}>
           <span className={styles.rowLevel} data-level={g.level}>
             {t(`guides.level.${g.level}`)}
@@ -208,7 +194,7 @@ export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProp
         </Link>
         <button
           type="button"
-          className={`${styles.rowStar} ${isSaved ? styles.starOn : ''}`}
+          className={`${hub.rowStar} ${isSaved ? hub.starOn : ''}`}
           aria-label={t(isSaved ? 'guides.unbookmark' : 'guides.bookmark')}
           aria-pressed={isSaved}
           onClick={() => toggleBookmark(g.slug)}
@@ -220,7 +206,7 @@ export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProp
   };
 
   const renderDoc = (g: GuideRow) => (view === 'list' ? row(g) : card(g));
-  const listClass = `${styles.grid} ${view === 'list' ? styles.list : ''} stagger-grid`;
+  const listClass = `${hub.grid} ${view === 'list' ? hub.list : ''} stagger-grid`;
 
   return (
     <>
@@ -269,51 +255,19 @@ export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProp
             {t('guides.readProgress', { done: readCount, total: LIVE_GUIDE_SLUGS.length })}
           </p>
           <div className={styles.toolbarEnd}>
-            <label className={styles.sortField}>
-              <span className={styles.sortLabel}>{t('guides.sortBy')}</span>
-              <select
-                className={styles.sortSelect}
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortKey)}
-              >
-                {SORTS.map((s) => (
-                  <option key={s} value={s}>
-                    {t(`guides.sort.${s}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className={styles.viewToggle} role="group" aria-label={t('guides.view')}>
-              <button
-                type="button"
-                className={`${styles.viewBtn} ${view === 'grid' ? styles.viewBtnActive : ''}`}
-                aria-pressed={view === 'grid'}
-                aria-label={t('guides.viewGrid')}
-                title={t('guides.viewGrid')}
-                onClick={() => setView('grid')}
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                  <rect x="3" y="3" width="8" height="8" rx="1.5" />
-                  <rect x="13" y="3" width="8" height="8" rx="1.5" />
-                  <rect x="3" y="13" width="8" height="8" rx="1.5" />
-                  <rect x="13" y="13" width="8" height="8" rx="1.5" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className={`${styles.viewBtn} ${view === 'list' ? styles.viewBtnActive : ''}`}
-                aria-pressed={view === 'list'}
-                aria-label={t('guides.viewList')}
-                title={t('guides.viewList')}
-                onClick={() => setView('list')}
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                  <rect x="3" y="4" width="18" height="3" rx="1.5" />
-                  <rect x="3" y="10.5" width="18" height="3" rx="1.5" />
-                  <rect x="3" y="17" width="18" height="3" rx="1.5" />
-                </svg>
-              </button>
-            </div>
+            <SortSelect
+              label={t('guides.sortBy')}
+              value={sort}
+              onChange={(v) => setSort(v as SortKey)}
+              options={SORTS.map((s) => ({ value: s, label: t(`guides.sort.${s}`) }))}
+            />
+            <ViewToggle
+              value={view}
+              onChange={setView}
+              groupLabel={t('guides.view')}
+              gridLabel={t('guides.viewGrid')}
+              listLabel={t('guides.viewList')}
+            />
           </div>
         </div>
       </div>
