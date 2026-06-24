@@ -25,6 +25,8 @@ import {
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
+import { LibraryHero } from './LibraryHero';
+import type { HeroStat } from './LibraryHero';
 import styles from './Library.module.css';
 
 const MIN_QUERY = 3;
@@ -35,6 +37,49 @@ const PAGE = 30;
 const KINDS: LibraryKind[] = ['regulations', 'reference', 'handbook'];
 /** Per-category accent — cycles the Falcon hues from the design-token map. */
 const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
+
+/** How the browse grid is laid out. Persisted across visits. */
+type ViewMode = 'grid' | 'list';
+const VIEW_KEY = 'flygaca:library-view';
+function readView(): ViewMode {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'grid';
+  } catch {
+    return 'grid';
+  }
+}
+
+/** Sort orders. 'size' is pages (regulations) or sections (reference/handbooks). */
+type SortKey = 'part' | 'title' | 'size';
+/** Which sorts each corpus offers, in display order; the first is its default. */
+const SORTS: Record<LibraryKind, SortKey[]> = {
+  regulations: ['part', 'title', 'size'],
+  reference: ['title', 'size'],
+  handbook: ['title', 'size'],
+};
+/** The size sort's i18n label key differs by corpus (pages vs sections). */
+const SIZE_LABEL: Record<LibraryKind, string> = {
+  regulations: 'library.sort.pages',
+  reference: 'library.sort.sections',
+  handbook: 'library.sort.sections',
+};
+/** Quick-search seed terms shown as chips in the hero, per corpus. */
+const SUGGESTIONS: Record<LibraryKind, string[]> = {
+  regulations: ['Part 91', 'medical', 'licensing', 'airworthiness', 'operations'],
+  reference: ['weather', 'navigation', 'safety', 'airspace'],
+  handbook: ['weather', 'aerodrome', 'navigation', 'systems'],
+};
+
+/** Compare two docs under the active sort; ties break on title. */
+function compareDocs(a: CorpusDoc, b: CorpusDoc, sort: SortKey): number {
+  if (sort === 'title') return a.title.localeCompare(b.title);
+  if (sort === 'size') {
+    const sa = a.pages ?? a.sections ?? 0;
+    const sb = b.pages ?? b.sections ?? 0;
+    return sb - sa || a.title.localeCompare(b.title);
+  }
+  return (a.partNum ?? 0) - (b.partNum ?? 0) || a.title.localeCompare(b.title);
+}
 
 /** Split text on a case-insensitive needle, wrapping matches in <mark>. */
 function highlight(text: string, needle: string) {
@@ -65,16 +110,28 @@ export function Library() {
   // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
+  const [sort, setSort] = useState<SortKey>(() => SORTS[kind][0]);
+  const [view, setView] = useState<ViewMode>(readView);
   const prefs = useLibraryPrefs();
   const { bookmarks, recents, searches } = prefs;
   // When applying a saved search, carry its category across the corpus switch.
   const pendingCat = useRef<string | null>(null);
 
-  // Reset the category filter whenever the corpus changes (honouring a pending apply).
+  // Reset the category filter + sort whenever the corpus changes (honour pending apply).
   useEffect(() => {
     setCategory(pendingCat.current ?? 'all');
     pendingCat.current = null;
+    setSort(SORTS[kind][0]);
   }, [kind]);
+
+  // Persist the chosen view so it survives reloads.
+  useEffect(() => {
+    try {
+      localStorage.setItem(VIEW_KEY, view);
+    } catch {
+      /* storage unavailable — keep in-memory */
+    }
+  }, [view]);
 
   const applySearch = (s: { kind: LibraryKind; category: string; query: string }) => {
     setQuery(s.query);
@@ -117,8 +174,24 @@ export function Library() {
           (d.part ? `part ${d.part}`.includes(needle) : false) ||
           (d.badge ? d.badge.toLowerCase().includes(needle) : false),
       )
-      .sort((a, b) => (a.partNum ?? 0) - (b.partNum ?? 0) || a.title.localeCompare(b.title));
-  }, [data, category, q]);
+      .sort((a, b) => compareDocs(a, b, sort));
+  }, [data, category, q, sort]);
+
+  // Animated corpus figures for the hero readout. Pages (regulations) or
+  // sections (reference/handbooks), whichever the corpus carries.
+  const stats = useMemo<HeroStat[]>(() => {
+    if (!data) return [];
+    const pages = data.documents.reduce((s, d) => s + (d.pages ?? 0), 0);
+    const sections = data.documents.reduce((s, d) => s + (d.sections ?? 0), 0);
+    const out: HeroStat[] = [
+      { label: t('library.stats.documents'), value: data.count, tone: 'cyan' },
+    ];
+    if (pages > 0) out.push({ label: t('library.stats.pages'), value: pages, tone: 'green' });
+    else if (sections > 0)
+      out.push({ label: t('library.stats.sections'), value: sections, tone: 'green' });
+    out.push({ label: t('library.stats.categories'), value: data.categories.length, tone: 'gold' });
+    return out;
+  }, [data, t]);
 
   // slug → category for the active corpus, so full-text hits can honour the chips.
   const docCat = useMemo(() => {
@@ -184,12 +257,15 @@ export function Library() {
       .map((c) => ({ id: c.id, label: c.label, docs: byCat.get(c.id) as CorpusDoc[] }));
   }, [data, docs]);
 
-  const renderCard = (d: CorpusDoc) => {
-    const meta = d.pages
+  const docMeta = (d: CorpusDoc) =>
+    d.pages
       ? `${d.pages} ${t('library.pages')}`
       : d.sections
         ? `${d.sections} ${t('document.sections')}`
         : '';
+
+  const renderCard = (d: CorpusDoc) => {
+    const meta = docMeta(d);
     const marked = isBookmarked(prefs, kind, d.slug);
     return (
       <li key={d.slug} className={styles.cardWrap}>
@@ -224,16 +300,49 @@ export function Library() {
     );
   };
 
+  // Compact list row — same data as the card, denser for scanning long corpora.
+  const renderRow = (d: CorpusDoc) => {
+    const meta = docMeta(d);
+    const marked = isBookmarked(prefs, kind, d.slug);
+    return (
+      <li key={d.slug} className={styles.rowWrap}>
+        <Link
+          to={`${CORPUS[kind].base}/${d.slug}`}
+          className={styles.row}
+          style={{ '--cat-color': catColor(d.category) } as CSSProperties}
+        >
+          <span className={styles.rowBar} aria-hidden="true" />
+          <span className={styles.rowBadge}>
+            {d.part ? `${t('library.part')} ${d.part}` : d.badge}
+          </span>
+          <span className={styles.rowTitle}>{d.title}</span>
+          <span className={styles.rowCat}>{categoryLabel(d.category)}</span>
+          {meta && <span className={styles.rowMeta}>{meta}</span>}
+        </Link>
+        <button
+          type="button"
+          className={`${styles.rowStar} ${marked ? styles.starOn : ''}`}
+          aria-pressed={marked}
+          aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
+          onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
+        >
+          {marked ? '★' : '☆'}
+        </button>
+      </li>
+    );
+  };
+
+  const renderDoc = (d: CorpusDoc) => (view === 'list' ? renderRow(d) : renderCard(d));
+  const listClass = `${styles.grid} ${view === 'list' ? styles.list : ''} stagger-grid`;
+
   return (
     <section className={`container ${styles.page}`}>
-      <header className={styles.head}>
-        <p className={styles.eyebrow}>{t('library.eyebrow')}</p>
-        <h1>{t('library.title')}</h1>
-        <p className={styles.subtitle}>{t('library.subtitle')}</p>
-        <Link className={styles.chartsLink} to="/library/charts">
-          {t('library.viewCharts')} →
-        </Link>
-      </header>
+      <LibraryHero
+        query={query}
+        onQueryChange={setQuery}
+        stats={stats}
+        suggestions={SUGGESTIONS[kind]}
+      />
 
       <OfflineDownloads />
 
@@ -308,15 +417,30 @@ export function Library() {
       {data && (
         <>
           <div className={styles.controls}>
-            <div className={styles.searchRow}>
-              <input
-                className={styles.search}
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t('library.searchPlaceholder')}
-                aria-label={t('library.searchPlaceholder')}
-              />
+            <div className={styles.chips} role="group" aria-label={t('library.eyebrow')}>
+              <button
+                type="button"
+                className={`${styles.chip} ${category === 'all' ? styles.chipActive : ''}`}
+                onClick={() => setCategory('all')}
+              >
+                {t('library.all')} <span className={styles.count}>{data.count}</span>
+              </button>
+              {data.categories.map((c) => {
+                const n = data.documents.filter((d) => d.category === c.id).length;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className={`${styles.chip} ${category === c.id ? styles.chipActive : ''}`}
+                    onClick={() => setCategory(c.id)}
+                  >
+                    {c.label} <span className={styles.count}>{n}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className={styles.toolbar}>
               {(query.trim() || category !== 'all') && (
                 <button
                   type="button"
@@ -326,8 +450,59 @@ export function Library() {
                   ☆ {t('library.saveSearch')}
                 </button>
               )}
+              <div className={styles.toolbarEnd}>
+                <label className={styles.sortField}>
+                  <span className={styles.sortLabel}>{t('library.sortBy')}</span>
+                  <select
+                    className={styles.sortSelect}
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as SortKey)}
+                  >
+                    {SORTS[kind].map((s) => (
+                      <option key={s} value={s}>
+                        {t(s === 'size' ? SIZE_LABEL[kind] : `library.sort.${s}`)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className={styles.viewToggle} role="group" aria-label={t('library.view')}>
+                  <button
+                    type="button"
+                    className={`${styles.viewBtn} ${view === 'grid' ? styles.viewBtnActive : ''}`}
+                    aria-pressed={view === 'grid'}
+                    aria-label={t('library.viewGrid')}
+                    title={t('library.viewGrid')}
+                    onClick={() => setView('grid')}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                      <rect x="3" y="3" width="8" height="8" rx="1.5" />
+                      <rect x="13" y="3" width="8" height="8" rx="1.5" />
+                      <rect x="3" y="13" width="8" height="8" rx="1.5" />
+                      <rect x="13" y="13" width="8" height="8" rx="1.5" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.viewBtn} ${view === 'list' ? styles.viewBtnActive : ''}`}
+                    aria-pressed={view === 'list'}
+                    aria-label={t('library.viewList')}
+                    title={t('library.viewList')}
+                    onClick={() => setView('list')}
+                  >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                      <rect x="3" y="4" width="18" height="3" rx="1.5" />
+                      <rect x="3" y="10.5" width="18" height="3" rx="1.5" />
+                      <rect x="3" y="17" width="18" height="3" rx="1.5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
-            <p className={styles.searchHint}>{t('library.searchHint')}</p>
+
+            {query.trim() && !fullText && (
+              <p className={styles.searchHint}>{t('library.searchHint')}</p>
+            )}
+
             {searches.length > 0 && (
               <div className={styles.savedSearches} aria-label={t('library.savedSearches')}>
                 {searches.map((s) => (
@@ -352,34 +527,12 @@ export function Library() {
                 ))}
               </div>
             )}
-            <div className={styles.chips} role="group" aria-label={t('library.eyebrow')}>
-              <button
-                type="button"
-                className={`${styles.chip} ${category === 'all' ? styles.chipActive : ''}`}
-                onClick={() => setCategory('all')}
-              >
-                {t('library.all')} <span className={styles.count}>{data.count}</span>
-              </button>
-              {data.categories.map((c) => {
-                const n = data.documents.filter((d) => d.category === c.id).length;
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    className={`${styles.chip} ${category === c.id ? styles.chipActive : ''}`}
-                    onClick={() => setCategory(c.id)}
-                  >
-                    {c.label} <span className={styles.count}>{n}</span>
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {docs.length === 0 ? (
             <p className={styles.empty}>{t('library.empty')}</p>
           ) : q ? (
-            <ul className={`${styles.grid} stagger-grid`}>{docs.map(renderCard)}</ul>
+            <ul className={listClass}>{docs.map(renderDoc)}</ul>
           ) : (
             groups.map((g) => (
               <section key={g.id} className={styles.group}>
@@ -388,7 +541,7 @@ export function Library() {
                   tone={catColor(g.id)}
                   count={t('library.docsCount', { count: g.docs.length })}
                 />
-                <ul className={`${styles.grid} stagger-grid`}>{g.docs.map(renderCard)}</ul>
+                <ul className={listClass}>{g.docs.map(renderDoc)}</ul>
               </section>
             ))
           )}
