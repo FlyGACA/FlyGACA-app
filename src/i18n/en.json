@@ -57,6 +57,7 @@
     "captainAdel": "Captain Adel",
     "captainShort": "Adel",
     "tools": "Tools",
+    "learn": "Learn",
     "guides": "Guides",
     "study": "Study",
     "pricing": "Pricing",
@@ -275,6 +276,13 @@
         "heading": "Study guides",
         "count": "guides",
         "cta": "Browse guides"
+      },
+      "learn": {
+        "eyebrow": "Learn",
+        "heading": "Guides & practice",
+        "guides": "guides",
+        "questions": "questions",
+        "cta": "Start learning"
       }
     }
   },
@@ -1934,6 +1942,21 @@
     "last": "Last",
     "month": "Month"
   },
+  "learn": {
+    "eyebrow": "Learn",
+    "title": "Learn to fly the Saudi skies.",
+    "subtitle": "Plain-English guides and active practice — quizzes, flashcards, ground school and mock exams — in one place. Each points you to the regulation and to Captain Adel for depth.",
+    "popular": "Popular topics",
+    "tabs": {
+      "guides": "Guides",
+      "practice": "Practice"
+    },
+    "stats": {
+      "guides": "Guides",
+      "questions": "Questions",
+      "lessons": "Lessons"
+    }
+  },
   "guides": {
     "title": "Guides",
     "subtitle": "Plain-English explainers for the Saudi licences, medicals, weather and airspace — each pointing you to the regulation and to Captain Adel for depth.",
@@ -2941,6 +2964,7 @@
     "sheets": "Study Sheets",
     "chat": "Captain Adel — AI Flight Instructor",
     "tools": "Flight Tools & Calculators",
+    "learn": "Learn — Guides & Study",
     "guides": "Pilot Guides",
     "study": "GACAR Study & Exam Prep",
     "quiz": "Quizzes",
@@ -2965,6 +2989,7 @@
     "sheets": "One-page study sheets for the Saudi PPL, CPL, IR, Class 1 medical, licence conversion and SAELPT — read or download. Free study aids from Fly GACA.",
     "chat": "Ask Captain Adel, the AI flight instructor that answers from Saudi GACAR with the exact Part and section cited. Independent study help — always verify against GACA.",
     "tools": "54 free flight calculators — crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders and more — built for Saudi pilots, instructors and cadets.",
+    "learn": "Learn to fly in Saudi Arabia: plain-language GACAR guides plus active practice — quizzes, flashcards, ground school and a timed mock exam — each citing the exact Part. Free.",
     "guides": "Plain-language guides to becoming a pilot in Saudi Arabia: PPL and CPL requirements, the GACA medical, licence conversion and SAELPT — each citing the GACAR Part.",
     "study": "Prepare for Saudi civil-aviation exams with GACAR quizzes, flashcards, ground school and a timed mock exam — every answer linked to the regulation. Free.",
     "quiz": "Practise GACAR written-exam questions across 12 domains, each explanation deep-linked to the cited Part and section. Free Saudi aviation exam prep from Fly GACA.",

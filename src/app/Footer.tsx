@@ -68,10 +68,7 @@ export function Footer() {
                 <Link to="/tools">{t('footer.flightTools')}</Link>
               </li>
               <li>
-                <Link to="/guides">{t('nav.guides')}</Link>
-              </li>
-              <li>
-                <Link to="/study">{t('nav.study')}</Link>
+                <Link to="/learn">{t('nav.learn')}</Link>
               </li>
               <li>
                 <Link to="/pricing">{t('nav.pricing')}</Link>

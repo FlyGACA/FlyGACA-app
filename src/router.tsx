@@ -1,5 +1,5 @@
 import { lazy, type ComponentType } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
 
@@ -89,12 +89,13 @@ const TurnPerformance = lazyNamed(() => import('./pages/tools/TurnPerformance'),
 const PivotalAltitude = lazyNamed(() => import('./pages/tools/PivotalAltitude'), 'PivotalAltitude');
 const TrueAltitude = lazyNamed(() => import('./pages/tools/TrueAltitude'), 'TrueAltitude');
 
+// Learn (unified Guides + Study hub)
+const LearnHub = lazyNamed(() => import('./pages/learn/LearnHub'), 'LearnHub');
+
 // Guides
-const GuidesIndex = lazyNamed(() => import('./pages/guides/GuidesIndex'), 'GuidesIndex');
 const Guide = lazyNamed(() => import('./pages/guides/Guide'), 'Guide');
 
 // Study
-const StudyHub = lazyNamed(() => import('./pages/study/StudyHub'), 'StudyHub');
 const Quiz = lazyNamed(() => import('./pages/study/Quiz'), 'Quiz');
 const Flashcards = lazyNamed(() => import('./pages/study/Flashcards'), 'Flashcards');
 const GroundSchool = lazyNamed(() => import('./pages/study/GroundSchool'), 'GroundSchool');
@@ -195,9 +196,11 @@ export const router = createBrowserRouter([
       { path: 'tools/turn-performance', element: <TurnPerformance /> },
       { path: 'tools/pivotal-altitude', element: <PivotalAltitude /> },
       { path: 'tools/true-altitude', element: <TrueAltitude /> },
-      { path: 'guides', element: <GuidesIndex /> },
+      { path: 'learn', element: <LearnHub /> },
+      // The former Guides + Study hubs are merged into /learn; keep their URLs working.
+      { path: 'guides', element: <Navigate to="/learn" replace /> },
       { path: 'guides/:slug', element: <Guide /> },
-      { path: 'study', element: <StudyHub /> },
+      { path: 'study', element: <Navigate to="/learn?tab=practice" replace /> },
       { path: 'study/quiz', element: <Quiz /> },
       { path: 'study/flashcards', element: <Flashcards /> },
       { path: 'study/groundschool', element: <GroundSchool /> },

@@ -88,6 +88,7 @@ const BY_ROUTE: Record<string, FC<IconProps>> = {
   '/library': LibraryIcon,
   '/chat': AdelIcon,
   '/tools': ToolsIcon,
+  '/learn': GuidesIcon,
   '/study': StudyIcon,
   '/guides': GuidesIcon,
   '/pricing': PricingIcon,

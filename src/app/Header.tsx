@@ -18,8 +18,7 @@ const NAV: NavItem[] = [
   { to: '/library', key: 'nav.library' },
   { to: '/chat', key: 'nav.captainAdel' },
   { to: '/tools', key: 'nav.tools' },
-  { to: '/guides', key: 'nav.guides' },
-  { to: '/study', key: 'nav.study' },
+  { to: '/learn', key: 'nav.learn' },
   { to: '/pricing', key: 'nav.pricing' },
   { to: '/about', key: 'nav.about' },
   { to: '/account', key: 'nav.account' },
@@ -28,7 +27,7 @@ const NAV: NavItem[] = [
 // The four destinations surfaced as quick-access tabs in the mobile bottom dock;
 // everything else falls into the dock's "More" sheet. Adjust this set to retune
 // which routes get a dedicated tab.
-const PRIMARY_KEYS = new Set(['/library', '/chat', '/tools', '/study']);
+const PRIMARY_KEYS = new Set(['/library', '/chat', '/tools', '/learn']);
 const PRIMARY = NAV.filter((item) => PRIMARY_KEYS.has(item.to));
 const MORE = NAV.filter((item) => !PRIMARY_KEYS.has(item.to));
 
