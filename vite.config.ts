@@ -110,13 +110,24 @@ export default defineConfig(({ mode }) => {
           globPatterns: ['**/*.{js,css,woff2,png,svg,ico,webp}', 'index.html'],
           globIgnores: ['**/data/**'],
           maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+          // Offline navigations to deep client routes (e.g. /library/...) resolve
+          // to the precached SPA shell; /api and /data are excluded so the proxy
+          // and the network-first data rule below keep handling them.
+          navigateFallback: 'index.html',
+          navigateFallbackDenylist: [/^\/api\//, /^\/data\//],
+          // Purge superseded precaches from earlier releases on activate.
+          cleanupOutdatedCaches: true,
           runtimeCaching: [
             {
               urlPattern: ({ url }) => url.pathname.startsWith('/data/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'flygaca-data',
+                // Fall back to cache quickly when offline/slow instead of hanging.
+                networkTimeoutSeconds: 3,
                 expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                // Only cache successful (or opaque) responses, never errors.
+                cacheableResponse: { statuses: [0, 200] },
               },
             },
           ],

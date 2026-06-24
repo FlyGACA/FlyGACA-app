@@ -25,7 +25,7 @@ Two things in the repo now point in different directions:
 
 | Artifact | What it implies |
 |---|---|
-| [`functions/api/[[path]].ts`](../functions/api/%5B%5Bpath%5D%5D.ts) | A **Cloudflare Pages** proxy that forwards `/api/*` to `https://flygaca-app.web.app`. Its comment states the real RAG backend lives in the **separate `flygaca/flygaca` repo** and is "not rebuilt." |
+| [`worker/index.ts`](../worker/index.ts) | A **Cloudflare Worker** proxy that forwards `/api/*` to the deployed Firebase gateway at `https://flygaca-app.web.app` — it treats Captain Adel's brain as an **already-hosted origin**, not something rebuilt at deploy time. |
 | [`functions/src/genkit-sample.ts`](../functions/src/genkit-sample.ts) | A **fresh Firebase Cloud Functions + Genkit** scaffold (Gemini via `@genkit-ai/google-genai`, `onCallGenkit`, Firebase telemetry, `defineSecret("GOOGLE_GENAI_API_KEY")`, Node 24, functions v7). |
 
 **The decision this design resolves:** *if* Captain Adel's brain is to be (re)built in this repo on
@@ -144,7 +144,7 @@ flowchart TD
   end
 
   subgraph Edge["Same-origin edge (no CORS / no CSP change)"]
-    CF["Cloudflare Pages proxy<br/>functions/api/[[path]].ts"]
+    CF["Cloudflare Worker proxy<br/>worker/index.ts"]
     HOST["Firebase Hosting rewrite<br/>flygaca-app.web.app /api/**"]
   end
 

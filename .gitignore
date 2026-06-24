@@ -37,6 +37,9 @@ android/app/build/
 firebase-debug.log
 firestore-debug.log
 
+# Cloudflare Wrangler (local dev cache + state)
+.wrangler/
+
 # Logs
 npm-debug.log*
 *.log
