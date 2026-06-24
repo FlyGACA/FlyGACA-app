@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountUp } from './CountUp';
 import styles from './SearchHero.module.css';
@@ -39,6 +39,8 @@ interface SearchHeroProps {
   chips?: HeroChip[];
   /** Optional trailing element in the stats row (e.g. a "Browse charts →" link). */
   trailing?: ReactNode;
+  /** Forwarded to the search input (e.g. to support a "/"-to-focus shortcut). */
+  inputRef?: Ref<HTMLInputElement>;
 }
 
 const TONE_VAR: Record<HeroStat['tone'], string> = {
@@ -64,6 +66,7 @@ export function SearchHero({
   chipsLabel,
   chips = [],
   trailing,
+  inputRef,
 }: SearchHeroProps) {
   const { t } = useTranslation();
 
@@ -83,6 +86,7 @@ export function SearchHero({
             </svg>
           </span>
           <input
+            ref={inputRef}
             className={styles.search}
             type="search"
             value={query}
