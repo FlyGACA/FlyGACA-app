@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
+import { SectionHeader } from '../components/SectionHeader';
 import { usePageMeta } from '../lib/usePageMeta';
 import { faqLd } from '../lib/jsonld';
 import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from '../lib/billing';
@@ -93,6 +94,7 @@ export function Pricing() {
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>
+        <div className={styles.glow} aria-hidden="true" />
         <p className={styles.eyebrow}>{t('pricing.eyebrow')}</p>
         <h1>{t('pricing.title')}</h1>
         <p className={styles.subtitle}>{t('pricing.subtitle')}</p>
@@ -214,9 +216,7 @@ export function Pricing() {
       </section>
 
       <section className={styles.compareSection} aria-labelledby="compare-head">
-        <h2 id="compare-head" className={styles.sectionHead}>
-          {t('pricing.compareHead')}
-        </h2>
+        <SectionHeader id="compare-head" title={t('pricing.compareHead')} tone="var(--cat-1)" />
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
@@ -264,9 +264,7 @@ export function Pricing() {
       </section>
 
       <section className={styles.faqSection} aria-labelledby="faq-head">
-        <h2 id="faq-head" className={styles.sectionHead}>
-          {t('pricing.faqHead')}
-        </h2>
+        <SectionHeader id="faq-head" title={t('pricing.faqHead')} tone="var(--cat-5)" />
         <div className={styles.faqList}>
           {faqs.map((item) => (
             <details key={item.q} className={styles.faq}>
