@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
@@ -28,6 +29,12 @@ interface Faq {
 }
 
 const FEATURE_TONES: BentoTone[] = ['default', 'cyan', 'green'];
+
+/** Neon tones cycled across the credibility stat tiles (mirrors SearchHero). */
+const STAT_TONES = ['var(--neon-cyan)', 'var(--neon-green)', 'var(--gold)'];
+
+/** Category accents cycled across the "what it is / isn't" cards. */
+const CARD_TONES = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 /** Render a stat value, animating a leading integer with CountUp ("74" → counts up). */
 function StatValue({ value }: { value: string }) {
@@ -68,6 +75,7 @@ export function About() {
   return (
     <div className={`container ${styles.page}`}>
       <header className={styles.hero}>
+        <div className={styles.glow} aria-hidden="true" />
         <div className={styles.heroText}>
           <p className={styles.eyebrow}>{t('about.eyebrow')}</p>
           <h1 className={styles.title}>{t('about.title')}</h1>
@@ -76,10 +84,14 @@ export function About() {
         <CaptainAvatar size="xl" glow pose="smile" className={styles.heroAvatar} decorative />
       </header>
 
-      {/* Credibility strip. */}
+      {/* Credibility strip — neon stat tiles. */}
       <ul className={styles.stats}>
         {stats.map((s, i) => (
-          <li key={i} className={styles.stat}>
+          <li
+            key={i}
+            className={styles.stat}
+            style={{ '--stat-tone': STAT_TONES[i % STAT_TONES.length] } as CSSProperties}
+          >
             <span className={styles.statValue}>
               <StatValue value={s.value} />
             </span>
@@ -88,19 +100,26 @@ export function About() {
         ))}
       </ul>
 
-      {/* What it is / isn't / how / who / source — as claymorphic cards. */}
-      <div className={styles.cards}>
-        {sections.map((s, i) => (
-          <section key={i} className={styles.card}>
-            <h2 className={styles.cardTitle}>{s.h}</h2>
-            <p className={styles.cardBody}>{s.p}</p>
-          </section>
-        ))}
-      </div>
+      {/* What it is / isn't / how / who / source — tone-coded claymorphic cards. */}
+      <section className={styles.block} aria-labelledby="about-sections">
+        <SectionHeader id="about-sections" title={t('about.sectionsHead')} tone="var(--cat-1)" />
+        <div className={styles.cards}>
+          {sections.map((s, i) => (
+            <article
+              key={i}
+              className={styles.card}
+              style={{ '--cat-color': CARD_TONES[i % CARD_TONES.length] } as CSSProperties}
+            >
+              <h3 className={styles.cardTitle}>{s.h}</h3>
+              <p className={styles.cardBody}>{s.p}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* How it works — Find → Ask → Verify. */}
       <section className={styles.block} aria-labelledby="about-how">
-        <SectionHeader id="about-how" title={t('about.howItWorks.head')} />
+        <SectionHeader id="about-how" title={t('about.howItWorks.head')} tone="var(--cat-4)" />
         <ol className={styles.steps}>
           {steps.map((s, i) => (
             <li key={i} className={styles.step}>
@@ -145,7 +164,7 @@ export function About() {
 
       {/* FAQ. */}
       <section className={styles.faqWrap} aria-labelledby="about-faq">
-        <SectionHeader id="about-faq" title={t('about.faqHead')} />
+        <SectionHeader id="about-faq" title={t('about.faqHead')} tone="var(--cat-5)" />
         <div className={styles.faqList}>
           {faqs.map((item) => (
             <details key={item.q} className={styles.faq}>
@@ -156,8 +175,8 @@ export function About() {
         </div>
       </section>
 
-      <section className={styles.contactSection}>
-        <h2 className={styles.contactHead}>{t('about.contactTitle')}</h2>
+      <section className={styles.contactSection} aria-labelledby="about-contact">
+        <SectionHeader id="about-contact" title={t('about.contactTitle')} tone="var(--cat-3)" />
         <ul className={styles.contacts}>
           {contacts.map((c) => (
             <li key={c.email} className={styles.contact}>
