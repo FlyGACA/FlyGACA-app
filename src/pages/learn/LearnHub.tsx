@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SearchHero } from '../../components/SearchHero';
 import type { HeroStat } from '../../components/SearchHero';
+import { SectionHeader } from '../../components/SectionHeader';
 import { Disclaimer } from '../../components/Disclaimer';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
@@ -18,6 +19,30 @@ const TABS: Tab[] = ['guides', 'practice'];
 
 /** Curated quick-pick topics surfaced as chips in the hero (jump into the Guides tab). */
 const POPULAR_TOPICS: GuideTopic[] = ['licensing', 'medical', 'airspace', 'weather', 'planning'];
+
+/**
+ * Study-relevant reference tools cross-linked from the Learn hub — the lookups and
+ * rule calculators a learner reaches for while studying. These live canonically
+ * under /tools; we only surface them here (id → /tools/<id>, label from the shared
+ * `tools.items.<id>.name` keys). Ordered by category: quick reference, GACAR rules,
+ * currency/validity, directory.
+ */
+const REFERENCE_TOOLS = [
+  'transponder',
+  'phonetic',
+  'units',
+  'chart-symbols',
+  'vfr-minima',
+  'oxygen',
+  'fuel-reserves',
+  'conversion-checker',
+  'part61-currency',
+  'medical-validity',
+  'flight-review',
+  'aerodromes',
+  'airspace',
+  'definitions',
+] as const;
 
 /**
  * The unified "Learn" hub — one search-first hero over a Guides ⇄ Practice
@@ -54,6 +79,10 @@ export function LearnHub() {
           path: `/guides/${slug}`,
         })),
         ...STUDY_MODES.map((m) => ({ name: t(`study.${m.key}`), path: m.to })),
+        ...REFERENCE_TOOLS.map((id) => ({
+          name: t(`tools.items.${id}.name`),
+          path: `/tools/${id}`,
+        })),
       ]),
     [t],
   );
@@ -116,6 +145,22 @@ export function LearnHub() {
       ) : (
         <StudyDashboard />
       )}
+
+      <section className={styles.refTools} aria-labelledby="learn-reference-tools">
+        <SectionHeader
+          title={t('learn.referenceTools')}
+          as="h2"
+          id="learn-reference-tools"
+          tone="var(--neon-cyan)"
+        />
+        <nav className={styles.refChips} aria-label={t('learn.referenceTools')}>
+          {REFERENCE_TOOLS.map((id) => (
+            <Link key={id} to={`/tools/${id}`} className={styles.refChip}>
+              {t(`tools.items.${id}.name`)}
+            </Link>
+          ))}
+        </nav>
+      </section>
 
       <div className={styles.footnote}>
         <Disclaimer compact />
