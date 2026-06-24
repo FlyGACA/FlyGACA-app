@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
@@ -21,6 +21,9 @@ interface Faq {
 }
 
 const FEATURE_TONES: BentoTone[] = ['default', 'cyan', 'green'];
+
+/** Neon tones cycled across the "what every seat includes" stat tiles (mirrors About). */
+const STAT_TONES = ['var(--neon-cyan)', 'var(--neon-green)', 'var(--gold)'];
 
 // "What every seat includes" — truthful product scope (gacar-index Parts, the
 // tools catalogue, ground-school modules from groundschool.json). No customer
@@ -61,6 +64,7 @@ export function Schools() {
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.hero}>
+        <div className={styles.glow} aria-hidden="true" />
         <div className={styles.heroText}>
           <p className={styles.eyebrow}>{t('schools.eyebrow')}</p>
           <h1>{t('schools.title')}</h1>
@@ -69,19 +73,28 @@ export function Schools() {
         <CaptainAvatar size="xl" glow pose="smile" decorative className={styles.heroAvatar} />
       </header>
 
-      {/* What every seat includes — truthful product scope. */}
+      {/* What every seat includes — truthful product scope, neon stat tiles. */}
       <div className={styles.includes}>
         <p className={styles.includesLabel}>{t('schools.includesLabel')}</p>
         <ul className={styles.stats}>
-          {SEAT_STATS.map((s) => (
-            <li key={s.key} className={styles.stat}>
+          {SEAT_STATS.map((s, i) => (
+            <li
+              key={s.key}
+              className={styles.stat}
+              style={{ '--stat-tone': STAT_TONES[i % STAT_TONES.length] } as CSSProperties}
+            >
               <span className={styles.statValue}>
                 <CountUp to={s.value} />
               </span>
               <span className={styles.statLabel}>{t(`schools.includes.${s.key}`)}</span>
             </li>
           ))}
-          <li className={styles.stat}>
+          <li
+            className={styles.stat}
+            style={
+              { '--stat-tone': STAT_TONES[SEAT_STATS.length % STAT_TONES.length] } as CSSProperties
+            }
+          >
             <span className={styles.statValue}>
               <bdi dir="ltr">EN · AR</bdi>
             </span>
@@ -92,7 +105,11 @@ export function Schools() {
 
       {/* Capabilities. */}
       <section className={styles.block} aria-labelledby="schools-features">
-        <SectionHeader id="schools-features" title={t('schools.featuresHead')} />
+        <SectionHeader
+          id="schools-features"
+          title={t('schools.featuresHead')}
+          tone="var(--cat-1)"
+        />
         <BentoGrid label={t('schools.featuresHead')}>
           {features.map((f, i) => (
             <BentoCard key={i} span="sm" tone={FEATURE_TONES[i % FEATURE_TONES.length]}>
@@ -121,9 +138,7 @@ export function Schools() {
       </section>
 
       <section className={styles.formWrap} aria-labelledby="schools-form-head">
-        <h2 id="schools-form-head" className={styles.sectionHead}>
-          {t('schools.formHead')}
-        </h2>
+        <SectionHeader id="schools-form-head" title={t('schools.formHead')} tone="var(--cat-3)" />
         <p className={styles.formIntro}>{t('schools.formIntro')}</p>
         <form className={styles.form} onSubmit={submit}>
           <label className={styles.field}>
@@ -171,9 +186,7 @@ export function Schools() {
       </section>
 
       <section className={styles.faqWrap} aria-labelledby="schools-faq-head">
-        <h2 id="schools-faq-head" className={styles.sectionHead}>
-          {t('schools.faqHead')}
-        </h2>
+        <SectionHeader id="schools-faq-head" title={t('schools.faqHead')} tone="var(--cat-5)" />
         <div className={styles.faqList}>
           {faqs.map((item) => (
             <details key={item.q} className={styles.faq}>
