@@ -5,12 +5,15 @@
  * (content + per-route meta/canonical/hreflang/JSON-LD paint at CSS-load time,
  * no JS) and the bundle still hydrates over it for interactivity.
  *
- * Runs from the npm `postbuild` hook, so EVERY `npm run build` produces snapshots
- * regardless of host (Firebase App Hosting / classic Hosting / Vercel) — there's
- * no per-host wiring to forget. It stays **non-fatal**: any failure (Chromium
- * missing and un-installable, a route timing out) logs a warning and exits 0,
- * leaving Vite's SPA/shell HTML in place, so it can never break a deploy. Set
- * SKIP_PRERENDER=1 to opt out (e.g. native `cap:sync`, which needs no snapshots).
+ * This is the OPTIONAL full-body enhancement layer that overwrites the head-only
+ * snapshots from scripts/prerender-head.mjs (which `npm run build` always runs)
+ * with hydrated HTML, on hosts that have a browser — the Vercel buildCommand and
+ * `npm run deploy`. It is **non-fatal**: any failure (Chromium missing and
+ * un-installable, a route timing out) logs a warning and exits 0, leaving the
+ * head-prerendered HTML in place, so it can never break a deploy. It is NOT in
+ * `npm run build` on purpose — Firebase App Hosting's buildpack can't run
+ * headless Chromium, and the e2e webServer build must not wait on it. Set
+ * SKIP_PRERENDER=1 to opt out explicitly.
  *
  * Route set mirrors scripts/build-sitemap.mjs: static router paths + guide slugs
  * (always), plus the dynamic library reader corpus (GACAR parts / reference /
