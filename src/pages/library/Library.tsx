@@ -465,11 +465,7 @@ export function Library() {
                     ))}
                   </select>
                 </label>
-                <div
-                  className={styles.viewToggle}
-                  role="group"
-                  aria-label={t('library.view')}
-                >
+                <div className={styles.viewToggle} role="group" aria-label={t('library.view')}>
                   <button
                     type="button"
                     className={`${styles.viewBtn} ${view === 'grid' ? styles.viewBtnActive : ''}`}
@@ -503,7 +499,9 @@ export function Library() {
               </div>
             </div>
 
-            {query.trim() && !fullText && <p className={styles.searchHint}>{t('library.searchHint')}</p>}
+            {query.trim() && !fullText && (
+              <p className={styles.searchHint}>{t('library.searchHint')}</p>
+            )}
 
             {searches.length > 0 && (
               <div className={styles.savedSearches} aria-label={t('library.savedSearches')}>
