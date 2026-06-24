@@ -10,7 +10,7 @@
     "build:airports": "node scripts/build-airports.mjs",
     "optimize:img": "node scripts/optimize-images.mjs",
     "gen:og": "node scripts/build-og-images.mjs",
-    "build": "npm run build:sitemap && tsc -b && vite build",
+    "build": "npm run build:sitemap && tsc -b && vite build && node scripts/prerender-head.mjs",
     "prerender": "node scripts/prerender.mjs",
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply",

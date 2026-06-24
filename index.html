@@ -10,6 +10,14 @@
       name="description"
       content="Fly GACA — an independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
     />
+    <!-- Baseline crawl signals for no-JS crawlers (canonical + hreflang). These
+         are the homepage/x-default defaults; usePageMeta and the prerendered
+         per-route snapshots override them. Keep the origin in sync with
+         SITE_ORIGIN / hreflangAlternates in src/lib/seo.ts. -->
+    <link rel="canonical" href="https://flygaca.com/" />
+    <link rel="alternate" hreflang="en" href="https://flygaca.com/?lang=en" />
+    <link rel="alternate" hreflang="ar" href="https://flygaca.com/?lang=ar" />
+    <link rel="alternate" hreflang="x-default" href="https://flygaca.com/" />
     <!-- Baseline social tags (usePageMeta refines per route + language at runtime). -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Fly GACA — Saudi Aviation Library" />
@@ -17,7 +25,8 @@
       property="og:description"
       content="An independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
     />
-    <meta property="og:image" content="/img/og-card.png" />
+    <!-- Absolute URL: OG scrapers reject root-relative image paths. -->
+    <meta property="og:image" content="https://flygaca.com/img/og-card.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Fly GACA — Saudi Aviation Library</title>
     <!-- Site-wide structured data (constant; per-route schema is injected by usePageMeta). -->

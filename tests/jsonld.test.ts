@@ -57,33 +57,46 @@ describe('itemListLd', () => {
 });
 
 describe('article builders', () => {
-  it('TechArticle carries url, language and site/publisher refs', () => {
+  it('TechArticle carries url, language and self-contained author/publisher', () => {
     const ld = techArticleLd({
       title: 'Part 91',
       description: 'General operating rules',
       path: '/library/part-91',
       lang: 'ar',
+      dateModified: '2026-01-15',
     });
     expect(ld['@type']).toBe('TechArticle');
     expect(ld.headline).toBe('Part 91');
     expect(ld.inLanguage).toBe('ar');
     expect(ld.url).toBe(`${SITE_ORIGIN}/library/part-91`);
     expect(ld.isPartOf).toEqual({ '@id': SITE_ID });
-    expect(ld.publisher).toEqual({ '@id': ORG_ID });
+    // author + publisher are self-contained Organization nodes (not bare @id refs)
+    // so a per-item validator resolves them without the site-wide graph.
+    expect(ld.author).toMatchObject({ '@type': 'Organization', '@id': ORG_ID, name: 'Fly GACA' });
+    expect(ld.publisher).toMatchObject({ '@type': 'Organization', '@id': ORG_ID, name: 'Fly GACA' });
+    // a single revision date is emitted as both datePublished and dateModified.
+    expect(ld.datePublished).toBe('2026-01-15');
+    expect(ld.dateModified).toBe('2026-01-15');
   });
-  it('Article defaults language to en and omits empty description', () => {
+  it('Article defaults language to en and omits empty description + dates', () => {
     const ld = articleLd({ title: 'Airspace explained', path: '/guides/airspace-explained' });
     expect(ld['@type']).toBe('Article');
     expect(ld.inLanguage).toBe('en');
     expect('description' in ld).toBe(false);
+    expect('datePublished' in ld).toBe(false);
+    expect(ld.author).toMatchObject({ '@type': 'Organization', '@id': ORG_ID });
   });
 });
 
 describe('course + faq + software', () => {
-  it('courseLd names the org as provider', () => {
+  it('courseLd names the org as provider and carries a free online instance', () => {
     const ld = courseLd({ title: 'PPL Ground School', path: '/study/groundschool' });
     expect(ld['@type']).toBe('Course');
-    expect(ld.provider).toEqual({ '@id': ORG_ID });
+    expect(ld.provider).toMatchObject({ '@type': 'Organization', '@id': ORG_ID, name: 'Fly GACA' });
+    expect(ld.isAccessibleForFree).toBe(true);
+    const ci = ld.hasCourseInstance as { '@type': string; courseMode: string };
+    expect(ci['@type']).toBe('CourseInstance');
+    expect(ci.courseMode).toBe('online');
   });
   it('faqLd maps Q/A pairs to Question/Answer', () => {
     const ld = faqLd([{ q: 'Is Fly GACA official?', a: 'No — it is independent.' }]);

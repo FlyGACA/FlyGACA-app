@@ -20,3 +20,13 @@
 
 /sw.js
   Cache-Control: no-cache
+
+# Serve the crawl/AI-discovery files as text/xml, never as the SPA HTML fallback.
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8

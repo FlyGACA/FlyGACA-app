@@ -17,6 +17,23 @@ export const SITE_ID = `${SITE_ORIGIN}/#website`;
 
 const CONTEXT = 'https://schema.org';
 
+/**
+ * A self-contained Organization node for per-item `author` / `publisher` /
+ * `provider` slots. It keeps the stable `@id` so it still merges with the
+ * site-wide graph in index.html, but also carries `name` + `logo` so a
+ * per-item validator (which won't resolve a cross-script `@id` reference) sees
+ * a complete publisher/author instead of a dangling ref.
+ */
+function orgNode(): JsonLd {
+  return {
+    '@type': 'Organization',
+    '@id': ORG_ID,
+    name: 'Fly GACA',
+    url: SITE_ORIGIN,
+    logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/img/icon-512.png` },
+  };
+}
+
 export function organizationLd(): JsonLd {
   return {
     '@context': CONTEXT,
@@ -113,13 +130,16 @@ function articleOfType(type: 'TechArticle' | 'Article', a: ArticleInput): JsonLd
     '@type': type,
     headline: a.title,
     ...(a.description ? { description: a.description } : {}),
-    ...(a.dateModified ? { dateModified: a.dateModified } : {}),
+    // We track a single revision date; emit it as both datePublished and
+    // dateModified so validators that require either are satisfied.
+    ...(a.dateModified ? { datePublished: a.dateModified, dateModified: a.dateModified } : {}),
     inLanguage: a.lang ?? 'en',
     url,
     mainEntityOfPage: url,
     image: OG_IMAGE,
+    author: orgNode(),
     isPartOf: { '@id': SITE_ID },
-    publisher: { '@id': ORG_ID },
+    publisher: orgNode(),
   };
 }
 
@@ -142,7 +162,15 @@ export function courseLd(a: ArticleInput): JsonLd {
     ...(a.description ? { description: a.description } : {}),
     inLanguage: a.lang ?? 'en',
     url: canonicalUrl(a.path),
-    provider: { '@id': ORG_ID },
+    provider: orgNode(),
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'SAR' },
+    // A free, self-paced online instance — the minimal shape Google's Course
+    // rich result expects alongside `provider`.
+    hasCourseInstance: {
+      '@type': 'CourseInstance',
+      courseMode: 'online',
+    },
   };
 }
 
