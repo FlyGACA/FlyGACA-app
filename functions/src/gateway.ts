@@ -152,7 +152,8 @@ app.post(['/chat', '/api/chat'], async (req: Request, res: Response): Promise<vo
         refusalClass: out.refusalClass,
         meta: { provider: out.meta.provider },
       });
-    } catch {
+    } catch (err) {
+      console.error('chat failed (buffered)', err);
       res.status(500).json({ error: 'chat failed' });
     }
     return;
@@ -186,7 +187,8 @@ app.post(['/chat', '/api/chat'], async (req: Request, res: Response): Promise<vo
     );
     res.write(doneFrame());
     res.end();
-  } catch {
+  } catch (err) {
+    console.error('chat failed (stream)', err);
     if (!aborted) {
       res.write(frame({ type: 'error', code: 'stream_failed' }));
       res.write(doneFrame());
