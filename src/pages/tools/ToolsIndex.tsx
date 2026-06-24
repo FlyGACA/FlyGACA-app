@@ -8,10 +8,19 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
+import { SearchHero } from '../../components/SearchHero';
+import type { HeroStat } from '../../components/SearchHero';
+import { ViewToggle } from '../../components/hub/ViewToggle';
+import { SortSelect } from '../../components/hub/SortSelect';
+import { useViewMode, type ViewMode } from '../../lib/useViewMode';
 import styles from './ToolsIndex.module.css';
+import hub from '../../components/hub/hubList.module.css';
 
 /** Per-category accent — cycles the Falcon hues from the design-token map. */
 const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
+/** Deterministic category → accent, by the category's order in the master list. */
+const catTone = (cat: ToolCategoryId) =>
+  CAT_TOKENS[Math.max(0, TOOL_CATEGORIES.indexOf(cat)) % CAT_TOKENS.length];
 
 /** A small glyph per category, for the headers and jump nav. */
 const CAT_ICON: Record<ToolCategoryId, string> = {
@@ -29,6 +38,21 @@ const CAT_ICON: Record<ToolCategoryId, string> = {
   reference: '📖',
   directory: '🗂️',
 };
+
+/** Quick-pick categories surfaced as chips in the hero. */
+const POPULAR_CATS: ToolCategoryId[] = [
+  'wind-runway',
+  'navigation',
+  'fuel-weight',
+  'weather',
+  'gacar',
+];
+
+/** Sort orders; 'category' keeps the grouped view, 'name' goes flat A–Z. */
+type SortKey = 'category' | 'name';
+const SORTS: SortKey[] = ['category', 'name'];
+
+const VIEW_KEY = 'flygaca:tools-view';
 
 /** Split text on a case-insensitive needle, wrapping matches in <mark>. */
 function highlight(text: string, needle: string) {
@@ -66,6 +90,8 @@ export function ToolsIndex() {
   usePageMeta(t('meta.tools'), t('metaDesc.tools'), toolListLd);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ToolCategoryId | 'all'>('all');
+  const [sort, setSort] = useState<SortKey>('category');
+  const [view, setView] = useViewMode(VIEW_KEY);
   const { favorites, recents } = useToolPrefs();
   const searchRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -102,11 +128,42 @@ export function ToolsIndex() {
   }, [matches]);
   const unfiltered = category === 'all';
 
-  // Pinned + recent rows only when not actively searching.
+  // Group the catalogue only in the default "by category" sort with no active
+  // search/filter; otherwise show a single flat grid sorted by the chosen order.
+  const showGrouped = sort === 'category' && unfiltered && !q;
+  const flat =
+    sort === 'name'
+      ? [...filtered].sort((a, b) =>
+          t(`tools.items.${a.id}.name`).localeCompare(t(`tools.items.${b.id}.name`)),
+        )
+      : filtered;
+
+  // Pinned + recent rows only in the grouped (default) view.
   const pinned = favorites.map((id) => byId.get(id)).filter((x): x is ToolMeta => Boolean(x));
   const recent = recents
     .map((id) => byId.get(id))
     .filter((x): x is ToolMeta => Boolean(x) && !favorites.includes(x!.id));
+
+  // Animated figures for the hero readout.
+  const stats = useMemo<HeroStat[]>(() => {
+    const soon = TOOLS.filter((x) => x.status === 'soon').length;
+    const cats = TOOL_CATEGORIES.filter((c) =>
+      TOOLS.some((x) => x.category === c && x.status === 'live'),
+    ).length;
+    const out: HeroStat[] = [
+      { label: t('tools.stats.tools'), value: liveCount, tone: 'cyan' },
+      { label: t('tools.stats.categories'), value: cats, tone: 'green' },
+    ];
+    if (soon > 0) out.push({ label: t('tools.stats.soon'), value: soon, tone: 'gold' });
+    return out;
+  }, [t, liveCount]);
+
+  // Quick-pick category chips for the hero; toggle the matching category filter.
+  const popularChips = POPULAR_CATS.map((c) => ({
+    label: t(`tools.categories.${c}`),
+    onClick: () => setCategory((cur) => (cur === c ? 'all' : c)),
+    active: category === c,
+  }));
 
   // Press "/" anywhere (outside a field) to focus the search box.
   useEffect(() => {
@@ -138,15 +195,17 @@ export function ToolsIndex() {
     items[next]?.focus();
   }
 
-  const renderGrid = (tools: ToolMeta[], tone: string) => (
-    <ul className={`${styles.grid} stagger-grid`}>
+  const listClass = `${hub.grid} ${view === 'list' ? hub.list : ''} stagger-grid`;
+  const renderGrid = (tools: ToolMeta[]) => (
+    <ul className={listClass}>
       {tools.map((tool) => (
         <ToolCard
           key={tool.id}
           tool={tool}
-          tone={tone}
+          tone={catTone(tool.category)}
           query={q}
           favorite={favorites.includes(tool.id)}
+          view={view}
         />
       ))}
     </ul>
@@ -154,21 +213,20 @@ export function ToolsIndex() {
 
   return (
     <section className={`container ${styles.page}`}>
-      <header className={styles.head}>
-        <h1>{t('tools.title')}</h1>
-        <p className={styles.subtitle}>{t('tools.subtitle')}</p>
-        <input
-          ref={searchRef}
-          className={styles.search}
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('tools.searchPlaceholder', { count: liveCount })}
-          aria-label={t('tools.searchPlaceholder', { count: liveCount })}
-        />
-        <p className={styles.searchMeta} role="status">
-          {q ? t('tools.resultCount', { count: matches.length }) : t('tools.searchTip')}
-        </p>
+      <SearchHero
+        eyebrow={t('tools.eyebrow')}
+        title={t('tools.title')}
+        subtitle={t('tools.subtitle')}
+        placeholder={t('tools.searchPlaceholder', { count: liveCount })}
+        query={query}
+        onQueryChange={setQuery}
+        stats={stats}
+        chipsLabel={t('tools.popular')}
+        chips={popularChips}
+        inputRef={searchRef}
+      />
+
+      <div className={styles.controls}>
         <div className={styles.filters} role="group" aria-label={t('tools.title')}>
           <button
             type="button"
@@ -190,23 +248,44 @@ export function ToolsIndex() {
             </button>
           ))}
         </div>
-      </header>
+
+        <div className={styles.toolbar}>
+          <p className={styles.searchMeta} role="status">
+            {q ? t('tools.resultCount', { count: matches.length }) : ''}
+          </p>
+          <div className={styles.toolbarEnd}>
+            <SortSelect
+              label={t('tools.sortBy')}
+              value={sort}
+              onChange={(v) => setSort(v as SortKey)}
+              options={SORTS.map((s) => ({ value: s, label: t(`tools.sort.${s}`) }))}
+            />
+            <ViewToggle
+              value={view}
+              onChange={setView}
+              groupLabel={t('tools.view')}
+              gridLabel={t('tools.viewGrid')}
+              listLabel={t('tools.viewList')}
+            />
+          </div>
+        </div>
+      </div>
 
       <div ref={rootRef} onKeyDown={onGridKeyDown}>
-        {unfiltered && !q && pinned.length > 0 && (
+        {showGrouped && pinned.length > 0 && (
           <section className={styles.category}>
             <SectionHeader title={`★ ${t('tools.pinned')}`} tone="var(--gold)" />
-            {renderGrid(pinned, 'var(--gold)')}
+            {renderGrid(pinned)}
           </section>
         )}
-        {unfiltered && !q && recent.length > 0 && (
+        {showGrouped && recent.length > 0 && (
           <section className={styles.category}>
             <SectionHeader title={`🕐 ${t('tools.recent')}`} tone="var(--cat-2)" />
-            {renderGrid(recent, 'var(--cat-2)')}
+            {renderGrid(recent)}
           </section>
         )}
 
-        {unfiltered && grouped.length > 1 && (
+        {showGrouped && grouped.length > 1 && (
           <nav className={styles.jump} aria-label={t('tools.jumpNav')}>
             {grouped.map(({ cat }) => (
               <a key={cat} href={`#${cat}`} className={styles.jumpChip}>
@@ -216,18 +295,20 @@ export function ToolsIndex() {
           </nav>
         )}
 
-        {grouped.length === 0 ? (
+        {flat.length === 0 ? (
           <p className={styles.empty}>{t('tools.empty')}</p>
-        ) : (
-          grouped.map(({ cat, tools }, i) => (
+        ) : showGrouped ? (
+          grouped.map(({ cat, tools }) => (
             <section key={cat} id={cat} className={styles.category}>
               <SectionHeader
                 title={`${CAT_ICON[cat]} ${t(`tools.categories.${cat}`)}`}
-                tone={CAT_TOKENS[i % CAT_TOKENS.length]}
+                tone={catTone(cat)}
               />
-              {renderGrid(tools, CAT_TOKENS[i % CAT_TOKENS.length])}
+              {renderGrid(tools)}
             </section>
           ))
+        ) : (
+          renderGrid(flat)
         )}
       </div>
 
@@ -243,16 +324,68 @@ function ToolCard({
   tone,
   query,
   favorite,
+  view,
 }: {
   tool: ToolMeta;
   tone: string;
   query: string;
   favorite: boolean;
+  view: ViewMode;
 }) {
   const { t } = useTranslation();
   const live = tool.status === 'live';
   const name = t(`tools.items.${tool.id}.name`);
   const blurb = t(`tools.items.${tool.id}.blurb`);
+  const starClass =
+    view === 'list'
+      ? `${hub.rowStar} ${favorite ? hub.starOn : ''}`
+      : `${styles.star} ${favorite ? styles.starOn : ''}`;
+  const star = (
+    <button
+      type="button"
+      className={starClass}
+      aria-label={t(favorite ? 'tools.unfavorite' : 'tools.favorite')}
+      aria-pressed={favorite}
+      onClick={() => toggleFavorite(tool.id)}
+    >
+      {favorite ? '★' : '☆'}
+    </button>
+  );
+
+  if (view === 'list') {
+    const inner = (
+      <>
+        <span className={hub.rowBar} aria-hidden="true" />
+        <span className={styles.rowTitle}>{highlight(name, query)}</span>
+        {tool.badge === 'new' && live && <span className={styles.badge}>{t('tools.new')}</span>}
+        <span className={styles.rowCat}>{t(`tools.categories.${tool.category}`)}</span>
+        <span className={styles.rowCta}>{live ? t('tools.open') : t('common.soon')}</span>
+      </>
+    );
+    return (
+      <li
+        className={`${hub.rowWrap} ${live ? '' : styles.pending}`}
+        style={{ '--cat-color': tone } as CSSProperties}
+      >
+        {live ? (
+          <Link
+            to={tool.route}
+            className={styles.row}
+            data-toolcard="1"
+            onClick={() => pushRecent(tool.id)}
+          >
+            {inner}
+          </Link>
+        ) : (
+          <div className={styles.row} aria-disabled="true">
+            {inner}
+          </div>
+        )}
+        {star}
+      </li>
+    );
+  }
+
   const inner = (
     <>
       <span className={styles.catBar} aria-hidden="true" />
@@ -269,15 +402,7 @@ function ToolCard({
       className={`${styles.card} ${live ? '' : styles.pending}`}
       style={{ '--cat-color': tone } as CSSProperties}
     >
-      <button
-        type="button"
-        className={`${styles.star} ${favorite ? styles.starOn : ''}`}
-        aria-label={t(favorite ? 'tools.unfavorite' : 'tools.favorite')}
-        aria-pressed={favorite}
-        onClick={() => toggleFavorite(tool.id)}
-      >
-        {favorite ? '★' : '☆'}
-      </button>
+      {star}
       {live ? (
         <Link
           to={tool.route}
