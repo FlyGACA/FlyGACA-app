@@ -2,58 +2,6 @@
   padding-block: var(--space-8);
 }
 
-/* Hero band — the signature falcon-stroke gradient with a sage glow and gold
-   bottom edge (Design System hero). */
-.head {
-  position: relative;
-  margin-block-end: var(--space-6);
-  padding: var(--space-8) var(--space-6);
-  overflow: hidden;
-  border-radius: var(--radius-xl);
-  border-block-end: 4px solid var(--gold);
-  background-color: var(--falcon-night);
-  background-image: var(--falcon-stroke);
-  color: var(--moon);
-}
-.head::before {
-  content: '';
-  position: absolute;
-  inset-block: -50%;
-  inset-inline-end: -15%;
-  inline-size: 60%;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--accent) 18%, transparent),
-    transparent 60%
-  );
-  pointer-events: none;
-}
-.head > * {
-  position: relative;
-}
-.chartsLink {
-  display: inline-block;
-  margin-block-start: var(--space-3);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  color: var(--accent-bright);
-}
-.eyebrow {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent-bright);
-  font-weight: var(--fw-semibold);
-}
-.head h1 {
-  margin-block-start: var(--space-2);
-}
-.subtitle {
-  margin-block-start: var(--space-3);
-  max-inline-size: 60ch;
-  color: var(--moon-soft);
-}
-
 /* Segmented control (Design System §08) — raised active tab on an inset track. */
 .tabs {
   display: inline-flex;
@@ -95,21 +43,79 @@
   margin-block-end: var(--space-6);
 }
 
-.search {
-  inline-size: 100%;
-  max-inline-size: 480px;
-  padding: var(--space-3) var(--space-4);
-  min-height: 44px;
+/* Filter + view toolbar — chips on one side, sort/view controls on the other. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.toolbarEnd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+.sortField {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.sortLabel {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+.sortSelect {
+  min-height: 40px;
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
   border: 1px solid var(--border-input);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
   font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
 }
-.search:focus {
-  border-color: var(--brand-hover);
+.sortSelect:focus {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* Grid/list segmented toggle — mirrors the corpus tab control. */
+.viewToggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 38px;
+  min-height: 38px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.viewBtn:hover {
+  color: var(--text);
+}
+.viewBtnActive {
+  background: var(--surface-raised);
+  color: var(--accent-bright);
+  box-shadow: var(--shadow-sm);
 }
 
 .chips {
@@ -179,6 +185,112 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-4);
+}
+/* List view — single dense column of rows. */
+.grid.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* ── Compact list row (list view) ── */
+.rowWrap {
+  position: relative;
+}
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  padding-inline-start: var(--space-5);
+  padding-inline-end: calc(var(--space-4) + 34px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: inherit;
+  overflow: hidden;
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.row:hover {
+  border-color: var(--cat-color, var(--brand));
+  background: var(--surface-raised);
+  text-decoration: none;
+}
+.rowBar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  background: var(--cat-color, var(--brand));
+}
+.rowBadge {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--cat-color, var(--brand)) 50%, transparent);
+  background: color-mix(in srgb, var(--cat-color, var(--brand)) 16%, var(--surface));
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+.rowTitle {
+  min-inline-size: 0;
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+}
+.rowCat {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.rowMeta {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rowStar {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--space-2);
+  transform: translateY(-50%);
+  z-index: 2;
+  inline-size: 30px;
+  block-size: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-md);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.rowStar:hover {
+  background: var(--surface-raised);
+}
+.rowStar:hover,
+.rowStar.starOn {
+  color: var(--gold);
+}
+/* On small screens the meta/cat columns collapse; keep title + open chevron. */
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .rowCat,
+  .rowMeta {
+    display: none;
+  }
 }
 
 /* Document card with a left category accent bar that widens on hover
@@ -520,12 +632,6 @@ a.hit:hover {
 }
 
 /* ── Saved searches ── */
-.searchRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
 .saveSearchBtn {
   min-height: 40px;
   padding: var(--space-2) var(--space-4);

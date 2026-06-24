@@ -28,6 +28,7 @@
     "soon": "Coming soon",
     "open": "Open",
     "close": "Close",
+    "clear": "Clear",
     "share": "Share",
     "backToTop": "Back to top",
     "cancel": "Cancel"
@@ -736,7 +737,24 @@
     "continueReading": "Continue reading",
     "saveSearch": "Save search",
     "savedSearches": "Saved searches",
-    "removeSearch": "Remove saved search"
+    "removeSearch": "Remove saved search",
+    "popular": "Quick searches",
+    "sortBy": "Sort",
+    "sort": {
+      "part": "Part number",
+      "title": "Title A–Z",
+      "pages": "Most pages",
+      "sections": "Most sections"
+    },
+    "view": "View",
+    "viewGrid": "Grid view",
+    "viewList": "List view",
+    "stats": {
+      "documents": "Documents",
+      "pages": "Pages",
+      "sections": "Sections",
+      "categories": "Collections"
+    }
   },
   "document": {
     "outline": "Outline",

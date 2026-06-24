@@ -28,6 +28,7 @@
     "soon": "قريبًا",
     "open": "افتح",
     "close": "إغلاق",
+    "clear": "مسح",
     "share": "مشاركة",
     "backToTop": "العودة للأعلى",
     "cancel": "إلغاء"
@@ -736,7 +737,24 @@
     "continueReading": "متابعة القراءة",
     "saveSearch": "حفظ البحث",
     "savedSearches": "عمليات البحث المحفوظة",
-    "removeSearch": "إزالة البحث المحفوظ"
+    "removeSearch": "إزالة البحث المحفوظ",
+    "popular": "عمليات بحث سريعة",
+    "sortBy": "ترتيب",
+    "sort": {
+      "part": "رقم الجزء",
+      "title": "العنوان أ–ي",
+      "pages": "الأكثر صفحات",
+      "sections": "الأكثر أقسامًا"
+    },
+    "view": "العرض",
+    "viewGrid": "عرض شبكي",
+    "viewList": "عرض قائمة",
+    "stats": {
+      "documents": "المستندات",
+      "pages": "الصفحات",
+      "sections": "الأقسام",
+      "categories": "المجموعات"
+    }
   },
   "document": {
     "outline": "المحتويات",
