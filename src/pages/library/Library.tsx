@@ -27,7 +27,11 @@ import { SectionHeader } from '../../components/SectionHeader';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
 import { SearchHero } from '../../components/SearchHero';
 import type { HeroStat } from '../../components/SearchHero';
+import { ViewToggle } from '../../components/hub/ViewToggle';
+import { SortSelect } from '../../components/hub/SortSelect';
+import { useViewMode } from '../../lib/useViewMode';
 import styles from './Library.module.css';
+import hub from '../../components/hub/hubList.module.css';
 
 const MIN_QUERY = 3;
 /** Max full-text matches collected before we ask the user to refine. */
@@ -38,16 +42,7 @@ const KINDS: LibraryKind[] = ['regulations', 'reference', 'handbook'];
 /** Per-category accent — cycles the Falcon hues from the design-token map. */
 const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
-/** How the browse grid is laid out. Persisted across visits. */
-type ViewMode = 'grid' | 'list';
 const VIEW_KEY = 'flygaca:library-view';
-function readView(): ViewMode {
-  try {
-    return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'grid';
-  } catch {
-    return 'grid';
-  }
-}
 
 /** Sort orders. 'size' is pages (regulations) or sections (reference/handbooks). */
 type SortKey = 'part' | 'title' | 'size';
@@ -111,7 +106,7 @@ export function Library() {
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
   const [sort, setSort] = useState<SortKey>(() => SORTS[kind][0]);
-  const [view, setView] = useState<ViewMode>(readView);
+  const [view, setView] = useViewMode(VIEW_KEY);
   const prefs = useLibraryPrefs();
   const { bookmarks, recents, searches } = prefs;
   // When applying a saved search, carry its category across the corpus switch.
@@ -123,15 +118,6 @@ export function Library() {
     pendingCat.current = null;
     setSort(SORTS[kind][0]);
   }, [kind]);
-
-  // Persist the chosen view so it survives reloads.
-  useEffect(() => {
-    try {
-      localStorage.setItem(VIEW_KEY, view);
-    } catch {
-      /* storage unavailable — keep in-memory */
-    }
-  }, [view]);
 
   const applySearch = (s: { kind: LibraryKind; category: string; query: string }) => {
     setQuery(s.query);
@@ -305,13 +291,13 @@ export function Library() {
     const meta = docMeta(d);
     const marked = isBookmarked(prefs, kind, d.slug);
     return (
-      <li key={d.slug} className={styles.rowWrap}>
+      <li key={d.slug} className={hub.rowWrap}>
         <Link
           to={`${CORPUS[kind].base}/${d.slug}`}
           className={styles.row}
           style={{ '--cat-color': catColor(d.category) } as CSSProperties}
         >
-          <span className={styles.rowBar} aria-hidden="true" />
+          <span className={hub.rowBar} aria-hidden="true" />
           <span className={styles.rowBadge}>
             {d.part ? `${t('library.part')} ${d.part}` : d.badge}
           </span>
@@ -321,7 +307,7 @@ export function Library() {
         </Link>
         <button
           type="button"
-          className={`${styles.rowStar} ${marked ? styles.starOn : ''}`}
+          className={`${hub.rowStar} ${marked ? hub.starOn : ''}`}
           aria-pressed={marked}
           aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
           onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
@@ -333,7 +319,7 @@ export function Library() {
   };
 
   const renderDoc = (d: CorpusDoc) => (view === 'list' ? renderRow(d) : renderCard(d));
-  const listClass = `${styles.grid} ${view === 'list' ? styles.list : ''} stagger-grid`;
+  const listClass = `${hub.grid} ${view === 'list' ? hub.list : ''} stagger-grid`;
 
   return (
     <section className={`container ${styles.page}`}>
@@ -457,51 +443,22 @@ export function Library() {
                 </button>
               )}
               <div className={styles.toolbarEnd}>
-                <label className={styles.sortField}>
-                  <span className={styles.sortLabel}>{t('library.sortBy')}</span>
-                  <select
-                    className={styles.sortSelect}
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value as SortKey)}
-                  >
-                    {SORTS[kind].map((s) => (
-                      <option key={s} value={s}>
-                        {t(s === 'size' ? SIZE_LABEL[kind] : `library.sort.${s}`)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <div className={styles.viewToggle} role="group" aria-label={t('library.view')}>
-                  <button
-                    type="button"
-                    className={`${styles.viewBtn} ${view === 'grid' ? styles.viewBtnActive : ''}`}
-                    aria-pressed={view === 'grid'}
-                    aria-label={t('library.viewGrid')}
-                    title={t('library.viewGrid')}
-                    onClick={() => setView('grid')}
-                  >
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                      <rect x="3" y="3" width="8" height="8" rx="1.5" />
-                      <rect x="13" y="3" width="8" height="8" rx="1.5" />
-                      <rect x="3" y="13" width="8" height="8" rx="1.5" />
-                      <rect x="13" y="13" width="8" height="8" rx="1.5" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.viewBtn} ${view === 'list' ? styles.viewBtnActive : ''}`}
-                    aria-pressed={view === 'list'}
-                    aria-label={t('library.viewList')}
-                    title={t('library.viewList')}
-                    onClick={() => setView('list')}
-                  >
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                      <rect x="3" y="4" width="18" height="3" rx="1.5" />
-                      <rect x="3" y="10.5" width="18" height="3" rx="1.5" />
-                      <rect x="3" y="17" width="18" height="3" rx="1.5" />
-                    </svg>
-                  </button>
-                </div>
+                <SortSelect
+                  label={t('library.sortBy')}
+                  value={sort}
+                  onChange={(v) => setSort(v as SortKey)}
+                  options={SORTS[kind].map((s) => ({
+                    value: s,
+                    label: t(s === 'size' ? SIZE_LABEL[kind] : `library.sort.${s}`),
+                  }))}
+                />
+                <ViewToggle
+                  value={view}
+                  onChange={setView}
+                  groupLabel={t('library.view')}
+                  gridLabel={t('library.viewGrid')}
+                  listLabel={t('library.viewList')}
+                />
               </div>
             </div>
 

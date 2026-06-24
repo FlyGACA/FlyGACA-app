@@ -57,66 +57,6 @@
   gap: var(--space-2);
   margin-inline-start: auto;
 }
-.sortField {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.sortLabel {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
-}
-.sortSelect {
-  min-height: 40px;
-  padding-inline: var(--space-3);
-  padding-block: var(--space-1);
-  border: 1px solid var(--border-input);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-}
-.sortSelect:focus {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-/* Grid/list segmented toggle — mirrors the corpus tab control. */
-.viewToggle {
-  display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-}
-.viewBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 38px;
-  min-height: 38px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
-}
-.viewBtn:hover {
-  color: var(--text);
-}
-.viewBtnActive {
-  background: var(--surface-raised);
-  color: var(--accent-bright);
-  box-shadow: var(--shadow-sm);
-}
 
 .chips {
   display: flex;
@@ -178,25 +118,8 @@
   color: var(--text-on-brand);
 }
 
-.grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-4);
-}
-/* List view — single dense column of rows. */
-.grid.list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-/* ── Compact list row (list view) ── */
-.rowWrap {
-  position: relative;
-}
+/* ── Compact list row (list view); grid/list container, .rowWrap, .rowBar and
+   .rowStar come from the shared hub/hubList.module.css. ── */
 .row {
   position: relative;
   display: grid;
@@ -219,13 +142,6 @@
   border-color: var(--cat-color, var(--brand));
   background: var(--surface-raised);
   text-decoration: none;
-}
-.rowBar {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: 4px;
-  background: var(--cat-color, var(--brand));
 }
 .rowBadge {
   padding: 2px var(--space-2);
@@ -252,35 +168,6 @@
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-}
-.rowStar {
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-end: var(--space-2);
-  transform: translateY(-50%);
-  z-index: 2;
-  inline-size: 30px;
-  block-size: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-dim);
-  font-size: var(--fs-md);
-  line-height: 1;
-  cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
-}
-.rowStar:hover {
-  background: var(--surface-raised);
-}
-.rowStar:hover,
-.rowStar.starOn {
-  color: var(--gold);
 }
 /* On small screens the meta/cat columns collapse; keep title + open chevron. */
 @media (max-width: 560px) {
