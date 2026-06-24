@@ -11,6 +11,7 @@ const PAGES = [
   '/pricing',
   '/account',
   '/library/charts',
+  '/learn',
   '/study/sheets',
   '/study/quiz',
   '/study/flashcards',

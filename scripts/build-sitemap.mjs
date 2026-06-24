@@ -28,6 +28,9 @@ const PRIVATE = new Set([
   '/records',
   '/settings',
 ]);
+// The former Guides + Study hubs now redirect to /learn — don't index the redirects
+// (their content + leaf pages live on, and `/learn` carries the hub priority).
+const REDIRECTS = new Set(['/guides', '/study']);
 const norm = (p) => (p === '/' ? '/' : `/${p.replace(/^\//, '')}`);
 
 const today = new Date().toISOString().slice(0, 10);
@@ -36,7 +39,7 @@ const isDate = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v);
 const staticPaths = routerPaths
   .filter((p) => !p.includes(':') && p !== '*')
   .map(norm)
-  .filter((p) => !PRIVATE.has(p));
+  .filter((p) => !PRIVATE.has(p) && !REDIRECTS.has(p));
 // url -> lastmod (ISO date). Default everything to the build date; corpus pages
 // override with their own freshness signal below.
 const urls = new Map(['/', ...staticPaths].map((p) => [p, today]));
@@ -78,7 +81,7 @@ for (const slug of guideSlugs) {
 }
 
 // Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
-const HUBS = new Set(['/library', '/tools', '/guides', '/study']);
+const HUBS = new Set(['/library', '/tools', '/learn', '/guides', '/study']);
 const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/safety']);
 function priority(u) {
   if (u === '/') return '1.0';

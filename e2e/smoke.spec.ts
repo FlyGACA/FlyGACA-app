@@ -13,6 +13,7 @@ const ROUTES = [
   '/library/reference/ac-68-1-basicmed',
   '/library/handbook/surveillance',
   '/chat',
+  '/learn',
   '/study',
   '/study/sheets',
   '/guides',

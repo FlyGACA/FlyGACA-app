@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SearchHero } from '../../components/SearchHero';
-import type { HeroStat } from '../../components/SearchHero';
-import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { itemListLd } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
 import { useGuidePrefs, toggleBookmark } from '../../lib/guidePrefs';
 import {
@@ -50,9 +45,6 @@ const TOPIC_TONE: Record<GuideTopic, string> = {
 const LEVELS: GuideLevel[] = ['beginner', 'intermediate', 'advanced'];
 const LEVEL_ORDER: Record<GuideLevel, number> = { beginner: 0, intermediate: 1, advanced: 2 };
 
-/** Curated quick-pick topics surfaced as chips in the hero (subset of GUIDE_TOPICS). */
-const POPULAR_TOPICS: GuideTopic[] = ['licensing', 'medical', 'airspace', 'weather', 'planning'];
-
 /** Sort orders; 'topic' keeps the grouped-by-collection view, the rest go flat. */
 type SortKey = 'topic' | 'title' | 'time' | 'level';
 const SORTS: SortKey[] = ['topic', 'title', 'time', 'level'];
@@ -68,23 +60,23 @@ function readView(): ViewMode {
   }
 }
 
-export function GuidesIndex() {
+interface GuidesBrowserProps {
+  /** Live search value (owned by the Learn hub so the hero search drives it). */
+  query: string;
+  /** Active topic filter (controlled by the hub so the hero chips can set it). */
+  topic: GuideTopic | 'all';
+  onTopicChange: (topic: GuideTopic | 'all') => void;
+}
+
+/**
+ * The Guides browsing surface: topic/level filters, sort + grid/list toolbar, and
+ * the grouped/flat card grid with the Saved row. Extracted from the former Guides
+ * hub so the Learn hub can compose it under a shared SearchHero alongside the
+ * study dashboard. `query` and `topic` are lifted to the hub; level/sort/view stay
+ * local.
+ */
+export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProps) {
   const { t } = useTranslation();
-  // Expose the guides as an ItemList so the index reads as a catalog of its
-  // article pages for crawlers.
-  const guideListLd = useMemo(
-    () =>
-      itemListLd(
-        LIVE_GUIDE_SLUGS.map((slug) => ({
-          name: t(`guides.items.${slug}.name`),
-          path: `/guides/${slug}`,
-        })),
-      ),
-    [t],
-  );
-  usePageMeta(t('meta.guides'), t('metaDesc.guides'), guideListLd);
-  const [query, setQuery] = useState('');
-  const [topic, setTopic] = useState<GuideTopic | 'all'>('all');
   const [level, setLevel] = useState<GuideLevel | 'all'>('all');
   const [sort, setSort] = useState<SortKey>('topic');
   const [view, setView] = useState<ViewMode>(readView);
@@ -156,27 +148,6 @@ export function GuidesIndex() {
 
   const saved = grouped ? guides.filter((g) => bookmarks.includes(g.slug)) : [];
   const readCount = read.length;
-
-  // Animated corpus figures for the hero readout.
-  const stats = useMemo<HeroStat[]>(
-    () => [
-      { label: t('guides.stats.guides'), value: LIVE_GUIDE_SLUGS.length, tone: 'cyan' },
-      {
-        label: t('guides.stats.sections'),
-        value: guides.reduce((s, g) => s + g.sectionCount, 0),
-        tone: 'green',
-      },
-      { label: t('guides.stats.topics'), value: GUIDE_TOPICS.length, tone: 'gold' },
-    ],
-    [t, guides],
-  );
-
-  // Quick-pick topic chips for the hero; toggle the matching topic filter.
-  const popularChips = POPULAR_TOPICS.map((tp) => ({
-    label: t(`guides.topics.${tp}`),
-    onClick: () => setTopic((cur) => (cur === tp ? 'all' : tp)),
-    active: topic === tp,
-  }));
 
   const card = (g: GuideRow) => {
     const isSaved = bookmarks.includes(g.slug);
@@ -252,25 +223,13 @@ export function GuidesIndex() {
   const listClass = `${styles.grid} ${view === 'list' ? styles.list : ''} stagger-grid`;
 
   return (
-    <section className={`container ${styles.page}`}>
-      <SearchHero
-        eyebrow={t('guides.eyebrow')}
-        title={t('guides.title')}
-        subtitle={t('guides.subtitle')}
-        placeholder={t('guides.searchPlaceholder')}
-        query={query}
-        onQueryChange={setQuery}
-        stats={stats}
-        chipsLabel={t('guides.popular')}
-        chips={popularChips}
-      />
-
+    <>
       <div className={styles.filters}>
         <div className={styles.chips} role="group" aria-label={t('guides.title')}>
           <button
             type="button"
             className={`${styles.chip} ${topic === 'all' ? styles.chipActive : ''}`}
-            onClick={() => setTopic('all')}
+            onClick={() => onTopicChange('all')}
           >
             {t('guides.allTopics')}
           </button>
@@ -279,7 +238,7 @@ export function GuidesIndex() {
               key={tp}
               type="button"
               className={`${styles.chip} ${topic === tp ? styles.chipActive : ''}`}
-              onClick={() => setTopic(tp)}
+              onClick={() => onTopicChange(tp)}
             >
               <span aria-hidden="true">{TOPIC_ICON[tp]}</span> {t(`guides.topics.${tp}`)}
             </button>
@@ -389,10 +348,6 @@ export function GuidesIndex() {
       ) : (
         <ul className={listClass}>{sortedFlat.map(renderDoc)}</ul>
       )}
-
-      <div className={styles.footnote}>
-        <Disclaimer compact />
-      </div>
-    </section>
+    </>
   );
 }

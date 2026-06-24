@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, QuizData } from '../../lib/content';
 import { useStudyProgress } from '../../lib/studyProgress';
@@ -8,12 +7,9 @@ import { masteredCount, dueCount } from '../../calc/srs';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { OutputGrid } from '../../components/calc/Grids';
 import { ProgressBar } from '../../components/ProgressBar';
-import { Disclaimer } from '../../components/Disclaimer';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { itemListLd } from '../../lib/jsonld';
 import styles from './Study.module.css';
 
-const MODES = [
+export const STUDY_MODES = [
   { to: '/study/quiz', key: 'quiz', icon: '◉' },
   { to: '/study/flashcards', key: 'flashcards', icon: '⇄' },
   { to: '/study/groundschool', key: 'groundschool', icon: '◈' },
@@ -23,15 +19,13 @@ const MODES = [
   { to: '/study/sheets', key: 'sheets', icon: '▤' },
 ] as const;
 
-export function StudyHub() {
+/**
+ * The study dashboard: progress stats, weakest/by-topic/exam-history analytics,
+ * quick-resume actions and the study-mode cards. Extracted from the former Study
+ * hub so the Learn hub can render it under the shared SearchHero (Practice tab).
+ */
+export function StudyDashboard() {
   const { t } = useTranslation();
-  // Expose the study modes as an ItemList so the hub reads as a catalog of its
-  // study-mode pages for crawlers.
-  const modeListLd = useMemo(
-    () => itemListLd(MODES.map((m) => ({ name: t(`study.${m.key}`), path: m.to }))),
-    [t],
-  );
-  usePageMeta(t('meta.study'), t('metaDesc.study'), modeListLd);
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
   const { quizBest, gsDone, fcSrs, streak, examHistory, flagged, lastBank } = useStudyProgress();
@@ -76,12 +70,7 @@ export function StudyHub() {
   };
 
   return (
-    <section className={`container ${styles.page}`}>
-      <header className={styles.head}>
-        <h1>{t('study.title')}</h1>
-        <p className={styles.subtitle}>{t('study.subtitle')}</p>
-      </header>
-
+    <>
       <OutputGrid>
         <ResultStat
           label={t('study.streak')}
@@ -180,7 +169,7 @@ export function StudyHub() {
       )}
 
       <ul className={`${styles.modes} stagger-grid`}>
-        {MODES.map((m) => {
+        {STUDY_MODES.map((m) => {
           const prog = progressFor(m.key);
           return (
             <li key={m.key}>
@@ -196,9 +185,6 @@ export function StudyHub() {
           );
         })}
       </ul>
-      <div className={styles.footnote}>
-        <Disclaimer compact />
-      </div>
-    </section>
+    </>
   );
 }

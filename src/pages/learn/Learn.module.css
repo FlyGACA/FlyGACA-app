@@ -1,0 +1,42 @@
+.page {
+  padding-block: var(--space-8);
+}
+
+/* Segmented control (Design System §08) — raised active tab on an inset track.
+   Mirrors the Library hub's corpus tabs. */
+.tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-block-end: var(--space-5);
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.tab {
+  padding: var(--space-3) var(--space-5);
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.tab:hover {
+  color: var(--text);
+}
+.tabActive {
+  background: var(--surface-raised);
+  color: var(--accent-bright);
+  box-shadow: var(--shadow-sm);
+}
+
+.footnote {
+  margin-block-start: var(--space-8);
+}

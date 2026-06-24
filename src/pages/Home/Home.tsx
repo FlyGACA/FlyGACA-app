@@ -35,7 +35,7 @@ const STATS = [
 
 // The "at a glance" trust strip. Numbers stay truthful: Parts mirrors the hero
 // proof stat (gacar-index), tools matches the migration catalogue, and guides is
-// the live `GUIDE_SLUGS` count the GuidesWidget already renders.
+// the live `GUIDE_SLUGS` count the Learn hub surfaces.
 const TRUST_STATS = [
   { value: 74, key: 'parts' },
   { value: 55, key: 'tools' },
