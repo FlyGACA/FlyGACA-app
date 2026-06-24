@@ -25,8 +25,8 @@ import {
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
-import { LibraryHero } from './LibraryHero';
-import type { HeroStat } from './LibraryHero';
+import { SearchHero } from '../../components/SearchHero';
+import type { HeroStat } from '../../components/SearchHero';
 import styles from './Library.module.css';
 
 const MIN_QUERY = 3;
@@ -337,11 +337,17 @@ export function Library() {
 
   return (
     <section className={`container ${styles.page}`}>
-      <LibraryHero
+      <SearchHero
+        eyebrow={t('library.eyebrow')}
+        title={t('library.title')}
+        subtitle={t('library.subtitle')}
+        placeholder={t('library.searchPlaceholder')}
         query={query}
         onQueryChange={setQuery}
         stats={stats}
-        suggestions={SUGGESTIONS[kind]}
+        chipsLabel={t('library.popular')}
+        chips={SUGGESTIONS[kind].map((s) => ({ label: s, onClick: () => setQuery(s) }))}
+        trailing={<Link to="/library/charts">{t('library.viewCharts')} →</Link>}
       />
 
       <OfflineDownloads />

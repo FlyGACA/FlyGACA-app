@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { SearchHero } from '../../components/SearchHero';
+import type { HeroStat } from '../../components/SearchHero';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -46,6 +48,25 @@ const TOPIC_TONE: Record<GuideTopic, string> = {
 };
 
 const LEVELS: GuideLevel[] = ['beginner', 'intermediate', 'advanced'];
+const LEVEL_ORDER: Record<GuideLevel, number> = { beginner: 0, intermediate: 1, advanced: 2 };
+
+/** Curated quick-pick topics surfaced as chips in the hero (subset of GUIDE_TOPICS). */
+const POPULAR_TOPICS: GuideTopic[] = ['licensing', 'medical', 'airspace', 'weather', 'planning'];
+
+/** Sort orders; 'topic' keeps the grouped-by-collection view, the rest go flat. */
+type SortKey = 'topic' | 'title' | 'time' | 'level';
+const SORTS: SortKey[] = ['topic', 'title', 'time', 'level'];
+
+/** Grid vs list layout, persisted across visits (mirrors the Library hub). */
+type ViewMode = 'grid' | 'list';
+const VIEW_KEY = 'flygaca:guides-view';
+function readView(): ViewMode {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'grid';
+  } catch {
+    return 'grid';
+  }
+}
 
 export function GuidesIndex() {
   const { t } = useTranslation();
@@ -65,8 +86,19 @@ export function GuidesIndex() {
   const [query, setQuery] = useState('');
   const [topic, setTopic] = useState<GuideTopic | 'all'>('all');
   const [level, setLevel] = useState<GuideLevel | 'all'>('all');
+  const [sort, setSort] = useState<SortKey>('topic');
+  const [view, setView] = useState<ViewMode>(readView);
   const { bookmarks, read } = useGuidePrefs();
   const q = query.trim().toLowerCase();
+
+  // Persist the chosen view so it survives reloads.
+  useEffect(() => {
+    try {
+      localStorage.setItem(VIEW_KEY, view);
+    } catch {
+      /* storage unavailable — keep in-memory */
+    }
+  }, [view]);
 
   const guides = useMemo(
     () =>
@@ -91,6 +123,8 @@ export function GuidesIndex() {
     [t],
   );
 
+  type GuideRow = (typeof guides)[number];
+
   const filtered = guides.filter(
     (g) =>
       (topic === 'all' || g.topic === topic) &&
@@ -98,7 +132,23 @@ export function GuidesIndex() {
       (!q || g.haystack.includes(q)),
   );
 
-  const grouped = topic === 'all' && level === 'all' && !q;
+  // 'topic' renders the grouped-by-collection view; every other sort is a flat,
+  // sorted list. Grouping only kicks in with no active search/filter.
+  const grouped = sort === 'topic' && topic === 'all' && level === 'all' && !q;
+  const sortedFlat = useMemo(() => {
+    const arr = [...filtered];
+    if (sort === 'title') arr.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sort === 'time')
+      arr.sort((a, b) => a.minutes - b.minutes || a.name.localeCompare(b.name));
+    else if (sort === 'level')
+      arr.sort(
+        (a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level] || a.name.localeCompare(b.name),
+      );
+    return arr;
+    // filtered is derived from these inputs; recompute when any changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guides, topic, level, q, sort]);
+
   const groups = GUIDE_TOPICS.map((tp) => ({
     topic: tp,
     items: filtered.filter((g) => g.topic === tp),
@@ -107,7 +157,27 @@ export function GuidesIndex() {
   const saved = grouped ? guides.filter((g) => bookmarks.includes(g.slug)) : [];
   const readCount = read.length;
 
-  type GuideRow = (typeof guides)[number];
+  // Animated corpus figures for the hero readout.
+  const stats = useMemo<HeroStat[]>(
+    () => [
+      { label: t('guides.stats.guides'), value: LIVE_GUIDE_SLUGS.length, tone: 'cyan' },
+      {
+        label: t('guides.stats.sections'),
+        value: guides.reduce((s, g) => s + g.sectionCount, 0),
+        tone: 'green',
+      },
+      { label: t('guides.stats.topics'), value: GUIDE_TOPICS.length, tone: 'gold' },
+    ],
+    [t, guides],
+  );
+
+  // Quick-pick topic chips for the hero; toggle the matching topic filter.
+  const popularChips = POPULAR_TOPICS.map((tp) => ({
+    label: t(`guides.topics.${tp}`),
+    onClick: () => setTopic((cur) => (cur === tp ? 'all' : tp)),
+    active: topic === tp,
+  }));
+
   const card = (g: GuideRow) => {
     const isSaved = bookmarks.includes(g.slug);
     const isRead = read.includes(g.slug);
@@ -144,23 +214,56 @@ export function GuidesIndex() {
     );
   };
 
+  // Compact list row — same guide, denser for scanning.
+  const row = (g: GuideRow) => {
+    const isSaved = bookmarks.includes(g.slug);
+    const isRead = read.includes(g.slug);
+    return (
+      <li key={g.slug} className={styles.rowWrap}>
+        <Link to={`/guides/${g.slug}`} className={styles.row}>
+          <span className={styles.rowLevel} data-level={g.level}>
+            {t(`guides.level.${g.level}`)}
+          </span>
+          <span className={styles.rowTitle}>{g.name}</span>
+          <span className={styles.rowMeta}>{t('guides.readTime', { min: g.minutes })}</span>
+          <span className={styles.rowMeta}>
+            {t('guides.sectionCount', { count: g.sectionCount })}
+          </span>
+          {isRead && (
+            <span className={styles.rowRead}>
+              <span aria-hidden="true">✓</span> {t('guides.readDone')}
+            </span>
+          )}
+        </Link>
+        <button
+          type="button"
+          className={`${styles.rowStar} ${isSaved ? styles.starOn : ''}`}
+          aria-label={t(isSaved ? 'guides.unbookmark' : 'guides.bookmark')}
+          aria-pressed={isSaved}
+          onClick={() => toggleBookmark(g.slug)}
+        >
+          {isSaved ? '★' : '☆'}
+        </button>
+      </li>
+    );
+  };
+
+  const renderDoc = (g: GuideRow) => (view === 'list' ? row(g) : card(g));
+  const listClass = `${styles.grid} ${view === 'list' ? styles.list : ''} stagger-grid`;
+
   return (
     <section className={`container ${styles.page}`}>
-      <header className={styles.head}>
-        <h1>{t('guides.title')}</h1>
-        <p className={styles.subtitle}>{t('guides.subtitle')}</p>
-        <p className={styles.progress} role="status">
-          {t('guides.readProgress', { done: readCount, total: LIVE_GUIDE_SLUGS.length })}
-        </p>
-        <input
-          className={styles.search}
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('guides.searchPlaceholder')}
-          aria-label={t('guides.searchPlaceholder')}
-        />
-      </header>
+      <SearchHero
+        eyebrow={t('guides.eyebrow')}
+        title={t('guides.title')}
+        subtitle={t('guides.subtitle')}
+        placeholder={t('guides.searchPlaceholder')}
+        query={query}
+        onQueryChange={setQuery}
+        stats={stats}
+        chipsLabel={t('guides.popular')}
+        chips={popularChips}
+      />
 
       <div className={styles.filters}>
         <div className={styles.chips} role="group" aria-label={t('guides.title')}>
@@ -201,6 +304,59 @@ export function GuidesIndex() {
             </button>
           ))}
         </div>
+
+        <div className={styles.toolbar}>
+          <p className={styles.progress} role="status">
+            {t('guides.readProgress', { done: readCount, total: LIVE_GUIDE_SLUGS.length })}
+          </p>
+          <div className={styles.toolbarEnd}>
+            <label className={styles.sortField}>
+              <span className={styles.sortLabel}>{t('guides.sortBy')}</span>
+              <select
+                className={styles.sortSelect}
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+              >
+                {SORTS.map((s) => (
+                  <option key={s} value={s}>
+                    {t(`guides.sort.${s}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className={styles.viewToggle} role="group" aria-label={t('guides.view')}>
+              <button
+                type="button"
+                className={`${styles.viewBtn} ${view === 'grid' ? styles.viewBtnActive : ''}`}
+                aria-pressed={view === 'grid'}
+                aria-label={t('guides.viewGrid')}
+                title={t('guides.viewGrid')}
+                onClick={() => setView('grid')}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <rect x="3" y="3" width="8" height="8" rx="1.5" />
+                  <rect x="13" y="3" width="8" height="8" rx="1.5" />
+                  <rect x="3" y="13" width="8" height="8" rx="1.5" />
+                  <rect x="13" y="13" width="8" height="8" rx="1.5" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className={`${styles.viewBtn} ${view === 'list' ? styles.viewBtnActive : ''}`}
+                aria-pressed={view === 'list'}
+                aria-label={t('guides.viewList')}
+                title={t('guides.viewList')}
+                onClick={() => setView('list')}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <rect x="3" y="4" width="18" height="3" rx="1.5" />
+                  <rect x="3" y="10.5" width="18" height="3" rx="1.5" />
+                  <rect x="3" y="17" width="18" height="3" rx="1.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
@@ -216,7 +372,7 @@ export function GuidesIndex() {
                 tone="var(--gold)"
                 count={t('guides.guideCount', { count: saved.length })}
               />
-              <ul className={`${styles.grid} stagger-grid`}>{saved.map(card)}</ul>
+              <ul className={listClass}>{saved.map(renderDoc)}</ul>
             </section>
           )}
           {groups.map((grp) => (
@@ -226,12 +382,12 @@ export function GuidesIndex() {
                 tone={TOPIC_TONE[grp.topic]}
                 count={t('guides.guideCount', { count: grp.items.length })}
               />
-              <ul className={`${styles.grid} stagger-grid`}>{grp.items.map(card)}</ul>
+              <ul className={listClass}>{grp.items.map(renderDoc)}</ul>
             </section>
           ))}
         </>
       ) : (
-        <ul className={`${styles.grid} stagger-grid`}>{filtered.map(card)}</ul>
+        <ul className={listClass}>{sortedFlat.map(renderDoc)}</ul>
       )}
 
       <div className={styles.footnote}>

@@ -1,5 +1,6 @@
-/* Search-first hero — the signature falcon-stroke band with a sage glow and a
-   gold bottom edge, but built around a large central search field. */
+/* Search-first hub hero — the signature falcon-stroke band with a sage glow and a
+   gold bottom edge, built around a large central search field. Shared by the
+   Library and Guides hubs. */
 .hero {
   position: relative;
   margin-block-end: var(--space-6);
@@ -119,7 +120,7 @@
   background: color-mix(in srgb, var(--moon) 22%, transparent);
 }
 
-/* ── Quick-search chips ── */
+/* ── Quick-action chips ── */
 .suggest {
   display: flex;
   flex-wrap: wrap;
@@ -163,8 +164,17 @@
   border-color: var(--sage-bright);
   background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
+.suggestChipActive {
+  color: var(--falcon-night);
+  border-color: var(--sage-bright);
+  background: var(--sage-bright);
+}
+.suggestChipActive:hover {
+  color: var(--falcon-night);
+  background: var(--sage-bright);
+}
 
-/* ── Stats readout + charts link ── */
+/* ── Stats readout + trailing link ── */
 .afterRow {
   display: flex;
   flex-wrap: wrap;
@@ -208,13 +218,14 @@
   letter-spacing: 0.06em;
   color: var(--moon-soft);
 }
-.chartsLink {
+/* Trailing slot — typically a link (e.g. "Browse charts →"). */
+.trailing a {
   font-size: var(--fs-sm);
   font-weight: var(--fw-bold);
   color: var(--accent-bright);
   white-space: nowrap;
 }
-.chartsLink:hover {
+.trailing a:hover {
   color: var(--sage-bright);
 }
 
