@@ -37,6 +37,33 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Reference-tools cross-link row — surfaces study-relevant /tools pages as pill
+   chips (mirrors the per-guide "Related tools" chips). /tools stays canonical. */
+.refTools {
+  margin-block-start: var(--space-8);
+}
+.refChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-4);
+}
+.refChip {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.refChip:hover {
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+  text-decoration: none;
+}
+
 .footnote {
   margin-block-start: var(--space-8);
 }
