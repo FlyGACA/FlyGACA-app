@@ -156,13 +156,50 @@ class Bm25Index {
 
 let indexPromise: Promise<Bm25Index> | null = null;
 
+/**
+ * Validate parsed JSON against the `SearchIndex` shape, or throw a clear
+ * `corpus: …` error. Defense-in-depth: the index is loaded at runtime (fetched
+ * from Hosting, or read from disk in the emulator/tests), and a truncated,
+ * wrong-content, or otherwise malformed response would otherwise be cast blindly
+ * and flow into the BM25 index that grounds Captain Adel's citations.
+ */
+export function parseSearchIndex(value: unknown): SearchIndex {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("corpus: index is not an object");
+  }
+  const obj = value as Record<string, unknown>;
+  if (!Array.isArray(obj.entries) || obj.entries.length === 0) {
+    throw new Error("corpus: 'entries' is missing or empty");
+  }
+  for (let i = 0; i < obj.entries.length; i++) {
+    const e = obj.entries[i] as Record<string, unknown> | null;
+    if (typeof e !== "object" || e === null) {
+      throw new Error(`corpus: entry ${i} is not an object`);
+    }
+    if (typeof e.d !== "string" || typeof e.b !== "string" || typeof e.u !== "string") {
+      throw new Error(`corpus: entry ${i} is missing a string d/b/u field`);
+    }
+    if (e.x !== undefined && typeof e.x !== "string") {
+      throw new Error(`corpus: entry ${i} has a non-string 'x'`);
+    }
+  }
+  // `generated`/`scope` are tolerant — `generated` only labels the citation rev.
+  const generated = typeof obj.generated === "string" ? obj.generated : "";
+  const scope = typeof obj.scope === "string" ? obj.scope : "";
+  if (typeof obj.count === "number" && obj.count !== obj.entries.length) {
+    // A count/length mismatch is a truncation signal, but not necessarily fatal.
+    console.warn(`corpus: count ${obj.count} != entries.length ${obj.entries.length}`);
+  }
+  return { generated, scope, count: obj.entries.length, entries: obj.entries as SearchEntry[] };
+}
+
 async function loadRaw(): Promise<SearchIndex> {
   if (/^https?:\/\//.test(CORPUS_SOURCE)) {
     const res = await fetch(CORPUS_SOURCE);
     if (!res.ok) throw new Error(`corpus fetch failed: ${res.status} ${CORPUS_SOURCE}`);
-    return (await res.json()) as SearchIndex;
+    return parseSearchIndex(await res.json());
   }
-  return JSON.parse(await readFile(CORPUS_SOURCE, "utf8")) as SearchIndex;
+  return parseSearchIndex(JSON.parse(await readFile(CORPUS_SOURCE, "utf8")));
 }
 
 /** Build (or return the cached) BM25 index. Warm instances reuse it. */
