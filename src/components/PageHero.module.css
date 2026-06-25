@@ -1,0 +1,78 @@
+/* Shared content-page hero — the signature falcon-stroke band (mirrors SearchHero).
+   Used by the About / Schools / Pricing pages via <PageHero>. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: clamp(var(--space-6), 4vw, var(--space-10)) var(--space-6);
+  border-radius: var(--radius-xl);
+  border-block-end: 4px solid var(--gold);
+  background-color: var(--falcon-night);
+  background-image: var(--falcon-stroke);
+  color: var(--moon);
+}
+/* Centered variant (no media) — e.g. the Pricing header with its billing toggle. */
+.center {
+  flex-direction: column;
+  text-align: center;
+}
+.center .heroText {
+  align-items: center;
+}
+
+/* Sage glow bleeding in from the inline-end corner. */
+.glow {
+  position: absolute;
+  inset-block: -50%;
+  inset-inline-end: -15%;
+  inline-size: 60%;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--accent) 20%, transparent),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.heroText {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+}
+.title {
+  font-size: var(--fs-h1);
+  color: var(--moon);
+  margin: 0;
+}
+.subtitle {
+  color: var(--moon-soft);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  max-inline-size: 56ch;
+  margin: 0;
+}
+/* Inline-end media slot (e.g. the Captain avatar) — split layout only. */
+.media {
+  position: relative;
+  flex-shrink: 0;
+  margin-inline-start: auto;
+}
+@media (max-width: 720px) {
+  .hero:not(.center) {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .media {
+    margin-inline-start: 0;
+  }
+}

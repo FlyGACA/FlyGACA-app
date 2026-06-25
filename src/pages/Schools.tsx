@@ -1,9 +1,10 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { CaptainAvatar } from '../components/CaptainAvatar';
-import { CountUp } from '../components/CountUp';
+import { PageHero } from '../components/PageHero';
+import { StatStrip } from '../components/StatStrip';
 import { SectionHeader } from '../components/SectionHeader';
 import { BentoGrid } from '../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
@@ -21,9 +22,6 @@ interface Faq {
 }
 
 const FEATURE_TONES: BentoTone[] = ['default', 'cyan', 'green'];
-
-/** Neon tones cycled across the "what every seat includes" stat tiles (mirrors About). */
-const STAT_TONES = ['var(--neon-cyan)', 'var(--neon-green)', 'var(--gold)'];
 
 // "What every seat includes" — truthful product scope (gacar-index Parts, the
 // tools catalogue, ground-school modules from groundschool.json). No customer
@@ -63,45 +61,21 @@ export function Schools() {
 
   return (
     <section className={`container ${styles.page}`}>
-      <header className={styles.hero}>
-        <div className={styles.glow} aria-hidden="true" />
-        <div className={styles.heroText}>
-          <p className={styles.eyebrow}>{t('schools.eyebrow')}</p>
-          <h1>{t('schools.title')}</h1>
-          <p className={styles.subtitle}>{t('schools.subtitle')}</p>
-        </div>
-        <CaptainAvatar size="xl" glow pose="smile" decorative className={styles.heroAvatar} />
-      </header>
+      <PageHero
+        eyebrow={t('schools.eyebrow')}
+        title={t('schools.title')}
+        subtitle={t('schools.subtitle')}
+        media={<CaptainAvatar size="xl" glow pose="smile" decorative />}
+      />
 
       {/* What every seat includes — truthful product scope, neon stat tiles. */}
-      <div className={styles.includes}>
-        <p className={styles.includesLabel}>{t('schools.includesLabel')}</p>
-        <ul className={styles.stats}>
-          {SEAT_STATS.map((s, i) => (
-            <li
-              key={s.key}
-              className={styles.stat}
-              style={{ '--stat-tone': STAT_TONES[i % STAT_TONES.length] } as CSSProperties}
-            >
-              <span className={styles.statValue}>
-                <CountUp to={s.value} />
-              </span>
-              <span className={styles.statLabel}>{t(`schools.includes.${s.key}`)}</span>
-            </li>
-          ))}
-          <li
-            className={styles.stat}
-            style={
-              { '--stat-tone': STAT_TONES[SEAT_STATS.length % STAT_TONES.length] } as CSSProperties
-            }
-          >
-            <span className={styles.statValue}>
-              <bdi dir="ltr">EN · AR</bdi>
-            </span>
-            <span className={styles.statLabel}>{t('schools.includes.languages')}</span>
-          </li>
-        </ul>
-      </div>
+      <StatStrip
+        label={t('schools.includesLabel')}
+        stats={[
+          ...SEAT_STATS.map((s) => ({ value: s.value, label: t(`schools.includes.${s.key}`) })),
+          { value: <bdi dir="ltr">EN · AR</bdi>, label: t('schools.includes.languages') },
+        ]}
+      />
 
       {/* Capabilities. */}
       <section className={styles.block} aria-labelledby="schools-features">

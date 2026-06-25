@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
+import { PageHero } from '../components/PageHero';
 import { SectionHeader } from '../components/SectionHeader';
 import { usePageMeta } from '../lib/usePageMeta';
 import { faqLd } from '../lib/jsonld';
@@ -93,11 +94,12 @@ export function Pricing() {
 
   return (
     <section className={`container ${styles.page}`}>
-      <header className={styles.head}>
-        <div className={styles.glow} aria-hidden="true" />
-        <p className={styles.eyebrow}>{t('pricing.eyebrow')}</p>
-        <h1>{t('pricing.title')}</h1>
-        <p className={styles.subtitle}>{t('pricing.subtitle')}</p>
+      <PageHero
+        align="center"
+        eyebrow={t('pricing.eyebrow')}
+        title={t('pricing.title')}
+        subtitle={t('pricing.subtitle')}
+      >
         <div className={styles.toggle} role="group" aria-label={t('pricing.billingCycle')}>
           <button
             type="button"
@@ -117,7 +119,7 @@ export function Pricing() {
             <span className={styles.save}>{t('pricing.saveBadge', { pct: savePct })}</span>
           </button>
         </div>
-      </header>
+      </PageHero>
 
       <p className={styles.trustBanner}>{t('pricing.trustBanner')}</p>
       <p className={styles.planIntro}>{t(`pricing.planIntro.${plan}`)}</p>
