@@ -29,4 +29,11 @@ export default tseslint.config(
     files: ['e2e/**/*.ts', 'playwright.config.ts', '*.config.ts'],
     languageOptions: { globals: globals.node },
   },
+  {
+    // The Cloudflare Worker runs in a service-worker-like runtime (no DOM/window),
+    // so expose worker globals (self, fetch, Response, caches, etc.) instead of
+    // the browser set.
+    files: ['worker/**/*.ts'],
+    languageOptions: { globals: globals.serviceworker },
+  },
 );

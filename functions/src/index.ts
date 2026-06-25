@@ -4,8 +4,8 @@
  * `chat` is the Captain Adel RAG gateway — a Gemini-powered Genkit flow exposed
  * over the legacy `/api/chat` HTTP + SSE contract via an Express app (see
  * docs/DESIGN-genkit-rag-backend.md). It replaces the legacy `flygaca/flygaca`
- * brain. `functions/api/[[path]].ts` (Cloudflare proxy) forwards same-origin
- * `/api/*` here; Firebase Hosting rewrites `/api/**` to this function.
+ * brain. The Cloudflare Worker (`worker/index.ts`) forwards same-origin `/api/*`
+ * here; Firebase Hosting rewrites `/api/**` to this function.
  *
  * Note: `src/genkit-sample.ts` is the scaffold example only — it is not imported
  * here, so it is not deployed.

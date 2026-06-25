@@ -71,26 +71,29 @@ vercel deploy --prod   # uses vercel.json (build + rewrites + headers)
 
 Config: `vercel.json` (proxies `/api/(.*)` → Firebase, SPA fallback, mirrored headers/CSP).
 
-## Cloudflare Pages (mirror)
+## Cloudflare Workers (mirror)
 
-**Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys `dist/`
-to the `flygaca-app` Pages project on every push to `main` (and on demand via Actions → **Deploy
-(Cloudflare Pages mirror)** → _Run workflow_). The deploy step is **gated on secrets**, so it builds
-but skips publishing until you add both in repo Settings → Secrets → Actions:
+**Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys the
+`flygaca-app` Worker (serving the `dist/` static assets) on every push to `main` (and on demand via
+Actions → **Deploy (Cloudflare Workers mirror)** → _Run workflow_). The deploy step is **gated on
+secrets**, so it builds but skips publishing until you add both in repo Settings → Secrets → Actions:
 
-- **`CLOUDFLARE_API_TOKEN`** — a token with the _Cloudflare Pages: Edit_ permission.
-- **`CLOUDFLARE_ACCOUNT_ID`** — the account that owns the `flygaca-app` Pages project.
+- **`CLOUDFLARE_API_TOKEN`** — a token with the _Workers Scripts: Edit_ permission (plus account-level
+  Workers access for uploading the static assets).
+- **`CLOUDFLARE_ACCOUNT_ID`** — the account that owns the `flygaca-app` Worker.
 
 **Manual (`wrangler login` first):**
 
 ```bash
 npm i -g wrangler
 npm run build
-npx wrangler pages deploy dist --project-name flygaca-app
+npx wrangler deploy            # reads name, main and dist/ assets from wrangler.toml
 ```
 
-Config: `wrangler.toml`, `functions/api/[[path]].ts` (proxies `/api/*` → Firebase, preserves SSE),
-`public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) — both copied into `dist/`.
+Config: `wrangler.toml` (Workers + `[assets]` binding, `run_worker_first = ["/api/*"]`),
+`worker/index.ts` (proxies `/api/*` → Firebase, preserves SSE; serves assets otherwise),
+`public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) — both copied into `dist/`
+and honored by Workers static assets.
 
 ## Netlify (mirror) — `netlify login` first
 
