@@ -98,6 +98,18 @@
       "tools": "Flight tools"
     }
   },
+  "offlinePage": {
+    "eyebrow": "Offline",
+    "title": "You're offline",
+    "lead": "We can't reach the network right now. The flight calculators and anything you've saved for offline stay available — pick up where the connection dropped.",
+    "back": "You're back online.",
+    "retry": "Try again",
+    "links": {
+      "tools": "Flight tools",
+      "library": "Saved library",
+      "study": "Study"
+    }
+  },
   "home": {
     "eyebrow": "Independent · Educational · Bilingual",
     "title": "Every Saudi reg. One captain on the answer.",
@@ -2998,6 +3010,7 @@
     "logbook": "Logbook",
     "settings": "Settings",
     "notFound": "Page not found",
+    "offline": "Offline",
     "currency": "Currency Tracker"
   },
   "metaDesc": {
