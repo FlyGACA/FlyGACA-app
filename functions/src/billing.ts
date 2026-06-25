@@ -74,7 +74,20 @@ async function writeEntitlement(uid: string, sub: Stripe.Subscription): Promise<
 }
 
 export const createCheckoutSession = onCall(
-  { region: REGION, secrets: [stripeSecret], timeoutSeconds: 30, memory: "256MiB", maxInstances: 5 },
+  {
+    region: REGION,
+    secrets: [stripeSecret],
+    timeoutSeconds: 30,
+    memory: "256MiB",
+    maxInstances: 5,
+    // App Check on the payments surface. These Stripe callables are web-only (the
+    // native shell uses store IAP, not Stripe Checkout), and the web app mints
+    // reCAPTCHA-Enterprise App Check tokens, so a stolen/automated ID token alone
+    // can't drive Stripe from outside the app. Requires the App Check provider to
+    // be registered + enforced in the Firebase console and
+    // VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the deployed build.
+    enforceAppCheck: true,
+  },
   async (request) => {
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
@@ -98,7 +111,20 @@ export const createCheckoutSession = onCall(
 );
 
 export const createBillingPortalSession = onCall(
-  { region: REGION, secrets: [stripeSecret], timeoutSeconds: 30, memory: "256MiB", maxInstances: 5 },
+  {
+    region: REGION,
+    secrets: [stripeSecret],
+    timeoutSeconds: 30,
+    memory: "256MiB",
+    maxInstances: 5,
+    // App Check on the payments surface. These Stripe callables are web-only (the
+    // native shell uses store IAP, not Stripe Checkout), and the web app mints
+    // reCAPTCHA-Enterprise App Check tokens, so a stolen/automated ID token alone
+    // can't drive Stripe from outside the app. Requires the App Check provider to
+    // be registered + enforced in the Firebase console and
+    // VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the deployed build.
+    enforceAppCheck: true,
+  },
   async (request) => {
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
