@@ -3023,6 +3023,11 @@
   "dashboard": {
     "eyebrow": "Flight deck",
     "greeting": "Welcome back, {{name}}",
+    "groups": {
+      "numbers": "Your numbers",
+      "activity": "Activity",
+      "more": "Achievements & actions"
+    },
     "actionNeeded": "Some items need attention",
     "allCurrent": "You're all current",
     "currencyBoard": "Currency board",

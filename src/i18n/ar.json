@@ -3023,6 +3023,11 @@
   "dashboard": {
     "eyebrow": "قمرة القيادة",
     "greeting": "أهلًا بعودتك، {{name}}",
+    "groups": {
+      "numbers": "أرقامك",
+      "activity": "النشاط",
+      "more": "الإنجازات والإجراءات"
+    },
     "actionNeeded": "بنود تحتاج إلى إجراء",
     "allCurrent": "جميع صلاحياتك سارية",
     "currencyBoard": "لوحة الصلاحيات",
