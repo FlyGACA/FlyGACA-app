@@ -8,6 +8,7 @@
  */
 
 export { pickSpeechLang as pickTtsLang } from './speech';
+export { toSpeechText } from './markdown';
 
 /** True when the browser exposes a usable speech-synthesis engine. */
 export function ttsSupported(): boolean {

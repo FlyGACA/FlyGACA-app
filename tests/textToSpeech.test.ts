@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
-import { ttsSupported, pickTtsLang } from '../src/calc/textToSpeech';
+import { ttsSupported, pickTtsLang, toSpeechText } from '../src/calc/textToSpeech';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -19,5 +19,11 @@ describe('ttsSupported', () => {
   it('is false when the engine is absent', () => {
     vi.stubGlobal('window', {});
     expect(ttsSupported()).toBe(false);
+  });
+});
+
+describe('toSpeechText (re-exported for SpeakButton)', () => {
+  it('strips markdown so the engine speaks clean prose', () => {
+    expect(toSpeechText('see **GACAR** at `91.155`')).toBe('see GACAR at 91.155.');
   });
 });
