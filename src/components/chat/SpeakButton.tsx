@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ttsSupported, pickTtsLang } from '../../calc/textToSpeech';
+import { ttsSupported, pickTtsLang, toSpeechText } from '../../calc/textToSpeech';
 import styles from './SpeakButton.module.css';
 
 /**
@@ -32,8 +32,12 @@ export function SpeakButton({ text }: { text: string }) {
       setSpeaking(false);
       return;
     }
+    // Speak clean prose, not raw Markdown — otherwise the engine announces
+    // every `**`, backtick, link and `§` symbol, which sounds letter-by-letter.
+    const spoken = toSpeechText(text);
+    if (!spoken) return;
     synth.cancel(); // clear anything queued from another message
-    const utter = new SpeechSynthesisUtterance(text);
+    const utter = new SpeechSynthesisUtterance(spoken);
     utter.lang = pickTtsLang(i18n.language);
     utter.onend = () => setSpeaking(false);
     utter.onerror = () => setSpeaking(false);
