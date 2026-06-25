@@ -142,15 +142,22 @@ app.use((req, res, next) => {
 });
 
 app.post(['/chat', '/api/chat'], async (req: Request, res: Response): Promise<void> => {
-  // Auth / App Check.
+  // Auth / App Check. Captain Adel chat requires a signed-in Firebase user — an
+  // absent/invalid ID token (anonymous) is rejected with 401, distinct from the
+  // App Check 403 above.
+  let uid: string | undefined;
   try {
-    await authenticate(req);
+    ({ uid } = await authenticate(req));
   } catch (err) {
     if (err instanceof AuthError) {
       res.status(403).json({ error: err.message });
       return;
     }
     throw err;
+  }
+  if (!uid) {
+    res.status(401).json({ error: 'sign-in required' });
+    return;
   }
 
   const parsed = parseRequest(req.body);

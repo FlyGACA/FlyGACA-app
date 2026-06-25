@@ -174,7 +174,7 @@ export function Chat() {
   const abortRef = useRef<AbortController | null>(null);
   const sentInitial = useRef(false);
 
-  const { entitlement } = useAccount();
+  const { entitlement, session } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
   const left = remaining(currentUsage(usage));
   const gated = !isPro && isExhausted(currentUsage(usage));
@@ -686,7 +686,14 @@ export function Chat() {
 
       {hasMessages && <SourcesDigest parts={digest} />}
 
-      {gated ? (
+      {!session ? (
+        <div className={styles.gate}>
+          <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
+          <Link className="btn btn-primary" to="/account">
+            {t('account.goSignIn')}
+          </Link>
+        </div>
+      ) : gated ? (
         <div className={styles.gate}>
           <p className={styles.gateNote}>{t('chat.quota.exhausted')}</p>
           <UpsellCard variant="inline" />
