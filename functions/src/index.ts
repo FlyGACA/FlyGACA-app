@@ -13,7 +13,7 @@
 import { setGlobalOptions } from "firebase-functions";
 import { onRequest } from "firebase-functions/https";
 import { defineSecret } from "firebase-functions/params";
-import { app } from "./gateway.js";
+import app from "./gateway.js";
 
 // Gemini API key — stored in Cloud Secret Manager, bound only to `chat`.
 const geminiApiKey = defineSecret("GOOGLE_GENAI_API_KEY");
