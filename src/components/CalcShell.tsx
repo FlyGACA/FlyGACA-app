@@ -7,6 +7,7 @@ import { usePageMeta } from '../lib/usePageMeta';
 import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
+import { shareCurrent } from '../lib/share';
 import {
   addPreset,
   removePreset,
@@ -69,6 +70,7 @@ export function CalcShell({
   const { entitlement } = useAccount();
   const isPro = effectivePlan(entitlement) !== 'free';
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
+  const [shared, setShared] = useState<'idle' | 'shared' | 'copied'>('idle');
   const [presets, setPresets] = useState<Preset[]>(loadPresets);
   const [naming, setNaming] = useState(false);
   const [presetName, setPresetName] = useState('');
@@ -108,6 +110,14 @@ export function CalcShell({
     setTimeout(() => setCopied('idle'), 1500);
   }
 
+  // Share the current tool URL (inputs carried in the query via useUrlState),
+  // tagged with ?ref=tool. Web Share sheet where available, else clipboard.
+  async function shareThis() {
+    const result = await shareCurrent('tool', { title });
+    setShared(result);
+    setTimeout(() => setShared('idle'), 1500);
+  }
+
   const copyLabel =
     copied === 'ok'
       ? t('calc.copied')
@@ -115,11 +125,20 @@ export function CalcShell({
         ? t('calc.copyFailed')
         : t('calc.copyLink');
 
-  // The button's visible label changes on copy, but screen readers also need the
+  const shareLabel =
+    shared === 'copied'
+      ? t('calc.copied')
+      : shared === 'shared'
+        ? t('calc.shared')
+        : t('calc.share');
+
+  // The buttons' visible labels change on action, but screen readers also need the
   // outcome announced — a polite live region carries the transient confirmation
   // (WCAG 4.1.3 Status Messages). Empty while idle so it only speaks on change.
   const copyStatus =
     copied === 'ok' ? t('calc.copied') : copied === 'fail' ? t('calc.copyFailed') : '';
+  const shareStatus =
+    shared === 'shared' ? t('calc.shared') : shared === 'copied' ? t('calc.copied') : '';
 
   const adelHref = adelPrompt ? adelLink(adelPrompt()) : null;
 
@@ -136,6 +155,9 @@ export function CalcShell({
       <div className={styles.actions}>
         <button className={styles.action} type="button" onClick={copyLink}>
           {copyLabel}
+        </button>
+        <button className={styles.action} type="button" onClick={shareThis}>
+          {shareLabel}
         </button>
         {onExample && (
           <button className={styles.action} type="button" onClick={onExample}>
@@ -215,7 +237,7 @@ export function CalcShell({
       )}
 
       <span className="sr-only" role="status" aria-live="polite">
-        {copyStatus}
+        {copyStatus || shareStatus}
       </span>
 
       {formula && (

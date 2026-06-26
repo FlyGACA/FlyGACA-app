@@ -1698,11 +1698,7 @@
       "pro": "You're on Pro — thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": [
-      "Bulk seat licences",
-      "Admin dashboard & usage",
-      "Syllabus-aligned study"
-    ],
+    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
@@ -2964,6 +2960,8 @@
     "copyLink": "Copy link to this setup",
     "copied": "✓ Link copied",
     "copyFailed": "Copy failed",
+    "share": "Share",
+    "shared": "✓ Shared",
     "tryExample": "Try an example",
     "askAdel": "Ask Captain Adel to explain",
     "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",

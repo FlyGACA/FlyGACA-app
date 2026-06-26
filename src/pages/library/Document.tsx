@@ -9,7 +9,7 @@ import type { CorpusIndex, LibraryKind } from '../../lib/content';
 import { docNeighbors, relatedDocs } from '../../calc/corpusNav';
 import { adelLink } from '../../lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
-import { share } from '../../lib/native-bridge';
+import { shareCurrent } from '../../lib/share';
 import { usePageMeta } from '../../lib/usePageMeta';
 import {
   useLibraryPrefs,
@@ -414,7 +414,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     }
   }
   function shareDoc() {
-    void share({ title: doc?.title, url: window.location.href });
+    void shareCurrent('library', { title: doc?.title });
   }
 
   // The eyebrow badge: "Part 91" for regulations, the corpus badge otherwise.
