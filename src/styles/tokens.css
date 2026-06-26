@@ -314,8 +314,16 @@ html[data-theme='cockpit'] {
   /* --- Glows dimmed — minimal bloom for night vision --- */
   --glow-teal: radial-gradient(closest-side, rgba(255, 176, 0, 0.18), rgba(255, 176, 0, 0) 70%);
   --glow-sage: radial-gradient(closest-side, rgba(255, 176, 0, 0.14), rgba(255, 176, 0, 0) 70%);
-  --glow-neon-green: radial-gradient(closest-side, rgba(255, 176, 0, 0.16), rgba(255, 176, 0, 0) 70%);
-  --glow-neon-cyan: radial-gradient(closest-side, rgba(255, 176, 0, 0.16), rgba(255, 176, 0, 0) 70%);
+  --glow-neon-green: radial-gradient(
+    closest-side,
+    rgba(255, 176, 0, 0.16),
+    rgba(255, 176, 0, 0) 70%
+  );
+  --glow-neon-cyan: radial-gradient(
+    closest-side,
+    rgba(255, 176, 0, 0.16),
+    rgba(255, 176, 0, 0) 70%
+  );
   --glow-stat-cyan: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
   --glow-stat-green: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
 }
