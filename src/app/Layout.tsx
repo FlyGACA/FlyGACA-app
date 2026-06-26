@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from './Header';
@@ -9,6 +9,11 @@ import { RouteFallback } from './RouteFallback';
 import { ScrollProgress } from '../components/ScrollProgress';
 import { CommandPalette } from '../components/CommandPalette/CommandPalette';
 import { PwaPrompts } from '../components/pwa/PwaPrompts';
+import { useOnboardingSeen } from '../lib/onboardingPrefs';
+
+// Lazy so the modal + its CSS stay out of the initial bundle (160 kB budget) —
+// only fetched on a genuine first visit to the home route.
+const OnboardingTour = lazy(() => import('../components/onboarding/OnboardingTour'));
 import { useOfflineBookmarkSync } from '../lib/useOfflineSync';
 
 /** The shared chrome: header + routed page + footer. Replaces the legacy
@@ -19,6 +24,11 @@ import { useOfflineBookmarkSync } from '../lib/useOfflineSync';
 export function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
+  const onboardingSeen = useOnboardingSeen();
+
+  // First-run welcome tour: only on a fresh visit to the home route, so a
+  // deep-linked tool or regulation is never interrupted.
+  const showTour = !onboardingSeen && location.pathname === '/';
   useOfflineBookmarkSync();
 
   return (
@@ -41,6 +51,11 @@ export function Layout() {
       </main>
       <Footer />
       <PwaPrompts />
+      {showTour && (
+        <Suspense fallback={null}>
+          <OnboardingTour />
+        </Suspense>
+      )}
     </>
   );
 }

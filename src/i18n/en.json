@@ -1,4 +1,32 @@
 {
+  "onboarding": {
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "done": "Get started",
+    "goThere": "Take me there",
+    "progress": "{{current}} of {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Fly GACA",
+        "body": "Your independent study companion for Saudi civil aviation. Here's a 30-second tour of what's inside."
+      },
+      "library": {
+        "title": "The regulation library",
+        "body": "Browse and search every GACAR Part, the AIP, and reference handbooks — full text, always free."
+      },
+      "tools": {
+        "title": "Flight tools",
+        "body": "Crosswind, fuel, weight & balance, navigation and dozens more — quick calculators with shareable links."
+      },
+      "captainAdel": {
+        "title": "Ask Captain Adel",
+        "body": "Answers grounded in the regulations, with the exact Part and section cited — never a replacement for the official source."
+      },
+      "bilingual": {
+        "title": "العربية & English",
+        "body": "Switch language anytime — the whole app mirrors right-to-left for Arabic."
+      }
   "errors": {
     "boundary": {
       "title": "Something went wrong",
@@ -1935,6 +1963,8 @@
     "medicalExpiry": "Medical expiry (date)",
     "lastReview": "Last flight review (date)",
     "language": "Language",
+    "help": "Help",
+    "replayTour": "Replay welcome tour",
     "data": "Your data",
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
