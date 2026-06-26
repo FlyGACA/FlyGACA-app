@@ -226,6 +226,11 @@
   --sheen-top: color-mix(in srgb, var(--text) 6%, transparent); /* glassy top highlight */
   --glow-stat-cyan: 0 0 22px color-mix(in srgb, var(--neon-cyan) 40%, transparent);
   --glow-stat-green: 0 0 22px color-mix(in srgb, var(--neon-green) 40%, transparent);
+
+  /* --- UI letter-spacing (tracking) ---
+     Base is 0; the Cockpit / Night-Ops theme nudges this up so amber text holds
+     its open counters at low cockpit brightness (see [data-theme="cockpit"]). */
+  --tracking-ui: 0;
 }
 
 /* =================================================================
@@ -237,3 +242,88 @@
    `color-scheme: dark` (set on :root) keeps native controls, scrollbars
    and form widgets dark to match.
    ================================================================= */
+
+/* =================================================================
+   Cockpit / Night-Ops theme — a SECOND dark variant (opt-in).
+
+   This is NOT a light theme (the rule above still holds — there is no
+   `prefers-color-scheme: light` and no `[data-theme="light"]`). It is a
+   night-vision-friendly DARK skin for use in a dark cockpit: low-wavelength
+   amber accents (#FFB000) with soft red (#FF3333) reserved for danger/hold,
+   over a deep charcoal canvas (#121212). Activated by `src/lib/theme.ts`,
+   which sets `data-theme="cockpit"` on <html> (default 'falcon' = no attr).
+
+   We only re-point the raw Falcon hues + the few semantic tokens that hard-code
+   navy-specific hexes; every component CSS Module reads the semantic layer, so
+   the new palette cascades app-wide with no component edits. `color-scheme:
+   dark` stays correct (both themes are dark).
+   ================================================================= */
+html[data-theme='cockpit'] {
+  /* Slight tracking: keep amber's open counters legible at low brightness. */
+  --tracking-ui: 0.01em;
+
+  /* --- Charcoal ramp (replaces the navy canvas) --- */
+  --falcon-night: #121212; /* --bg inherits this */
+  --falcon-deep: #1a1a1a; /* --surface inherits this */
+  --falcon-mist: #2a2a2a; /* --border inherits this */
+  --falcon-mist-2: #333333; /* raised border on dark */
+  --surface-raised: #222222; /* override: original #13212e is navy */
+  --border-bright: #3a3a3a; /* override: was #26384a */
+  --border-input: #6a6a6a; /* clears WCAG 1.4.11 3:1 vs #121212/#1a1a1a */
+
+  /* --- Amber primary, soft-red alert (low-wavelength, night-vision safe) --- */
+  --falcon-teal: #ffb000; /* primary brand → amber */
+  --teal-bright: #ffc23d; /* hover / links / focus → brighter amber */
+  --falcon-sage: #ffb000; /* secondary accent → amber (near-monochrome) */
+  --sage-bright: #ffd27a; /* highlight / focus ring → pale amber */
+  --falcon-gold: #ffb000; /* heritage gold collapses into amber */
+  --falcon-gold-soft: #ffd27a;
+  --falcon-clay: #ff3333; /* caution / danger → soft red */
+
+  /* --- Text — warm off-white trims blue light --- */
+  --text: #e8e2d6; /* primary */
+  --text-muted: #b3a78f; /* secondary */
+  --text-dim: #9a8e76; /* tertiary / captions */
+  --text-on-brand: #1a1208; /* CRITICAL: near-black on amber fill (~9:1). NOT white. */
+
+  /* Success stays distinguishable from the amber/red field (split palette);
+     warning stays amber (--warning → --falcon-gold), danger stays red. */
+  --success: #7fb069; /* dim desaturated green */
+
+  --focus: #ffd27a; /* pale amber focus ring */
+
+  /* --- Category accents → amber-luminance ramp; red kept for the hold category --- */
+  --cat-1: #ffb000;
+  --cat-2: #ffc23d;
+  --cat-3: #ffd27a;
+  --cat-4: #cc8a00; /* dim amber */
+  --cat-5: #ff3333; /* red reserved for the hold / refusal category */
+
+  /* --- Neutralize high-wavelength neon (destroys dark adaptation) --- */
+  --neon-green: #ffb000; /* "ON" / live status → amber */
+  --neon-cyan: #ffc23d; /* data tracks → amber */
+  --bento-surface: #1a1a1a;
+  --bento-gutter: #0c0c0c;
+  --diagram-runway: #3a3a3a;
+
+  /* --- Gradients re-authored (they literal-hex the navy/teal stops) --- */
+  --grad-brand: linear-gradient(102deg, #cc8a00 0%, #ffb000 100%);
+  --grad-wing: linear-gradient(155deg, #ffb000 0%, #ffd27a 100%);
+  --falcon-stroke: linear-gradient(135deg, #121212 0%, #3a2a00 40%, #8a6000 75%, #ffb000 100%);
+
+  /* --- Glows dimmed — minimal bloom for night vision --- */
+  --glow-teal: radial-gradient(closest-side, rgba(255, 176, 0, 0.18), rgba(255, 176, 0, 0) 70%);
+  --glow-sage: radial-gradient(closest-side, rgba(255, 176, 0, 0.14), rgba(255, 176, 0, 0) 70%);
+  --glow-neon-green: radial-gradient(
+    closest-side,
+    rgba(255, 176, 0, 0.16),
+    rgba(255, 176, 0, 0) 70%
+  );
+  --glow-neon-cyan: radial-gradient(
+    closest-side,
+    rgba(255, 176, 0, 0.16),
+    rgba(255, 176, 0, 0) 70%
+  );
+  --glow-stat-cyan: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
+  --glow-stat-green: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
+}

@@ -14,7 +14,7 @@ import { sessionId } from '../../lib/session';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { hasFeature } from '../../lib/features';
 import type { GacarIndex } from '../../lib/content';
 import {
   consume,
@@ -175,7 +175,7 @@ export function Chat() {
   const sentInitial = useRef(false);
 
   const { entitlement, session } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = hasFeature(entitlement, 'adel-unlimited');
   const left = remaining(currentUsage(usage));
   const gated = !isPro && isExhausted(currentUsage(usage));
 

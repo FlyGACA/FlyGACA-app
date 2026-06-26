@@ -111,18 +111,35 @@ export const nativeStore = {
   },
 };
 
-/** Share a link via the native sheet, the Web Share API, or clipboard fallback. */
-export async function share(opts: { title?: string; text?: string; url: string }): Promise<void> {
+/** How a share resolved: the OS/browser sheet handled it, or we fell back to
+ *  copying the link to the clipboard. */
+export type ShareResult = 'shared' | 'copied';
+
+/** Share a link via the native sheet, the Web Share API, or clipboard fallback.
+ *  Returns how it resolved so callers can give the right feedback (e.g. a tool
+ *  page showing "Link copied" when the desktop clipboard fallback runs). */
+export async function share(opts: {
+  title?: string;
+  text?: string;
+  url: string;
+}): Promise<ShareResult> {
   if (isNative()) {
     const { Share } = await import('@capacitor/share');
     await Share.share(opts);
-    return;
+    return 'shared';
   }
   if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-    await navigator.share(opts).catch(() => {});
-    return;
+    try {
+      await navigator.share(opts);
+      return 'shared';
+    } catch (err) {
+      // The user dismissed the sheet — it was shown, so don't force a copy.
+      if (err instanceof Error && err.name === 'AbortError') return 'shared';
+      // Otherwise the Web Share call failed — fall through to the clipboard.
+    }
   }
   await navigator.clipboard?.writeText(opts.url).catch(() => {});
+  return 'copied';
 }
 
 /** Open an external URL in the in-app browser (native) or a new tab (web). */

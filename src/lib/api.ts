@@ -25,6 +25,11 @@ export interface ChatSource {
   verbatim?: string;
   section?: string;
   part?: string;
+  /** Hierarchical lineage (present when the passage came from the chunk index). */
+  subpart?: string;
+  paragraph?: string;
+  subParagraph?: string;
+  effectiveDate?: string;
   /** Corpus revision the passage came from (e.g. "Rev 2024-06"). */
   corpusVersion?: string;
 }
