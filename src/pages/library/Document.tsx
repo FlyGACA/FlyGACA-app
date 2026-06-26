@@ -9,6 +9,7 @@ import type { CorpusIndex, LibraryKind } from '../../lib/content';
 import { docNeighbors, relatedDocs } from '../../calc/corpusNav';
 import { adelLink } from '../../lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
+import { useOnline } from '../../lib/pwa';
 import { share } from '../../lib/native-bridge';
 import { usePageMeta } from '../../lib/usePageMeta';
 import {
@@ -161,6 +162,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);
   const doc = docs.find((d) => d.slug === slug);
   const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
+  const online = useOnline();
   const prefs = useLibraryPrefs();
   const dk = docKey({ kind, slug: slug ?? '' });
   const notesForDoc = prefs.notes[dk];
@@ -448,7 +450,16 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
       </p>
 
       {loading && <p>{t('common.loading')}</p>}
-      {error && <p role="alert">{t('common.loadError')}</p>}
+      {error &&
+        (online ? (
+          <p role="alert">{t('common.loadError')}</p>
+        ) : (
+          // The doc wasn't in the offline cache and there's no network to fetch it.
+          <div className={styles.offlineNotice} role="status">
+            <h2>{t('offline.unavailable')}</h2>
+            <p>{t('offline.unavailableHint')}</p>
+          </div>
+        ))}
 
       {html && (
         <>

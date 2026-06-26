@@ -9,6 +9,7 @@ import { RouteFallback } from './RouteFallback';
 import { ScrollProgress } from '../components/ScrollProgress';
 import { CommandPalette } from '../components/CommandPalette/CommandPalette';
 import { PwaPrompts } from '../components/pwa/PwaPrompts';
+import { useOfflineBookmarkSync } from '../lib/useOfflineSync';
 
 /** The shared chrome: header + routed page + footer. Replaces the legacy
  *  build-chrome.js stamper — the chrome is now a component, never copied.
@@ -18,6 +19,7 @@ import { PwaPrompts } from '../components/pwa/PwaPrompts';
 export function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
+  useOfflineBookmarkSync();
 
   return (
     <>
