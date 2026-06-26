@@ -8,6 +8,7 @@
     "dev": "vite",
     "build:sitemap": "node scripts/build-sitemap.mjs",
     "build:airports": "node scripts/build-airports.mjs",
+    "build:chunks": "node scripts/build-rag-chunks.mjs",
     "optimize:img": "node scripts/optimize-images.mjs",
     "gen:og": "node scripts/build-og-images.mjs",
     "build": "npm run build:sitemap && tsc -b && vite build && node scripts/prerender-head.mjs",
