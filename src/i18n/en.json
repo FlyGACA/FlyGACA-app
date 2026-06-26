@@ -2958,7 +2958,15 @@
     "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية",
     "ctaTitle": "Study smarter with Captain Adel",
     "ctaText": "Go Pro for unlimited questions, deeper study tools, and full offline access to the library.",
-    "browseLibrary": "Browse the library"
+    "browseLibrary": "Browse the library",
+    "followUs": "Follow Fly GACA",
+    "social": {
+      "x": "Fly GACA on X",
+      "snapchat": "Fly GACA on Snapchat",
+      "facebook": "Fly GACA on Facebook",
+      "instagram": "Fly GACA on Instagram",
+      "linkedin": "Fly GACA on LinkedIn"
+    }
   },
   "calc": {
     "copyLink": "Copy link to this setup",
