@@ -29,6 +29,8 @@ test('language toggle flips the document to Arabic / RTL', async ({ page }) => {
 });
 
 test('chat degrades gracefully when the backend is not connected', async ({ page }) => {
+  // Chat now requires a signed-in user; seed a local (Firebase-off) session so the composer renders.
+  await page.addInitScript(() => localStorage.setItem('flygaca:session', 'pilot@example.com'));
   await page.goto('/chat');
   await page.getByRole('textbox').first().fill('What is GACAR Part 91?');
   await page.getByRole('button', { name: 'Send' }).click();
@@ -48,12 +50,14 @@ test('chat renders a streamed answer, grounding badge and source', async ({ page
       'data: [DONE]\n';
     await route.fulfill({ status: 200, contentType: 'text/event-stream', body });
   });
+  await page.addInitScript(() => localStorage.setItem('flygaca:session', 'pilot@example.com'));
   await page.goto('/chat');
   await page.getByRole('textbox').first().fill('VFR minima?');
   await page.getByRole('button', { name: 'Send' }).click();
 
   await expect(page.getByText('VFR minima apply here.')).toBeVisible();
-  await expect(page.getByRole('status')).toContainText('Grounded');
+  // Scope to the grounding badge — the PWA "offline ready" toast is also role=status.
+  await expect(page.getByRole('status').filter({ hasText: 'Grounded' })).toBeVisible();
   // `exact` so this matches the source citation, not the "Show the exact text of §91.155" follow-up.
   await expect(page.getByText('§91.155', { exact: true })).toBeVisible();
 });
