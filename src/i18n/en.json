@@ -50,7 +50,8 @@
     "downloads": "Offline downloads",
     "count": "{{n}} saved",
     "size": "{{size}} on device",
-    "empty": "Nothing saved for offline yet."
+    "empty": "Nothing saved for offline yet.",
+    "proLock": "Saving for offline is a Pro feature."
   },
   "nav": {
     "library": "Library",
@@ -757,6 +758,7 @@
     "bookmarked": "Bookmarked",
     "unbookmark": "Remove bookmark",
     "bookmarkSection": "Bookmark section",
+    "bookmarkProLock": "Bookmarking is a Pro feature.",
     "savedTitle": "Saved",
     "continueReading": "Continue reading",
     "saveSearch": "Save search",
@@ -2999,9 +3001,11 @@
     "logbook": "Logbook",
     "settings": "Settings",
     "notFound": "Page not found",
-    "currency": "Currency Tracker"
+    "currency": "Currency Tracker",
+    "updates": "Regulatory Change Tracking"
   },
   "metaDesc": {
+    "updates": "Track when the Saudi GACAR, AIP and AIP-derived sources change, see the current AIRAC cycle and watch the sources that matter to you. A Fly GACA Pro feature.",
     "library": "Browse and search all 74 GACAR Parts plus FAA, ICAO and GACA reference handbooks — full-text and deep-linked to the exact section. Independent and free; verify against GACA.",
     "charts": "Pan and zoom Saudi VFR (visual) charts from the GACA AIP, grouped by region with shareable links. Part of Fly GACA's independent aviation library.",
     "sheets": "One-page study sheets for the Saudi PPL, CPL, IR, Class 1 medical, licence conversion and SAELPT — read or download. Free study aids from Fly GACA.",
@@ -3092,6 +3096,25 @@
       }
     },
     "addCalendar": "Add reminders to calendar"
+  },
+  "alerts": {
+    "eyebrow": "Stay current",
+    "title": "Regulatory change tracking",
+    "subtitle": "See what moved in the GACAR, AIP and AIP-derived sources since you last looked, and watch the ones that matter to you.",
+    "proTeaser": "Get notified in-app when the regulations you rely on change, with the live AIRAC cycle and a personal watchlist. Change tracking is a Pro feature.",
+    "libraryLink": "Track regulatory changes",
+    "airacCurrent": "Current AIRAC cycle",
+    "airacNext": "Next AIRAC cycle",
+    "airacDays": "in {{n}} days",
+    "sinceLastVisit": "Changes since your last visit",
+    "markRead": "Mark all as read",
+    "empty": "No changes since you last looked. You're up to date.",
+    "changed": "Changed",
+    "effective": "Effective {{date}}",
+    "watchlist": "Watchlist",
+    "watchHint": "Watch a source to keep an eye on it. Changed sources are highlighted above.",
+    "watch": "Watch",
+    "watching": "Watching"
   },
   "upsell": {
     "proOnly": "Pro",

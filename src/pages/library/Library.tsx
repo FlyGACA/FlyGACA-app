@@ -15,13 +15,13 @@ import type {
 } from '../../lib/content';
 import {
   useLibraryPrefs,
-  toggleBookmark,
   isBookmarked,
   saveSearch,
   removeSearch,
   searchKey,
   bookmarkKey,
 } from '../../lib/libraryPrefs';
+import { useBookmarkGate } from '../../lib/useBookmarkGate';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
@@ -108,6 +108,7 @@ export function Library() {
   const [sort, setSort] = useState<SortKey>(() => SORTS[kind][0]);
   const [view, setView] = useViewMode(VIEW_KEY);
   const prefs = useLibraryPrefs();
+  const bookmark = useBookmarkGate();
   const { bookmarks, recents, searches } = prefs;
   // When applying a saved search, carry its category across the corpus switch.
   const pendingCat = useRef<string | null>(null);
@@ -260,7 +261,7 @@ export function Library() {
           className={`${styles.star} ${marked ? styles.starOn : ''}`}
           aria-pressed={marked}
           aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
-          onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
+          onClick={() => bookmark.toggle({ kind, slug: d.slug, title: d.title }, marked)}
         >
           {marked ? '★' : '☆'}
         </button>
@@ -310,7 +311,7 @@ export function Library() {
           className={`${hub.rowStar} ${marked ? hub.starOn : ''}`}
           aria-pressed={marked}
           aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
-          onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
+          onClick={() => bookmark.toggle({ kind, slug: d.slug, title: d.title }, marked)}
         >
           {marked ? '★' : '☆'}
         </button>
@@ -337,6 +338,12 @@ export function Library() {
       />
 
       <OfflineDownloads />
+
+      <Link to="/updates" className={styles.updatesLink}>
+        <span className={styles.updatesText}>{t('alerts.libraryLink')}</span>
+        <span className={styles.updatesPro}>{t('upsell.proOnly')}</span>
+        <span aria-hidden="true">→</span>
+      </Link>
 
       {!q && recents.length > 0 && (
         <section className={styles.personal} aria-label={t('library.continueReading')}>

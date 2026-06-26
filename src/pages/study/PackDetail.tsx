@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { GroundSchoolData, PathsIndex, PdfsIndex, QuizData } from '../../lib/content';
 import { useStudyProgress } from '../../lib/studyProgress';
-import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { useFeature } from '../../lib/features';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { Disclaimer } from '../../components/Disclaimer';
 import { PACKS, PACKS_GATED } from './packs';
@@ -18,7 +17,7 @@ export function PackDetail() {
 
   usePageMeta(pack ? t(`study.packCatalog.${pack.id}.name`) : undefined);
 
-  const { entitlement } = useAccount();
+  const canUsePro = useFeature('prep-packs');
   const { quizBest } = useStudyProgress();
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
@@ -27,7 +26,7 @@ export function PackDetail() {
 
   if (!pack) return <NotFound />;
 
-  const locked = PACKS_GATED && pack.pro && effectivePlan(entitlement) === 'free';
+  const locked = PACKS_GATED && pack.pro && !canUsePro;
   if (locked) {
     return (
       <section className={`container ${styles.page}`}>
