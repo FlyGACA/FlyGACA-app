@@ -1,4 +1,12 @@
 {
+  "errors": {
+    "boundary": {
+      "title": "Something went wrong",
+      "lead": "This page hit an unexpected error. Your data is safe — try reloading, or head back to the home page.",
+      "reload": "Reload page",
+      "home": "Back to home"
+    }
+  },
   "cmdk": {
     "label": "Search Fly GACA",
     "search": "Search",
@@ -1698,11 +1706,7 @@
       "pro": "You're on Pro — thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": [
-      "Bulk seat licences",
-      "Admin dashboard & usage",
-      "Syllabus-aligned study"
-    ],
+    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
