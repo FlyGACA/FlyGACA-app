@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { clearAll, loadSaved, offlineSupported, saveDocs, storageEstimate } from '../../lib/offlineCache';
+import {
+  clearAll,
+  loadSaved,
+  offlineSupported,
+  saveDocs,
+  storageEstimate,
+} from '../../lib/offlineCache';
 import { CORPUS, loadJson, type CorpusIndex } from '../../lib/content';
 import { formatBytes } from '../../calc/offlineManifest';
 import styles from './OfflineDownloads.module.css';
@@ -65,7 +71,12 @@ export function OfflineDownloads() {
         </span>
       </div>
       <div className={styles.actions}>
-        <button type="button" className={styles.save} onClick={() => void saveCore()} disabled={busy}>
+        <button
+          type="button"
+          className={styles.save}
+          onClick={() => void saveCore()}
+          disabled={busy}
+        >
           {progress
             ? t('offline.saving', { done: progress.done, total: progress.total })
             : t('offline.saveCore')}
