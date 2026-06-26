@@ -371,3 +371,39 @@ export function searchHref(u: string, q?: string): string | null {
   const query = q && q.trim() ? `?q=${encodeURIComponent(q.trim())}` : '';
   return `${CORPUS[ref.kind].base}/${ref.id}${query}${ref.anchor ? `#${ref.anchor}` : ''}`;
 }
+
+/**
+ * One compiled regulatory Part, as emitted by scripts/parse-regulations.mjs from the Markdown
+ * source under content/regulations/. `references` are the Parts this one cites; `sectionRefs`
+ * are `§` citations; `sections` is the document's own heading outline.
+ */
+export interface RegulationRecord {
+  slug: string;
+  partNum: number;
+  part: string;
+  title: string;
+  category: string;
+  references: string[];
+  sectionRefs: string[];
+  sections: string[];
+}
+
+/**
+ * The optimized cross-reference lookup dictionary (public/data/regulations-lookup.json),
+ * compiled in CI so the frontend can render "references / referenced by" instantly without
+ * re-parsing the corpus. `index.referencedBy` is the reverse graph: slug → Parts that cite it.
+ */
+export interface RegulationsLookup {
+  generated: string | null;
+  count: number;
+  parts: Record<string, RegulationRecord>;
+  index: {
+    byPart: string[];
+    referencedBy: Record<string, string[]>;
+  };
+}
+
+/** Load the compiled regulatory cross-reference lookup (cached for the tab session). */
+export function loadRegulationsLookup(): Promise<RegulationsLookup> {
+  return loadJson<RegulationsLookup>('/data/regulations-lookup.json');
+}
