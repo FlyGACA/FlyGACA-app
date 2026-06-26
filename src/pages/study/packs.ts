@@ -63,10 +63,11 @@ export const PACKS: Pack[] = [
 ];
 
 /**
- * Gating seam — flip to `true` to paywall `pro` packs behind an active plan.
- * Free for now: every pack is fully usable.
+ * Gating seam — paywalls `pro` packs behind an active plan (the `prep-packs`
+ * feature in src/lib/features.ts). Free packs (`ppl-exam`, `airspace-vfr`) stay
+ * open; flip to `false` to make every pack free again.
  */
-export const PACKS_GATED = false;
+export const PACKS_GATED = true;
 
 export const PACK_IDS = PACKS.map((p) => p.id);
 

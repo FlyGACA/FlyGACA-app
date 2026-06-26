@@ -1,4 +1,40 @@
 {
+  "onboarding": {
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "done": "Get started",
+    "goThere": "Take me there",
+    "progress": "{{current}} of {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Fly GACA",
+        "body": "Your independent study companion for Saudi civil aviation. Here's a 30-second tour of what's inside."
+      },
+      "library": {
+        "title": "The regulation library",
+        "body": "Browse and search every GACAR Part, the AIP, and reference handbooks — full text, always free."
+      },
+      "tools": {
+        "title": "Flight tools",
+        "body": "Crosswind, fuel, weight & balance, navigation and dozens more — quick calculators with shareable links."
+      },
+      "captainAdel": {
+        "title": "Ask Captain Adel",
+        "body": "Answers grounded in the regulations, with the exact Part and section cited — never a replacement for the official source."
+      },
+      "bilingual": {
+        "title": "العربية & English",
+        "body": "Switch language anytime — the whole app mirrors right-to-left for Arabic."
+      }
+  "errors": {
+    "boundary": {
+      "title": "Something went wrong",
+      "lead": "This page hit an unexpected error. Your data is safe — try reloading, or head back to the home page.",
+      "reload": "Reload page",
+      "home": "Back to home"
+    }
+  },
   "cmdk": {
     "label": "Search Fly GACA",
     "search": "Search",
@@ -19,6 +55,7 @@
     "appName": "Fly GACA",
     "switchLanguage": "Switch language",
     "langToggleLabel": "ع",
+    "toggleTheme": "Toggle night-ops theme",
     "goPro": "Go Pro",
     "search": "Search",
     "loading": "Loading…",
@@ -50,7 +87,13 @@
     "downloads": "Offline downloads",
     "count": "{{n}} saved",
     "size": "{{size}} on device",
-    "empty": "Nothing saved for offline yet."
+    "empty": "Nothing saved for offline yet.",
+    "saveCore": "Save all GACAR Parts offline",
+    "saving": "Saving {{done}}/{{total}}…",
+    "coreSaved": "GACAR Parts saved for offline.",
+    "unavailable": "Not available offline",
+    "unavailableHint": "This section hasn't been saved for offline use. Reconnect, or open it once while online to keep it on this device."
+    "proLock": "Saving for offline is a Pro feature."
   },
   "nav": {
     "library": "Library",
@@ -610,6 +653,7 @@
     "send": "Send",
     "thinking": "Captain Adel is checking the GACAR…",
     "notReady": "I couldn't reach my engine just now, Captain. The assistant backend isn't connected in this build. Verify any regulation against the official GACA source at gaca.gov.sa.",
+    "signInRequired": "Sign in to ask Captain Adel.",
     "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source — not for operational use.",
     "clear": "Clear chat",
     "sourcesLabel": "Sources",
@@ -756,6 +800,7 @@
     "bookmarked": "Bookmarked",
     "unbookmark": "Remove bookmark",
     "bookmarkSection": "Bookmark section",
+    "bookmarkProLock": "Bookmarking is a Pro feature.",
     "savedTitle": "Saved",
     "continueReading": "Continue reading",
     "saveSearch": "Save search",
@@ -1697,11 +1742,7 @@
       "pro": "You're on Pro — thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": [
-      "Bulk seat licences",
-      "Admin dashboard & usage",
-      "Syllabus-aligned study"
-    ],
+    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
@@ -1922,6 +1963,8 @@
     "medicalExpiry": "Medical expiry (date)",
     "lastReview": "Last flight review (date)",
     "language": "Language",
+    "help": "Help",
+    "replayTour": "Replay welcome tour",
     "data": "Your data",
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
@@ -2957,12 +3000,22 @@
     "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية",
     "ctaTitle": "Study smarter with Captain Adel",
     "ctaText": "Go Pro for unlimited questions, deeper study tools, and full offline access to the library.",
-    "browseLibrary": "Browse the library"
+    "browseLibrary": "Browse the library",
+    "followUs": "Follow Fly GACA",
+    "social": {
+      "x": "Fly GACA on X",
+      "snapchat": "Fly GACA on Snapchat",
+      "facebook": "Fly GACA on Facebook",
+      "instagram": "Fly GACA on Instagram",
+      "linkedin": "Fly GACA on LinkedIn"
+    }
   },
   "calc": {
     "copyLink": "Copy link to this setup",
     "copied": "✓ Link copied",
     "copyFailed": "Copy failed",
+    "share": "Share",
+    "shared": "✓ Shared",
     "tryExample": "Try an example",
     "askAdel": "Ask Captain Adel to explain",
     "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",
@@ -2998,9 +3051,11 @@
     "logbook": "Logbook",
     "settings": "Settings",
     "notFound": "Page not found",
-    "currency": "Currency Tracker"
+    "currency": "Currency Tracker",
+    "updates": "Regulatory Change Tracking"
   },
   "metaDesc": {
+    "updates": "Track when the Saudi GACAR, AIP and AIP-derived sources change, see the current AIRAC cycle and watch the sources that matter to you. A Fly GACA Pro feature.",
     "library": "Browse and search all 74 GACAR Parts plus FAA, ICAO and GACA reference handbooks — full-text and deep-linked to the exact section. Independent and free; verify against GACA.",
     "charts": "Pan and zoom Saudi VFR (visual) charts from the GACA AIP, grouped by region with shareable links. Part of Fly GACA's independent aviation library.",
     "sheets": "One-page study sheets for the Saudi PPL, CPL, IR, Class 1 medical, licence conversion and SAELPT — read or download. Free study aids from Fly GACA.",
@@ -3091,6 +3146,25 @@
       }
     },
     "addCalendar": "Add reminders to calendar"
+  },
+  "alerts": {
+    "eyebrow": "Stay current",
+    "title": "Regulatory change tracking",
+    "subtitle": "See what moved in the GACAR, AIP and AIP-derived sources since you last looked, and watch the ones that matter to you.",
+    "proTeaser": "Get notified in-app when the regulations you rely on change, with the live AIRAC cycle and a personal watchlist. Change tracking is a Pro feature.",
+    "libraryLink": "Track regulatory changes",
+    "airacCurrent": "Current AIRAC cycle",
+    "airacNext": "Next AIRAC cycle",
+    "airacDays": "in {{n}} days",
+    "sinceLastVisit": "Changes since your last visit",
+    "markRead": "Mark all as read",
+    "empty": "No changes since you last looked. You're up to date.",
+    "changed": "Changed",
+    "effective": "Effective {{date}}",
+    "watchlist": "Watchlist",
+    "watchHint": "Watch a source to keep an eye on it. Changed sources are highlighted above.",
+    "watch": "Watch",
+    "watching": "Watching"
   },
   "upsell": {
     "proOnly": "Pro",

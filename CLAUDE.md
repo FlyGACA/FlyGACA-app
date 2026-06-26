@@ -48,7 +48,10 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
 - **The disclaimer never drifts.** Use `<Disclaimer />`; do not inline or reword the
   not-affiliated / verify-against-GACA text.
 - **Tokens only / logical properties only.** No hard-coded colours; no physical `left`/`right`.
-- Run `npm run typecheck && npm run lint && npm run test && npm run build` before committing.
+- Run `npm run verify` before committing. It chains the exact CI gates —
+  `typecheck → lint → format:check → test → build → check:bundle` — so a green local run
+  means a green CI. (Don't run only a subset: `format:check` and `check:bundle` are enforced in
+  CI too.)
 
 ## Porting the legacy site
 

@@ -26,6 +26,9 @@ body {
   color: var(--text);
   background: var(--bg);
   min-height: 100dvh;
+  /* 0 in the Falcon theme; the Cockpit / Night-Ops theme nudges this up so
+     amber text holds its open counters at low cockpit brightness. */
+  letter-spacing: var(--tracking-ui);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

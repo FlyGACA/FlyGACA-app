@@ -4,8 +4,7 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizData, QuizQuestion } from '../../lib/content';
 import { setExamResult, useStudyProgress } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
 import { UpsellCard } from '../../components/UpsellCard';
 import styles from './Study.module.css';
@@ -38,8 +37,7 @@ export function MockExam() {
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { exam } = useStudyProgress();
-  const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = useFeature('mock-exam');
   const [started, setStarted] = useState(false);
 
   if (loading)
