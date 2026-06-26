@@ -2984,6 +2984,8 @@
     "copyLink": "Copy link to this setup",
     "copied": "✓ Link copied",
     "copyFailed": "Copy failed",
+    "share": "Share",
+    "shared": "✓ Shared",
     "tryExample": "Try an example",
     "askAdel": "Ask Captain Adel to explain",
     "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",

@@ -7,6 +7,7 @@ import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
+import { captureReferral } from './lib/share';
 import { initAnalytics } from './lib/analytics';
 import { canonicalRedirect, isMirrorHost } from './lib/seo';
 import { applyTheme, readTheme } from './lib/theme';
@@ -38,6 +39,10 @@ if (redirectTo) {
 } else {
   const rootEl = document.getElementById('root');
   if (!rootEl) throw new Error('Root element #root not found');
+
+  // Capture an inbound ?ref= (from a shared link), stash it, and strip it from
+  // the URL before the router reads the location — keeps the canonical clean.
+  captureReferral();
 
   // Load only the active language's strings before the first render — no flash of
   // untranslated keys, and the other language stays off the boot path.
