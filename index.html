@@ -6,6 +6,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
     <meta name="theme-color" content="#0A0E12" />
+    <!-- No-flash theme init: apply the persisted Cockpit / Night-Ops theme before
+         any paint so the charcoal/amber tokens are live for the critical-CSS hero
+         and first React render. Keep the key + hex in sync with src/lib/theme.ts. -->
+    <script>
+      try {
+        if (localStorage.getItem('flygaca:theme') === 'cockpit') {
+          document.documentElement.setAttribute('data-theme', 'cockpit');
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', '#121212');
+        }
+      } catch (e) {}
+    </script>
     <meta
       name="description"
       content="Fly GACA — an independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
