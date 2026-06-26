@@ -8,6 +8,7 @@ import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
 import { shareCurrent } from '../lib/share';
+import { useFeature } from '../lib/features';
 import {
   addPreset,
   removePreset,
@@ -67,8 +68,7 @@ export function CalcShell({
   const { t } = useTranslation();
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = useFeature('tool-presets');
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
   const [shared, setShared] = useState<'idle' | 'shared' | 'copied'>('idle');
   const [presets, setPresets] = useState<Preset[]>(loadPresets);

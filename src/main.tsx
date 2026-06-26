@@ -8,7 +8,14 @@ import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
 import { captureReferral } from './lib/share';
+import { initAnalytics } from './lib/analytics';
 import { canonicalRedirect, isMirrorHost } from './lib/seo';
+import { applyTheme, readTheme } from './lib/theme';
+
+// Reflect the persisted theme on <html> before first paint. The inline script in
+// index.html already does this for the cockpit case to avoid a colour flash; this
+// is the canonical, belt-and-suspenders application (and restores Falcon cleanly).
+applyTheme(readTheme());
 
 // Mirror/preview fronts (*.web.app, *.vercel.app, *.netlify.app, *.pages.dev)
 // serve the same build for redundancy but must not be indexed as duplicates of
@@ -50,4 +57,8 @@ if (redirectTo) {
   // Native shell bootstrap (no-op on the web). Deep links route through the
   // same data router the rest of the app uses.
   void initNative({ onDeepLink: (path) => void router.navigate(path) });
+
+  // Web product analytics + Core Web Vitals. No-op in the native shell and in
+  // dev/test — see lib/analytics.ts.
+  initAnalytics();
 }

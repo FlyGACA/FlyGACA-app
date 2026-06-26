@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
 import { PACKS, PACKS_GATED, packItemCount } from './packs';
 import styles from './Study.module.css';
@@ -10,8 +9,7 @@ import styles from './Study.module.css';
 export function Packs() {
   const { t } = useTranslation();
   usePageMeta(t('meta.packs'), t('metaDesc.packs'));
-  const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = useFeature('prep-packs');
 
   return (
     <section className={`container ${styles.page}`}>
