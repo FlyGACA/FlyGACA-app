@@ -9,6 +9,12 @@ import { router } from './router';
 import { initNative } from './lib/native-bridge';
 import { initAnalytics } from './lib/analytics';
 import { canonicalRedirect, isMirrorHost } from './lib/seo';
+import { applyTheme, readTheme } from './lib/theme';
+
+// Reflect the persisted theme on <html> before first paint. The inline script in
+// index.html already does this for the cockpit case to avoid a colour flash; this
+// is the canonical, belt-and-suspenders application (and restores Falcon cleanly).
+applyTheme(readTheme());
 
 // Mirror/preview fronts (*.web.app, *.vercel.app, *.netlify.app, *.pages.dev)
 // serve the same build for redundancy but must not be indexed as duplicates of

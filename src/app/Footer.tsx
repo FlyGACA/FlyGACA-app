@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { Disclaimer } from '../components/Disclaimer';
 import { ExternalLink } from '../components/ExternalLink';
 import styles from './Footer.module.css';
@@ -178,6 +179,7 @@ export function Footer() {
               <path d="m18 15-6-6-6 6" />
             </svg>
           </button>
+          <ThemeToggle className={styles.langToggle} />
           <LangToggle className={styles.langToggle} />
         </div>
       </div>
