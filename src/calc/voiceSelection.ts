@@ -34,10 +34,7 @@ function primary(lang: string): string {
  * browser default in place rather than forcing a wrong-language voice. Generic so
  * the live `SpeechSynthesisVoice[]` flows straight through and back.
  */
-export function pickVoice<T extends VoiceInfo>(
-  voices: readonly T[],
-  targetLang: string,
-): T | null {
+export function pickVoice<T extends VoiceInfo>(voices: readonly T[], targetLang: string): T | null {
   const want = primary(targetLang);
   const candidates = voices.filter((v) => primary(v.lang) === want);
   if (candidates.length === 0) return null;

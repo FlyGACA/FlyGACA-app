@@ -11,7 +11,6 @@ import { adelLink } from '../../lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
 import { shareCurrent } from '../../lib/share';
 import { useOnline } from '../../lib/pwa';
-import { share } from '../../lib/native-bridge';
 import { usePageMeta } from '../../lib/usePageMeta';
 import {
   useLibraryPrefs,
