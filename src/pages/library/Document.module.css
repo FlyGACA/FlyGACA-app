@@ -421,6 +421,7 @@
   margin: 0;
   color: var(--text-muted);
   font-size: var(--fs-sm);
+}
 /* Pro affordance on gated toolbar pills (bookmark / save-offline) for free users. */
 .proTag {
   margin-inline-start: var(--space-2);
