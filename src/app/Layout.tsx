@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { ErrorBoundary } from './ErrorBoundary';
 import { ScrollToTop } from './ScrollToTop';
 import { RouteFallback } from './RouteFallback';
 import { ScrollProgress } from '../components/ScrollProgress';
@@ -31,9 +32,11 @@ export function Layout() {
       <Header />
       <main id="main" tabIndex={-1}>
         <div key={location.pathname} className="page-enter">
-          <Suspense fallback={<RouteFallback />}>
-            <Outlet />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </main>
       <Footer />

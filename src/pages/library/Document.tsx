@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
@@ -14,7 +14,6 @@ import { share } from '../../lib/native-bridge';
 import { usePageMeta } from '../../lib/usePageMeta';
 import {
   useLibraryPrefs,
-  toggleBookmark,
   recordView,
   addNote,
   removeNote,
@@ -22,6 +21,8 @@ import {
   docKey,
   type LibNote,
 } from '../../lib/libraryPrefs';
+import { useBookmarkGate } from '../../lib/useBookmarkGate';
+import { useFeature } from '../../lib/features';
 import { SelectionPopover, type SelectionRect } from '../../components/library/SelectionPopover';
 import { breadcrumbLd, techArticleLd, type Crumb } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
@@ -150,6 +151,9 @@ function wrapAnnotation(root: HTMLElement, note: LibNote, markClass: string): bo
 export function Document({ kind = 'regulations' }: DocumentProps) {
   const { t, i18n } = useTranslation();
   const { hash, pathname } = useLocation();
+  const navigate = useNavigate();
+  const bookmark = useBookmarkGate();
+  const canOffline = useFeature('offline-sync');
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const q = (searchParams.get('q') ?? '').trim();
@@ -406,6 +410,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   }, [slug]);
   async function toggleSave() {
     if (!slug) return;
+    // Saving for offline is a Pro perk; removing an existing save is always
+    // allowed so a lapsed user can reclaim space.
+    if (!saved && !canOffline) {
+      navigate('/pricing');
+      return;
+    }
     const urls = [`${corpus.dir}/${slug}.html`, corpus.index];
     if (saved) {
       await removeDoc(slug, urls);
@@ -528,9 +538,19 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                   type="button"
                   className={`${styles.toolPill} ${docBookmarked ? styles.toolPillOn : ''}`}
                   aria-pressed={docBookmarked}
-                  onClick={() => toggleBookmark({ kind, slug: slug as string, title: doc.title })}
+                  title={
+                    !docBookmarked && !bookmark.canBookmark
+                      ? t('library.bookmarkProLock')
+                      : undefined
+                  }
+                  onClick={() =>
+                    bookmark.toggle({ kind, slug: slug as string, title: doc.title }, docBookmarked)
+                  }
                 >
                   {docBookmarked ? `★ ${t('library.bookmarked')}` : `☆ ${t('library.bookmark')}`}
+                  {!docBookmarked && !bookmark.canBookmark && (
+                    <span className={styles.proTag}>{t('upsell.proOnly')}</span>
+                  )}
                 </button>
               )}
               {offlineSupported() && (
@@ -538,9 +558,13 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                   type="button"
                   className={`${styles.toolPill} ${saved ? styles.toolPillOn : ''}`}
                   aria-pressed={saved}
+                  title={!saved && !canOffline ? t('offline.proLock') : undefined}
                   onClick={() => void toggleSave()}
                 >
                   {saved ? `✓ ${t('offline.saved')}` : `⬇ ${t('offline.save')}`}
+                  {!saved && !canOffline && (
+                    <span className={styles.proTag}>{t('upsell.proOnly')}</span>
+                  )}
                 </button>
               )}
               <button type="button" className={styles.toolPill} onClick={shareDoc}>
@@ -605,13 +629,16 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                       aria-label={t('library.bookmarkSection')}
                       title={t('library.bookmarkSection')}
                       onClick={() =>
-                        toggleBookmark({
-                          kind,
-                          slug: slug as string,
-                          title: doc?.title ?? e.title,
-                          anchor: e.id,
-                          anchorText: e.title,
-                        })
+                        bookmark.toggle(
+                          {
+                            kind,
+                            slug: slug as string,
+                            title: doc?.title ?? e.title,
+                            anchor: e.id,
+                            anchorText: e.title,
+                          },
+                          !!slug && isBookmarked(prefs, kind, slug, e.id),
+                        )
                       }
                     >
                       {slug && isBookmarked(prefs, kind, slug, e.id) ? '★' : '☆'}

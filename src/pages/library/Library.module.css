@@ -573,3 +573,33 @@ a.hit:hover {
 .savedSearchX:hover {
   color: var(--danger);
 }
+
+/* Discreet entry point to the regulatory change-tracking feed. */
+.updatesLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-decoration: none;
+}
+.updatesLink:hover {
+  border-color: var(--gold);
+}
+.updatesText {
+  flex: 1;
+  font-weight: var(--fw-medium);
+}
+.updatesPro {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--gold);
+}

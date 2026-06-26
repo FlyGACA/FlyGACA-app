@@ -421,4 +421,15 @@
   margin: 0;
   color: var(--text-muted);
   font-size: var(--fs-sm);
+/* Pro affordance on gated toolbar pills (bookmark / save-offline) for free users. */
+.proTag {
+  margin-inline-start: var(--space-2);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--gold);
 }
