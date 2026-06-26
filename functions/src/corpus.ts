@@ -9,6 +9,7 @@
  * a real part/section/url/verbatim/corpusVersion so citations are exact.
  */
 import { readFile } from "node:fs/promises";
+import { defineString } from "firebase-functions/params";
 import type { ChatSource } from "./contract.js";
 
 /** Raw entry shape in `library-search.json`. */
@@ -37,8 +38,9 @@ export interface Retrieved {
  * already served at the Hosting `/data` path); anything else is read from disk
  * (emulator / tests). Defaults to the deployed Hosting origin.
  */
-const CORPUS_SOURCE =
-  process.env.CORPUS_URL ?? "https://flygaca-app.web.app/data/library-search.json";
+const CORPUS_URL = defineString("CORPUS_URL", {
+  default: "https://flygaca-app.web.app/data/library-search.json",
+});
 
 // ----------------------------------------------------------------------------
 // Tokenization
@@ -194,12 +196,13 @@ export function parseSearchIndex(value: unknown): SearchIndex {
 }
 
 async function loadRaw(): Promise<SearchIndex> {
-  if (/^https?:\/\//.test(CORPUS_SOURCE)) {
-    const res = await fetch(CORPUS_SOURCE);
-    if (!res.ok) throw new Error(`corpus fetch failed: ${res.status} ${CORPUS_SOURCE}`);
+  const source = CORPUS_URL.value();
+  if (/^https?:\/\//.test(source)) {
+    const res = await fetch(source);
+    if (!res.ok) throw new Error(`corpus fetch failed: ${res.status} ${source}`);
     return parseSearchIndex(await res.json());
   }
-  return parseSearchIndex(JSON.parse(await readFile(CORPUS_SOURCE, "utf8")));
+  return parseSearchIndex(JSON.parse(await readFile(source, "utf8")));
 }
 
 /** Build (or return the cached) BM25 index. Warm instances reuse it. */

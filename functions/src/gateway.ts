@@ -9,6 +9,7 @@ import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import type { Request, Response } from "express";
+import { defineBoolean } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
@@ -19,8 +20,7 @@ import type { ChatRequest, ChatTurn } from "./contract.js";
 
 if (getApps().length === 0) initializeApp();
 
-const ENFORCE_APP_CHECK =
-  process.env.ENFORCE_APP_CHECK === "1" || process.env.ENFORCE_APP_CHECK === "true";
+const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: false });
 
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 class AuthError extends Error {}
@@ -31,7 +31,7 @@ class AuthError extends Error {}
  */
 async function authenticate(req: Request): Promise<{ uid?: string }> {
   const appCheckToken = req.header("X-Firebase-AppCheck");
-  if (ENFORCE_APP_CHECK) {
+  if (ENFORCE_APP_CHECK.value()) {
     if (!appCheckToken) throw new AuthError("missing App Check token");
     try {
       await getAppCheck().verifyToken(appCheckToken);

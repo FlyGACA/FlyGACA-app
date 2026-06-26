@@ -12,6 +12,7 @@
 import { genkit, z } from "genkit";
 import { googleAI } from "@genkit-ai/google-genai";
 import { enableFirebaseTelemetry } from "@genkit-ai/firebase";
+import { defineInt, defineString } from "firebase-functions/params";
 import { getIndex, toChatSource } from "./corpus.js";
 import { buildSystem } from "./captain-adel-prompt.js";
 import type { ChatTurn, GroundingKind } from "./contract.js";
@@ -21,13 +22,15 @@ enableFirebaseTelemetry();
 const ai = genkit({ plugins: [googleAI()] });
 
 // How many passages to retrieve and feed as context.
-const TOP_K = Number(process.env.RETRIEVE_K ?? 6);
+const TOP_K = defineInt("RETRIEVE_K", { default: 6 });
 
 // BM25 score thresholds (DESIGN §10 — tune against a recall eval set; these are
 // conservative v1 defaults). Below MIN ⇒ refuse without calling the model;
-// below GROUNDED ⇒ answer but flag "partially grounded".
-const MIN_SCORE = Number(process.env.REFUSE_SCORE ?? 1.5);
-const GROUNDED_SCORE = Number(process.env.GROUNDED_SCORE ?? 4);
+// below GROUNDED ⇒ answer but flag "partially grounded". Thresholds can be
+// fractional, so they are string params (Firebase has no float type) coerced
+// with Number() at the call site.
+const MIN_SCORE = defineString("REFUSE_SCORE", { default: "1.5" });
+const GROUNDED_SCORE = defineString("GROUNDED_SCORE", { default: "4" });
 
 const SOURCE_SCHEMA = z.object({
   citation: z.string(),
@@ -99,12 +102,12 @@ export const captainAdelFlow = ai.defineFlow(
   async (req, { sendChunk }): Promise<CaptainAdelOutput> => {
     const provider = modelFor(req.provider);
     const index = await getIndex();
-    const hits = index.search(req.message, TOP_K);
+    const hits = index.search(req.message, TOP_K.value());
     const corpusVersion = `Rev ${index.generated}`;
     const top = hits[0]?.score ?? 0;
 
     // Low retrieval confidence ⇒ deterministic refusal; do not call the model.
-    if (hits.length === 0 || top < MIN_SCORE) {
+    if (hits.length === 0 || top < Number(MIN_SCORE.value())) {
       const refusalClass = hits[0]
         ? toChatSource(hits[0].entry, index.generated).section
         : undefined;
@@ -138,7 +141,7 @@ export const captainAdelFlow = ai.defineFlow(
     }
     const answer = (await response).text;
 
-    const kind: GroundingKind = top >= GROUNDED_SCORE ? "grounded" : "partial";
+    const kind: GroundingKind = top >= Number(GROUNDED_SCORE.value()) ? "grounded" : "partial";
     return {
       answer,
       sources,
