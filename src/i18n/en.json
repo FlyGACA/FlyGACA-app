@@ -50,7 +50,12 @@
     "downloads": "Offline downloads",
     "count": "{{n}} saved",
     "size": "{{size}} on device",
-    "empty": "Nothing saved for offline yet."
+    "empty": "Nothing saved for offline yet.",
+    "saveCore": "Save all GACAR Parts offline",
+    "saving": "Saving {{done}}/{{total}}…",
+    "coreSaved": "GACAR Parts saved for offline.",
+    "unavailable": "Not available offline",
+    "unavailableHint": "This section hasn't been saved for offline use. Reconnect, or open it once while online to keep it on this device."
   },
   "nav": {
     "library": "Library",
