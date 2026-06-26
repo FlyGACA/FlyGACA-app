@@ -5,7 +5,7 @@
  * offline analysis; there is no datastore wired yet, so the shape stays small.
  */
 
-export type FeedbackRating = 'up' | 'down';
+export type FeedbackRating = "up" | "down";
 
 export interface FeedbackInput {
   rating: FeedbackRating;
@@ -20,16 +20,16 @@ export interface FeedbackInput {
 const MAX_TEXT = 2000;
 
 function cleanText(v: unknown): string | undefined {
-  if (typeof v !== 'string') return undefined;
+  if (typeof v !== "string") return undefined;
   const t = v.trim();
   return t ? t.slice(0, MAX_TEXT) : undefined;
 }
 
 /** Coerce a raw request body into a validated `FeedbackInput`, or null if invalid. */
 export function parseFeedback(body: unknown): FeedbackInput | null {
-  if (!body || typeof body !== 'object') return null;
+  if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
-  if (b.rating !== 'up' && b.rating !== 'down') return null;
+  if (b.rating !== "up" && b.rating !== "down") return null;
   return {
     rating: b.rating,
     session: cleanText(b.session),
