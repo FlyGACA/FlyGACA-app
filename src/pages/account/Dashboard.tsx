@@ -24,7 +24,8 @@ import styles from './dashboard.module.css';
 
 export function Dashboard() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.dashboard'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.dashboard'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />

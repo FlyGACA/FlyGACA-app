@@ -56,7 +56,8 @@ const COLS: (keyof FlightDraft)[] = [
 
 export function Logbook() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.logbook'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.logbook'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />

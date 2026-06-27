@@ -4,6 +4,7 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizData, QuizQuestion } from '../../lib/content';
 import { setExamResult, useStudyProgress } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { courseLd } from '../../lib/jsonld';
 import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
 import { UpsellCard } from '../../components/UpsellCard';
@@ -32,8 +33,17 @@ function byBank(questions: ExamQuestion[], answers: (number | null)[]) {
 }
 
 export function MockExam() {
-  const { t } = useTranslation();
-  usePageMeta(t('meta.exam'), t('metaDesc.exam'));
+  const { t, i18n } = useTranslation();
+  usePageMeta(
+    t('meta.exam'),
+    t('metaDesc.exam'),
+    courseLd({
+      title: t('meta.exam'),
+      description: t('metaDesc.exam'),
+      path: '/study/exam',
+      lang: i18n.language,
+    }),
+  );
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { exam } = useStudyProgress();

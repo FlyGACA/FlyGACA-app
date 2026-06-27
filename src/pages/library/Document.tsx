@@ -175,6 +175,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const [copiedId, setCopiedId] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
   const docDesc = doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined;
+  // The corpus carries a real freshness signal (effectiveDate, or a date-shaped
+  // revision marker); fall back to the index's generated date. Mirrors the same
+  // resolution in scripts/build-sitemap.mjs + scripts/prerender-head.mjs.
+  const asDate = (v?: string) => (v && /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : undefined);
+  const dateModified =
+    asDate(doc?.effectiveDate) ?? asDate(doc?.revision) ?? asDate(index.data?.generated);
   // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>.
   const crumbs: Crumb[] = doc?.title
     ? [
@@ -193,10 +199,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             description: docDesc,
             path: pathname,
             lang: i18n.language,
+            dateModified,
           }),
           breadcrumbLd(crumbs),
         ]
       : undefined,
+    { ogType: 'article' },
   );
 
   // ── Reading font scale (persisted) ──

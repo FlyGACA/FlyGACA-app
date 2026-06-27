@@ -208,7 +208,9 @@ function LocalSignIn() {
 
 export function Account() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.account'));
+  // Session-gated dashboard — keep it out of the index (no SEO value; a thin,
+  // login-walled page to a crawler).
+  usePageMeta(t('meta.account'), undefined, undefined, { noindex: true });
   const { session, uid, emailVerified, profile, entitlement, syncError } = useAccount();
   const plan = effectivePlan(entitlement);
   const [params, setParams] = useSearchParams();

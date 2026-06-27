@@ -5,6 +5,7 @@ import type { GroundSchoolData, GsLesson } from '../../lib/content';
 import { adelLink } from '../../lib/adel';
 import { useStudyProgress, toggleLesson } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { courseLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import styles from './GroundSchool.module.css';
@@ -28,8 +29,17 @@ function readHref(url: string | undefined): string | null {
 }
 
 export function GroundSchool() {
-  const { t } = useTranslation();
-  usePageMeta(t('meta.groundschool'), t('metaDesc.groundschool'));
+  const { t, i18n } = useTranslation();
+  usePageMeta(
+    t('meta.groundschool'),
+    t('metaDesc.groundschool'),
+    courseLd({
+      title: t('meta.groundschool'),
+      description: t('metaDesc.groundschool'),
+      path: '/study/groundschool',
+      lang: i18n.language,
+    }),
+  );
   const { data, error, loading } = useFetchJson<GroundSchoolData>('/data/groundschool.json');
   const { gsDone } = useStudyProgress();
   const isDone = (id: string) => Boolean(gsDone[id]);
