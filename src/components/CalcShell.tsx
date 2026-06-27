@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
 import { usePageMeta } from '../lib/usePageMeta';
-import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
+import { breadcrumbLd, softwareAppLd, type JsonLd } from '../lib/jsonld';
 import { shareCurrent } from '../lib/share';
 import { useFeature } from '../lib/features';
 import {
@@ -46,6 +46,14 @@ interface CalcShellProps {
   formula?: ReactNode;
   /** Related tools shown as chips at the foot of the page. */
   related?: RelatedTool[];
+  /**
+   * Replace the default SoftwareApplication JSON-LD with a node that better
+   * describes the page's subject (e.g. an Airport for an aerodrome page). The
+   * breadcrumb is still emitted alongside it.
+   */
+  primaryLd?: JsonLd;
+  /** Keep this rendering out of the index (e.g. an unknown-ICAO soft-404). */
+  noindex?: boolean;
 }
 
 /**
@@ -62,6 +70,8 @@ export function CalcShell({
   adelPrompt,
   formula,
   related,
+  primaryLd,
+  noindex,
 }: CalcShellProps) {
   const { t } = useTranslation();
   const { pathname, search } = useLocation();
@@ -89,14 +99,19 @@ export function CalcShell({
     setPresetName('');
     setNaming(false);
   }
-  usePageMeta(title, intro, [
-    softwareAppLd({ title, description: intro, path: pathname }),
-    breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
-      { name: t('nav.tools'), path: '/tools' },
-      { name: title, path: pathname },
-    ]),
-  ]);
+  usePageMeta(
+    title,
+    intro,
+    [
+      primaryLd ?? softwareAppLd({ title, description: intro, path: pathname }),
+      breadcrumbLd([
+        { name: t('nav.home'), path: '/' },
+        { name: t('nav.tools'), path: '/tools' },
+        { name: title, path: pathname },
+      ]),
+    ],
+    noindex ? { noindex: true } : undefined,
+  );
 
   async function copyLink() {
     try {

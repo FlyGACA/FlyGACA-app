@@ -5,17 +5,32 @@ import type { GroundSchoolData, PathsIndex, PdfsIndex, QuizData } from '../../li
 import { useStudyProgress } from '../../lib/studyProgress';
 import { useFeature } from '../../lib/features';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { courseLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import { PACKS, PACKS_GATED } from './packs';
 import { NotFound } from '../NotFound';
 import styles from './Study.module.css';
 
 export function PackDetail() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const pack = PACKS.find((p) => p.id === id);
 
-  usePageMeta(pack ? t(`study.packCatalog.${pack.id}.name`) : undefined);
+  // A study pack is a curated, free course. An unknown id renders <NotFound/>, so
+  // noindex it here (this hook runs before that early return).
+  usePageMeta(
+    pack ? t(`study.packCatalog.${pack.id}.name`) : undefined,
+    pack ? t(`study.packCatalog.${pack.id}.desc`) : undefined,
+    pack
+      ? courseLd({
+          title: t(`study.packCatalog.${pack.id}.name`),
+          description: t(`study.packCatalog.${pack.id}.desc`),
+          path: `/study/packs/${pack.id}`,
+          lang: i18n.language,
+        })
+      : undefined,
+    pack ? undefined : { noindex: true },
+  );
 
   const canUsePro = useFeature('prep-packs');
   const { quizBest } = useStudyProgress();

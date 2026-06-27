@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { itemListLd } from '../../lib/jsonld';
 import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
 import { PACKS, PACKS_GATED, packItemCount } from './packs';
@@ -8,7 +9,17 @@ import styles from './Study.module.css';
 
 export function Packs() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.packs'), t('metaDesc.packs'));
+  // Catalog hub → ItemList of the pack detail pages (each is its own URL).
+  usePageMeta(
+    t('meta.packs'),
+    t('metaDesc.packs'),
+    itemListLd(
+      PACKS.map((p) => ({
+        name: t(`study.packCatalog.${p.id}.name`),
+        path: `/study/packs/${p.id}`,
+      })),
+    ),
+  );
   const isPro = useFeature('prep-packs');
 
   return (

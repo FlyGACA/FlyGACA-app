@@ -5,6 +5,7 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
 import { useStudyProgress, setQuizBest, setLastBank, toggleFlag } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { courseLd } from '../../lib/jsonld';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import { buildSession, isSynthetic } from './session';
@@ -25,8 +26,17 @@ function Shell({ children }: { children: React.ReactNode }) {
 }
 
 export function Quiz() {
-  const { t } = useTranslation();
-  usePageMeta(t('meta.quiz'), t('metaDesc.quiz'));
+  const { t, i18n } = useTranslation();
+  usePageMeta(
+    t('meta.quiz'),
+    t('metaDesc.quiz'),
+    courseLd({
+      title: t('meta.quiz'),
+      description: t('metaDesc.quiz'),
+      path: '/study/quiz',
+      lang: i18n.language,
+    }),
+  );
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { quizBest, flagged } = useStudyProgress();

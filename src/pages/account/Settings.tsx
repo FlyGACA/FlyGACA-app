@@ -16,7 +16,8 @@ const LICENCE_TYPES = ['SPL', 'PPL', 'CPL', 'ATPL'] as const;
 
 export function Settings() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.settings'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.settings'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />

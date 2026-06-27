@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { itemListLd } from '../../lib/jsonld';
 import { CORPUS, fetchJson, parseSearchUrl, searchHref } from '../../lib/content';
 import type {
   CorpusDoc,
@@ -97,10 +98,21 @@ function highlight(text: string, needle: string) {
 
 export function Library() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.library'), t('metaDesc.library'));
   const [kind, setKind] = useState<LibraryKind>('regulations');
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index, reload);
+  // Expose the active corpus as an ItemList so crawlers read the hub as an
+  // ordered set of its documents (for a crawler that's the default 74 GACAR Parts).
+  const itemLd = useMemo(
+    () =>
+      data
+        ? itemListLd(
+            data.documents.map((d) => ({ name: d.title, path: `${CORPUS[kind].base}/${d.slug}` })),
+          )
+        : undefined,
+    [data, kind],
+  );
+  usePageMeta(t('meta.library'), t('metaDesc.library'), itemLd);
   const [category, setCategory] = useState<string>('all');
   // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
   const [searchParams] = useSearchParams();

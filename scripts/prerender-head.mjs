@@ -93,6 +93,26 @@ const softwareAppLd = ({ title, description, path }) => ({
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'SAR' },
   publisher: { '@id': ORG_ID },
 });
+const courseLd = ({ title, description, path }) => ({
+  '@context': CTX,
+  '@type': 'Course',
+  name: title,
+  ...(description ? { description } : {}),
+  inLanguage: 'en',
+  url: canonicalUrl(path),
+  provider: orgNode(),
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'SAR' },
+  hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
+});
+// The self-paced, GACAR-grounded study modes are Courses (mirrors src/pages/study/*).
+const COURSE_ROUTES = new Set([
+  '/study/quiz',
+  '/study/flashcards',
+  '/study/groundschool',
+  '/study/exam',
+  '/study/paths',
+]);
 
 // --- Build the route → SEO descriptor map --------------------------------------
 const en = readJson('src/i18n/en.json');
@@ -133,9 +153,14 @@ for (const p of routerPaths) {
   const norm = normalizePath(p === '/' ? '/' : `/${p.replace(/^\//, '')}`);
   if (PRIVATE.has(norm) || REDIRECTS.has(norm)) continue;
   const key = STATIC_META[norm];
+  const title = key ? tIn(en.meta, key) : undefined;
+  const description = key ? tIn(en.metaDesc, key) : undefined;
   put(norm, {
-    title: key ? tIn(en.meta, key) : undefined,
-    description: key ? tIn(en.metaDesc, key) : undefined,
+    title,
+    description,
+    ...(COURSE_ROUTES.has(norm)
+      ? { jsonLd: courseLd({ title, description, path: norm }) }
+      : {}),
   });
 }
 
@@ -164,7 +189,12 @@ for (const slug of guideSlugs) {
   const path = `/guides/${slug}`;
   const title = tIn(en, `guides.items.${slug}.name`);
   const description = tIn(en, `guides.items.${slug}.blurb`);
-  put(path, { title, description, jsonLd: articleLd('Article', { title, description, path }) });
+  put(path, {
+    title,
+    description,
+    jsonLd: articleLd('Article', { title, description, path }),
+    ogType: 'article',
+  });
 }
 
 // Library reader corpus → title (+ revision date) from the data indexes + TechArticle.
@@ -174,16 +204,21 @@ for (const [base, file] of [
   ['/library/reference', 'public/data/reference-index.json'],
   ['/library/handbook', 'public/data/ebooks-index.json'],
 ]) {
-  for (const d of readJson(file).documents) {
+  const idx = readJson(file);
+  // Fall back to the index's generated date when a doc carries no date-shaped
+  // effectiveDate/revision — mirrors src/pages/library/Document.tsx at runtime.
+  const fallback = isDate(idx.generated) ? idx.generated.slice(0, 10) : undefined;
+  for (const d of idx.documents) {
     const path = `${base}/${d.slug}`;
     const dateModified = isDate(d.effectiveDate)
       ? d.effectiveDate.slice(0, 10)
       : isDate(d.revision)
         ? d.revision.slice(0, 10)
-        : undefined;
+        : fallback;
     put(path, {
       title: d.title,
       jsonLd: articleLd('TechArticle', { title: d.title, path, dateModified }),
+      ogType: 'article',
     });
   }
 }
@@ -218,10 +253,16 @@ function render(path, d) {
       `<link rel="alternate" hreflang="${hreflang}" href="${href}" />`,
     );
   }
+  const image = ogImageFor(path);
+  html = setTag(html, /<meta\s+property="og:type"[^>]*>/, `<meta property="og:type" content="${d.ogType ?? 'website'}" />`);
   html = setTag(html, /<meta\s+property="og:title"[^>]*>/, `<meta property="og:title" content="${esc(fullTitle)}" />`);
   html = setTag(html, /<meta\s+property="og:description"[^>]*>/, `<meta property="og:description" content="${esc(desc)}" />`);
   html = setTag(html, /<meta\s+property="og:url"[^>]*>/, `<meta property="og:url" content="${canonical}" />`);
-  html = setTag(html, /<meta\s+property="og:image"[^>]*>/, `<meta property="og:image" content="${ogImageFor(path)}" />`);
+  html = setTag(html, /<meta\s+property="og:image"[^>]*>/, `<meta property="og:image" content="${image}" />`);
+  // Explicit Twitter tags mirror the Open Graph values (see usePageMeta).
+  html = setTag(html, /<meta\s+name="twitter:title"[^>]*>/, `<meta name="twitter:title" content="${esc(fullTitle)}" />`);
+  html = setTag(html, /<meta\s+name="twitter:description"[^>]*>/, `<meta name="twitter:description" content="${esc(desc)}" />`);
+  html = setTag(html, /<meta\s+name="twitter:image"[^>]*>/, `<meta name="twitter:image" content="${image}" />`);
 
   if (d.jsonLd) {
     html = html.replace(

@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { useFetchJson } from '../../lib/useFetchJson';
+import { airportLd } from '../../lib/jsonld';
 import { regionBadge } from '../../lib/aerodromes';
 import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
 import { AirportTypeIcon } from '../../components/aerodrome/AirportTypeIcon';
@@ -42,7 +43,8 @@ export function AerodromeDetail() {
   }
   if (error || !airport) {
     return (
-      <CalcShell title={code} category={t('tools.categories.directory')}>
+      // Unknown ICAO (or a failed load) has no content to index — noindex the soft-404.
+      <CalcShell title={code} category={t('tools.categories.directory')} noindex>
         <p role="alert">{error ? t('common.loadError') : t('aerodromesTool.notFound')}</p>
         <Link className={styles.back} to="/tools/aerodromes">
           ← {t('aerodromesTool.backToList')}
@@ -70,6 +72,16 @@ export function AerodromeDetail() {
       formula={t('aerodromesTool.formula')}
       adelPrompt={adelPrompt}
       related={[{ to: '/tools/aerodromes', label: t('aerodromesTool.backToList') }]}
+      primaryLd={airportLd({
+        name,
+        icao: a.icao,
+        iata: a.iata,
+        path: `/tools/aerodromes/${a.icao}`,
+        lat: a.lat,
+        lon: a.lon,
+        elevationFt: a.elev_ft,
+        country,
+      })}
     >
       <div className={styles.detailHead}>
         <AirportTypeIcon type={a.type} className={styles.detailTypeIcon} />
