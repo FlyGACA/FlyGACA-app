@@ -194,24 +194,3 @@
     animation: none;
   }
 }
-.errorRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  color: var(--color-error);
-}
-.retry {
-  min-block-size: 36px;
-  padding-inline: var(--space-3);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-}
-.retry:hover {
-  border-color: var(--brand-hover);
-  color: var(--brand-hover);
-}

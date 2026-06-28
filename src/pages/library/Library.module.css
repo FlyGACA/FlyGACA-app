@@ -401,34 +401,6 @@ a.hit:hover {
   }
 }
 
-/* Error + retry. */
-.errorBox {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 1px solid var(--color-error);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-  color: var(--text-muted);
-}
-.retry {
-  min-height: 40px;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-weight: var(--fw-semibold);
-  cursor: pointer;
-}
-.retry:hover {
-  border-color: var(--brand-hover);
-  color: var(--brand-hover);
-}
-
 .synced {
   margin-block-start: var(--space-6);
   font-size: var(--fs-xs);
