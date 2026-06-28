@@ -296,7 +296,22 @@ export function ToolsIndex() {
         )}
 
         {flat.length === 0 ? (
-          <p className={styles.empty}>{t('tools.empty')}</p>
+          <div className={styles.emptyState}>
+            <span className={styles.emptyIcon} aria-hidden="true">
+              🔍
+            </span>
+            <p className={styles.emptyMsg}>{t('tools.empty')}</p>
+            <button
+              type="button"
+              className="btn btn-clay"
+              onClick={() => {
+                setQuery('');
+                setCategory('all');
+              }}
+            >
+              {t('common.clear')}
+            </button>
+          </div>
         ) : showGrouped ? (
           grouped.map(({ cat, tools }) => (
             <section key={cat} id={cat} className={styles.category}>
