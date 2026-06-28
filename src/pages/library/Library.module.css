@@ -279,11 +279,6 @@
   color: var(--text-dim);
 }
 
-.empty {
-  color: var(--text-muted);
-  padding-block: var(--space-6);
-}
-
 /* Lazy full-text results */
 .results {
   margin-block-start: var(--space-8);
