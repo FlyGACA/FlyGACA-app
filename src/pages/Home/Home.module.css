@@ -219,6 +219,42 @@
   }
 }
 
+/* Staggered scroll reveal — each step rises and fades in the page's kinetic-
+   entry curve as the stepper scrolls into view, cascading 1 → 2 → 3. Purely
+   additive: gated on BOTH scroll-driven-animation support and no reduced-motion
+   request, so everywhere else the stepper simply shows in its finished state
+   (the base .step rules above) with no layout shift. The cascade comes from
+   per-node animation-range offsets, since a scroll timeline has no time-based
+   delay to hang --dur-stagger on. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .step {
+      animation-name: step-rise;
+      animation-fill-mode: both;
+      animation-timing-function: var(--ease-entry);
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+    .step:nth-child(2) {
+      animation-range: entry 12% entry 92%;
+    }
+    .step:nth-child(3) {
+      animation-range: entry 24% entry 100%;
+    }
+  }
+}
+
+@keyframes step-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-5));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Why trust it — bento card text. */
 .featTitle {
   font-size: var(--fs-lg);
