@@ -27,7 +27,12 @@
 
 .title {
   margin-block-start: var(--space-4);
-  font-size: var(--fs-h1);
+  /* The landing hero is the one place display type earns its scale — promote
+     from --fs-h1 to the display token, tighten the leading and track in. */
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
   background: var(--grad-brand);
   /* Oversize the gradient so it can drift edge-to-edge for the shimmer. */
   background-size: 220% auto;
@@ -52,6 +57,7 @@
   margin-inline: auto;
   color: var(--text-muted);
   font-size: var(--fs-lg);
+  text-wrap: balance;
 }
 
 .heroCta {
@@ -118,6 +124,7 @@
   text-align: center;
   font-size: var(--fs-xs);
   color: var(--text-dim);
+  text-wrap: pretty;
 }
 
 /* ── Funnel sections (How · Why · Trust · Convert) ───────────────────────────
@@ -136,34 +143,52 @@
   font-weight: var(--fw-semibold);
 }
 
-/* How it works — numbered steps. */
+/* How it works — a connected three-node stepper. The numbered nodes ride a
+   brand-gradient rail (horizontal on desktop, vertical when stacked) so the
+   section reads as one ordered flow rather than three interchangeable cards. */
 .steps {
   list-style: none;
-  margin: var(--space-2) 0 0;
+  margin: var(--space-6) 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
 }
 .step {
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: var(--space-2);
-  padding: var(--space-6);
-  border: var(--clay-border);
-  border-radius: var(--clay-radius);
-  background: var(--surface);
-  box-shadow: var(--clay-shadow);
+  padding-inline: var(--space-3);
+}
+/* Rail segment from this node to the next. Logical properties mirror it in RTL;
+   the last node omits it so the track ends cleanly. */
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 22px; /* vertical centre of the 44px node */
+  inset-inline-start: calc(50% + 22px); /* just past this node's edge */
+  inline-size: calc(100% - 44px + var(--space-5)); /* across to the next node */
+  block-size: 2px;
+  background: var(--grad-brand);
+  opacity: 0.55;
+  z-index: 0;
 }
 .stepNum {
+  position: relative;
+  z-index: 1; /* node sits above the rail */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 36px;
-  block-size: 36px;
+  inline-size: 44px;
+  block-size: 44px;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  background: var(--surface);
+  border: 2px solid color-mix(in srgb, var(--brand) 50%, transparent);
+  /* a halo in the page colour masks the rail where it passes behind the node */
+  box-shadow: 0 0 0 6px var(--bg);
   color: var(--brand-hover);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
@@ -175,6 +200,23 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
+  text-wrap: pretty;
+  max-inline-size: 32ch;
+}
+
+/* Stacked: the rail runs vertically from each node down to the next. */
+@media (max-width: 640px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    justify-items: center;
+  }
+  .step:not(:last-child)::after {
+    inset-block-start: 44px;
+    inset-inline-start: calc(50% - 1px);
+    inline-size: 2px;
+    block-size: calc(100% - 44px + var(--space-6));
+  }
 }
 
 /* Why trust it — bento card text. */
@@ -186,6 +228,7 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
+  text-wrap: pretty;
 }
 
 /* Trust "at a glance" strip — a clay band wrapping the shared .stats tiles. */
@@ -228,11 +271,13 @@
 .ctaTitle {
   font-size: var(--fs-h3);
   margin: 0 0 var(--space-1);
+  text-wrap: balance;
 }
 .ctaLead {
   color: var(--text-muted);
   margin: 0;
   max-inline-size: 52ch;
+  text-wrap: pretty;
 }
 .ctaActions {
   display: flex;
