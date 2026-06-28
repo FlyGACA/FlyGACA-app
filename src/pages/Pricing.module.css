@@ -34,7 +34,11 @@
   transition:
     background var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease);
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.toggle button:active {
+  transform: scale(0.97);
 }
 .active {
   background: var(--brand);
@@ -132,12 +136,31 @@
   color: transparent;
 }
 
+/* Price block — reserves a uniform height (price + optional VAT note) so the
+   feature-list divider starts at the same Y on every card, including Free which
+   has no VAT note. */
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+/* Only reserve the band once the cards sit side by side — that's when the
+   feature dividers need to line up. Sized for the tallest case (a two-line
+   price + VAT note), so the single-line Free price reserves the same height.
+   When stacked, each card keeps its natural height (no dead space). */
+@media (min-width: 560px) {
+  .priceBlock {
+    min-block-size: 5.25rem;
+  }
+}
+
 /* Price */
 .price {
   font-size: var(--fs-h2);
   font-weight: var(--fw-black);
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  margin: 0;
 }
 .highlight .price {
   background: var(--grad-brand);
@@ -306,6 +329,16 @@
 .table thead th:nth-child(3) {
   color: var(--accent-bright);
 }
+/* Track the recommended (Pro) tier down the whole comparison, not just its
+   header — a faint brand wash + framing hairlines on the 3rd column
+   (feature · Free · Pro · School). Logical inset-shadow so it mirrors in RTL. */
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  background: color-mix(in srgb, var(--brand) 9%, var(--surface));
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--brand) 28%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--brand) 28%, transparent);
+}
 .table tbody th {
   font-weight: var(--fw-semibold);
   color: var(--text);
@@ -375,11 +408,11 @@
   margin: 0;
 }
 
-/* VAT line under each price. */
+/* VAT line under each price (spacing handled by the .priceBlock gap). */
 .priceNote {
   font-size: var(--fs-xs);
   color: var(--text-dim);
-  margin-block: calc(-1 * var(--space-2)) 0;
+  margin: 0;
 }
 
 /* Pro card: trial + money-back, and the student-pricing disclosure. */

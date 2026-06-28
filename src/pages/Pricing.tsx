@@ -322,10 +322,14 @@ function Plan({
       {badge && !current && <span className={styles.popularBadge}>{badge}</span>}
       {current && currentLabel && <span className={styles.currentBadge}>{currentLabel}</span>}
       <h2 className={styles.planName}>{name}</h2>
-      <p className={styles.price}>
-        <bdi dir="ltr">{price}</bdi>
-      </p>
-      {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
+      {/* Fixed-height block so every card's feature list starts at the same Y,
+          whether or not the plan carries a VAT note (Free has none). */}
+      <div className={styles.priceBlock}>
+        <p className={styles.price}>
+          <bdi dir="ltr">{price}</bdi>
+        </p>
+        {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
+      </div>
       <ul className={styles.features}>
         {features.map((x) => (
           <li key={x}>{x}</li>
