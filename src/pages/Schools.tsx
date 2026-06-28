@@ -122,6 +122,7 @@ export function Schools() {
               onChange={(e) => setName(e.target.value)}
               placeholder={t('schools.form.namePh')}
               autoComplete="name"
+              required
             />
           </label>
           <label className={styles.field}>
@@ -130,6 +131,7 @@ export function Schools() {
               value={school}
               onChange={(e) => setSchool(e.target.value)}
               placeholder={t('schools.form.schoolPh')}
+              required
             />
           </label>
           <label className={styles.field}>
@@ -138,6 +140,8 @@ export function Schools() {
               value={seats}
               onChange={(e) => setSeats(e.target.value)}
               placeholder={t('schools.form.seatsPh')}
+              type="number"
+              min="1"
               inputMode="numeric"
             />
           </label>
