@@ -1,3 +1,5 @@
+/* Crosswind keeps a bespoke two-column frame (inputs beside the wind diagram);
+   the fields and result stats themselves come from the shared calc components. */
 .grid {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -17,31 +19,6 @@
   flex-direction: column;
   gap: var(--space-4);
   inline-size: 100%;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-.field input {
-  padding: var(--space-3);
-  min-height: 44px;
-  border: 1px solid var(--border-input);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-variant-numeric: tabular-nums;
-  transition: border-color var(--dur) var(--ease);
-}
-.field input:focus {
-  border-color: var(--brand-hover);
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
 }
 
 .diagram {
@@ -64,49 +41,6 @@
   font-size: var(--fs-sm);
   line-height: var(--lh-snug);
   text-align: center;
-}
-
-.outputs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
-  margin: 0;
-}
-
-@media (max-width: 620px) {
-  .outputs {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.outputs dt {
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.outputs dd {
-  margin: 0;
-  margin-block-start: var(--space-1);
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  display: flex;
-  flex-direction: column;
-}
-
-.sub {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-regular);
-  color: var(--text-muted);
-}
-
-.good {
-  color: var(--accent);
-}
-.bad {
-  color: var(--danger);
 }
 
 .angleNote {
