@@ -337,6 +337,7 @@
     "eyebrow": "Flight planning",
     "open": "Open",
     "new": "New",
+    "featured": "Start here",
     "empty": "No tools match that search.",
     "searchPlaceholder": "Search {{count}}+ tools, wind, fuel, currency…",
     "jumpNav": "Jump to category",

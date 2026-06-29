@@ -43,6 +43,17 @@ const POPULAR_CATS: ToolCategoryId[] = [
   'gacar',
 ];
 
+/** Curated flagship tools surfaced in the "Start here" row at the top of the
+ *  default view — the most-reached-for calculators. Edit this list to retune. */
+const FEATURED: string[] = [
+  'crosswind',
+  'density-altitude',
+  'wind-triangle',
+  'fuel-reserves',
+  'metar',
+  'weight-balance',
+];
+
 /** Sort orders; 'category' keeps the grouped view, 'name' goes flat A–Z. */
 type SortKey = 'category' | 'name';
 const SORTS: SortKey[] = ['category', 'name'];
@@ -133,7 +144,8 @@ export function ToolsIndex() {
         )
       : filtered;
 
-  // Pinned + recent rows only in the grouped (default) view.
+  // Featured "Start here" row + pinned/recent rows — grouped (default) view only.
+  const featured = FEATURED.map((id) => byId.get(id)).filter((x): x is ToolMeta => Boolean(x));
   const pinned = favorites.map((id) => byId.get(id)).filter((x): x is ToolMeta => Boolean(x));
   const recent = recents
     .map((id) => byId.get(id))
@@ -268,6 +280,24 @@ export function ToolsIndex() {
       </div>
 
       <div ref={rootRef} onKeyDown={onGridKeyDown}>
+        {showGrouped && featured.length > 0 && (
+          <section className={styles.category}>
+            <SectionHeader title={t('tools.featured')} tone="var(--brand-hover)" />
+            <ul className={`${styles.featuredGrid} stagger-grid`}>
+              {featured.map((tool) => (
+                <ToolCard
+                  key={tool.id}
+                  tool={tool}
+                  tone={catTone(tool.category)}
+                  query={q}
+                  favorite={favorites.includes(tool.id)}
+                  view="grid"
+                  featured
+                />
+              ))}
+            </ul>
+          </section>
+        )}
         {showGrouped && pinned.length > 0 && (
           <section className={styles.category}>
             <SectionHeader
@@ -355,12 +385,14 @@ function ToolCard({
   query,
   favorite,
   view,
+  featured = false,
 }: {
   tool: ToolMeta;
   tone: string;
   query: string;
   favorite: boolean;
   view: ViewMode;
+  featured?: boolean;
 }) {
   const { t } = useTranslation();
   const live = tool.status === 'live';
@@ -431,7 +463,7 @@ function ToolCard({
   );
   return (
     <li
-      className={`${styles.card} ${live ? '' : styles.pending}`}
+      className={`${styles.card} ${featured ? styles.cardFeatured : ''} ${live ? '' : styles.pending}`}
       style={{ '--cat-color': tone } as CSSProperties}
     >
       {star}

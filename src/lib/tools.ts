@@ -65,9 +65,8 @@ const t = (
 export const TOOLS: ToolMeta[] = [
   // Wind & runway
   t('crosswind', 'wind-runway', 'live', { keywords: ['xwind', 'headwind', 'runway'] }),
-  t('wind-table', 'wind-runway', 'live', { badge: 'new', keywords: ['all runways', 'components'] }),
+  t('wind-table', 'wind-runway', 'live', { keywords: ['all runways', 'components'] }),
   t('hydroplaning', 'wind-runway', 'live', {
-    badge: 'new',
     keywords: ['aquaplaning', 'tyre', 'tire'],
   }),
   t('takeoff-landing', 'wind-runway', 'live', {
@@ -77,55 +76,45 @@ export const TOOLS: ToolMeta[] = [
   // Atmosphere & altitude
   t('density-altitude', 'atmosphere', 'live', { keywords: ['da', 'pa', 'isa'] }),
   t('pressure-altitude', 'atmosphere', 'live', {
-    badge: 'new',
     keywords: ['pa', 'flight level', 'fl'],
   }),
-  t('isa', 'atmosphere', 'live', { badge: 'new', keywords: ['standard atmosphere', 'deviation'] }),
-  t('altimeter', 'atmosphere', 'live', { badge: 'new', keywords: ['qnh', 'qfe', 'setting'] }),
+  t('isa', 'atmosphere', 'live', { keywords: ['standard atmosphere', 'deviation'] }),
+  t('altimeter', 'atmosphere', 'live', { keywords: ['qnh', 'qfe', 'setting'] }),
   t('cloud-base', 'atmosphere', 'live', { keywords: ['dew point', 'spread', 'lcl'] }),
   t('true-altitude', 'atmosphere', 'live', {
-    badge: 'new',
     keywords: ['temperature error', 'cold weather', 'isa deviation'],
   }),
 
   // Speed
   t('tas', 'speed', 'live', { keywords: ['true airspeed', 'cas', 'mach'] }),
-  t('mach', 'speed', 'live', { badge: 'new', keywords: ['speed of sound', 'tas'] }),
+  t('mach', 'speed', 'live', { keywords: ['speed of sound', 'tas'] }),
 
   // Climb, descent & turns
   t('climb-gradient', 'climb-descent', 'live', {
-    badge: 'new',
     keywords: ['ft/nm', 'fpm', 'sid', 'percent'],
   }),
   t('top-of-descent', 'climb-descent', 'live', { keywords: ['tod', 'descent point'] }),
   t('descent-vdp', 'climb-descent', 'live', {
-    badge: 'new',
     keywords: ['rate', 'vdp', 'glidepath'],
   }),
   t('standard-rate-turn', 'climb-descent', 'live', {
-    badge: 'new',
     keywords: ['rate one', 'bank', 'radius'],
   }),
   t('top-of-climb', 'climb-descent', 'live', {
-    badge: 'new',
     keywords: ['toc', 'time to climb', 'fuel'],
   }),
   t('turn-performance', 'climb-descent', 'live', {
-    badge: 'new',
     keywords: ['turn radius', 'rate of turn', 'bank'],
   }),
 
   // Navigation & planning
   t('wind-triangle', 'navigation', 'live', {
-    badge: 'new',
     keywords: ['heading', 'groundspeed', 'wca'],
   }),
   t('great-circle', 'navigation', 'live', {
-    badge: 'new',
     keywords: ['distance', 'bearing', 'gc'],
   }),
   t('one-in-sixty', 'navigation', 'live', {
-    badge: 'new',
     keywords: ['track error', 'correction'],
   }),
   t('tsd', 'navigation', 'live', { keywords: ['time speed distance'] }),
@@ -133,24 +122,21 @@ export const TOOLS: ToolMeta[] = [
   t('route-planner', 'navigation', 'live', { keywords: ['leg', 'eta', 'wind'] }),
   t('flight-plan', 'navigation', 'live', { keywords: ['icao fpl', 'filing'] }),
   t('critical-point', 'navigation', 'live', {
-    badge: 'new',
     keywords: ['etp', 'pnr', 'point of no return', 'radius of action'],
   }),
   t('pivotal-altitude', 'navigation', 'live', {
-    badge: 'new',
     keywords: ['eights on pylons', 'commercial maneuver'],
   }),
 
   // Fuel & weight
   t('fuel', 'fuel-weight', 'live', { keywords: ['burn', 'endurance', 'range'] }),
   t('specific-range', 'fuel-weight', 'live', {
-    badge: 'new',
     keywords: ['nm per kg', 'efficiency'],
   }),
   t('weight-balance', 'fuel-weight', 'live', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
 
   // Time & cycles
-  t('zulu-clock', 'time-cycles', 'live', { badge: 'new', keywords: ['utc', 'ksa', 'local', 'z'] }),
+  t('zulu-clock', 'time-cycles', 'live', { keywords: ['utc', 'ksa', 'local', 'z'] }),
   t('airac', 'time-cycles', 'live', { keywords: ['cycle', '28 day', 'effective'] }),
   t('sun-times', 'time-cycles', 'live', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
 
@@ -167,7 +153,6 @@ export const TOOLS: ToolMeta[] = [
   }),
   t('oxygen', 'gacar', 'live', { badge: 'new', keywords: ['o2', 'altitude', 'part 91'] }),
   t('fuel-reserves', 'gacar', 'live', {
-    badge: 'new',
     keywords: ['reserve', 'alternate', 'part 121'],
   }),
   t('conversion-checker', 'gacar', 'live', { keywords: ['foreign licence', 'convert'] }),
@@ -190,11 +175,9 @@ export const TOOLS: ToolMeta[] = [
 
   // Quick reference
   t('transponder', 'reference', 'live', {
-    badge: 'new',
     keywords: ['squawk', '7500', '7600', '7700'],
   }),
   t('phonetic', 'reference', 'live', {
-    badge: 'new',
     keywords: ['alphabet', 'morse', 'alpha bravo'],
   }),
   t('units', 'reference', 'live', { keywords: ['converter', 'feet', 'metres', 'knots'] }),
