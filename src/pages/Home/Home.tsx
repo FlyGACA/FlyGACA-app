@@ -9,6 +9,7 @@ import { Marquee } from '../../components/Marquee';
 import { HeroAmbient } from '../../components/HeroAmbient';
 import { AdelHeroWidget } from '../../components/AdelHeroWidget';
 import { SectionHeader } from '../../components/SectionHeader';
+import { Stepper } from '../../components/Stepper';
 import { BentoGrid } from '../../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../../components/bento/BentoCard';
 import { useAccount } from '../../lib/account';
@@ -115,17 +116,7 @@ export function Home() {
       <section className={`container ${styles.block}`} aria-labelledby="home-how">
         <p className={styles.blockEyebrow}>{t('home.how.eyebrow')}</p>
         <SectionHeader id="home-how" title={t('home.how.title')} />
-        <ol className={styles.steps}>
-          {steps.map((s, i) => (
-            <li key={i} className={styles.step}>
-              <span className={styles.stepNum} aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3 className={styles.stepTitle}>{s.h}</h3>
-              <p className={styles.stepBody}>{s.p}</p>
-            </li>
-          ))}
-        </ol>
+        <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
       </section>
 
       {/* Why trust it — independent · cites the section · offline · bilingual. */}
