@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
+import { OutputGrid } from '../../components/calc/Grids';
+import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { densityAltitude } from '../../calc/isa';
 import shared from './CalcFields.module.css';
@@ -76,20 +78,21 @@ export function DensityAltitude() {
         </label>
       </div>
 
-      <dl className={shared.outputs}>
-        <div>
-          <dt>{t('densityAltitude.pressureAltitude')}</dt>
-          <dd>{r ? `${fmt(r.pa)} ft` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('densityAltitude.isaDev')}</dt>
-          <dd>{r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('densityAltitude.densityAltitude')}</dt>
-          <dd className={shared.headline}>{r ? `${fmt(r.da)} ft` : '—'}</dd>
-        </div>
-      </dl>
+      <OutputGrid>
+        <ResultStat
+          label={t('densityAltitude.pressureAltitude')}
+          value={r ? `${fmt(r.pa)} ft` : '—'}
+        />
+        <ResultStat
+          label={t('densityAltitude.isaDev')}
+          value={r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}
+        />
+        <ResultStat
+          label={t('densityAltitude.densityAltitude')}
+          value={r ? `${fmt(r.da)} ft` : '—'}
+          tone="headline"
+        />
+      </OutputGrid>
     </CalcShell>
   );
 }
