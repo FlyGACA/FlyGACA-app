@@ -66,6 +66,22 @@
   box-shadow: var(--clay-shadow-press);
   transform: scale(0.97);
 }
+/* Gated pro pack: dim it and replace the hover-lift / press with a gold "upgrade"
+   border hint, so a locked pack doesn't read as a directly-openable one (it routes
+   to /pricing). Placed after .bank:hover/:active so it wins on equal specificity. */
+.bankLocked {
+  opacity: 0.72;
+}
+.bankLocked:hover,
+.bankLocked:active {
+  transform: none;
+  box-shadow: var(--clay-shadow);
+  border-color: var(--gold);
+}
+.lockIcon {
+  margin-inline-end: var(--space-1);
+  font-size: 0.85em;
+}
 .mode h2 {
   font-size: var(--fs-lg);
 }
@@ -415,7 +431,11 @@
   transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.flagBtn:active {
+  transform: scale(0.97);
 }
 .flagOn {
   border-color: var(--warning);
@@ -540,11 +560,15 @@
   cursor: pointer;
   transition:
     border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .secondary:hover {
   border-color: var(--brand-hover);
   color: var(--brand-hover);
+}
+.secondary:active {
+  transform: scale(0.97);
 }
 
 .lastResult {
@@ -687,11 +711,18 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   background: var(--surface);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .quickChip:hover {
   border-color: var(--brand-hover);
   color: var(--text);
   text-decoration: none;
+}
+.quickChip:active {
+  transform: scale(0.97);
 }
 .analytics {
   margin-block-start: var(--space-7);

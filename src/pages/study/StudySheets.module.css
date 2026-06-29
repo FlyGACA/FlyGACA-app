@@ -81,11 +81,15 @@
   text-align: start;
   transition:
     border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .item:hover {
   border-color: var(--brand-hover);
   background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+}
+.item:active {
+  transform: scale(0.99);
 }
 .itemActive {
   border-color: var(--brand);
@@ -133,13 +137,17 @@
   transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .toolBtn:hover {
   border-color: var(--brand-hover);
   color: var(--brand-hover);
   background: var(--brand-tint);
   text-decoration: none;
+}
+.toolBtn:active {
+  transform: scale(0.97);
 }
 
 .embed {

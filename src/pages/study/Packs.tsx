@@ -34,6 +34,11 @@ export function Packs() {
           const inner = (
             <>
               <span className={styles.bankTitle}>
+                {locked && (
+                  <span className={styles.lockIcon} aria-hidden="true">
+                    🔒
+                  </span>
+                )}
                 {t(`study.packCatalog.${p.id}.name`)}
                 {p.pro && <span className={styles.proTag}>{t('study.packPro')}</span>}
               </span>
@@ -46,7 +51,7 @@ export function Packs() {
           return (
             <li key={p.id}>
               {locked ? (
-                <Link to="/pricing" className={styles.bank}>
+                <Link to="/pricing" className={`${styles.bank} ${styles.bankLocked}`}>
                   {inner}
                 </Link>
               ) : (
