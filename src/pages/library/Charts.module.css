@@ -127,7 +127,8 @@
   transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .navBtn:hover,
 .toolBtn:hover {
@@ -135,6 +136,10 @@
   color: var(--brand-hover);
   background: var(--brand-tint);
   text-decoration: none;
+}
+.navBtn:active,
+.toolBtn:active {
+  transform: scale(0.97);
 }
 
 .metaLine {
@@ -193,7 +198,8 @@
   cursor: pointer;
   transition:
     border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .thumb img {
   inline-size: 100%;
@@ -205,6 +211,9 @@
 .thumb:hover {
   border-color: var(--brand-hover);
   color: var(--text);
+}
+.thumb:active {
+  transform: scale(0.97);
 }
 .thumbActive {
   border-color: var(--brand);
