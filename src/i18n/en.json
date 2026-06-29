@@ -1616,7 +1616,7 @@
     "monthly": "Monthly",
     "annual": "Annual",
     "saveBadge": "Save {{pct}}%",
-    "indicative": "Indicative pricing — confirmed at launch.",
+    "indicative": "Indicative pricing, confirmed at launch.",
     "billingNote": "Checkout opens when billing is connected.",
     "eyebrow": "Plans & Pricing",
     "popular": "Most popular",
@@ -1630,9 +1630,9 @@
         "name": "Free",
         "price": "SAR 0",
         "features": [
-          "The full regulatory library — free, forever",
+          "The full regulatory library, free forever",
           "All 55 flight tools",
-          "Captain Adel — 5 questions / day",
+          "Captain Adel: 5 questions / day",
           "Ground school, quizzes & flashcards"
         ]
       },
@@ -1662,6 +1662,8 @@
     "billingCycle": "Billing cycle",
     "compareHead": "Compare plans",
     "feature": "Feature",
+    "cmpYes": "Included",
+    "cmpNo": "Not included",
     "faqHead": "Frequently asked",
     "compare": [
       {
@@ -1684,7 +1686,7 @@
       },
       {
         "feature": "Mock exams",
-        "free": "—",
+        "free": "✕",
         "pro": "✓",
         "school": "✓"
       },
@@ -1696,39 +1698,39 @@
       },
       {
         "feature": "Logbook export & reminders",
-        "free": "—",
+        "free": "✕",
         "pro": "✓",
         "school": "✓"
       },
       {
         "feature": "Offline library pack",
-        "free": "—",
+        "free": "✕",
         "pro": "✓",
         "school": "✓"
       },
       {
         "feature": "Admin dashboard & seats",
-        "free": "—",
-        "pro": "—",
+        "free": "✕",
+        "pro": "✕",
         "school": "✓"
       }
     ],
     "faq": [
       {
         "q": "Is the regulatory library really free?",
-        "a": "Yes — the full GACAR library, search and charts are free forever. Pro adds AI depth, study tools, exports and offline; it never paywalls reading the rule."
+        "a": "Yes. The full GACAR library, search and charts are free forever. Pro adds AI depth, study tools, exports and offline; it never paywalls reading the rule."
       },
       {
         "q": "Can I cancel anytime?",
-        "a": "Yes — Pro is month-to-month or annual. Cancel whenever and keep access until the period ends."
+        "a": "Yes. Pro is month-to-month or annual. Cancel whenever and keep access until the period ends."
       },
       {
         "q": "Do you offer refunds?",
-        "a": "Yes — a 30-day money-back guarantee on any plan. Email us and we'll sort it out."
+        "a": "Yes. A 30-day money-back guarantee on any plan. Email us and we'll sort it out."
       },
       {
         "q": "What happens to my logbook if I cancel?",
-        "a": "It stays — your logbook and progress are stored on your device. Pro-only exports pause until you re-subscribe."
+        "a": "It stays. Your logbook and progress are stored on your device. Pro-only exports pause until you re-subscribe."
       },
       {
         "q": "How does billing work for flight schools?",
@@ -1736,12 +1738,12 @@
       },
       {
         "q": "Is Fly GACA affiliated with GACA?",
-        "a": "No. Fly GACA is an independent educational tool — always verify against the official GACA sources."
+        "a": "No. Fly GACA is an independent educational tool. Always verify against the official GACA sources."
       }
     ],
     "planIntro": {
-      "free": "You're on the Free plan — here's what Pro unlocks.",
-      "pro": "You're on Pro — thank you. Manage your subscription anytime.",
+      "free": "You're on the Free plan. Here's what Pro unlocks.",
+      "pro": "You're on Pro, thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
     "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
@@ -1751,13 +1753,13 @@
     "pass": "SAR {{n}} / 90 days",
     "vatIncl": "incl. 15% VAT",
     "vatExcl": "Invoiced annually · VAT-exclusive",
-    "trustBanner": "The full regulatory library is free, forever. Fly GACA is independent and not affiliated with GACA — always verify against the official source.",
-    "trial": "7-day free trial — no card",
+    "trustBanner": "The full regulatory library is free, forever. Fly GACA is independent and not affiliated with GACA. Always verify against the official source.",
+    "trial": "7-day free trial, no card",
     "moneyBack": "30-day money-back guarantee",
     "studentToggle": "Studying full-time? Get student pricing",
     "studentNote": "verified at checkout",
     "passHead": "Exam Season Pass",
-    "passLead": "Just need it until your checkride? Full Pro access for 90 days — no subscription.",
+    "passLead": "Just need it until your checkride? Full Pro access for 90 days, no subscription.",
     "passCta": "Get the pass",
     "schoolsEyebrow": "For flight schools & universities",
     "schoolsHead": "Equip a whole cohort",
@@ -2858,11 +2860,11 @@
     "eyebrow": "About",
     "title": "About Fly GACA",
     "lead": "Every Saudi reg. One captain on the answer. Finding the right GACAR section should not be the hard part of flying in the Kingdom.",
-    "sectionsHead": "What Fly GACA is — and isn't",
+    "sectionsHead": "What Fly GACA is, and isn't",
     "sections": [
       {
         "h": "What Fly GACA is",
-        "p": "A reference library of every numbered GACAR Part, topical handbooks, aerodromes and VFR charts — plus Captain Adel, an AI flight instructor that cites the exact section, and a set of flight tools and study material."
+        "p": "A reference library of every numbered GACAR Part, topical handbooks, aerodromes and VFR charts, plus Captain Adel, an AI flight instructor that cites the exact section, and a set of flight tools and study material."
       },
       {
         "h": "What it is not",
@@ -2874,7 +2876,7 @@
       },
       {
         "h": "Who it is for",
-        "p": "Student pilots, instructors, cadets and licensed crew who actually use the regulations — in English and Arabic."
+        "p": "Student pilots, instructors, cadets and licensed crew who actually use the regulations, in English and Arabic."
       },
       {
         "h": "Source of truth",
@@ -2890,7 +2892,7 @@
     ],
     "cta": {
       "title": "Start with the regulation",
-      "lead": "Browse the library or ask Captain Adel — he cites the exact Part and section.",
+      "lead": "Browse the library or ask Captain Adel. He cites the exact Part and section.",
       "browse": "Browse the library",
       "ask": "Ask Captain Adel"
     },
@@ -2917,7 +2919,7 @@
       "steps": [
         {
           "h": "Find the rule",
-          "p": "Search every numbered GACAR Part, handbook, aerodrome and chart by keyword — full-text, in English or Arabic."
+          "p": "Search every numbered GACAR Part, handbook, aerodrome and chart by keyword. Full-text, in English or Arabic."
         },
         {
           "h": "Ask Captain Adel",
@@ -2938,7 +2940,7 @@
         },
         {
           "h": "Works offline",
-          "p": "An installable PWA — save Parts and study material to read without a connection."
+          "p": "An installable PWA: save Parts and study material to read without a connection."
         },
         {
           "h": "Cited answers",
@@ -2946,7 +2948,7 @@
         },
         {
           "h": "Open & free",
-          "p": "The regulatory library is free to browse — no account needed to read the rules."
+          "p": "The regulatory library is free to browse, no account needed to read the rules."
         },
         {
           "h": "Full-text search",
@@ -2966,7 +2968,7 @@
       },
       {
         "q": "Can I use it in the cockpit?",
-        "a": "No. Nothing here is for operational use. It is a study and reference aid — always fly by the current GACAR, AIP, AFM and operator manuals."
+        "a": "No. Nothing here is for operational use. It is a study and reference aid. Always fly by the current GACAR, AIP, AFM and operator manuals."
       },
       {
         "q": "Where does the data come from?",
@@ -2974,7 +2976,7 @@
       },
       {
         "q": "Is it free?",
-        "a": "Yes — the regulatory library, search and Captain Adel's core answers are free to use. Some study packs and advanced features are part of an optional Pro plan."
+        "a": "Yes. The regulatory library, search and Captain Adel's core answers are free to use. Some study packs and advanced features are part of an optional Pro plan."
       },
       {
         "q": "Does it work in Arabic?",
