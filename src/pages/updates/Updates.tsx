@@ -17,6 +17,7 @@ import {
 import { Disclaimer } from '../../components/Disclaimer';
 import { EmptyState } from '../../components/EmptyState';
 import { UpsellCard } from '../../components/UpsellCard';
+import { Alert } from '../../components/Alert';
 import styles from './Updates.module.css';
 
 interface SourcesFile {
@@ -68,7 +69,9 @@ export function Updates() {
       ) : loading ? (
         <p>{t('common.loading')}</p>
       ) : src.error || status.error ? (
-        <p role="alert">{t('common.loadError')}</p>
+        <Alert tone="error" role="alert" icon="⚠">
+          {t('common.loadError')}
+        </Alert>
       ) : (
         <>
           {airac && (

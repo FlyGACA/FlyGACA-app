@@ -76,11 +76,15 @@
   text-align: start;
   transition:
     border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .item:hover {
   border-color: var(--brand-hover);
   background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+}
+.item:active {
+  transform: scale(0.99);
 }
 .itemActive {
   border-color: var(--brand);
@@ -128,13 +132,17 @@
   transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .toolBtn:hover {
   border-color: var(--brand-hover);
   color: var(--brand-hover);
   background: var(--brand-tint);
   text-decoration: none;
+}
+.toolBtn:active {
+  transform: scale(0.97);
 }
 
 .embed {
@@ -188,25 +196,4 @@
   .skeleton {
     animation: none;
   }
-}
-.errorRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  color: var(--color-error);
-}
-.retry {
-  min-block-size: 36px;
-  padding-inline: var(--space-3);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-}
-.retry:hover {
-  border-color: var(--brand-hover);
-  color: var(--brand-hover);
 }

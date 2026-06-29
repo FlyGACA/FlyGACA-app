@@ -26,6 +26,7 @@ import { useBookmarkGate } from '../../lib/useBookmarkGate';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { EmptyState } from '../../components/EmptyState';
+import { Alert } from '../../components/Alert';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
 import { SearchHero } from '../../components/SearchHero';
 import type { HeroStat } from '../../components/SearchHero';
@@ -411,19 +412,21 @@ export function Library() {
       </div>
 
       {loading && (
-        <ul className={`${styles.grid} ${styles.skeletonGrid}`} aria-hidden="true">
+        <ul className={`${hub.grid} ${styles.skeletonGrid}`} aria-hidden="true">
           {Array.from({ length: 6 }).map((_, i) => (
             <li key={i} className={styles.skeleton} />
           ))}
         </ul>
       )}
       {error && (
-        <div className={styles.errorBox} role="alert">
-          <p>{t('common.loadError')}</p>
-          <button type="button" className={styles.retry} onClick={() => setReload((r) => r + 1)}>
-            {t('library.retry')}
-          </button>
-        </div>
+        <Alert
+          tone="error"
+          role="alert"
+          icon="⚠"
+          action={{ label: t('library.retry'), onClick: () => setReload((r) => r + 1) }}
+        >
+          {t('common.loadError')}
+        </Alert>
       )}
 
       {data && (

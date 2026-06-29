@@ -31,8 +31,14 @@
 }
 .gateNote {
   margin: 0;
-  color: var(--text-dim);
   max-inline-size: 60ch;
+  /* Tonal teaser band (mirrors the Alert language) so the pro gate reads as an
+     invitation rather than stark dim text above the upsell card. */
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 3px solid var(--brand);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  color: var(--text-muted);
 }
 
 /* AIRAC cycle card */
@@ -92,9 +98,15 @@
   color: var(--link);
   font-size: var(--fs-sm);
   cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .markRead:hover {
   background: var(--surface-raised);
+}
+.markRead:active {
+  transform: scale(0.97);
 }
 
 .list {
@@ -140,6 +152,8 @@
   block-size: 8px;
   border-radius: 50%;
   background: var(--gold);
+  /* Soft halo so the "changed" marker reads at a glance (box-shadow → no reflow). */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent);
 }
 
 .watchHint {
@@ -156,9 +170,16 @@
   color: var(--text-dim);
   font-size: var(--fs-sm);
   cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .watch:hover {
   background: var(--surface-raised);
+}
+.watch:active {
+  transform: scale(0.97);
 }
 .watchOn {
   border-color: var(--gold);

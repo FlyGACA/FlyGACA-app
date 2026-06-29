@@ -53,16 +53,6 @@
   font-size: var(--fs-sm);
   margin: 0;
 }
-.error {
-  color: var(--color-error);
-  font-size: var(--fs-sm);
-  margin: 0;
-}
-.notice {
-  color: var(--color-success);
-  font-size: var(--fs-sm);
-  margin: 0;
-}
 .linkBtn {
   align-self: flex-start;
   background: none;
@@ -71,6 +61,11 @@
   color: var(--link);
   font-size: var(--fs-sm);
   cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.linkBtn:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
 }
 .linkBtn:disabled {
   opacity: 0.5;
@@ -323,18 +318,6 @@
 .del:hover {
   color: var(--color-error);
   background: var(--color-error-bg);
-}
-
-/* Local-ahead-of-server warning when a Firestore write-through fails. */
-.syncNotice {
-  margin: 0;
-  padding-block: var(--space-2);
-  padding-inline: var(--space-3);
-  border: 1px solid var(--warning);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
 }
 
 /* ── Logbook filter bar ── */

@@ -89,6 +89,15 @@ button {
   margin-inline: auto;
 }
 
+/* Clear the floating bottom dock on mobile (≤860px, where the dock shows) so a
+   page's final content is never trapped behind the fixed nav. Mirrors the dock
+   height token + safe-area inset used in Header/Footer. */
+@media (max-width: 860px) {
+  main {
+    padding-block-end: calc(var(--nav-content-h) + var(--space-4) + var(--safe-bottom));
+  }
+}
+
 .container-narrow {
   width: min(100% - 2 * var(--space-4), var(--container-narrow));
   margin-inline: auto;
