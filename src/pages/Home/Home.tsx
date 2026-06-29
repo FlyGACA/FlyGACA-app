@@ -11,7 +11,7 @@ import { AdelHeroWidget } from '../../components/AdelHeroWidget';
 import { SectionHeader } from '../../components/SectionHeader';
 import { Stepper } from '../../components/Stepper';
 import { BentoGrid } from '../../components/bento/BentoGrid';
-import { BentoCard, type BentoTone } from '../../components/bento/BentoCard';
+import { BentoCard, type BentoSpan, type BentoTone } from '../../components/bento/BentoCard';
 import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -23,27 +23,23 @@ import styles from './Home.module.css';
 // hero's critical path; it streams in under the Suspense boundary below.
 const HomeDashboard = lazy(() => import('../../components/bento/HomeDashboard'));
 
-// The "proof" stats. Values come from the app's own data indexes (gacar-index,
-// ebooks-index, airports, charts-index, reference-index) so they stay truthful;
-// only the labels are translated.
-const STATS = [
-  { value: 74, key: 'parts' },
-  { value: 21, key: 'handbooks' },
-  { value: 61, key: 'aerodromes' },
-  { value: 13, key: 'charts' },
-  { value: 211, key: 'reference' },
-] as const;
-
-// The "at a glance" trust strip. Numbers stay truthful: Parts mirrors the hero
-// proof stat (gacar-index), tools matches the migration catalogue, and guides is
-// the live `GUIDE_SLUGS` count the Learn hub surfaces.
+// The single "at a glance" proof strip. Numbers stay truthful: Parts mirrors the
+// gacar-index, tools matches the migration catalogue, and guides is the live
+// `GUIDE_SLUGS` count the Learn hub surfaces.
 const TRUST_STATS = [
   { value: 74, key: 'parts' },
   { value: 55, key: 'tools' },
   { value: GUIDE_SLUGS.length, key: 'guides' },
 ] as const;
 
-const WHY_TONES: BentoTone[] = ['default', 'cyan', 'green'];
+// "Why trust it" reads as an asymmetric bento, not four equal cards: a tall lead
+// pillar (the independence claim, carrying the mark) + one wide + two small.
+const WHY_LAYOUT: { span: BentoSpan; tone: BentoTone }[] = [
+  { span: 'lg', tone: 'default' },
+  { span: 'wide', tone: 'cyan' },
+  { span: 'sm', tone: 'green' },
+  { span: 'sm', tone: 'default' },
+];
 
 interface Step {
   h: string;
@@ -69,74 +65,35 @@ export function Home() {
 
   return (
     <>
+      {/* Hero — an asymmetric split: the value prop + primary actions on the
+          start side, the live Captain Adel demo as the real product visual. */}
       <section className={styles.hero}>
         <HeroAmbient />
-        <div className={`container ${styles.heroInner}`}>
-          <p className={styles.eyebrow}>{t('home.eyebrow')}</p>
-          <h1 className={styles.title}>{t('home.title')}</h1>
-          <p className={styles.subtitle}>{t('home.subtitle')}</p>
-          <div className={styles.heroCta}>
-            <Link to="/library" className="btn btn-clay-primary" data-magnetic>
-              {t('home.ctaLibrary')}
-            </Link>
-            <Link to="/tools" className="btn btn-clay" data-magnetic>
-              {t('home.ctaTools')}
-            </Link>
-            <Link to="/chat" className="btn btn-ghost" data-magnetic>
-              {t('home.ctaChat')}
-            </Link>
+        <div className={`container ${styles.heroGrid}`}>
+          <div className={`${styles.heroCopy} page-enter`}>
+            <p className={styles.eyebrow}>{t('home.eyebrow')}</p>
+            <h1 className={styles.title}>{t('home.title')}</h1>
+            <p className={styles.subtitle}>{t('home.subtitle')}</p>
+            <div className={styles.heroCta}>
+              <Link to="/library" className="btn btn-clay-primary" data-magnetic>
+                {t('home.ctaLibrary')}
+              </Link>
+              <Link to="/chat" className="btn btn-clay" data-magnetic>
+                {t('home.ctaChat')}
+              </Link>
+            </div>
           </div>
-          <ul className={styles.stats}>
-            {STATS.map((s) => (
-              <li key={s.key} className={styles.stat}>
-                <span className={styles.statValue}>
-                  <CountUp to={s.value} />
-                </span>
-                <span className={styles.statLabel}>{t(`home.stats.${s.key}`)}</span>
-              </li>
-            ))}
-          </ul>
-          <SyncedStamp />
-          <AdelHeroWidget />
+          <div className={styles.heroAside}>
+            <AdelHeroWidget />
+          </div>
         </div>
       </section>
 
       <Marquee />
 
-      <FlightDivider />
-
-      <section className={`container ${styles.dashboardSection}`}>
-        <Suspense fallback={<div className={styles.dashboardFallback} aria-hidden="true" />}>
-          <HomeDashboard />
-        </Suspense>
-        <p className={styles.notice}>{t('home.notAffiliated')}</p>
-      </section>
-
-      {/* How it works — question → cited answer → study. */}
-      <section className={`container ${styles.block}`} aria-labelledby="home-how">
-        <p className={styles.blockEyebrow}>{t('home.how.eyebrow')}</p>
-        <SectionHeader id="home-how" title={t('home.how.title')} />
-        <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
-      </section>
-
-      {/* Why trust it — independent · cites the section · offline · bilingual. */}
-      <section className={`container ${styles.block}`} aria-labelledby="home-why">
-        <p className={styles.blockEyebrow}>{t('home.why.eyebrow')}</p>
-        <SectionHeader id="home-why" title={t('home.why.title')} tone="var(--cat-2)" />
-        <BentoGrid label={t('home.why.title')}>
-          {reasons.map((r, i) => (
-            <BentoCard key={i} span="sm" tone={WHY_TONES[i % WHY_TONES.length]}>
-              <h3 className={styles.featTitle}>{r.h}</h3>
-              <p className={styles.featBody}>{r.p}</p>
-            </BentoCard>
-          ))}
-        </BentoGrid>
-      </section>
-
-      {/* Trust "at a glance" strip. */}
+      {/* Single proof strip — the corpus and product facts, once. */}
       <section className="container" aria-label={t('home.trust.label')}>
-        <div className={styles.trust}>
-          <p className={styles.trustLabel}>{t('home.trust.label')}</p>
+        <div className={styles.proof}>
           <ul className={styles.stats}>
             {TRUST_STATS.map((s) => (
               <li key={s.key} className={styles.stat}>
@@ -157,7 +114,50 @@ export function Home() {
               <span className={styles.statLabel}>{t('home.trust.price')}</span>
             </li>
           </ul>
+          <SyncedStamp />
         </div>
+      </section>
+
+      <FlightDivider />
+
+      <section className={`container ${styles.dashboardSection}`}>
+        <Suspense fallback={<div className={styles.dashboardFallback} aria-hidden="true" />}>
+          <HomeDashboard />
+        </Suspense>
+        <p className={styles.notice}>{t('home.notAffiliated')}</p>
+      </section>
+
+      {/* How it works — question → cited answer → study. */}
+      <section className={`container ${styles.block}`} aria-labelledby="home-how">
+        <SectionHeader id="home-how" title={t('home.how.title')} />
+        <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
+      </section>
+
+      {/* Why trust it — independent · cites the section · offline · bilingual. */}
+      <section className={`container ${styles.block}`} aria-labelledby="home-why">
+        <SectionHeader id="home-why" title={t('home.why.title')} tone="var(--cat-2)" />
+        <BentoGrid label={t('home.why.title')}>
+          {reasons.map((r, i) => {
+            const cfg = WHY_LAYOUT[i] ?? { span: 'sm', tone: 'default' };
+            const lead = i === 0;
+            return (
+              <BentoCard key={i} span={cfg.span} tone={cfg.tone}>
+                {lead && (
+                  <img
+                    className={styles.whyMark}
+                    src="/img/flygaca-mark.png"
+                    alt=""
+                    width={40}
+                    height={40}
+                    decoding="async"
+                  />
+                )}
+                <h3 className={lead ? styles.featLead : styles.featTitle}>{r.h}</h3>
+                <p className={styles.featBody}>{r.p}</p>
+              </BentoCard>
+            );
+          })}
+        </BentoGrid>
       </section>
 
       {/* Conversion band — plan-aware. */}
@@ -184,9 +184,6 @@ export function Home() {
               <div className={styles.ctaActions}>
                 <Link className="btn btn-clay-primary" to="/pricing">
                   {t('home.convert.cta')}
-                </Link>
-                <Link className="btn btn-clay" to="/chat">
-                  {t('home.convert.secondary')}
                 </Link>
               </div>
             </>

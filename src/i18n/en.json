@@ -144,9 +144,9 @@
     }
   },
   "home": {
-    "eyebrow": "Independent · Educational · Bilingual",
+    "eyebrow": "Independent, educational, bilingual",
     "title": "Every Saudi reg. One captain on the answer.",
-    "subtitle": "A fast, free reference library of Saudi civil-aviation regulations (GACAR), charts and study tools — with an AI flight instructor who cites the exact Part and section.",
+    "subtitle": "A free library of Saudi civil-aviation regulations, with an AI instructor that cites the exact Part and section.",
     "ctaLibrary": "Open the library",
     "ctaTools": "Flight tools",
     "ctaChat": "Ask Captain Adel",
@@ -171,7 +171,7 @@
       "engine": "RAG · GACAR",
       "onDuty": "on duty",
       "thinking": "thinking…",
-      "note": "Illustrative example — always verify against the official GACA publication.",
+      "note": "Illustrative example. Always verify against the official GACA publication.",
       "demos": [
         {
           "q": "What is the night currency requirement under Part 61?",
@@ -179,7 +179,7 @@
           "cites": [
             {
               "code": "61.57(b)",
-              "tip": "GACAR §61.57(b) — Recent flight experience: night. 3 takeoffs and 3 landings to a full stop in the preceding 90 days to carry passengers at night."
+              "tip": "GACAR §61.57(b). Recent flight experience at night: 3 takeoffs and 3 landings to a full stop in the preceding 90 days to carry passengers at night."
             }
           ]
         },
@@ -189,17 +189,17 @@
           "cites": [
             {
               "code": "91.155",
-              "tip": "GACAR §91.155 — Basic VFR weather minimums: visibility and distance-from-cloud by airspace class and altitude."
+              "tip": "GACAR §91.155. Basic VFR weather minimums: visibility and distance-from-cloud by airspace class and altitude."
             }
           ]
         },
         {
           "q": "Does approved simulator time count toward the instrument rating?",
-          "a": "Yes — approved FFS or FTD time is creditable toward the instrument rating, up to the limit in the aeronautical-experience table.",
+          "a": "Yes, approved FFS or FTD time is creditable toward the instrument rating, up to the limit in the aeronautical-experience table.",
           "cites": [
             {
               "code": "61.65",
-              "tip": "GACAR §61.65 — Instrument rating requirements, including credit for approved flight-simulation training device time."
+              "tip": "GACAR §61.65. Instrument rating requirements, including credit for approved flight-simulation training device time."
             }
           ]
         }
@@ -221,7 +221,7 @@
       "steps": [
         {
           "h": "Find the rule",
-          "p": "Search every numbered GACAR Part, reference guidance and handbooks — in English or Arabic."
+          "p": "Search every numbered GACAR Part, reference guidance and handbooks, in English or Arabic."
         },
         {
           "h": "Captain Adel cites it",
@@ -247,7 +247,7 @@
         },
         {
           "h": "Works offline",
-          "p": "A fast Progressive Web App — install it and read the library without a connection."
+          "p": "A fast Progressive Web App: install it and read the library without a connection."
         },
         {
           "h": "Fully bilingual",
@@ -258,11 +258,11 @@
     "convert": {
       "eyebrow": "Go further",
       "title": "Unlock the full flight deck",
-      "lead": "Unlimited Captain Adel, currency reminders, logbook export and offline access — for serious students and crews.",
+      "lead": "Unlimited Captain Adel, currency reminders, logbook export and offline access, for serious students and crews.",
       "cta": "See Pro plans",
       "secondary": "Ask Captain Adel",
       "proTitle": "You're flying Pro",
-      "proLead": "Your full toolkit is ready — jump back into your dashboard.",
+      "proLead": "Your full toolkit is ready. Jump back into your dashboard.",
       "proCta": "Open my dashboard"
     },
     "dashboard": {
@@ -313,7 +313,7 @@
       "adel": {
         "status": "Online",
         "heading": "Captain Adel",
-        "desc": "Ask anything — he cites the exact Part and section.",
+        "desc": "Ask anything; he cites the exact Part and section.",
         "cta": "Ask Captain Adel"
       },
       "guides": {
