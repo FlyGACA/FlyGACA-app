@@ -13,26 +13,26 @@
       },
       "library": {
         "title": "The regulation library",
-        "body": "Browse and search every GACAR Part, the AIP, and reference handbooks — full text, always free."
+        "body": "Browse and search every GACAR Part, the AIP, and reference handbooks, full text, always free."
       },
       "tools": {
         "title": "Flight tools",
-        "body": "Crosswind, fuel, weight & balance, navigation and dozens more — quick calculators with shareable links."
+        "body": "Crosswind, fuel, weight & balance, navigation and dozens more, quick calculators with shareable links."
       },
       "captainAdel": {
         "title": "Ask Captain Adel",
-        "body": "Answers grounded in the regulations, with the exact Part and section cited — never a replacement for the official source."
+        "body": "Answers grounded in the regulations, with the exact Part and section cited, never a replacement for the official source."
       },
       "bilingual": {
         "title": "العربية & English",
-        "body": "Switch language anytime — the whole app mirrors right-to-left for Arabic."
+        "body": "Switch language anytime, the whole app mirrors right-to-left for Arabic."
       }
     }
   },
   "errors": {
     "boundary": {
       "title": "Something went wrong",
-      "lead": "This page hit an unexpected error. Your data is safe — try reloading, or head back to the home page.",
+      "lead": "This page hit an unexpected error. Your data is safe, try reloading, or head back to the home page.",
       "reload": "Reload page",
       "home": "Back to home"
     }
@@ -45,7 +45,7 @@
     "regulations": "Regulations",
     "aerodromes": "Aerodromes",
     "tools": "Tools",
-    "empty": "No matches — try a Part number, ICAO code, or tool.",
+    "empty": "No matches, try a Part number, ICAO code, or tool.",
     "navigate": "navigate",
     "openHint": "open",
     "closeHint": "close",
@@ -109,7 +109,7 @@
     "about": "About",
     "account": "Account",
     "charts": "VFR Charts",
-    "home": "Fly GACA — home",
+    "home": "Fly GACA, home",
     "primary": "Primary",
     "menu": "Menu",
     "more": "More",
@@ -338,13 +338,13 @@
     "open": "Open",
     "new": "New",
     "empty": "No tools match that search.",
-    "searchPlaceholder": "Search {{count}}+ tools — wind, fuel, currency…",
+    "searchPlaceholder": "Search {{count}}+ tools, wind, fuel, currency…",
     "jumpNav": "Jump to category",
     "popular": "Popular",
     "sortBy": "Sort",
     "sort": {
       "category": "By category",
-      "name": "Name A–Z"
+      "name": "Name A-Z"
     },
     "view": "View",
     "viewGrid": "Grid view",
@@ -404,7 +404,7 @@
       },
       "cloud-base": {
         "name": "Cloud base estimate",
-        "blurb": "Convective cloud base from the temperature–dew point spread."
+        "blurb": "Convective cloud base from the temperature-dew point spread."
       },
       "tas": {
         "name": "True airspeed",
@@ -625,14 +625,14 @@
   },
   "densityAltitude": {
     "title": "Density altitude",
-    "intro": "Pressure altitude, ISA deviation and density altitude from field elevation, the altimeter setting and the outside air temperature. A planning aid — performance figures come from the POH/AFM.",
+    "intro": "Pressure altitude, ISA deviation and density altitude from field elevation, the altimeter setting and the outside air temperature. A planning aid: performance figures come from the POH/AFM.",
     "elevation": "Field elevation (ft)",
     "qnh": "QNH (hPa)",
     "oat": "OAT (°C)",
     "pressureAltitude": "Pressure altitude",
     "isaDev": "ISA deviation",
     "densityAltitude": "Density altitude",
-    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it — and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative."
+    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it, and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative."
   },
   "tas": {
     "title": "True airspeed",
@@ -649,14 +649,14 @@
     "title": "Captain Adel",
     "avatarAlt": "Captain Adel, your AI flight instructor",
     "status": "AI flight instructor · cites the GACAR",
-    "welcome": "Captain Adel — your AI study assistant, trained on the GACAR. Ask about any Saudi regulation and he cites the exact Part and section. He can be wrong — always verify against the official source.",
+    "welcome": "Captain Adel, your AI study assistant, trained on the GACAR. Ask about any Saudi regulation and he cites the exact Part and section. He can be wrong, always verify against the official source.",
     "placeholder": "Ask about any GACAR Part or section…",
     "composer": "Message Captain Adel",
     "send": "Send",
     "thinking": "Captain Adel is checking the GACAR…",
     "notReady": "I couldn't reach my engine just now, Captain. The assistant backend isn't connected in this build. Verify any regulation against the official GACA source at gaca.gov.sa.",
     "signInRequired": "Sign in to ask Captain Adel.",
-    "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source — not for operational use.",
+    "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source, not for operational use.",
     "clear": "Clear chat",
     "sourcesLabel": "Sources",
     "exactText": "Exact text",
@@ -673,7 +673,7 @@
     "grounding": {
       "grounded": "Grounded",
       "partial": "Partially grounded",
-      "refusal": "Hold — not grounded"
+      "refusal": "Hold, not grounded"
     },
     "quota": {
       "left": "{{n}} of {{limit}} free questions left today",
@@ -701,7 +701,7 @@
       "s5": "What equipment is required for night VFR flight?",
       "s6": "How many flight hours are required for an instrument rating?"
     },
-    "transcriptTitle": "Captain Adel — conversation",
+    "transcriptTitle": "Captain Adel, conversation",
     "you": "You",
     "export": "Copy conversation",
     "exportCopied": "Copied",
@@ -741,7 +741,7 @@
   },
   "sheets": {
     "title": "Study Sheets",
-    "lead": "One-page PDF summaries for each Saudi licence and check. Study aids — always verify against the official GACAR.",
+    "lead": "One-page PDF summaries for each Saudi licence and check. Study aids, always verify against the official GACAR.",
     "open": "Open ↗",
     "download": "Download",
     "noInline": "Your browser can't display the PDF inline.",
@@ -754,7 +754,7 @@
   },
   "charts": {
     "title": "VFR Charts",
-    "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy — always verify against the current official AIP.",
+    "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy, always verify against the current official AIP.",
     "sheet": "Sheet",
     "openImage": "Open full image ↗",
     "fullscreen": "Fullscreen",
@@ -774,8 +774,8 @@
     "viewCharts": "Browse VFR charts",
     "eyebrow": "Reference Library",
     "title": "The Saudi aviation reference, in one place.",
-    "subtitle": "Every numbered GACAR Part, browsable and searchable. Our ingested copy — always verify against the official GACA publication.",
-    "searchPlaceholder": "Search regulations — 'Part 91', 'medical', 'operations'…",
+    "subtitle": "Every numbered GACAR Part, browsable and searchable. Our ingested copy, always verify against the official GACA publication.",
+    "searchPlaceholder": "Search regulations, 'Part 91', 'medical', 'operations'…",
     "all": "All",
     "part": "Part",
     "pages": "pages",
@@ -785,7 +785,7 @@
     "searching": "Searching the full text…",
     "fullResults": "In-text matches",
     "hitsCount": "{{count}} passage(s) match.",
-    "moreHits": "Showing the first {{max}} passages — refine your search to narrow them.",
+    "moreHits": "Showing the first {{max}} passages, refine your search to narrow them.",
     "noFullMatches": "No passages match “{{q}}”.",
     "browse": "Browse by collection",
     "docsCount": "{{count}} document(s)",
@@ -797,7 +797,7 @@
     "retry": "Retry",
     "showing": "Showing {{shown}} of {{total}}",
     "loadMore": "Load more",
-    "capHint": "first {{max}} — refine to narrow",
+    "capHint": "first {{max}}, refine to narrow",
     "bookmark": "Bookmark",
     "bookmarked": "Bookmarked",
     "unbookmark": "Remove bookmark",
@@ -812,7 +812,7 @@
     "sortBy": "Sort",
     "sort": {
       "part": "Part number",
-      "title": "Title A–Z",
+      "title": "Title A-Z",
       "pages": "Most pages",
       "sections": "Most sections"
     },
@@ -940,7 +940,7 @@
     "factor": "Applied factor",
     "adequate": "Runway adequate",
     "short": "Runway too short",
-    "formula": "Required = book × (1 + 10% per 1000 ft DA) × (1 + 5% per 1% upslope) × (1 + safety factor). These are conservative rules of thumb — the authoritative figures are the AFM/POH and your operator's data."
+    "formula": "Required = book × (1 + 10% per 1000 ft DA) × (1 + 5% per 1% upslope) × (1 + safety factor). These are conservative rules of thumb, the authoritative figures are the AFM/POH and your operator's data."
   },
   "windTriangle": {
     "course": "Desired course (°)",
@@ -1070,19 +1070,19 @@
     "lastDate": "Last met the requirement (date)",
     "window": "Recency window (days)",
     "expiry": "Currency expires",
-    "formula": "Currency expires the recency window after the date you last completed the required recent experience (e.g. three take-offs and landings). GACAR Part 61 sets the exact period and conditions — confirm against Part 61."
+    "formula": "Currency expires the recency window after the date you last completed the required recent experience (e.g. three take-offs and landings). GACAR Part 61 sets the exact period and conditions, confirm against Part 61."
   },
   "medicalValidity": {
     "issueDate": "Examination date",
     "months": "Validity (months)",
     "expiry": "Expires",
-    "formula": "Expiry = examination date + validity. The validity period depends on the certificate class and your age under GACAR Part 67 — confirm the exact period against Part 67."
+    "formula": "Expiry = examination date + validity. The validity period depends on the certificate class and your age under GACAR Part 67, confirm the exact period against Part 67."
   },
   "flightReview": {
     "lastDate": "Last completed (date)",
     "months": "Interval (months)",
     "nextDue": "Next due",
-    "formula": "Next due = last completed + interval. GACAR sets the required interval and lookback for a flight review or instrument proficiency check — confirm against the rule."
+    "formula": "Next due = last completed + interval. GACAR sets the required interval and lookback for a flight review or instrument proficiency check, confirm against the rule."
   },
   "holding": {
     "inbound": "Inbound course (°)",
@@ -1111,23 +1111,23 @@
     "closing": "Closing",
     "opening": "Opening",
     "timeToZero": "Time to zero spacing",
-    "formula": "Closure = follower groundspeed − leader groundspeed. If closing, time to zero = spacing ÷ closure. ATC separation minima are set by procedure — this is the geometry only."
+    "formula": "Closure = follower groundspeed − leader groundspeed. If closing, time to zero = spacing ÷ closure. ATC separation minima are set by procedure, this is the geometry only."
   },
   "vfrBrief": {
     "progress": "{{done}} of {{total}} checked",
     "items": [
-      "Weather — METAR, TAF and trend for departure, route and destination",
+      "Weather, METAR, TAF and trend for departure, route and destination",
       "NOTAMs for departure, en-route and destination",
-      "Fuel — required plus reserves, with a margin",
+      "Fuel, required plus reserves, with a margin",
       "Weight & balance within limits for the whole flight",
       "Take-off and landing performance against the runways",
-      "Airspace — class, controlled zones, restricted and danger areas",
+      "Airspace, class, controlled zones, restricted and danger areas",
       "Alternates and a diversion plan",
       "Aircraft documents and serviceability",
       "Personal fitness to fly (IMSAFE)",
       "Charts current and the AIRAC cycle in date"
     ],
-    "formula": "A structured self-brief. Tick each item before you go — it is a memory aid, not a substitute for the official requirements."
+    "formula": "A structured self-brief. Tick each item before you go, it is a memory aid, not a substitute for the official requirements."
   },
   "loa": {
     "name": "Pilot name",
@@ -1138,13 +1138,13 @@
     "output": "Draft letter",
     "copy": "Copy text",
     "copied": "✓ Copied",
-    "formula": "Fills a simple Letter of Authorization template you can copy and edit. Submit it through the proper GACA channel — this does not grant any authorization."
+    "formula": "Fills a simple Letter of Authorization template you can copy and edit. Submit it through the proper GACA channel, this does not grant any authorization."
   },
   "e6b": {
     "tabsTas": "True airspeed",
     "tabsWind": "Wind triangle",
     "tabsTsd": "Time · speed · distance",
-    "formula": "The everyday E6B functions in one place — true airspeed, the wind triangle and time–speed–distance. Each is also available as a standalone tool."
+    "formula": "The everyday E6B functions in one place, true airspeed, the wind triangle and time-speed-distance. Each is also available as a standalone tool."
   },
   "unitsTool": {
     "value": "Value",
@@ -1186,7 +1186,7 @@
         "meaning": "IFR, entering from an area with no code assigned"
       }
     ],
-    "formula": "Standard transponder (squawk) codes. The emergency codes 7500 / 7600 / 7700 are universal — set them only when the situation applies."
+    "formula": "Standard transponder (squawk) codes. The emergency codes 7500 / 7600 / 7700 are universal, set them only when the situation applies."
   },
   "phonetic": {
     "filter": "Filter (letter, word or digit)",
@@ -1205,13 +1205,13 @@
     "dew": "Dew point",
     "qnh": "QNH",
     "altimeter": "Altimeter",
-    "cavok": "CAVOK — ceiling and visibility OK",
-    "none": "—",
+    "cavok": "CAVOK, ceiling and visibility OK",
+    "none": "-",
     "calm": "calm",
     "vrb": "variable direction",
     "atKt": "{{dir}}° at {{spd}} kt",
     "gusting": ", gusting {{g}} kt",
-    "variableBetween": " (variable {{from}}°–{{to}}°)",
+    "variableBetween": " (variable {{from}}°-{{to}}°)",
     "tenKm": "10 km or more",
     "metres": "{{m}} m",
     "ft": "{{ft}} ft",
@@ -1304,7 +1304,7 @@
     "items": [
       {
         "symbol": "CTR",
-        "meaning": "Control zone — controlled airspace around an aerodrome from the surface"
+        "meaning": "Control zone, controlled airspace around an aerodrome from the surface"
       },
       {
         "symbol": "TMA",
@@ -1320,15 +1320,15 @@
       },
       {
         "symbol": "P",
-        "meaning": "Prohibited area — flight is not permitted"
+        "meaning": "Prohibited area, flight is not permitted"
       },
       {
         "symbol": "R",
-        "meaning": "Restricted area — flight restricted by stated conditions"
+        "meaning": "Restricted area, flight restricted by stated conditions"
       },
       {
         "symbol": "D",
-        "meaning": "Danger area — hazards may exist at stated times"
+        "meaning": "Danger area, hazards may exist at stated times"
       },
       {
         "symbol": "VOR",
@@ -1352,7 +1352,7 @@
       },
       {
         "symbol": "OBST",
-        "meaning": "Obstacle — elevation shown in feet AMSL"
+        "meaning": "Obstacle, elevation shown in feet AMSL"
       },
       {
         "symbol": "MSA",
@@ -1379,7 +1379,7 @@
     "detailCol": "Details"
   },
   "vfrMinima": {
-    "confirm": "ICAO Annex 2 standard VMC minima shown for reference — GACAR Part 91 may set local differences. Confirm the exact figure in Part 91.",
+    "confirm": "ICAO Annex 2 standard VMC minima shown for reference, GACAR Part 91 may set local differences. Confirm the exact figure in Part 91.",
     "bandCol": "Altitude band",
     "visCol": "Flight visibility",
     "cloudCol": "Distance from cloud",
@@ -1403,7 +1403,7 @@
     "formula": "Visual meteorological conditions depend on the airspace and altitude. The values here are the ICAO standard; the authoritative figures are in GACAR Part 91."
   },
   "oxygen": {
-    "confirm": "Framework only — the exact cabin altitudes and times are set in GACAR Part 91. Confirm there before relying on it.",
+    "confirm": "Framework only, the exact cabin altitudes and times are set in GACAR Part 91. Confirm there before relying on it.",
     "altCol": "Cabin pressure altitude",
     "reqCol": "Requirement",
     "rows": [
@@ -1420,10 +1420,10 @@
         "req": "Oxygen provided for the passengers"
       }
     ],
-    "formula": "Supplemental-oxygen requirements increase with cabin altitude and exposure time. The exact thresholds are in GACAR Part 91 — this shows the structure only."
+    "formula": "Supplemental-oxygen requirements increase with cabin altitude and exposure time. The exact thresholds are in GACAR Part 91, this shows the structure only."
   },
   "fuelReserves": {
-    "confirm": "These are the standard fuel components — the exact minima depend on the operation and are set in the applicable GACAR Part (91 / 121 / 135). Confirm there.",
+    "confirm": "These are the standard fuel components, the exact minima depend on the operation and are set in the applicable GACAR Part (91 / 121 / 135). Confirm there.",
     "nameCol": "Component",
     "descCol": "What it covers",
     "rows": [
@@ -1433,7 +1433,7 @@
       },
       {
         "name": "Trip fuel",
-        "desc": "Departure to destination — climb, cruise, descent and approach."
+        "desc": "Departure to destination, climb, cruise, descent and approach."
       },
       {
         "name": "Contingency fuel",
@@ -1452,10 +1452,10 @@
         "desc": "As required by the operation or the commander."
       }
     ],
-    "formula": "Plan fuel as the sum of these components. The minimum for each is set by the applicable GACAR operating Part — confirm the exact figures there."
+    "formula": "Plan fuel as the sum of these components. The minimum for each is set by the applicable GACAR operating Part, confirm the exact figures there."
   },
   "conversion": {
-    "confirm": "A general outline of the pathway — confirm the current requirements and forms with GACA.",
+    "confirm": "A general outline of the pathway, confirm the current requirements and forms with GACA.",
     "stepCol": "Step",
     "rows": [
       {
@@ -1483,7 +1483,7 @@
         "desc": "Submit the application and fees through GACA."
       }
     ],
-    "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA — confirm before you start."
+    "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA, confirm before you start."
   },
   "aerodromesTool": {
     "search": "Search by ICAO, name, city or country",
@@ -1491,9 +1491,9 @@
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
-    "count": "{{n}} aerodromes worldwide — Saudi listed first",
+    "count": "{{n}} aerodromes worldwide, Saudi listed first",
     "matched": "{{n}} aerodromes",
-    "showing": "Showing {{n}} of {{total}} — refine your search or load more",
+    "showing": "Showing {{n}} of {{total}}, refine your search or load more",
     "regionLabel": "Filter by region",
     "regions": {
       "all": "All",
@@ -1513,7 +1513,7 @@
     "services": "Services",
     "runwayDiagram": "Runway orientation diagram",
     "position": "Approximate position on the globe",
-    "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data — runways and frequencies included — from OurAirports. Not for operational use — always use the current AIP and NOTAMs."
+    "formula": "Saudi aerodrome data derived from the AIP-KSA; worldwide data, runways and frequencies included, from OurAirports. Not for operational use, always use the current AIP and NOTAMs."
   },
   "definitionsTool": {
     "search": "Search the GACAR Part 1 glossary",
@@ -1558,7 +1558,7 @@
     ],
     "formula": "The ICAO airspace classes and the service each provides. For Saudi sector boundaries and frequencies, consult the AIP-KSA.",
     "zonesTitle": "Control zones & terminal areas",
-    "zonesLead": "Saudi control zones (CTR) and terminal areas (TMA) from AIP ENR 2.1, as approximate circles for study — always verify lateral and vertical limits against the current AIP.",
+    "zonesLead": "Saudi control zones (CTR) and terminal areas (TMA) from AIP ENR 2.1, as approximate circles for study, always verify lateral and vertical limits against the current AIP.",
     "zonesCount": "{{n}} areas in the Kingdom and region",
     "typeCTR": "Control zones (CTR)",
     "typeTMA": "Terminal areas (TMA / CTA)",
@@ -1573,9 +1573,9 @@
     "unknown": "Not in our directory:",
     "metar": "METAR (official) ↗",
     "taf": "TAF (official) ↗",
-    "note": "This builds a route briefing by linking to the official source for each aerodrome — it never invents weather. Always read the actual METAR/TAF/NOTAM and verify against the official GACA/AIP source before flight.",
-    "adel": "Help me read the weather for a flight along {{route}} — what should I check before departure?",
-    "sourceNote": "Live observations and forecasts come from aviationweather.gov (NOAA). Not for operational use — verify against the official GACA source."
+    "note": "This builds a route briefing by linking to the official source for each aerodrome, it never invents weather. Always read the actual METAR/TAF/NOTAM and verify against the official GACA/AIP source before flight.",
+    "adel": "Help me read the weather for a flight along {{route}}, what should I check before departure?",
+    "sourceNote": "Live observations and forecasts come from aviationweather.gov (NOAA). Not for operational use, verify against the official GACA source."
   },
   "routePlanner": {
     "route": "Route (ICAO codes)",
@@ -1589,7 +1589,7 @@
     "time": "Time",
     "fuel": "Fuel",
     "unknown": "Unknown aerodrome(s): {{codes}}",
-    "formula": "Great-circle legs between the aerodromes, with time and fuel from your groundspeed and fuel flow. Aerodrome data from the AIP-KSA — plan with current charts."
+    "formula": "Great-circle legs between the aerodromes, with time and fuel from your groundspeed and fuel flow. Aerodrome data from the AIP-KSA, plan with current charts."
   },
   "flightPlan": {
     "callsign": "Aircraft identification",
@@ -1608,7 +1608,7 @@
     "output": "FPL message",
     "copy": "Copy text",
     "copied": "✓ Copied",
-    "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel — this does not file a flight plan."
+    "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel, this does not file a flight plan."
   },
   "pricing": {
     "title": "Pricing",
@@ -1778,7 +1778,7 @@
     "formHead": "Talk to us",
     "formIntro": "Tell us about your school and we'll get back to you with seat pricing.",
     "orEmail": "Or email us at",
-    "mailSubject": "Fly GACA for schools — {{school}}",
+    "mailSubject": "Fly GACA for schools, {{school}}",
     "mailBody": "Name: {{name}}\nSchool: {{school}}\nSeats: {{seats}}\n\n{{message}}",
     "faqHead": "Common questions",
     "form": {
@@ -1803,7 +1803,7 @@
       },
       {
         "q": "Can we manage students centrally?",
-        "a": "Yes — the admin dashboard handles bulk onboarding and usage tracking."
+        "a": "Yes, the admin dashboard handles bulk onboarding and usage tracking."
       },
       {
         "q": "How are we billed?",
@@ -1830,7 +1830,7 @@
       },
       {
         "h": "Usage tracking",
-        "p": "See who is studying and where cohorts need a hand — at a glance."
+        "p": "See who is studying and where cohorts need a hand, at a glance."
       },
       {
         "h": "Captain Adel for cohorts",
@@ -1858,7 +1858,7 @@
         },
         {
           "h": "Cadets study & stay current",
-          "p": "Your cohort studies the library, practices, and asks Captain Adel — in English or Arabic."
+          "p": "Your cohort studies the library, practices, and asks Captain Adel, in English or Arabic."
         }
       ]
     }
@@ -1882,7 +1882,7 @@
     "resetNeedEmail": "Enter your email above first.",
     "emailNotVerified": "Email not verified",
     "resendVerification": "Resend verification email",
-    "verificationSent": "Verification email sent — check your inbox.",
+    "verificationSent": "Verification email sent, check your inbox.",
     "licenceSelect": "Select…",
     "licenceOptions": {
       "SPL": "Student (SPL)",
@@ -1906,8 +1906,8 @@
       "manage": "Manage subscription",
       "none": "You're on the free plan.",
       "activating": "Activating your subscription…",
-      "checkoutSuccess": "You're Pro — thank you!",
-      "checkoutCanceled": "Checkout canceled — no charge was made.",
+      "checkoutSuccess": "You're Pro, thank you!",
+      "checkoutCanceled": "Checkout canceled, no charge was made.",
       "errors": {
         "generic": "Couldn't open billing just now. Please try again.",
         "sign-in-required": "Sign in to manage your subscription.",
@@ -1971,7 +1971,7 @@
     "exportData": "Export (JSON)",
     "deleteData": "Delete all data",
     "deleteConfirm": "Delete your profile and all logbook entries on this device?",
-    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection — changes will sync on your next edit.",
+    "syncError": "Saved on this device, but couldn't sync to your account. Check your connection, changes will sync on your next edit.",
     "nightLdg": "Night ldg",
     "appr": "Appr",
     "summary": "Logbook summary",
@@ -2005,7 +2005,7 @@
   "learn": {
     "eyebrow": "Learn",
     "title": "Learn to fly the Saudi skies.",
-    "subtitle": "Plain-English guides and active practice — quizzes, flashcards, ground school and mock exams — in one place. Each points you to the regulation and to Captain Adel for depth.",
+    "subtitle": "Plain-English guides and active practice (quizzes, flashcards, ground school and mock exams) in one place. Each points you to the regulation and to Captain Adel for depth.",
     "popular": "Popular topics",
     "referenceTools": "Reference tools",
     "tabs": {
@@ -2020,13 +2020,13 @@
   },
   "guides": {
     "title": "Guides",
-    "subtitle": "Plain-English explainers for the Saudi licences, medicals, weather and airspace — each pointing you to the regulation and to Captain Adel for depth.",
+    "subtitle": "Plain-English explainers for the Saudi licences, medicals, weather and airspace, each pointing you to the regulation and to Captain Adel for depth.",
     "eyebrow": "Learn",
     "popular": "Popular topics",
     "sortBy": "Sort",
     "sort": {
       "topic": "By topic",
-      "title": "Title A–Z",
+      "title": "Title A-Z",
       "time": "Reading time",
       "level": "Level"
     },
@@ -2043,20 +2043,20 @@
     "items": {
       "how-to-become-a-pilot-in-saudi-arabia": {
         "name": "How to become a pilot in Saudi Arabia",
-        "blurb": "The full path to a Saudi pilot licence — medical, training, exams and the GACAR Parts that govern each step.",
-        "intro": "Becoming a pilot in the Kingdom follows a clear path set out in the GACA Civil Aviation Regulations (GACAR). This guide maps the journey end to end — from your first medical to a commercial licence — and links each step to the rule that governs it. It is an educational overview, not a substitute for the regulation: always confirm the current requirements with GACA or an approved training organisation.",
+        "blurb": "The full path to a Saudi pilot licence, medical, training, exams and the GACAR Parts that govern each step.",
+        "intro": "Becoming a pilot in the Kingdom follows a clear path set out in the GACA Civil Aviation Regulations (GACAR). This guide maps the journey end to end, from your first medical to a commercial licence, and links each step to the rule that governs it. It is an educational overview, not a substitute for the regulation: always confirm the current requirements with GACA or an approved training organisation.",
         "sections": [
           {
             "h": "1. Meet the basics",
-            "p": "Decide why you want to fly — for pleasure (a Private Pilot Licence) or for a career (a Commercial, then Airline Transport, licence). You must be old enough for the licence you want, hold a valid aviation medical, and meet the ICAO English language standard. These eligibility rules live in GACAR Part 61."
+            "p": "Decide why you want to fly, for pleasure (a Private Pilot Licence) or for a career (a Commercial, then Airline Transport, licence). You must be old enough for the licence you want, hold a valid aviation medical, and meet the ICAO English language standard. These eligibility rules live in GACAR Part 61."
           },
           {
             "h": "2. Get an aviation medical",
-            "p": "Hold a medical certificate from a GACA-approved aviation medical examiner — Class 2 is the minimum for a PPL, Class 1 for commercial flying. The medical standards sit in GACAR Part 67, and the certificate has a validity period you must keep current."
+            "p": "Hold a medical certificate from a GACA-approved aviation medical examiner, Class 2 is the minimum for a PPL, Class 1 for commercial flying. The medical standards sit in GACAR Part 67, and the certificate has a validity period you must keep current."
           },
           {
             "h": "3. Train with an approved organisation",
-            "p": "Fly with an authorised instructor or Approved Training Organisation (ATO). You build dual and solo hours — including cross-country and night where required — toward the experience the licence demands."
+            "p": "Fly with an authorised instructor or Approved Training Organisation (ATO). You build dual and solo hours, including cross-country and night where required, toward the experience the licence demands."
           },
           {
             "h": "4. Pass the exams",
@@ -2070,7 +2070,7 @@
         "adel": "I want to become a pilot in Saudi Arabia. Walk me through the GACAR Part 61 path from medical to commercial licence, and cite the relevant sections.",
         "takeaways": [
           "The path is set out in GACAR Part 61 (licensing) and Part 67 (medical).",
-          "Start with an aviation medical — Class 2 for a PPL, Class 1 for commercial.",
+          "Start with an aviation medical, Class 2 for a PPL, Class 1 for commercial.",
           "Train with an approved instructor or ATO, then pass theory exams and a skill test.",
           "Add ratings and higher licences (IR → CPL → ATPL) as your experience grows."
         ]
@@ -2078,7 +2078,7 @@
       "gacar-explained": {
         "name": "GACAR explained",
         "blurb": "What the Saudi civil-aviation regulations are, how they are organised into Parts, and how to find the rule you need.",
-        "intro": "GACAR — the GACA Civil Aviation Regulations — is the body of rules that governs civil aviation in Saudi Arabia. It is organised into numbered Parts, each covering one area, much like the FAA's Federal Aviation Regulations. This guide explains how the library is structured so you can find the exact Part and section that applies. It is an educational overview; the regulation itself is always the authority.",
+        "intro": "GACAR, the GACA Civil Aviation Regulations, is the body of rules that governs civil aviation in Saudi Arabia. It is organised into numbered Parts, each covering one area, much like the FAA's Federal Aviation Regulations. This guide explains how the library is structured so you can find the exact Part and section that applies. It is an educational overview; the regulation itself is always the authority.",
         "sections": [
           {
             "h": "What GACAR is",
@@ -2086,7 +2086,7 @@
           },
           {
             "h": "How it is organised",
-            "p": "The rules are split into numbered Parts. Each Part covers one subject — for example Part 1 holds definitions and abbreviations, Part 61 covers pilot licensing, and Part 91 covers general operating and flight rules. Within a Part, content is divided into subparts and numbered sections."
+            "p": "The rules are split into numbered Parts. Each Part covers one subject, for example Part 1 holds definitions and abbreviations, Part 61 covers pilot licensing, and Part 91 covers general operating and flight rules. Within a Part, content is divided into subparts and numbered sections."
           },
           {
             "h": "Finding a rule",
@@ -2094,13 +2094,13 @@
           },
           {
             "h": "Reading it safely",
-            "p": "Definitions in Part 1 change how every other Part is read, so check a term there first. Always read the current text — regulations are amended over time — and treat summaries (including this one) as a pointer to the rule, never a replacement for it."
+            "p": "Definitions in Part 1 change how every other Part is read, so check a term there first. Always read the current text, regulations are amended over time, and treat summaries (including this one) as a pointer to the rule, never a replacement for it."
           }
         ],
         "adel": "Explain how the GACAR is structured into Parts and how I find a specific rule, with an example citation.",
         "takeaways": [
           "GACAR is Saudi Arabia's civil-aviation regulation, organised into numbered Parts.",
-          "Each Part covers one subject — e.g. Part 1 definitions, Part 61 licensing, Part 91 operations.",
+          "Each Part covers one subject, e.g. Part 1 definitions, Part 61 licensing, Part 91 operations.",
           "A citation like §61.57 means Part 61, section 57.",
           "Start with Part 1 definitions, and always read the current text at source."
         ]
@@ -2126,7 +2126,7 @@
         "adel": "What are the requirements for a GACAR Part 61 Private Pilot Licence? Cite the section.",
         "takeaways": [
           "Minimum age 17, a current Class 2 medical, and ICAO English Level 4.",
-          "Train with an approved instructor or ATO — dual, solo, cross-country and night.",
+          "Train with an approved instructor or ATO, dual, solo, cross-country and night.",
           "Finish with the theory exams and a skill test with an authorized examiner."
         ]
       },
@@ -2195,14 +2195,14 @@
           },
           {
             "h": "Validity",
-            "p": "Valid for a set period that shortens with age — confirm in GACAR Part 67."
+            "p": "Valid for a set period that shortens with age, confirm in GACAR Part 67."
           }
         ],
         "adel": "What does a GACA Class 1 medical assess and how long is it valid under Part 67?",
         "takeaways": [
           "Required to exercise commercial and airline pilot privileges.",
           "Assesses vision, hearing, cardiovascular and general fitness.",
-          "Validity shortens with age — confirm the period in GACAR Part 67."
+          "Validity shortens with age, confirm the period in GACAR Part 67."
         ]
       },
       "foreign-license-conversion-to-gaca": {
@@ -2262,7 +2262,7 @@
         "sections": [
           {
             "h": "The classes",
-            "p": "ICAO classes A–G define who may fly and the service provided."
+            "p": "ICAO classes A-G define who may fly and the service provided."
           },
           {
             "h": "Controlled vs uncontrolled",
@@ -2275,7 +2275,7 @@
         ],
         "adel": "Explain the airspace classes used in Saudi Arabia and the rules in each.",
         "takeaways": [
-          "ICAO classes A–G set who may fly and the service provided.",
+          "ICAO classes A-G set who may fly and the service provided.",
           "Controlled airspace needs clearances and separation; uncontrolled gives information only.",
           "Check VFR minima and the AIP for Saudi sector specifics."
         ]
@@ -2301,7 +2301,7 @@
         "adel": "How do I read a METAR and a TAF?",
         "takeaways": [
           "A METAR observes current conditions; a TAF forecasts them over a period.",
-          "Learn the fixed field order — wind, visibility, weather, cloud, temp, pressure.",
+          "Learn the fixed field order, wind, visibility, weather, cloud, temp, pressure.",
           "FM, BECMG and TEMPO mark forecast changes in a TAF."
         ]
       },
@@ -2382,7 +2382,7 @@
       },
       "atpl-requirements": {
         "name": "ATPL requirements",
-        "blurb": "The highest pilot licence — the path to airline command.",
+        "blurb": "The highest pilot licence, the path to airline command.",
         "intro": "The Airline Transport Pilot Licence is the senior pilot licence, required to act as pilot in command of large or multi-crew commercial aircraft.",
         "sections": [
           {
@@ -2416,7 +2416,7 @@
           },
           {
             "h": "Instructional training",
-            "p": "Learn the fundamentals of instructing — lesson planning, briefing and assessing — and demonstrate teaching from the right seat."
+            "p": "Learn the fundamentals of instructing, lesson planning, briefing and assessing, and demonstrate teaching from the right seat."
           },
           {
             "h": "Test",
@@ -2433,7 +2433,7 @@
       "radiotelephony-phraseology": {
         "name": "Radiotelephony phraseology",
         "blurb": "Standard words that keep the radio clear.",
-        "intro": "Standard phraseology makes radio calls short, clear and unambiguous. Using the right words — and the phonetic alphabet — prevents mistakes.",
+        "intro": "Standard phraseology makes radio calls short, clear and unambiguous. Using the right words, and the phonetic alphabet, prevents mistakes.",
         "sections": [
           {
             "h": "The phonetic alphabet",
@@ -2508,7 +2508,7 @@
       "density-altitude-and-performance": {
         "name": "Density altitude & performance",
         "blurb": "Why hot, high and humid days hurt performance.",
-        "intro": "Density altitude is pressure altitude corrected for temperature. As it rises, the air thins and aircraft performance falls — critical on hot Saudi days.",
+        "intro": "Density altitude is pressure altitude corrected for temperature. As it rises, the air thins and aircraft performance falls, critical on hot Saudi days.",
         "sections": [
           {
             "h": "What it is",
@@ -2545,7 +2545,7 @@
           },
           {
             "h": "IFR & commercial",
-            "p": "IFR and commercial flights carry extra alternate and holding fuel — see Part 91 and Part 121."
+            "p": "IFR and commercial flights carry extra alternate and holding fuel, see Part 91 and Part 121."
           }
         ],
         "takeaways": [
@@ -2600,7 +2600,7 @@
   },
   "study": {
     "title": "Study",
-    "subtitle": "Practice quizzes, flashcards and a full ground-school path for the Saudi licences. Practice questions authored from the GACAR — not actual exam questions; verify every answer against the official source.",
+    "subtitle": "Practice quizzes, flashcards and a full ground-school path for the Saudi licences. Practice questions authored from the GACAR, not actual exam questions; verify every answer against the official source.",
     "quiz": "Quizzes",
     "quizDesc": "Topic banks with instant feedback and a cited source for every answer.",
     "flashcards": "Flashcards",
@@ -2627,7 +2627,7 @@
     "dueCount": "{{n}} due",
     "masteredCount": "{{n}} learned",
     "progress": "{{done}} of {{total}}",
-    "deckDone": "Deck complete — {{known}} known, {{review}} to review.",
+    "deckDone": "Deck complete, {{known}} known, {{review}} to review.",
     "reset": "Reset deck",
     "gsObjective": "Objective",
     "gsAskAdel": "Learn with Captain Adel",
@@ -2655,7 +2655,7 @@
     "packGo": "Go Pro to unlock",
     "streak": "Study streak",
     "streakUnit": "days",
-    "streakMilestone": "🔥 {{n}}-day study streak — keep it going!",
+    "streakMilestone": "🔥 {{n}}-day study streak, keep it going!",
     "avgBest": "Avg best",
     "banksDone": "Quiz banks",
     "lessonsDone": "Lessons",
@@ -2679,7 +2679,7 @@
     "packCatalog": {
       "ppl-exam": {
         "name": "PPL exam prep",
-        "desc": "Everything for the Saudi PPL written exam — air law, airspace, navigation and operations."
+        "desc": "Everything for the Saudi PPL written exam, air law, airspace, navigation and operations."
       },
       "airspace-vfr": {
         "name": "Airspace & VFR",
@@ -2711,14 +2711,14 @@
     "dueToday": "Due today",
     "examHistory": "Recent exams",
     "resume": "Resume",
-    "examProGate": "Mock exams are part of Pro — unlimited timed exams with a per-bank breakdown."
+    "examProGate": "Mock exams are part of Pro, unlimited timed exams with a per-bank breakdown."
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
     "body": "It is not affiliated with, endorsed by, or operated by the General Authority of Civil Aviation (GACA) or the Government of the Kingdom of Saudi Arabia. The official and authoritative source for all civil aviation regulations, publications, and aeronautical information is always GACA. Always verify against the latest official GACA publication at gaca.gov.sa."
   },
   "legal": {
-    "updated": "An educational reference — not a legal document.",
+    "updated": "An educational reference, not a legal document.",
     "disclaimer": {
       "title": "Disclaimer",
       "intro": "Please read this before relying on anything you find here.",
@@ -2732,7 +2732,7 @@
           "p": "Where Fly GACA shows a regulation it is pointing you to GACA's text. The official GACA publication always prevails over anything shown here."
         },
         {
-          "h": "For study and reference only — not for operational use",
+          "h": "For study and reference only, not for operational use",
           "p": "Nothing here is for flight planning, dispatch, navigation or maintenance sign-off. Use official, current sources for operations."
         },
         {
@@ -2744,7 +2744,7 @@
           "p": "The content is machine-extracted from GACA PDFs and provided “as is”, without warranty of accuracy, completeness or fitness for any purpose."
         },
         {
-          "h": "Captain Adel — the AI study assistant",
+          "h": "Captain Adel, the AI study assistant",
           "p": "Captain Adel is an educational AI that cites sources but can be wrong. Treat its answers as a study aid and verify against the official GACAR."
         }
       ]
@@ -2797,7 +2797,7 @@
         },
         {
           "h": "Why we use it",
-          "p": "To run the service, answer your questions, and keep it secure — on the basis of your consent and our legitimate interest."
+          "p": "To run the service, answer your questions, and keep it secure, on the basis of your consent and our legitimate interest."
         },
         {
           "h": "Where your data is stored",
@@ -2827,11 +2827,11 @@
         },
         {
           "h": "In an emergency, contact the authorities",
-          "p": "If you have a safety or emergency situation, contact ATC, your operator and the relevant official channels — never this app. Fly GACA provides no real-time, operational or emergency service."
+          "p": "If you have a safety or emergency situation, contact ATC, your operator and the relevant official channels, never this app. Fly GACA provides no real-time, operational or emergency service."
         },
         {
           "h": "Information may be out of date",
-          "p": "Regulations, aerodrome data and charts change, and aeronautical information follows the 28-day AIRAC cycle. Content here may lag or contain extraction errors — always verify against the current official GACA publication."
+          "p": "Regulations, aerodrome data and charts change, and aeronautical information follows the 28-day AIRAC cycle. Content here may lag or contain extraction errors, always verify against the current official GACA publication."
         },
         {
           "h": "Captain Adel can be wrong",
@@ -2839,7 +2839,7 @@
         },
         {
           "h": "The pilot-in-command is responsible",
-          "p": "Final authority and responsibility for the safe conduct of a flight rest with the certificated pilot-in-command and operator — not with Fly GACA. Nothing here transfers, reduces or satisfies that responsibility."
+          "p": "Final authority and responsibility for the safe conduct of a flight rest with the certificated pilot-in-command and operator, not with Fly GACA. Nothing here transfers, reduces or satisfies that responsibility."
         },
         {
           "h": "Report an error or safety concern",
@@ -3020,7 +3020,7 @@
     "shared": "✓ Shared",
     "tryExample": "Try an example",
     "askAdel": "Ask Captain Adel to explain",
-    "shareNote": "The link carries your inputs — share it and the tool opens pre-filled.",
+    "shareNote": "The link carries your inputs, share it and the tool opens pre-filled.",
     "howItWorks": "How it works",
     "related": "Related tools",
     "savePreset": "Save preset",
@@ -3034,9 +3034,9 @@
     "library": "GACAR Reference Library",
     "charts": "Saudi VFR Charts",
     "sheets": "Study Sheets",
-    "chat": "Captain Adel — AI Flight Instructor",
+    "chat": "Captain Adel, AI Flight Instructor",
     "tools": "Flight Tools & Calculators",
-    "learn": "Learn — Guides & Study",
+    "learn": "Learn, Guides & Study",
     "guides": "Pilot Guides",
     "study": "GACAR Study & Exam Prep",
     "quiz": "Quizzes",
@@ -3058,24 +3058,24 @@
   },
   "metaDesc": {
     "updates": "Track when the Saudi GACAR, AIP and AIP-derived sources change, see the current AIRAC cycle and watch the sources that matter to you. A Fly GACA Pro feature.",
-    "library": "Browse and search all 74 GACAR Parts plus FAA, ICAO and GACA reference handbooks — full-text and deep-linked to the exact section. Independent and free; verify against GACA.",
+    "library": "Browse and search all 74 GACAR Parts plus FAA, ICAO and GACA reference handbooks, full-text and deep-linked to the exact section. Independent and free; verify against GACA.",
     "charts": "Pan and zoom Saudi VFR (visual) charts from the GACA AIP, grouped by region with shareable links. Part of Fly GACA's independent aviation library.",
-    "sheets": "One-page study sheets for the Saudi PPL, CPL, IR, Class 1 medical, licence conversion and SAELPT — read or download. Free study aids from Fly GACA.",
-    "chat": "Ask Captain Adel, the AI flight instructor that answers from Saudi GACAR with the exact Part and section cited. Independent study help — always verify against GACA.",
-    "tools": "54 free flight calculators — crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders and more — built for Saudi pilots, instructors and cadets.",
-    "learn": "Learn to fly in Saudi Arabia: plain-language GACAR guides plus active practice — quizzes, flashcards, ground school and a timed mock exam — each citing the exact Part. Free.",
-    "guides": "Plain-language guides to becoming a pilot in Saudi Arabia: PPL and CPL requirements, the GACA medical, licence conversion and SAELPT — each citing the GACAR Part.",
-    "study": "Prepare for Saudi civil-aviation exams with GACAR quizzes, flashcards, ground school and a timed mock exam — every answer linked to the regulation. Free.",
+    "sheets": "One-page study sheets for the Saudi PPL, CPL, IR, Class 1 medical, licence conversion and SAELPT, read or download. Free study aids from Fly GACA.",
+    "chat": "Ask Captain Adel, the AI flight instructor that answers from Saudi GACAR with the exact Part and section cited. Independent study help, always verify against GACA.",
+    "tools": "54 free flight calculators, crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders and more, built for Saudi pilots, instructors and cadets.",
+    "learn": "Learn to fly in Saudi Arabia: plain-language GACAR guides plus active practice, quizzes, flashcards, ground school and a timed mock exam, each citing the exact Part. Free.",
+    "guides": "Plain-language guides to becoming a pilot in Saudi Arabia: PPL and CPL requirements, the GACA medical, licence conversion and SAELPT, each citing the GACAR Part.",
+    "study": "Prepare for Saudi civil-aviation exams with GACAR quizzes, flashcards, ground school and a timed mock exam, every answer linked to the regulation. Free.",
     "quiz": "Practise GACAR written-exam questions across 12 domains, each explanation deep-linked to the cited Part and section. Free Saudi aviation exam prep from Fly GACA.",
-    "flashcards": "Spaced-repetition flashcards for Saudi GACAR exam prep — air law, airspace, weather, navigation and more. Study smarter with Fly GACA, free.",
-    "groundschool": "Structured PPL ground school for Saudi pilots — air law, meteorology, navigation, performance and human factors, each lesson linked to GACAR and the tools.",
+    "flashcards": "Spaced-repetition flashcards for Saudi GACAR exam prep, air law, airspace, weather, navigation and more. Study smarter with Fly GACA, free.",
+    "groundschool": "Structured PPL ground school for Saudi pilots, air law, meteorology, navigation, performance and human factors, each lesson linked to GACAR and the tools.",
     "exam": "Sit a timed GACAR mock exam with a real pass mark and instant review, every answer cited to the regulation. Free Saudi aviation exam prep from Fly GACA.",
-    "paths": "Guided reading paths through the Saudi GACAR — becoming a PPL, drone/UAS rules, the medical, licence conversion and more — Parts, handbooks and tools in order.",
+    "paths": "Guided reading paths through the Saudi GACAR, becoming a PPL, drone/UAS rules, the medical, licence conversion and more, Parts, handbooks and tools in order.",
     "packs": "Focused prep packs that bundle the right GACAR reading, tools and quizzes for each Saudi licence and rating. Plan your study with Fly GACA.",
     "pricing": "Fly GACA is free to study the Saudi GACAR; go Pro for offline access, exports and prep packs, or equip a whole flight school. Simple monthly or annual plans.",
-    "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel — bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
-    "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA — it helps you find and study the rules.",
-    "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel — an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
+    "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel, bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
+    "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",
+    "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel, an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
   },
   "dashboard": {
     "eyebrow": "Flight deck",
@@ -3092,7 +3092,7 @@
     "viewAll": "View all",
     "openLogbook": "Open logbook",
     "last90Days": "Flights · 90 days",
-    "adelRenewalPrompt": "Help me plan how to stay current as a pilot under the GACA regulations — walk me through which renewals I need and when.",
+    "adelRenewalPrompt": "Help me plan how to stay current as a pilot under the GACA regulations, walk me through which renewals I need and when.",
     "hoursTrend": "Hours trend",
     "last6Months": "6 months",
     "hoursTrendSummary": "{{hours}} hours flown in the last 6 months",
@@ -3119,7 +3119,7 @@
   "currency": {
     "title": "Currency Tracker",
     "intro": "Track your certificates and recency requirements in one place. Always confirm the exact periods in GACAR Part 61 / 67.",
-    "notSet": "Not set — add it in Settings",
+    "notSet": "Not set, add it in Settings",
     "medicalDetail": "Medical certificate validity",
     "reviewDetail": "Flight review (every {{months}} months)",
     "landingsDetail": "{{have}} of {{need}} landings in {{days}} days",
@@ -3194,7 +3194,7 @@
   "records": {
     "title": "Records & ratings",
     "intro": "Track your licences, ratings, aircraft, documents and endorsements. Anything with an expiry shows on your currency board.",
-    "empty": "Nothing here yet — add your first one.",
+    "empty": "Nothing here yet, add your first one.",
     "expiresHint": "Leave blank if it does not expire",
     "categories": {
       "rating": "Ratings",
@@ -3237,11 +3237,11 @@
     "gsOut": "Groundspeed out",
     "gsHome": "Groundspeed home",
     "endurance": "Usable endurance",
-    "etpDist": "ETP — distance",
-    "etpTime": "ETP — time",
-    "pnrDist": "PNR — distance",
-    "pnrTime": "PNR — time",
-    "formula": "The equal time point (ETP) is where continuing and returning take the same time: distance = D·GSh/(GSo+GSh). The point of no return (PNR) is the farthest you can go and still return within your usable endurance E: time = E·GSh/(GSo+GSh). A planning aid — use your operator’s fuel policy."
+    "etpDist": "ETP, distance",
+    "etpTime": "ETP, time",
+    "pnrDist": "PNR, distance",
+    "pnrTime": "PNR, time",
+    "formula": "The equal time point (ETP) is where continuing and returning take the same time: distance = D·GSh/(GSo+GSh). The point of no return (PNR) is the farthest you can go and still return within your usable endurance E: time = E·GSh/(GSo+GSh). A planning aid: use your operator’s fuel policy."
   },
   "topOfClimb": {
     "altGain": "Altitude to gain",
@@ -3251,7 +3251,7 @@
     "time": "Time to climb",
     "dist": "Distance",
     "fuel": "Fuel",
-    "formula": "Time = altitude to gain ÷ rate of climb; distance = groundspeed × time; fuel = fuel flow × time. Uses an average climb rate — the AFM/POH climb tables are authoritative."
+    "formula": "Time = altitude to gain ÷ rate of climb; distance = groundspeed × time; fuel = fuel flow × time. Uses an average climb rate, the AFM/POH climb tables are authoritative."
   },
   "turnPerf": {
     "tas": "True airspeed",
@@ -3263,7 +3263,7 @@
   "pivotalAlt": {
     "gs": "Groundspeed",
     "altitude": "Pivotal altitude",
-    "formula": "Pivotal altitude (ft) = groundspeed (kt)² ÷ 11.3 — the height at which the line of sight to a ground reference stays on the wingtip in eights-on-pylons. It rises and falls with groundspeed through the turn."
+    "formula": "Pivotal altitude (ft) = groundspeed (kt)² ÷ 11.3, the height at which the line of sight to a ground reference stays on the wingtip in eights-on-pylons. It rises and falls with groundspeed through the turn."
   },
   "trueAlt": {
     "indicated": "Indicated altitude",
