@@ -25,12 +25,20 @@ body {
   line-height: var(--lh-body);
   color: var(--text);
   background: var(--bg);
-  min-height: 100dvh;
   /* 0 in the Falcon theme; the Cockpit / Night-Ops theme nudges this up so
      amber text holds its open counters at low cockpit brightness. */
   letter-spacing: var(--tracking-ui);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Sticky-footer frame: React mounts here, so the viewport-height column lives on
+   #root (not body). main grows to absorb slack, pinning the footer to the bottom
+   on short pages — otherwise body's dark background showed below the footer. */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
 }
 
 img,
@@ -84,6 +92,12 @@ button {
 }
 
 /* --- Layout primitives --- */
+/* Grow to fill the leftover height in the #root flex column so the footer is
+   pushed to the bottom of the viewport on short pages. */
+main {
+  flex: 1 0 auto;
+}
+
 .container {
   width: min(100% - 2 * var(--space-4), var(--container));
   margin-inline: auto;
