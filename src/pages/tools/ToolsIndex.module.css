@@ -294,6 +294,43 @@
   font-weight: var(--fw-semibold);
 }
 
+/* ── "Start here" featured row — larger, richer cards above the dense category
+   grids, so the most-reached-for tools have clear visual priority. ── */
+.featuredGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+.cardFeatured {
+  border-color: color-mix(in srgb, var(--brand) 38%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--brand) 8%, transparent), transparent 42%),
+    var(--surface);
+}
+/* A brand top-stripe (replacing the left accent bar) marks the featured tier. */
+.cardFeatured::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  background: var(--grad-brand);
+}
+.cardFeatured .catBar {
+  display: none;
+}
+.cardFeatured .cardLink {
+  padding: var(--space-6);
+  padding-inline-end: calc(var(--space-6) + 28px);
+  gap: var(--space-3);
+}
+.cardFeatured .cardTitle {
+  font-size: var(--fs-h3);
+}
+
 .footnote {
   margin-block-start: var(--space-8);
 }
