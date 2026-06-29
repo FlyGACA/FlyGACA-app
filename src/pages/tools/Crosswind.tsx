@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
+import { OutputGrid } from '../../components/calc/Grids';
+import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { resolveCrosswind } from '../../calc/crosswind';
 import { WindDiagram } from './WindDiagram';
@@ -126,35 +128,27 @@ export function Crosswind() {
         </div>
       </div>
 
-      <dl className={styles.outputs}>
-        <div>
-          <dt>{t('crosswind.runwayHeading')}</dt>
-          <dd>
-            <bdi dir="ltr">{result ? `${result.runwayHeading}°` : '—'}</bdi>
-          </dd>
-        </div>
-        <div>
-          <dt>{t('crosswind.crosswind')}</dt>
-          <dd>
-            <bdi dir="ltr">{result ? `${Math.abs(result.crosswind).toFixed(1)} kt` : '—'}</bdi>
-            {result && <span className={styles.sub}>{side}</span>}
-          </dd>
-        </div>
-        <div>
-          <dt>
-            {result && result.headwind < 0 ? t('crosswind.tailwind') : t('crosswind.headwind')}
-          </dt>
-          <dd className={result ? (result.headwind < 0 ? styles.bad : styles.good) : undefined}>
-            <bdi dir="ltr">{result ? `${Math.abs(result.headwind).toFixed(1)} kt` : '—'}</bdi>
-          </dd>
-        </div>
-        <div>
-          <dt>{t('crosswind.angle')}</dt>
-          <dd>
-            <bdi dir="ltr">{result ? `${Math.round(Math.abs(result.angle))}°` : '—'}</bdi>
-          </dd>
-        </div>
-      </dl>
+      <OutputGrid>
+        <ResultStat
+          label={t('crosswind.runwayHeading')}
+          value={result ? `${result.runwayHeading}°` : '—'}
+        />
+        <ResultStat
+          label={t('crosswind.crosswind')}
+          value={result ? `${Math.abs(result.crosswind).toFixed(1)} kt` : '—'}
+          sub={result ? side : undefined}
+          tone="headline"
+        />
+        <ResultStat
+          label={result && result.headwind < 0 ? t('crosswind.tailwind') : t('crosswind.headwind')}
+          value={result ? `${Math.abs(result.headwind).toFixed(1)} kt` : '—'}
+          tone={result ? (result.headwind < 0 ? 'bad' : 'good') : undefined}
+        />
+        <ResultStat
+          label={t('crosswind.angle')}
+          value={result ? `${Math.round(Math.abs(result.angle))}°` : '—'}
+        />
+      </OutputGrid>
       {angleNote && <p className={styles.angleNote}>{angleNote}</p>}
     </CalcShell>
   );

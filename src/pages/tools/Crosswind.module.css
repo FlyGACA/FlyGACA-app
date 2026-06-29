@@ -66,48 +66,8 @@
   text-align: center;
 }
 
-.outputs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
-  margin: 0;
-}
-
-@media (max-width: 620px) {
-  .outputs {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.outputs dt {
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.outputs dd {
-  margin: 0;
-  margin-block-start: var(--space-1);
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  display: flex;
-  flex-direction: column;
-}
-
-.sub {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-regular);
-  color: var(--text-muted);
-}
-
-.good {
-  color: var(--accent);
-}
-.bad {
-  color: var(--danger);
-}
+/* Results now use the shared <OutputGrid> + <ResultStat> cardlets
+   (src/components/calc/) — the per-tool .outputs/.sub/.good/.bad grid is gone. */
 
 .angleNote {
   color: var(--text-muted);
