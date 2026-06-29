@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
+import { OutputGrid } from '../../components/calc/Grids';
+import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { trueAirspeed } from '../../calc/tas';
 import shared from './CalcFields.module.css';
@@ -74,20 +76,18 @@ export function Tas() {
         </label>
       </div>
 
-      <dl className={shared.outputs}>
-        <div>
-          <dt>{t('tas.trueAirspeed')}</dt>
-          <dd className={shared.headline}>{r ? `${Math.round(r.tas)} kt` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('tas.mach')}</dt>
-          <dd>{r ? `M ${r.mach.toFixed(3)}` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('tas.isaDev')}</dt>
-          <dd>{r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}</dd>
-        </div>
-      </dl>
+      <OutputGrid>
+        <ResultStat
+          label={t('tas.trueAirspeed')}
+          value={r ? `${Math.round(r.tas)} kt` : '—'}
+          tone="headline"
+        />
+        <ResultStat label={t('tas.mach')} value={r ? `M ${r.mach.toFixed(3)}` : '—'} />
+        <ResultStat
+          label={t('tas.isaDev')}
+          value={r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}
+        />
+      </OutputGrid>
     </CalcShell>
   );
 }
