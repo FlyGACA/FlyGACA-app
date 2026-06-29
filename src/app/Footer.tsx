@@ -36,7 +36,7 @@ const SOCIAL_ICONS: Record<string, ReactNode> = {
 /** FlyGACA social profiles, in display order. */
 const SOCIALS = [
   { key: 'x', href: 'https://x.com/flygacax' },
-  { key: 'snapchat', href: 'https://www.snapchat.com/add/fly_gaca' },
+  { key: 'snapchat', href: 'https://www.snapchat.com/@flygaca' },
   { key: 'facebook', href: 'https://www.facebook.com/flygaca' },
   { key: 'instagram', href: 'https://www.instagram.com/flygaca' },
   { key: 'linkedin', href: 'https://www.linkedin.com/company/flygaca' },
