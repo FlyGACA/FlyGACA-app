@@ -52,7 +52,8 @@
   cursor: pointer;
   transition:
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .rowStar:hover {
   background: var(--surface-raised);
@@ -60,4 +61,8 @@
 .rowStar:hover,
 .rowStar.starOn {
   color: var(--gold);
+}
+/* Keep the vertical-centring translate while adding the press scale. */
+.rowStar:active {
+  transform: translateY(-50%) scale(0.9);
 }

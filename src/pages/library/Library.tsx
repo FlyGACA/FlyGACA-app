@@ -411,7 +411,7 @@ export function Library() {
       </div>
 
       {loading && (
-        <ul className={`${styles.grid} ${styles.skeletonGrid}`} aria-hidden="true">
+        <ul className={`${hub.grid} ${styles.skeletonGrid}`} aria-hidden="true">
           {Array.from({ length: 6 }).map((_, i) => (
             <li key={i} className={styles.skeleton} />
           ))}
