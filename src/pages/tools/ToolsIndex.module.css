@@ -42,12 +42,18 @@
   backdrop-filter: blur(6px);
 }
 .jumpChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: var(--space-1) var(--space-3);
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
   white-space: nowrap;
+}
+.jumpChip svg {
+  flex: none;
 }
 .jumpChip:hover {
   color: var(--brand-hover);
@@ -72,10 +78,27 @@
   border-block-end: 1px solid var(--border);
 }
 
+/* Accent-toned glyph beside a section heading; inherits the header's --tone. */
+.secTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.secTitle svg {
+  flex: none;
+  color: var(--tone, var(--brand));
+}
+
 .cardHead {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+}
+/* Leading category glyph on a card / row — tinted to the category accent. */
+.cardIcon,
+.rowIcon {
+  flex: none;
+  color: var(--cat-color, var(--brand));
 }
 .badge {
   padding: 1px var(--space-2);
@@ -100,9 +123,8 @@
   color: var(--text-muted);
 }
 .emptyIcon {
-  font-size: 2.5rem;
-  line-height: 1;
-  opacity: 0.7;
+  color: var(--text-dim);
+  opacity: 0.8;
 }
 .emptyMsg {
   margin: 0;
