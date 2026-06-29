@@ -2,6 +2,25 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { bootI18n } from './i18n';
+// Self-hosted fonts, replacing the Google Fonts CDN we used to depend on — that
+// stylesheet 503'd intermittently and flashed a fallback face. Imported before the
+// tokens that name them; Vite emits hashed woff2 the PWA precaches. We pull only the
+// subsets this bilingual app renders — Latin (+ Latin-ext) for both faces, plus
+// Arabic for Readex (RTL) — so unused Cyrillic/Greek/Vietnamese never enter the bundle.
+import '@fontsource/readex-pro/latin-300.css';
+import '@fontsource/readex-pro/latin-400.css';
+import '@fontsource/readex-pro/latin-500.css';
+import '@fontsource/readex-pro/latin-600.css';
+import '@fontsource/readex-pro/latin-700.css';
+import '@fontsource/readex-pro/latin-ext-400.css';
+import '@fontsource/readex-pro/arabic-400.css';
+import '@fontsource/readex-pro/arabic-500.css';
+import '@fontsource/readex-pro/arabic-600.css';
+import '@fontsource/readex-pro/arabic-700.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+import '@fontsource/jetbrains-mono/latin-600.css';
+import '@fontsource/jetbrains-mono/latin-ext-400.css';
 import './styles/tokens.css';
 import './styles/global.css';
 import './styles/native.css';
