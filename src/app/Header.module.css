@@ -70,6 +70,15 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.28));
 }
 
+/* Cockpit / Night-Ops: the mark is a fixed teal/sage raster, so recolor it to the
+   theme's amber so it stops clashing with the amber wordmark + chrome. grayscale
+   flattens the teal/green hue split to luminance; sepia + hue-rotate repaint it
+   amber (bright/dim wings ≈ the cockpit amber ramp). Falcon theme is untouched. */
+:global(html[data-theme='cockpit']) .mark {
+  filter: grayscale(1) sepia(1) saturate(5) hue-rotate(5deg) brightness(1.15)
+    drop-shadow(0 2px 8px rgba(0, 0, 0, 0.28));
+}
+
 .wordmark {
   font-family: var(--font-sans);
   font-weight: var(--fw-black);
