@@ -161,6 +161,10 @@
   transform: translateY(-2px);
   text-decoration: none;
 }
+/* Momentary press, mirroring the global .btn:active convention. */
+.card:active {
+  transform: scale(0.99);
+}
 .cardTitle {
   font-size: var(--fs-lg);
   padding-inline-end: var(--space-6);
@@ -205,6 +209,9 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-success-bg);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   color: var(--success);
@@ -218,7 +225,14 @@
 .blurb {
   color: var(--text-muted);
   font-size: var(--fs-sm);
-  flex: 1;
+  /* Clamp to keep card heights even across the grid; `auto` bottom margin keeps
+     the meta row pinned to the card foot the way `flex: 1` did. */
+  margin-block-end: auto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 /* Card / header metadata: level pill + read time + section count. */
