@@ -233,12 +233,16 @@
   transition:
     background var(--dur) var(--ease),
     border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .searchPill:hover {
   color: var(--text);
   border-color: color-mix(in srgb, var(--brand) 60%, transparent);
   background: var(--brand-tint);
+}
+.searchPill:active {
+  transform: scale(0.97);
 }
 .searchPill svg {
   inline-size: 16px;
