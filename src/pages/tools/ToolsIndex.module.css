@@ -38,7 +38,10 @@
   gap: var(--space-2);
   margin-block-end: var(--space-6);
   padding-block: var(--space-3);
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  /* Opaque surface: the catalogue scrolls underneath this sticky nav, so a
+     translucent background let card text (e.g. "Density altitude") bleed
+     through and read as a broken overlap. */
+  background: var(--bg);
   backdrop-filter: blur(6px);
 }
 .jumpChip {
