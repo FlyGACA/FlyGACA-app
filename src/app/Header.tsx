@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LangToggle } from '../components/LangToggle';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import { DockIcon, MoreIcon } from './DockIcons';
@@ -168,6 +169,7 @@ export function Header() {
                 ⌘K
               </kbd>
             </button>
+            <ThemeToggle className={styles.langToggle} />
             <LangToggle className={styles.langToggle} />
             <InstallButton />
             <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">

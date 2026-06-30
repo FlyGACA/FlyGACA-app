@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { CaptainAvatar } from '../components/CaptainAvatar';
-import { CountUp } from '../components/CountUp';
+import { PageHero } from '../components/PageHero';
+import { StatStrip } from '../components/StatStrip';
 import { SectionHeader } from '../components/SectionHeader';
+import { Stepper } from '../components/Stepper';
 import { BentoGrid } from '../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
 import { usePageMeta } from '../lib/usePageMeta';
@@ -30,23 +32,8 @@ interface Faq {
 
 const FEATURE_TONES: BentoTone[] = ['default', 'cyan', 'green'];
 
-/** Neon tones cycled across the credibility stat tiles (mirrors SearchHero). */
-const STAT_TONES = ['var(--neon-cyan)', 'var(--neon-green)', 'var(--gold)'];
-
 /** Category accents cycled across the "what it is / isn't" cards. */
 const CARD_TONES = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
-
-/** Render a stat value, animating a leading integer with CountUp ("74" → counts up). */
-function StatValue({ value }: { value: string }) {
-  const m = /^(\d[\d,]*)(.*)$/.exec(value);
-  if (!m) return <>{value}</>;
-  return (
-    <>
-      <CountUp to={parseInt(m[1].replace(/,/g, ''), 10)} />
-      {m[2]}
-    </>
-  );
-}
 
 export function About() {
   const { t, i18n } = useTranslation();
@@ -74,31 +61,15 @@ export function About() {
 
   return (
     <div className={`container ${styles.page}`}>
-      <header className={styles.hero}>
-        <div className={styles.glow} aria-hidden="true" />
-        <div className={styles.heroText}>
-          <p className={styles.eyebrow}>{t('about.eyebrow')}</p>
-          <h1 className={styles.title}>{t('about.title')}</h1>
-          <p className={styles.lead}>{t('about.lead')}</p>
-        </div>
-        <CaptainAvatar size="xl" glow pose="smile" className={styles.heroAvatar} decorative />
-      </header>
+      <PageHero
+        eyebrow={t('about.eyebrow')}
+        title={t('about.title')}
+        subtitle={t('about.lead')}
+        media={<CaptainAvatar size="xl" glow pose="smile" decorative />}
+      />
 
       {/* Credibility strip — neon stat tiles. */}
-      <ul className={styles.stats}>
-        {stats.map((s, i) => (
-          <li
-            key={i}
-            className={styles.stat}
-            style={{ '--stat-tone': STAT_TONES[i % STAT_TONES.length] } as CSSProperties}
-          >
-            <span className={styles.statValue}>
-              <StatValue value={s.value} />
-            </span>
-            <span className={styles.statLabel}>{s.label}</span>
-          </li>
-        ))}
-      </ul>
+      <StatStrip stats={stats} />
 
       {/* What it is / isn't / how / who / source — tone-coded claymorphic cards. */}
       <section className={styles.block} aria-labelledby="about-sections">
@@ -120,17 +91,7 @@ export function About() {
       {/* How it works — Find → Ask → Verify. */}
       <section className={styles.block} aria-labelledby="about-how">
         <SectionHeader id="about-how" title={t('about.howItWorks.head')} tone="var(--cat-4)" />
-        <ol className={styles.steps}>
-          {steps.map((s, i) => (
-            <li key={i} className={styles.step}>
-              <span className={styles.stepNum} aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3 className={styles.stepTitle}>{s.h}</h3>
-              <p className={styles.stepBody}>{s.p}</p>
-            </li>
-          ))}
-        </ol>
+        <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
       </section>
 
       {/* Capability grid. */}

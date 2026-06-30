@@ -67,6 +67,36 @@ export function parseInline(text: string): Inline[] {
   return spans.length ? spans : [{ type: 'text', value: text }];
 }
 
+/**
+ * Flatten a Markdown answer into clean, speakable prose for the Web Speech
+ * Synthesis API. Reuses {@link parseMarkdown} so the spoken text always matches
+ * what {@link ../components/chat/RichText} renders, minus the markup: `**`,
+ * `` ` ``, `#`/`-`/`>` markers and link hrefs are dropped (link spans keep only
+ * their visible text), `§` becomes the spoken word "section", and blocks/list
+ * items are separated by sentence punctuation so the engine pauses naturally
+ * instead of announcing symbols letter-by-letter. Pure (no DOM) and testable.
+ */
+export function toSpeechText(input: string): string {
+  const flatten = (spans: Inline[]) => spans.map((s) => s.value).join('');
+
+  const blockTexts = parseMarkdown(input).map((b) => {
+    if (b.type === 'ul' || b.type === 'ol') return b.items.map(flatten).join('. ');
+    return flatten(b.spans);
+  });
+
+  const sentence = blockTexts
+    // End each block on sentence punctuation so paragraphs/lists get a pause.
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .map((t) => (/[.?!:]$/.test(t) ? t : `${t}.`))
+    .join(' ');
+
+  return sentence
+    .replace(/§/g, 'section ') // "§91.155" reads as "section 91.155", not a symbol
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /** Parse a Markdown-ish string into a flat list of blocks. */
 export function parseMarkdown(input: string): Block[] {
   const lines = (input ?? '').replace(/\r\n?/g, '\n').split('\n');

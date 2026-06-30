@@ -10,58 +10,7 @@
   gap: var(--space-8);
 }
 
-/* ── Hero header — the signature falcon-stroke band (mirrors About/Schools). ── */
-.head {
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  padding: clamp(var(--space-6), 4vw, var(--space-10)) var(--space-6);
-  border-radius: var(--radius-xl);
-  border-block-end: 4px solid var(--gold);
-  background-color: var(--falcon-night);
-  background-image: var(--falcon-stroke);
-  color: var(--moon);
-}
-.glow {
-  position: absolute;
-  inset-block: -50%;
-  inset-inline-end: -15%;
-  inline-size: 60%;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--accent) 20%, transparent),
-    transparent 60%
-  );
-  pointer-events: none;
-}
-.eyebrow {
-  position: relative;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent-bright);
-}
-.head h1 {
-  position: relative;
-  font-size: var(--fs-h1);
-  color: var(--moon);
-  margin: 0;
-}
-.subtitle {
-  position: relative;
-  color: var(--moon-soft);
-  font-size: var(--fs-lg);
-  line-height: var(--lh-snug);
-  max-inline-size: 52ch;
-  margin: 0;
-}
-
-/* ── Monthly / Annual toggle ── */
+/* ── Monthly / Annual toggle (rendered inside the shared PageHero) ── */
 .toggle {
   position: relative;
   display: inline-flex;
@@ -85,7 +34,11 @@
   transition:
     background var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease);
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.toggle button:active {
+  transform: scale(0.97);
 }
 .active {
   background: var(--brand);
@@ -183,12 +136,31 @@
   color: transparent;
 }
 
+/* Price block — reserves a uniform height (price + optional VAT note) so the
+   feature-list divider starts at the same Y on every card, including Free which
+   has no VAT note. */
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+/* Only reserve the band once the cards sit side by side — that's when the
+   feature dividers need to line up. Sized for the tallest case (a two-line
+   price + VAT note), so the single-line Free price reserves the same height.
+   When stacked, each card keeps its natural height (no dead space). */
+@media (min-width: 560px) {
+  .priceBlock {
+    min-block-size: 5.25rem;
+  }
+}
+
 /* Price */
 .price {
   font-size: var(--fs-h2);
   font-weight: var(--fw-black);
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  margin: 0;
 }
 .highlight .price {
   background: var(--grad-brand);
@@ -342,10 +314,16 @@
 }
 .table th,
 .table td {
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-5);
   text-align: start;
   border-block-end: 1px solid var(--border);
   white-space: nowrap;
+}
+/* The three plan columns center their values (checks, crosses, short values);
+   only the leading feature label stays start-aligned. */
+.table th:not(:first-child),
+.table td:not(:first-child) {
+  text-align: center;
 }
 .table thead th {
   font-size: var(--fs-xs);
@@ -357,6 +335,24 @@
 .table thead th:nth-child(3) {
   color: var(--accent-bright);
 }
+/* Track the recommended (Pro) tier down the whole comparison, not just its
+   header — a brand wash + framing hairlines on the 3rd column
+   (feature · Free · Pro · School). Logical inset-shadow so it mirrors in RTL. */
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent);
+}
+/* Cap the Pro column with a brand hairline so the highlighted lane reads as a
+   continuation of the Pro plan card above it. */
+.table thead th:nth-child(3) {
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent),
+    inset 0 3px 0 var(--brand);
+}
 .table tbody th {
   font-weight: var(--fw-semibold);
   color: var(--text);
@@ -365,9 +361,27 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+/* Row feedback on hover — a faint wash across the row (the Pro column keeps its
+   stronger tint via the rule above). */
+.table tbody tr:hover th,
+.table tbody tr:hover td {
+  background: color-mix(in srgb, var(--brand) 5%, var(--surface));
+}
+.table tbody tr:hover td:nth-child(3) {
+  background: color-mix(in srgb, var(--brand) 15%, var(--surface));
+}
 .table tbody tr:last-child th,
 .table tbody tr:last-child td {
   border-block-end: none;
+}
+
+/* Comparison check / cross glyphs. */
+.cmpYes {
+  color: var(--accent-bright);
+  font-weight: var(--fw-bold);
+}
+.cmpNo {
+  color: var(--text-dim);
 }
 
 /* ── FAQ accordion ── */
@@ -426,11 +440,11 @@
   margin: 0;
 }
 
-/* VAT line under each price. */
+/* VAT line under each price (spacing handled by the .priceBlock gap). */
 .priceNote {
   font-size: var(--fs-xs);
   color: var(--text-dim);
-  margin-block: calc(-1 * var(--space-2)) 0;
+  margin: 0;
 }
 
 /* Pro card: trial + money-back, and the student-pricing disclosure. */

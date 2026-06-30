@@ -25,10 +25,14 @@
   cursor: pointer;
   transition:
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .tab:hover {
   color: var(--text);
+}
+.tab:active {
+  transform: scale(0.97);
 }
 .tabActive {
   background: var(--surface-raised);
@@ -89,12 +93,16 @@
   transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .chip:hover {
   color: var(--text);
   border-color: var(--brand-hover);
   background: color-mix(in srgb, var(--brand) 6%, transparent);
+}
+.chip:active {
+  transform: scale(0.97);
 }
 .chipActive {
   background: var(--brand);
@@ -136,12 +144,16 @@
   overflow: hidden;
   transition:
     border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .row:hover {
   border-color: var(--cat-color, var(--brand));
   background: var(--surface-raised);
   text-decoration: none;
+}
+.row:active {
+  transform: scale(0.99);
 }
 .rowBadge {
   padding: 2px var(--space-2);
@@ -279,11 +291,6 @@
   color: var(--text-dim);
 }
 
-.empty {
-  color: var(--text-muted);
-  padding-block: var(--space-6);
-}
-
 /* Lazy full-text results */
 .results {
   margin-block-start: var(--space-8);
@@ -363,11 +370,15 @@ a.hit:hover {
   cursor: pointer;
   transition:
     color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease);
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .loadMore:hover {
   color: var(--brand-hover);
   border-color: var(--brand-hover);
+}
+.loadMore:active {
+  transform: scale(0.97);
 }
 
 /* Skeleton placeholders while the corpus index loads. */
@@ -375,7 +386,9 @@ a.hit:hover {
   margin-block-start: var(--space-2);
 }
 .skeleton {
-  block-size: 150px;
+  /* Matches a typical loaded document card (~215–235px) so the grid reserves the
+     right height and doesn't reflow when the corpus index resolves. */
+  block-size: 220px;
   border-radius: var(--clay-radius);
   border: var(--clay-border);
   background: linear-gradient(
@@ -399,34 +412,6 @@ a.hit:hover {
   .skeleton {
     animation: none;
   }
-}
-
-/* Error + retry. */
-.errorBox {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 1px solid var(--color-error);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-  color: var(--text-muted);
-}
-.retry {
-  min-height: 40px;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-weight: var(--fw-semibold);
-  cursor: pointer;
-}
-.retry:hover {
-  border-color: var(--brand-hover);
-  color: var(--brand-hover);
 }
 
 .synced {
@@ -463,11 +448,15 @@ a.hit:hover {
   cursor: pointer;
   transition:
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .star:hover {
   color: var(--gold);
   background: var(--surface-raised);
+}
+.star:active {
+  transform: scale(0.9);
 }
 .starOn {
   color: var(--gold);
@@ -529,10 +518,17 @@ a.hit:hover {
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .saveSearchBtn:hover {
   border-color: var(--brand-hover);
   color: var(--text);
+}
+.saveSearchBtn:active {
+  transform: scale(0.97);
 }
 .savedSearches {
   display: flex;
@@ -555,9 +551,15 @@ a.hit:hover {
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .savedSearchApply:hover {
   color: var(--text);
+}
+.savedSearchApply:active {
+  transform: scale(0.97);
 }
 .savedSearchX {
   padding-inline: var(--space-2);
@@ -569,7 +571,43 @@ a.hit:hover {
   line-height: 1;
   cursor: pointer;
   align-self: stretch;
+  transition:
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .savedSearchX:hover {
   color: var(--danger);
+}
+.savedSearchX:active {
+  transform: scale(0.9);
+}
+
+/* Discreet entry point to the regulatory change-tracking feed. */
+.updatesLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-decoration: none;
+}
+.updatesLink:hover {
+  border-color: var(--gold);
+}
+.updatesText {
+  flex: 1;
+  font-weight: var(--fw-medium);
+}
+.updatesPro {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--gold);
 }

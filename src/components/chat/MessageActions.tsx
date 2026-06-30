@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { share } from '../../lib/native-bridge';
+import { shareCurrent } from '../../lib/share';
 import type { Rating } from '../../calc/chatFeedback';
 import { SpeakButton } from './SpeakButton';
 import styles from './MessageActions.module.css';
@@ -39,10 +39,11 @@ export function MessageActions({
     }
   }
 
-  // Capacitor Share on native · Web Share · clipboard fallback (all in `share`).
+  // Capacitor Share on native · Web Share · clipboard fallback (all in `share`),
+  // with ?ref=chat appended for attribution.
   async function shareReply() {
     try {
-      await share({ title: shareTitle ?? t('chat.title'), text, url: window.location.href });
+      await shareCurrent('chat', { title: shareTitle ?? t('chat.title'), text });
     } catch {
       /* user dismissed the sheet, or sharing unavailable — ignore */
     }

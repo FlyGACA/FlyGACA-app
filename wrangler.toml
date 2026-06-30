@@ -1,6 +1,19 @@
-# Cloudflare Pages project config for `wrangler pages deploy`. The Pages Function
-# in functions/api/[[path]].ts proxies /api/* to the Firebase gateway.
-# See docs/RUNBOOK-deploy.md.
+# Cloudflare Workers config (static assets). Serves the Vite-built SPA from dist/
+# and runs worker/index.ts to proxy /api/* to the Firebase gateway. Deployed via
+# `wrangler deploy` (see .github/workflows/deploy-cloudflare.yml, docs/RUNBOOK-deploy.md).
 name = "flygaca-app"
-pages_build_output_dir = "dist"
-compatibility_date = "2024-06-01"
+main = "worker/index.ts"
+compatibility_date = "2025-06-01"
+
+# Serve the built SPA from dist/. `run_worker_first = ["/api/*"]` makes the Worker
+# run before the asset layer for /api/* (so the SPA fallback can't swallow an API
+# call); everything else is served straight from assets, with the SPA fallback
+# returning index.html for client-side routes.
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/*"]
+
+[observability]
+enabled = true

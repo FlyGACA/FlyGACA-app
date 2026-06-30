@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { TextField } from '../../components/calc/TextField';
 import { SelectField, type SelectOption } from '../../components/calc/SelectField';
 import { LangToggle } from '../../components/LangToggle';
+import { Alert } from '../../components/Alert';
 import { deleteAllData, exportAll, saveProfile, useAccount } from '../../lib/account';
+import { replayOnboarding } from '../../lib/onboardingPrefs';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
@@ -15,7 +17,8 @@ const LICENCE_TYPES = ['SPL', 'PPL', 'CPL', 'ATPL'] as const;
 
 export function Settings() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.settings'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.settings'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />
@@ -25,6 +28,7 @@ export function Settings() {
 
 function Inner() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { profile, entitlement, syncError } = useAccount();
   const plan = effectivePlan(entitlement);
   const [saved, setSaved] = useState(false);
@@ -68,9 +72,9 @@ function Inner() {
       </header>
 
       {syncError && (
-        <p className={styles.syncNotice} role="status">
+        <Alert tone="warning" role="status" icon="⚠">
           {t('account.syncError')}
-        </p>
+        </Alert>
       )}
 
       <div className={styles.sectionHead}>
@@ -132,6 +136,20 @@ function Inner() {
       <h2>{t('account.language')}</h2>
       <div>
         <LangToggle className={styles.btn} />
+      </div>
+
+      <h2>{t('account.help')}</h2>
+      <div>
+        <button
+          type="button"
+          className={styles.btn}
+          onClick={() => {
+            replayOnboarding();
+            navigate('/');
+          }}
+        >
+          {t('account.replayTour')}
+        </button>
       </div>
 
       <h2>{t('account.data')}</h2>

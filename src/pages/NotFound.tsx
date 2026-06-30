@@ -14,7 +14,9 @@ const LINKS = [
 
 export function NotFound() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.notFound'));
+  // A SPA can't return a real 404 status, so noindex the soft-404 to keep unknown
+  // URLs out of the index instead of letting them rank as thin pages.
+  usePageMeta(t('meta.notFound'), undefined, undefined, { noindex: true });
 
   return (
     <section className={`container-narrow ${styles.page}`}>

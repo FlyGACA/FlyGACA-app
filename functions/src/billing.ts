@@ -15,7 +15,7 @@
 import { onCall, onRequest, HttpsError } from "firebase-functions/https";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import Stripe from "stripe";
 import { entitlementFromSubscription, type PriceEnv } from "./billing-core.js";
 
@@ -30,7 +30,10 @@ const priceAnnual = defineString("STRIPE_PRICE_PRO_ANNUAL");
 const appOrigin = defineString("APP_ORIGIN");
 
 function stripeClient(): Stripe {
-  return new Stripe(stripeSecret.value());
+  // Pin the API version so a Stripe-side default bump can't silently change the
+  // webhook payload shape (and break entitlement derivation). Matches the version
+  // the installed `stripe` SDK is generated against.
+  return new Stripe(stripeSecret.value(), { apiVersion: "2025-02-24.acacia" });
 }
 function priceEnv(): PriceEnv {
   return { proMonthly: priceMonthly.value(), proAnnual: priceAnnual.value() };
@@ -71,7 +74,20 @@ async function writeEntitlement(uid: string, sub: Stripe.Subscription): Promise<
 }
 
 export const createCheckoutSession = onCall(
-  { region: REGION, secrets: [stripeSecret] },
+  {
+    region: REGION,
+    secrets: [stripeSecret],
+    timeoutSeconds: 30,
+    memory: "256MiB",
+    maxInstances: 5,
+    // App Check on the payments surface. These Stripe callables are web-only (the
+    // native shell uses store IAP, not Stripe Checkout), and the web app mints
+    // reCAPTCHA-Enterprise App Check tokens, so a stolen/automated ID token alone
+    // can't drive Stripe from outside the app. Requires the App Check provider to
+    // be registered + enforced in the Firebase console and
+    // VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the deployed build.
+    enforceAppCheck: true,
+  },
   async (request) => {
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
@@ -95,7 +111,20 @@ export const createCheckoutSession = onCall(
 );
 
 export const createBillingPortalSession = onCall(
-  { region: REGION, secrets: [stripeSecret] },
+  {
+    region: REGION,
+    secrets: [stripeSecret],
+    timeoutSeconds: 30,
+    memory: "256MiB",
+    maxInstances: 5,
+    // App Check on the payments surface. These Stripe callables are web-only (the
+    // native shell uses store IAP, not Stripe Checkout), and the web app mints
+    // reCAPTCHA-Enterprise App Check tokens, so a stolen/automated ID token alone
+    // can't drive Stripe from outside the app. Requires the App Check provider to
+    // be registered + enforced in the Firebase console and
+    // VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the deployed build.
+    enforceAppCheck: true,
+  },
   async (request) => {
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
@@ -111,7 +140,7 @@ export const createBillingPortalSession = onCall(
 );
 
 export const stripeWebhook = onRequest(
-  { region: REGION, secrets: [stripeSecret, webhookSecret] },
+  { region: REGION, secrets: [stripeSecret, webhookSecret], timeoutSeconds: 30, memory: "256MiB", maxInstances: 5 },
   async (req, res) => {
     const stripe = stripeClient();
     const sig = req.headers["stripe-signature"];
@@ -120,6 +149,19 @@ export const stripeWebhook = onRequest(
       event = stripe.webhooks.constructEvent(req.rawBody, sig as string, webhookSecret.value());
     } catch {
       res.status(400).send("Webhook signature verification failed");
+      return;
+    }
+
+    // Idempotency: Stripe delivers at-least-once and retries on 5xx, so claim each
+    // event id exactly once. `create()` fails if the marker already exists (a
+    // duplicate/replay) — ack and skip. `stripeEvents` is server-only (firestore.rules
+    // default-deny). On a handler failure below we delete the marker so the retry
+    // can reprocess.
+    const eventRef = getFirestore().collection("stripeEvents").doc(event.id);
+    try {
+      await eventRef.create({ type: event.type, receivedAt: FieldValue.serverTimestamp() });
+    } catch {
+      res.json({ received: true, duplicate: true });
       return;
     }
 
@@ -140,7 +182,9 @@ export const stripeWebhook = onRequest(
         if (uid) await writeEntitlement(uid, sub);
       }
     } catch {
-      // Surface a 500 so Stripe retries rather than dropping the event.
+      // Roll back the idempotency claim so Stripe's retry can reprocess, then
+      // surface a 500 to trigger that retry rather than dropping the event.
+      await eventRef.delete().catch(() => {});
       res.status(500).send("Webhook handler error");
       return;
     }

@@ -6,12 +6,12 @@
       {
         "source": "/api/chat",
         "function": "chat",
-        "region": "me-central1"
+        "region": "me-central2"
       },
       {
         "source": "/api/stripe-webhook",
         "function": "stripeWebhook",
-        "region": "me-central1"
+        "region": "me-central2"
       },
       {
         "source": "**",
@@ -111,6 +111,9 @@
     "indexes": "firestore.indexes.json"
   },
   "emulators": {
+    "firestore": {
+      "port": 8080
+    },
     "dataconnect": {
       "dataDir": "dataconnect/.dataconnect/pgliteData"
     }

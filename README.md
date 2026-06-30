@@ -262,7 +262,7 @@ npm run deploy        # build + prerender → deploy hosting
 npm run deploy:all    # hosting + functions + firestore rules
 
 # Vercel       vercel deploy --prod
-# Cloudflare   npx wrangler pages deploy dist --project-name flygaca-app
+# Cloudflare   npx wrangler deploy            # Worker + dist/ assets (wrangler.toml)
 # Netlify      netlify deploy --build --prod
 ```
 

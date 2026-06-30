@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   sendChatStream,
@@ -14,7 +14,7 @@ import { sessionId } from '../../lib/session';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { hasFeature } from '../../lib/features';
 import type { GacarIndex } from '../../lib/content';
 import {
   consume,
@@ -159,6 +159,7 @@ export function Chat() {
   const { t } = useTranslation();
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation<Message>[]>(loadConversations);
   const [activeId, setActiveId] = useState<string>(() => conversations[0]?.id ?? newId());
   const [messages, setMessages] = useState<Message[]>(() => conversations[0]?.messages ?? []);
@@ -174,8 +175,8 @@ export function Chat() {
   const abortRef = useRef<AbortController | null>(null);
   const sentInitial = useRef(false);
 
-  const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const { entitlement, session } = useAccount();
+  const isPro = hasFeature(entitlement, 'adel-unlimited');
   const left = remaining(currentUsage(usage));
   const gated = !isPro && isExhausted(currentUsage(usage));
 
@@ -241,6 +242,15 @@ export function Chat() {
   async function ask(question: string, base: Message[] = messages) {
     const q = question.trim();
     if (!q || busy) return;
+
+    // Signing in is required before any question reaches Captain Adel. Guard here —
+    // the single choke point for every entry path (suggestions, "surprise me",
+    // follow-ups, the composer, deep-link auto-send) — so a signed-out tap never
+    // renders a user turn or the "typing" bubble before disclosing the requirement.
+    if (!session) {
+      navigate('/account');
+      return;
+    }
 
     // Free-tier daily gate (UI nudge only; the server is the source of truth).
     if (!isPro) {
@@ -539,6 +549,14 @@ export function Chat() {
                 className={styles.welcomeAvatar}
               />
               <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
+              {!session && (
+                <div className={styles.gate}>
+                  <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
+                  <Link className="btn btn-primary" to="/account">
+                    {t('account.goSignIn')}
+                  </Link>
+                </div>
+              )}
               <div className={styles.capabilities}>
                 {CAPABILITIES.map((c) => (
                   <StatusPill key={c.id} tone={c.tone}>
@@ -686,7 +704,14 @@ export function Chat() {
 
       {hasMessages && <SourcesDigest parts={digest} />}
 
-      {gated ? (
+      {!session ? (
+        <div className={styles.gate}>
+          <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
+          <Link className="btn btn-primary" to="/account">
+            {t('account.goSignIn')}
+          </Link>
+        </div>
+      ) : gated ? (
         <div className={styles.gate}>
           <p className={styles.gateNote}>{t('chat.quota.exhausted')}</p>
           <UpsellCard variant="inline" />

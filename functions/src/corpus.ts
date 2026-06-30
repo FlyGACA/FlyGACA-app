@@ -9,14 +9,30 @@
  * a real part/section/url/verbatim/corpusVersion so citations are exact.
  */
 import { readFile } from "node:fs/promises";
+import { defineString } from "firebase-functions/params";
 import type { ChatSource } from "./contract.js";
 
-/** Raw entry shape in `library-search.json`. */
+/** Full legal lineage emitted by the hierarchical splitter (rag-chunks.json). */
+export interface Lineage {
+  document: string;
+  subpart?: string | null;
+  section?: string | null;
+  paragraph?: string | null;
+  sub_paragraph?: string | null;
+  title?: string | null;
+  effective_date?: string | null;
+}
+
+/**
+ * Raw entry shape. `library-search.json` ships `{d,b,u,x}`; `rag-chunks.json`
+ * adds an optional `lineage` block. Both flow through the same index.
+ */
 interface SearchEntry {
   d: string;
   b: string;
   u: string;
   x?: string;
+  lineage?: Lineage;
 }
 
 interface SearchIndex {
@@ -37,8 +53,9 @@ export interface Retrieved {
  * already served at the Hosting `/data` path); anything else is read from disk
  * (emulator / tests). Defaults to the deployed Hosting origin.
  */
-const CORPUS_SOURCE =
-  process.env.CORPUS_URL ?? "https://flygaca-app.web.app/data/library-search.json";
+const CORPUS_URL = defineString("CORPUS_URL", {
+  default: "https://flygaca-app.web.app/data/library-search.json",
+});
 
 // ----------------------------------------------------------------------------
 // Tokenization
@@ -156,13 +173,60 @@ class Bm25Index {
 
 let indexPromise: Promise<Bm25Index> | null = null;
 
-async function loadRaw(): Promise<SearchIndex> {
-  if (/^https?:\/\//.test(CORPUS_SOURCE)) {
-    const res = await fetch(CORPUS_SOURCE);
-    if (!res.ok) throw new Error(`corpus fetch failed: ${res.status} ${CORPUS_SOURCE}`);
-    return (await res.json()) as SearchIndex;
+/**
+ * Validate parsed JSON against the `SearchIndex` shape, or throw a clear
+ * `corpus: …` error. Defense-in-depth: the index is loaded at runtime (fetched
+ * from Hosting, or read from disk in the emulator/tests), and a truncated,
+ * wrong-content, or otherwise malformed response would otherwise be cast blindly
+ * and flow into the BM25 index that grounds Captain Adel's citations.
+ */
+export function parseSearchIndex(value: unknown): SearchIndex {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("corpus: index is not an object");
   }
-  return JSON.parse(await readFile(CORPUS_SOURCE, "utf8")) as SearchIndex;
+  const obj = value as Record<string, unknown>;
+  if (!Array.isArray(obj.entries) || obj.entries.length === 0) {
+    throw new Error("corpus: 'entries' is missing or empty");
+  }
+  for (let i = 0; i < obj.entries.length; i++) {
+    const e = obj.entries[i] as Record<string, unknown> | null;
+    if (typeof e !== "object" || e === null) {
+      throw new Error(`corpus: entry ${i} is not an object`);
+    }
+    if (typeof e.d !== "string" || typeof e.b !== "string" || typeof e.u !== "string") {
+      throw new Error(`corpus: entry ${i} is missing a string d/b/u field`);
+    }
+    if (e.x !== undefined && typeof e.x !== "string") {
+      throw new Error(`corpus: entry ${i} has a non-string 'x'`);
+    }
+    // Lineage is optional and additive: a malformed block is dropped (the entry
+    // still indexes/retrieves), never fatal.
+    if (e.lineage !== undefined) {
+      const lin = e.lineage as Record<string, unknown> | null;
+      if (typeof lin !== "object" || lin === null || typeof lin.document !== "string") {
+        console.warn(`corpus: entry ${i} has a malformed 'lineage' — dropping it`);
+        delete e.lineage;
+      }
+    }
+  }
+  // `generated`/`scope` are tolerant — `generated` only labels the citation rev.
+  const generated = typeof obj.generated === "string" ? obj.generated : "";
+  const scope = typeof obj.scope === "string" ? obj.scope : "";
+  if (typeof obj.count === "number" && obj.count !== obj.entries.length) {
+    // A count/length mismatch is a truncation signal, but not necessarily fatal.
+    console.warn(`corpus: count ${obj.count} != entries.length ${obj.entries.length}`);
+  }
+  return { generated, scope, count: obj.entries.length, entries: obj.entries as SearchEntry[] };
+}
+
+async function loadRaw(): Promise<SearchIndex> {
+  const source = CORPUS_URL.value();
+  if (/^https?:\/\//.test(source)) {
+    const res = await fetch(source);
+    if (!res.ok) throw new Error(`corpus fetch failed: ${res.status} ${source}`);
+    return parseSearchIndex(await res.json());
+  }
+  return parseSearchIndex(JSON.parse(await readFile(source, "utf8")));
 }
 
 /** Build (or return the cached) BM25 index. Warm instances reuse it. */
@@ -213,20 +277,53 @@ function sectionOf(u: string): string | undefined {
   return anchor ? anchor : undefined;
 }
 
+function partFromDocument(document: string): string | undefined {
+  return /Part_(\w+)/.exec(document)?.[1];
+}
+
+/**
+ * Render the `(b)(1)(i)` paragraph path from a lineage block. The `#N`
+ * occurrence suffix the splitter adds to disambiguate OCR-collapsed siblings is
+ * kept in the metadata (for lineage uniqueness) but stripped from the citation.
+ */
+function paragraphPath(lin: Lineage): string {
+  const parts: string[] = [];
+  if (lin.paragraph) parts.push(lin.paragraph);
+  if (lin.sub_paragraph) parts.push(...lin.sub_paragraph.split("_"));
+  return parts.map((p) => `(${p.replace(/#\d+$/, "")})`).join("");
+}
+
+/** Exact, lineage-aware citation, e.g. `GACAR Part 61 §61.107(b)(1)(i) — Title`. */
+function lineageCitation(lin: Lineage, badge: string, heading: string): string {
+  const part = partFromDocument(lin.document) ?? partOf(badge);
+  const title = (lin.title ?? heading ?? "").trim();
+  if (lin.section) {
+    return `GACAR Part ${part ?? ""} §${lin.section}${paragraphPath(lin)}${title ? ` — ${title}` : ""}`.trim();
+  }
+  // Non-numbered passage (e.g. Part 1 Definitions): fall back to badge + title.
+  return `GACAR ${badge}${title ? ` — ${title}` : ""}`.trim();
+}
+
 /** Map a retrieved entry to the public `ChatSource` shape. */
 export function toChatSource(entry: SearchEntry, generated: string): ChatSource {
-  const part = partOf(entry.b);
-  const badge = entry.b?.trim();
-  const heading = entry.d?.trim();
-  const citation = /^Part\b/i.test(badge ?? "")
-    ? `GACAR ${badge}${heading ? ` — ${heading}` : ""}`
-    : [badge, heading].filter(Boolean).join(" — ") || "GACAR";
+  const badge = entry.b?.trim() ?? "";
+  const heading = entry.d?.trim() ?? "";
+  const lin = entry.lineage;
+  const citation = lin
+    ? lineageCitation(lin, badge, heading)
+    : /^Part\b/i.test(badge)
+      ? `GACAR ${badge}${heading ? ` — ${heading}` : ""}`
+      : [badge, heading].filter(Boolean).join(" — ") || "GACAR";
   return {
     citation,
     url: searchHref(entry.u) ?? "/library",
     verbatim: entry.x?.trim() || undefined,
-    section: sectionOf(entry.u),
-    part,
+    section: lin?.section ?? sectionOf(entry.u),
+    part: (lin && partFromDocument(lin.document)) || partOf(badge),
+    subpart: lin?.subpart ?? undefined,
+    paragraph: lin?.paragraph ?? undefined,
+    subParagraph: lin?.sub_paragraph ?? undefined,
+    effectiveDate: lin?.effective_date ?? undefined,
     corpusVersion: `Rev ${generated}`,
   };
 }

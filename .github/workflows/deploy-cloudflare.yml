@@ -1,13 +1,13 @@
-name: Deploy (Cloudflare Pages mirror)
+name: Deploy (Cloudflare Workers mirror)
 
 # Secondary mirror deploy. Firebase Hosting is canonical (see deploy.yml and
-# docs/RUNBOOK-deploy.md); this publishes the same dist/ to Cloudflare Pages,
-# which serves the SPA and runs functions/api/[[path]].ts to proxy /api/* back
-# to the Firebase-hosted gateway. The deploy step is gated on the Cloudflare
+# docs/RUNBOOK-deploy.md); this publishes the same dist/ to a Cloudflare Worker
+# (static assets), which serves the SPA and runs worker/index.ts to proxy /api/*
+# back to the Firebase-hosted gateway. The deploy step is gated on the Cloudflare
 # secrets, so it no-ops cleanly until they are added in
 # repo Settings → Secrets → Actions:
-#   CLOUDFLARE_API_TOKEN  — token with "Cloudflare Pages: Edit"
-#   CLOUDFLARE_ACCOUNT_ID — the account that owns the "flygaca-app" Pages project
+#   CLOUDFLARE_API_TOKEN  — token with "Workers Scripts: Edit" (+ account Workers access)
+#   CLOUDFLARE_ACCOUNT_ID — the account that owns the "flygaca-app" Worker
 
 on:
   push:
@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   deploy:
-    name: build · deploy Cloudflare Pages
+    name: build · deploy Cloudflare Worker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,13 +46,14 @@ jobs:
           VITE_SITE_URL: https://flygaca.com
           VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY }}
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=flygaca-app --branch=main
+          # Reads name, main (worker/index.ts) and the dist/ assets from wrangler.toml.
+          command: deploy
 
       - name: Note when skipped
         if: ${{ secrets.CLOUDFLARE_API_TOKEN == '' || secrets.CLOUDFLARE_ACCOUNT_ID == '' }}
