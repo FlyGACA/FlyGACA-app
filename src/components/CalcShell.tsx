@@ -6,6 +6,7 @@ import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
 import { usePageMeta } from '../lib/usePageMeta';
 import { breadcrumbLd, softwareAppLd, type JsonLd } from '../lib/jsonld';
+import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
 import { shareCurrent } from '../lib/share';
 import { useFeature } from '../lib/features';
 import {
