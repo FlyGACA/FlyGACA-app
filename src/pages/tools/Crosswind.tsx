@@ -4,6 +4,9 @@ import { OutputGrid } from '../../components/calc/Grids';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { resolveCrosswind } from '../../calc/crosswind';
+import { NumberField } from '../../components/calc/NumberField';
+import { ResultStat } from '../../components/calc/ResultStat';
+import { OutputGrid } from '../../components/calc/Grids';
 import { WindDiagram } from './WindDiagram';
 import styles from './Crosswind.module.css';
 
@@ -84,33 +87,24 @@ export function Crosswind() {
     >
       <div className={styles.grid}>
         <div className={styles.inputs}>
-          <label className={styles.field}>
-            <span>{t('crosswind.runway')}</span>
-            <input
-              inputMode="numeric"
-              value={inputs.rwy}
-              onChange={(e) => set('rwy', e.target.value)}
-              placeholder="34"
-            />
-          </label>
-          <label className={styles.field}>
-            <span>{t('crosswind.windDir')}</span>
-            <input
-              inputMode="numeric"
-              value={inputs.wdir}
-              onChange={(e) => set('wdir', e.target.value)}
-              placeholder="290"
-            />
-          </label>
-          <label className={styles.field}>
-            <span>{t('crosswind.windSpeed')}</span>
-            <input
-              inputMode="numeric"
-              value={inputs.wspd}
-              onChange={(e) => set('wspd', e.target.value)}
-              placeholder="18"
-            />
-          </label>
+          <NumberField
+            label={t('crosswind.runway')}
+            value={inputs.rwy}
+            onChange={(v) => set('rwy', v)}
+            placeholder="34"
+          />
+          <NumberField
+            label={t('crosswind.windDir')}
+            value={inputs.wdir}
+            onChange={(v) => set('wdir', v)}
+            placeholder="290"
+          />
+          <NumberField
+            label={t('crosswind.windSpeed')}
+            value={inputs.wspd}
+            onChange={(v) => set('wspd', v)}
+            placeholder="18"
+          />
         </div>
 
         <div className={styles.diagram}>

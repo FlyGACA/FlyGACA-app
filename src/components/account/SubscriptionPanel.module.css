@@ -71,12 +71,12 @@
   color: var(--brand-hover);
   text-decoration: none;
 }
+.manage:active,
+.upgrade:active {
+  transform: scale(0.97);
+  box-shadow: var(--clay-shadow-press);
+}
 .manage:disabled {
   opacity: 0.6;
   cursor: default;
-}
-.error {
-  color: var(--color-error);
-  font-size: var(--fs-sm);
-  margin: 0;
 }

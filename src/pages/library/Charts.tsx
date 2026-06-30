@@ -10,6 +10,7 @@ import type { ChartsIndex, ChartDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ExternalLink } from '../../components/ExternalLink';
 import { Alert } from '../../components/Alert';
+import { EmptyState } from '../../components/EmptyState';
 import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path). */
@@ -167,6 +168,10 @@ export function Charts() {
         >
           {t('common.loadError')}
         </Alert>
+      )}
+
+      {!index.loading && !index.error && docs.length === 0 && (
+        <EmptyState icon="🗺️">{t('charts.empty')}</EmptyState>
       )}
 
       {docs.length > 0 && (
