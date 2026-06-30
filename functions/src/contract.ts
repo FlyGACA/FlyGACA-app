@@ -8,7 +8,7 @@
  */
 
 export interface ChatTurn {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 
@@ -29,7 +29,7 @@ export interface ChatSource {
 }
 
 /** Grounding verdict. `na` (or absent) means "no badge". */
-export type GroundingKind = 'grounded' | 'partial' | 'refusal' | 'na';
+export type GroundingKind = "grounded" | "partial" | "refusal" | "na";
 
 export interface ChatRequest {
   message: string;
@@ -57,24 +57,24 @@ export interface ChatResponse {
  * `drainSse()` in `src/lib/api.ts`.
  */
 export type StreamEvent =
-  | { type: 'token'; delta: string }
-  | { type: 'reset' }
+  | { type: "token"; delta: string }
+  | { type: "reset" }
   | {
-      type: 'final';
+      type: "final";
       answer: string;
       sources: ChatSource[];
       kind?: GroundingKind;
       refusalClass?: string;
       meta?: { provider?: string };
     }
-  | { type: 'error'; code?: string };
+  | { type: "error"; code?: string };
 
 /**
  * Body of the `/api/feedback` endpoint — a 👍/👎 on an answer, logged for
  * offline quality analysis. Best-effort; the client ignores the response.
  */
 export interface FeedbackRequest {
-  rating: 'up' | 'down';
+  rating: "up" | "down";
   session?: string;
   question?: string;
   answer?: string;

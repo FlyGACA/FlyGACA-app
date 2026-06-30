@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
+import { OutputGrid } from '../../components/calc/Grids';
+import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { resolveCrosswind } from '../../calc/crosswind';
 import { NumberField } from '../../components/calc/NumberField';
@@ -129,6 +131,7 @@ export function Crosswind() {
           label={t('crosswind.crosswind')}
           value={result ? `${Math.abs(result.crosswind).toFixed(1)} kt` : '—'}
           sub={result ? side : undefined}
+          tone="headline"
         />
         <ResultStat
           label={result && result.headwind < 0 ? t('crosswind.tailwind') : t('crosswind.headwind')}
