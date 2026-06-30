@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
+import { OutputGrid } from '../../components/calc/Grids';
+import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { trueAirspeed } from '../../calc/tas';
 import { NumberField } from '../../components/calc/NumberField';

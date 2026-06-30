@@ -340,6 +340,13 @@ export function ToolsIndex() {
         )}
 
         {flat.length === 0 ? (
+          <div className={styles.emptyState}>
+            <MagnifyingGlass className={styles.emptyIcon} size={44} weight="regular" aria-hidden />
+            <p className={styles.emptyMsg}>{t('tools.empty')}</p>
+            <button
+              type="button"
+              className="btn btn-clay"
+              onClick={() => {
           <EmptyState
             icon={<MagnifyingGlass size={44} weight="regular" aria-hidden />}
             action={{
