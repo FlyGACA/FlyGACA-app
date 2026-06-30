@@ -756,6 +756,7 @@
   "charts": {
     "title": "VFR Charts",
     "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy, always verify against the current official AIP.",
+    "empty": "No VFR charts are available right now. Browse the rest of the library, or check back soon.",
     "sheet": "Sheet",
     "openImage": "Open full image ↗",
     "fullscreen": "Fullscreen",
