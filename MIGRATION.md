@@ -245,7 +245,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
 - [ ] Chat: **SSE token streaming**, grounding badges (grounded/partial/refusal), tool-chip
       deep links, transcript persistence, App Check token header
 - [x] About; Legal: Disclaimer, Terms, Privacy
-- [x] Legal: Safety (`/safety`, shared `LegalPage`). 404 is done; offline page still to add
+- [x] Legal: Safety (`/safety`, shared `LegalPage`). 404 and the `/offline` fallback page are done
 - [ ] Account / Pricing / Schools (billing via Stripe web + RevenueCat native)
 - [ ] Dashboard, Logbook (Firestore-backed), Settings, Search (Ctrl/Cmd-K)
 - [ ] Guides, Study (ground school, flashcards, checkride/exam), Paths

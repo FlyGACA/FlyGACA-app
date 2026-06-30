@@ -123,6 +123,7 @@ const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage'
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
 const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPage');
 const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
+const Offline = lazyNamed(() => import('./pages/Offline'), 'Offline');
 
 /**
  * Route table for the app. Each page lives under src/pages/. As more pages are
@@ -224,6 +225,7 @@ export const router = createBrowserRouter([
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'safety', element: <SafetyPage /> },
+      { path: 'offline', element: <Offline /> },
       { path: '*', element: <NotFound /> },
     ],
   },
