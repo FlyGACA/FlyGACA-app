@@ -23,13 +23,15 @@ const ENFORCE_APP_CHECK =
   process.env.ENFORCE_APP_CHECK === '1' || process.env.ENFORCE_APP_CHECK === 'true';
 
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
-class AuthError extends Error {}
+export class AuthError extends Error {}
 
 /**
  * Verify the Firebase ID token (optional → anonymous) and App Check token
  * (enforced in prod). Returns the uid when a valid token was presented.
+ *
+ * Exported for unit testing; the route handlers below are the only callers.
  */
-async function authenticate(req: Request): Promise<{ uid?: string }> {
+export async function authenticate(req: Request): Promise<{ uid?: string }> {
   const appCheckToken = req.header('X-Firebase-AppCheck');
   if (ENFORCE_APP_CHECK) {
     if (!appCheckToken) throw new AuthError('missing App Check token');
@@ -53,8 +55,8 @@ async function authenticate(req: Request): Promise<{ uid?: string }> {
   return {};
 }
 
-/** Coerce a raw request body into a validated `ChatRequest` (or null). */
-function parseRequest(body: unknown): ChatRequest | null {
+/** Coerce a raw request body into a validated `ChatRequest` (or null). Exported for unit testing. */
+export function parseRequest(body: unknown): ChatRequest | null {
   if (!body || typeof body !== 'object') return null;
   const b = body as Record<string, unknown>;
   if (typeof b.message !== 'string' || b.message.trim() === '') return null;

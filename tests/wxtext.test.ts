@@ -25,7 +25,7 @@ describe('describeWind', () => {
 
   it('appends gusts and a variable range', () => {
     const w: Wind = { dir: 330, speedKt: 15, gustKt: 25, variableFrom: 300, variableTo: 360 };
-    expect(describeWind(w, t)).toBe('330° at 15 kt, gusting 25 kt (variable 300°–360°)');
+    expect(describeWind(w, t)).toBe('330° at 15 kt, gusting 25 kt (variable 300°-360°)');
   });
 
   it('reports calm and variable winds specially', () => {
@@ -34,7 +34,7 @@ describe('describeWind', () => {
   });
 
   it('renders a dash for a missing wind group', () => {
-    expect(describeWind(null, t)).toBe('—');
+    expect(describeWind(null, t)).toBe('-');
   });
 });
 
@@ -45,7 +45,7 @@ describe('describeVisibility', () => {
 
   it('renders metres otherwise and a dash when absent', () => {
     expect(describeVisibility(3000, t)).toBe('3000 m');
-    expect(describeVisibility(null, t)).toBe('—');
+    expect(describeVisibility(null, t)).toBe('-');
   });
 });
 
@@ -59,7 +59,7 @@ describe('describeClouds', () => {
   });
 
   it('renders a dash for a clear sky', () => {
-    expect(describeClouds([], t)).toBe('—');
+    expect(describeClouds([], t)).toBe('-');
   });
 });
 
@@ -78,6 +78,6 @@ describe('describeWeather', () => {
   });
 
   it('renders a dash when there is no weather', () => {
-    expect(describeWeather([], t)).toBe('—');
+    expect(describeWeather([], t)).toBe('-');
   });
 });

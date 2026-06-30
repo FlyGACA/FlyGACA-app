@@ -1,10 +1,12 @@
 import { useState, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Copy, Check, ShareNetwork, GraduationCap } from '@phosphor-icons/react';
 import { Disclaimer } from './Disclaimer';
 import { adelLink } from '../lib/adel';
 import { usePageMeta } from '../lib/usePageMeta';
 import { breadcrumbLd, softwareAppLd, type JsonLd } from '../lib/jsonld';
+import { breadcrumbLd, softwareAppLd } from '../lib/jsonld';
 import { shareCurrent } from '../lib/share';
 import { useFeature } from '../lib/features';
 import {
@@ -166,59 +168,84 @@ export function CalcShell({
       <div className={styles.body}>{children}</div>
 
       <div className={styles.actions}>
-        <button className={styles.action} type="button" onClick={copyLink}>
-          {copyLabel}
-        </button>
-        <button className={styles.action} type="button" onClick={shareThis}>
-          {shareLabel}
-        </button>
-        {onExample && (
-          <button className={styles.action} type="button" onClick={onExample}>
-            {t('calc.tryExample')}
-          </button>
-        )}
-        {adelHref && (
-          <Link className={`${styles.action} ${styles.adel}`} to={adelHref}>
-            {t('calc.askAdel')}
-          </Link>
-        )}
-        {!isPro ? (
-          <Link className={styles.action} to="/pricing">
-            {t('calc.savePreset')}
-            <span className={styles.proTag}>{t('upsell.proOnly')}</span>
-          </Link>
-        ) : naming ? (
-          <span className={styles.presetForm}>
-            <input
-              className={styles.presetInput}
-              value={presetName}
-              onChange={(e) => setPresetName(e.target.value)}
-              placeholder={t('calc.presetName')}
-              aria-label={t('calc.presetName')}
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  saveCurrentPreset();
-                } else if (e.key === 'Escape') {
-                  setNaming(false);
-                }
-              }}
-            />
-            <button
-              type="button"
-              className={styles.action}
-              onClick={saveCurrentPreset}
-              disabled={!presetName.trim()}
-            >
-              {t('calc.presetSave')}
+        {/* Primary actions: the worked example seeds the inputs, Ask-Adel is the
+            one filled CTA. Utilities (copy · share · save) sit to the inline-end. */}
+        <div className={styles.actionsPrimary}>
+          {onExample && (
+            <button className={styles.action} type="button" onClick={onExample}>
+              {t('calc.tryExample')}
             </button>
-          </span>
-        ) : (
-          <button type="button" className={styles.action} onClick={() => setNaming(true)}>
-            {t('calc.savePreset')}
+          )}
+          {adelHref && (
+            <Link className={`${styles.action} ${styles.adel}`} to={adelHref}>
+              <GraduationCap size={18} weight="fill" aria-hidden />
+              {t('calc.askAdel')}
+            </Link>
+          )}
+        </div>
+
+        <div className={styles.actionsUtility}>
+          <button
+            className={styles.iconAction}
+            type="button"
+            onClick={copyLink}
+            aria-label={copyLabel}
+            title={copyLabel}
+          >
+            {copied === 'ok' ? <Check size={18} aria-hidden /> : <Copy size={18} aria-hidden />}
           </button>
-        )}
+          <button
+            className={styles.iconAction}
+            type="button"
+            onClick={shareThis}
+            aria-label={shareLabel}
+            title={shareLabel}
+          >
+            {shared !== 'idle' ? (
+              <Check size={18} aria-hidden />
+            ) : (
+              <ShareNetwork size={18} aria-hidden />
+            )}
+          </button>
+          {!isPro ? (
+            <Link className={styles.action} to="/pricing">
+              {t('calc.savePreset')}
+              <span className={styles.proTag}>{t('upsell.proOnly')}</span>
+            </Link>
+          ) : naming ? (
+            <span className={styles.presetForm}>
+              <input
+                className={styles.presetInput}
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+                placeholder={t('calc.presetName')}
+                aria-label={t('calc.presetName')}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveCurrentPreset();
+                  } else if (e.key === 'Escape') {
+                    setNaming(false);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className={styles.action}
+                onClick={saveCurrentPreset}
+                disabled={!presetName.trim()}
+              >
+                {t('calc.presetSave')}
+              </button>
+            </span>
+          ) : (
+            <button type="button" className={styles.action} onClick={() => setNaming(true)}>
+              {t('calc.savePreset')}
+            </button>
+          )}
+        </div>
+
         <span className={styles.note}>{t('calc.shareNote')}</span>
       </div>
 

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SectionHeader } from '../../components/SectionHeader';
+import { EmptyState } from '../../components/EmptyState';
 import { ViewToggle } from '../../components/hub/ViewToggle';
 import { SortSelect } from '../../components/hub/SortSelect';
 import { useViewMode } from '../../lib/useViewMode';
@@ -273,9 +274,7 @@ export function GuidesBrowser({ query, topic, onTopicChange }: GuidesBrowserProp
       </div>
 
       {filtered.length === 0 ? (
-        <p className={styles.empty} role="status">
-          {t('guides.empty')}
-        </p>
+        <EmptyState icon="🔍">{t('guides.empty')}</EmptyState>
       ) : grouped ? (
         <>
           {saved.length > 0 && (

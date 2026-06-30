@@ -5,6 +5,7 @@ import { RequireSession } from './RequireSession';
 import { TextField } from '../../components/calc/TextField';
 import { SelectField, type SelectOption } from '../../components/calc/SelectField';
 import { LangToggle } from '../../components/LangToggle';
+import { Alert } from '../../components/Alert';
 import { deleteAllData, exportAll, saveProfile, useAccount } from '../../lib/account';
 import { replayOnboarding } from '../../lib/onboardingPrefs';
 import { effectivePlan } from '../../lib/entitlements';
@@ -71,9 +72,9 @@ function Inner() {
       </header>
 
       {syncError && (
-        <p className={styles.syncNotice} role="status">
+        <Alert tone="warning" role="status" icon="⚠">
           {t('account.syncError')}
-        </p>
+        </Alert>
       )}
 
       <div className={styles.sectionHead}>
