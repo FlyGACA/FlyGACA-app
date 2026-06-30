@@ -6,6 +6,7 @@ import { CaptainAvatar } from '../components/CaptainAvatar';
 import { PageHero } from '../components/PageHero';
 import { StatStrip } from '../components/StatStrip';
 import { SectionHeader } from '../components/SectionHeader';
+import { Stepper } from '../components/Stepper';
 import { BentoGrid } from '../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
 import { usePageMeta } from '../lib/usePageMeta';
@@ -98,17 +99,7 @@ export function Schools() {
       <section className={styles.block} aria-labelledby="schools-how">
         <p className={styles.blockEyebrow}>{t('schools.how.eyebrow')}</p>
         <SectionHeader id="schools-how" title={t('schools.how.title')} tone="var(--cat-2)" />
-        <ol className={styles.steps}>
-          {steps.map((s, i) => (
-            <li key={i} className={styles.step}>
-              <span className={styles.stepNum} aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3 className={styles.stepTitle}>{s.h}</h3>
-              <p className={styles.stepBody}>{s.p}</p>
-            </li>
-          ))}
-        </ol>
+        <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
       </section>
 
       <section className={styles.formWrap} aria-labelledby="schools-form-head">
@@ -122,6 +113,7 @@ export function Schools() {
               onChange={(e) => setName(e.target.value)}
               placeholder={t('schools.form.namePh')}
               autoComplete="name"
+              required
             />
           </label>
           <label className={styles.field}>
@@ -130,6 +122,7 @@ export function Schools() {
               value={school}
               onChange={(e) => setSchool(e.target.value)}
               placeholder={t('schools.form.schoolPh')}
+              required
             />
           </label>
           <label className={styles.field}>
@@ -138,6 +131,8 @@ export function Schools() {
               value={seats}
               onChange={(e) => setSeats(e.target.value)}
               placeholder={t('schools.form.seatsPh')}
+              type="number"
+              min="1"
               inputMode="numeric"
             />
           </label>

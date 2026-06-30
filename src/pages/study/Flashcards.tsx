@@ -6,6 +6,7 @@ import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
 import { useStudyProgress, gradeCard } from '../../lib/studyProgress';
 import { dueKeys, masteredCount } from '../../calc/srs';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { courseLd } from '../../lib/jsonld';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Study.module.css';
@@ -20,8 +21,17 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function Flashcards() {
-  const { t } = useTranslation();
-  usePageMeta(t('meta.flashcards'), t('metaDesc.flashcards'));
+  const { t, i18n } = useTranslation();
+  usePageMeta(
+    t('meta.flashcards'),
+    t('metaDesc.flashcards'),
+    courseLd({
+      title: t('meta.flashcards'),
+      description: t('metaDesc.flashcards'),
+      path: '/study/flashcards',
+      lang: i18n.language,
+    }),
+  );
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { fcSrs } = useStudyProgress();

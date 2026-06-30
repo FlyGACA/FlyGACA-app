@@ -50,6 +50,25 @@ export function Pricing() {
   const f = (base: string) => t(`${base}.features`, { returnObjects: true }) as unknown as string[];
   const savePct = annualSavingsPct(PRO_PRICE.monthly, PRO_PRICE.annual);
   const compare = t('pricing.compare', { returnObjects: true }) as unknown as CompareRow[];
+  // Render the boolean comparison cells as a tinted check / muted cross with an
+  // sr-only label; value cells (e.g. "5 / day", "Unlimited") pass through as text.
+  const cmpCell = (v: string): ReactNode => {
+    if (v === '✓')
+      return (
+        <span className={styles.cmpYes}>
+          <span aria-hidden="true">✓</span>
+          <span className="sr-only">{t('pricing.cmpYes')}</span>
+        </span>
+      );
+    if (v === '✕')
+      return (
+        <span className={styles.cmpNo}>
+          <span aria-hidden="true">✕</span>
+          <span className="sr-only">{t('pricing.cmpNo')}</span>
+        </span>
+      );
+    return v;
+  };
   const faqs = t('pricing.faq', { returnObjects: true }) as unknown as Faq[];
   const schoolPoints = t('pricing.schoolsPoints', { returnObjects: true }) as unknown as string[];
 
@@ -221,6 +240,7 @@ export function Pricing() {
         <SectionHeader id="compare-head" title={t('pricing.compareHead')} tone="var(--cat-1)" />
         <div className={styles.tableWrap}>
           <table className={styles.table}>
+            <caption className="sr-only">{t('pricing.compareHead')}</caption>
             <thead>
               <tr>
                 <th scope="col">{t('pricing.feature')}</th>
@@ -233,9 +253,9 @@ export function Pricing() {
               {compare.map((row) => (
                 <tr key={row.feature}>
                   <th scope="row">{row.feature}</th>
-                  <td>{row.free}</td>
-                  <td>{row.pro}</td>
-                  <td>{row.school}</td>
+                  <td>{cmpCell(row.free)}</td>
+                  <td>{cmpCell(row.pro)}</td>
+                  <td>{cmpCell(row.school)}</td>
                 </tr>
               ))}
             </tbody>
@@ -322,10 +342,14 @@ function Plan({
       {badge && !current && <span className={styles.popularBadge}>{badge}</span>}
       {current && currentLabel && <span className={styles.currentBadge}>{currentLabel}</span>}
       <h2 className={styles.planName}>{name}</h2>
-      <p className={styles.price}>
-        <bdi dir="ltr">{price}</bdi>
-      </p>
-      {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
+      {/* Fixed-height block so every card's feature list starts at the same Y,
+          whether or not the plan carries a VAT note (Free has none). */}
+      <div className={styles.priceBlock}>
+        <p className={styles.price}>
+          <bdi dir="ltr">{price}</bdi>
+        </p>
+        {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
+      </div>
       <ul className={styles.features}>
         {features.map((x) => (
           <li key={x}>{x}</li>

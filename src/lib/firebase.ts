@@ -176,3 +176,22 @@ export function getAnalyticsClient(): Promise<Analytics | null> {
   })();
   return analyticsPromise;
 }
+
+/**
+ * Best-effort GA4 custom event. No-ops (never throws) when analytics isn't
+ * configured/supported — the same gate as `getAnalyticsClient`. Safe to call
+ * from anywhere; the `firebase/analytics` chunk only loads when GA is live.
+ */
+export async function logAnalyticsEvent(
+  name: string,
+  params?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    const client = await getAnalyticsClient();
+    if (!client) return;
+    const { logEvent } = await import('firebase/analytics');
+    logEvent(client, name, params);
+  } catch {
+    /* analytics is non-essential — never let it surface an error */
+  }
+}

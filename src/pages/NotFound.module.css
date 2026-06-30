@@ -55,6 +55,9 @@
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-1px);
 }
+.search:active {
+  transform: scale(0.97);
+}
 .kbd {
   padding: 1px 5px;
   border: 1px solid var(--border-bright);
@@ -95,4 +98,7 @@
   transform: translateY(-2px);
   color: var(--brand-hover);
   text-decoration: none;
+}
+.tile:active {
+  transform: scale(0.97);
 }

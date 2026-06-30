@@ -27,6 +27,7 @@ import {
 } from '../../calc/logbook';
 import type { Flight } from '../../lib/account';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { Alert } from '../../components/Alert';
 import styles from './account.module.css';
 
 function download(name: string, data: string, mime: string) {
@@ -56,7 +57,8 @@ const COLS: (keyof FlightDraft)[] = [
 
 export function Logbook() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.logbook'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.logbook'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />
@@ -146,9 +148,9 @@ function Inner() {
       </header>
 
       {syncError && (
-        <p className={styles.syncNotice} role="status">
+        <Alert tone="warning" role="status" icon="⚠">
           {t('account.syncError')}
-        </p>
+        </Alert>
       )}
 
       {flights.length > 0 && (

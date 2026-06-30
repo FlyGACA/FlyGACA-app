@@ -9,6 +9,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import type { ChartsIndex, ChartDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ExternalLink } from '../../components/ExternalLink';
+import { Alert } from '../../components/Alert';
 import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path). */
@@ -158,16 +159,14 @@ export function Charts() {
 
       {index.loading && <div className={styles.skeleton} aria-hidden="true" />}
       {index.error && (
-        <p role="alert" className={styles.errorRow}>
-          {t('common.loadError')}{' '}
-          <button
-            type="button"
-            className={styles.retry}
-            onClick={() => setReloadToken((n) => n + 1)}
-          >
-            {t('common.retry')}
-          </button>
-        </p>
+        <Alert
+          tone="error"
+          role="alert"
+          icon="⚠"
+          action={{ label: t('common.retry'), onClick: () => setReloadToken((n) => n + 1) }}
+        >
+          {t('common.loadError')}
+        </Alert>
       )}
 
       {docs.length > 0 && (

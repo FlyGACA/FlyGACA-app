@@ -101,6 +101,9 @@
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-1px);
 }
+.scrollDown:active {
+  transform: scale(0.97);
+}
 
 /* ── Welcome screen ── */
 .welcome {
@@ -216,6 +219,9 @@
   background: color-mix(in srgb, var(--brand) 18%, transparent);
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-1px);
+}
+.surprise:active {
+  transform: scale(0.97);
 }
 .welcomeLink {
   font-size: var(--fs-sm);
@@ -542,11 +548,15 @@
   cursor: pointer;
   transition:
     border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+    color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .followup:hover {
   border-color: var(--brand-hover);
   color: var(--brand-hover);
+}
+.followup:active {
+  transform: scale(0.97);
 }
 
 /* Free-tier quota readout under the composer. */

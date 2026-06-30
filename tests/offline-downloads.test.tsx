@@ -24,7 +24,17 @@ afterEach(() => {
 });
 
 describe('<OfflineDownloads />', () => {
-  it('renders nothing when nothing is saved', () => {
+  it('offers the bulk save action even when nothing is saved yet', async () => {
+    render(<OfflineDownloads />);
+    expect(
+      await screen.findByRole('button', { name: 'Save all GACAR Parts offline' }),
+    ).toBeInTheDocument();
+    // No saved summary / remove-all until something is actually saved.
+    expect(screen.queryByRole('button', { name: 'Remove all' })).toBeNull();
+  });
+
+  it('renders nothing when the Cache API is unavailable', () => {
+    vi.stubGlobal('caches', undefined);
     const { container } = render(<OfflineDownloads />);
     expect(container).toBeEmptyDOMElement();
   });
