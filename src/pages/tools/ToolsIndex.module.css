@@ -114,26 +114,8 @@
   letter-spacing: 0.06em;
 }
 
-/* Composed no-results state — glyph + message + one-tap recovery, instead of a
-   bare line, so a dead-end search offers a way back. */
-.emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-3);
-  padding-block: var(--space-10);
-  color: var(--text-muted);
-}
-.emptyIcon {
-  color: var(--text-dim);
-  opacity: 0.8;
-}
-.emptyMsg {
-  margin: 0;
-  font-size: var(--fs-lg);
-  color: var(--text);
-}
+/* No-results state now uses the shared <EmptyState> component
+   (src/components/EmptyState). */
 
 /* ── Compact list row (list view); grid/list container, .rowWrap, .rowBar and
    .rowStar come from the shared hub/hubList.module.css. ── */

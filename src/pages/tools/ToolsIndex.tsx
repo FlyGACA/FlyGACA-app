@@ -9,6 +9,7 @@ import { CategoryIcon, TOOL_ICON_WEIGHT } from '../../lib/toolIcons';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
+import { EmptyState } from '../../components/EmptyState';
 import { SectionHeader } from '../../components/SectionHeader';
 import { SearchHero } from '../../components/SearchHero';
 import type { HeroStat } from '../../components/SearchHero';
@@ -339,20 +340,18 @@ export function ToolsIndex() {
         )}
 
         {flat.length === 0 ? (
-          <div className={styles.emptyState}>
-            <MagnifyingGlass className={styles.emptyIcon} size={44} weight="regular" aria-hidden />
-            <p className={styles.emptyMsg}>{t('tools.empty')}</p>
-            <button
-              type="button"
-              className="btn btn-clay"
-              onClick={() => {
+          <EmptyState
+            icon={<MagnifyingGlass size={44} weight="regular" aria-hidden />}
+            action={{
+              label: t('common.clear'),
+              onClick: () => {
                 setQuery('');
                 setCategory('all');
-              }}
-            >
-              {t('common.clear')}
-            </button>
-          </div>
+              },
+            }}
+          >
+            {t('tools.empty')}
+          </EmptyState>
         ) : showGrouped ? (
           grouped.map(({ cat, tools }) => (
             <section key={cat} id={cat} className={styles.category}>
