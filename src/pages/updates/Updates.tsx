@@ -15,6 +15,7 @@ import {
   type SourceStatus,
 } from '../../calc/changeTracking';
 import { Disclaimer } from '../../components/Disclaimer';
+import { EmptyState } from '../../components/EmptyState';
 import { UpsellCard } from '../../components/UpsellCard';
 import { Alert } from '../../components/Alert';
 import styles from './Updates.module.css';
@@ -105,7 +106,7 @@ export function Updates() {
               )}
             </div>
             {changed.length === 0 ? (
-              <p className={styles.empty}>{t('alerts.empty')}</p>
+              <EmptyState icon="✓">{t('alerts.empty')}</EmptyState>
             ) : (
               <ul className={styles.list}>
                 {changed.map((s) => (

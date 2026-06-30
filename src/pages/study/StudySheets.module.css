@@ -50,11 +50,6 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-.noMatch {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  margin: 0;
-}
 .group {
   display: flex;
   flex-direction: column;

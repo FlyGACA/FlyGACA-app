@@ -27,6 +27,7 @@ import {
 } from '../../calc/logbook';
 import type { Flight } from '../../lib/account';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { Alert } from '../../components/Alert';
 import styles from './account.module.css';
 
 function download(name: string, data: string, mime: string) {
@@ -147,9 +148,9 @@ function Inner() {
       </header>
 
       {syncError && (
-        <p className={styles.syncNotice} role="status">
+        <Alert tone="warning" role="status" icon="⚠">
           {t('account.syncError')}
-        </p>
+        </Alert>
       )}
 
       {flights.length > 0 && (

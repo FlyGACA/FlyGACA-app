@@ -314,10 +314,16 @@
 }
 .table th,
 .table td {
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-5);
   text-align: start;
   border-block-end: 1px solid var(--border);
   white-space: nowrap;
+}
+/* The three plan columns center their values (checks, crosses, short values);
+   only the leading feature label stays start-aligned. */
+.table th:not(:first-child),
+.table td:not(:first-child) {
+  text-align: center;
 }
 .table thead th {
   font-size: var(--fs-xs);
@@ -330,14 +336,22 @@
   color: var(--accent-bright);
 }
 /* Track the recommended (Pro) tier down the whole comparison, not just its
-   header — a faint brand wash + framing hairlines on the 3rd column
+   header — a brand wash + framing hairlines on the 3rd column
    (feature · Free · Pro · School). Logical inset-shadow so it mirrors in RTL. */
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  background: color-mix(in srgb, var(--brand) 9%, var(--surface));
+  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
   box-shadow:
-    inset 1px 0 0 color-mix(in srgb, var(--brand) 28%, transparent),
-    inset -1px 0 0 color-mix(in srgb, var(--brand) 28%, transparent);
+    inset 1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent);
+}
+/* Cap the Pro column with a brand hairline so the highlighted lane reads as a
+   continuation of the Pro plan card above it. */
+.table thead th:nth-child(3) {
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--brand) 34%, transparent),
+    inset 0 3px 0 var(--brand);
 }
 .table tbody th {
   font-weight: var(--fw-semibold);
@@ -347,9 +361,27 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+/* Row feedback on hover — a faint wash across the row (the Pro column keeps its
+   stronger tint via the rule above). */
+.table tbody tr:hover th,
+.table tbody tr:hover td {
+  background: color-mix(in srgb, var(--brand) 5%, var(--surface));
+}
+.table tbody tr:hover td:nth-child(3) {
+  background: color-mix(in srgb, var(--brand) 15%, var(--surface));
+}
 .table tbody tr:last-child th,
 .table tbody tr:last-child td {
   border-block-end: none;
+}
+
+/* Comparison check / cross glyphs. */
+.cmpYes {
+  color: var(--accent-bright);
+  font-weight: var(--fw-bold);
+}
+.cmpNo {
+  color: var(--text-dim);
 }
 
 /* ── FAQ accordion ── */

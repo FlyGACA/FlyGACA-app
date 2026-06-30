@@ -283,11 +283,6 @@
   color: var(--warning);
 }
 
-.empty {
-  color: var(--text-muted);
-  padding-block: var(--space-6);
-}
-
 /* Reading progress bar — fixed below the nav (mirrors the document reader). */
 .readingTrack {
   position: fixed;

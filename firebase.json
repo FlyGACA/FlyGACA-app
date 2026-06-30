@@ -111,6 +111,9 @@
     "indexes": "firestore.indexes.json"
   },
   "emulators": {
+    "firestore": {
+      "port": 8080
+    },
     "dataconnect": {
       "dataDir": "dataconnect/.dataconnect/pgliteData"
     }

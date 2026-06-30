@@ -4,7 +4,9 @@ import { OutputGrid } from '../../components/calc/Grids';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { trueAirspeed } from '../../calc/tas';
-import shared from './CalcFields.module.css';
+import { NumberField } from '../../components/calc/NumberField';
+import { ResultStat } from '../../components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 
 const EXAMPLE = { cas: '110', pa: '8000', oat: '10' };
 
@@ -46,35 +48,26 @@ export function Tas() {
         { to: '/tools/wind-triangle', label: t('tools.items.wind-triangle.name') },
       ]}
     >
-      <div className={shared.inputs}>
-        <label className={shared.field}>
-          <span>{t('tas.cas')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.cas}
-            onChange={(e) => set('cas', e.target.value)}
-            placeholder="110"
-          />
-        </label>
-        <label className={shared.field}>
-          <span>{t('tas.pa')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.pa}
-            onChange={(e) => set('pa', e.target.value)}
-            placeholder="8000"
-          />
-        </label>
-        <label className={shared.field}>
-          <span>{t('tas.oat')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.oat}
-            onChange={(e) => set('oat', e.target.value)}
-            placeholder="10"
-          />
-        </label>
-      </div>
+      <FieldGrid>
+        <NumberField
+          label={t('tas.cas')}
+          value={inputs.cas}
+          onChange={(v) => set('cas', v)}
+          placeholder="110"
+        />
+        <NumberField
+          label={t('tas.pa')}
+          value={inputs.pa}
+          onChange={(v) => set('pa', v)}
+          placeholder="8000"
+        />
+        <NumberField
+          label={t('tas.oat')}
+          value={inputs.oat}
+          onChange={(v) => set('oat', v)}
+          placeholder="10"
+        />
+      </FieldGrid>
 
       <OutputGrid>
         <ResultStat

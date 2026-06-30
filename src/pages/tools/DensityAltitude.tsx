@@ -2,7 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { useUrlState } from '../../lib/useUrlState';
 import { densityAltitude } from '../../calc/isa';
-import shared from './CalcFields.module.css';
+import { NumberField } from '../../components/calc/NumberField';
+import { ResultStat } from '../../components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 
 const EXAMPLE = { elev: '5000', qnh: '1013', oat: '30' };
 const fmt = (n: number) => Math.round(n).toLocaleString();
@@ -46,50 +48,42 @@ export function DensityAltitude() {
         { to: '/tools/takeoff-landing', label: t('tools.items.takeoff-landing.name') },
       ]}
     >
-      <div className={shared.inputs}>
-        <label className={shared.field}>
-          <span>{t('densityAltitude.elevation')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.elev}
-            onChange={(e) => set('elev', e.target.value)}
-            placeholder="5000"
-          />
-        </label>
-        <label className={shared.field}>
-          <span>{t('densityAltitude.qnh')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.qnh}
-            onChange={(e) => set('qnh', e.target.value)}
-            placeholder="1013"
-          />
-        </label>
-        <label className={shared.field}>
-          <span>{t('densityAltitude.oat')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.oat}
-            onChange={(e) => set('oat', e.target.value)}
-            placeholder="30"
-          />
-        </label>
-      </div>
+      <FieldGrid>
+        <NumberField
+          label={t('densityAltitude.elevation')}
+          value={inputs.elev}
+          onChange={(v) => set('elev', v)}
+          placeholder="5000"
+        />
+        <NumberField
+          label={t('densityAltitude.qnh')}
+          value={inputs.qnh}
+          onChange={(v) => set('qnh', v)}
+          placeholder="1013"
+        />
+        <NumberField
+          label={t('densityAltitude.oat')}
+          value={inputs.oat}
+          onChange={(v) => set('oat', v)}
+          placeholder="30"
+        />
+      </FieldGrid>
 
-      <dl className={shared.outputs}>
-        <div>
-          <dt>{t('densityAltitude.pressureAltitude')}</dt>
-          <dd>{r ? `${fmt(r.pa)} ft` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('densityAltitude.isaDev')}</dt>
-          <dd>{r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('densityAltitude.densityAltitude')}</dt>
-          <dd className={shared.headline}>{r ? `${fmt(r.da)} ft` : '—'}</dd>
-        </div>
-      </dl>
+      <OutputGrid>
+        <ResultStat
+          label={t('densityAltitude.pressureAltitude')}
+          value={r ? `${fmt(r.pa)} ft` : '—'}
+        />
+        <ResultStat
+          label={t('densityAltitude.isaDev')}
+          value={r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}
+        />
+        <ResultStat
+          label={t('densityAltitude.densityAltitude')}
+          value={r ? `${fmt(r.da)} ft` : '—'}
+          tone="headline"
+        />
+      </OutputGrid>
     </CalcShell>
   );
 }

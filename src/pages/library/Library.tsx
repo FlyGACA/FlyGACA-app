@@ -25,6 +25,7 @@ import {
 import { useBookmarkGate } from '../../lib/useBookmarkGate';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
+import { EmptyState } from '../../components/EmptyState';
 import { Alert } from '../../components/Alert';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
 import { SearchHero } from '../../components/SearchHero';
@@ -515,7 +516,18 @@ export function Library() {
           </div>
 
           {docs.length === 0 ? (
-            <p className={styles.empty}>{t('library.empty')}</p>
+            <EmptyState
+              icon="🔍"
+              action={{
+                label: t('common.clear'),
+                onClick: () => {
+                  setQuery('');
+                  setCategory('all');
+                },
+              }}
+            >
+              {t('library.empty')}
+            </EmptyState>
           ) : q ? (
             <ul className={listClass}>{docs.map(renderDoc)}</ul>
           ) : (
