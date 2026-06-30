@@ -10,16 +10,19 @@ export function ExternalLink({
   href,
   className,
   children,
+  'aria-label': ariaLabel,
 }: {
   href: string;
   className?: string;
   children: ReactNode;
+  'aria-label'?: string;
 }) {
   if (isNative()) {
     return (
       <button
         type="button"
         className={className}
+        aria-label={ariaLabel}
         onClick={() => void openExternal(href)}
         style={{ cursor: 'pointer' }}
       >
@@ -28,7 +31,7 @@ export function ExternalLink({
     );
   }
   return (
-    <a className={className} href={href} target="_blank" rel="noopener">
+    <a className={className} href={href} aria-label={ariaLabel} target="_blank" rel="noopener">
       {children}
     </a>
   );

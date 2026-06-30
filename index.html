@@ -6,6 +6,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
     <meta name="theme-color" content="#0A0E12" />
+    <!-- No-flash theme init: apply the persisted Cockpit / Night-Ops theme before
+         any paint so the charcoal/amber tokens are live for the critical-CSS hero
+         and first React render. Keep the key + hex in sync with src/lib/theme.ts. -->
+    <script>
+      try {
+        if (localStorage.getItem('flygaca:theme') === 'cockpit') {
+          document.documentElement.setAttribute('data-theme', 'cockpit');
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', '#121212');
+        }
+      } catch (e) {}
+    </script>
     <meta
       name="description"
       content="Fly GACA — an independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
@@ -20,14 +32,26 @@
     <link rel="alternate" hreflang="x-default" href="https://flygaca.com/" />
     <!-- Baseline social tags (usePageMeta refines per route + language at runtime). -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fly GACA" />
     <meta property="og:title" content="Fly GACA — Saudi Aviation Library" />
     <meta
       property="og:description"
       content="An independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
     />
-    <!-- Absolute URL: OG scrapers reject root-relative image paths. -->
+    <!-- Absolute URL: OG scrapers reject root-relative image paths. The section
+         cards (og-*.png) are all 1200×630; declaring dimensions lets scrapers
+         render the card without a layout round-trip. -->
     <meta property="og:image" content="https://flygaca.com/img/og-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Fly GACA — Saudi Aviation Library" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fly GACA — Saudi Aviation Library" />
+    <meta
+      name="twitter:description"
+      content="An independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
+    />
+    <meta name="twitter:image" content="https://flygaca.com/img/og-card.png" />
     <title>Fly GACA — Saudi Aviation Library</title>
     <!-- Site-wide structured data (constant; per-route schema is injected by usePageMeta). -->
     <script type="application/ld+json">
@@ -61,23 +85,10 @@
         ]
       }
     </script>
-    <!-- Fonts: preconnect, then load the stylesheet non-render-blocking (media=print
-         flip) so first paint isn't gated on Google Fonts. display=swap already paints
-         text in the fallback immediately, then swaps — no FOIT. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      media="print"
-      onload="this.media = 'all'"
-      href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      />
-    </noscript>
+    <!-- Fonts are self-hosted via @fontsource (imported in src/main.tsx) — the
+         @font-face rules ship in the app CSS bundle, so there's no Google Fonts CDN
+         dependency (it 503'd intermittently) and no preconnect to a third party.
+         display:swap (set by @fontsource) paints the fallback immediately, no FOIT. -->
     <!-- Critical CSS for the static home hero shell below: it paints from the
          initial HTML at CSS-load time (no JS), so the <h1> becomes the LCP element
          immediately instead of waiting for the bundle + React. Values mirror
@@ -160,15 +171,14 @@
            for every path); React replaces it on the home route. -->
       <div id="app-shell">
         <div class="s-inner">
-          <p class="s-eyebrow">Independent · Educational · Bilingual</p>
+          <p class="s-eyebrow">Independent, educational, bilingual</p>
           <h1>Every Saudi reg. One captain on the answer.</h1>
           <p class="s-sub">
-            A fast, free reference library of Saudi civil-aviation regulations (GACAR), charts and
-            study tools — with an AI flight instructor who cites the exact Part and section.
+            A free library of Saudi civil-aviation regulations, with an AI instructor that cites the
+            exact Part and section.
           </p>
           <div class="s-cta">
             <a class="s-btn primary" href="/library">Open the library</a>
-            <a class="s-btn" href="/tools">Flight tools</a>
             <a class="s-btn ghost" href="/chat">Ask Captain Adel</a>
           </div>
         </div>

@@ -50,7 +50,8 @@ function expiryStatus(expires: string): { tone: StatusTone; key: string } | null
 
 export function Records() {
   const { t } = useTranslation();
-  usePageMeta(t('records.title'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('records.title'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />

@@ -24,6 +24,26 @@ const arItems = (ar as unknown as Bundle).guides.items;
 
 const nonEmptyStr = (v: unknown): boolean => typeof v === 'string' && v.trim().length > 0;
 
+/** Every author-facing string in a guide item, flattened — used to scan for
+ *  unreplaced scaffold placeholders. */
+function contentStrings(item: GuideItem | undefined): string[] {
+  if (!item) return [];
+  const out: string[] = [];
+  for (const key of ['name', 'blurb', 'intro', 'adel'] as const) {
+    if (typeof item[key] === 'string') out.push(item[key] as string);
+  }
+  if (Array.isArray(item.sections)) {
+    for (const s of item.sections as { h?: unknown; p?: unknown }[]) {
+      if (typeof s.h === 'string') out.push(s.h);
+      if (typeof s.p === 'string') out.push(s.p);
+    }
+  }
+  if (Array.isArray(item.takeaways)) {
+    for (const tk of item.takeaways as unknown[]) if (typeof tk === 'string') out.push(tk);
+  }
+  return out;
+}
+
 function checkItem(item: GuideItem | undefined): void {
   expect(item, 'guide content missing for this language').toBeDefined();
   if (!item) return;
@@ -50,6 +70,26 @@ describe('guide content completeness (EN + AR)', () => {
     it(`${slug} has metadata + a valid status`, () => {
       expect(GUIDE_META[slug]).toBeDefined();
       expect(['draft', 'live']).toContain(GUIDE_STATUS[slug]);
+    });
+  }
+
+  // `new-guide.mjs` seeds every field with a `TODO (...)` placeholder and the
+  // guide as a draft; the author replaces them before flipping it to 'live'
+  // (GUIDE_AUTHORING.md §8). Nothing else catches a publish that skipped that
+  // step — placeholders are non-empty strings, so the completeness check above
+  // passes — so a 'live' guide must carry no leftover scaffold placeholder.
+  for (const slug of GUIDE_SLUGS) {
+    if (GUIDE_STATUS[slug] !== 'live') continue;
+    it(`${slug} (live) has no leftover TODO placeholders`, () => {
+      for (const [lang, items] of [
+        ['EN', enItems],
+        ['AR', arItems],
+      ] as const) {
+        const leftover = contentStrings(items[slug]).filter((s) => s.includes('TODO ('));
+        expect(leftover, `${lang} ${slug} still has scaffold placeholders: ${leftover.join(' | ')}`).toEqual(
+          [],
+        );
+      }
     });
   }
 

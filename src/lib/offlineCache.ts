@@ -43,6 +43,24 @@ export async function saveDoc(slug: string, urls: string[]): Promise<boolean> {
   }
 }
 
+/**
+ * Bulk "save for offline" over {@link saveDoc}: warm many docs (e.g. all GACAR
+ * Parts, or a batch of bookmarked sections) into the cache. Runs sequentially
+ * so a quota failure stops cleanly mid-way rather than firing dozens of parallel
+ * `addAll`s, and so `onProgress` is monotonic. Returns the count actually saved.
+ */
+export async function saveDocs(
+  items: { slug: string; urls: string[] }[],
+  onProgress?: (done: number, total: number) => void,
+): Promise<number> {
+  let ok = 0;
+  for (let i = 0; i < items.length; i++) {
+    if (await saveDoc(items[i].slug, items[i].urls)) ok++;
+    onProgress?.(i + 1, items.length);
+  }
+  return ok;
+}
+
 /** Evict the given URLs from the cache and forget the slug. */
 export async function removeDoc(slug: string, urls: string[]): Promise<void> {
   if (offlineSupported()) {

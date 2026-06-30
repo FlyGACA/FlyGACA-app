@@ -42,11 +42,32 @@
 .refTools {
   margin-block-start: var(--space-8);
 }
+/* Clusters of related reference tools, each under a light sub-label — laid out
+   2-up on desktop, stacking on mobile. The section keeps a single glow-bar
+   header above; the per-cluster labels are quiet (no extra accent bars). */
+.refGroups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5) var(--space-6);
+  margin-block-start: var(--space-4);
+}
+@media (max-width: 600px) {
+  .refGroups {
+    grid-template-columns: 1fr;
+  }
+}
+.refGroupLabel {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: var(--fw-semibold);
+  color: var(--text-dim);
+}
 .refChips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-block-start: var(--space-4);
 }
 .refChip {
   padding: var(--space-2) var(--space-4);

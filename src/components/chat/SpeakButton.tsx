@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ttsSupported, pickTtsLang } from '../../calc/textToSpeech';
+import { ttsSupported, pickTtsLang, toSpeechText } from '../../calc/textToSpeech';
+import { pickVoice } from '../../calc/voiceSelection';
 import styles from './SpeakButton.module.css';
 
 /**
@@ -15,11 +16,21 @@ export function SpeakButton({ text }: { text: string }) {
   const { t, i18n } = useTranslation();
   const [supported] = useState(ttsSupported);
   const [speaking, setSpeaking] = useState(false);
+  // Cache the voice list: `getVoices()` is often empty until `voiceschanged`
+  // fires, so we warm it on mount and refresh it when the engine populates.
+  const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
 
-  // Cancel any in-flight speech if the bubble unmounts (e.g. on regenerate).
   useEffect(() => {
+    if (!ttsSupported()) return;
+    const synth = window.speechSynthesis;
+    const load = () => {
+      voicesRef.current = synth.getVoices();
+    };
+    load();
+    synth.addEventListener?.('voiceschanged', load);
     return () => {
-      if (ttsSupported()) window.speechSynthesis.cancel();
+      synth.removeEventListener?.('voiceschanged', load);
+      synth.cancel(); // stop any in-flight speech if the bubble unmounts (e.g. on regenerate)
     };
   }, []);
 
@@ -32,9 +43,20 @@ export function SpeakButton({ text }: { text: string }) {
       setSpeaking(false);
       return;
     }
+    // Speak clean prose, not raw Markdown — otherwise the engine announces
+    // every `**`, backtick, link and `§` symbol, which sounds letter-by-letter.
+    const spoken = toSpeechText(text);
+    if (!spoken) return;
     synth.cancel(); // clear anything queued from another message
-    const utter = new SpeechSynthesisUtterance(text);
+    const utter = new SpeechSynthesisUtterance(spoken);
     utter.lang = pickTtsLang(i18n.language);
+    // Pick the best natural voice for this language; without it the browser
+    // falls back to a robotic default. Leave unset when nothing matches.
+    const voices = voicesRef.current.length ? voicesRef.current : synth.getVoices();
+    const voice = pickVoice(voices, utter.lang);
+    if (voice) utter.voice = voice;
+    utter.rate = 1; // natural, measured pace
+    utter.pitch = 1;
     utter.onend = () => setSpeaking(false);
     utter.onerror = () => setSpeaking(false);
     setSpeaking(true);

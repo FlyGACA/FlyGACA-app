@@ -3,6 +3,7 @@ import { SITE_ORIGIN } from '../src/lib/seo';
 import {
   ORG_ID,
   SITE_ID,
+  airportLd,
   articleLd,
   breadcrumbLd,
   courseLd,
@@ -110,5 +111,37 @@ describe('course + faq + software', () => {
     expect(ld.isAccessibleForFree).toBe(true);
     expect(ld.offers).toEqual({ '@type': 'Offer', price: '0', priceCurrency: 'SAR' });
     expect(ld.url).toBe(`${SITE_ORIGIN}/tools/crosswind`);
+  });
+});
+
+describe('airportLd', () => {
+  it('describes the aerodrome as an Airport place with codes + geo', () => {
+    const ld = airportLd({
+      name: 'King Khalid International',
+      icao: 'OERK',
+      iata: 'RUH',
+      path: '/tools/aerodromes/OERK',
+      lat: 24.9576,
+      lon: 46.6988,
+      elevationFt: 2049,
+      country: 'Saudi Arabia',
+    });
+    expect(ld['@type']).toBe('Airport');
+    expect(ld.icaoCode).toBe('OERK');
+    expect(ld.iataCode).toBe('RUH');
+    expect(ld.url).toBe(`${SITE_ORIGIN}/tools/aerodromes/OERK`);
+    expect(ld.geo).toMatchObject({
+      '@type': 'GeoCoordinates',
+      latitude: 24.9576,
+      longitude: 46.6988,
+      elevation: '2049 ft',
+    });
+    expect(ld.address).toMatchObject({ '@type': 'PostalAddress', addressCountry: 'Saudi Arabia' });
+  });
+  it('omits optional codes/geo when absent', () => {
+    const ld = airportLd({ name: 'Some Strip', icao: 'OXXX', path: '/tools/aerodromes/OXXX' });
+    expect('iataCode' in ld).toBe(false);
+    expect('geo' in ld).toBe(false);
+    expect('address' in ld).toBe(false);
   });
 });

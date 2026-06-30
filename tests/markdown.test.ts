@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseInline, parseMarkdown, safeHref } from '../src/calc/markdown';
+import { parseInline, parseMarkdown, safeHref, toSpeechText } from '../src/calc/markdown';
 
 describe('parseInline', () => {
   it('splits bold and code out of surrounding text', () => {
@@ -107,5 +107,27 @@ describe('parseMarkdown', () => {
       'paragraph',
       'blockquote',
     ]);
+  });
+});
+
+describe('toSpeechText', () => {
+  it('drops bold and inline-code markers so symbols are not spoken', () => {
+    expect(toSpeechText('see **GACAR** at `91.155` now')).toBe('see GACAR at 91.155 now.');
+  });
+
+  it('speaks only the link text, not the href', () => {
+    expect(toSpeechText('[Part 91](/library/part-91)')).toBe('Part 91.');
+  });
+
+  it('flattens headings and lists with pauses and no markup', () => {
+    expect(toSpeechText('## Weather minima\n- one\n- two')).toBe('Weather minima. one. two.');
+  });
+
+  it('reads the section sign as a word', () => {
+    expect(toSpeechText('§91.155')).toBe('section 91.155.');
+  });
+
+  it('returns an empty string for whitespace-only input', () => {
+    expect(toSpeechText('   \n  ')).toBe('');
   });
 });

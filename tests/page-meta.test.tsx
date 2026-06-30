@@ -11,6 +11,16 @@ function Probe({ title, desc }: { title?: string; desc?: string }) {
   return null;
 }
 
+function NoindexProbe() {
+  usePageMeta('Account', 'private', undefined, { noindex: true });
+  return null;
+}
+
+function ArticleProbe() {
+  usePageMeta('Part 91', 'rules', undefined, { ogType: 'article' });
+  return null;
+}
+
 function LdProbe() {
   usePageMeta('Crosswind', 'desc', [
     { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Crosswind' },
@@ -29,6 +39,13 @@ const ogTitle = () =>
   document.head.querySelector('meta[property="og:title"]')?.getAttribute('content');
 const metaDesc = () =>
   document.head.querySelector('meta[name="description"]')?.getAttribute('content');
+const robots = () =>
+  document.head.querySelector('meta[data-page-robots]')?.getAttribute('content') ?? null;
+const ogType = () =>
+  document.head.querySelector('meta[property="og:type"]')?.getAttribute('content');
+const alternates = () => document.head.querySelectorAll('link[rel="alternate"][hreflang]').length;
+const twitterTitle = () =>
+  document.head.querySelector('meta[name="twitter:title"]')?.getAttribute('content');
 
 afterEach(cleanup);
 
@@ -65,5 +82,34 @@ describe('usePageMeta', () => {
     expect(document.head.querySelectorAll('script[data-managed-ld]')).toHaveLength(1);
     unmount();
     expect(managedLd()).toBeNull();
+  });
+
+  it('mirrors the title/description into explicit Twitter tags', () => {
+    renderProbe(<Probe title="Crosswind" desc="Headwind and crosswind components." />);
+    expect(twitterTitle()).toBe('Crosswind — Fly GACA');
+  });
+
+  it('sets og:type to article for article-like routes', () => {
+    renderProbe(<ArticleProbe />);
+    expect(ogType()).toBe('article');
+  });
+
+  it('noindex emits a robots tag and suppresses hreflang + JSON-LD', () => {
+    const { unmount } = renderProbe(<NoindexProbe />);
+    expect(robots()).toBe('noindex, follow');
+    expect(alternates()).toBe(0);
+    expect(managedLd()).toBeNull();
+    unmount();
+    // The route-managed robots tag is cleared once the noindexed route unmounts.
+    expect(robots()).toBeNull();
+  });
+
+  it('does not leave a stale noindex when an indexable route follows', () => {
+    const { unmount } = renderProbe(<NoindexProbe />);
+    expect(robots()).toBe('noindex, follow');
+    unmount();
+    renderProbe(<Probe title="Crosswind" desc="components" />);
+    expect(robots()).toBeNull();
+    expect(alternates()).toBeGreaterThan(0);
   });
 });

@@ -97,42 +97,69 @@ app.use(
     message: { error: 'Too many requests, please try again later.' },
   }),
 );
-// CORS: restrict to same origin (adjust if needed)
+// CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
+// /api/* here, so the Origin we see is the page origin. Production fronts are
+// listed exactly; preview/channel deploys match a few project-scoped suffixes.
+const ALLOWED_ORIGINS = new Set([
+  'https://flygaca.com',
+  'https://www.flygaca.com',
+  'https://flygaca-app.web.app',
+  'https://flygaca-app.firebaseapp.com',
+  'https://flygaca-app.vercel.app',
+]);
+// Project-scoped preview/channel hosts (https only). Add the Netlify / Cloudflare
+// mirror origins here if those fronts are ever accessed directly.
+const ALLOWED_ORIGIN_SUFFIXES = [
+  '.flygaca-app.web.app', // Firebase Hosting preview channels
+  '.flygaca-app.firebaseapp.com',
+  '-flygaca-app.vercel.app', // Vercel git/preview deploys
+];
+
+function isAllowedOrigin(origin: string): boolean {
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true; // local dev
+  // The leading '.'/'-' in each suffix prevents look-alikes (e.g.
+  // evil-flygaca-app.web.app) from matching a real subdomain we control.
+  return (
+    origin.startsWith('https://') &&
+    ALLOWED_ORIGIN_SUFFIXES.some((suffix) => origin.endsWith(suffix))
+  );
+}
+
 app.use((req, res, next) => {
-  const allowedOrigin = req.headers.origin ?? '';
-  // Allow requests from the same host (including preview deployments)
-  // You can customize this list as needed.
-  if (
-    allowedOrigin === '' ||
-    allowedOrigin.endsWith('.flygaca-app.web.app') ||
-    allowedOrigin.endsWith('.flygaca-app.firebaseapp.com') ||
-    allowedOrigin.startsWith('http://localhost:') ||
-    allowedOrigin.startsWith('http://127.0.0.1:')
-  ) {
-    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, X-Firebase-AppCheck',
-    );
-    if (req.method === 'OPTIONS') {
-      return res.sendStatus(204);
-    }
-    return next();
+  const origin = req.headers.origin;
+  // No Origin → same-origin or non-browser caller: nothing to gate, and the
+  // browser needs no CORS headers. Never reflect an empty/absent origin.
+  if (!origin) return next();
+  if (!isAllowedOrigin(origin)) {
+    return res.status(403).json({ error: 'CORS not allowed' });
   }
-  return res.status(403).json({ error: 'CORS not allowed' });
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Firebase-AppCheck');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  return next();
 });
 
 app.post(['/chat', '/api/chat'], async (req: Request, res: Response): Promise<void> => {
-  // Auth / App Check.
+  // Auth / App Check. Captain Adel chat requires a signed-in Firebase user — an
+  // absent/invalid ID token (anonymous) is rejected with 401, distinct from the
+  // App Check 403 above.
+  let uid: string | undefined;
   try {
-    await authenticate(req);
+    ({ uid } = await authenticate(req));
   } catch (err) {
     if (err instanceof AuthError) {
       res.status(403).json({ error: err.message });
       return;
     }
     throw err;
+  }
+  if (!uid) {
+    res.status(401).json({ error: 'sign-in required' });
+    return;
   }
 
   const parsed = parseRequest(req.body);

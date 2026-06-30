@@ -80,6 +80,21 @@ for (const slug of guideSlugs) {
   if (!draftGuides.has(slug)) urls.set(`/guides/${slug}`, today);
 }
 
+// Aerodrome directory → one detail page per curated ICAO (the /tools/aerodromes/:icao
+// route resolves each from airports.json). Dated from the index's generated date.
+const aero = readJson('public/data/aerodromes-index.json');
+const aeroDate = isDate(aero.generated) ? aero.generated.slice(0, 10) : today;
+for (const d of aero.documents) urls.set(`/tools/aerodromes/${d.icao}`, aeroDate);
+
+// Prep packs → one detail page per pack id (src/pages/study/packs.ts). Each pack
+// page carries a unique localized name + description regardless of Pro gating.
+const packIds = [...read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
+  (m) => m[1],
+);
+for (const id of packIds) urls.set(`/study/packs/${id}`, today);
+// Not indexed by design: chart sheets and study sheets (selected by ?param on a
+// single viewer page, no per-item URL) and the 1,736 definition terms (search-only).
+
 // Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
 const HUBS = new Set(['/library', '/tools', '/learn', '/guides', '/study']);
 const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/safety']);

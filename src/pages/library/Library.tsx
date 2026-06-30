@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { itemListLd } from '../../lib/jsonld';
 import { CORPUS, fetchJson, parseSearchUrl, searchHref } from '../../lib/content';
 import type {
   CorpusDoc,
@@ -15,15 +16,17 @@ import type {
 } from '../../lib/content';
 import {
   useLibraryPrefs,
-  toggleBookmark,
   isBookmarked,
   saveSearch,
   removeSearch,
   searchKey,
   bookmarkKey,
 } from '../../lib/libraryPrefs';
+import { useBookmarkGate } from '../../lib/useBookmarkGate';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
+import { EmptyState } from '../../components/EmptyState';
+import { Alert } from '../../components/Alert';
 import { OfflineDownloads } from '../../components/pwa/OfflineDownloads';
 import { SearchHero } from '../../components/SearchHero';
 import type { HeroStat } from '../../components/SearchHero';
@@ -97,10 +100,21 @@ function highlight(text: string, needle: string) {
 
 export function Library() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.library'), t('metaDesc.library'));
   const [kind, setKind] = useState<LibraryKind>('regulations');
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<CorpusIndex>(CORPUS[kind].index, reload);
+  // Expose the active corpus as an ItemList so crawlers read the hub as an
+  // ordered set of its documents (for a crawler that's the default 74 GACAR Parts).
+  const itemLd = useMemo(
+    () =>
+      data
+        ? itemListLd(
+            data.documents.map((d) => ({ name: d.title, path: `${CORPUS[kind].base}/${d.slug}` })),
+          )
+        : undefined,
+    [data, kind],
+  );
+  usePageMeta(t('meta.library'), t('metaDesc.library'), itemLd);
   const [category, setCategory] = useState<string>('all');
   // Seed the search from a `?q=` deep link (e.g. the home dashboard's search tile).
   const [searchParams] = useSearchParams();
@@ -108,6 +122,7 @@ export function Library() {
   const [sort, setSort] = useState<SortKey>(() => SORTS[kind][0]);
   const [view, setView] = useViewMode(VIEW_KEY);
   const prefs = useLibraryPrefs();
+  const bookmark = useBookmarkGate();
   const { bookmarks, recents, searches } = prefs;
   // When applying a saved search, carry its category across the corpus switch.
   const pendingCat = useRef<string | null>(null);
@@ -260,7 +275,7 @@ export function Library() {
           className={`${styles.star} ${marked ? styles.starOn : ''}`}
           aria-pressed={marked}
           aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
-          onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
+          onClick={() => bookmark.toggle({ kind, slug: d.slug, title: d.title }, marked)}
         >
           {marked ? '★' : '☆'}
         </button>
@@ -310,7 +325,7 @@ export function Library() {
           className={`${hub.rowStar} ${marked ? hub.starOn : ''}`}
           aria-pressed={marked}
           aria-label={t(marked ? 'library.unbookmark' : 'library.bookmark')}
-          onClick={() => toggleBookmark({ kind, slug: d.slug, title: d.title })}
+          onClick={() => bookmark.toggle({ kind, slug: d.slug, title: d.title }, marked)}
         >
           {marked ? '★' : '☆'}
         </button>
@@ -337,6 +352,12 @@ export function Library() {
       />
 
       <OfflineDownloads />
+
+      <Link to="/updates" className={styles.updatesLink}>
+        <span className={styles.updatesText}>{t('alerts.libraryLink')}</span>
+        <span className={styles.updatesPro}>{t('upsell.proOnly')}</span>
+        <span aria-hidden="true">→</span>
+      </Link>
 
       {!q && recents.length > 0 && (
         <section className={styles.personal} aria-label={t('library.continueReading')}>
@@ -391,19 +412,21 @@ export function Library() {
       </div>
 
       {loading && (
-        <ul className={`${styles.grid} ${styles.skeletonGrid}`} aria-hidden="true">
+        <ul className={`${hub.grid} ${styles.skeletonGrid}`} aria-hidden="true">
           {Array.from({ length: 6 }).map((_, i) => (
             <li key={i} className={styles.skeleton} />
           ))}
         </ul>
       )}
       {error && (
-        <div className={styles.errorBox} role="alert">
-          <p>{t('common.loadError')}</p>
-          <button type="button" className={styles.retry} onClick={() => setReload((r) => r + 1)}>
-            {t('library.retry')}
-          </button>
-        </div>
+        <Alert
+          tone="error"
+          role="alert"
+          icon="⚠"
+          action={{ label: t('library.retry'), onClick: () => setReload((r) => r + 1) }}
+        >
+          {t('common.loadError')}
+        </Alert>
       )}
 
       {data && (
@@ -493,7 +516,18 @@ export function Library() {
           </div>
 
           {docs.length === 0 ? (
-            <p className={styles.empty}>{t('library.empty')}</p>
+            <EmptyState
+              icon="🔍"
+              action={{
+                label: t('common.clear'),
+                onClick: () => {
+                  setQuery('');
+                  setCategory('all');
+                },
+              }}
+            >
+              {t('library.empty')}
+            </EmptyState>
           ) : q ? (
             <ul className={listClass}>{docs.map(renderDoc)}</ul>
           ) : (

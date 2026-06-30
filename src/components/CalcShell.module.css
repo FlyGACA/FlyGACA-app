@@ -134,6 +134,59 @@
   border-block-start: 1px solid var(--border);
 }
 
+/* Primary actions sit at the inline-start; utilities (copy · share · save) are
+   pushed to the inline-end so the filled Ask-Adel CTA reads as the focal point. */
+.actionsPrimary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.actionsUtility {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/* Square icon-only utility button — same clay material as .action, no label. */
+.iconAction {
+  inline-size: 44px;
+  block-size: 44px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: var(--clay-shadow);
+  transition:
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.iconAction:hover {
+  box-shadow: var(--clay-shadow-hover);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+  color: var(--brand-hover);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+}
+.iconAction:active {
+  box-shadow: var(--clay-shadow-press);
+  transform: scale(0.94);
+}
+.iconAction:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .action {
   display: inline-flex;
   align-items: center;
