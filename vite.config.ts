@@ -112,20 +112,46 @@ export default defineConfig(({ mode }) => {
           maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
           // Offline navigations to deep client routes (e.g. /library/...) resolve
           // to the precached SPA shell; /api and /data are excluded so the proxy
-          // and the network-first data rule below keep handling them.
+          // and the network-first data rules below keep handling them.
           navigateFallback: 'index.html',
           navigateFallbackDenylist: [/^\/api\//, /^\/data\//],
           // Purge superseded precaches from earlier releases on activate.
           cleanupOutdatedCaches: true,
+          // Two-tier network-first data cache (first match wins). Both stay
+          // network-first so online reads are always freshest; the split keeps the
+          // few very large/volatile files (the ~19 MB search index, the ~21 MB
+          // worldwide airports set, chart JPGs) in their own bounded cache so they
+          // can't evict the regulatory docs a pilot explicitly saved for offline.
           runtimeCaching: [
             {
+              // Rule A — heavy/volatile assets, isolated so they don't crowd out
+              // the regulatory corpus or blow the storage quota.
+              urlPattern: ({ url }) =>
+                /^\/data\/(library-search\.json|airports(-extra)?\.json|charts\/)/.test(
+                  url.pathname,
+                ),
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'flygaca-data-heavy',
+                networkTimeoutSeconds: 3,
+                expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+            {
+              // Rule B — the regulatory corpus: Parts/library/ebook HTML plus the
+              // small JSON indexes. Shares the `flygaca-data` cache that
+              // offlineCache.saveDoc warms, so explicitly-saved docs, auto-cached
+              // bookmarks and incidentally-fetched pages all live together. The
+              // entry ceiling is high enough for all 74 GACAR Parts + their index
+              // + bookmarks without LRU-evicting a saved doc.
               urlPattern: ({ url }) => url.pathname.startsWith('/data/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'flygaca-data',
                 // Fall back to cache quickly when offline/slow instead of hanging.
                 networkTimeoutSeconds: 3,
-                expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
+                expiration: { maxEntries: 350, maxAgeSeconds: 60 * 60 * 24 * 30 },
                 // Only cache successful (or opaque) responses, never errors.
                 cacheableResponse: { statuses: [0, 200] },
               },

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 /** Every key route loads, renders a heading, and sets its own document title. */
 const ROUTES = [

@@ -14,7 +14,8 @@ import styles from './account.module.css';
 
 export function Currency() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.currency'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.currency'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />

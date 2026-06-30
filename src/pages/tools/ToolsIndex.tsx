@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { MagnifyingGlass, Star, ClockCounterClockwise } from '@phosphor-icons/react';
 import { TOOLS, TOOL_CATEGORIES, type ToolCategoryId, type ToolMeta } from '../../lib/tools';
 import { useToolPrefs, toggleFavorite, pushRecent } from '../../lib/toolPrefs';
+import { CategoryIcon, TOOL_ICON_WEIGHT } from '../../lib/toolIcons';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
+import { EmptyState } from '../../components/EmptyState';
 import { SectionHeader } from '../../components/SectionHeader';
 import { SearchHero } from '../../components/SearchHero';
 import type { HeroStat } from '../../components/SearchHero';
@@ -22,22 +25,15 @@ const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4
 const catTone = (cat: ToolCategoryId) =>
   CAT_TOKENS[Math.max(0, TOOL_CATEGORIES.indexOf(cat)) % CAT_TOKENS.length];
 
-/** A small glyph per category, for the headers and jump nav. */
-const CAT_ICON: Record<ToolCategoryId, string> = {
-  'wind-runway': '🛬',
-  atmosphere: '🌡️',
-  speed: '💨',
-  'climb-descent': '📈',
-  navigation: '🧭',
-  'fuel-weight': '⛽',
-  'time-cycles': '🕐',
-  weather: '🌦️',
-  gacar: '📋',
-  currency: '🪪',
-  procedures: '🗼',
-  reference: '📖',
-  directory: '🗂️',
-};
+/** Section heading content: an accent-toned glyph beside the label. */
+function TitleWithIcon({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <span className={styles.secTitle}>
+      {icon}
+      <span>{children}</span>
+    </span>
+  );
+}
 
 /** Quick-pick categories surfaced as chips in the hero. */
 const POPULAR_CATS: ToolCategoryId[] = [
@@ -46,6 +42,17 @@ const POPULAR_CATS: ToolCategoryId[] = [
   'fuel-weight',
   'weather',
   'gacar',
+];
+
+/** Curated flagship tools surfaced in the "Start here" row at the top of the
+ *  default view — the most-reached-for calculators. Edit this list to retune. */
+const FEATURED: string[] = [
+  'crosswind',
+  'density-altitude',
+  'wind-triangle',
+  'fuel-reserves',
+  'metar',
+  'weight-balance',
 ];
 
 /** Sort orders; 'category' keeps the grouped view, 'name' goes flat A–Z. */
@@ -138,7 +145,8 @@ export function ToolsIndex() {
         )
       : filtered;
 
-  // Pinned + recent rows only in the grouped (default) view.
+  // Featured "Start here" row + pinned/recent rows — grouped (default) view only.
+  const featured = FEATURED.map((id) => byId.get(id)).filter((x): x is ToolMeta => Boolean(x));
   const pinned = favorites.map((id) => byId.get(id)).filter((x): x is ToolMeta => Boolean(x));
   const recent = recents
     .map((id) => byId.get(id))
@@ -244,7 +252,8 @@ export function ToolsIndex() {
               aria-pressed={category === cat}
               onClick={() => setCategory(cat)}
             >
-              <span aria-hidden="true">{CAT_ICON[cat]}</span> {t(`tools.categories.${cat}`)}
+              <CategoryIcon cat={cat} size={16} />
+              {t(`tools.categories.${cat}`)}
             </button>
           ))}
         </div>
@@ -272,15 +281,49 @@ export function ToolsIndex() {
       </div>
 
       <div ref={rootRef} onKeyDown={onGridKeyDown}>
+        {showGrouped && featured.length > 0 && (
+          <section className={styles.category}>
+            <SectionHeader title={t('tools.featured')} tone="var(--brand-hover)" />
+            <ul className={`${styles.featuredGrid} stagger-grid`}>
+              {featured.map((tool) => (
+                <ToolCard
+                  key={tool.id}
+                  tool={tool}
+                  tone={catTone(tool.category)}
+                  query={q}
+                  favorite={favorites.includes(tool.id)}
+                  view="grid"
+                  featured
+                />
+              ))}
+            </ul>
+          </section>
+        )}
         {showGrouped && pinned.length > 0 && (
           <section className={styles.category}>
-            <SectionHeader title={`★ ${t('tools.pinned')}`} tone="var(--gold)" />
+            <SectionHeader
+              title={
+                <TitleWithIcon icon={<Star size={20} weight="fill" aria-hidden />}>
+                  {t('tools.pinned')}
+                </TitleWithIcon>
+              }
+              tone="var(--gold)"
+            />
             {renderGrid(pinned)}
           </section>
         )}
         {showGrouped && recent.length > 0 && (
           <section className={styles.category}>
-            <SectionHeader title={`🕐 ${t('tools.recent')}`} tone="var(--cat-2)" />
+            <SectionHeader
+              title={
+                <TitleWithIcon
+                  icon={<ClockCounterClockwise size={20} weight={TOOL_ICON_WEIGHT} aria-hidden />}
+                >
+                  {t('tools.recent')}
+                </TitleWithIcon>
+              }
+              tone="var(--cat-2)"
+            />
             {renderGrid(recent)}
           </section>
         )}
@@ -289,19 +332,42 @@ export function ToolsIndex() {
           <nav className={styles.jump} aria-label={t('tools.jumpNav')}>
             {grouped.map(({ cat }) => (
               <a key={cat} href={`#${cat}`} className={styles.jumpChip}>
-                <span aria-hidden="true">{CAT_ICON[cat]}</span> {t(`tools.categories.${cat}`)}
+                <CategoryIcon cat={cat} size={16} />
+                {t(`tools.categories.${cat}`)}
               </a>
             ))}
           </nav>
         )}
 
         {flat.length === 0 ? (
-          <p className={styles.empty}>{t('tools.empty')}</p>
+          <div className={styles.emptyState}>
+            <MagnifyingGlass className={styles.emptyIcon} size={44} weight="regular" aria-hidden />
+            <p className={styles.emptyMsg}>{t('tools.empty')}</p>
+            <button
+              type="button"
+              className="btn btn-clay"
+              onClick={() => {
+          <EmptyState
+            icon={<MagnifyingGlass size={44} weight="regular" aria-hidden />}
+            action={{
+              label: t('common.clear'),
+              onClick: () => {
+                setQuery('');
+                setCategory('all');
+              },
+            }}
+          >
+            {t('tools.empty')}
+          </EmptyState>
         ) : showGrouped ? (
           grouped.map(({ cat, tools }) => (
             <section key={cat} id={cat} className={styles.category}>
               <SectionHeader
-                title={`${CAT_ICON[cat]} ${t(`tools.categories.${cat}`)}`}
+                title={
+                  <TitleWithIcon icon={<CategoryIcon cat={cat} size={20} />}>
+                    {t(`tools.categories.${cat}`)}
+                  </TitleWithIcon>
+                }
                 tone={catTone(cat)}
               />
               {renderGrid(tools)}
@@ -325,12 +391,14 @@ function ToolCard({
   query,
   favorite,
   view,
+  featured = false,
 }: {
   tool: ToolMeta;
   tone: string;
   query: string;
   favorite: boolean;
   view: ViewMode;
+  featured?: boolean;
 }) {
   const { t } = useTranslation();
   const live = tool.status === 'live';
@@ -348,7 +416,7 @@ function ToolCard({
       aria-pressed={favorite}
       onClick={() => toggleFavorite(tool.id)}
     >
-      {favorite ? '★' : '☆'}
+      <Star size={18} weight={favorite ? 'fill' : 'regular'} aria-hidden />
     </button>
   );
 
@@ -356,6 +424,7 @@ function ToolCard({
     const inner = (
       <>
         <span className={hub.rowBar} aria-hidden="true" />
+        <CategoryIcon cat={tool.category} size={18} className={styles.rowIcon} />
         <span className={styles.rowTitle}>{highlight(name, query)}</span>
         {tool.badge === 'new' && live && <span className={styles.badge}>{t('tools.new')}</span>}
         <span className={styles.rowCat}>{t(`tools.categories.${tool.category}`)}</span>
@@ -390,6 +459,7 @@ function ToolCard({
     <>
       <span className={styles.catBar} aria-hidden="true" />
       <span className={styles.cardHead}>
+        <CategoryIcon cat={tool.category} size={18} className={styles.cardIcon} />
         <h3 className={styles.cardTitle}>{highlight(name, query)}</h3>
         {tool.badge === 'new' && live && <span className={styles.badge}>{t('tools.new')}</span>}
       </span>
@@ -399,7 +469,7 @@ function ToolCard({
   );
   return (
     <li
-      className={`${styles.card} ${live ? '' : styles.pending}`}
+      className={`${styles.card} ${featured ? styles.cardFeatured : ''} ${live ? '' : styles.pending}`}
       style={{ '--cat-color': tone } as CSSProperties}
     >
       {star}

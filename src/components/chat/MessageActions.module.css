@@ -19,11 +19,15 @@
   cursor: pointer;
   transition:
     color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 .action:hover {
   color: var(--brand-hover);
   background: var(--surface-raised);
+}
+.action:active {
+  transform: scale(0.97);
 }
 
 /* A selected thumb stays lit so the reader's rating is visible at a glance. */

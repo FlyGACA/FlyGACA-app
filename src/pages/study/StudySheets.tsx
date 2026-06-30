@@ -7,6 +7,8 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import type { PdfsIndex, PdfDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ExternalLink } from '../../components/ExternalLink';
+import { EmptyState } from '../../components/EmptyState';
+import { Alert } from '../../components/Alert';
 import styles from './StudySheets.module.css';
 
 /** Deployed PDF path (the index stores the legacy `assets/…` path). */
@@ -74,16 +76,14 @@ export function StudySheets() {
 
       {index.loading && <div className={styles.skeleton} aria-hidden="true" />}
       {index.error && (
-        <p role="alert" className={styles.errorRow}>
-          {t('common.loadError')}{' '}
-          <button
-            type="button"
-            className={styles.retry}
-            onClick={() => setReloadToken((n) => n + 1)}
-          >
-            {t('common.retry')}
-          </button>
-        </p>
+        <Alert
+          tone="error"
+          role="alert"
+          icon="⚠"
+          action={{ label: t('common.retry'), onClick: () => setReloadToken((n) => n + 1) }}
+        >
+          {t('common.loadError')}
+        </Alert>
       )}
 
       {files.length > 0 && (
@@ -97,7 +97,15 @@ export function StudySheets() {
               placeholder={t('sheets.search')}
               aria-label={t('sheets.search')}
             />
-            {!hasMatches && <p className={styles.noMatch}>{t('sheets.noMatch')}</p>}
+            {!hasMatches && (
+              <EmptyState
+                compact
+                icon="🔍"
+                action={{ label: t('common.clear'), onClick: () => setQ('') }}
+              >
+                {t('sheets.noMatch')}
+              </EmptyState>
+            )}
             {groups.map((g) => (
               <div key={g.id} className={styles.group}>
                 <h2 className={styles.groupLabel}>{g.label}</h2>

@@ -6,6 +6,7 @@ import { CaptainAvatar } from '../components/CaptainAvatar';
 import { PageHero } from '../components/PageHero';
 import { StatStrip } from '../components/StatStrip';
 import { SectionHeader } from '../components/SectionHeader';
+import { Stepper } from '../components/Stepper';
 import { BentoGrid } from '../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
 import { usePageMeta } from '../lib/usePageMeta';
@@ -90,17 +91,7 @@ export function About() {
       {/* How it works — Find → Ask → Verify. */}
       <section className={styles.block} aria-labelledby="about-how">
         <SectionHeader id="about-how" title={t('about.howItWorks.head')} tone="var(--cat-4)" />
-        <ol className={styles.steps}>
-          {steps.map((s, i) => (
-            <li key={i} className={styles.step}>
-              <span className={styles.stepNum} aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3 className={styles.stepTitle}>{s.h}</h3>
-              <p className={styles.stepBody}>{s.p}</p>
-            </li>
-          ))}
-        </ol>
+        <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
       </section>
 
       {/* Capability grid. */}

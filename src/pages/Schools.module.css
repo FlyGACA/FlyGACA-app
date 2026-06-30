@@ -31,48 +31,6 @@
   line-height: var(--lh-body);
 }
 
-/* How it works — numbered steps. */
-.steps {
-  list-style: none;
-  margin: var(--space-2) 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--space-4);
-}
-.step {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-6);
-  border: var(--clay-border);
-  border-radius: var(--clay-radius);
-  background: var(--surface);
-  box-shadow: var(--clay-shadow);
-}
-.stepNum {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 36px;
-  block-size: 36px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--brand) 16%, transparent);
-  color: var(--brand-hover);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  box-shadow: 0 0 12px color-mix(in srgb, var(--brand-hover) 45%, transparent);
-}
-.stepTitle {
-  font-size: var(--fs-lg);
-}
-.stepBody {
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-}
-
 /* ── Enquiry form ── */
 .formWrap {
   display: flex;
@@ -126,6 +84,18 @@
   border-color: var(--brand-hover);
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+/* Inline error — only after the user has interacted with an invalid field
+   (:user-invalid never fires on the initial empty render). Falls back to the
+   native validation tooltip where unsupported. */
+.field input:user-invalid,
+.field textarea:user-invalid {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+.field input:user-invalid:focus,
+.field textarea:user-invalid:focus {
+  outline-color: var(--color-error);
 }
 .send {
   grid-column: 1 / -1;

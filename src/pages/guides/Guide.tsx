@@ -61,6 +61,10 @@ export function Guide() {
           breadcrumbLd(crumbs),
         ]
       : undefined,
+    // Valid guides are editorial articles; an unknown slug renders <NotFound/>,
+    // so noindex it here (this parent hook runs after the child's, so it owns
+    // the final robots state).
+    valid ? { ogType: 'article' } : { noindex: true },
   );
 
   const [progress, setProgress] = useState(0);

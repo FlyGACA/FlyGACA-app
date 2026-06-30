@@ -56,18 +56,20 @@ describe('<CalcShell />', () => {
     vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
     try {
       renderShell();
-      const btn = screen.getByText('Copy link to this setup');
+      // Copy is an icon button; its accessible name carries the label and the
+      // transient confirmation (the sr-only live region announces it too).
+      const btn = screen.getByRole('button', { name: 'Copy link to this setup' });
       await act(async () => {
         fireEvent.click(btn);
       });
       expect(writeText).toHaveBeenCalledWith(window.location.href);
-      // The confirmation appears twice by design — the button's visible label and
-      // the sr-only live region (WCAG 4.1.3) — so assert the button's own label.
-      expect(btn).toHaveTextContent('✓ Link copied');
+      expect(btn).toHaveAccessibleName('✓ Link copied');
       await act(async () => {
         vi.advanceTimersByTime(1500);
       });
-      expect(screen.getByText('Copy link to this setup')).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Copy link to this setup' }),
+      ).toBeInTheDocument();
     } finally {
       vi.unstubAllGlobals();
       vi.useRealTimers();

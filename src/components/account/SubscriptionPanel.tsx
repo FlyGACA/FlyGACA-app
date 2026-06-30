@@ -6,6 +6,7 @@ import { effectivePlan } from '../../lib/entitlements';
 import { startBillingPortal } from '../../lib/billing';
 import { isAuthAvailable } from '../../lib/auth';
 import { StatusPill } from '../StatusPill';
+import { Alert } from '../Alert';
 import styles from './SubscriptionPanel.module.css';
 
 function fmtDate(iso?: string): string | null {
@@ -90,9 +91,9 @@ export function SubscriptionPanel() {
       )}
 
       {error && (
-        <p role="alert" className={styles.error}>
+        <Alert tone="error" role="alert" icon="⚠">
           {error}
-        </p>
+        </Alert>
       )}
     </section>
   );

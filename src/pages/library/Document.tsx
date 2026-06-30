@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
@@ -9,11 +9,11 @@ import type { CorpusIndex, LibraryKind } from '../../lib/content';
 import { docNeighbors, relatedDocs } from '../../calc/corpusNav';
 import { adelLink } from '../../lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
-import { share } from '../../lib/native-bridge';
+import { shareCurrent } from '../../lib/share';
+import { useOnline } from '../../lib/pwa';
 import { usePageMeta } from '../../lib/usePageMeta';
 import {
   useLibraryPrefs,
-  toggleBookmark,
   recordView,
   addNote,
   removeNote,
@@ -21,6 +21,8 @@ import {
   docKey,
   type LibNote,
 } from '../../lib/libraryPrefs';
+import { useBookmarkGate } from '../../lib/useBookmarkGate';
+import { useFeature } from '../../lib/features';
 import { SelectionPopover, type SelectionRect } from '../../components/library/SelectionPopover';
 import { breadcrumbLd, techArticleLd, type Crumb } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
@@ -149,6 +151,9 @@ function wrapAnnotation(root: HTMLElement, note: LibNote, markClass: string): bo
 export function Document({ kind = 'regulations' }: DocumentProps) {
   const { t, i18n } = useTranslation();
   const { hash, pathname } = useLocation();
+  const navigate = useNavigate();
+  const bookmark = useBookmarkGate();
+  const canOffline = useFeature('offline-sync');
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const q = (searchParams.get('q') ?? '').trim();
@@ -157,6 +162,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);
   const doc = docs.find((d) => d.slug === slug);
   const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
+  const online = useOnline();
   const prefs = useLibraryPrefs();
   const dk = docKey({ kind, slug: slug ?? '' });
   const notesForDoc = prefs.notes[dk];
@@ -169,6 +175,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const [copiedId, setCopiedId] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
   const docDesc = doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined;
+  // The corpus carries a real freshness signal (effectiveDate, or a date-shaped
+  // revision marker); fall back to the index's generated date. Mirrors the same
+  // resolution in scripts/build-sitemap.mjs + scripts/prerender-head.mjs.
+  const asDate = (v?: string) => (v && /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : undefined);
+  const dateModified =
+    asDate(doc?.effectiveDate) ?? asDate(doc?.revision) ?? asDate(index.data?.generated);
   // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>.
   const crumbs: Crumb[] = doc?.title
     ? [
@@ -187,10 +199,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             description: docDesc,
             path: pathname,
             lang: i18n.language,
+            dateModified,
           }),
           breadcrumbLd(crumbs),
         ]
       : undefined,
+    { ogType: 'article' },
   );
 
   // ── Reading font scale (persisted) ──
@@ -404,6 +418,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   }, [slug]);
   async function toggleSave() {
     if (!slug) return;
+    // Saving for offline is a Pro perk; removing an existing save is always
+    // allowed so a lapsed user can reclaim space.
+    if (!saved && !canOffline) {
+      navigate('/pricing');
+      return;
+    }
     const urls = [`${corpus.dir}/${slug}.html`, corpus.index];
     if (saved) {
       await removeDoc(slug, urls);
@@ -414,7 +434,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     }
   }
   function shareDoc() {
-    void share({ title: doc?.title, url: window.location.href });
+    void shareCurrent('library', { title: doc?.title });
   }
 
   // The eyebrow badge: "Part 91" for regulations, the corpus badge otherwise.
@@ -438,7 +458,16 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
       </p>
 
       {loading && <p>{t('common.loading')}</p>}
-      {error && <p role="alert">{t('common.loadError')}</p>}
+      {error &&
+        (online ? (
+          <p role="alert">{t('common.loadError')}</p>
+        ) : (
+          // The doc wasn't in the offline cache and there's no network to fetch it.
+          <div className={styles.offlineNotice} role="status">
+            <h2>{t('offline.unavailable')}</h2>
+            <p>{t('offline.unavailableHint')}</p>
+          </div>
+        ))}
 
       {html && (
         <>
@@ -517,9 +546,19 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                   type="button"
                   className={`${styles.toolPill} ${docBookmarked ? styles.toolPillOn : ''}`}
                   aria-pressed={docBookmarked}
-                  onClick={() => toggleBookmark({ kind, slug: slug as string, title: doc.title })}
+                  title={
+                    !docBookmarked && !bookmark.canBookmark
+                      ? t('library.bookmarkProLock')
+                      : undefined
+                  }
+                  onClick={() =>
+                    bookmark.toggle({ kind, slug: slug as string, title: doc.title }, docBookmarked)
+                  }
                 >
                   {docBookmarked ? `★ ${t('library.bookmarked')}` : `☆ ${t('library.bookmark')}`}
+                  {!docBookmarked && !bookmark.canBookmark && (
+                    <span className={styles.proTag}>{t('upsell.proOnly')}</span>
+                  )}
                 </button>
               )}
               {offlineSupported() && (
@@ -527,9 +566,13 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                   type="button"
                   className={`${styles.toolPill} ${saved ? styles.toolPillOn : ''}`}
                   aria-pressed={saved}
+                  title={!saved && !canOffline ? t('offline.proLock') : undefined}
                   onClick={() => void toggleSave()}
                 >
                   {saved ? `✓ ${t('offline.saved')}` : `⬇ ${t('offline.save')}`}
+                  {!saved && !canOffline && (
+                    <span className={styles.proTag}>{t('upsell.proOnly')}</span>
+                  )}
                 </button>
               )}
               <button type="button" className={styles.toolPill} onClick={shareDoc}>
@@ -594,13 +637,16 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                       aria-label={t('library.bookmarkSection')}
                       title={t('library.bookmarkSection')}
                       onClick={() =>
-                        toggleBookmark({
-                          kind,
-                          slug: slug as string,
-                          title: doc?.title ?? e.title,
-                          anchor: e.id,
-                          anchorText: e.title,
-                        })
+                        bookmark.toggle(
+                          {
+                            kind,
+                            slug: slug as string,
+                            title: doc?.title ?? e.title,
+                            anchor: e.id,
+                            anchorText: e.title,
+                          },
+                          !!slug && isBookmarked(prefs, kind, slug, e.id),
+                        )
                       }
                     >
                       {slug && isBookmarked(prefs, kind, slug, e.id) ? '★' : '☆'}

@@ -1,8 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
+import { OutputGrid } from '../../components/calc/Grids';
+import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { trueAirspeed } from '../../calc/tas';
-import shared from './CalcFields.module.css';
+import { NumberField } from '../../components/calc/NumberField';
+import { ResultStat } from '../../components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 
 const EXAMPLE = { cas: '110', pa: '8000', oat: '10' };
 
@@ -44,50 +48,39 @@ export function Tas() {
         { to: '/tools/wind-triangle', label: t('tools.items.wind-triangle.name') },
       ]}
     >
-      <div className={shared.inputs}>
-        <label className={shared.field}>
-          <span>{t('tas.cas')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.cas}
-            onChange={(e) => set('cas', e.target.value)}
-            placeholder="110"
-          />
-        </label>
-        <label className={shared.field}>
-          <span>{t('tas.pa')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.pa}
-            onChange={(e) => set('pa', e.target.value)}
-            placeholder="8000"
-          />
-        </label>
-        <label className={shared.field}>
-          <span>{t('tas.oat')}</span>
-          <input
-            inputMode="numeric"
-            value={inputs.oat}
-            onChange={(e) => set('oat', e.target.value)}
-            placeholder="10"
-          />
-        </label>
-      </div>
+      <FieldGrid>
+        <NumberField
+          label={t('tas.cas')}
+          value={inputs.cas}
+          onChange={(v) => set('cas', v)}
+          placeholder="110"
+        />
+        <NumberField
+          label={t('tas.pa')}
+          value={inputs.pa}
+          onChange={(v) => set('pa', v)}
+          placeholder="8000"
+        />
+        <NumberField
+          label={t('tas.oat')}
+          value={inputs.oat}
+          onChange={(v) => set('oat', v)}
+          placeholder="10"
+        />
+      </FieldGrid>
 
-      <dl className={shared.outputs}>
-        <div>
-          <dt>{t('tas.trueAirspeed')}</dt>
-          <dd className={shared.headline}>{r ? `${Math.round(r.tas)} kt` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('tas.mach')}</dt>
-          <dd>{r ? `M ${r.mach.toFixed(3)}` : '—'}</dd>
-        </div>
-        <div>
-          <dt>{t('tas.isaDev')}</dt>
-          <dd>{r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}</dd>
-        </div>
-      </dl>
+      <OutputGrid>
+        <ResultStat
+          label={t('tas.trueAirspeed')}
+          value={r ? `${Math.round(r.tas)} kt` : '—'}
+          tone="headline"
+        />
+        <ResultStat label={t('tas.mach')} value={r ? `M ${r.mach.toFixed(3)}` : '—'} />
+        <ResultStat
+          label={t('tas.isaDev')}
+          value={r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}
+        />
+      </OutputGrid>
     </CalcShell>
   );
 }

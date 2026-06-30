@@ -19,6 +19,7 @@ const Document = lazyNamed(() => import('./pages/library/Document'), 'Document')
   kind?: 'reference' | 'handbook';
 }>;
 const Charts = lazyNamed(() => import('./pages/library/Charts'), 'Charts');
+const Updates = lazyNamed(() => import('./pages/updates/Updates'), 'Updates');
 const Chat = lazyNamed(() => import('./pages/chat/Chat'), 'Chat');
 
 // Tools
@@ -122,6 +123,7 @@ const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage'
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
 const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPage');
 const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
+const Offline = lazyNamed(() => import('./pages/Offline'), 'Offline');
 
 /**
  * Route table for the app. Each page lives under src/pages/. As more pages are
@@ -138,6 +140,7 @@ export const router = createBrowserRouter([
       { path: 'library/reference/:slug', element: <Document kind="reference" /> },
       { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },
+      { path: 'updates', element: <Updates /> },
       { path: 'chat', element: <Chat /> },
       { path: 'tools', element: <ToolsIndex /> },
       { path: 'tools/crosswind', element: <Crosswind /> },
@@ -222,6 +225,7 @@ export const router = createBrowserRouter([
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'safety', element: <SafetyPage /> },
+      { path: 'offline', element: <Offline /> },
       { path: '*', element: <NotFound /> },
     ],
   },
