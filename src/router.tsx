@@ -19,6 +19,7 @@ const Document = lazyNamed(() => import('./pages/library/Document'), 'Document')
   kind?: 'reference' | 'handbook';
 }>;
 const Charts = lazyNamed(() => import('./pages/library/Charts'), 'Charts');
+const Updates = lazyNamed(() => import('./pages/updates/Updates'), 'Updates');
 const Chat = lazyNamed(() => import('./pages/chat/Chat'), 'Chat');
 
 // Tools
@@ -138,6 +139,7 @@ export const router = createBrowserRouter([
       { path: 'library/reference/:slug', element: <Document kind="reference" /> },
       { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },
+      { path: 'updates', element: <Updates /> },
       { path: 'chat', element: <Chat /> },
       { path: 'tools', element: <ToolsIndex /> },
       { path: 'tools/crosswind', element: <Crosswind /> },

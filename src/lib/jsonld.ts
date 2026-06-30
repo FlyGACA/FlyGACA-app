@@ -214,3 +214,42 @@ export function softwareAppLd(a: SoftwareAppInput): JsonLd {
     publisher: { '@id': ORG_ID },
   };
 }
+
+export interface AirportInput {
+  name: string;
+  icao: string;
+  iata?: string;
+  /** Router path of the aerodrome page (canonicalized internally). */
+  path: string;
+  lat?: number;
+  lon?: number;
+  elevationFt?: number;
+  country?: string;
+}
+
+/**
+ * Airport — for an aerodrome directory page. A schema.org `Airport` (a Place)
+ * describes the real-world facility, which is what the page is *about*; this is
+ * the correct node for it rather than the generic tool SoftwareApplication.
+ */
+export function airportLd(a: AirportInput): JsonLd {
+  return {
+    '@context': CONTEXT,
+    '@type': 'Airport',
+    name: a.name,
+    icaoCode: a.icao,
+    ...(a.iata ? { iataCode: a.iata } : {}),
+    url: canonicalUrl(a.path),
+    ...(typeof a.lat === 'number' && typeof a.lon === 'number'
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: a.lat,
+            longitude: a.lon,
+            ...(typeof a.elevationFt === 'number' ? { elevation: `${a.elevationFt} ft` } : {}),
+          },
+        }
+      : {}),
+    ...(a.country ? { address: { '@type': 'PostalAddress', addressCountry: a.country } } : {}),
+  };
+}

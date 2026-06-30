@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test('crosswind calculator computes from the worked example', async ({ page }) => {
   await page.goto('/tools/crosswind');

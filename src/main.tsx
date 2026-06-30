@@ -2,12 +2,39 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { bootI18n } from './i18n';
+// Self-hosted fonts, replacing the Google Fonts CDN we used to depend on — that
+// stylesheet 503'd intermittently and flashed a fallback face. Imported before the
+// tokens that name them; Vite emits hashed woff2 the PWA precaches. We pull only the
+// subsets this bilingual app renders — Latin (+ Latin-ext) for both faces, plus
+// Arabic for Readex (RTL) — so unused Cyrillic/Greek/Vietnamese never enter the bundle.
+import '@fontsource/readex-pro/latin-300.css';
+import '@fontsource/readex-pro/latin-400.css';
+import '@fontsource/readex-pro/latin-500.css';
+import '@fontsource/readex-pro/latin-600.css';
+import '@fontsource/readex-pro/latin-700.css';
+import '@fontsource/readex-pro/latin-ext-400.css';
+import '@fontsource/readex-pro/arabic-400.css';
+import '@fontsource/readex-pro/arabic-500.css';
+import '@fontsource/readex-pro/arabic-600.css';
+import '@fontsource/readex-pro/arabic-700.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+import '@fontsource/jetbrains-mono/latin-600.css';
+import '@fontsource/jetbrains-mono/latin-ext-400.css';
 import './styles/tokens.css';
 import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
+import { captureReferral } from './lib/share';
+import { initAnalytics } from './lib/analytics';
 import { canonicalRedirect, isMirrorHost } from './lib/seo';
+import { applyTheme, readTheme } from './lib/theme';
+
+// Reflect the persisted theme on <html> before first paint. The inline script in
+// index.html already does this for the cockpit case to avoid a colour flash; this
+// is the canonical, belt-and-suspenders application (and restores Falcon cleanly).
+applyTheme(readTheme());
 
 // Mirror/preview fronts (*.web.app, *.vercel.app, *.netlify.app, *.pages.dev)
 // serve the same build for redundancy but must not be indexed as duplicates of
@@ -32,6 +59,10 @@ if (redirectTo) {
   const rootEl = document.getElementById('root');
   if (!rootEl) throw new Error('Root element #root not found');
 
+  // Capture an inbound ?ref= (from a shared link), stash it, and strip it from
+  // the URL before the router reads the location — keeps the canonical clean.
+  captureReferral();
+
   // Load only the active language's strings before the first render — no flash of
   // untranslated keys, and the other language stays off the boot path.
   void bootI18n().then(() => {
@@ -45,4 +76,8 @@ if (redirectTo) {
   // Native shell bootstrap (no-op on the web). Deep links route through the
   // same data router the rest of the app uses.
   void initNative({ onDeepLink: (path) => void router.navigate(path) });
+
+  // Web product analytics + Core Web Vitals. No-op in the native shell and in
+  // dev/test — see lib/analytics.ts.
+  initAnalytics();
 }

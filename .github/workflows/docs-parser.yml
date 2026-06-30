@@ -1,0 +1,84 @@
+name: Docs parser
+
+# On merge to main, compile the regulatory Markdown corpus: lint → parse/validate cross-references
+# into public/data/regulations-lookup.json → upsert vector embeddings to Supabase pgvector.
+# Path-filtered to the content dir, so regenerating public/data/** does not retrigger this workflow.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/regulations/**'
+  workflow_dispatch:
+
+concurrency:
+  group: docs-parser-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    name: markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Lint regulatory Markdown
+        run: npm run lint:md
+
+  parse:
+    name: parse · validate cross-refs · compile lookup
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # commit the regenerated lookup back to main
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Parse + validate + compile lookup dictionary
+        run: npm run parse:regulations
+
+      - name: Upload lookup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: regulations-lookup
+          path: public/data/regulations-lookup.json
+          retention-days: 14
+
+      - name: Commit regenerated lookup (if changed)
+        run: |
+          if git diff --quiet -- public/data/regulations-lookup.json; then
+            echo "regulations-lookup.json unchanged — nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/regulations-lookup.json
+          git commit -m "chore(data): recompile regulations-lookup.json [skip ci]"
+          git push
+
+  embeddings:
+    name: upsert embeddings → Supabase pgvector
+    needs: parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Upsert vector embeddings (skips if secrets unset)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: npm run embeddings:upsert

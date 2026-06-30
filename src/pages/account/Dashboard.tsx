@@ -13,6 +13,7 @@ import { StatValue } from '../../components/bento/widgets/StatValue';
 import { StatusPill } from '../../components/StatusPill';
 import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
+import { useFeature } from '../../lib/features';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { computeCurrency, recordCurrency, actionNeeded } from '../../calc/currency';
 import { summarizeLogbook, monthlyHours } from '../../calc/logbook';
@@ -23,7 +24,8 @@ import styles from './dashboard.module.css';
 
 export function Dashboard() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.dashboard'));
+  // Session-gated — keep out of the index.
+  usePageMeta(t('meta.dashboard'), undefined, undefined, { noindex: true });
   return (
     <RequireSession>
       <Inner />
@@ -37,6 +39,7 @@ function Inner() {
   const { profile, flights, records, entitlement } = useAccount();
   const plan = effectivePlan(entitlement);
   const isPro = plan !== 'free';
+  const canExport = useFeature('currency-export');
 
   const currency = [...computeCurrency(profile, flights), ...recordCurrency(records)];
   const needs = actionNeeded(currency);
@@ -50,7 +53,7 @@ function Inner() {
     .map((i) => ({ summary: t(i.labelKey), date: i.expiry as Date }));
 
   function exportIcs() {
-    if (!isPro) {
+    if (!canExport) {
       navigate('/pricing');
       return;
     }
@@ -230,6 +233,9 @@ function Inner() {
               </Link>
               <Link to="/currency" className={styles.quickLink}>
                 {t('currency.title')}
+              </Link>
+              <Link to="/updates" className={styles.quickLink}>
+                {t('alerts.title')}
               </Link>
               <Link to="/settings" className={styles.quickLink}>
                 {t('account.settings')}

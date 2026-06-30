@@ -22,6 +22,32 @@ function setJsonLd(data?: JsonLd | JsonLd[]) {
   el.textContent = JSON.stringify(data);
 }
 
+// The route-managed robots meta carries its own attribute so it stays distinct
+// from the *host-level* `<meta name="robots">` that main.tsx adds on mirror
+// fronts — removing one must never clobber the other.
+const ROBOTS_ATTR = 'data-page-robots';
+
+/** Add `noindex, follow` for a route we keep out of the index, or remove it. */
+function setRobots(noindex: boolean) {
+  let el = document.head.querySelector<HTMLMetaElement>(`meta[${ROBOTS_ATTR}]`);
+  if (!noindex) {
+    el?.remove();
+    return;
+  }
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute('name', 'robots');
+    el.setAttribute(ROBOTS_ATTR, '');
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', 'noindex, follow');
+}
+
+/** Drop all hreflang `<link rel="alternate">` (static or previously set). */
+function clearAlternates() {
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+}
+
 const SUFFIX = 'Fly GACA';
 const DEFAULT_TITLE = 'Fly GACA — Saudi Aviation Library';
 const DEFAULT_DESC =
@@ -49,14 +75,33 @@ function setLink(rel: string, href: string, hreflang?: string) {
   el.setAttribute('href', href);
 }
 
+export interface PageMetaOptions {
+  /**
+   * Keep this route out of the index (404 + session-gated pages). Emits
+   * `<meta name="robots" content="noindex, follow">` and suppresses the
+   * hreflang alternates + JSON-LD — we don't advertise language variants or
+   * structured data for a page we're asking search engines to drop.
+   */
+  noindex?: boolean;
+  /** og:type for the route. Article-like pages (guides, library docs) → 'article'. */
+  ogType?: 'website' | 'article';
+}
+
 /**
  * Single-source head manager for the SPA. Each route sets its own title +
- * description; we mirror those into Open Graph, and emit the canonical URL,
- * hreflang alternates and locale for the current path/language. Re-runs when
+ * description; we mirror those into Open Graph + Twitter, and emit the canonical
+ * URL, hreflang alternates and locale for the current path/language. Re-runs when
  * the language changes so og:locale + hreflang stay correct.
  */
-export function usePageMeta(title?: string, description?: string, jsonLd?: JsonLd | JsonLd[]) {
+export function usePageMeta(
+  title?: string,
+  description?: string,
+  jsonLd?: JsonLd | JsonLd[],
+  opts?: PageMetaOptions,
+) {
   const { pathname } = useLocation();
+  const noindex = opts?.noindex ?? false;
+  const ogType = opts?.ogType ?? 'website';
   // Serialize the LD for a stable effect dependency (the object identity churns
   // every render, but its content only changes with the route/language).
   const jsonKey = jsonLd ? JSON.stringify(jsonLd) : '';
@@ -66,19 +111,31 @@ export function usePageMeta(title?: string, description?: string, jsonLd?: JsonL
       const desc = description ?? DEFAULT_DESC;
       const path = pathname;
       const canonical = canonicalUrl(path);
+      const image = ogImageFor(path);
 
       document.title = fullTitle;
       setMeta('meta[name="description"]', 'name', 'description', desc);
       setMeta('meta[property="og:title"]', 'property', 'og:title', fullTitle);
       setMeta('meta[property="og:description"]', 'property', 'og:description', desc);
-      setMeta('meta[property="og:type"]', 'property', 'og:type', 'website');
+      setMeta('meta[property="og:type"]', 'property', 'og:type', ogType);
       setMeta('meta[property="og:url"]', 'property', 'og:url', canonical);
-      setMeta('meta[property="og:image"]', 'property', 'og:image', ogImageFor(path));
+      setMeta('meta[property="og:image"]', 'property', 'og:image', image);
       setMeta('meta[property="og:locale"]', 'property', 'og:locale', ogLocale(i18n.language));
+      // Explicit Twitter tags (X otherwise falls back to og:*; explicit is the
+      // documented best practice). They mirror the Open Graph values 1:1.
+      setMeta('meta[name="twitter:title"]', 'name', 'twitter:title', fullTitle);
+      setMeta('meta[name="twitter:description"]', 'name', 'twitter:description', desc);
+      setMeta('meta[name="twitter:image"]', 'name', 'twitter:image', image);
 
       setLink('canonical', canonical);
-      for (const alt of hreflangAlternates(path)) setLink('alternate', alt.href, alt.hreflang);
-      setJsonLd(jsonLd);
+      setRobots(noindex);
+      if (noindex) {
+        clearAlternates();
+        setJsonLd(undefined);
+      } else {
+        for (const alt of hreflangAlternates(path)) setLink('alternate', alt.href, alt.hreflang);
+        setJsonLd(jsonLd);
+      }
     }
 
     apply();
@@ -89,9 +146,11 @@ export function usePageMeta(title?: string, description?: string, jsonLd?: JsonL
       setMeta('meta[name="description"]', 'name', 'description', DEFAULT_DESC);
       setMeta('meta[property="og:title"]', 'property', 'og:title', DEFAULT_TITLE);
       setMeta('meta[property="og:description"]', 'property', 'og:description', DEFAULT_DESC);
+      setMeta('meta[property="og:type"]', 'property', 'og:type', 'website');
+      setRobots(false);
       setJsonLd(undefined);
     };
     // jsonKey stands in for jsonLd's content in the dependency list.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, description, pathname, jsonKey]);
+  }, [title, description, pathname, jsonKey, noindex, ogType]);
 }

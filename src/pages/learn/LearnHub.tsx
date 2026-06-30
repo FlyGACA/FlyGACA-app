@@ -27,22 +27,17 @@ const POPULAR_TOPICS: GuideTopic[] = ['licensing', 'medical', 'airspace', 'weath
  * `tools.items.<id>.name` keys). Ordered by category: quick reference, GACAR rules,
  * currency/validity, directory.
  */
-const REFERENCE_TOOLS = [
-  'transponder',
-  'phonetic',
-  'units',
-  'chart-symbols',
-  'vfr-minima',
-  'oxygen',
-  'fuel-reserves',
-  'conversion-checker',
-  'part61-currency',
-  'medical-validity',
-  'flight-review',
-  'aerodromes',
-  'airspace',
-  'definitions',
+const REFERENCE_GROUPS = [
+  {
+    key: 'quick',
+    ids: ['transponder', 'phonetic', 'units', 'chart-symbols', 'conversion-checker'],
+  },
+  { key: 'rules', ids: ['vfr-minima', 'oxygen', 'fuel-reserves'] },
+  { key: 'currency', ids: ['part61-currency', 'medical-validity', 'flight-review'] },
+  { key: 'directory', ids: ['aerodromes', 'airspace', 'definitions'] },
 ] as const;
+// Flat list (every id, order preserved) for the JSON-LD catalogue.
+const REFERENCE_TOOLS = REFERENCE_GROUPS.flatMap((g) => g.ids);
 
 /**
  * The unified "Learn" hub — one search-first hero over a Guides ⇄ Practice
@@ -153,13 +148,20 @@ export function LearnHub() {
           id="learn-reference-tools"
           tone="var(--neon-cyan)"
         />
-        <nav className={styles.refChips} aria-label={t('learn.referenceTools')}>
-          {REFERENCE_TOOLS.map((id) => (
-            <Link key={id} to={`/tools/${id}`} className={styles.refChip}>
-              {t(`tools.items.${id}.name`)}
-            </Link>
+        <div className={styles.refGroups}>
+          {REFERENCE_GROUPS.map((g) => (
+            <div key={g.key} className={styles.refGroup}>
+              <p className={styles.refGroupLabel}>{t(`learn.refGroups.${g.key}`)}</p>
+              <nav className={styles.refChips} aria-label={t(`learn.refGroups.${g.key}`)}>
+                {g.ids.map((id) => (
+                  <Link key={id} to={`/tools/${id}`} className={styles.refChip}>
+                    {t(`tools.items.${id}.name`)}
+                  </Link>
+                ))}
+              </nav>
+            </div>
           ))}
-        </nav>
+        </div>
       </section>
 
       <div className={styles.footnote}>

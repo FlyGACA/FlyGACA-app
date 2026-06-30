@@ -38,6 +38,10 @@ const SOURCE_SCHEMA = z.object({
   verbatim: z.string().optional(),
   section: z.string().optional(),
   part: z.string().optional(),
+  subpart: z.string().optional(),
+  paragraph: z.string().optional(),
+  subParagraph: z.string().optional(),
+  effectiveDate: z.string().optional(),
   corpusVersion: z.string().optional(),
 });
 

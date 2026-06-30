@@ -1,17 +1,26 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../../lib/usePageMeta';
-import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { itemListLd } from '../../lib/jsonld';
+import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
 import { PACKS, PACKS_GATED, packItemCount } from './packs';
 import styles from './Study.module.css';
 
 export function Packs() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.packs'), t('metaDesc.packs'));
-  const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  // Catalog hub → ItemList of the pack detail pages (each is its own URL).
+  usePageMeta(
+    t('meta.packs'),
+    t('metaDesc.packs'),
+    itemListLd(
+      PACKS.map((p) => ({
+        name: t(`study.packCatalog.${p.id}.name`),
+        path: `/study/packs/${p.id}`,
+      })),
+    ),
+  );
+  const isPro = useFeature('prep-packs');
 
   return (
     <section className={`container ${styles.page}`}>
@@ -25,6 +34,11 @@ export function Packs() {
           const inner = (
             <>
               <span className={styles.bankTitle}>
+                {locked && (
+                  <span className={styles.lockIcon} aria-hidden="true">
+                    🔒
+                  </span>
+                )}
                 {t(`study.packCatalog.${p.id}.name`)}
                 {p.pro && <span className={styles.proTag}>{t('study.packPro')}</span>}
               </span>
@@ -37,7 +51,7 @@ export function Packs() {
           return (
             <li key={p.id}>
               {locked ? (
-                <Link to="/pricing" className={styles.bank}>
+                <Link to="/pricing" className={`${styles.bank} ${styles.bankLocked}`}>
                   {inner}
                 </Link>
               ) : (

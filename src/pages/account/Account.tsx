@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TextField } from '../../components/calc/TextField';
+import { Alert } from '../../components/Alert';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { StatusPill } from '../../components/StatusPill';
@@ -104,14 +105,14 @@ function FirebaseSignIn() {
           error={errors.password}
         />
         {errors.general && (
-          <p role="alert" className={styles.error}>
+          <Alert tone="error" role="alert" icon="⚠">
             {errors.general}
-          </p>
+          </Alert>
         )}
         {notice && (
-          <p role="status" className={styles.notice}>
+          <Alert tone="success" role="status" icon="✓">
             {notice}
-          </p>
+          </Alert>
         )}
         <button type="submit" className={styles.btn} disabled={busy || !email.trim() || !password}>
           {mode === 'in' ? t('account.signIn') : t('account.register')}
@@ -208,7 +209,9 @@ function LocalSignIn() {
 
 export function Account() {
   const { t } = useTranslation();
-  usePageMeta(t('meta.account'));
+  // Session-gated dashboard — keep it out of the index (no SEO value; a thin,
+  // login-walled page to a crawler).
+  usePageMeta(t('meta.account'), undefined, undefined, { noindex: true });
   const { session, uid, emailVerified, profile, entitlement, syncError } = useAccount();
   const plan = effectivePlan(entitlement);
   const [params, setParams] = useSearchParams();
@@ -279,9 +282,9 @@ export function Account() {
       <SubscriptionPanel />
 
       {syncError && (
-        <p className={styles.syncNotice} role="status">
+        <Alert tone="warning" role="status" icon="⚠">
           {t('account.syncError')}
-        </p>
+        </Alert>
       )}
 
       <div className={styles.linkRow}>

@@ -47,4 +47,19 @@ describe("parseSearchIndex", () => {
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();
   });
+
+  it('accepts an entry carrying a well-formed lineage block', () => {
+    const lineage = { document: 'GACAR_Part_61', section: '61.107', paragraph: 'b' };
+    const idx = parseSearchIndex({ ...valid, entries: [{ ...valid.entries[0], lineage }] });
+    expect(idx.entries[0].lineage).toMatchObject({ document: 'GACAR_Part_61', section: '61.107' });
+  });
+
+  it('tolerates a malformed lineage by dropping it and keeping the entry', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const idx = parseSearchIndex({ ...valid, entries: [{ ...valid.entries[0], lineage: { nope: 1 } }] });
+    expect(idx.entries).toHaveLength(1);
+    expect(idx.entries[0].lineage).toBeUndefined();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
 });
