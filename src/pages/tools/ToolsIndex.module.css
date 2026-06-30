@@ -134,6 +134,8 @@
   font-size: var(--fs-lg);
   color: var(--text);
 }
+/* No-results state now uses the shared <EmptyState> component
+   (src/components/EmptyState). */
 
 /* ── Compact list row (list view); grid/list container, .rowWrap, .rowBar and
    .rowStar come from the shared hub/hubList.module.css. ── */

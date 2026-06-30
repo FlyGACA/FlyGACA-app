@@ -143,6 +143,18 @@
       "tools": "Flight tools"
     }
   },
+  "offlinePage": {
+    "eyebrow": "Offline",
+    "title": "You're offline",
+    "lead": "We can't reach the network right now. The flight calculators and anything you've saved for offline stay available — pick up where the connection dropped.",
+    "back": "You're back online.",
+    "retry": "Try again",
+    "links": {
+      "tools": "Flight tools",
+      "library": "Saved library",
+      "study": "Study"
+    }
+  },
   "home": {
     "eyebrow": "Independent, educational, bilingual",
     "title": "Every Saudi reg. One captain on the answer.",
@@ -756,6 +768,7 @@
   "charts": {
     "title": "VFR Charts",
     "lead": "GACA AIP visual (UVR) charts. Pan and zoom each sheet. Our ingested copy, always verify against the current official AIP.",
+    "empty": "No VFR charts are available right now. Browse the rest of the library, or check back soon.",
     "sheet": "Sheet",
     "openImage": "Open full image ↗",
     "fullscreen": "Fullscreen",
@@ -3064,6 +3077,8 @@
     "notFound": "Page not found",
     "currency": "Currency Tracker",
     "updates": "Regulatory Change Tracking"
+    "offline": "Offline",
+    "currency": "Currency Tracker"
   },
   "metaDesc": {
     "updates": "Track when the Saudi GACAR, AIP and AIP-derived sources change, see the current AIRAC cycle and watch the sources that matter to you. A Fly GACA Pro feature.",

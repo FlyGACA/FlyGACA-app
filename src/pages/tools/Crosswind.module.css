@@ -43,6 +43,9 @@
   text-align: center;
 }
 
+/* Results now use the shared <OutputGrid> + <ResultStat> cardlets
+   (src/components/calc/) — the per-tool .outputs/.sub/.good/.bad grid is gone. */
+
 .angleNote {
   color: var(--text-muted);
   font-size: var(--fs-sm);
