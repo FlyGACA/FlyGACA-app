@@ -7,14 +7,15 @@
   border-block-end: 1px solid var(--border);
 }
 
-/* Glowing accent bar — tone defaults to the brand hover teal. */
+/* Glowing accent bar — tone defaults to the brand hover teal. The glow is a
+   soft mixed halo, not the raw tone at full strength. */
 .bar {
   flex: none;
   inline-size: 5px;
   block-size: 28px;
   border-radius: var(--radius-sm);
   background: var(--tone, var(--brand-hover));
-  box-shadow: 0 0 12px var(--tone, var(--brand-hover));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--tone, var(--brand-hover)) 60%, transparent);
 }
 
 .title {

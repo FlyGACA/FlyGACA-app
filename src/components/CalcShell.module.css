@@ -7,6 +7,7 @@
 
 .head h1 {
   font-size: var(--fs-h2);
+  letter-spacing: var(--tracking-heading);
   background: var(--grad-brand);
   -webkit-background-clip: text;
   background-clip: text;
@@ -15,23 +16,35 @@
 }
 
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent-bright);
   font-weight: var(--fw-semibold);
   margin-block-end: var(--space-2);
 }
+/* Short inline-start rule — the "instrument label" grammar shared with Home. */
+.eyebrow::before {
+  content: '';
+  inline-size: 16px;
+  block-size: 1px;
+  background: var(--accent-bright);
+}
 
+/* Collapsible "How it works" — rests as a default card, raises when open. */
 .formula {
-  border: var(--clay-border);
+  border: var(--hairline-bright);
   border-radius: var(--clay-radius);
   background: var(--surface);
-  box-shadow: var(--clay-shadow);
+  box-shadow: var(--elev-1), var(--edge-sheen);
   transition: box-shadow var(--dur) var(--ease);
 }
 .formula[open] {
-  box-shadow: var(--clay-shadow-hover);
+  background: var(--surface-raised);
+  box-shadow: var(--elev-2), var(--edge-sheen);
 }
 .formula summary {
   padding: var(--space-3) var(--space-4);
@@ -86,7 +99,7 @@
   font-size: var(--fs-xs);
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
   margin-inline-end: var(--space-1);
 }
 .relatedChip {
@@ -94,15 +107,11 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .relatedChip:hover {
   border-color: var(--brand-hover);
@@ -150,7 +159,8 @@
   margin-inline-start: auto;
 }
 
-/* Square icon-only utility button — same clay material as .action, no label. */
+/* Square icon-only utility button — flat rest state so the filled Ask-Adel
+   CTA stays the only heavy element in the row. */
 .iconAction {
   inline-size: 44px;
   block-size: 44px;
@@ -158,21 +168,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: var(--clay-border);
+  border: var(--hairline-brand);
   border-radius: var(--clay-radius);
   background: var(--surface);
   color: var(--text-muted);
   cursor: pointer;
-  box-shadow: var(--clay-shadow);
-  transition:
-    box-shadow var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  box-shadow: var(--elev-1);
+  transition: var(--transition-interactive);
 }
 .iconAction:hover {
-  box-shadow: var(--clay-shadow-hover);
+  box-shadow: var(--elev-2);
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand) 50%, transparent);
   color: var(--brand-hover);
@@ -194,24 +199,19 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   min-height: 44px;
-  border: var(--clay-border);
+  border: var(--hairline-brand);
   border-radius: var(--clay-radius);
   background: var(--surface);
   color: var(--text);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   cursor: pointer;
-  box-shadow: var(--clay-shadow);
+  box-shadow: var(--elev-1);
   text-decoration: none;
-  transition:
-    box-shadow var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .action:hover {
-  box-shadow: var(--clay-shadow-hover);
+  box-shadow: var(--elev-2);
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand) 50%, transparent);
   color: var(--brand-hover);
@@ -237,7 +237,7 @@
   border-color: var(--brand-hover);
   color: var(--text-on-brand);
   box-shadow:
-    var(--clay-shadow-hover),
+    var(--elev-2),
     0 0 20px color-mix(in srgb, var(--brand) 28%, transparent);
 }
 
@@ -267,9 +267,9 @@
 .presetInput {
   min-height: 44px;
   padding: var(--space-1) var(--space-3);
-  border: var(--clay-border);
+  border: 1px solid var(--border-input);
   border-radius: var(--clay-radius);
-  background: var(--surface);
+  background: var(--surface-sunken);
   color: var(--text);
   font: inherit;
   font-size: var(--fs-sm);
