@@ -41,4 +41,14 @@ describe('sendFeedback', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response));
     await expect(sendFeedback({ rating: 'up' })).rejects.toThrow(/500/);
   });
+
+  it('forwards an AbortSignal to fetch so the POST is cancellable on unmount', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okRes());
+    vi.stubGlobal('fetch', fetchMock);
+
+    const controller = new AbortController();
+    await sendFeedback({ rating: 'up' }, undefined, undefined, controller.signal);
+
+    expect(fetchMock.mock.calls[0][1].signal).toBe(controller.signal);
+  });
 });
