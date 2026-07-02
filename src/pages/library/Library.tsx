@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
@@ -84,7 +84,7 @@ function highlight(text: string, needle: string) {
   if (!needle) return text;
   const lower = text.toLowerCase();
   const n = needle.toLowerCase();
-  const out: (string | JSX.Element)[] = [];
+  const out: (string | ReactElement)[] = [];
   let i = 0;
   let hit = lower.indexOf(n);
   let k = 0;
