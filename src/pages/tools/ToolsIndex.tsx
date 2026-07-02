@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlass, Star, ClockCounterClockwise } from '@phosphor-icons/react';
@@ -66,7 +66,7 @@ function highlight(text: string, needle: string) {
   const n = needle.trim().toLowerCase();
   if (!n) return text;
   const lower = text.toLowerCase();
-  const out: (string | JSX.Element)[] = [];
+  const out: (string | ReactElement)[] = [];
   let i = 0;
   let hit = lower.indexOf(n);
   let k = 0;

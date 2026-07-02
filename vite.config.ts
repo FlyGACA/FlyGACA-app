@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
           // chunks so the app chunk stays lean and a release only busts the
           // app bundle, not React/router/i18n.
           manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-router'],
+            'vendor-react': ['react', 'react-dom', 'react-dom/client', 'react-router'],
             'vendor-i18n': ['i18next', 'react-i18next'],
             // framer-motion is intentionally NOT a manual chunk: it is only reached
             // through the lazily-imported home dashboard, so leaving it un-pinned lets
