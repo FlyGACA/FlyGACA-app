@@ -3,7 +3,7 @@
   block-size: 88px;
   overflow: hidden;
   border-block: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg) 92%, #000);
+  background: color-mix(in srgb, var(--bg) 92%, var(--shade));
 }
 
 .path {

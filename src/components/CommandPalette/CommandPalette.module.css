@@ -132,9 +132,9 @@
   font-size: 0.72rem;
   /* Brighter teal than --teal-bright so the §-tag clears WCAG AA (4.5:1) over
      the translucent chip + blurred dialog backdrop. */
-  color: #7cc8dd;
+  color: var(--teal-vivid);
   background: color-mix(in srgb, var(--brand) 16%, transparent);
-  border: 1px solid color-mix(in srgb, #7cc8dd 28%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal-vivid) 28%, transparent);
   border-radius: 6px;
   padding: 3px 7px;
   min-inline-size: 56px;
@@ -150,14 +150,14 @@
 }
 .tool {
   /* Brighter gold than --gold to clear WCAG AA over the translucent chip. */
-  color: #e8c56d;
-  border-color: color-mix(in srgb, #e8c56d 30%, transparent);
+  color: var(--gold-vivid);
+  border-color: color-mix(in srgb, var(--gold-vivid) 30%, transparent);
   background: color-mix(in srgb, var(--gold) 12%, transparent);
 }
 .guide {
-  color: #c9a7e8;
-  border-color: color-mix(in srgb, #c9a7e8 30%, transparent);
-  background: color-mix(in srgb, #c9a7e8 12%, transparent);
+  color: var(--violet-vivid);
+  border-color: color-mix(in srgb, var(--violet-vivid) 30%, transparent);
+  background: color-mix(in srgb, var(--violet-vivid) 12%, transparent);
 }
 
 .meta {

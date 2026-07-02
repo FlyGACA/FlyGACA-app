@@ -3,12 +3,28 @@
  * as static JSON under /data and are fetched at runtime (as in the legacy site),
  * so the heavy corpus never bloats the JS bundle.
  */
-export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<T> {
+export async function fetchJson<T>(
+  path: string,
+  signal?: AbortSignal,
+  validate?: (data: unknown) => data is T,
+): Promise<T> {
   const res = await fetch(path, { signal });
   if (!res.ok) {
     throw new Error(`Failed to load ${path}: ${res.status} ${res.statusText}`);
   }
-  return (await res.json()) as T;
+  let data: unknown;
+  try {
+    data = await res.json();
+  } catch (err) {
+    // A truncated/malformed body should surface as a load error at the call
+    // site (retryable, evicted from loadJson's cache), not as a downstream
+    // render crash on a value that was silently cast to T.
+    throw new Error(`Failed to parse ${path}: ${err instanceof Error ? err.message : String(err)}`);
+  }
+  if (validate && !validate(data)) {
+    throw new Error(`Failed to validate ${path}: unexpected shape`);
+  }
+  return data as T;
 }
 
 /**
