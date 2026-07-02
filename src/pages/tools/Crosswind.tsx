@@ -5,8 +5,6 @@ import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { resolveCrosswind } from '../../calc/crosswind';
 import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { OutputGrid } from '../../components/calc/Grids';
 import { WindDiagram } from './WindDiagram';
 import styles from './Crosswind.module.css';
 

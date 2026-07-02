@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
-import { OutputGrid } from '../../components/calc/Grids';
+import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { useUrlState } from '../../lib/useUrlState';
 import { densityAltitude } from '../../calc/isa';
 import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 
 const EXAMPLE = { elev: '5000', qnh: '1013', oat: '30' };
 const fmt = (n: number) => Math.round(n).toLocaleString();

@@ -2,13 +2,7 @@
  *  (base = the first unit). Temperature is special-cased. Pure. */
 
 export type UnitCategory =
-  | 'length'
-  | 'speed'
-  | 'altitude'
-  | 'pressure'
-  | 'mass'
-  | 'volume'
-  | 'temperature';
+  'length' | 'speed' | 'altitude' | 'pressure' | 'mass' | 'volume' | 'temperature';
 
 interface Unit {
   id: string;
