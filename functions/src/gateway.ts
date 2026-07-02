@@ -32,10 +32,6 @@ export class AuthError extends Error {}
  * Exported for unit testing; the route handlers below are the only callers.
  */
 export async function authenticate(req: Request): Promise<{ uid?: string }> {
-  const appCheckToken = req.header('X-Firebase-AppCheck');
-  if (ENFORCE_APP_CHECK) {
-    if (!appCheckToken) throw new AuthError('missing App Check token');
-async function authenticate(req: Request): Promise<{ uid?: string }> {
   const appCheckToken = req.header("X-Firebase-AppCheck");
   if (ENFORCE_APP_CHECK.value()) {
     if (!appCheckToken) throw new AuthError("missing App Check token");
@@ -61,9 +57,6 @@ async function authenticate(req: Request): Promise<{ uid?: string }> {
 
 /** Coerce a raw request body into a validated `ChatRequest` (or null). Exported for unit testing. */
 export function parseRequest(body: unknown): ChatRequest | null {
-  if (!body || typeof body !== 'object') return null;
-/** Coerce a raw request body into a validated `ChatRequest` (or null). */
-function parseRequest(body: unknown): ChatRequest | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
   if (typeof b.message !== "string" || b.message.trim() === "") return null;

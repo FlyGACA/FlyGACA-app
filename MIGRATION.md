@@ -75,6 +75,7 @@ live weather API + CSP, which belong to a later wiring/hardening stage). The ful
 
 Built on a local-first account layer (`src/lib/account.ts`, localStorage via useSyncExternalStore)
 standing in for the Stage 3 Firebase service layer — same component API will map onto Firestore:
+
 - Account (email sign-in/out), Dashboard (medical & flight-review validity, total hours), Logbook
   (add/delete flights, column totals, JSON export), Settings (profile, language, delete-all-data).
 - Pricing (Free/Pro/Schools, monthly↔annual; checkout stubbed until billing) and Schools (B2B).
@@ -148,7 +149,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
   main bundle. Linked from the Library header.
 - **PDF study sheets** (`/study/sheets`): the deployed one-page study PDFs rendered inline via a
   native `<object>` embed (no PDF library), with open/download and `?doc=`. New Study mode tile.
-- **met-brief** (`/tools/met-brief`): the last `soon` tool, now **live**. A route *briefing builder*
+- **met-brief** (`/tools/met-brief`): the last `soon` tool, now **live**. A route _briefing builder_
   that links each aerodrome to the official source (aviationweather.gov) + our own decoders — it
   never fabricates weather, so no new CSP origin. **All 54 catalog tools are now live.**
 
@@ -226,9 +227,17 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
 - **Static pages:** About (`pages/About.tsx`) + Disclaimer / Terms / Privacy via a shared
   `LegalPage` prose component driven by structured i18n content.
 
-## ⏳ Tools to port (~34) — repeat the Crosswind pattern
+---
+
+> **Superseded:** the three checklists below predate the ✅ stage logs above and are kept only as
+> a record of the original porting scope — every item on them has shipped (all catalog tools are
+> live in `src/lib/tools.ts`, and `public/data/tools.json` was replaced by that typed registry).
+> Forward-looking work is tracked in [`ROADMAP.md`](./ROADMAP.md).
+
+## ✅ (superseded) Tools to port (~34) — repeat the Crosswind pattern
 
 `calc/*` math cores already isolated in the legacy repo make these the easiest first:
+
 - [ ] E6B (`tools-e6b.js`)
 - [ ] Holding (`holding-core.js`), AIRAC (`airac-core.js`), currency (`currency.js`)
 - [ ] Cloudbase, fuel, TOD/TSD, suntimes, units/conversion, performance, W&B, VFR, procsep
@@ -236,7 +245,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
 - [ ] aerodromes, airspace, chart symbols, definitions, LOA, library/PDF readers
 - [x] TAS (`tools-tas.js`), density altitude (`isa-core.js`)
 
-## ⏳ Pages to port / finish
+## ✅ (superseded) Pages to port / finish
 
 - [x] Library index + per-Part metadata page (`gacar-index.json`)
 - [x] Library: full in-app document reader (regulations + reference + handbooks), corpus tabs,
@@ -250,7 +259,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
 - [ ] Dashboard, Logbook (Firestore-backed), Settings, Search (Ctrl/Cmd-K)
 - [ ] Guides, Study (ground school, flashcards, checkride/exam), Paths
 
-## ⏳ Wiring to complete
+## ✅ (superseded) Wiring to complete
 
 - [ ] Firebase init + Auth (web + native sign-in through `native-bridge`).
 - [ ] Stripe Checkout / RevenueCat IAP in `lib/billing`.
