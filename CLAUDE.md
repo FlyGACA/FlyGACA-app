@@ -30,9 +30,13 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
   legacy app.)
 - **Calculators:** pure math in `src/calc/*` (no DOM/i18n) so it is unit-testable; the
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
-  disclaimer) and `useUrlState` keeps inputs in the URL. This pair replaces the legacy
-  `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every other
-  tool follows.
+  disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
+  `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
+  string-only pages (decoders, directories) use raw `useUrlState`. Shared field/output layout
+  comes from `FieldGrid`/`OutputGrid` + `ResultStat` (`src/components/calc/`). This replaces the
+  legacy `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every
+  other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
+  `FieldGrid`).
 - **Services:** `src/lib/{api,auth,entitlements,native-bridge}.ts` are the typed frontend
   services. `entitlements.isActive` is a pure predicate mirroring `functions/entitlements-core.js`
   — the `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant.
@@ -55,7 +59,9 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
 
 ## Porting the legacy site
 
-To migrate a tool: lift its math into `src/calc/<tool>.ts` (pure, add a Vitest spec), then build a
-page under `src/pages/tools/<Tool>/` using `CalcShell` + `useUrlState`, add its strings to the i18n
-bundles, flip its `live` flag in `public/data/tools.json`, and register the route in `router.tsx`.
-`MIGRATION.md` tracks progress — the legacy source is in the `flygaca/flygaca` repo.
+The port is feature-complete — all catalog tools are live. If a new tool is ever added: lift its
+math into `src/calc/<tool>.ts` (pure, add a Vitest spec), build the page under `src/pages/tools/`
+using `CalcShell` + `useNumericInputs` (or `useUrlState` for string-only tools), add its strings to
+the i18n bundles, register it in the typed catalog `src/lib/tools.ts` (`status: 'live' | 'soon'`),
+and add the route in `router.tsx`. `MIGRATION.md` records the migration history — the legacy source
+is in the `flygaca/flygaca` repo.
