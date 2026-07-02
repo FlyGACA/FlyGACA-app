@@ -83,6 +83,13 @@ describe('inRegion', () => {
     for (const f of filters) expect(inRegion(noRegion, f)).toBe(false);
     expect(inRegion(noRegion, 'world')).toBe(true);
   });
+
+  it('covers every declared filter bucket', () => {
+    // Guards against a new RegionFilter being added without a matching branch.
+    for (const f of REGION_FILTERS) {
+      expect(typeof inRegion(ksa, f)).toBe('boolean');
+    }
+  });
 });
 
 describe('regionBadge', () => {

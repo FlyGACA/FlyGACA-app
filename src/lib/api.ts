@@ -207,6 +207,7 @@ export async function sendFeedback(
   req: FeedbackRequest,
   authToken?: string,
   appCheckToken?: string,
+  signal?: AbortSignal,
 ): Promise<void> {
   const res = await fetch(`${API_BASE}/feedback`, {
     method: 'POST',
@@ -216,6 +217,7 @@ export async function sendFeedback(
       ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
     },
     body: JSON.stringify(req),
+    signal,
   });
   if (!res.ok) throw new Error(`Feedback request failed: ${res.status}`);
 }

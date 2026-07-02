@@ -5,7 +5,7 @@
 }
 
 .screen {
-  background: color-mix(in srgb, var(--bg) 88%, #000);
+  background: color-mix(in srgb, var(--bg) 88%, var(--shade));
   border: 1px solid var(--border-bright);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-pop);
@@ -124,7 +124,7 @@
   inline-size: max-content;
   max-inline-size: 240px;
   white-space: normal;
-  background: color-mix(in srgb, var(--bg) 96%, #000);
+  background: color-mix(in srgb, var(--bg) 96%, var(--shade));
   border: 1px solid var(--border-bright);
   color: var(--text);
   font-family: var(--font-sans);

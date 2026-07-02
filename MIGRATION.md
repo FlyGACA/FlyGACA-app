@@ -15,8 +15,9 @@ intentionally **out of scope** (the app keeps calling the same `/api` backend).
 - Typed services: `api` (the `/v1/chat` contract), `auth`, `entitlements` (pure `isActive`),
   `native-bridge`, `content`/`useFetchJson`.
 - PWA via `vite-plugin-pwa`; Capacitor config (`com.flygaca.app`, `webDir: dist`).
-- **Reference vertical slice:** Home, Tools index (data-driven from `public/data/tools.json`),
-  and the **Crosswind** tool end-to-end (pure `calc/crosswind.ts` + unit tests + diagram).
+- **Reference vertical slice:** Home, Tools index (data-driven from `public/data/tools.json`,
+  since replaced by the typed `src/lib/tools.ts` registry), and the **Crosswind** tool end-to-end
+  (pure `calc/crosswind.ts` + unit tests + diagram).
 
 ## ✅ Stage 1 — Expanded tools suite (in progress)
 
@@ -227,43 +228,17 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
 - **Static pages:** About (`pages/About.tsx`) + Disclaimer / Terms / Privacy via a shared
   `LegalPage` prose component driven by structured i18n content.
 
----
+## Migration complete — what remains
 
-> **Superseded:** the three checklists below predate the ✅ stage logs above and are kept only as
-> a record of the original porting scope — every item on them has shipped (all catalog tools are
-> live in `src/lib/tools.ts`, and `public/data/tools.json` was replaced by that typed registry).
-> Forward-looking work is tracked in [`ROADMAP.md`](./ROADMAP.md).
+The stage sections above are the record: every catalog tool is live, and the tools, library,
+chat (SSE streaming + grounding), study/guides, account/billing (emulator-first), native shell
+and hardening/SEO/E2E stages are all done. Still open, none of it code in this repo's port scope:
 
-## ✅ (superseded) Tools to port (~34) — repeat the Crosswind pattern
+- **Production secret flip** before DNS cutover — real Firebase config, App Check enforcement,
+  Stripe live price IDs, deploy rules (see `docs/BILLING.md` for the Stripe live-ops runbook).
+- **Native IAP purchase wiring** pending the `@revenuecat/purchases-capacitor` plugin.
+- **Lighthouse perf budget** in CI and broader E2E flow coverage.
+- **Heavy ebook PDFs** (kept out of the repo/payload for now).
 
-`calc/*` math cores already isolated in the legacy repo make these the easiest first:
-
-- [ ] E6B (`tools-e6b.js`)
-- [ ] Holding (`holding-core.js`), AIRAC (`airac-core.js`), currency (`currency.js`)
-- [ ] Cloudbase, fuel, TOD/TSD, suntimes, units/conversion, performance, W&B, VFR, procsep
-- [ ] METAR/NOTAM decoders, AIP quiz, METAR drill, readback, ELP check, route planner
-- [ ] aerodromes, airspace, chart symbols, definitions, LOA, library/PDF readers
-- [x] TAS (`tools-tas.js`), density altitude (`isa-core.js`)
-
-## ✅ (superseded) Pages to port / finish
-
-- [x] Library index + per-Part metadata page (`gacar-index.json`)
-- [x] Library: full in-app document reader (regulations + reference + handbooks), corpus tabs,
-      and lazy full-text search (`library-search.json`). Remaining: charts (Leaflet), ebook PDFs.
-- [x] Captain Adel chat (JSON POST)
-- [ ] Chat: **SSE token streaming**, grounding badges (grounded/partial/refusal), tool-chip
-      deep links, transcript persistence, App Check token header
-- [x] About; Legal: Disclaimer, Terms, Privacy
-- [x] Legal: Safety (`/safety`, shared `LegalPage`). 404 and the `/offline` fallback page are done
-- [ ] Account / Pricing / Schools (billing via Stripe web + RevenueCat native)
-- [ ] Dashboard, Logbook (Firestore-backed), Settings, Search (Ctrl/Cmd-K)
-- [ ] Guides, Study (ground school, flashcards, checkride/exam), Paths
-
-## ✅ (superseded) Wiring to complete
-
-- [ ] Firebase init + Auth (web + native sign-in through `native-bridge`).
-- [ ] Stripe Checkout / RevenueCat IAP in `lib/billing`.
-- [ ] Lazy-load the heavy `library-search.json` + ebooks (native cache shim parity).
-- [x] CSP / security headers + Firebase Hosting config (`firebase.json`, `.firebaserc`, ported `firestore.rules`).
-- [x] CI (GitHub Actions): typecheck · lint · format:check · test · build on every PR.
-- [ ] Playwright smoke + critical-flow tests (bilingual toggle, calculators, navigation).
+Forward-looking work is tracked in [`ROADMAP.md`](./ROADMAP.md); this file stays the historical
+log of the rebuild.

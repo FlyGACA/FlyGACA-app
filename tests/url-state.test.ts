@@ -42,6 +42,30 @@ describe('useUrlState', () => {
     expect(search()).toBe('');
     expect(window.location.pathname).toBe('/');
   });
+
+  it('rehydrates from the URL on popstate (Back/Forward)', () => {
+    window.history.replaceState(null, '', '/?wind=270');
+    const { result } = renderHook(() => useUrlState({ wind: '', speed: '10' }));
+    expect(result.current[0]).toEqual({ wind: '270', speed: '10' });
+
+    // Simulate the browser restoring an earlier entry: the URL changes and
+    // popstate fires without a re-mount.
+    act(() => {
+      window.history.replaceState(null, '', '/?wind=090&speed=25');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    expect(result.current[0]).toEqual({ wind: '090', speed: '25' });
+  });
+
+  it('falls back to defaults for keys absent after popstate', () => {
+    window.history.replaceState(null, '', '/?wind=270&speed=25');
+    const { result } = renderHook(() => useUrlState({ wind: '', speed: '10' }));
+    act(() => {
+      window.history.replaceState(null, '', '/');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    expect(result.current[0]).toEqual({ wind: '', speed: '10' });
+  });
 });
 
 describe('useNumericInputs', () => {

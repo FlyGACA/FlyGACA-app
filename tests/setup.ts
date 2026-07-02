@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
-import i18n from '../src/i18n';
+import i18n, { applyDocumentLang, type Lang } from '../src/i18n';
 import { initReactI18next } from 'react-i18next';
 import { clearJsonCache } from '../src/lib/content';
 import en from '../src/i18n/en.json';
@@ -11,7 +11,6 @@ import ar from '../src/i18n/ar.json';
 afterEach(() => {
   clearJsonCache();
 });
-import { applyDocumentLang, type Lang } from '../src/i18n';
 
 // Initialize i18n for components using translation hooks/functions under Vitest.
 void i18n.use(initReactI18next).init({

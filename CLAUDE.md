@@ -30,9 +30,13 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
   legacy app.)
 - **Calculators:** pure math in `src/calc/*` (no DOM/i18n) so it is unit-testable; the
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
-  disclaimer) and `useUrlState` keeps inputs in the URL. This pair replaces the legacy
-  `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every other
-  tool follows.
+  disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
+  `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
+  string-only pages (decoders, directories) use raw `useUrlState`. Shared field/output layout
+  comes from `FieldGrid`/`OutputGrid` + `ResultStat` (`src/components/calc/`). This replaces the
+  legacy `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every
+  other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
+  `FieldGrid`).
 - **Services:** `src/lib/{api,auth,entitlements,native-bridge}.ts` are the typed frontend
   services. `entitlements.isActive` is a pure predicate mirroring `functions/entitlements-core.js`
   — the `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant.
@@ -58,7 +62,8 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
 The legacy→React migration is **complete** (all catalog tools are live). To add a tool: register
 it in `src/lib/tools.ts` — the typed catalog registry and single source of truth (`status:
 'soon'` until it ships, then flip to `'live'`) — lift its math into `src/calc/<tool>.ts` (pure,
-add a Vitest spec), build a page under `src/pages/tools/` using `CalcShell` + `useUrlState`, add
-its strings to both i18n bundles, and register the route in `router.tsx`. `MIGRATION.md` is the
-historical log of the rebuild; `ROADMAP.md` tracks what's next. The legacy source
-(`flygaca/flygaca` repo) remains the reference for anything still ported from the old site.
+add a Vitest spec), build a page under `src/pages/tools/` using `CalcShell` + `useNumericInputs`
+(or `useUrlState` for string-only tools), add its strings to both i18n bundles, and register the
+route in `router.tsx`. `MIGRATION.md` is the historical log of the rebuild; `ROADMAP.md` tracks
+what's next. The legacy source (`flygaca/flygaca` repo) remains the reference for anything still
+ported from the old site.

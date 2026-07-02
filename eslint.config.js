@@ -34,6 +34,9 @@ export default tseslint.config(
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/refs': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',
+      // Guards against half-applied merges leaving a second import of the same
+      // module — tsc only catches these when the *bindings* collide.
+      'no-duplicate-imports': ['error', { allowSeparateTypeImports: true }],
     },
   },
   {

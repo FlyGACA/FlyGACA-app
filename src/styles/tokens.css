@@ -70,6 +70,10 @@
   --danger: var(--falcon-clay); /* refusal / "hold — not grounded" */
   --focus: var(--sage-bright);
 
+  /* Pure-black mix partner for color-mix() shading of --bg (section bands
+     slightly darker than the canvas). */
+  --shade: #000;
+
   /* Brand-tinted surfaces — reused by nav/footer pill hover + active states. */
   --brand-tint: color-mix(in srgb, var(--brand) 12%, transparent);
   --brand-tint-strong: color-mix(in srgb, var(--brand) 18%, transparent);
