@@ -271,6 +271,13 @@
      Base is 0; the Cockpit / Night-Ops theme nudges this up so amber text holds
      its open counters at low cockpit brightness (see [data-theme="cockpit"]). */
   --tracking-ui: 0;
+
+  /* --- Command-palette result-tag hues ---
+     Deliberately brighter than --teal-bright / --gold so the tags clear WCAG AA
+     (4.5:1) over the translucent chip + blurred dialog backdrop. */
+  --tag-regulation: #7cc8dd; /* §-tags — bright teal */
+  --tag-tool: #e8c56d; /* tool tags — bright gold */
+  --tag-guide: #c9a7e8; /* guide tags — lavender */
 }
 
 /* =================================================================
@@ -366,4 +373,10 @@ html[data-theme='cockpit'] {
   );
   --glow-stat-cyan: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
   --glow-stat-green: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
+
+  /* --- Palette result tags → amber-luminance ramp (night-vision safe; the
+     default teal/lavender would leak high-wavelength light into the cockpit) --- */
+  --tag-regulation: #ffc23d;
+  --tag-tool: #ffd27a;
+  --tag-guide: #ffe0a3;
 }
