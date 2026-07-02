@@ -12,7 +12,7 @@
   padding: var(--space-1) var(--space-4);
   border-radius: var(--radius-pill);
   background: var(--falcon-clay, var(--warning));
-  color: var(--text-on-brand, #fff);
+  color: var(--text-on-brand);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
   box-shadow: var(--clay-shadow);

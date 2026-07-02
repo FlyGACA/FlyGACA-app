@@ -64,6 +64,18 @@
   --danger: var(--falcon-clay); /* refusal / "hold — not grounded" */
   --focus: var(--sage-bright);
 
+  /* --- Vivid accents — deliberately brighter than --teal-bright / --gold so
+     small text clears WCAG AA (4.5:1) over translucent chips + blurred
+     backdrops (e.g. the command-palette code chips). Do not swap these for
+     the darker base accents. --- */
+  --teal-vivid: #7cc8dd;
+  --gold-vivid: #e8c56d;
+  --violet-vivid: #c9a7e8;
+
+  /* Pure-black mix partner for color-mix() shading of --bg (section bands
+     slightly darker than the canvas). */
+  --shade: #000;
+
   /* Brand-tinted surfaces — reused by nav/footer pill hover + active states. */
   --brand-tint: color-mix(in srgb, var(--brand) 12%, transparent);
   --brand-tint-strong: color-mix(in srgb, var(--brand) 18%, transparent);
