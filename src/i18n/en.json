@@ -3076,9 +3076,8 @@
     "settings": "Settings",
     "notFound": "Page not found",
     "currency": "Currency Tracker",
-    "updates": "Regulatory Change Tracking"
-    "offline": "Offline",
-    "currency": "Currency Tracker"
+    "updates": "Regulatory Change Tracking",
+    "offline": "Offline"
   },
   "metaDesc": {
     "updates": "Track when the Saudi GACAR, AIP and AIP-derived sources change, see the current AIRAC cycle and watch the sources that matter to you. A Fly GACA Pro feature.",
