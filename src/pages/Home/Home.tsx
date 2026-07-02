@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CountUp } from '../../components/CountUp';
