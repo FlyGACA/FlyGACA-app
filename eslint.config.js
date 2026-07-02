@@ -22,6 +22,9 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      // Guards against half-applied merges leaving a second import of the same
+      // module — tsc only catches these when the *bindings* collide.
+      'no-duplicate-imports': ['error', { allowSeparateTypeImports: true }],
     },
   },
   {
