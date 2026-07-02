@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 import { ResultStat } from '../../components/calc/ResultStat';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { trueAirspeed } from '../../calc/tas';
 import { NumberField } from '../../components/calc/NumberField';
 
@@ -10,12 +10,12 @@ const EXAMPLE = { cas: '110', pa: '8000', oat: '10' };
 
 export function Tas() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ cas: '', pa: '', oat: '' });
+  const { inputs, set, nums } = useNumericInputs({ cas: '', pa: '', oat: '' });
 
   const r = trueAirspeed({
-    cas: parseFloat(inputs.cas),
-    pa: parseFloat(inputs.pa),
-    oat: parseFloat(inputs.oat),
+    cas: nums.cas,
+    pa: nums.pa,
+    oat: nums.oat,
   });
 
   const adelPrompt = () => {
