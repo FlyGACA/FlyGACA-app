@@ -58,7 +58,7 @@
 
 ## About the Project
 
-**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. We transform the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into an accessible, searchable, and highly reliable developer-centric portal. 
+**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. We transform the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into an accessible, searchable, and highly reliable educational platform. 
 
 This repository houses the modern frontend rebuild. We leverage Vite 6, React 18, and Capacitor to deliver a blazing-fast, offline-capable Progressive Web App (PWA) and native shell. Access the full regulatory corpus, utilize over 50 aviation calculators, and learn with **Captain Adel**, our Retrieval-Augmented AI flight instructor.
 
@@ -86,7 +86,7 @@ Explore a powerful suite designed to accelerate study, enhance flight planning, 
 
 ## Get Started in 60 Seconds
 
-Accelerate your workflow. Get a local development environment running instantly.
+Accelerate your workflow. Get a local development environment running in under a minute.
 
 ### Prerequisites
 - **Node.js** `>= 20` (LTS recommended)
@@ -108,13 +108,13 @@ cp .env.example .env.local
 # 4. Launch the development server
 npm run dev
 ```
-Navigate to **`http://localhost:5173`** to view the app. *(Note: Without VITE_FIREBASE_* variables, the app runs entirely local-first).*
+Navigate to **`http://localhost:5173`** to view the app. *(Note: Without VITE_FIREBASE_* variables, the app runs local-first — backend features like Captain Adel AI will be unavailable).*
 
 ---
 
 ## Architecture & Tech Stack
 
-Engineered for performance, offline reliability, and absolute type safety. 
+Engineered for performance, offline reliability, and strict type safety. 
 
 ### Core Commands
 
@@ -157,9 +157,14 @@ Scale across any edge network. Firebase Hosting is canonical, while Vercel, Clou
 ### Push to Production
 
 ```bash
-# Deploy to Firebase (Canonical)
+# Firebase (Canonical)
 npm run deploy        # Build, prerender, and deploy to Hosting
 npm run deploy:all    # Deploy Hosting, Functions, and Firestore rules
+
+# Mirror Fronts
+# Vercel       vercel deploy --prod
+# Cloudflare   npx wrangler deploy            # Worker + dist/ assets (wrangler.toml)
+# Netlify      netlify deploy --build --prod
 ```
 
 > [!NOTE]  
