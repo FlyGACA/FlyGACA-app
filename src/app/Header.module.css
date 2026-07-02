@@ -432,6 +432,29 @@
     visibility: visible;
     transform: translateY(0) scale(1);
   }
+  /* Where discrete transitions are supported, upgrade the sheet to real
+     display:none semantics (out of the a11y tree and tab order when closed)
+     while keeping the same enter/exit motion. The visibility-based rules above
+     stay as the fallback. The 60ms focus defer in Header.tsx covers the
+     display flip exactly as it covered visibility. */
+  @supports (transition-behavior: allow-discrete) {
+    .sheet {
+      display: none;
+      transition-property: opacity, transform, display, overlay;
+      transition-duration: var(--dur);
+      transition-timing-function: var(--ease);
+      transition-behavior: allow-discrete;
+    }
+    .sheet.open {
+      display: flex;
+    }
+    @starting-style {
+      .sheet.open {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+      }
+    }
+  }
   /* Section label atop the sheet. */
   .sheetLabel {
     margin-block: var(--space-1) var(--space-2);

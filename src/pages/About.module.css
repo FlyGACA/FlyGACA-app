@@ -148,6 +148,27 @@
   margin-block-start: var(--space-8);
 }
 
+/* Scroll-driven reveal — same progressive pattern as Home: animation exists
+   only inside the guard, so unsupported browsers render fully opaque. */
+/* Local copy of the global fade-up — CSS modules scope keyframe names, so a
+   module animation must reference a keyframe defined in the same module. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .block {
+      animation: reveal-up var(--ease-entry) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
 /* ── Feature bento card text ── */
 .featTitle {
   font-size: var(--fs-lg);

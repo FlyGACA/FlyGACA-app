@@ -453,6 +453,29 @@ main {
   animation-delay: calc(12 * var(--dur-stagger));
 }
 
+/* --- View Transitions (route navigation) ---
+   Driven by React Router 7's `viewTransition` on the chrome-level links; the
+   keyed .page-enter wrapper stays as the fallback for browsers without VT
+   support and for non-chrome navigations. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vt-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  ::view-transition-old(root) {
+    animation: vt-fade-out 150ms var(--ease) both;
+  }
+  ::view-transition-new(root) {
+    animation: fade-up var(--dur-entry) var(--ease-entry) both;
+  }
+}
+/* While a view transition drives the swap, suppress the CSS entry animation so
+   the incoming page doesn't animate twice. */
+html:active-view-transition .page-enter {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -460,6 +483,14 @@ main {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* The universal reset above does not match the ::view-transition-* pseudos —
+     neutralize them explicitly. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 
   .skeleton {

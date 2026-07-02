@@ -119,7 +119,7 @@ export function Header() {
     <>
       <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
         <div className={`container ${styles.inner}`}>
-          <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
+          <Link className={styles.lockup} to="/" aria-label={t('nav.home')} viewTransition>
             <img
               className={styles.mark}
               src="/img/flygaca-mark.png"
@@ -138,6 +138,7 @@ export function Header() {
           <nav className={styles.links} aria-label={t('nav.primary')}>
             {NAV.map((item) => (
               <NavLink
+                viewTransition
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) => (isActive ? styles.active : undefined)}
@@ -176,6 +177,7 @@ export function Header() {
             <ButtonLink
               className={styles.cta}
               to="/pricing"
+              viewTransition
               icon={
                 <svg
                   viewBox="0 0 24 24"
@@ -202,6 +204,7 @@ export function Header() {
       <nav className={styles.dock} aria-label={t('nav.primary')}>
         {PRIMARY.map((item) => (
           <NavLink
+            viewTransition
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
@@ -248,6 +251,7 @@ export function Header() {
           {MORE.map((item) => (
             <li key={item.to}>
               <NavLink
+                viewTransition
                 to={item.to}
                 className={({ isActive }) =>
                   isActive ? `${styles.sheetLink} ${styles.sheetActive}` : styles.sheetLink
@@ -263,7 +267,12 @@ export function Header() {
           ))}
         </ul>
         <div className={styles.sheetDivider} aria-hidden="true" />
-        <Link className={styles.sheetCta} to="/pricing" onClick={() => setOpen(false)}>
+        <Link
+          className={styles.sheetCta}
+          to="/pricing"
+          onClick={() => setOpen(false)}
+          viewTransition
+        >
           <svg
             viewBox="0 0 24 24"
             fill="none"

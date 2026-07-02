@@ -181,6 +181,30 @@
   gap: var(--space-5);
 }
 
+/* Scroll-driven reveal for the below-fold funnel sections — progressive: the
+   animation only exists inside the guard, so unsupported browsers never see an
+   initial opacity: 0. Reuses the global fade-up keyframes; block-axis only, so
+   RTL-safe. */
+/* Local copy of the global fade-up — CSS modules scope keyframe names, so a
+   module animation must reference a keyframe defined in the same module. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .block,
+    .cta {
+      animation: reveal-up var(--ease-entry) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
 /* Why trust it — bento card text. */
 .featTitle {
   font-size: var(--fs-lg);

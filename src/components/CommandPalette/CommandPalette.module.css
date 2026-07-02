@@ -219,9 +219,35 @@
   color: var(--text-dim);
 }
 
+/* Mount entry via @starting-style where discrete transitions are supported —
+   first-render transitions replace the keyframes (which stay as the base for
+   older engines). Exit still unmounts instantly, matching today. */
+@supports (transition-behavior: allow-discrete) {
+  .scrim {
+    animation: none;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .box {
+    animation: none;
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease-entry);
+  }
+  @starting-style {
+    .scrim {
+      opacity: 0;
+    }
+    .box {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.98);
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scrim,
   .box {
     animation: none;
+    transition: none;
   }
 }
