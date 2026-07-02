@@ -17,10 +17,7 @@
   color: var(--text-dim);
   font-size: var(--fs-xs);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .action:hover {
   color: var(--brand-hover);

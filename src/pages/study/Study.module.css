@@ -37,10 +37,7 @@
   box-shadow: var(--clay-shadow);
   color: inherit;
   cursor: pointer;
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease),
-    border-color var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .mode::before {
   content: '';
@@ -130,7 +127,7 @@
   font-size: var(--fs-xs);
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-caps);
   margin: 0;
 }
 .qText {
@@ -153,15 +150,12 @@
   text-align: start;
   min-height: 44px;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 /* The A/B/C/D key badge on each option. */
 .optionKey {
@@ -227,10 +221,7 @@
   font-size: var(--fs-sm);
   cursor: pointer;
   box-shadow: var(--clay-shadow);
-  transition:
-    background var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .primary:hover {
   background: var(--brand-hover);
@@ -332,17 +323,13 @@
   min-height: 44px;
   padding: var(--space-3);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   background: transparent;
   color: var(--text);
   cursor: pointer;
   font-weight: var(--fw-semibold);
   font-size: var(--fs-sm);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .mark:active {
   transform: scale(0.97);
@@ -421,18 +408,14 @@
   flex-shrink: 0;
   min-height: 36px;
   padding-inline: var(--space-3);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text-muted);
   font: inherit;
   font-size: var(--fs-xs);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .flagBtn:active {
   transform: scale(0.97);
@@ -453,16 +436,14 @@
 .summaryCell {
   aspect-ratio: 1;
   min-block-size: 44px;
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text-muted);
   font: inherit;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .summaryCell:hover {
   border-color: var(--brand-hover);
@@ -494,7 +475,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-md);
   background: var(--surface);
 }
@@ -551,17 +532,14 @@
   align-items: center;
   min-height: 44px;
   padding: var(--space-3) var(--space-5);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--clay-radius);
   background: var(--surface);
   color: var(--text);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .secondary:hover {
   border-color: var(--brand-hover);
@@ -600,7 +578,7 @@
 }
 .reviewItem {
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-inline-start: 3px solid var(--border-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
@@ -648,7 +626,7 @@
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
   background: color-mix(in srgb, var(--gold) 20%, transparent);
   color: var(--gold);
 }
@@ -706,15 +684,12 @@
   align-items: center;
   min-height: 40px;
   padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
   background: var(--surface);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .quickChip:hover {
   border-color: var(--brand-hover);
@@ -745,7 +720,7 @@
   gap: var(--space-2);
   min-height: 40px;
   padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
@@ -791,7 +766,7 @@
   gap: var(--space-2);
   block-size: 80px;
   padding: var(--space-3);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-md);
   background: var(--surface-raised);
 }

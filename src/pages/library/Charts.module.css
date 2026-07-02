@@ -55,14 +55,12 @@
   min-height: 44px;
   justify-content: center;
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
   font-size: var(--fs-sm);
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .variant:hover {
   border-color: var(--brand-hover);
@@ -116,7 +114,7 @@
   min-block-size: 36px;
   min-inline-size: 36px;
   padding-inline: var(--space-3);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
@@ -124,11 +122,7 @@
   font-size: var(--fs-sm);
   cursor: pointer;
   white-space: nowrap;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .navBtn:hover,
 .toolBtn:hover {
@@ -190,16 +184,13 @@
   gap: 2px;
   inline-size: 84px;
   padding: var(--space-1);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text-muted);
   font-size: var(--fs-xs);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .thumb img {
   inline-size: 100%;

@@ -51,7 +51,7 @@
   color: var(--accent-bright);
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 .pages {
@@ -100,7 +100,7 @@
     min-height: 44px;
     margin-block-end: var(--space-3);
     padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--border-bright);
+    border: var(--hairline-bright);
     border-radius: var(--radius-pill);
     background: var(--surface);
     color: var(--text);
@@ -156,10 +156,7 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
   line-height: var(--lh-snug);
-  transition:
-    background var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .toc a:hover {
   background: color-mix(in srgb, var(--brand) 8%, var(--surface-raised));
@@ -228,7 +225,7 @@
   border-collapse: collapse;
   margin-block: var(--space-4);
   font-size: var(--fs-sm);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   -webkit-overflow-scrolling: touch;
 }
@@ -284,17 +281,14 @@
   gap: var(--space-1);
   min-height: 36px;
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text-muted);
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .toolPill:hover {
   border-color: var(--brand-hover);
@@ -354,7 +348,7 @@
 .notes {
   margin-block-start: var(--space-7);
   padding: var(--space-5);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-md);
   background: var(--surface-raised);
 }
@@ -421,7 +415,7 @@
 .offlineNotice {
   margin-block: var(--space-6);
   padding: var(--space-5) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
 }
@@ -443,7 +437,7 @@
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
   background: color-mix(in srgb, var(--gold) 20%, transparent);
   color: var(--gold);
 }
@@ -488,9 +482,7 @@
   background: var(--surface);
   box-shadow: var(--clay-shadow);
   color: inherit;
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .relatedCard:hover {
   box-shadow: var(--clay-shadow-hover);
