@@ -81,10 +81,7 @@
   font: inherit;
   font-size: var(--fs-lg);
   backdrop-filter: blur(6px);
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .search::placeholder {
   color: var(--moon-mute);
@@ -154,10 +151,7 @@
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .suggestChip:hover {
   color: var(--moon);
