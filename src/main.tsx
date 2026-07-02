@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router';
 import { bootI18n } from './i18n';
 // Self-hosted fonts, replacing the Google Fonts CDN we used to depend on — that
 // stylesheet 503'd intermittently and flashed a fallback face. Imported before the

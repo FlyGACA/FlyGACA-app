@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { usePageMeta } from '../src/lib/usePageMeta';
 
 const DEFAULT_TITLE = 'Fly GACA — Saudi Aviation Library';

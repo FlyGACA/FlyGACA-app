@@ -12,7 +12,10 @@ import { gzipSync } from 'node:zlib';
 import { join } from 'node:path';
 
 const DIST = 'dist';
-const BUDGET_KB = 160; // gzipped initial JS ceiling; tighten as the shell shrinks
+// Gzipped initial-JS ceiling; tighten as the shell shrinks. Raised 160 → 170
+// for react-router 7, which ships ~9 kB gz more than v6 in the vendor chunk
+// (measured 158.7 → 167.4 kB across the upgrade, nothing else changed).
+const BUDGET_KB = 170;
 
 const html = readFileSync(join(DIST, 'index.html'), 'utf8');
 const files = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+\.js)"/g)].map((m) => m[1]);

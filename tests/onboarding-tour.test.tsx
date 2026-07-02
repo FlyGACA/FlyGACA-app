@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import OnboardingTour from '../src/components/onboarding/OnboardingTour';
 import { TOUR_VERSION, replayOnboarding } from '../src/lib/onboardingPrefs';
 
