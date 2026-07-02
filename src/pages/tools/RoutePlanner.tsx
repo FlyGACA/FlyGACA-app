@@ -5,7 +5,7 @@ import { NumberField } from '../../components/calc/NumberField';
 import { TextField } from '../../components/calc/TextField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { AirportsIndex } from '../../lib/content';
 import { greatCircle } from '../../calc/navigation';
@@ -15,7 +15,7 @@ import table from './WindTable.module.css';
 export function RoutePlanner() {
   const { t } = useTranslation();
   const { data, loading, error } = useFetchJson<AirportsIndex>('/data/airports.json');
-  const [inputs, set] = useUrlState({ route: '', gs: '', burn: '' });
+  const { inputs, set, nums } = useNumericInputs({ route: '', gs: '', burn: '' });
 
   const byIcao = useMemo(() => {
     const m = new Map<string, AirportsIndex['airports'][number]>();
@@ -45,8 +45,8 @@ export function RoutePlanner() {
   }, [codes, byIcao]);
 
   const total = legs.reduce((s, l) => s + l.distanceNm, 0);
-  const gs = parseFloat(inputs.gs);
-  const burn = parseFloat(inputs.burn);
+  const gs = nums.gs;
+  const burn = nums.burn;
   const timeHr = total > 0 && gs > 0 ? total / gs : null;
   const fuel = timeHr != null && burn > 0 ? burn * timeHr : null;
 

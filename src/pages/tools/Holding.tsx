@@ -3,13 +3,13 @@ import { CalcShell } from '../../components/CalcShell';
 import { NumberField } from '../../components/calc/NumberField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { holdTiming, holdingEntry } from '../../calc/holding';
 import seg from '../../components/calc/calc.module.css';
 
 export function Holding() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({
+  const { inputs, set, nums } = useNumericInputs({
     inbound: '',
     heading: '',
     turns: 'right',
@@ -18,12 +18,8 @@ export function Holding() {
     laps: '1',
   });
   const right = inputs.turns !== 'left';
-  const entry = holdingEntry(parseFloat(inputs.inbound), parseFloat(inputs.heading), right);
-  const timing = holdTiming(
-    parseFloat(inputs.leg),
-    parseFloat(inputs.burn),
-    parseFloat(inputs.laps),
-  );
+  const entry = holdingEntry(nums.inbound, nums.heading, right);
+  const timing = holdTiming(nums.leg, nums.burn, nums.laps);
 
   return (
     <CalcShell

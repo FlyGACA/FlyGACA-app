@@ -3,16 +3,16 @@ import { CalcShell } from '../../components/CalcShell';
 import { NumberField } from '../../components/calc/NumberField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { machFromTas, tasFromMach } from '../../calc/speed';
 import seg from '../../components/calc/calc.module.css';
 
 export function Mach() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ mode: 'tas', val: '', oat: '' });
+  const { inputs, set, nums } = useNumericInputs({ mode: 'tas', val: '', oat: '' });
   const toMach = inputs.mode !== 'mach';
-  const oat = parseFloat(inputs.oat);
-  const val = parseFloat(inputs.val);
+  const oat = nums.oat;
+  const val = nums.val;
   const r = toMach ? machFromTas(val, oat) : tasFromMach(val, oat);
 
   return (

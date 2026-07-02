@@ -3,7 +3,7 @@ import { CalcShell } from '../../components/CalcShell';
 import { NumberField } from '../../components/calc/NumberField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { convertAll, UNIT_TABLES, type UnitCategory } from '../../calc/units';
 import seg from '../../components/calc/calc.module.css';
 
@@ -18,13 +18,13 @@ const fmt = (n: number) => {
 
 export function Units() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ cat: 'speed', from: '', val: '' });
+  const { inputs, set, nums } = useNumericInputs({ cat: 'speed', from: '', val: '' });
   const cat = (CATEGORIES as string[]).includes(inputs.cat)
     ? (inputs.cat as UnitCategory)
     : 'speed';
   const units = UNIT_TABLES[cat];
   const from = units.some((u) => u.id === inputs.from) ? inputs.from : units[0].id;
-  const result = convertAll(parseFloat(inputs.val), from, cat);
+  const result = convertAll(nums.val, from, cat);
 
   return (
     <CalcShell
