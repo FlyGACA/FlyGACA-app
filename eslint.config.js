@@ -8,20 +8,32 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   { ignores: ['dist', 'dev-dist', 'coverage', 'ios', 'android', 'public'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    // react-hooks v6+ ships flat presets that register the plugin themselves;
+    // `recommended-latest` also enables the compiler-derived rules added in v6/v7.
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommended,
+      reactHooks.configs.flat['recommended-latest'],
+    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
     },
     plugins: {
-      'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      // The v6/v7 compiler-derived rules flag long-established intentional
+      // patterns here (state snapshots in mount effects, roving-focus ref
+      // reads, hand-tuned memoization). Kept visible as warnings for
+      // incremental review — mirrors the jsx-a11y triage below — so they
+      // never mask a new error-level violation.
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
     },
   },
   {
