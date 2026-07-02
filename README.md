@@ -58,7 +58,7 @@
 
 ## About the Project
 
-**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. We transform the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into an accessible, searchable, and highly reliable educational platform. 
+**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. We transform the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into an accessible, searchable, and highly reliable resource. 
 
 This repository houses the modern frontend rebuild. We leverage Vite 6, React 18, and Capacitor to deliver a blazing-fast, offline-capable Progressive Web App (PWA) and native shell. Access the full regulatory corpus, utilize over 50 aviation calculators, and learn with **Captain Adel**, our Retrieval-Augmented AI flight instructor.
 
@@ -102,7 +102,7 @@ cd FlyGACA-app
 # 2. Install dependencies
 npm install
 
-# 3. Configure your local environment
+# 3. (Optional) Configure your local environment
 cp .env.example .env.local
 
 # 4. Launch the development server
@@ -189,7 +189,7 @@ Join the mission to modernize Saudi general aviation. We welcome all PRs! 🛫
 
 ## License
 
-Distributed under the **MIT License**. Reference [`LICENSE`](LICENSE) for exhaustive details.
+Distributed under the **MIT License**. Reference [`LICENSE`](LICENSE) for more information.
 
 ---
 
