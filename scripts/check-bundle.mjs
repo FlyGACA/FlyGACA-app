@@ -12,11 +12,12 @@ import { gzipSync } from 'node:zlib';
 import { join } from 'node:path';
 
 const DIST = 'dist';
-// Gzipped initial-JS ceiling. Re-based 160 → 176 for React 19: react-dom's
-// renderer is ~14 kB gz heavier than 18.3 (vendor-react 66.7 → 81.2). App-shell
-// code is unchanged (index chunk ~76 kB). Re-ratchet downward after the Vite 8
-// (Oxc minifier) + i18next 26 upgrades land and the real floor is measured.
-const BUDGET_KB = 176;
+// Gzipped initial-JS ceiling. Re-based 160 → 184 across the framework majors:
+// react-dom 19's renderer is ~14 kB gz heavier than 18.3 and react-router 7's
+// core is ~9 kB gz heavier than 6.30 (vendor-react 66.7 → 89.9). App-shell code
+// is unchanged (index chunk ~76 kB). Re-ratchet downward after the Vite 8 (Oxc
+// minifier) + i18next 26 upgrades land and the real floor is measured.
+const BUDGET_KB = 184;
 
 const html = readFileSync(join(DIST, 'index.html'), 'utf8');
 const files = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+\.js)"/g)].map((m) => m[1]);
