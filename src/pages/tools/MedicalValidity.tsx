@@ -4,7 +4,7 @@ import { NumberField } from '../../components/calc/NumberField';
 import { TextField } from '../../components/calc/TextField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { parseISO, validityByMonths } from '../../calc/recency';
 
 const fmtDate = (d: Date) =>
@@ -17,8 +17,8 @@ const fmtDate = (d: Date) =>
 
 export function MedicalValidity() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ issue: '', months: '12' });
-  const v = validityByMonths(parseISO(inputs.issue), parseFloat(inputs.months));
+  const { inputs, set, nums } = useNumericInputs({ issue: '', months: '12' });
+  const v = validityByMonths(parseISO(inputs.issue), nums.months);
 
   return (
     <CalcShell
