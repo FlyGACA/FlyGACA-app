@@ -15,25 +15,28 @@
     box-shadow var(--dur) var(--ease),
     border-color var(--dur) var(--ease);
 }
-/* Elevated state — firmer surface, hairline + shadow appear once scrolled. */
+/* Elevated state — firmer surface, hairline + a quiet shadow once scrolled. */
 .nav.scrolled {
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  background: var(--surface-overlay);
   border-block-end-color: var(--border);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--elev-1);
 }
-/* Brand-gradient hairline along the bottom edge; reveals on scroll. */
+/* Brand-gradient hairline along the bottom edge; reveals on scroll. The mask
+   fades it out at both ends so it reads as a jeweled edge, not a stripe. */
 .nav::after {
   content: '';
   position: absolute;
   inset-block-end: 0;
   inset-inline: 0;
-  block-size: 2px;
+  block-size: 1px;
   background: var(--grad-brand);
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   opacity: 0;
   transition: opacity var(--dur) var(--ease);
 }
 .nav.scrolled::after {
-  opacity: 0.85;
+  opacity: 0.6;
 }
 
 .inner {
@@ -117,9 +120,7 @@
   display: inline-flex;
   align-items: center;
   border-radius: var(--radius-pill);
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .links a:hover {
   color: var(--text);
@@ -131,6 +132,20 @@
   color: var(--brand-hover);
   background: var(--brand-tint);
   font-weight: var(--fw-semibold);
+}
+/* Glowing underline dot inside the active pill (inset-inline + margin-inline
+   auto centers it in both directions, so no physical transforms). */
+.links a.active::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 5px;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: 14px;
+  block-size: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-hover);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--brand-hover) 70%, transparent);
 }
 
 .actions {
@@ -156,10 +171,7 @@
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .search:hover {
   border-color: var(--brand-hover);
@@ -207,11 +219,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .langToggle:hover {
   transform: translateY(-1px);
@@ -232,18 +240,14 @@
   block-size: 44px;
   padding-inline: var(--space-3);
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-bright);
-  background: var(--surface);
+  border: var(--hairline-bright);
+  background: var(--surface-sunken); /* reads as an input well, not a card */
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.03em;
   cursor: pointer;
-  transition:
-    background var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .searchPill:hover {
   color: var(--text);
@@ -266,7 +270,7 @@
 }
 .searchPillKbd {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--fs-2xs);
   background: color-mix(in srgb, var(--text) 6%, transparent);
   border: 1px solid var(--border-bright);
   border-radius: 5px;
@@ -325,12 +329,12 @@
     max-inline-size: 30rem;
     margin-inline: auto;
     padding: var(--space-2);
-    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    background: var(--surface-overlay);
     backdrop-filter: blur(18px) saturate(150%);
     -webkit-backdrop-filter: blur(18px) saturate(150%);
-    border: 1px solid var(--border-bright);
+    border: var(--hairline-bright);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-pop);
+    box-shadow: var(--elev-3);
   }
 
   .dockItem {
@@ -353,9 +357,7 @@
     font-weight: var(--fw-medium);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition:
-      color var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+    transition: var(--transition-interactive);
   }
   /* Spotlight indicator: a small glowing dot above the active tab. The dot row
      is reserved on every tab so the icon never shifts between states. */
@@ -413,9 +415,9 @@
     background: color-mix(in srgb, var(--surface) 92%, transparent);
     backdrop-filter: blur(18px) saturate(150%);
     -webkit-backdrop-filter: blur(18px) saturate(150%);
-    border: 1px solid var(--border-bright);
+    border: var(--hairline-bright);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-pop);
+    box-shadow: var(--elev-3), var(--edge-sheen);
     opacity: 0;
     visibility: hidden;
     transform: translateY(12px) scale(0.98);
@@ -437,7 +439,7 @@
     font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--tracking-eyebrow);
     color: var(--text-dim);
   }
   .sheetList {
@@ -460,9 +462,7 @@
     color: color-mix(in srgb, var(--text-muted) 30%, var(--text));
     font-size: var(--fs-base);
     font-weight: var(--fw-medium);
-    transition:
-      color var(--dur) var(--ease),
-      background var(--dur) var(--ease);
+    transition: var(--transition-color);
   }
   .sheetLink:hover {
     color: var(--text);
@@ -505,9 +505,7 @@
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     box-shadow: var(--clay-shadow);
-    transition:
-      box-shadow var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+    transition: var(--transition-interactive);
   }
   .sheetCta svg {
     inline-size: 18px;

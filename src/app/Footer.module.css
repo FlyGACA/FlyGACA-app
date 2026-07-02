@@ -11,14 +11,18 @@
     padding-block-end: calc(var(--space-6) + 80px + var(--safe-bottom));
   }
 }
-/* Brand-gradient hairline along the top edge. */
+/* Brand-gradient hairline along the top edge — masked to fade at both ends,
+   bookending the header's scrolled hairline. */
 .footer::before {
   content: '';
   position: absolute;
   inset-block-start: 0;
   inset-inline: 0;
-  block-size: 2px;
+  block-size: 1px;
   background: var(--grad-brand);
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  opacity: 0.7;
 }
 
 /* --- Top: brand + two link columns --- */
@@ -74,7 +78,7 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
-  transition: color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .contact svg {
   color: var(--brand-hover);
@@ -99,16 +103,12 @@
   justify-content: center;
   inline-size: 40px;
   block-size: 40px;
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .socialLink:hover {
   color: var(--brand-hover);
@@ -127,10 +127,10 @@
 
 /* --- Link columns --- */
 .col h2 {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-2xs);
   font-weight: var(--fw-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--text-dim);
   margin-block-end: var(--space-3);
 }
@@ -147,7 +147,7 @@
   min-block-size: 36px;
   color: color-mix(in srgb, var(--text-muted) 50%, var(--text));
   font-size: var(--fs-sm);
-  transition: color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .col a:hover {
   color: var(--brand-hover);
@@ -171,13 +171,13 @@
 }
 .verifyLabel {
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-eyebrow);
   font-weight: var(--fw-semibold);
   color: var(--text-dim);
 }
 .verify a {
   color: var(--text-muted);
-  transition: color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .verify a:hover {
   color: var(--brand-hover);
@@ -206,18 +206,14 @@
   min-block-size: 44px;
   padding-block: var(--space-2);
   padding-inline: var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .backToTop:hover {
   color: var(--brand-hover);
@@ -239,7 +235,7 @@
   inline-size: 44px;
   block-size: 44px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   background: transparent;
   color: var(--text);
   font-weight: var(--fw-bold);
@@ -248,11 +244,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .langToggle:hover {
   transform: translateY(-1px);
