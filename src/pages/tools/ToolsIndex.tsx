@@ -251,6 +251,7 @@ export function ToolsIndex() {
               className={`${styles.filterChip} ${category === cat ? styles.filterChipActive : ''}`}
               aria-pressed={category === cat}
               onClick={() => setCategory(cat)}
+              style={{ '--cat-color': catTone(cat) } as CSSProperties}
             >
               <CategoryIcon cat={cat} size={16} />
               {t(`tools.categories.${cat}`)}

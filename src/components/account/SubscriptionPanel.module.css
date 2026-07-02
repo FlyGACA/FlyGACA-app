@@ -59,10 +59,7 @@
   font-size: var(--fs-sm);
   cursor: pointer;
   box-shadow: var(--clay-shadow);
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .manage:hover,
 .upgrade:hover {

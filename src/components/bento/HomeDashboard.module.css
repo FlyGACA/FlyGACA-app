@@ -14,7 +14,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--text-dim);
   white-space: nowrap;
 }

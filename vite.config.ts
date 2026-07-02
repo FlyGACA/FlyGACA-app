@@ -39,12 +39,28 @@ export default defineConfig(({ mode }) => {
           // Split the stable framework libraries into their own long-cached
           // chunks so the app chunk stays lean and a release only busts the
           // app bundle, not React/router/i18n.
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-dom/client', 'react-router'],
-            'vendor-i18n': ['i18next', 'react-i18next'],
-            // framer-motion is intentionally NOT a manual chunk: it is only reached
-            // through the lazily-imported home dashboard, so leaving it un-pinned lets
-            // Rollup fold it into that async chunk and keep it off the initial path.
+          // Function form: React 19 moved the renderer into react-dom/client
+          // internals, which the object form (package roots only) missed —
+          // ~100 kB of renderer fell into the index chunk. Path-matching the
+          // whole package directory keeps the split stable across versions.
+          // framer-motion is intentionally NOT pinned: it is only reached
+          // through the lazily-imported home dashboard, so leaving it alone
+          // lets Rollup fold it into that async chunk, off the initial path.
+          manualChunks(id: string) {
+            if (
+              /node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/.test(
+                id,
+              )
+            ) {
+              return 'vendor-react';
+            }
+            if (
+              /node_modules[\\/](i18next|react-i18next|html-parse-stringify|void-elements)[\\/]/.test(
+                id,
+              )
+            ) {
+              return 'vendor-i18n';
+            }
           },
         },
       },

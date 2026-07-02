@@ -18,9 +18,7 @@
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .btn:hover {
   color: var(--text);

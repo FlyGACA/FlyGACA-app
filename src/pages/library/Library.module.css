@@ -3,43 +3,10 @@
 }
 
 /* Segmented control (Design System §08) — raised active tab on an inset track. */
+/* Layout-only remainder — the tab strip itself is the shared ui/Tabs. */
 .tabs {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 2px;
   margin-block-end: var(--space-5);
-  padding: 3px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
 }
-.tab {
-  padding: var(--space-3) var(--space-4);
-  min-height: 44px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-weight: var(--fw-semibold);
-  cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
-}
-.tab:hover {
-  color: var(--text);
-}
-.tab:active {
-  transform: scale(0.97);
-}
-.tabActive {
-  background: var(--surface-raised);
-  color: var(--accent-bright);
-  box-shadow: var(--shadow-sm);
-}
-
 .controls {
   display: flex;
   flex-direction: column;
@@ -84,17 +51,13 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .chip:hover {
   color: var(--text);
@@ -137,15 +100,12 @@
   padding: var(--space-3) var(--space-4);
   padding-inline-start: var(--space-5);
   padding-inline-end: calc(var(--space-4) + 34px);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: inherit;
   overflow: hidden;
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .row:hover {
   border-color: var(--cat-color, var(--brand));
@@ -214,9 +174,7 @@
   box-shadow: var(--clay-shadow);
   color: inherit;
   overflow: hidden;
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .card:hover {
   transform: translateY(-2px);
@@ -251,7 +209,7 @@
   color: var(--text);
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
 }
 .meta {
   font-size: var(--fs-xs);
@@ -317,13 +275,11 @@
   display: grid;
   gap: var(--space-1);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: inherit;
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 a.hit:hover {
   border-color: var(--brand-hover);
@@ -335,7 +291,7 @@ a.hit:hover {
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   color: var(--accent-bright);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
 }
 .hitTitle {
   font-weight: var(--fw-semibold);
@@ -361,17 +317,14 @@ a.hit:hover {
   min-height: 44px;
   margin-block-start: var(--space-4);
   padding: var(--space-2) var(--space-6);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
   font: inherit;
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .loadMore:hover {
   color: var(--brand-hover);
@@ -446,10 +399,7 @@ a.hit:hover {
   font-size: var(--fs-lg);
   line-height: 1;
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .star:hover {
   color: var(--gold);
@@ -484,7 +434,7 @@ a.hit:hover {
   gap: 2px;
   max-inline-size: 240px;
   padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--surface);
   color: inherit;
@@ -496,7 +446,7 @@ a.hit:hover {
 .personalKind {
   font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
   color: var(--text-dim);
 }
 .personalTitle {
@@ -511,17 +461,14 @@ a.hit:hover {
 .saveSearchBtn {
   min-height: 40px;
   padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text-muted);
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .saveSearchBtn:hover {
   border-color: var(--brand-hover);
@@ -538,7 +485,7 @@ a.hit:hover {
 .savedSearch {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   overflow: hidden;
@@ -551,9 +498,7 @@ a.hit:hover {
   font: inherit;
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .savedSearchApply:hover {
   color: var(--text);
@@ -571,9 +516,7 @@ a.hit:hover {
   line-height: 1;
   cursor: pointer;
   align-self: stretch;
-  transition:
-    color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .savedSearchX:hover {
   color: var(--danger);
@@ -588,7 +531,7 @@ a.hit:hover {
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-md);
   background: var(--surface-raised);
   color: var(--text);
@@ -607,7 +550,7 @@ a.hit:hover {
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
   background: color-mix(in srgb, var(--gold) 20%, transparent);
   color: var(--gold);
 }

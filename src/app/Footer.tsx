@@ -52,7 +52,7 @@ export function Footer() {
         {/* Brand + two tidy link columns. */}
         <div className={styles.top}>
           <div className={styles.brand}>
-            <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
+            <Link className={styles.lockup} to="/" aria-label={t('nav.home')} viewTransition>
               <img
                 src="/img/flygaca-mark.png"
                 alt=""
@@ -105,19 +105,29 @@ export function Footer() {
             <h2>{t('footer.explore')}</h2>
             <ul>
               <li>
-                <Link to="/library">{t('nav.library')}</Link>
+                <Link to="/library" viewTransition>
+                  {t('nav.library')}
+                </Link>
               </li>
               <li>
-                <Link to="/chat">{t('nav.captainAdel')}</Link>
+                <Link to="/chat" viewTransition>
+                  {t('nav.captainAdel')}
+                </Link>
               </li>
               <li>
-                <Link to="/tools">{t('footer.flightTools')}</Link>
+                <Link to="/tools" viewTransition>
+                  {t('footer.flightTools')}
+                </Link>
               </li>
               <li>
-                <Link to="/learn">{t('nav.learn')}</Link>
+                <Link to="/learn" viewTransition>
+                  {t('nav.learn')}
+                </Link>
               </li>
               <li>
-                <Link to="/pricing">{t('nav.pricing')}</Link>
+                <Link to="/pricing" viewTransition>
+                  {t('nav.pricing')}
+                </Link>
               </li>
             </ul>
           </nav>
@@ -126,16 +136,24 @@ export function Footer() {
             <h2>{t('footer.legal')}</h2>
             <ul>
               <li>
-                <Link to="/disclaimer">{t('footer.disclaimerLink')}</Link>
+                <Link to="/disclaimer" viewTransition>
+                  {t('footer.disclaimerLink')}
+                </Link>
               </li>
               <li>
-                <Link to="/terms">{t('footer.terms')}</Link>
+                <Link to="/terms" viewTransition>
+                  {t('footer.terms')}
+                </Link>
               </li>
               <li>
-                <Link to="/privacy">{t('footer.privacy')}</Link>
+                <Link to="/privacy" viewTransition>
+                  {t('footer.privacy')}
+                </Link>
               </li>
               <li>
-                <Link to="/safety">{t('footer.safety')}</Link>
+                <Link to="/safety" viewTransition>
+                  {t('footer.safety')}
+                </Link>
               </li>
             </ul>
           </nav>

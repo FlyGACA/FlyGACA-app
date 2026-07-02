@@ -39,6 +39,12 @@
   --bg: var(--falcon-night);
   --surface: var(--falcon-deep);
   --surface-raised: #13212e; /* hover / raised card */
+  --surface-sunken: color-mix(
+    in srgb,
+    var(--bg) 75%,
+    var(--bento-gutter)
+  ); /* input wells, troughs */
+  --surface-overlay: color-mix(in srgb, var(--surface) 90%, transparent); /* translucent chrome */
   --border: var(--falcon-mist);
   --border-bright: #26384a;
   /* Form-control boundary — lighter than --border-bright so text inputs clear
@@ -63,14 +69,6 @@
   --warning: var(--falcon-gold); /* partial / mixed grounding */
   --danger: var(--falcon-clay); /* refusal / "hold — not grounded" */
   --focus: var(--sage-bright);
-
-  /* --- Vivid accents — deliberately brighter than --teal-bright / --gold so
-     small text clears WCAG AA (4.5:1) over translucent chips + blurred
-     backdrops (e.g. the command-palette code chips). Do not swap these for
-     the darker base accents. --- */
-  --teal-vivid: #7cc8dd;
-  --gold-vivid: #e8c56d;
-  --violet-vivid: #c9a7e8;
 
   /* Pure-black mix partner for color-mix() shading of --bg (section bands
      slightly darker than the canvas). */
@@ -126,6 +124,7 @@
   --fs-base: 1rem;
   --fs-sm: 0.9rem;
   --fs-xs: 0.78rem; /* eyebrows / mono labels */
+  --fs-2xs: 0.7rem; /* kbd chips, count badges, micro meta */
 
   --fw-regular: 400;
   --fw-medium: 500;
@@ -136,6 +135,13 @@
   --lh-tight: 1.15;
   --lh-snug: 1.35;
   --lh-body: 1.65;
+  --lh-heading: 1.08; /* display-size headings only */
+
+  /* Tracking scale — one vocabulary for the hand-rolled 0.04–0.12em spread. */
+  --tracking-eyebrow: 0.14em; /* uppercase eyebrows / section labels */
+  --tracking-caps: 0.06em; /* small uppercase meta (stat labels, badges) */
+  --tracking-tight: -0.02em; /* display / hero headings */
+  --tracking-heading: -0.01em; /* h1–h3 optical tightening */
 
   /* --- Spacing (4px base) --- */
   --space-1: 0.25rem;
@@ -156,24 +162,38 @@
   --radius-xl: 28px;
   --radius-pill: 999px;
 
-  /* --- Elevation --- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.45);
-  --shadow-pop: 0 18px 50px rgba(0, 0, 0, 0.55);
+  /* --- Elevation ---
+     Named 3-tier ladder: layered ambient + key shadows, softer and larger-radius
+     than the former single-shadow values. --shadow-* stay as aliases so every
+     existing consumer inherits the refined depth. */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --elev-2: 0 2px 6px rgba(0, 0, 0, 0.3), 0 10px 32px -8px rgba(0, 0, 0, 0.45);
+  --elev-3: 0 4px 12px rgba(0, 0, 0, 0.35), 0 24px 64px -12px rgba(0, 0, 0, 0.6);
+  --shadow-sm: var(--elev-1);
+  --shadow-card: var(--elev-2);
+  --shadow-pop: var(--elev-3);
+
+  /* --- Hairline / edge strategy (1px edges + top sheen replace chunky borders) --- */
+  --hairline: 1px solid var(--border);
+  --hairline-bright: 1px solid var(--border-bright);
+  --hairline-brand: 1px solid color-mix(in srgb, var(--brand) 45%, var(--border-bright));
+  --edge-sheen: inset 0 1px 0 var(--sheen-top); /* glassy top highlight on raised surfaces */
   /* Cool, low-spread shadows for light reading surfaces (Design System §06).
      Dark UI keeps --shadow-card / --shadow-pop above. */
   --shadow-1: 0 1px 2px rgba(15, 26, 36, 0.04), 0 1px 3px rgba(15, 26, 36, 0.06);
   --shadow-2: 0 4px 8px -2px rgba(15, 26, 36, 0.08), 0 2px 4px -2px rgba(15, 26, 36, 0.04);
   --shadow-3: 0 12px 24px -8px rgba(15, 26, 36, 0.14), 0 4px 8px -4px rgba(15, 26, 36, 0.06);
 
-  /* --- Claymorphism (2026 trend) ---
-     Double-shadow system: outer drop + inner highlight. Borders 3-4px.
-     Use on interactive cards/buttons that need tactile depth. */
-  --clay-border: 3px solid color-mix(in srgb, var(--brand) 40%, transparent);
-  --clay-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  --clay-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  --clay-shadow-press: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
-  --clay-radius: var(--radius-lg); /* 20px — chunky rounded corners */
+  /* --- Clay (elevated refresh) ---
+     Retuned from the chunky 3px clay of 2026 to a 1px brand hairline over
+     layered depth. Same consumers (.btn-clay*, .card-clay, calc stats, action
+     rows) — the tactile identity now comes from elevation + sheen, not border
+     weight. */
+  --clay-border: 1px solid color-mix(in srgb, var(--brand) 32%, var(--border-bright));
+  --clay-shadow: var(--elev-2), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --clay-shadow-hover: var(--elev-3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --clay-shadow-press: 0 1px 4px rgba(0, 0, 0, 0.3), inset 0 2px 6px rgba(0, 0, 0, 0.25);
+  --clay-radius: var(--radius-lg); /* 20px — rounded corners */
 
   /* --- Skeleton shimmer --- */
   --skeleton-base: color-mix(in srgb, var(--surface) 60%, var(--border));
@@ -196,6 +216,18 @@
   --ease-lift: var(--ease-entry); /* card lift — shares the kinetic-entry curve */
   --dur: 0.2s;
   --dur-slow: 0.4s;
+  --dur-fast: 120ms; /* transform-only micro feedback (press, raise) */
+
+  /* --- Interaction tokens — the shared press/hover grammar --- */
+  --press-scale: 0.97;
+  --hover-raise: -2px;
+  --transition-color:
+    color var(--dur) var(--ease), background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+  --transition-interactive:
+    color var(--dur) var(--ease), background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+    transform var(--dur-fast) var(--ease-glide), opacity var(--dur) var(--ease);
 
   /* --- Neon functional accents (active status / live data — bento dashboard) ---
      Used only for accents, hairline borders, iconography and large status text on
@@ -243,6 +275,13 @@
      Base is 0; the Cockpit / Night-Ops theme nudges this up so amber text holds
      its open counters at low cockpit brightness (see [data-theme="cockpit"]). */
   --tracking-ui: 0;
+
+  /* --- Command-palette result-tag hues ---
+     Deliberately brighter than --teal-bright / --gold so the tags clear WCAG AA
+     (4.5:1) over the translucent chip + blurred dialog backdrop. */
+  --tag-regulation: #7cc8dd; /* §-tags — bright teal */
+  --tag-tool: #e8c56d; /* tool tags — bright gold */
+  --tag-guide: #c9a7e8; /* guide tags — lavender */
 }
 
 /* =================================================================
@@ -338,4 +377,10 @@ html[data-theme='cockpit'] {
   );
   --glow-stat-cyan: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
   --glow-stat-green: 0 0 14px color-mix(in srgb, #ffb000 28%, transparent);
+
+  /* --- Palette result tags → amber-luminance ramp (night-vision safe; the
+     default teal/lavender would leak high-wavelength light into the cockpit) --- */
+  --tag-regulation: #ffc23d;
+  --tag-tool: #ffd27a;
+  --tag-guide: #ffe0a3;
 }

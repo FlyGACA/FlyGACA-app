@@ -75,12 +75,10 @@
 
 .lesson {
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--bg);
-  transition:
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .lessonDone {
   border-color: var(--color-success);
@@ -120,13 +118,11 @@
   align-items: center;
   min-height: 36px;
   padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .action:hover {
   border-color: var(--brand-hover);

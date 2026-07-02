@@ -23,11 +23,12 @@
   display: flex;
   align-items: stretch;
   min-height: 44px;
+  /* --border-input clears WCAG 1.4.11 non-text contrast — do not darken. */
   border: 1px solid var(--border-input);
   border-radius: var(--radius-md);
-  background: var(--surface);
+  background: var(--surface-sunken); /* inputs read as wells, distinct from cards */
   overflow: hidden;
-  transition: border-color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .inputRow:focus-within {
   border-color: var(--brand-hover);
@@ -107,7 +108,8 @@
   display: flex;
   align-items: center;
   padding-inline: var(--space-3);
-  background: var(--surface-raised);
+  background: transparent;
+  border-inline-start: var(--hairline); /* a hairline seam, not a solid slab */
   color: var(--text-dim);
   font-size: var(--fs-xs);
   white-space: nowrap;
@@ -118,23 +120,21 @@
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-4);
-  border: var(--clay-border);
+  border: var(--hairline-bright);
   border-radius: var(--clay-radius);
   background: var(--surface);
-  box-shadow: var(--clay-shadow);
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  box-shadow: var(--elev-1), var(--edge-sheen);
+  transition: var(--transition-interactive);
 }
 .stat:hover {
-  box-shadow: var(--clay-shadow-hover);
-  transform: translateY(-2px);
+  box-shadow: var(--elev-2), var(--edge-sheen);
+  transform: translateY(var(--hover-raise));
 }
 .stat dt {
   font-size: var(--fs-xs);
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
 }
 .stat dd {
   margin: 0;
@@ -161,10 +161,9 @@
   display: inline-flex;
   gap: 2px;
   padding: 3px;
-  border: var(--clay-border);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
-  background: var(--surface);
-  box-shadow: var(--clay-shadow);
+  background: var(--surface-sunken); /* the control sits in a well */
 }
 .segBtn {
   padding: var(--space-2) var(--space-4);
@@ -175,7 +174,7 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
   cursor: pointer;
-  transition: color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .segBtn:hover {
   color: var(--text);
@@ -183,13 +182,19 @@
 .segActive {
   background: var(--brand);
   color: var(--text-on-brand);
+  box-shadow: var(--elev-1);
 }
 
+/* Headline stat — the tool's answer. Accent top edge + a faint top wash. */
 .headline {
   border-block-start: 3px solid var(--accent-bright);
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--accent) 7%, transparent), transparent 45%),
+    var(--surface);
 }
 .headline dd {
   color: var(--accent-bright);
+  font-size: clamp(var(--fs-h3), 1rem + 0.9vw, var(--fs-h2));
 }
 
 .hint {

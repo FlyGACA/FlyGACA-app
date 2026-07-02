@@ -57,11 +57,13 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
   means a green CI. (Don't run only a subset: `format:check` and `check:bundle` are enforced in
   CI too.)
 
-## Porting the legacy site
+## Adding a new tool
 
-The port is feature-complete — all catalog tools are live. If a new tool is ever added: lift its
-math into `src/calc/<tool>.ts` (pure, add a Vitest spec), build the page under `src/pages/tools/`
-using `CalcShell` + `useNumericInputs` (or `useUrlState` for string-only tools), add its strings to
-the i18n bundles, register it in the typed catalog `src/lib/tools.ts` (`status: 'live' | 'soon'`),
-and add the route in `router.tsx`. `MIGRATION.md` records the migration history — the legacy source
-is in the `flygaca/flygaca` repo.
+The legacy→React migration is **complete** (all catalog tools are live). To add a tool: register
+it in `src/lib/tools.ts` — the typed catalog registry and single source of truth (`status:
+'soon'` until it ships, then flip to `'live'`) — lift its math into `src/calc/<tool>.ts` (pure,
+add a Vitest spec), build a page under `src/pages/tools/` using `CalcShell` + `useNumericInputs`
+(or `useUrlState` for string-only tools), add its strings to both i18n bundles, and register the
+route in `router.tsx`. `MIGRATION.md` is the historical log of the rebuild; `ROADMAP.md` tracks
+what's next. The legacy source (`flygaca/flygaca` repo) remains the reference for anything still
+ported from the old site.

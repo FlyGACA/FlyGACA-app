@@ -35,6 +35,7 @@ import { SortSelect } from '../../components/hub/SortSelect';
 import { useViewMode } from '../../lib/useViewMode';
 import styles from './Library.module.css';
 import hub from '../../components/hub/hubList.module.css';
+import { Tab, Tabs } from '../../components/ui/Tabs';
 
 const MIN_QUERY = 3;
 /** Max full-text matches collected before we ask the user to refine. */
@@ -396,20 +397,13 @@ export function Library() {
         </section>
       )}
 
-      <div className={styles.tabs} role="tablist" aria-label={t('library.browse')}>
+      <Tabs label={t('library.browse')} className={styles.tabs}>
         {KINDS.map((k) => (
-          <button
-            key={k}
-            type="button"
-            role="tab"
-            aria-selected={kind === k}
-            className={`${styles.tab} ${kind === k ? styles.tabActive : ''}`}
-            onClick={() => setKind(k)}
-          >
+          <Tab key={k} active={kind === k} onClick={() => setKind(k)}>
             {t(`library.kind.${k}`)}
-          </button>
+          </Tab>
         ))}
-      </div>
+      </Tabs>
 
       {loading && (
         <ul className={`${hub.grid} ${styles.skeletonGrid}`} aria-hidden="true">

@@ -14,7 +14,7 @@
 .blockEyebrow {
   font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent-bright);
   font-weight: var(--fw-semibold);
   margin: 0;
@@ -70,7 +70,7 @@
 .field textarea {
   min-height: 44px;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-md);
   background: var(--bg);
   color: var(--text);
@@ -112,9 +112,7 @@
   box-shadow:
     var(--clay-shadow),
     0 0 18px color-mix(in srgb, var(--brand) 28%, transparent);
-  transition:
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .send:hover {
   background: var(--brand-hover);

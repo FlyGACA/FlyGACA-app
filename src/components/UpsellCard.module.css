@@ -30,7 +30,7 @@
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-caps);
 }
 .title {
   margin: 0;
@@ -68,10 +68,7 @@
   box-shadow:
     var(--clay-shadow),
     0 0 18px color-mix(in srgb, var(--brand) 28%, transparent);
-  transition:
-    background var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .cta:hover {
   background: var(--brand-hover);
