@@ -21,9 +21,9 @@
   position: relative;
   inline-size: min(440px, 92vw);
   background: var(--surface-raised);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--elev-3);
   padding: var(--space-8) var(--space-6) var(--space-6);
   text-align: center;
   animation: onb-rise var(--dur) var(--ease);
@@ -107,9 +107,7 @@
   block-size: 7px;
   border-radius: var(--radius-pill);
   background: var(--border-bright);
-  transition:
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .dotActive {
   background: var(--brand-hover);
@@ -137,14 +135,10 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .back {
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   background: transparent;
   color: var(--text-muted);
 }

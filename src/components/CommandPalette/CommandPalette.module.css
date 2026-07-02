@@ -20,10 +20,14 @@
 
 .box {
   inline-size: min(560px, 92vw);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-bright);
+  /* Translucent chrome over the blurred scrim — same overlay material as the
+     header/dock; the scrim's dim keeps text contrast comfortable. */
+  background: var(--surface-overlay);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: var(--hairline-bright);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--elev-3), var(--edge-sheen);
   overflow: hidden;
   animation: cmdk-rise var(--dur) var(--ease);
 }
@@ -68,7 +72,7 @@
   font-family: var(--font-mono);
   font-size: 0.62rem;
   color: var(--text-dim);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: 5px;
   padding: 1px 6px;
 }
@@ -87,14 +91,14 @@
   min-block-size: 44px;
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-caps);
   color: var(--text-muted);
   background: transparent;
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   padding: 0 var(--space-4);
   cursor: pointer;
-  transition: all var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 
 .chipActive {
