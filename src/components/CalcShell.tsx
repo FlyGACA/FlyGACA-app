@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Copy, Check, ShareNetwork, GraduationCap } from '@phosphor-icons/react';
 import { Disclaimer } from './Disclaimer';

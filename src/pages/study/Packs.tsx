@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { OutputGrid } from '../../components/calc/Grids';
 import { ResultStat } from '../../components/calc/ResultStat';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { resolveCrosswind } from '../../calc/crosswind';
 import { NumberField } from '../../components/calc/NumberField';
 import { WindDiagram } from './WindDiagram';
@@ -12,12 +12,12 @@ const EXAMPLE = { rwy: '34', wdir: '290', wspd: '18' };
 
 export function Crosswind() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ rwy: '', wdir: '', wspd: '' });
+  const { inputs, set, nums } = useNumericInputs({ rwy: '', wdir: '', wspd: '' });
 
   const result = resolveCrosswind({
-    runway: parseFloat(inputs.rwy),
-    windDir: parseFloat(inputs.wdir),
-    windSpeed: parseFloat(inputs.wspd),
+    runway: nums.rwy,
+    windDir: nums.wdir,
+    windSpeed: nums.wspd,
   });
 
   const side = result
@@ -41,13 +41,13 @@ export function Crosswind() {
     ? Math.abs(result.crosswind) < 0.5
       ? t('crosswind.diagramLabelCalm', {
           rwy: result.runwayHeading,
-          dir: Math.round(parseFloat(inputs.wdir)),
-          spd: Math.round(parseFloat(inputs.wspd)),
+          dir: Math.round(nums.wdir),
+          spd: Math.round(nums.wspd),
         })
       : t('crosswind.diagramLabel', {
           rwy: result.runwayHeading,
-          dir: Math.round(parseFloat(inputs.wdir)),
-          spd: Math.round(parseFloat(inputs.wspd)),
+          dir: Math.round(nums.wdir),
+          spd: Math.round(nums.wspd),
           xw: Math.abs(result.crosswind).toFixed(1),
           side: result.crosswind >= 0 ? t('crosswind.right') : t('crosswind.left'),
         })
@@ -109,8 +109,8 @@ export function Crosswind() {
           {result ? (
             <WindDiagram
               runwayHeading={result.runwayHeading}
-              windDir={parseFloat(inputs.wdir)}
-              windSpeed={parseFloat(inputs.wspd)}
+              windDir={nums.wdir}
+              windSpeed={nums.wspd}
               crosswind={result.crosswind}
               label={diagramLabel}
             />

@@ -6,7 +6,7 @@
  * free user tries to add, we route to /pricing, matching the app's other upsell
  * surfaces (currency export, prep packs) so the upgrade flow lives in one place.
  */
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useFeature } from './features';
 import { toggleBookmark, type LibBookmark } from './libraryPrefs';
 

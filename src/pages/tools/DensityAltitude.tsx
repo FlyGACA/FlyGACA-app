@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '../../components/CalcShell';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
 import { ResultStat } from '../../components/calc/ResultStat';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { densityAltitude } from '../../calc/isa';
 import { NumberField } from '../../components/calc/NumberField';
 
@@ -11,13 +11,9 @@ const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function DensityAltitude() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ elev: '', qnh: '', oat: '' });
+  const { inputs, set, nums } = useNumericInputs({ elev: '', qnh: '', oat: '' });
 
-  const r = densityAltitude(
-    parseFloat(inputs.elev),
-    parseFloat(inputs.qnh),
-    parseFloat(inputs.oat),
-  );
+  const r = densityAltitude(nums.elev, nums.qnh, nums.oat);
 
   const adelPrompt = () => {
     if (!r) return null;

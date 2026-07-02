@@ -1,5 +1,5 @@
 import { lazy, type ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
 

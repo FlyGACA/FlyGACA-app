@@ -4,7 +4,7 @@ import { NumberField } from '../../components/calc/NumberField';
 import { TextField } from '../../components/calc/TextField';
 import { ResultStat } from '../../components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { sunTimes } from '../../calc/sun';
 import { formatHm, shiftTime, KSA_OFFSET_MIN } from '../../calc/zulu';
 
@@ -13,10 +13,10 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
 
 export function SunTimes() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ lat: '', lon: '', date: '' });
+  const { inputs, set, nums } = useNumericInputs({ lat: '', lon: '', date: '' });
   const dateStr = ISO.test(inputs.date) ? inputs.date : todayIso();
   const when = new Date(`${dateStr}T12:00:00Z`);
-  const r = sunTimes(when, parseFloat(inputs.lat), parseFloat(inputs.lon));
+  const r = sunTimes(when, nums.lat, nums.lon);
 
   function pair(d: Date | null): { utc: string; ksa: string } {
     if (!d) return { utc: t('sunTimes.noEvent'), ksa: '' };
