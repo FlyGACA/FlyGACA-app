@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { searchHref, parseSearchUrl, toSearchRef } from '../src/lib/content';
+import { searchHref, parseSearchUrl, toSearchRef, linkHref } from '../src/lib/content';
 
 describe('searchHref', () => {
   it('rewrites regulations URLs to the Document reader', () => {
@@ -86,5 +86,40 @@ describe('toSearchRef', () => {
   it('returns null for an unroutable object', () => {
     expect(toSearchRef({ kind: 'charts', id: 'oerk' })).toBeNull();
     expect(toSearchRef({ type: 'regulations', id: '' })).toBeNull();
+  });
+});
+
+describe('linkHref', () => {
+  it('routes semantic corpus pointers via the Library reader', () => {
+    expect(linkHref({ kind: 'regulations', id: 'part-61', anchor: 'sec-x' })).toBe(
+      '/library/part-61#sec-x',
+    );
+    expect(linkHref({ kind: 'handbook', id: 'foreword' })).toBe('/library/handbook/foreword');
+  });
+
+  it('passes through explicit app routes', () => {
+    expect(linkHref({ route: '/study/quiz?bank=medical' })).toBe('/study/quiz?bank=medical');
+  });
+
+  it('rewrites legacy internal .html links to app routes', () => {
+    expect(linkHref('../guides/saudi-ppl-requirements.html')).toBe('/guides/saudi-ppl-requirements');
+    expect(linkHref('tools/e6b.html')).toBe('/tools/e6b');
+    expect(linkHref('../library.html')).toBe('/library');
+    expect(linkHref('study/groundschool.html')).toBe('/study/groundschool');
+    expect(linkHref('study/quiz.html?bank=medical')).toBe('/study/quiz?bank=medical');
+  });
+
+  it('still resolves legacy corpus URL strings (back-compat)', () => {
+    expect(linkHref('../document.html?type=handbooks&id=foreword')).toBe('/library/handbook/foreword');
+  });
+
+  it('resolves the deprecated url field on a link object', () => {
+    expect(linkHref({ url: '../tools/vfr-minima.html' })).toBe('/tools/vfr-minima');
+  });
+
+  it('returns null for anything unroutable', () => {
+    expect(linkHref('https://gaca.gov.sa')).toBeNull();
+    expect(linkHref('nonsense')).toBeNull();
+    expect(linkHref({})).toBeNull();
   });
 });

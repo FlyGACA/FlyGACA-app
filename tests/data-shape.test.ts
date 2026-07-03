@@ -3,23 +3,21 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
- * Guards the corpus's semantic shape (see src/lib/content.ts · toSearchRef and
- * scripts/migrate-search-index.mjs). Frontend corpus pointers must be semantic
- * `{ kind, id, anchor }` fields — never the legacy `document.html?type=…&id=…#…`
- * routing URL. If an upstream sync re-introduces the legacy shape in a migrated
- * file, this fails — run `npm run data:normalize` to heal it (and land the
- * builder patch upstream so it stops recurring).
+ * Guards the corpus's semantic shape (see src/lib/content.ts · toSearchRef /
+ * linkHref and scripts/normalize-corpus-data.mjs). Frontend links must be
+ * semantic — corpus `{ kind, id, anchor }` pointers or `{ route }` app paths —
+ * never a legacy `document.html?type=…&id=…#…` URL. If an upstream sync
+ * re-introduces the legacy shape in a migrated file, this fails — run
+ * `npm run data:normalize` to heal it (and land the builder patch upstream so it
+ * stops recurring).
  *
- * A few files legitimately still carry legacy URLs, each for a specific reason.
- * They're allow-listed here; anything else with a `document.html?` URL fails.
- * The allow-list is self-checking: a file that no longer needs the exemption
- * must be removed from it (otherwise the "still needs exemption" test fails).
+ * One file legitimately still carries legacy URLs; it's allow-listed with a
+ * reason, and anything else with a `document.html?` URL fails. The allow-list is
+ * self-checking: a file that no longer needs the exemption must be removed from
+ * it (otherwise the "still needs exemption" test fails).
  */
 const LEGACY_URL_ALLOWED = new Map<string, string>([
   ['rag-chunks.json', 'backend BM25 retriever contract (functions/src/corpus.ts) reads `u`'],
-  ['paths-index.json', 'heterogeneous step.url (corpus + guides/tools/quiz links) — pending link-model migration'],
-  ['groundschool.json', 'heterogeneous read.url (corpus + tools/guides links) — pending link-model migration'],
-  ['quiz.json', 'latent citeUrl field — pending migration to a semantic cite ref'],
 ]);
 
 const DATA_DIR = join(process.cwd(), 'public/data');
@@ -59,5 +57,29 @@ describe('corpus data shape', () => {
       terms: Array<Record<string, unknown>>;
     };
     expect(idx.terms.every((t) => !('url' in t))).toBe(true);
+  });
+
+  it('curated content links are semantic (no legacy url/citeUrl fields)', () => {
+    const paths = JSON.parse(read('paths-index.json')) as {
+      paths: Array<{ steps: Array<{ url?: string; kind?: string; route?: string }> }>;
+    };
+    const steps = paths.paths.flatMap((p) => p.steps);
+    expect(steps.some((s) => 'url' in s), 'paths-index has legacy step.url').toBe(false);
+    expect(steps.every((s) => s.kind != null || s.route != null)).toBe(true);
+
+    const gs = JSON.parse(read('groundschool.json')) as {
+      modules: Array<{ lessons: Array<{ read?: { url?: string } }> }>;
+    };
+    const reads = gs.modules.flatMap((m) => m.lessons.map((l) => l.read).filter(Boolean));
+    expect(reads.some((r) => r && 'url' in r), 'groundschool has legacy read.url').toBe(false);
+
+    const quiz = JSON.parse(read('quiz.json')) as {
+      banks: Array<{ questions: Array<{ citeUrl?: string; cite?: unknown; citeRef?: unknown }> }>;
+    };
+    const qs = quiz.banks.flatMap((b) => b.questions);
+    expect(qs.some((q) => 'citeUrl' in q), 'quiz has legacy citeUrl').toBe(false);
+    // `cite` is the human-readable label; the semantic link lives in `citeRef`.
+    // Guards against a migration clobbering the label with a ref object.
+    expect(qs.every((q) => q.cite === undefined || typeof q.cite === 'string')).toBe(true);
   });
 });

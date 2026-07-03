@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
-import { searchHref, type PathsIndex } from '../../lib/content';
+import { linkHref, type PathsIndex } from '../../lib/content';
 import { useStudyProgress, togglePathStep } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
@@ -47,7 +47,7 @@ export function Paths() {
             </div>
             <ol className={styles.steps}>
               {p.steps.map((s, i) => {
-                const href = searchHref(s.url);
+                const href = linkHref(s);
                 const isDone = done.has(i);
                 return (
                   <li key={i} className={`${styles.step} ${isDone ? styles.stepDone : ''}`}>
