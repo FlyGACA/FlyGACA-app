@@ -5,6 +5,7 @@
  * in src/calc/offlineManifest.ts; this module owns the DOM/Cache + persistence.
  */
 import { addSaved, listSaved, removeSaved } from '../calc/offlineManifest';
+import { dataUrl } from './content';
 
 /** Must match the workbox runtimeCaching cacheName in vite.config.ts. */
 const CACHE = 'flygaca-data';
@@ -35,7 +36,9 @@ export async function saveDoc(slug: string, urls: string[]): Promise<boolean> {
   if (!offlineSupported()) return false;
   try {
     const cache = await caches.open(CACHE);
-    await cache.addAll(urls);
+    // Cache under the same origin the runtime fetch uses (dataUrl), so a saved
+    // doc is served from cache whether /data is same-origin or on the bucket.
+    await cache.addAll(urls.map(dataUrl));
     persist(addSaved(loadSaved(), slug));
     return true;
   } catch {
@@ -66,7 +69,7 @@ export async function removeDoc(slug: string, urls: string[]): Promise<void> {
   if (offlineSupported()) {
     try {
       const cache = await caches.open(CACHE);
-      await Promise.all(urls.map((u) => cache.delete(u)));
+      await Promise.all(urls.map((u) => cache.delete(dataUrl(u))));
     } catch {
       /* ignore */
     }

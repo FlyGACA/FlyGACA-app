@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { dataUrl } from './content';
 
 interface FetchState {
   text: string | null;
@@ -13,7 +14,7 @@ export function useFetchText(path: string): FetchState {
   useEffect(() => {
     const controller = new AbortController();
     setState({ text: null, error: null, loading: true });
-    fetch(path, { signal: controller.signal })
+    fetch(dataUrl(path), { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load ${path}: ${res.status}`);
         return res.text();
