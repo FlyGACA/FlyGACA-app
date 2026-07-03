@@ -13,9 +13,10 @@ import { GuidesBrowser } from '../guides/GuidesBrowser';
 import { StudyDashboard, STUDY_MODES } from '../study/StudyDashboard';
 import { LIVE_GUIDE_SLUGS, type GuideTopic } from '../guides/guides';
 import styles from './Learn.module.css';
+import { Tab, Tabs } from '../../components/ui/Tabs';
 
-type Tab = 'guides' | 'practice';
-const TABS: Tab[] = ['guides', 'practice'];
+type LearnTab = 'guides' | 'practice';
+const TABS: LearnTab[] = ['guides', 'practice'];
 
 /** Curated quick-pick topics surfaced as chips in the hero (jump into the Guides tab). */
 const POPULAR_TOPICS: GuideTopic[] = ['licensing', 'medical', 'airspace', 'weather', 'planning'];
@@ -47,8 +48,8 @@ const REFERENCE_TOOLS = REFERENCE_GROUPS.flatMap((g) => g.ids);
 export function LearnHub() {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
-  const tab: Tab = params.get('tab') === 'practice' ? 'practice' : 'guides';
-  const setTab = (next: Tab) => {
+  const tab: LearnTab = params.get('tab') === 'practice' ? 'practice' : 'guides';
+  const setTab = (next: LearnTab) => {
     const p = new URLSearchParams(params);
     if (next === 'guides') p.delete('tab');
     else p.set('tab', next);
@@ -120,20 +121,13 @@ export function LearnHub() {
         chips={chips}
       />
 
-      <div className={styles.tabs} role="tablist" aria-label={t('learn.title')}>
+      <Tabs label={t('learn.title')} className={styles.tabs}>
         {TABS.map((tb) => (
-          <button
-            key={tb}
-            type="button"
-            role="tab"
-            aria-selected={tab === tb}
-            className={`${styles.tab} ${tab === tb ? styles.tabActive : ''}`}
-            onClick={() => setTab(tb)}
-          >
+          <Tab key={tb} active={tab === tb} onClick={() => setTab(tb)}>
             {t(`learn.tabs.${tb}`)}
-          </button>
+          </Tab>
         ))}
-      </div>
+      </Tabs>
 
       {tab === 'guides' ? (
         <GuidesBrowser query={query} topic={topic} onTopicChange={setTopic} />

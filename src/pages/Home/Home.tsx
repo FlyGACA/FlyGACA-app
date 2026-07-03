@@ -1,5 +1,4 @@
 import { lazy, Suspense } from 'react';
-import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CountUp } from '../../components/CountUp';
@@ -12,6 +11,8 @@ import { SectionHeader } from '../../components/SectionHeader';
 import { Stepper } from '../../components/Stepper';
 import { BentoGrid } from '../../components/bento/BentoGrid';
 import { BentoCard, type BentoSpan, type BentoTone } from '../../components/bento/BentoCard';
+import { ButtonLink } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
 import { useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -75,12 +76,12 @@ export function Home() {
             <h1 className={styles.title}>{t('home.title')}</h1>
             <p className={styles.subtitle}>{t('home.subtitle')}</p>
             <div className={styles.heroCta}>
-              <Link to="/library" className="btn btn-clay-primary" data-magnetic>
+              <ButtonLink to="/library" variant="clayPrimary" data-magnetic>
                 {t('home.ctaLibrary')}
-              </Link>
-              <Link to="/chat" className="btn btn-clay" data-magnetic>
+              </ButtonLink>
+              <ButtonLink to="/chat" variant="clay" data-magnetic>
                 {t('home.ctaChat')}
-              </Link>
+              </ButtonLink>
             </div>
           </div>
           <div className={styles.heroAside}>
@@ -160,9 +161,10 @@ export function Home() {
         </BentoGrid>
       </section>
 
-      {/* Conversion band — plan-aware. */}
+      {/* Conversion band — plan-aware. The gold heritage accent is used exactly
+          once on the page, here. */}
       <section className="container">
-        <div className={styles.cta}>
+        <Card variant="accent" accent="var(--gold)" className={styles.cta}>
           {isPro ? (
             <>
               <div>
@@ -170,9 +172,9 @@ export function Home() {
                 <p className={styles.ctaLead}>{t('home.convert.proLead')}</p>
               </div>
               <div className={styles.ctaActions}>
-                <Link className="btn btn-clay-primary" to="/dashboard">
+                <ButtonLink variant="clayPrimary" to="/dashboard">
                   {t('home.convert.proCta')}
-                </Link>
+                </ButtonLink>
               </div>
             </>
           ) : (
@@ -182,13 +184,13 @@ export function Home() {
                 <p className={styles.ctaLead}>{t('home.convert.lead')}</p>
               </div>
               <div className={styles.ctaActions}>
-                <Link className="btn btn-clay-primary" to="/pricing">
+                <ButtonLink variant="clayPrimary" to="/pricing">
                   {t('home.convert.cta')}
-                </Link>
+                </ButtonLink>
               </div>
             </>
           )}
-        </div>
+        </Card>
       </section>
 
       <section className="container">

@@ -11,10 +11,7 @@
   color: var(--text-muted);
   font-size: var(--fs-md);
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .mic:hover {
   color: var(--text);

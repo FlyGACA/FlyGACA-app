@@ -76,6 +76,7 @@ live weather API + CSP, which belong to a later wiring/hardening stage). The ful
 
 Built on a local-first account layer (`src/lib/account.ts`, localStorage via useSyncExternalStore)
 standing in for the Stage 3 Firebase service layer — same component API will map onto Firestore:
+
 - Account (email sign-in/out), Dashboard (medical & flight-review validity, total hours), Logbook
   (add/delete flights, column totals, JSON export), Settings (profile, language, delete-all-data).
 - Pricing (Free/Pro/Schools, monthly↔annual; checkout stubbed until billing) and Schools (B2B).
@@ -149,7 +150,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
   main bundle. Linked from the Library header.
 - **PDF study sheets** (`/study/sheets`): the deployed one-page study PDFs rendered inline via a
   native `<object>` embed (no PDF library), with open/download and `?doc=`. New Study mode tile.
-- **met-brief** (`/tools/met-brief`): the last `soon` tool, now **live**. A route *briefing builder*
+- **met-brief** (`/tools/met-brief`): the last `soon` tool, now **live**. A route _briefing builder_
   that links each aerodrome to the official source (aviationweather.gov) + our own decoders — it
   never fabricates weather, so no new CSP origin. **All 54 catalog tools are now live.**
 
@@ -238,3 +239,6 @@ and hardening/SEO/E2E stages are all done. Still open, none of it code in this r
 - **Native IAP purchase wiring** pending the `@revenuecat/purchases-capacitor` plugin.
 - **Lighthouse perf budget** in CI and broader E2E flow coverage.
 - **Heavy ebook PDFs** (kept out of the repo/payload for now).
+
+Forward-looking work is tracked in [`ROADMAP.md`](./ROADMAP.md); this file stays the historical
+log of the rebuild.

@@ -29,9 +29,7 @@
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   text-decoration: none;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .chip:hover {
   border-color: var(--brand-hover);

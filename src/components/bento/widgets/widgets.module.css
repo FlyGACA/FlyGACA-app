@@ -5,7 +5,7 @@
   font-size: var(--fs-xs);
   font-family: var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--text-dim);
 }
 
@@ -110,7 +110,7 @@
   min-inline-size: 0;
   min-height: 44px;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text);
@@ -137,9 +137,7 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition:
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 
 .featBtn:hover {
@@ -167,7 +165,7 @@
   padding-block: 2px;
   padding-inline: var(--space-3);
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   background: var(--surface);
   font-size: var(--fs-xs);
   color: var(--text-muted);

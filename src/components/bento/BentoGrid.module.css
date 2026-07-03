@@ -10,7 +10,7 @@
     var(--glow-teal) 100% 100% / 52% 62% no-repeat,
     var(--bento-gutter);
   border-radius: var(--radius-xl);
-  border: 1px solid var(--border);
+  border: var(--hairline);
 }
 
 @media (max-width: 960px) {

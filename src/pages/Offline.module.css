@@ -14,7 +14,7 @@
 .eyebrow {
   font-size: var(--fs-h3);
   font-weight: var(--fw-black);
-  letter-spacing: 0.15em;
+  letter-spacing: var(--tracking-eyebrow);
   background: var(--grad-brand);
   -webkit-background-clip: text;
   background-clip: text;
@@ -53,9 +53,7 @@
   font-weight: var(--fw-semibold);
   cursor: pointer;
   box-shadow: var(--clay-shadow);
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .retry:hover {
   box-shadow: var(--clay-shadow-hover);
@@ -84,10 +82,7 @@
   color: var(--text);
   font-weight: var(--fw-semibold);
   box-shadow: var(--clay-shadow);
-  transition:
-    box-shadow var(--dur) var(--ease),
-    transform var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .tile:hover {
   box-shadow: var(--clay-shadow-hover);

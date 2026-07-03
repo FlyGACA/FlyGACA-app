@@ -4,39 +4,10 @@
 
 /* Segmented control (Design System §08) — raised active tab on an inset track.
    Mirrors the Library hub's corpus tabs. */
+/* Layout-only remainder — the strip itself is the shared ui/Tabs. */
 .tabs {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 2px;
   margin-block-end: var(--space-5);
-  padding: 3px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
 }
-.tab {
-  padding: var(--space-3) var(--space-5);
-  min-height: 44px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-weight: var(--fw-semibold);
-  cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease);
-}
-.tab:hover {
-  color: var(--text);
-}
-.tabActive {
-  background: var(--surface-raised);
-  color: var(--accent-bright);
-  box-shadow: var(--shadow-sm);
-}
-
 /* Reference-tools cross-link row — surfaces study-relevant /tools pages as pill
    chips (mirrors the per-guide "Related tools" chips). /tools stays canonical. */
 .refTools {
@@ -60,7 +31,7 @@
   margin: 0 0 var(--space-3);
   font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   font-weight: var(--fw-semibold);
   color: var(--text-dim);
 }
@@ -71,13 +42,11 @@
 }
 .refChip {
   padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .refChip:hover {
   border-color: var(--brand-hover);

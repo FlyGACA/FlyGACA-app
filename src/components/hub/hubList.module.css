@@ -50,10 +50,7 @@
   font-size: var(--fs-md);
   line-height: 1;
   cursor: pointer;
-  transition:
-    color var(--dur) var(--ease),
-    background var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: var(--transition-interactive);
 }
 .rowStar:hover {
   background: var(--surface-raised);

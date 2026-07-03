@@ -29,6 +29,10 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
   now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
   needs Google Fonts (`fonts.gstatic.com`) network access: `node scripts/build-og-card.mjs`.
+- **[platform]** **Keep `main` green and readable.** Make the CI `build` (the `verify` chain) and
+  `e2e` jobs required checks on `main`, and use descriptive squash-merge titles — recent history
+  (`sd (#215)`, `j (#209)`, `,m (#208)`) doesn't self-describe, which matters for an open
+  educational repo.
 
 ## Next — this quarter-ish
 
@@ -37,6 +41,15 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   and app icons/splash. See `docs/RUNBOOK-native.md`.
 - **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
   initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (160 kB gzip).
+- **[platform]** **Shard the heavy data payloads.** `airports-extra.json` (21 MB) and
+  `library-search.json` (19 MB) are each fetched as a single blob today; shard them (by
+  region/ICAO prefix and by corpus/Part or term-prefix buckets) so the first search on a mobile
+  connection doesn't wait on the whole index. Confirm `rag-chunks.json` (14 MB) is only consumed
+  server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
+  (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
+  cache split in `vite.config.ts` when shard names change.
+- **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
+  same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
   axe a11y checks to cover more critical flows.
 - **[product]** **Global ⌘K search / command palette.** The header already shows a ⌘K search pill;
@@ -53,6 +66,13 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[product]** Captain Adel enhancements — richer grounding, exam-mode ties, and saved-chat UX.
 - **[product]** Study analytics & progress insights beyond the current streak/mastery rollups.
 - **[platform]** Push notifications and native polish once the mobile shells ship.
+- **[platform]** **Observability.** Client error monitoring (e.g. Sentry) and privacy-respecting
+  usage analytics (page + tool usage only, no PII) to learn which of the 55 tools earn their
+  maintenance. Both dynamic-`import()`ed like the Firebase SDK so the 160 kB budget holds, and
+  any new origin added to the CSP deliberately — never wildcards.
+- **[docs]** **Contributor onboarding.** `CONTRIBUTING.md` (the `verify` gate, i18n-parity rule,
+  tokens/logical-properties rule, and the add-a-tool recipe from `CLAUDE.md`) plus issue/PR
+  templates in `.github/`, including a "regulation drift" template for content corrections.
 - **[docs]** README screenshots (`docs/screenshots/`) and marketing assets.
 
 ## How we ship (Definition of Done)

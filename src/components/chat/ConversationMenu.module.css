@@ -8,15 +8,13 @@
   flex-shrink: 0;
   min-height: 36px;
   padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   font-size: var(--fs-xs);
   cursor: pointer;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .newBtn:hover {
   border-color: var(--brand-hover);
@@ -32,16 +30,14 @@
   display: inline-flex;
   align-items: center;
   padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--border-bright);
+  border: var(--hairline-bright);
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-muted);
   font-size: var(--fs-xs);
   cursor: pointer;
   list-style: none;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  transition: var(--transition-color);
 }
 .summary::-webkit-details-marker {
   display: none;

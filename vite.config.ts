@@ -39,12 +39,28 @@ export default defineConfig(({ mode }) => {
           // Split the stable framework libraries into their own long-cached
           // chunks so the app chunk stays lean and a release only busts the
           // app bundle, not React/router/i18n.
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-dom/client', 'react-router'],
-            'vendor-i18n': ['i18next', 'react-i18next'],
-            // framer-motion is intentionally NOT a manual chunk: it is only reached
-            // through the lazily-imported home dashboard, so leaving it un-pinned lets
-            // Rollup fold it into that async chunk and keep it off the initial path.
+          // Function form: React 19 moved the renderer into react-dom/client
+          // internals, which the object form (package roots only) missed —
+          // ~100 kB of renderer fell into the index chunk. Path-matching the
+          // whole package directory keeps the split stable across versions.
+          // framer-motion is intentionally NOT pinned: it is only reached
+          // through the lazily-imported home dashboard, so leaving it alone
+          // lets Rollup fold it into that async chunk, off the initial path.
+          manualChunks(id: string) {
+            if (
+              /node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/.test(
+                id,
+              )
+            ) {
+              return 'vendor-react';
+            }
+            if (
+              /node_modules[\\/](i18next|react-i18next|html-parse-stringify|void-elements)[\\/]/.test(
+                id,
+              )
+            ) {
+              return 'vendor-i18n';
+            }
           },
         },
       },
@@ -125,9 +141,12 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               // Rule A — heavy/volatile assets, isolated so they don't crowd out
-              // the regulatory corpus or blow the storage quota.
+              // the regulatory corpus or blow the storage quota. Matches the
+              // `/data/<file>` segment anywhere in the path, so it covers both
+              // same-origin `/data/…` and an off-host data bucket
+              // (`https://…/data/…`, see VITE_DATA_BASE_URL).
               urlPattern: ({ url }) =>
-                /^\/data\/(library-search\.json|airports(-extra)?\.json|charts\/)/.test(
+                /\/data\/(library-search\.json|airports(-extra)?\.json|charts\/)/.test(
                   url.pathname,
                 ),
               handler: 'NetworkFirst',
@@ -144,8 +163,9 @@ export default defineConfig(({ mode }) => {
               // offlineCache.saveDoc warms, so explicitly-saved docs, auto-cached
               // bookmarks and incidentally-fetched pages all live together. The
               // entry ceiling is high enough for all 74 GACAR Parts + their index
-              // + bookmarks without LRU-evicting a saved doc.
-              urlPattern: ({ url }) => url.pathname.startsWith('/data/'),
+              // + bookmarks without LRU-evicting a saved doc. `includes('/data/')`
+              // (not `startsWith`) so it also matches an off-host data bucket.
+              urlPattern: ({ url }) => url.pathname.includes('/data/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'flygaca-data',

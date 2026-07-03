@@ -14,6 +14,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { parseISO } from '../../calc/recency';
 import account from './account.module.css';
 import styles from './records.module.css';
+import { Tab, Tabs } from '../../components/ui/Tabs';
 
 const CATS: RecordCategory[] = ['rating', 'aircraft', 'document', 'endorsement'];
 const DAY = 86400000;
@@ -76,16 +77,13 @@ function Inner() {
         <p className={account.sub}>{t('records.intro')}</p>
       </header>
 
-      <div className={styles.tabs} role="tablist" aria-label={t('records.title')}>
+      <Tabs label={t('records.title')}>
         {CATS.map((c) => {
           const n = records.filter((r) => r.category === c).length;
           return (
-            <button
+            <Tab
               key={c}
-              type="button"
-              role="tab"
-              aria-selected={cat === c}
-              className={`${styles.tab} ${cat === c ? styles.tabActive : ''}`}
+              active={cat === c}
               onClick={() => {
                 setCat(c);
                 setAdding(false);
@@ -94,10 +92,10 @@ function Inner() {
             >
               {t(`records.categories.${c}`)}
               {n > 0 && <span className={styles.count}>{n}</span>}
-            </button>
+            </Tab>
           );
         })}
-      </div>
+      </Tabs>
 
       <div className={account.actions}>
         <button

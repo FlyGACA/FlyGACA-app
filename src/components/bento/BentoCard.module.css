@@ -9,9 +9,9 @@
   padding: var(--space-5);
   /* A glassy top highlight over the tile face for spatial depth. */
   background: linear-gradient(180deg, var(--sheen-top), transparent 38%), var(--bento-surface);
-  border: 1px solid var(--border);
+  border: var(--hairline);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--elev-2);
   transition: box-shadow var(--dur-slow) var(--ease);
   /* Promote to its own layer so the entry scale/opacity and hover lift stay on
      the compositor — the path to a steady 120fps. */
@@ -21,7 +21,7 @@
 /* Deepen the drop shadow as the card lifts on hover/focus. */
 .card:hover,
 .link:focus-visible {
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--elev-3);
 }
 
 .link {

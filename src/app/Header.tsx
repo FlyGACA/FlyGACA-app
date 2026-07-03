@@ -5,6 +5,7 @@ import { LangToggle } from '../components/LangToggle';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
+import { ButtonLink } from '../components/ui/Button';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 
@@ -118,7 +119,7 @@ export function Header() {
     <>
       <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
         <div className={`container ${styles.inner}`}>
-          <Link className={styles.lockup} to="/" aria-label={t('nav.home')}>
+          <Link className={styles.lockup} to="/" aria-label={t('nav.home')} viewTransition>
             <img
               className={styles.mark}
               src="/img/flygaca-mark.png"
@@ -137,6 +138,7 @@ export function Header() {
           <nav className={styles.links} aria-label={t('nav.primary')}>
             {NAV.map((item) => (
               <NavLink
+                viewTransition
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) => (isActive ? styles.active : undefined)}
@@ -172,20 +174,26 @@ export function Header() {
             <ThemeToggle className={styles.langToggle} />
             <LangToggle className={styles.langToggle} />
             <InstallButton />
-            <Link className={`btn btn-primary ${styles.cta}`} to="/pricing">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
-              </svg>
+            <ButtonLink
+              className={styles.cta}
+              to="/pricing"
+              viewTransition
+              icon={
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
+                </svg>
+              }
+            >
               {t('common.goPro')}
-            </Link>
+            </ButtonLink>
           </div>
         </div>
       </header>
@@ -196,6 +204,7 @@ export function Header() {
       <nav className={styles.dock} aria-label={t('nav.primary')}>
         {PRIMARY.map((item) => (
           <NavLink
+            viewTransition
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
@@ -242,6 +251,7 @@ export function Header() {
           {MORE.map((item) => (
             <li key={item.to}>
               <NavLink
+                viewTransition
                 to={item.to}
                 className={({ isActive }) =>
                   isActive ? `${styles.sheetLink} ${styles.sheetActive}` : styles.sheetLink
@@ -257,7 +267,12 @@ export function Header() {
           ))}
         </ul>
         <div className={styles.sheetDivider} aria-hidden="true" />
-        <Link className={styles.sheetCta} to="/pricing" onClick={() => setOpen(false)}>
+        <Link
+          className={styles.sheetCta}
+          to="/pricing"
+          onClick={() => setOpen(false)}
+          viewTransition
+        >
           <svg
             viewBox="0 0 24 24"
             fill="none"

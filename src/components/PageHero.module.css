@@ -44,7 +44,7 @@
 .eyebrow {
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--accent-bright);
 }

@@ -199,7 +199,7 @@ export function CommandPalette() {
     (item: Item | undefined) => {
       if (!item) return;
       close();
-      navigate(item.to);
+      navigate(item.to, { viewTransition: true });
     },
     [close, navigate],
   );
