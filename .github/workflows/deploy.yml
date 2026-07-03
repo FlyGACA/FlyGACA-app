@@ -48,6 +48,10 @@ jobs:
           VITE_SITE_URL: https://flygaca.com
           # Optional: set to enable App Check (see docs/APP-CHECK-BACKEND.md).
           VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY }}
+          # Optional: serve the ~130 MB /data corpus off a bucket to keep each
+          # Hosting release small (see the "Offload data corpus" step + docs/
+          # DATA-HOSTING.md). Empty → the app fetches /data same-origin as before.
+          VITE_DATA_BASE_URL: ${{ vars.DATA_BASE_URL }}
 
       - name: Bundle budget
         run: npm run check:bundle
@@ -59,6 +63,25 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run prerender
+
+      # When a data bucket is configured, mirror the heavy /data corpus to it and
+      # drop it from the Hosting release — keeps each release ~12 MB instead of
+      # ~141 MB so it can't exhaust the Firebase Hosting storage quota. Runs
+      # before the Firebase auth/deploy steps use those same credentials. No-op
+      # until DATA_BUCKET (a gs:// target) is set; until then the corpus ships
+      # from Hosting as before. Pair with DATA_BASE_URL in the Build step.
+      - name: Offload data corpus to bucket
+        if: ${{ vars.DATA_BUCKET != '' }}
+        run: |
+          printf '%s' "${FIREBASE_SERVICE_ACCOUNT}" > "${RUNNER_TEMP}/data-sa.json"
+          gcloud auth activate-service-account --key-file "${RUNNER_TEMP}/data-sa.json"
+          echo "Mirroring public/data → ${{ vars.DATA_BUCKET }}/data"
+          gsutil -m rsync -r -d public/data "${{ vars.DATA_BUCKET }}/data"
+          rm -f "${RUNNER_TEMP}/data-sa.json"
+          rm -rf dist/data
+          echo "Stripped dist/data from the Hosting release."
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Authenticate to Firebase
         run: |
