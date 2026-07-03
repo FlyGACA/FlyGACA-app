@@ -86,9 +86,9 @@ const aero = readJson('public/data/aerodromes-index.json');
 const aeroDate = isDate(aero.generated) ? aero.generated.slice(0, 10) : today;
 for (const d of aero.documents) urls.set(`/tools/aerodromes/${d.icao}`, aeroDate);
 
-// Prep packs → one detail page per pack id (src/pages/study/packs.ts). Each pack
+// Prep packs → one detail page per pack id (src/pages/study/packCatalog.ts). Each pack
 // page carries a unique localized name + description regardless of Pro gating.
-const packIds = [...read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
+const packIds = [...read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
   (m) => m[1],
 );
 for (const id of packIds) urls.set(`/study/packs/${id}`, today);

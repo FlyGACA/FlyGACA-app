@@ -4,7 +4,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
 import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
-import { PACKS, PACKS_GATED, packItemCount } from './packs';
+import { PACKS, PACKS_GATED, packItemCount } from './packCatalog';
 import styles from './Study.module.css';
 
 export function Packs() {
