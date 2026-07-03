@@ -48,6 +48,11 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
   (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
   cache split in `vite.config.ts` when shard names change.
+- **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
+  `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
+  files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync
+  meanwhile. Patch the builder to emit the semantic shape natively, then retire the normalize step
+  — exact diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
