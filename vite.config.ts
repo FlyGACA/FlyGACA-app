@@ -141,9 +141,12 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               // Rule A — heavy/volatile assets, isolated so they don't crowd out
-              // the regulatory corpus or blow the storage quota.
+              // the regulatory corpus or blow the storage quota. Matches the
+              // `/data/<file>` segment anywhere in the path, so it covers both
+              // same-origin `/data/…` and an off-host data bucket
+              // (`https://…/data/…`, see VITE_DATA_BASE_URL).
               urlPattern: ({ url }) =>
-                /^\/data\/(library-search\.json|airports(-extra)?\.json|charts\/)/.test(
+                /\/data\/(library-search\.json|airports(-extra)?\.json|charts\/)/.test(
                   url.pathname,
                 ),
               handler: 'NetworkFirst',
@@ -160,8 +163,9 @@ export default defineConfig(({ mode }) => {
               // offlineCache.saveDoc warms, so explicitly-saved docs, auto-cached
               // bookmarks and incidentally-fetched pages all live together. The
               // entry ceiling is high enough for all 74 GACAR Parts + their index
-              // + bookmarks without LRU-evicting a saved doc.
-              urlPattern: ({ url }) => url.pathname.startsWith('/data/'),
+              // + bookmarks without LRU-evicting a saved doc. `includes('/data/')`
+              // (not `startsWith`) so it also matches an off-host data bucket.
+              urlPattern: ({ url }) => url.pathname.includes('/data/'),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'flygaca-data',
