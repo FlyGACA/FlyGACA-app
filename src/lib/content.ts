@@ -334,14 +334,21 @@ export interface PathsIndex {
 
 /**
  * One hit in the lazy full-text search index (`/data/library-search.json`).
- * `d` heading · `b` badge (e.g. "Part 61") · `u` legacy URL
- * (`document.html?type=regulations&id=<slug>#<anchor>`) · `x` excerpt.
+ * `d` heading · `b` badge (e.g. "Part 61") · `x` excerpt. The corpus pointer is
+ * either the semantic `kind`/`id`/`anchor` fields (current) or the legacy `u`
+ * URL (`document.html?type=…&id=…#…`) still emitted by un-migrated corpus
+ * builds — read it through {@link searchEntryLink} so both shapes route alike.
  */
 export interface SearchEntry {
   d: string;
   b: string;
-  u: string;
   x?: string;
+  /** Semantic corpus pointer. */
+  kind?: LibraryKind;
+  id?: string;
+  anchor?: string;
+  /** @deprecated Legacy composite URL; superseded by `kind`/`id`/`anchor`. */
+  u?: string;
 }
 
 export interface SearchIndex {
@@ -351,9 +358,8 @@ export interface SearchIndex {
   entries: SearchEntry[];
 }
 
+/** Legacy `type=` tokens that don't already match a {@link LibraryKind}. */
 const SEARCH_TYPE_TO_KIND: Record<string, LibraryKind> = {
-  regulations: 'regulations',
-  reference: 'reference',
   handbooks: 'handbook',
 };
 
@@ -365,27 +371,62 @@ export interface SearchRef {
   anchor?: string;
 }
 
-/** Parse a legacy search-index URL into its corpus kind, document id and anchor. */
+/**
+ * A corpus pointer as it may appear in data. The historical shape is a legacy
+ * `document.html?type=<t>&id=<slug>#<anchor>` string, still emitted by the
+ * upstream corpus builders; the semantic shape keeps routing out of the data
+ * (`{ kind, id, anchor }`). Normalise either through {@link toSearchRef} so the
+ * app parses both identically and is ready for the data to switch shapes with
+ * no frontend change.
+ */
+export type SearchLink = string | { kind?: string; type?: string; id?: string; anchor?: string };
+
+/** Resolve a legacy `type=` token or a semantic `kind` to a corpus kind. */
+function toCorpusKind(token: string | undefined): LibraryKind | undefined {
+  if (!token) return undefined;
+  return token in CORPUS ? (token as LibraryKind) : SEARCH_TYPE_TO_KIND[token];
+}
+
+/** Parse a legacy `document.html?type=…&id=…#…` search-index URL into a {@link SearchRef}. */
 export function parseSearchUrl(u: string): SearchRef | null {
-  const type = /[?&]type=([^&#]+)/.exec(u)?.[1];
+  const kind = toCorpusKind(/[?&]type=([^&#]+)/.exec(u)?.[1]);
   const id = /[?&]id=([^&#]+)/.exec(u)?.[1];
-  const kind = type ? SEARCH_TYPE_TO_KIND[type] : undefined;
   if (!id || !kind) return null;
   const anchor = /#(.+)$/.exec(u)?.[1];
-  return { kind, id, anchor };
+  return anchor ? { kind, id, anchor } : { kind, id };
 }
 
 /**
- * Rewrite a legacy search-index URL to the app's Document-reader route.
+ * Normalise any corpus pointer — legacy URL string or semantic object — into a
+ * {@link SearchRef}. Returns null when the pointer names no routable document.
+ */
+export function toSearchRef(link: SearchLink): SearchRef | null {
+  if (typeof link === 'string') return parseSearchUrl(link);
+  const kind = toCorpusKind(link.kind ?? link.type);
+  if (!kind || !link.id) return null;
+  return link.anchor ? { kind, id: link.id, anchor: link.anchor } : { kind, id: link.id };
+}
+
+/**
+ * Build the app's Document-reader route for a corpus pointer.
  * `document.html?type=reference&id=ac-68-1#sec-x` → `/library/reference/ac-68-1#sec-x`.
- * Returns null for entries we can't route. Pass `q` to carry the search phrase
+ * Returns null for pointers we can't route. Pass `q` to carry the search phrase
  * through to the reader so it can highlight and scroll to the matched passage.
  */
-export function searchHref(u: string, q?: string): string | null {
-  const ref = parseSearchUrl(u);
+export function searchHref(link: SearchLink, q?: string): string | null {
+  const ref = toSearchRef(link);
   if (!ref) return null;
   const query = q && q.trim() ? `?q=${encodeURIComponent(q.trim())}` : '';
   return `${CORPUS[ref.kind].base}/${ref.id}${query}${ref.anchor ? `#${ref.anchor}` : ''}`;
+}
+
+/**
+ * The corpus pointer for a search hit, tolerant of both the current semantic
+ * entry (`kind`/`id`/`anchor`) and the legacy `u` URL. Pass the result to
+ * {@link toSearchRef} or {@link searchHref}.
+ */
+export function searchEntryLink(e: SearchEntry): SearchLink {
+  return e.u ?? e;
 }
 
 /**
