@@ -106,7 +106,8 @@ Carried over from the rebuild — these gates still apply to everything above.
 
 ## Legacy sources of truth
 
-The original no-build PWA (`flygaca/flygaca`) remains the reference when porting anything new:
+The original no-build PWA (the vanilla Fly GACA site, whose source is not in this GitHub org)
+remains the reference when porting anything new:
 `flygaca/assets/js/{auth,store,entitlements,billing,native-bridge,firebase-*}.js`,
 `flygaca/config/routes.js` (CSP), `flygaca/firestore.rules`, the `tools-*.js` family and `*-core.js`
 math, and `flygaca/assets/data/*`.
