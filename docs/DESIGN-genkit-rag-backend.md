@@ -77,7 +77,7 @@ that the grounding verdict (`kind`) and `refusalClass` encode end-to-end.
 
 ### D0 — Ownership: Gemini becomes the brain; the co-located gateway **replaces** the legacy service ✅ (OQ-1 resolved)
 **Decision:** the Genkit project in `functions/` is the **new, co-located Captain Adel brain**,
-powered by **Gemini** (`@genkit-ai/google-genai`). It **replaces** the legacy `flygaca/flygaca` RAG
+powered by **Gemini** (`@genkit-ai/google-genai`). It **replaces** the legacy Fly GACA RAG
 service. The legacy brain is retained only as an instant-rollback origin during cutover (§9), not as
 a permanent second provider.
 
