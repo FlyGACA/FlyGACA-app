@@ -1,5 +1,5 @@
 /**
- * build-rag-chunks — generate public/data/rag-chunks.json.
+ * build-rag-chunks — generate content/rag-chunks.json.
  *
  * Runs the hierarchical splitter (scripts/lib/markdown-splitter.mjs) over every
  * GACAR Part HTML in public/data/parts/, joins per-document metadata from
@@ -19,7 +19,7 @@ import { splitPartHtml } from './lib/markdown-splitter.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const INDEX_PATH = resolve(ROOT, 'public/data/gacar-index.json');
 const PARTS_DIR = resolve(ROOT, 'public/data/parts');
-const OUT_PATH = resolve(ROOT, 'public/data/rag-chunks.json');
+const OUT_PATH = resolve(ROOT, 'content/rag-chunks.json');
 
 /** "2026-06-13" → "2026-06" (corpus-wide effective-date fallback). */
 function toMonth(generated) {

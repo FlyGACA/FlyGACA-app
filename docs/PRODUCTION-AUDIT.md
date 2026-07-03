@@ -78,8 +78,8 @@ budget.
 ### Data corpus is never bundled (SSR-equivalent)
 
 The "use SSR so phones don't download megabytes of data" item is satisfied differently: the
-~129 MB `/data/` corpus (regulatory HTML, `library-search.json` ~19 MB, `airports-extra.json`
-~21 MB, `rag-chunks.json` ~15 MB) **never enters the JS bundle**. It is fetched at runtime via
+~114 MB `/data/` corpus (regulatory HTML, `library-search.json` ~19 MB, `airports-extra.json`
+~21 MB) **never enters the JS bundle**. It is fetched at runtime via
 `src/lib/content.ts` (`fetchJson` / `loadJson`) and `useFetchJson`, with a session-scoped
 de-dupe cache. Build-time head prerendering (`prerender-head.mjs`) gives crawlers a fully-formed
 `<head>` per route without an SSR server.

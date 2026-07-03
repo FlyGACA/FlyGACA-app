@@ -44,8 +44,7 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[platform]** **Shard the heavy data payloads.** `airports-extra.json` (21 MB) and
   `library-search.json` (19 MB) are each fetched as a single blob today; shard them (by
   region/ICAO prefix and by corpus/Part or term-prefix buckets) so the first search on a mobile
-  connection doesn't wait on the whole index. Confirm `rag-chunks.json` (14 MB) is only consumed
-  server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
+  connection doesn't wait on the whole index. Keep `src/lib/content.ts`
   (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
   cache split in `vite.config.ts` when shard names change.
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
