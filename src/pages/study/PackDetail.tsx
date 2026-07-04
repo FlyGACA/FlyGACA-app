@@ -7,7 +7,7 @@ import { useFeature } from '../../lib/features';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
-import { PACKS, PACKS_GATED } from './packs';
+import { PACKS, PACKS_GATED } from './packCatalog';
 import { NotFound } from '../NotFound';
 import styles from './Study.module.css';
 

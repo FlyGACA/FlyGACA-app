@@ -4,7 +4,8 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 
 - **Firebase Hosting** is the **canonical/production** front: the `/api/chat` and `/api/content`
   Cloud Functions (the Captain Adel gateway, region `me-central2`) are co-located there. The backend
-  lives in the separate `flygaca/flygaca` repo — this repo never rebuilds it.
+  lives in this repo's `functions/` workspace, deployed separately via `npm run deploy:functions` —
+  the frontend `npm run build` never rebuilds it.
 - **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
   `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
   working. The proxy is same-origin to the browser, so the strict CSP (`connect-src 'self'`) is

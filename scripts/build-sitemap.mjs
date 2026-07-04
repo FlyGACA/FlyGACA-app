@@ -86,9 +86,9 @@ const aero = readJson('public/data/aerodromes-index.json');
 const aeroDate = isDate(aero.generated) ? aero.generated.slice(0, 10) : today;
 for (const d of aero.documents) urls.set(`/tools/aerodromes/${d.icao}`, aeroDate);
 
-// Prep packs → one detail page per pack id (src/pages/study/packs.ts). Each pack
+// Prep packs → one detail page per pack id (src/pages/study/packCatalog.ts). Each pack
 // page carries a unique localized name + description regardless of Pro gating.
-const packIds = [...read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
+const packIds = [...read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
   (m) => m[1],
 );
 for (const id of packIds) urls.set(`/study/packs/${id}`, today);
@@ -132,9 +132,30 @@ ${body}
 </urlset>
 `;
 
-const robots = `User-agent: *
+// Fly GACA is an independent, educational Saudi civil-aviation library that wants
+// to be crawled and cited. All agents are allowed; the AI answer engines and search
+// crawlers below are listed explicitly to document that intent (a bot that matches
+// its own group ignores the `*` group, so each must carry its own `Allow: /`). In
+// 2026 being uncitable is fatal — never add a `Disallow` here to fence out a bot.
+const CITATION_BOTS = [
+  'GPTBot', // OpenAI training/index crawler
+  'OAI-SearchBot', // ChatGPT search index
+  'ChatGPT-User', // ChatGPT live user-triggered fetches
+  'ClaudeBot', // Anthropic crawler
+  'Claude-Web', // Anthropic live fetches
+  'PerplexityBot', // Perplexity index crawler
+  'Perplexity-User', // Perplexity live user-triggered fetches
+  'Google-Extended', // Gemini / Vertex AI grounding opt-in
+  'Applebot-Extended', // Apple Intelligence opt-in
+  'Bingbot', // Bing / Copilot
+];
+const robots = `# Fly GACA — independent educational Saudi civil-aviation library.
+# We want to be crawled and cited; every agent is allowed. See scripts/build-sitemap.mjs.
+User-agent: *
 Allow: /
 
+# AI answer engines & search crawlers — explicitly welcomed (documents intent).
+${CITATION_BOTS.map((ua) => `User-agent: ${ua}\nAllow: /\n`).join('\n')}
 Sitemap: ${SITE}/sitemap.xml
 `;
 

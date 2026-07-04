@@ -5,6 +5,16 @@
    Shared by every page; never hard-code a colour outside this file.
    ============================================================ */
 
+/* Registered so the hero gold-edge highlight can *interpolate* its position — an
+   unregistered custom property would jump discretely mid-cycle. Baseline since
+   mid-2024 (consistent with our already-ungated color-mix() use); the legacy
+   fallback is a static 4px highlight, still a valid design. */
+@property --edge-glint {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 50%;
+}
+
 :root {
   /* Cockpit view: Fly GACA is always dark. This also tells the UA to paint
      native controls, scrollbars, and form widgets dark to match. */
@@ -271,6 +281,39 @@
   --glow-stat-cyan: 0 0 22px color-mix(in srgb, var(--neon-cyan) 40%, transparent);
   --glow-stat-green: 0 0 22px color-mix(in srgb, var(--neon-green) 40%, transparent);
 
+  /* --- Instrument-glass hero finishes (2026 hero pass) ---
+     Film grain over the falcon band (CSP allows img-src data:), true-glass search
+     field, and a gold hero edge whose bright stop breathes via --edge-glint. All
+     token-derived, so the Cockpit theme inherits them through the semantic layer
+     (only --grain-opacity / --hero-glow-alpha are dimmed there for night vision). */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-opacity: 0.05;
+  --glass-bg: color-mix(in srgb, var(--falcon-night) 45%, transparent);
+  --glass-bg-strong: color-mix(in srgb, var(--falcon-night) 65%, transparent);
+  --glass-border: color-mix(in srgb, var(--moon) 24%, transparent);
+  --glass-blur: blur(14px) saturate(140%);
+  --hero-glow-alpha: 20%; /* band .glow accent strength (breathing max) */
+  /* Symmetric about the moving --edge-glint centre → RTL mirroring is a no-op. */
+  --edge-gold: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--gold) 30%, transparent) 0%,
+    var(--gold) calc(var(--edge-glint) - 32%),
+    var(--falcon-gold-soft) var(--edge-glint),
+    var(--gold) calc(var(--edge-glint) + 32%),
+    color-mix(in srgb, var(--gold) 30%, transparent) 100%
+  );
+  /* Landing-title gradient with a heritage gold glint threaded between the
+     teal→sage stops. Only ever background-clipped onto the H1; crawler text is
+     unaffected. Cockpit re-authors this with literal amber hexes below. */
+  --grad-title: linear-gradient(
+    102deg,
+    var(--teal-bright) 0%,
+    var(--falcon-sage) 40%,
+    var(--falcon-gold-soft) 55%,
+    var(--falcon-sage) 70%,
+    var(--teal-bright) 100%
+  );
+
   /* --- UI letter-spacing (tracking) ---
      Base is 0; the Cockpit / Night-Ops theme nudges this up so amber text holds
      its open counters at low cockpit brightness (see [data-theme="cockpit"]). */
@@ -383,4 +426,20 @@ html[data-theme='cockpit'] {
   --tag-regulation: #ffc23d;
   --tag-tool: #ffd27a;
   --tag-guide: #ffe0a3;
+
+  /* --- Instrument-glass hero pass, night-vision tuned ---
+     --edge-gold / --glass-* need no override: they read --gold / --falcon-gold-soft
+     / --falcon-night / --moon, all re-pointed to the amber ramp above, so the edge
+     glint becomes a luminance-only amber breath. Only dim the textures + re-author
+     the clipped title gradient (it literal-hexes its stops, like --grad-brand). */
+  --grain-opacity: 0.03; /* dimmer film — protect dark adaptation */
+  --hero-glow-alpha: 12%; /* dimmer band-glow breath */
+  --grad-title: linear-gradient(
+    102deg,
+    #ffc23d 0%,
+    #ffb000 45%,
+    #ffd27a 55%,
+    #ffb000 65%,
+    #ffc23d 100%
+  );
 }
