@@ -41,7 +41,7 @@ export function LegalPage({ base }: { base: LegalBase }) {
       dateModified: LAST_UPDATED,
     }),
     breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
+      { name: t('nav.breadcrumbHome'), path: '/' },
       { name: title, path: doc.path },
     ]),
   ]);

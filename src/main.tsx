@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
-import { bootI18n } from './i18n';
+import { bootI18n, resolveInitialLang } from './i18n';
 // Self-hosted fonts, replacing the Google Fonts CDN we used to depend on — that
 // stylesheet 503'd intermittently and flashed a fallback face. Imported before the
 // tokens that name them; Vite emits hashed woff2 the PWA precaches. We pull only the
@@ -27,8 +27,7 @@ import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
 import { captureReferral } from './lib/share';
-import { initAnalytics } from './lib/analytics';
-import { canonicalRedirect, isMirrorHost } from './lib/seo';
+import { canonicalRedirect, isMirrorHost, localeRedirect } from './lib/seo';
 import { applyTheme, readTheme } from './lib/theme';
 
 // Reflect the persisted theme on <html> before first paint. The inline script in
@@ -48,13 +47,32 @@ if (isMirrorHost(window.location.hostname)) {
   document.head.appendChild(robots);
 }
 
+// Two pre-boot redirects, host first: a duplicate host (e.g. captadel.com) folds
+// onto the canonical origin; then the locale reconciler moves the URL so its path
+// prefix matches the language — a legacy `?lang=ar` link, a stored Arabic choice,
+// or an Arabic browser on a clean URL lands on `/ar`. Both are `location.replace`
+// (full nav) so the router remounts under the right basename. `localeRedirect`
+// returns null when already consistent, so this can't loop.
+const redirectTo =
+  canonicalRedirect(window.location) ?? localeRedirect(window.location, resolveInitialLang());
 // A duplicate host (e.g. captadel.com) serves this same build — fold it straight
 // onto the canonical origin, preserving the path, before booting anything. This
 // is the host-agnostic safety net; an edge 301 (vercel.json) handles it sooner
 // where the duplicate is served by Vercel.
 const redirectTo = canonicalRedirect(window.location);
+
+// The Arabic variant of every content route lives under `/ar`. If the app boots
+// Arabic (an old ?lang=ar link, a stored choice, or an Arabic browser) on a
+// non-/ar URL — or English on an /ar URL — move to the matching path so the URL
+// equals the language and the canonical stays honest. Runs before the router
+// mounts (which reads the prefix to pick its basename); `localeRedirect` returns
+// null when already consistent, so this can't loop.
+const localeTo = redirectTo ? null : localeRedirect(window.location.pathname, resolveInitialLang());
+
 if (redirectTo) {
   window.location.replace(redirectTo);
+} else if (localeTo) {
+  window.location.replace(`${localeTo}${window.location.search}${window.location.hash}`);
 } else {
   const rootEl = document.getElementById('root');
   if (!rootEl) throw new Error('Root element #root not found');
@@ -76,8 +94,4 @@ if (redirectTo) {
   // Native shell bootstrap (no-op on the web). Deep links route through the
   // same data router the rest of the app uses.
   void initNative({ onDeepLink: (path) => void router.navigate(path) });
-
-  // Web product analytics + Core Web Vitals. No-op in the native shell and in
-  // dev/test — see lib/analytics.ts.
-  initAnalytics();
 }

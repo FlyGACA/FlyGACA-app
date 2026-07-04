@@ -113,7 +113,8 @@
     "primary": "الرئيسية",
     "menu": "القائمة",
     "more": "المزيد",
-    "breadcrumb": "مسار التنقل"
+    "breadcrumb": "مسار التنقل",
+    "breadcrumbHome": "الرئيسية"
   },
   "command": {
     "title": "بحث وانتقال",

@@ -42,10 +42,16 @@
   block-size: 44px;
   border-radius: var(--radius-pill);
   background: var(--surface);
-  border: 2px solid color-mix(in srgb, var(--brand) 50%, transparent);
-  /* a halo in the page colour masks the rail where it passes behind the node */
-  box-shadow: 0 0 0 6px var(--bg);
+  border: 2px solid color-mix(in srgb, var(--brand) 60%, transparent);
+  /* Ships "ignited": a page-colour halo (first — it masks the rail behind the
+     node), a brand glow bloom, and a top sheen. This is the finished/fallback
+     state; the scroll-timeline ignition below only rewinds it. */
+  box-shadow:
+    0 0 0 6px var(--bg),
+    0 0 16px color-mix(in srgb, var(--brand) 40%, transparent),
+    inset 0 1px 0 var(--sheen-top);
   color: var(--brand-hover);
+  font-family: var(--font-mono);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
 }
@@ -97,6 +103,45 @@
     .step:nth-child(3) {
       animation-range: entry 24% entry 100%;
     }
+
+    /* Rail draws itself in behind the nodes as the section enters, so the flow
+       reads left→right (mirrored in RTL because it grows from inset-inline-start).
+       Single-`from` keyframe → the base rule's computed inline-size is the "to". */
+    .step:not(:last-child)::after {
+      animation-name: rail-draw-x;
+      animation-fill-mode: both;
+      animation-timing-function: var(--ease-entry);
+      animation-timeline: view();
+      animation-range: entry 20% entry 100%;
+    }
+
+    /* Nodes "ignite" — border and glow bloom up to the base ignited state as each
+       node's range completes, sequenced after the rise/draw so it reads as a
+       finale rather than noise. */
+    .stepNum {
+      animation-name: node-ignite;
+      animation-fill-mode: both;
+      animation-timing-function: var(--ease-entry);
+      animation-timeline: view();
+      animation-range: entry 40% entry 95%;
+    }
+    .step:nth-child(2) .stepNum {
+      animation-range: entry 52% entry 100%;
+    }
+    .step:nth-child(3) .stepNum {
+      animation-range: entry 64% entry 100%;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      /* Stacked: the rail runs vertically, so it draws top→down instead. */
+      .step:not(:last-child)::after {
+        animation-name: rail-draw-y;
+      }
+    }
   }
 }
 
@@ -108,5 +153,29 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes rail-draw-x {
+  from {
+    inline-size: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes rail-draw-y {
+  from {
+    block-size: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes node-ignite {
+  from {
+    border-color: color-mix(in srgb, var(--brand) 25%, transparent);
+    box-shadow:
+      0 0 0 6px var(--bg),
+      0 0 0 color-mix(in srgb, var(--brand) 0%, transparent),
+      inset 0 1px 0 var(--sheen-top);
   }
 }

@@ -3,12 +3,29 @@
  * as static JSON under /data and are fetched at runtime (as in the legacy site),
  * so the heavy corpus never bloats the JS bundle.
  */
+
+/**
+ * Where the ~130 MB `/data` corpus is served from. Defaults to same-origin
+ * `/data` (dev, tests, and any host that ships the corpus alongside the app).
+ * Set `VITE_DATA_BASE_URL` (e.g. a Cloud Storage bucket origin) to serve the
+ * corpus off the app host — this keeps each Firebase Hosting release small so
+ * it can't exhaust the Hosting storage quota. Every `/data/*` fetch and asset
+ * URL funnels through {@link dataUrl}, so flipping the origin is a single
+ * build-env change with no call-site edits.
+ */
+const DATA_BASE = import.meta.env.VITE_DATA_BASE_URL ?? '/data';
+
+/** Map a `/data/…`-rooted path onto the configured data origin (no-op when unset). */
+export function dataUrl(path: string): string {
+  return path.startsWith('/data/') ? DATA_BASE + path.slice('/data'.length) : path;
+}
+
 export async function fetchJson<T>(
   path: string,
   signal?: AbortSignal,
   validate?: (data: unknown) => data is T,
 ): Promise<T> {
-  const res = await fetch(path, { signal });
+  const res = await fetch(dataUrl(path), { signal });
   if (!res.ok) {
     throw new Error(`Failed to load ${path}: ${res.status} ${res.statusText}`);
   }
