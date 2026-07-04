@@ -87,6 +87,14 @@ if (skipped > 0) {
 }
 const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();
 
+// Arabic full-body set mirrors scripts/prerender-head.mjs's covered set: every
+// base route + the top AR_CORPUS_MAX corpus docs (same parts→reference→handbook
+// order). Each is rendered by visiting its `?lang=ar` variant — a real browser
+// honours the param — and written to the distinct dist/ar/<route>/index.html the
+// host can route to. Keep AR_CORPUS_MAX in sync with the other two scripts.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
+const arRouteList = [...new Set([...baseList, ...corpus.slice(0, AR_CORPUS_MAX)])].sort();
+
 // --- Helpers -------------------------------------------------------------------
 function waitForServer(timeoutMs = 20000) {
   const deadline = Date.now() + timeoutMs;
@@ -108,6 +116,14 @@ function outPath(route) {
   return route === '/'
     ? join(root, 'dist/index.html')
     : join(root, 'dist', route.replace(/^\//, ''), 'index.html');
+}
+
+// The Arabic snapshot lives under a real `/ar` path prefix (Firebase routes by
+// path, so this is a distinct file the crawler can fetch).
+function outPathAr(route) {
+  return route === '/'
+    ? join(root, 'dist/ar/index.html')
+    : join(root, 'dist/ar', route.replace(/^\//, ''), 'index.html');
 }
 
 // Launch Chromium; on a fresh CI image the browser binary may be absent, so try
@@ -141,22 +157,42 @@ try {
 
   browser = await launchChromium(chromium);
   const page = await browser.newPage();
+
+  // Drive one route to a hydrated snapshot on disk. Waits for a real-app element
+  // the static shell never contains, then dumps the live DOM.
+  const snapshot = async (url, file) => {
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForSelector('footer', { timeout: 15000 });
+    const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, html);
+  };
+
   let done = 0;
   for (const route of routeList) {
     try {
-      await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle', timeout: 30000 });
-      // Wait for a real-app element the static shell never contains.
-      await page.waitForSelector('footer', { timeout: 15000 });
-      const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
-      const file = outPath(route);
-      mkdirSync(dirname(file), { recursive: true });
-      writeFileSync(file, html);
+      await snapshot(`${BASE}${route}`, outPath(route));
       done++;
     } catch (err) {
       console.warn(`  prerender: skipped ${route} — ${err.message}`);
     }
   }
-  console.log(`prerender: wrote ${done}/${routeList.length} routes`);
+  // Arabic bodies: visit the real `/ar<route>` URL (the router mounts under
+  // basename `/ar` and hydrates in Arabic with a self-canonical `/ar` head) and
+  // write the distinct dist/ar/<route> file.
+  let doneAr = 0;
+  for (const route of arRouteList) {
+    const arRoute = route === '/' ? '/ar' : `/ar${route}`;
+    try {
+      await snapshot(`${BASE}${arRoute}`, outPathAr(route));
+      doneAr++;
+    } catch (err) {
+      console.warn(`  prerender: skipped ar ${route} — ${err.message}`);
+    }
+  }
+  console.log(
+    `prerender: wrote ${done}/${routeList.length} en + ${doneAr}/${arRouteList.length} ar routes`,
+  );
 } catch (err) {
   console.warn(`prerender: skipped (non-fatal) — ${err.message}`);
 } finally {

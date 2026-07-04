@@ -3,7 +3,10 @@ import {
   SITE_ORIGIN,
   normalizePath,
   canonicalUrl,
-  langUrl,
+  localePath,
+  isArabicPath,
+  stripArPrefix,
+  localeRedirect,
   hreflangAlternates,
   ogLocale,
   ogImageFor,
@@ -20,21 +23,68 @@ describe('normalizePath', () => {
   });
 });
 
-describe('canonical + lang urls', () => {
-  it('builds an origin-absolute clean canonical', () => {
+describe('localePath + canonicalUrl', () => {
+  it('English/default stays on the clean path', () => {
+    expect(localePath('/library', 'en')).toBe('/library');
     expect(canonicalUrl('/library/part-1')).toBe(`${SITE_ORIGIN}/library/part-1`);
+    expect(canonicalUrl('/library/part-1', 'en')).toBe(`${SITE_ORIGIN}/library/part-1`);
   });
-  it('appends ?lang for language URLs', () => {
-    expect(langUrl('/pricing', 'ar')).toBe(`${SITE_ORIGIN}/pricing?lang=ar`);
+  it('Arabic maps onto its real /ar document (root → /ar, no trailing slash)', () => {
+    expect(localePath('/', 'ar')).toBe('/ar');
+    expect(localePath('/library', 'ar')).toBe('/ar/library');
+    expect(canonicalUrl('/', 'ar')).toBe(`${SITE_ORIGIN}/ar`);
+    expect(canonicalUrl('/library/part-1?x=1#y', 'ar')).toBe(`${SITE_ORIGIN}/ar/library/part-1`);
+  });
+});
+
+describe('isArabicPath + stripArPrefix', () => {
+  it('detects the /ar document tree without matching look-alikes', () => {
+    expect(isArabicPath('/ar')).toBe(true);
+    expect(isArabicPath('/ar/library')).toBe(true);
+    expect(isArabicPath('/')).toBe(false);
+    expect(isArabicPath('/archive')).toBe(false);
+  });
+  it('strips the /ar prefix back to the logical path', () => {
+    expect(stripArPrefix('/ar')).toBe('/');
+    expect(stripArPrefix('/ar/')).toBe('/');
+    expect(stripArPrefix('/ar/library/part-1')).toBe('/library/part-1');
+    expect(stripArPrefix('/library')).toBe('/library');
+    expect(stripArPrefix('/archive')).toBe('/archive');
+  });
+  it('localePath(ar) and stripArPrefix round-trip', () => {
+    expect(stripArPrefix(localePath('/library', 'ar'))).toBe('/library');
   });
 });
 
 describe('hreflangAlternates', () => {
-  it('emits en, ar and x-default', () => {
+  it('emits en (clean), ar (real /ar document) and x-default (clean)', () => {
     const alts = hreflangAlternates('/chat');
     expect(alts.map((a) => a.hreflang)).toEqual(['en', 'ar', 'x-default']);
-    expect(alts[0].href).toBe(`${SITE_ORIGIN}/chat?lang=en`);
+    expect(alts[0].href).toBe(`${SITE_ORIGIN}/chat`);
+    expect(alts[1].href).toBe(`${SITE_ORIGIN}/ar/chat`);
     expect(alts[2].href).toBe(`${SITE_ORIGIN}/chat`);
+  });
+});
+
+describe('localeRedirect', () => {
+  const loc = (pathname: string, search = '', hash = '') => ({ pathname, search, hash });
+  it('returns null when path prefix already matches the language (loop-safe)', () => {
+    expect(localeRedirect(loc('/library'), 'en')).toBeNull();
+    expect(localeRedirect(loc('/ar/library'), 'ar')).toBeNull();
+    expect(localeRedirect(loc('/ar'), 'ar')).toBeNull();
+  });
+  it('moves a clean URL to /ar when the language is Arabic', () => {
+    expect(localeRedirect(loc('/library'), 'ar')).toBe('/ar/library');
+    expect(localeRedirect(loc('/'), 'ar')).toBe('/ar');
+  });
+  it('moves an /ar URL back to the clean path when the language is English', () => {
+    expect(localeRedirect(loc('/ar/library'), 'en')).toBe('/library');
+  });
+  it('drops a legacy ?lang= param, preserving other query + hash', () => {
+    expect(localeRedirect(loc('/library', '?lang=ar'), 'ar')).toBe('/ar/library');
+    expect(localeRedirect(loc('/ar/library', '?lang=ar&ref=x', '#s'), 'ar')).toBe(
+      '/ar/library?ref=x#s',
+    );
   });
 });
 

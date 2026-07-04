@@ -1,10 +1,12 @@
 import { describe, expect, it, afterEach } from 'vitest';
-import { render, screen, cleanup, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, cleanup, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import i18n from '../src/i18n';
 import { LangToggle } from '../src/components/LangToggle';
 
-// LangToggle shows the *other* language's glyph and flips the whole document to
-// RTL on switch — the bilingual entry point in the chrome.
+// LangToggle is a crawlable <a> to the *other* language's URL of the current page.
+// Clicking it is a full navigation (the router remounts under the matching
+// basename), so here we assert the link target rather than a client-side flip.
 
 afterEach(async () => {
   cleanup();
@@ -13,25 +15,40 @@ afterEach(async () => {
   });
 });
 
+const renderAt = (path: string) =>
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <LangToggle className="lang-toggle" />
+    </MemoryRouter>,
+  );
+
 describe('<LangToggle />', () => {
-  it('shows the Arabic glyph and an accessible label while on English', () => {
-    render(<LangToggle />);
-    const btn = screen.getByRole('button', { name: 'Switch language' });
-    expect(btn).toHaveTextContent('ع');
+  it('on English, links to the /ar document of the current page and shows the Arabic glyph', () => {
+    renderAt('/library');
+    const a = screen.getByRole('link', { name: 'Switch language' });
+    expect(a).toHaveAttribute('href', '/ar/library');
+    expect(a).toHaveAttribute('hreflang', 'ar');
+    expect(a).toHaveTextContent('ع');
   });
 
-  it('switches to Arabic, flips the document to RTL, and shows the EN glyph', async () => {
-    render(<LangToggle className="x" />);
+  it('on Arabic, links back to the clean English URL and shows the EN glyph', async () => {
     await act(async () => {
-      fireEvent.click(screen.getByRole('button'));
+      await i18n.changeLanguage('ar');
     });
-    await waitFor(() => expect(screen.getByRole('button')).toHaveTextContent('EN'));
-    expect(document.documentElement.dir).toBe('rtl');
-    expect(document.documentElement.lang).toBe('ar');
+    renderAt('/library');
+    const a = screen.getByRole('link', { name: 'تبديل اللغة' });
+    expect(a).toHaveAttribute('href', '/library');
+    expect(a).toHaveAttribute('hreflang', 'en');
+    expect(a).toHaveTextContent('EN');
   });
 
-  it('passes the className through to the button', () => {
-    render(<LangToggle className="lang-toggle" />);
-    expect(screen.getByRole('button')).toHaveClass('lang-toggle');
+  it('preserves query + hash on the alternate URL', () => {
+    renderAt('/tools/crosswind?rwy=18#calc');
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/ar/tools/crosswind?rwy=18#calc');
+  });
+
+  it('passes the className through', () => {
+    renderAt('/');
+    expect(screen.getByRole('link')).toHaveClass('lang-toggle');
   });
 });

@@ -109,8 +109,12 @@ export function usePageMeta(
     function apply() {
       const fullTitle = title ? `${title} — ${SUFFIX}` : DEFAULT_TITLE;
       const desc = description ?? DEFAULT_DESC;
+      // `pathname` is the logical (basename-stripped) path. In Arabic the page's
+      // self-canonical is its real `/ar` document, so the hydrated head matches the
+      // static Arabic snapshot the crawler read (and Google doesn't fold the Arabic
+      // page into the English one). English/x-default stay on the clean path.
       const path = pathname;
-      const canonical = canonicalUrl(path);
+      const canonical = canonicalUrl(path, i18n.language);
       const image = ogImageFor(path);
 
       document.title = fullTitle;
