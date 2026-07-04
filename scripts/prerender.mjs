@@ -100,6 +100,14 @@ if (skipped > 0) {
 }
 const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();
 
+// Arabic full-body set mirrors scripts/prerender-head.mjs's covered set: every
+// base route + the top AR_CORPUS_MAX corpus docs (same parts→reference→handbook
+// order). Each is rendered by visiting its `?lang=ar` variant — a real browser
+// honours the param — and written to the distinct dist/ar/<route>/index.html the
+// host can route to. Keep AR_CORPUS_MAX in sync with the other two scripts.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
+const arRouteList = [...new Set([...baseList, ...corpus.slice(0, AR_CORPUS_MAX)])].sort();
+
 // --- Helpers -------------------------------------------------------------------
 function waitForServer(timeoutMs = 20000) {
   const deadline = Date.now() + timeoutMs;
@@ -123,6 +131,8 @@ function outPath(route) {
     : join(root, 'dist', route.replace(/^\//, ''), 'index.html');
 }
 
+// The Arabic snapshot lives under a real `/ar` path prefix (Firebase routes by
+// path, so this is a distinct file the crawler can fetch).
 // The Arabic variant of each route lives under /ar (SEO-PLAN 0.3). Only the
 // finite content/UI set (base routes) gets an Arabic twin — never the reader corpus.
 function outPathAr(route) {
@@ -164,6 +174,9 @@ try {
   browser = await launchChromium(chromium);
   const page = await browser.newPage();
 
+  // Drive one route to a hydrated snapshot on disk. Waits for a real-app element
+  // the static shell never contains, then dumps the live DOM.
+  const snapshot = async (url, file) => {
   // Navigate + capture the hydrated document to `file` (a real-app <footer> is
   // the signal the app rendered over the static shell).
   async function snapshot(url, file) {
@@ -172,6 +185,7 @@ try {
     const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, html);
+  };
   }
 
   let done = 0;
@@ -183,6 +197,22 @@ try {
       console.warn(`  prerender: skipped ${route} — ${err.message}`);
     }
   }
+  // Arabic bodies: visit the real `/ar<route>` URL (the router mounts under
+  // basename `/ar` and hydrates in Arabic with a self-canonical `/ar` head) and
+  // write the distinct dist/ar/<route> file.
+  let doneAr = 0;
+  for (const route of arRouteList) {
+    const arRoute = route === '/' ? '/ar' : `/ar${route}`;
+    try {
+      await snapshot(`${BASE}${arRoute}`, outPathAr(route));
+      doneAr++;
+    } catch (err) {
+      console.warn(`  prerender: skipped ar ${route} — ${err.message}`);
+    }
+  }
+  console.log(
+    `prerender: wrote ${done}/${routeList.length} en + ${doneAr}/${arRouteList.length} ar routes`,
+  );
   if (done < routeList.length) {
     warn(
       `wrote ${done}/${routeList.length} en routes — ${routeList.length - done} failed and kept their head-only HTML`,

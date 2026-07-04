@@ -47,6 +47,14 @@ if (isMirrorHost(window.location.hostname)) {
   document.head.appendChild(robots);
 }
 
+// Two pre-boot redirects, host first: a duplicate host (e.g. captadel.com) folds
+// onto the canonical origin; then the locale reconciler moves the URL so its path
+// prefix matches the language — a legacy `?lang=ar` link, a stored Arabic choice,
+// or an Arabic browser on a clean URL lands on `/ar`. Both are `location.replace`
+// (full nav) so the router remounts under the right basename. `localeRedirect`
+// returns null when already consistent, so this can't loop.
+const redirectTo =
+  canonicalRedirect(window.location) ?? localeRedirect(window.location, resolveInitialLang());
 // A duplicate host (e.g. captadel.com) serves this same build — fold it straight
 // onto the canonical origin, preserving the path, before booting anything. This
 // is the host-agnostic safety net; an edge 301 (vercel.json) handles it sooner
