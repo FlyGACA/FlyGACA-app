@@ -22,6 +22,7 @@
     "gen:captain": "node scripts/generate-captain-adel.mjs",
     "new:guide": "node scripts/new-guide.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
+    "audit:ai": "node scripts/audit-ai-visibility.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",

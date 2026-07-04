@@ -43,7 +43,7 @@ export function Schools() {
   usePageMeta(t('meta.schools'), t('metaDesc.schools'), [
     faqLd(faqs),
     breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
+      { name: t('nav.breadcrumbHome'), path: '/' },
       { name: t('schools.title'), path: '/schools' },
     ]),
   ]);
