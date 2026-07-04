@@ -184,7 +184,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>.
   const crumbs: Crumb[] = doc?.title
     ? [
-        { name: t('nav.home'), path: '/' },
+        { name: t('nav.breadcrumbHome'), path: '/' },
         { name: t('nav.library'), path: '/library' },
         { name: doc.title, path: pathname },
       ]
