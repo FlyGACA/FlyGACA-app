@@ -132,9 +132,30 @@ ${body}
 </urlset>
 `;
 
-const robots = `User-agent: *
+// Fly GACA is an independent, educational Saudi civil-aviation library that wants
+// to be crawled and cited. All agents are allowed; the AI answer engines and search
+// crawlers below are listed explicitly to document that intent (a bot that matches
+// its own group ignores the `*` group, so each must carry its own `Allow: /`). In
+// 2026 being uncitable is fatal — never add a `Disallow` here to fence out a bot.
+const CITATION_BOTS = [
+  'GPTBot', // OpenAI training/index crawler
+  'OAI-SearchBot', // ChatGPT search index
+  'ChatGPT-User', // ChatGPT live user-triggered fetches
+  'ClaudeBot', // Anthropic crawler
+  'Claude-Web', // Anthropic live fetches
+  'PerplexityBot', // Perplexity index crawler
+  'Perplexity-User', // Perplexity live user-triggered fetches
+  'Google-Extended', // Gemini / Vertex AI grounding opt-in
+  'Applebot-Extended', // Apple Intelligence opt-in
+  'Bingbot', // Bing / Copilot
+];
+const robots = `# Fly GACA — independent educational Saudi civil-aviation library.
+# We want to be crawled and cited; every agent is allowed. See scripts/build-sitemap.mjs.
+User-agent: *
 Allow: /
 
+# AI answer engines & search crawlers — explicitly welcomed (documents intent).
+${CITATION_BOTS.map((ua) => `User-agent: ${ua}\nAllow: /\n`).join('\n')}
 Sitemap: ${SITE}/sitemap.xml
 `;
 
