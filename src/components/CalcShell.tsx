@@ -106,7 +106,7 @@ export function CalcShell({
     [
       primaryLd ?? softwareAppLd({ title, description: intro, path: pathname }),
       breadcrumbLd([
-        { name: t('nav.home'), path: '/' },
+        { name: t('nav.breadcrumbHome'), path: '/' },
         { name: t('nav.tools'), path: '/tools' },
         { name: title, path: pathname },
       ]),
