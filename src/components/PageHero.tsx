@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import band from './heroBand.module.css';
 import styles from './PageHero.module.css';
 
 interface PageHeroProps {
@@ -31,8 +32,10 @@ export function PageHero({
   children,
 }: PageHeroProps) {
   return (
-    <header className={`${styles.hero} ${align === 'center' ? styles.center : ''}`}>
-      <div className={styles.glow} aria-hidden="true" />
+    <header
+      className={`${band.band} ${styles.hero} ${align === 'center' ? styles.center : ''}`}
+    >
+      <div className={band.glow} aria-hidden="true" />
       <div className={styles.heroText}>
         <p className={styles.eyebrow}>{eyebrow}</p>
         <h1 className={styles.title}>{title}</h1>
