@@ -32,9 +32,7 @@ export function PageHero({
   children,
 }: PageHeroProps) {
   return (
-    <header
-      className={`${band.band} ${styles.hero} ${align === 'center' ? styles.center : ''}`}
-    >
+    <header className={`${band.band} ${styles.hero} ${align === 'center' ? styles.center : ''}`}>
       <div className={band.glow} aria-hidden="true" />
       <div className={styles.heroText}>
         <p className={styles.eyebrow}>{eyebrow}</p>

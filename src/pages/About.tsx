@@ -54,7 +54,7 @@ export function About() {
     }),
     faqLd(faqs),
     breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
+      { name: t('nav.breadcrumbHome'), path: '/' },
       { name: t('nav.about'), path: '/about' },
     ]),
   ]);
