@@ -4,7 +4,7 @@
  * bank, or the user's flagged review deck — without any new runner.
  */
 import type { QuizBank, QuizData } from '../../lib/content';
-import { PACKS } from './packs';
+import { PACKS } from './packCatalog';
 
 export interface SessionOpts {
   pack?: string | null;

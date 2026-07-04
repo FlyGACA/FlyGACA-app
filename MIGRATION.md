@@ -1,4 +1,4 @@
-# Migration tracker — legacy `flygaca/flygaca` → `FlyGACA-app`
+# Migration tracker — legacy vanilla Fly GACA monorepo → `FlyGACA-app`
 
 This rebuild migrates the **frontend app only**. The Firebase Functions gateway, the Captain Adel
 RAG service, the Python `sales_agents/`, `office/`/`docs/`, and the multi-host routing generator are

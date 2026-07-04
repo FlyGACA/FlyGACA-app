@@ -40,7 +40,7 @@ export function Guide() {
   // can never drift. Empty for unknown slugs (the page renders <NotFound/>).
   const crumbs: Crumb[] = valid
     ? [
-        { name: t('nav.home'), path: '/' },
+        { name: t('nav.breadcrumbHome'), path: '/' },
         { name: t('guides.title'), path: '/guides' },
         { name: t(`${base}.name`), path: `/guides/${slug}` },
       ]

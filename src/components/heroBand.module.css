@@ -1,0 +1,87 @@
+/* Shared hero band — the signature falcon-stroke gradient with a gold bottom edge
+   and a sage glow, extracted from SearchHero/PageHero so the two heroes render the
+   exact same material. Compose `.band` onto the hero element and drop `.glow` inside
+   it. The 2026 "instrument glass" pass adds a film-grain layer and a breathing
+   gold edge; both are purely decorative (aria-hidden / pointer-events: none) and
+   token-derived, so the Cockpit theme inherits them. */
+.band {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background-color: var(--falcon-night);
+  background-image: var(--falcon-stroke);
+  color: var(--moon);
+  box-shadow: var(--edge-sheen), var(--elev-2);
+}
+
+/* Film grain over the gradient — no DOM node, blends only with the band beneath
+   (content layers are position: relative and paint above by DOM order). */
+.band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  background-size: 160px;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Gold edge — replaces the old 4px solid border with a symmetric gradient strip
+   whose bright centre breathes via --edge-glint. Clipped square by overflow. */
+.band::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 4px;
+  background: var(--edge-gold);
+  pointer-events: none;
+}
+
+/* Sage glow bleeding in from the inline-end corner (mirrors in RTL). */
+.glow {
+  position: absolute;
+  inset-block: -50%;
+  inset-inline-end: -15%;
+  inline-size: 60%;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--accent) var(--hero-glow-alpha), transparent),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+/* Expressive layer — the glow breathes and the gold edge glint drifts. Both are
+   compositor-cheap (scale/opacity) or a 4px repaint, alternate-infinite so any
+   prerender frame is a finished design, and gated off under reduced motion (the
+   global reduce kill-switch is the backstop). */
+@media (prefers-reduced-motion: no-preference) {
+  .glow {
+    animation: glow-breathe 12s ease-in-out infinite alternate;
+  }
+  .band::after {
+    animation: edge-glint 9s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes glow-breathe {
+  from {
+    opacity: 0.75;
+    scale: 1;
+  }
+  to {
+    opacity: 1;
+    scale: 1.06;
+  }
+}
+
+@keyframes edge-glint {
+  from {
+    --edge-glint: 35%;
+  }
+  to {
+    --edge-glint: 65%;
+  }
+}
