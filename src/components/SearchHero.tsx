@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountUp } from './CountUp';
+import band from './heroBand.module.css';
 import styles from './SearchHero.module.css';
 
 /** One animated stat in the hero readout strip. */
@@ -71,8 +72,8 @@ export function SearchHero({
   const { t } = useTranslation();
 
   return (
-    <header className={styles.hero}>
-      <div className={styles.glow} aria-hidden="true" />
+    <header className={`${band.band} ${styles.hero}`}>
+      <div className={band.glow} aria-hidden="true" />
       <div className={styles.inner}>
         <p className={styles.eyebrow}>{eyebrow}</p>
         <h1 className={styles.title}>{title}</h1>
