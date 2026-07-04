@@ -19,6 +19,16 @@ const LOADERS: Record<Lang, () => Promise<{ default: Record<string, unknown> }>>
 };
 
 /**
+ * Picks the initial language. The `/ar` path prefix is the authoritative signal
+ * (a crawlable Arabic document must always boot Arabic), then a legacy `?lang=`,
+ * then the stored choice, then the browser hint. `main.tsx` reconciles URL↔lang
+ * via `localeRedirect`, so e.g. a stored Arabic choice on a clean URL ends up on
+ * `/ar` rather than mismatching.
+ */
+export function resolveInitialLang(): Lang {
+  const { pathname, search } = window.location;
+  if (isArabicPath(pathname)) return 'ar';
+  const param = new URLSearchParams(search).get('lang');
  * Picks the initial language, highest signal first:
  * `/ar` URL prefix → `?lang=` (back-compat for old links) → stored choice →
  * browser hint → English. The `/ar` prefix wins because the Arabic variant is a

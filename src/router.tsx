@@ -2,6 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
+import { isArabicPath } from './lib/seo';
 import { AR_PREFIX, isArabicPath } from './lib/seo';
 
 /**
@@ -140,6 +141,118 @@ const basename =
  * Route table for the app. Each page lives under src/pages/. As more pages are
  * ported from the legacy site they slot in here (see MIGRATION.md).
  */
+const routes = [
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'library', element: <Library /> },
+      { path: 'library/charts', element: <Charts /> },
+      { path: 'library/reference/:slug', element: <Document kind="reference" /> },
+      { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
+      { path: 'library/:slug', element: <Document /> },
+      { path: 'updates', element: <Updates /> },
+      { path: 'chat', element: <Chat /> },
+      { path: 'tools', element: <ToolsIndex /> },
+      { path: 'tools/crosswind', element: <Crosswind /> },
+      { path: 'tools/density-altitude', element: <DensityAltitude /> },
+      { path: 'tools/tas', element: <Tas /> },
+      { path: 'tools/pressure-altitude', element: <PressureAltitude /> },
+      { path: 'tools/isa', element: <Isa /> },
+      { path: 'tools/altimeter', element: <Altimeter /> },
+      { path: 'tools/cloud-base', element: <CloudBase /> },
+      { path: 'tools/mach', element: <Mach /> },
+      { path: 'tools/climb-gradient', element: <ClimbGradient /> },
+      { path: 'tools/standard-rate-turn', element: <StandardRateTurn /> },
+      { path: 'tools/wind-table', element: <WindTable /> },
+      { path: 'tools/hydroplaning', element: <Hydroplaning /> },
+      { path: 'tools/takeoff-landing', element: <TakeoffLanding /> },
+      { path: 'tools/wind-triangle', element: <WindTriangle /> },
+      { path: 'tools/great-circle', element: <GreatCircle /> },
+      { path: 'tools/one-in-sixty', element: <OneInSixty /> },
+      { path: 'tools/tsd', element: <Tsd /> },
+      { path: 'tools/e6b', element: <E6b /> },
+      { path: 'tools/top-of-descent', element: <TopOfDescent /> },
+      { path: 'tools/descent-vdp', element: <DescentVdp /> },
+      { path: 'tools/fuel', element: <Fuel /> },
+      { path: 'tools/specific-range', element: <SpecificRange /> },
+      { path: 'tools/weight-balance', element: <WeightBalance /> },
+      { path: 'tools/zulu-clock', element: <ZuluClock /> },
+      { path: 'tools/airac', element: <AiracCycle /> },
+      { path: 'tools/sun-times', element: <SunTimes /> },
+      { path: 'tools/part61-currency', element: <Part61Currency /> },
+      { path: 'tools/medical-validity', element: <MedicalValidity /> },
+      { path: 'tools/flight-review', element: <FlightReview /> },
+      { path: 'tools/holding', element: <Holding /> },
+      { path: 'tools/procedural-separation', element: <ProceduralSeparation /> },
+      { path: 'tools/vfr-brief', element: <VfrBrief /> },
+      { path: 'tools/loa', element: <Loa /> },
+      { path: 'tools/units', element: <Units /> },
+      { path: 'tools/transponder', element: <Transponder /> },
+      { path: 'tools/phonetic', element: <Phonetic /> },
+      { path: 'tools/metar', element: <Metar /> },
+      { path: 'tools/taf', element: <Taf /> },
+      { path: 'tools/notam', element: <Notam /> },
+      { path: 'tools/met-brief', element: <MetBrief /> },
+      { path: 'tools/chart-symbols', element: <ChartSymbols /> },
+      { path: 'tools/vfr-minima', element: <VfrMinima /> },
+      { path: 'tools/oxygen', element: <Oxygen /> },
+      { path: 'tools/fuel-reserves', element: <FuelReserves /> },
+      { path: 'tools/conversion-checker', element: <ConversionChecker /> },
+      { path: 'tools/aerodromes', element: <Aerodromes /> },
+      { path: 'tools/aerodromes/:icao', element: <AerodromeDetail /> },
+      { path: 'tools/airspace', element: <Airspace /> },
+      { path: 'tools/definitions', element: <Definitions /> },
+      { path: 'tools/route-planner', element: <RoutePlanner /> },
+      { path: 'tools/flight-plan', element: <FlightPlan /> },
+      { path: 'tools/critical-point', element: <CriticalPoint /> },
+      { path: 'tools/top-of-climb', element: <TopOfClimb /> },
+      { path: 'tools/turn-performance', element: <TurnPerformance /> },
+      { path: 'tools/pivotal-altitude', element: <PivotalAltitude /> },
+      { path: 'tools/true-altitude', element: <TrueAltitude /> },
+      { path: 'learn', element: <LearnHub /> },
+      // The former Guides + Study hubs are merged into /learn; keep their URLs working.
+      { path: 'guides', element: <Navigate to="/learn" replace /> },
+      { path: 'guides/:slug', element: <Guide /> },
+      { path: 'study', element: <Navigate to="/learn?tab=practice" replace /> },
+      { path: 'study/quiz', element: <Quiz /> },
+      { path: 'study/flashcards', element: <Flashcards /> },
+      { path: 'study/groundschool', element: <GroundSchool /> },
+      { path: 'study/exam', element: <MockExam /> },
+      { path: 'study/paths', element: <Paths /> },
+      { path: 'study/packs', element: <Packs /> },
+      { path: 'study/packs/:id', element: <PackDetail /> },
+      { path: 'study/sheets', element: <StudySheets /> },
+      { path: 'account', element: <Account /> },
+      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'currency', element: <Currency /> },
+      { path: 'logbook', element: <Logbook /> },
+      { path: 'records', element: <Records /> },
+      { path: 'settings', element: <Settings /> },
+      { path: 'pricing', element: <Pricing /> },
+      { path: 'schools', element: <Schools /> },
+      { path: 'about', element: <About /> },
+      { path: 'disclaimer', element: <DisclaimerPage /> },
+      { path: 'terms', element: <TermsPage /> },
+      { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'safety', element: <SafetyPage /> },
+      { path: 'offline', element: <Offline /> },
+      { path: '*', element: <NotFound /> },
+    ],
+  },
+];
+
+/**
+ * Arabic is the SAME route tree mounted under `basename: '/ar'` when the URL is an
+ * Arabic document (`/ar`, `/ar/…`). React Router then strips the prefix — so
+ * `<Link>`s auto-prepend `/ar` (Arabic pages self-reference) and `useLocation()`
+ * reports the logical path meta/canonical code already expects. `main.tsx`'s
+ * `localeRedirect` guarantees the URL and the mounted basename always agree.
+ */
+export const router = createBrowserRouter(routes, {
+  basename: isArabicPath(window.location.pathname) ? '/ar' : '/',
+});
 export const router = createBrowserRouter(
   [
     {
