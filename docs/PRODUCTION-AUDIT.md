@@ -6,9 +6,9 @@ a tier transition, a major release, or any wider rollout.
 
 > **Stack note.** This repo is a **Vite + React + TypeScript SPA** (frontend only). Some generic
 > pre-flight advice assumes Astro/Next.js SSR, a NestJS backend, or a self-hosted vector store —
-> none apply here. Those rows are marked **N/A** with the real equivalent. The backend (Firebase
-> Functions gateway) and the Captain Adel RAG service live in the separate `flygaca/flygaca` repo
-> and are out of scope for this audit.
+> none apply here. Those rows are marked **N/A** with the real equivalent. The backend (the Firebase
+> Functions gateway / Captain Adel RAG flow) lives in this repo's `functions/` workspace — its own
+> build, tests, and deploy — and is out of scope for this frontend audit.
 
 **Last run:** 2026-06-27 · against `dist/` from `npm run build` · headless Chromium against
 `npm run preview` (`:4173`). Re-run the commands in [§6](#6-how-to-re-run-this-audit) to refresh.

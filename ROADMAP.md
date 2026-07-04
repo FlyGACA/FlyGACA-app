@@ -47,6 +47,11 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   connection doesn't wait on the whole index. Keep `src/lib/content.ts`
   (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
   cache split in `vite.config.ts` when shard names change.
+- **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
+  `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
+  files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync
+  meanwhile. Patch the builder to emit the semantic shape natively, then retire the normalize step
+  — exact diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
@@ -100,7 +105,8 @@ Carried over from the rebuild — these gates still apply to everything above.
 
 ## Legacy sources of truth
 
-The original no-build PWA (`flygaca/flygaca`) remains the reference when porting anything new:
+The original no-build PWA (the vanilla Fly GACA site, whose source is not in this GitHub org)
+remains the reference when porting anything new:
 `flygaca/assets/js/{auth,store,entitlements,billing,native-bridge,firebase-*}.js`,
 `flygaca/config/routes.js` (CSP), `flygaca/firestore.rules`, the `tools-*.js` family and `*-core.js`
 math, and `flygaca/assets/data/*`.
