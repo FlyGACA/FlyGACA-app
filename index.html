@@ -27,8 +27,8 @@
          per-route snapshots override them. Keep the origin in sync with
          SITE_ORIGIN / hreflangAlternates in src/lib/seo.ts. -->
     <link rel="canonical" href="https://flygaca.com/" />
-    <link rel="alternate" hreflang="en" href="https://flygaca.com/?lang=en" />
-    <link rel="alternate" hreflang="ar" href="https://flygaca.com/?lang=ar" />
+    <link rel="alternate" hreflang="en" href="https://flygaca.com/" />
+    <link rel="alternate" hreflang="ar" href="https://flygaca.com/ar" />
     <link rel="alternate" hreflang="x-default" href="https://flygaca.com/" />
     <!-- Baseline social tags (usePageMeta refines per route + language at runtime). -->
     <meta property="og:type" content="website" />
@@ -186,7 +186,10 @@
       <script>
         // The shell is the home hero; on any other route the SPA fallback still
         // serves this file, so drop the shell there to avoid a wrong-page flash.
-        if (location.pathname !== '/' && location.pathname !== '/index.html') {
+        // `/ar` + `/ar/` are the Arabic home snapshot (main.tsx folds them onto
+        // `/?lang=ar`), so they keep the hero too.
+        var p = location.pathname;
+        if (p !== '/' && p !== '/index.html' && p !== '/ar' && p !== '/ar/') {
           var s = document.getElementById('app-shell');
           if (s) s.remove();
         }

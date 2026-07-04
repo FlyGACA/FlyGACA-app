@@ -1,12 +1,12 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactElement } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
-import { CORPUS, fetchJson, parseSearchUrl, searchHref } from '../../lib/content';
+import { CORPUS, fetchJson, searchEntryLink, searchHref, toSearchRef } from '../../lib/content';
 import type {
   CorpusDoc,
   CorpusIndex,
@@ -211,7 +211,7 @@ export function Library() {
       if (!e.d.toLowerCase().includes(needle) && !(e.x ?? '').toLowerCase().includes(needle)) {
         continue;
       }
-      const ref = parseSearchUrl(e.u);
+      const ref = toSearchRef(searchEntryLink(e));
       if (!ref || ref.kind !== kind) continue;
       if (category !== 'all' && docCat.get(ref.id) !== category) continue;
       out.push(e);
@@ -556,7 +556,7 @@ export function Library() {
                   </p>
                   <ul className={styles.hitList} onKeyDown={onHitKeyDown}>
                     {shownHits.map((e, i) => {
-                      const href = searchHref(e.u, q);
+                      const href = searchHref(searchEntryLink(e), q);
                       const body = (
                         <Fragment>
                           <span className={styles.hitBadge}>{e.b}</span>
@@ -565,7 +565,7 @@ export function Library() {
                         </Fragment>
                       );
                       return (
-                        <li key={`${e.u}-${i}`}>
+                        <li key={`${href ?? e.d}-${i}`}>
                           {href ? (
                             <Link
                               to={href}

@@ -1,19 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
-import type { PathsIndex } from '../../lib/content';
+import { linkHref, type PathsIndex } from '../../lib/content';
 import { useStudyProgress, togglePathStep } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './Paths.module.css';
-
-/** Legacy "document.html?...id=part-61#x" → "/library/part-61". */
-function partHref(url: string): string | null {
-  const id = url.match(/[?&]id=([^&#]+)/)?.[1];
-  return id ? `/library/${id}` : null;
-}
 
 export function Paths() {
   const { t, i18n } = useTranslation();
@@ -53,7 +47,7 @@ export function Paths() {
             </div>
             <ol className={styles.steps}>
               {p.steps.map((s, i) => {
-                const href = partHref(s.url);
+                const href = linkHref(s);
                 const isDone = done.has(i);
                 return (
                   <li key={i} className={`${styles.step} ${isDone ? styles.stepDone : ''}`}>

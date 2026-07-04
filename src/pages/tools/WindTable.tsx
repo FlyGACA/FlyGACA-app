@@ -3,14 +3,14 @@ import { CalcShell } from '../../components/CalcShell';
 import { NumberField } from '../../components/calc/NumberField';
 import { TextField } from '../../components/calc/TextField';
 import { FieldGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { useNumericInputs } from '../../lib/useNumericInputs';
 import { parseRunways, windTable } from '../../calc/windTable';
 import styles from './WindTable.module.css';
 
 export function WindTable() {
   const { t } = useTranslation();
-  const [inputs, set] = useUrlState({ dir: '', spd: '', rwys: '' });
-  const rows = windTable(parseRunways(inputs.rwys), parseFloat(inputs.dir), parseFloat(inputs.spd));
+  const { inputs, set, nums } = useNumericInputs({ dir: '', spd: '', rwys: '' });
+  const rows = windTable(parseRunways(inputs.rwys), nums.dir, nums.spd);
 
   return (
     <CalcShell

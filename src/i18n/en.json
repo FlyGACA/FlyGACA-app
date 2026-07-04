@@ -113,7 +113,8 @@
     "primary": "Primary",
     "menu": "Menu",
     "more": "More",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "breadcrumbHome": "Home"
   },
   "command": {
     "title": "Search & jump",

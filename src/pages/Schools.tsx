@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { CaptainAvatar } from '../components/CaptainAvatar';
@@ -43,7 +43,7 @@ export function Schools() {
   usePageMeta(t('meta.schools'), t('metaDesc.schools'), [
     faqLd(faqs),
     breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
+      { name: t('nav.breadcrumbHome'), path: '/' },
       { name: t('schools.title'), path: '/schools' },
     ]),
   ]);

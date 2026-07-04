@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
-import type { GroundSchoolData, GsLesson } from '../../lib/content';
+import { linkHref, type GroundSchoolData, type GsLesson } from '../../lib/content';
 import { adelLink } from '../../lib/adel';
 import { useStudyProgress, toggleLesson } from '../../lib/studyProgress';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -12,21 +12,6 @@ import styles from './GroundSchool.module.css';
 
 /** Per-module accent — cycles the Falcon hues from the design-token map. */
 const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
-
-/**
- * Resolve a lesson's reference URL to an in-app route:
- *   "…?type=regulations&id=part-91#x" → "/library/part-91"
- *   "../tools/vfr-minima.html"        → "/tools/vfr-minima"
- *   "../guides/saudi-ppl-….html"      → "/guides/saudi-ppl-…"
- * Returns null for anything unrecognised (the link is simply not rendered).
- */
-function readHref(url: string | undefined): string | null {
-  if (!url) return null;
-  const id = url.match(/[?&]id=([^&#]+)/)?.[1];
-  if (id) return `/library/${id}`;
-  const route = url.match(/\.\.\/(tools|guides)\/([a-z0-9-]+)\.html/i);
-  return route ? `/${route[1]}/${route[2]}` : null;
-}
 
 export function GroundSchool() {
   const { t, i18n } = useTranslation();
@@ -117,7 +102,7 @@ function Lesson({
 }) {
   const { t } = useTranslation();
   const adel = adelLink(lesson.adel);
-  const read = readHref(lesson.read?.url);
+  const read = lesson.read ? linkHref(lesson.read) : null;
   return (
     <li className={`${styles.lesson} ${done ? styles.lessonDone : ''}`}>
       <div className={styles.lessonHead}>
