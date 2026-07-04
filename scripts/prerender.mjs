@@ -21,6 +21,12 @@
  * Any coverage gap (cap trim, failed route, whole-run skip) is still non-fatal
  * but warns loudly — as a GitHub Actions annotation in CI — so corpus growth
  * can never silently outrun the cap.
+ * (always), plus every enumerable dynamic route the sitemap indexes — the library
+ * reader corpus (GACAR parts / reference / handbook), aerodrome detail pages and
+ * prep-pack pages — up to PRERENDER_MAX snapshots (default 560, sized to the full
+ * sitemap plus headroom; 0 = everything). If the cap ever trims routes, the
+ * deploy-time gate (scripts/check-prerender-coverage.mjs) fails the deploy —
+ * a sitemap URL without body content is invisible to non-JS AI crawlers.
  */
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -72,8 +78,10 @@ for (const p of routerPaths) {
 }
 for (const slug of guideSlugs) baseRoutes.add(`/guides/${slug}`);
 
-// The dynamic reader corpus, enumerated from the same indexes the sitemap uses.
-// Ordered parts → reference → handbook so the highest-value docs win the budget.
+// Every enumerable dynamic route the sitemap indexes, from the same data.
+// Ordered by citation value — reader corpus (parts → reference → handbook),
+// then aerodrome detail pages, then prep packs — so the most-cited docs win
+// the budget if a cap ever bites.
 const corpus = [];
 for (const [seg, file] of [
   ['/library', 'public/data/gacar-index.json'],
@@ -82,12 +90,20 @@ for (const [seg, file] of [
 ]) {
   for (const d of readJson(file).documents) corpus.push(`${seg}/${d.slug}`);
 }
+for (const d of readJson('public/data/aerodromes-index.json').documents)
+  corpus.push(`/tools/aerodromes/${d.icao}`);
+for (const m of read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g))
+  corpus.push(`/study/packs/${m[1]}`);
 
 // Cap total snapshots so the build stays bounded; base routes are never dropped,
 // the cap only trims the corpus tail (which the sitemap + head snapshots still
 // cover). A trim warns loudly (annotated in CI) — when it fires, raise
 // PRERENDER_MAX or set it to 0 to prerender the whole corpus.
 const MAX = Number(process.env.PRERENDER_MAX ?? 500);
+// the cap only trims the corpus tail. A trimmed tail is NOT silently fine —
+// those sitemap URLs would ship without body content, so the deploy gate
+// (check-prerender-coverage.mjs) turns any trim into a failed deploy.
+const MAX = Number(process.env.PRERENDER_MAX ?? 560);
 const baseList = [...baseRoutes];
 const budget = MAX === 0 ? corpus.length : Math.max(0, MAX - baseList.length);
 const corpusIncluded = corpus.slice(0, budget);
@@ -96,6 +112,9 @@ if (skipped > 0) {
   const dropped = corpus.slice(budget, budget + 5).join(', ');
   warn(
     `corpus capped at PRERENDER_MAX=${MAX} — ${corpusIncluded.length}/${corpus.length} reader pages prerendered; ${skipped} dropped to head-only HTML (${dropped}${skipped > 5 ? ', …' : ''}). Raise PRERENDER_MAX or set 0 for the whole corpus.`,
+  console.warn(
+    `prerender: WARNING — corpus capped at PRERENDER_MAX=${MAX}: ${corpusIncluded.length}/${corpus.length} dynamic pages prerendered, ` +
+      `${skipped} skipped. These ship WITHOUT body content and the coverage gate will fail the deploy — raise PRERENDER_MAX.`,
   );
 }
 const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();
@@ -151,7 +170,10 @@ async function launchChromium(chromium) {
   } catch (err) {
     console.warn(`prerender: chromium launch failed (${err.message}); installing browser…`);
     await new Promise((resolve) => {
-      const inst = spawn('npx', ['playwright', 'install', 'chromium'], { cwd: root, stdio: 'ignore' });
+      const inst = spawn('npx', ['playwright', 'install', 'chromium'], {
+        cwd: root,
+        stdio: 'ignore',
+      });
       inst.on('exit', resolve);
       inst.on('error', resolve);
     });

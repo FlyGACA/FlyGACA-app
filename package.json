@@ -14,6 +14,7 @@
     "build": "npm run build:sitemap && tsc -b && vite build && node scripts/prerender-head.mjs && npm run check:prerender",
     "check:prerender": "node scripts/check-prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
+    "check:prerender": "node scripts/check-prerender-coverage.mjs",
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply && npm run data:normalize",
     "data:normalize": "node scripts/normalize-corpus-data.mjs",
@@ -38,10 +39,10 @@
     "cap:sync": "npm run build && cap sync",
     "cap:open": "cap open ios",
     "serve": "npm run build && firebase emulators:start --only hosting",
-    "deploy": "npm run build && npm run prerender && firebase deploy --only hosting",
+    "deploy": "npm run build && npm run prerender && npm run check:prerender && firebase deploy --only hosting",
     "deploy:rules": "firebase deploy --only firestore:rules",
     "deploy:functions": "firebase deploy --only functions",
-    "deploy:all": "npm run build && npm run prerender && firebase deploy --only hosting,functions,firestore:rules"
+    "deploy:all": "npm run build && npm run prerender && npm run check:prerender && firebase deploy --only hosting,functions,firestore:rules"
   },
   "dependencies": {
     "@capacitor/android": "^6.2.1",
