@@ -58,7 +58,10 @@ jobs:
 
       # Snapshot the high-value routes into dist/<route>/index.html so production
       # (Firebase, the canonical host) serves prerendered HTML, not just the SPA
-      # shell. Non-fatal by design — a prerender failure never blocks the deploy.
+      # shell. Non-fatal by design — a prerender failure never blocks the deploy —
+      # but any coverage gap (PRERENDER_MAX trim, failed route, whole-run skip)
+      # surfaces as a ::warning:: annotation on this run; treat one as a signal
+      # to raise PRERENDER_MAX in scripts/prerender.mjs.
       - name: Prerender static routes
         run: |
           npx playwright install --with-deps chromium

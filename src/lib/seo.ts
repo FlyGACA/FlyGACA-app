@@ -1,15 +1,20 @@
 /**
- * Pure SEO URL helpers — canonical + hreflang for the bilingual single-URL SPA.
+ * Pure SEO URL helpers — canonical + hreflang for the bilingual SPA.
  *
- * The app serves one URL per page and switches language client-side, so for
- * crawlers we expose distinct language URLs via a `?lang=` param (honoured by
- * `src/i18n/index.ts`); the canonical stays the clean, param-free path.
+ * English is served at clean, param-free paths; the Arabic variant lives under a
+ * real `/ar/` locale prefix (e.g. `/ar/tools/crosswind`) so it exists as its own
+ * crawlable, prerendered document on a static host. Each language URL is
+ * self-canonical; both carry the same hreflang cluster (en → clean, ar → `/ar`,
+ * x-default → clean).
  */
 export const SITE_ORIGIN =
   (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, '') ??
   'https://flygaca.com';
 
 export const OG_IMAGE = `${SITE_ORIGIN}/img/og-card.png`;
+
+/** The path prefix under which the Arabic variant of every content route lives. */
+export const AR_PREFIX = '/ar';
 
 /** Normalize a router path: leading slash, no trailing slash (except root), no query/hash. */
 export function normalizePath(path: string): string {
@@ -50,6 +55,34 @@ export function isArabicPath(pathname: string): boolean {
 export function stripArPrefix(pathname: string): string {
   if (pathname === '/ar' || pathname === '/ar/') return '/';
   return pathname.startsWith('/ar/') ? pathname.slice(3) : pathname;
+/** True if a (normalized) path is the Arabic locale root or under it. */
+export function isArabicPath(path: string): boolean {
+  const p = normalizePath(path);
+  return p === AR_PREFIX || p.startsWith(`${AR_PREFIX}/`);
+}
+
+/** The `/ar`-prefixed form of a clean path (`/` → `/ar`, `/tools/x` → `/ar/tools/x`). */
+function withArPrefix(cleanPath: string): string {
+  return cleanPath === '/' ? AR_PREFIX : `${AR_PREFIX}${cleanPath}`;
+}
+
+/**
+ * Origin-absolute canonical for a path in a given language. Arabic canonicals
+ * live under `/ar`; English is the clean path. `path` may be either the logical
+ * (basename-stripped) path or an already `/ar`-prefixed one — the prefix is
+ * normalized away first so callers never double-prefix.
+ */
+export function canonicalUrl(path: string, lang: string = 'en'): string {
+  const clean = stripArPrefix(normalizePath(path));
+  return lang === 'ar' ? `${SITE_ORIGIN}${withArPrefix(clean)}` : `${SITE_ORIGIN}${clean}`;
+}
+
+/** Drop a leading `/ar` locale prefix from a normalized path (`/ar/x` → `/x`, `/ar` → `/`). */
+export function stripArPrefix(path: string): string {
+  const p = normalizePath(path);
+  if (p === AR_PREFIX) return '/';
+  if (p.startsWith(`${AR_PREFIX}/`)) return p.slice(AR_PREFIX.length);
+  return p;
 }
 
 export interface Alternate {
@@ -61,8 +94,13 @@ export interface Alternate {
  * hreflang alternates for a logical `path`: English at the clean URL, Arabic at
  * its real `/ar` document, x-default at the clean URL. Head + sitemap must emit
  * this exact set (see scripts/build-sitemap.mjs, scripts/prerender-head.mjs).
+ * hreflang alternates for a route: the English (clean) URL, the Arabic (`/ar`)
+ * URL, and an x-default at the clean URL. Independent of the active language, so
+ * the same cluster is emitted on both the English and Arabic documents. `path`
+ * may be logical or `/ar`-prefixed — it is normalized to the clean path first.
  */
 export function hreflangAlternates(path: string): Alternate[] {
+  const clean = stripArPrefix(normalizePath(path));
   return [
     { hreflang: 'en', href: canonicalUrl(path, 'en') },
     { hreflang: 'ar', href: canonicalUrl(path, 'ar') },
@@ -88,6 +126,25 @@ export function localeRedirect(
   if (target === loc.pathname && !hadLang) return null;
   const query = params.toString();
   return `${target}${query ? `?${query}` : ''}${loc.hash}`;
+    { hreflang: 'en', href: canonicalUrl(clean, 'en') },
+    { hreflang: 'ar', href: canonicalUrl(clean, 'ar') },
+    { hreflang: 'x-default', href: canonicalUrl(clean, 'en') },
+  ];
+}
+
+/**
+ * When the app boots in a language that disagrees with the URL's locale prefix,
+ * the path it should move to so the URL matches the language (URL == language
+ * keeps the canonical honest). Returns `null` when already consistent, so a
+ * caller can guard against redirect loops. Pure; the `location.replace` lives in
+ * `main.tsx`.
+ */
+export function localeRedirect(pathname: string, lang: string): string | null {
+  const clean = stripArPrefix(normalizePath(pathname));
+  const underAr = isArabicPath(pathname);
+  if (lang === 'ar' && !underAr) return withArPrefix(clean);
+  if (lang !== 'ar' && underAr) return clean;
+  return null;
 }
 
 const OG_LOCALE: Record<string, string> = { en: 'en_US', ar: 'ar_SA' };

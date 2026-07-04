@@ -114,6 +114,9 @@ export function usePageMeta(
       // static Arabic snapshot the crawler read (and Google doesn't fold the Arabic
       // page into the English one). English/x-default stay on the clean path.
       const path = pathname;
+      // `pathname` is basename-stripped, so the Arabic canonical is derived from
+      // the active language, not the URL prefix — Arabic pages self-canonical to
+      // their `/ar` URL, English to the clean path.
       const canonical = canonicalUrl(path, i18n.language);
       const image = ogImageFor(path);
 
