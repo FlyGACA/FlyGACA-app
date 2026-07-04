@@ -27,7 +27,6 @@ import './styles/native.css';
 import { router } from './router';
 import { initNative } from './lib/native-bridge';
 import { captureReferral } from './lib/share';
-import { initAnalytics } from './lib/analytics';
 import { canonicalRedirect, isMirrorHost } from './lib/seo';
 import { applyTheme, readTheme } from './lib/theme';
 
@@ -76,8 +75,4 @@ if (redirectTo) {
   // Native shell bootstrap (no-op on the web). Deep links route through the
   // same data router the rest of the app uses.
   void initNative({ onDeepLink: (path) => void router.navigate(path) });
-
-  // Web product analytics + Core Web Vitals. No-op in the native shell and in
-  // dev/test — see lib/analytics.ts.
-  initAnalytics();
 }

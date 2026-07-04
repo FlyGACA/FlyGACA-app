@@ -9,6 +9,7 @@ import { RouteFallback } from './RouteFallback';
 import { ScrollProgress } from '../components/ScrollProgress';
 import { CommandPalette } from '../components/CommandPalette/CommandPalette';
 import { PwaPrompts } from '../components/pwa/PwaPrompts';
+import { AnalyticsProvider } from '../components/AnalyticsProvider';
 import { useOnboardingSeen } from '../lib/onboardingPrefs';
 
 // Lazy so the modal + its CSS stay out of the initial bundle (160 kB budget) —
@@ -51,6 +52,7 @@ export function Layout() {
       </main>
       <Footer />
       <PwaPrompts />
+      <AnalyticsProvider />
       {showTour && (
         <Suspense fallback={null}>
           <OnboardingTour />
