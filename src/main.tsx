@@ -71,8 +71,6 @@ const localeTo = redirectTo ? null : localeRedirect(window.location.pathname, re
 
 if (redirectTo) {
   window.location.replace(redirectTo);
-} else if (localeTo) {
-  window.location.replace(`${localeTo}${window.location.search}${window.location.hash}`);
 } else {
   const rootEl = document.getElementById('root');
   if (!rootEl) throw new Error('Root element #root not found');

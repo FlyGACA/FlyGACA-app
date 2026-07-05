@@ -58,31 +58,42 @@ export function stripArPrefix(pathname: string): string {
 /** True if a (normalized) path is the Arabic locale root or under it. */
 export function isArabicPath(path: string): boolean {
   const p = normalizePath(path);
+/** True if `pathname` is under the Arabic `/ar` document tree (`/ar`, `/ar/…`). A
+ *  look-alike like `/archive` is not matched. */
+export function isArabicPath(pathname: string): boolean {
+  const p = normalizePath(pathname);
   return p === AR_PREFIX || p.startsWith(`${AR_PREFIX}/`);
 }
 
-/** The `/ar`-prefixed form of a clean path (`/` → `/ar`, `/tools/x` → `/ar/tools/x`). */
-function withArPrefix(cleanPath: string): string {
-  return cleanPath === '/' ? AR_PREFIX : `${AR_PREFIX}${cleanPath}`;
+/**
+ * Strip a leading `/ar` segment to recover the logical path the router matches:
+ * `/ar` and `/ar/` → `/`, `/ar/library` → `/library`; a non-`/ar` path (including
+ * look-alikes like `/archive`) passes through unchanged. The router mounts under
+ * `basename: '/ar'` for Arabic, so this mirrors what React Router strips at runtime.
+ */
+export function stripArPrefix(pathname: string): string {
+  const p = normalizePath(pathname);
+  if (p === AR_PREFIX) return '/';
+  return p.startsWith(`${AR_PREFIX}/`) ? p.slice(AR_PREFIX.length) : p;
 }
 
 /**
- * Origin-absolute canonical for a path in a given language. Arabic canonicals
- * live under `/ar`; English is the clean path. `path` may be either the logical
- * (basename-stripped) path or an already `/ar`-prefixed one — the prefix is
- * normalized away first so callers never double-prefix.
+ * Root-relative path for a logical `path` in `lang`. Arabic lives under a real
+ * `/ar` prefix (`/` → `/ar`, `/library` → `/ar/library`) so Firebase — which
+ * routes by path, never by `?lang=` query — can serve a distinct Arabic document
+ * the AI crawlers actually read; English/x-default stay on the clean path. `path`
+ * may be logical or already `/ar`-prefixed — the prefix is normalized away first.
  */
-export function canonicalUrl(path: string, lang: string = 'en'): string {
-  const clean = stripArPrefix(normalizePath(path));
-  return lang === 'ar' ? `${SITE_ORIGIN}${withArPrefix(clean)}` : `${SITE_ORIGIN}${clean}`;
+export function localePath(path: string, lang: string): string {
+  const clean = stripArPrefix(path);
+  if (lang !== 'ar') return clean;
+  return clean === '/' ? AR_PREFIX : `${AR_PREFIX}${clean}`;
 }
 
-/** Drop a leading `/ar` locale prefix from a normalized path (`/ar/x` → `/x`, `/ar` → `/`). */
-export function stripArPrefix(path: string): string {
-  const p = normalizePath(path);
-  if (p === AR_PREFIX) return '/';
-  if (p.startsWith(`${AR_PREFIX}/`)) return p.slice(AR_PREFIX.length);
-  return p;
+/** Origin-absolute canonical for a logical `path` in `lang`. English/x-default use
+ *  the clean path; Arabic self-canonicalizes to its own `/ar` document. */
+export function canonicalUrl(path: string, lang: string = 'en'): string {
+  return `${SITE_ORIGIN}${localePath(path, lang)}`;
 }
 
 export interface Alternate {
@@ -98,9 +109,11 @@ export interface Alternate {
  * URL, and an x-default at the clean URL. Independent of the active language, so
  * the same cluster is emitted on both the English and Arabic documents. `path`
  * may be logical or `/ar`-prefixed — it is normalized to the clean path first.
+ * Head + sitemap must emit this exact set (see scripts/build-sitemap.mjs,
+ * scripts/prerender-head.mjs).
  */
 export function hreflangAlternates(path: string): Alternate[] {
-  const clean = stripArPrefix(normalizePath(path));
+  const clean = stripArPrefix(path);
   return [
     { hreflang: 'en', href: canonicalUrl(path, 'en') },
     { hreflang: 'ar', href: canonicalUrl(path, 'ar') },
@@ -133,18 +146,24 @@ export function localeRedirect(
 }
 
 /**
- * When the app boots in a language that disagrees with the URL's locale prefix,
- * the path it should move to so the URL matches the language (URL == language
- * keeps the canonical honest). Returns `null` when already consistent, so a
- * caller can guard against redirect loops. Pure; the `location.replace` lives in
- * `main.tsx`.
+ * The URL to `location.replace` to so the path prefix matches the language, or
+ * `null` when they already agree (loop-safe). The single reconciler that moves an
+ * old `?lang=ar` link, a stored Arabic choice, or an Arabic browser on a clean URL
+ * onto `/ar` — and drops the now-redundant `?lang=` param. Pairs with the
+ * basename-mounted router (src/router.tsx) and `resolveInitialLang` in i18n. Pure;
+ * the actual `location.replace` lives in `main.tsx`.
  */
-export function localeRedirect(pathname: string, lang: string): string | null {
-  const clean = stripArPrefix(normalizePath(pathname));
-  const underAr = isArabicPath(pathname);
-  if (lang === 'ar' && !underAr) return withArPrefix(clean);
-  if (lang !== 'ar' && underAr) return clean;
-  return null;
+export function localeRedirect(
+  loc: { pathname: string; search: string; hash: string },
+  lang: string,
+): string | null {
+  const target = localePath(loc.pathname, lang);
+  const params = new URLSearchParams(loc.search);
+  const hadLang = params.has('lang');
+  params.delete('lang');
+  if (target === normalizePath(loc.pathname) && !hadLang) return null;
+  const query = params.toString();
+  return `${target}${query ? `?${query}` : ''}${loc.hash}`;
 }
 
 const OG_LOCALE: Record<string, string> = { en: 'en_US', ar: 'ar_SA' };
@@ -161,7 +180,7 @@ const OG_SECTIONS = new Set(['tools', 'guides', 'library', 'study', 'pricing']);
  * section is the first path segment, so leaf pages share their section's card.
  */
 export function ogImageFor(path: string): string {
-  const section = normalizePath(path).split('/')[1] ?? '';
+  const section = stripArPrefix(path).split('/')[1] ?? '';
   return OG_SECTIONS.has(section) ? `${SITE_ORIGIN}/img/og-${section}.png` : OG_IMAGE;
 }
 

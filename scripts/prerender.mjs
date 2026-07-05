@@ -102,6 +102,8 @@ for (const m of read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g))
 const MAX = Number(process.env.PRERENDER_MAX ?? 500);
 // the cap only trims the corpus tail. A trimmed tail is NOT silently fine —
 // those sitemap URLs would ship without body content, so the deploy gate
+// the cap only trims the corpus tail. A trimmed tail is NOT silently fine — those
+// sitemap URLs would ship without body content, so the deploy gate
 // (check-prerender-coverage.mjs) turns any trim into a failed deploy.
 const MAX = Number(process.env.PRERENDER_MAX ?? 560);
 const baseList = [...baseRoutes];
@@ -159,7 +161,6 @@ function outPathAr(route) {
     ? join(root, 'dist/ar/index.html')
     : join(root, 'dist/ar', route.replace(/^\//, ''), 'index.html');
 }
-const arRoutes = baseList;
 
 // Launch Chromium; on a fresh CI image the browser binary may be absent, so try
 // a one-off `playwright install chromium` and retry once. A still-failing launch
@@ -240,27 +241,11 @@ try {
       `wrote ${done}/${routeList.length} en routes — ${routeList.length - done} failed and kept their head-only HTML`,
     );
   }
-
-  // Arabic twins of the content/UI routes. Visiting /ar<route> boots the app in
-  // Arabic (the router reads the /ar prefix), so the captured DOM is RTL Arabic
-  // with the self-canonical /ar head. Always included (finite set), separate from
-  // the corpus budget.
-  let arDone = 0;
-  for (const route of arRoutes) {
-    const arUrl = `${BASE}/ar${route === '/' ? '' : route}`;
-    try {
-      await snapshot(arUrl, outPathAr(route));
-      arDone++;
-    } catch (err) {
-      console.warn(`  prerender: skipped /ar${route} — ${err.message}`);
-    }
-  }
-  if (arDone < arRoutes.length) {
+  if (doneAr < arRouteList.length) {
     warn(
-      `wrote ${arDone}/${arRoutes.length} ar routes — ${arRoutes.length - arDone} failed and kept their head-only HTML`,
+      `wrote ${doneAr}/${arRouteList.length} ar routes — ${arRouteList.length - doneAr} failed and kept their head-only HTML`,
     );
   }
-  console.log(`prerender: wrote ${done}/${routeList.length} en + ${arDone}/${arRoutes.length} ar routes`);
 } catch (err) {
   warn(`skipped (non-fatal) — ${err.message}`);
 } finally {

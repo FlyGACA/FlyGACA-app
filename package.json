@@ -15,6 +15,7 @@
     "check:prerender": "node scripts/check-prerender.mjs",
     "prerender": "node scripts/prerender.mjs",
     "check:prerender": "node scripts/check-prerender-coverage.mjs",
+    "check:prerender:coverage": "node scripts/check-prerender-coverage.mjs",
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply && npm run data:normalize",
     "data:normalize": "node scripts/normalize-corpus-data.mjs",
@@ -43,6 +44,10 @@
     "deploy:rules": "firebase deploy --only firestore:rules",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:all": "npm run build && npm run prerender && npm run check:prerender && firebase deploy --only hosting,functions,firestore:rules"
+    "deploy": "npm run build && npm run prerender && npm run check:prerender:coverage && firebase deploy --only hosting",
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:all": "npm run build && npm run prerender && npm run check:prerender:coverage && firebase deploy --only hosting,functions,firestore:rules"
   },
   "dependencies": {
     "@capacitor/android": "^6.2.1",

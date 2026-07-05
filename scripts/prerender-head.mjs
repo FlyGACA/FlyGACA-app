@@ -55,6 +55,8 @@ const arUrl = (p) => {
   const n = normalizePath(p);
   return n === '/' ? `${SITE}/ar` : `${SITE}/ar${n}`;
 };
+// The Arabic document's real path mirrors src/lib/seo.ts localePath/canonicalUrl:
+// `/` → `/ar`, `/library` → `/ar/library`; English/x-default stay on the clean path.
 const stripArPrefix = (p) => {
   const n = normalizePath(p);
   if (n === AR_PREFIX) return '/';
@@ -157,6 +159,9 @@ const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
 /** @type {Map<string, {title?:string, description?:string, jsonLd?:object, ogType?:string}>} */
 const seoAr = new Map();
 const putAr = (path, desc) => seoAr.set(normalizePath(path), desc);
+// Arabic bundle drives the parallel `arSeo` map — the crawler-facing Arabic
+// snapshots written to dist/ar/<path>/index.html. Arabic meta is authored (never
+// machine-translated), so we read the same keys straight from ar.json.
 const ar = readJson('src/i18n/ar.json');
 const tIn = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
 
@@ -164,6 +169,11 @@ const tIn = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k])
 // pages). English keeps its constant defaults above.
 const DEFAULT_TITLE_AR = tIn(ar.meta, 'home') ?? DEFAULT_TITLE;
 const DEFAULT_DESC_AR = tIn(ar.metaDesc, 'home') ?? DEFAULT_DESC;
+
+// Arabic descriptors for the covered set (static + tools + guides + top library
+// docs). Long-tail corpus stays English-only, capped by AR_CORPUS_MAX — the SAME
+// cap scripts/build-sitemap.mjs uses, so head-hreflang and sitemap-hreflang agree.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
 
 const PRIVATE = new Set(['/account', '/dashboard', '/currency', '/logbook', '/records', '/settings']);
 const REDIRECTS = new Set(['/guides', '/study']);
@@ -380,9 +390,19 @@ function corpusDescriptors() {
   return map;
 }
 
-// English = content + corpus (clean paths); Arabic = content only (under /ar).
-const enSeo = new Map([...contentDescriptors(en, 'en'), ...corpusDescriptors()]);
+// English = content + all corpus (clean paths). Arabic = content + the top
+// AR_CORPUS_MAX corpus docs, in the same parts→reference→handbook order — matching
+// exactly the hreflang=ar set scripts/build-sitemap.mjs emits (the Arabic snapshot
+// wraps the English GACAR text in Arabic chrome + RTL; check-prerender.mjs gates it).
+const corpus = corpusDescriptors();
+const enSeo = new Map([...contentDescriptors(en, 'en'), ...corpus]);
 const arSeo = contentDescriptors(ar, 'ar');
+let arCorpusCount = 0;
+for (const [path, desc] of corpus) {
+  if (arCorpusCount >= AR_CORPUS_MAX) break;
+  arSeo.set(path, desc);
+  arCorpusCount++;
+}
 
 // --- Head transform ------------------------------------------------------------
 /** Replace a tag matching `re` with `tag`, or insert `tag` before </head> if absent. */
@@ -462,6 +482,7 @@ function render(path, d, lang = 'en') {
   // English default already omits og:locale; usePageMeta sets it at runtime).
   if (isAr) html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="ar_SA" />`);
   html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="${ogLocale(lang)}" />`);
+  if (isAr) html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="${ogLocale(lang)}" />`);
   // Explicit Twitter tags mirror the Open Graph values (see usePageMeta).
   html = setTag(html, /<meta\s+name="twitter:title"[^>]*>/, `<meta name="twitter:title" content="${esc(fullTitle)}" />`);
   html = setTag(html, /<meta\s+name="twitter:description"[^>]*>/, `<meta name="twitter:description" content="${esc(desc)}" />`);
@@ -511,6 +532,11 @@ for (const [path, d] of seoAr) {
   writtenAr++;
 }
 console.log(`prerender-head: wrote ${written} en + ${writtenAr} ar route snapshots (origin ${SITE})`);
+// Arabic siblings live at dist/ar/<path>/index.html — the real per-language
+// documents Firebase can route to (it strips `?lang=`, so the query variant can
+// never be a distinct file). These are the crawler-facing Arabic bodies;
+// scripts/prerender.mjs later overwrites them with hydrated content where a
+// browser is available.
 /** Write a descriptor map to dist, under /ar for Arabic. Returns the count. */
 function writeSnapshots(map, lang) {
   const arDir = lang === 'ar';

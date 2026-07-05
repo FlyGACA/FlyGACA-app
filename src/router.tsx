@@ -357,3 +357,4 @@ export const router = createBrowserRouter(
   ],
   { basename },
 );
+export const router = createBrowserRouter(routes, { basename });

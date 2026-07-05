@@ -35,8 +35,9 @@ export function resolveInitialLang(): Lang {
  * real, self-canonical document there; the URL is the source of truth for it.
  */
 export function resolveInitialLang(): Lang {
-  if (isArabicPath(window.location.pathname)) return 'ar';
-  const param = new URLSearchParams(window.location.search).get('lang');
+  const { pathname, search } = window.location;
+  if (isArabicPath(pathname)) return 'ar';
+  const param = new URLSearchParams(search).get('lang');
   if (param === 'en' || param === 'ar') return param;
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'en' || stored === 'ar') return stored;
