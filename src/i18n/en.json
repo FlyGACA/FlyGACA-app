@@ -1883,7 +1883,17 @@
   "account": {
     "title": "Account",
     "signInTitle": "Sign in",
-    "signInIntro": "This preview stores your profile and logbook on this device. Real sign-in (Google / Apple / email) arrives when the backend is wired.",
+    "signInIntro": "Sync your logbook, study progress and bookmarks across devices — your data stays on this device first, sign-in adds backup and sync.",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "benefits": {
+      "eyebrow": "Why sign in",
+      "title": "One cockpit for your training and flying",
+      "pilot": "Logbook, currency and personal minimums — always at hand, on every device.",
+      "student": "Study streaks, practice exams and flashcards that follow you from ground school to checkride.",
+      "instructor": "Your ratings, endorsements and reference material, organised for every lesson.",
+      "local": "Fly GACA is local-first: everything keeps working offline, with or without an account."
+    },
     "email": "Email",
     "name": "Name",
     "password": "Password",
