@@ -8,7 +8,8 @@
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { logger } from "firebase-functions";
 import { defineBoolean } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
@@ -219,7 +220,7 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
         meta: { provider: out.meta.provider },
       });
     } catch (err) {
-      console.error("chat failed (buffered)", err);
+      logger.error("chat failed (buffered)", { err });
       res.status(500).json({ error: "chat failed" });
     }
     return;
@@ -254,7 +255,7 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     res.write(doneFrame());
     res.end();
   } catch (err) {
-    console.error("chat failed (stream)", err);
+    logger.error("chat failed (stream)", { err });
     if (!aborted) {
       res.write(frame({ type: "error", code: "stream_failed" }));
       res.write(doneFrame());
@@ -283,8 +284,39 @@ app.post(["/feedback", "/api/feedback"], async (req: Request, res: Response): Pr
     return;
   }
 
-  console.info("captain-adel-feedback", JSON.stringify({ ...fb, uid }));
+  // Structured jsonPayload (was a JSON string inside textPayload) — the sink is
+  // read for offline quality review, so filter on jsonPayload fields now.
+  logger.info("captain-adel-feedback", { ...fb, uid });
   res.status(204).end();
 });
+
+/** JSON 404 for unknown paths (the raw function URL has no SPA fallback). Exported for tests. */
+export function notFoundHandler(_req: Request, res: Response): void {
+  res.status(404).json({ error: "not found" });
+}
+
+/**
+ * Final safety net — Express 5 forwards rejected async handlers here (e.g. a
+ * non-AuthError rethrow from `authenticate`); the in-route try/catches stay
+ * primary. Never leak the error to the client; if headers are already out
+ * (mid-SSE) just terminate the stream rather than corrupt it. Exported for tests.
+ */
+export function errorHandler(
+  err: unknown,
+  req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Express detects error middleware by arity(4)
+  _next: NextFunction,
+): void {
+  logger.error("gateway unhandled error", { path: req.path, err });
+  if (res.headersSent) {
+    res.end();
+    return;
+  }
+  res.status(500).json({ error: "internal error" });
+}
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
