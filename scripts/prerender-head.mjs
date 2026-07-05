@@ -47,6 +47,14 @@ const normalizePath = (p) => {
   const lead = clean.startsWith('/') ? clean : `/${clean}`;
   return lead.length > 1 ? lead.replace(/\/+$/, '') : '/';
 };
+const canonicalUrl = (p) => `${SITE}${normalizePath(p)}`;
+// The Arabic document's real path (mirrors src/lib/seo.ts localePath/canonicalUrl):
+// `/` → `/ar`, `/library` → `/ar/library`. This is the hreflang `ar` target + the
+// Arabic page's self-canonical, so Firebase can serve it as a distinct static file.
+const arUrl = (p) => {
+  const n = normalizePath(p);
+  return n === '/' ? `${SITE}/ar` : `${SITE}/ar${n}`;
+};
 // The Arabic document's real path mirrors src/lib/seo.ts localePath/canonicalUrl:
 // `/` → `/ar`, `/library` → `/ar/library`; English/x-default stay on the clean path.
 const stripArPrefix = (p) => {
@@ -114,6 +122,7 @@ const courseLd = ({ title, description, path, lang = 'en' }) => ({
   name: title,
   ...(description ? { description } : {}),
   inLanguage: lang,
+  url: canonicalUrl(path),
   url: canonicalUrl(path, lang),
   provider: orgNode(),
   isAccessibleForFree: true,
@@ -131,6 +140,25 @@ const COURSE_ROUTES = new Set([
 
 // --- Build the route → SEO descriptor maps -------------------------------------
 const en = readJson('src/i18n/en.json');
+// Arabic bundle drives the parallel `seoAr` map — the crawler-facing Arabic
+// snapshots written to dist/ar/<path>/index.html. Arabic meta is authored (never
+// machine-translated), so we read the same keys straight from ar.json.
+const ar = readJson('src/i18n/ar.json');
+const tIn = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
+
+// Arabic fallbacks for routes without a per-page meta key (mirror the English
+// DEFAULT_* shape, but authored). The home meta doubles as the site-level Arabic
+// default and carries the not-affiliated caveat.
+const DEFAULT_TITLE_AR = `${SUFFIX} — ${tIn(ar.meta, 'home')}`;
+const DEFAULT_DESC_AR = tIn(ar.metaDesc, 'home');
+
+// Arabic descriptors for the covered set (static + tools + guides + top library
+// docs). Long-tail corpus stays English-only, capped by AR_CORPUS_MAX — the SAME
+// cap scripts/build-sitemap.mjs uses, so head-hreflang and sitemap-hreflang agree.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
+/** @type {Map<string, {title?:string, description?:string, jsonLd?:object, ogType?:string}>} */
+const seoAr = new Map();
+const putAr = (path, desc) => seoAr.set(normalizePath(path), desc);
 // Arabic bundle drives the parallel `arSeo` map — the crawler-facing Arabic
 // snapshots written to dist/ar/<path>/index.html. Arabic meta is authored (never
 // machine-translated), so we read the same keys straight from ar.json.
@@ -174,6 +202,49 @@ const STATIC_META = {
 // Route sources are enumerated once — the *routes* are identical across languages;
 // only the copy (from the bundle) and the JSON-LD url/inLanguage (from `lang`) differ.
 const routerPaths = [...read('src/router.tsx').matchAll(/path:\s*'([^']+)'/g)].map((m) => m[1]);
+for (const p of routerPaths) {
+  if (p.includes(':') || p === '*') continue;
+  const norm = normalizePath(p === '/' ? '/' : `/${p.replace(/^\//, '')}`);
+  if (PRIVATE.has(norm) || REDIRECTS.has(norm)) continue;
+  const key = STATIC_META[norm];
+  const title = key ? tIn(en.meta, key) : undefined;
+  const description = key ? tIn(en.metaDesc, key) : undefined;
+  put(norm, {
+    title,
+    description,
+    ...(COURSE_ROUTES.has(norm)
+      ? { jsonLd: courseLd({ title, description, path: norm }) }
+      : {}),
+  });
+  const titleAr = key ? tIn(ar.meta, key) : undefined;
+  const descAr = key ? tIn(ar.metaDesc, key) : undefined;
+  putAr(norm, {
+    title: titleAr,
+    description: descAr,
+    ...(COURSE_ROUTES.has(norm)
+      ? { jsonLd: courseLd({ title: titleAr, description: descAr, path: norm, lang: 'ar' }) }
+      : {}),
+  });
+}
+
+// Tools → name/blurb from i18n + SoftwareApplication.
+const toolsSrc = read('src/lib/tools.ts');
+for (const m of toolsSrc.matchAll(/\bt\(\s*'([^']+)'\s*,\s*'[^']+'\s*,\s*'live'/g)) {
+  const id = m[1];
+  const path = `/tools/${id}`;
+  const title = tIn(en, `tools.items.${id}.name`);
+  const description = tIn(en, `tools.items.${id}.blurb`);
+  put(path, { title, description, jsonLd: softwareAppLd({ title, description, path }) });
+  const titleAr = tIn(ar, `tools.items.${id}.name`);
+  const descAr = tIn(ar, `tools.items.${id}.blurb`);
+  putAr(path, {
+    title: titleAr,
+    description: descAr,
+    jsonLd: softwareAppLd({ title: titleAr, description: descAr, path }),
+  });
+}
+
+// Guides → name/blurb from i18n + Article (drafts excluded, like the sitemap).
 const toolIds = [
   ...read('src/lib/tools.ts').matchAll(/\bt\(\s*'([^']+)'\s*,\s*'[^']+'\s*,\s*'live'/g),
 ].map((m) => m[1]);
@@ -186,6 +257,52 @@ const draftGuides = new Set(
     (m) => m[1],
   ),
 );
+for (const slug of guideSlugs) {
+  if (draftGuides.has(slug)) continue;
+  const path = `/guides/${slug}`;
+  const title = tIn(en, `guides.items.${slug}.name`);
+  const description = tIn(en, `guides.items.${slug}.blurb`);
+  put(path, {
+    title,
+    description,
+    jsonLd: articleLd('Article', { title, description, path }),
+    ogType: 'article',
+  });
+  const titleAr = tIn(ar, `guides.items.${slug}.name`);
+  const descAr = tIn(ar, `guides.items.${slug}.blurb`);
+  putAr(path, {
+    title: titleAr,
+    description: descAr,
+    jsonLd: articleLd('Article', { title: titleAr, description: descAr, path, lang: 'ar' }),
+    ogType: 'article',
+  });
+}
+
+// Library reader corpus → title (+ revision date) from the data indexes + TechArticle.
+const isDate = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v);
+// Corpus docs are ordered parts → reference → handbook so the highest-value docs
+// win the Arabic budget — the same ordering scripts/build-sitemap.mjs uses.
+let arCorpusCount = 0;
+for (const [base, file] of [
+  ['/library', 'public/data/gacar-index.json'],
+  ['/library/reference', 'public/data/reference-index.json'],
+  ['/library/handbook', 'public/data/ebooks-index.json'],
+]) {
+  const idx = readJson(file);
+  // Fall back to the index's generated date when a doc carries no date-shaped
+  // effectiveDate/revision — mirrors src/pages/library/Document.tsx at runtime.
+  const fallback = isDate(idx.generated) ? idx.generated.slice(0, 10) : undefined;
+  for (const d of idx.documents) {
+    const path = `${base}/${d.slug}`;
+    const dateModified = isDate(d.effectiveDate)
+      ? d.effectiveDate.slice(0, 10)
+      : isDate(d.revision)
+        ? d.revision.slice(0, 10)
+        : fallback;
+    const descriptor = {
+      title: d.title,
+      jsonLd: articleLd('TechArticle', { title: d.title, path, dateModified }),
+
 /**
  * Content/UI descriptors (static pages + tools + guides) for one language bundle.
  * Titles/descriptions come from `bundle`; JSON-LD url + inLanguage from `lang`.
@@ -230,7 +347,15 @@ function contentDescriptors(bundle, lang) {
       description,
       jsonLd: articleLd('Article', { title, description, path, lang }),
       ogType: 'article',
-    });
+    };
+    put(path, descriptor);
+    // The reader body is the English GACAR text; the Arabic snapshot wraps it in
+    // Arabic chrome + RTL. Keep the English doc title + inLanguage 'en' — the
+    // underlying document is the same English regulation, so that's honest.
+    if (arCorpusCount < AR_CORPUS_MAX) {
+      putAr(path, descriptor);
+      arCorpusCount++;
+    }
   }
   return map;
 }
@@ -313,6 +438,11 @@ function render(path, d, lang = 'en') {
   const desc = d.description ?? (isAr ? DEFAULT_DESC_AR : DEFAULT_DESC);
   // In Arabic the page self-canonicalizes to its own `/ar` document; x-default
   // always targets the clean, param-free URL.
+  const canonical = isAr ? arUrl(path) : canonicalUrl(path);
+  const cleanUrl = canonicalUrl(path);
+  let html = shell;
+
+  if (isAr) html = html.replace('<html lang="en" dir="ltr">', '<html lang="ar" dir="rtl">');
   const canonical = canonicalUrl(path, lang);
   let html = shell;
 
@@ -329,6 +459,9 @@ function render(path, d, lang = 'en') {
   // The same hreflang cluster on every language variant: en (clean), ar (/ar),
   // x-default (clean). Mirrors src/lib/seo.ts hreflangAlternates.
   for (const [hreflang, href] of [
+    ['en', cleanUrl],
+    ['ar', arUrl(path)],
+    ['x-default', cleanUrl],
     ['en', canonicalUrl(path, 'en')],
     ['ar', canonicalUrl(path, 'ar')],
     ['x-default', canonicalUrl(path, 'en')],
@@ -347,6 +480,8 @@ function render(path, d, lang = 'en') {
   html = setTag(html, /<meta\s+property="og:image"[^>]*>/, `<meta property="og:image" content="${image}" />`);
   // The Arabic snapshot declares its locale so scrapers file it under ar_SA (the
   // English default already omits og:locale; usePageMeta sets it at runtime).
+  if (isAr) html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="ar_SA" />`);
+  html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="${ogLocale(lang)}" />`);
   if (isAr) html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="${ogLocale(lang)}" />`);
   // Explicit Twitter tags mirror the Open Graph values (see usePageMeta).
   html = setTag(html, /<meta\s+name="twitter:title"[^>]*>/, `<meta name="twitter:title" content="${esc(fullTitle)}" />`);
@@ -364,6 +499,10 @@ function render(path, d, lang = 'en') {
   // content on every path (the runtime script does the same once JS runs). On the
   // Arabic home, swap the English hero for the Arabic one.
   if (normalizePath(path) !== '/') {
+  // Strip the home hero on non-home routes, and on *every* Arabic page — the hero
+  // is baked English copy in the shell, so a no-JS Arabic reader must never see it
+  // (the runtime script strips it too once JS runs).
+  if (normalizePath(path) !== '/' || isAr) {
     html = html.replace(/<div id="app-shell">[\s\S]*?<\/script>\s*/, '');
   } else if (isAr) {
     html = html.replace(/<div id="app-shell">[\s\S]*?<\/script>\s*/, arHero());
@@ -371,6 +510,28 @@ function render(path, d, lang = 'en') {
   return html;
 }
 
+let written = 0;
+for (const [path, d] of seo) {
+  const file =
+    path === '/' ? shellPath : join(root, 'dist', path.replace(/^\//, ''), 'index.html');
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, render(path, d, 'en'));
+  written++;
+}
+
+// Arabic siblings at dist/ar/<path>/index.html — the real per-language documents
+// Firebase can route to (it strips `?lang=`, so the query variant can never be a
+// distinct file). These are the crawler-facing Arabic bodies; scripts/prerender.mjs
+// later overwrites them with hydrated content on hosts that have a browser.
+let writtenAr = 0;
+for (const [path, d] of seoAr) {
+  const rel = path === '/' ? 'ar/index.html' : `ar/${path.replace(/^\//, '')}/index.html`;
+  const file = join(root, 'dist', rel);
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, render(path, d, 'ar'));
+  writtenAr++;
+}
+console.log(`prerender-head: wrote ${written} en + ${writtenAr} ar route snapshots (origin ${SITE})`);
 // Arabic siblings live at dist/ar/<path>/index.html — the real per-language
 // documents Firebase can route to (it strips `?lang=`, so the query variant can
 // never be a distinct file). These are the crawler-facing Arabic bodies;

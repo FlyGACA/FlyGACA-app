@@ -129,6 +129,18 @@ function priority(u) {
 // Arabic at its real `/ar` document (only where a snapshot exists), and x-default
 // at the clean URL. Head-hreflang (prerender-head.mjs) must stay byte-identical to
 // this — check-prerender.mjs enforces the Arabic side.
+function alternates(u) {
+  const loc = `${SITE}${u}`;
+  const arLink = arCovered.has(u)
+    ? `<xhtml:link rel="alternate" hreflang="ar" href="${SITE}/ar${u === '/' ? '' : u}"/>`
+    : '';
+  return (
+    `<xhtml:link rel="alternate" hreflang="en" href="${loc}"/>` +
+    arLink +
+    `<xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>`
+// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean path,
+// Arabic under /ar, x-default at the clean path. The same cluster is emitted on
+// both the English and Arabic <url> entries (reciprocal hreflang).
 const arLoc = (u) => `${SITE}/ar${u === '/' ? '' : u}`;
 function alternates(u) {
   const loc = `${SITE}${u}`;
