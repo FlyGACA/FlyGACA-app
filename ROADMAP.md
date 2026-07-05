@@ -6,9 +6,10 @@ study hub, account/commerce, and guides are shipped and deploying to production 
 `main`. This file looks **forward**; the stage-by-stage rebuild history lives in
 [`MIGRATION.md`](./MIGRATION.md).
 
-Scope is unchanged: this repo is **frontend only**. The Firebase Functions gateway and the Captain
-Adel RAG brain are separate and untouched — the app calls the same `/api/chat` / `/api/content`
-endpoints and the `flygaca-app` Firebase project (`me-central2`).
+Scope note: this repo now carries the **backend too** — the Firebase Functions gateway and the
+Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestore in
+`me-central2`). The app calls them via the same `/api/chat` / `/api/feedback` endpoints on the
+`flygaca-app` Firebase project.
 
 ## How to read this
 
