@@ -56,11 +56,22 @@ export async function authenticate(req: Request): Promise<{ uid?: string }> {
   return {};
 }
 
+/**
+ * Hard input caps (cost control, DESIGN N4). History *count* was always capped
+ * (12 turns); these bound the *size* of what reaches Gemini. An over-long
+ * message is rejected (400) rather than truncated — silent truncation changes
+ * the question; an over-long history turn is dropped like any other malformed
+ * turn. Exported for unit testing.
+ */
+export const MESSAGE_MAX_CHARS = 4000;
+export const HISTORY_CONTENT_MAX_CHARS = 8000;
+
 /** Coerce a raw request body into a validated `ChatRequest` (or null). Exported for unit testing. */
 export function parseRequest(body: unknown): ChatRequest | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
   if (typeof b.message !== "string" || b.message.trim() === "") return null;
+  if (b.message.length > MESSAGE_MAX_CHARS) return null;
 
   const history: ChatTurn[] = Array.isArray(b.history)
     ? (b.history as unknown[])
@@ -71,7 +82,8 @@ export function parseRequest(body: unknown): ChatRequest | null {
             (("role" in t &&
               ((t as ChatTurn).role === "user" ||
                 (t as ChatTurn).role === "assistant")) as boolean) &&
-            typeof (t as ChatTurn).content === "string",
+            typeof (t as ChatTurn).content === "string" &&
+            (t as ChatTurn).content.length <= HISTORY_CONTENT_MAX_CHARS,
       )
       .slice(-12) // cap history length (cost control, DESIGN N4)
     : [];
@@ -187,7 +199,9 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
 
   const parsed = parseRequest(req.body);
   if (!parsed) {
-    res.status(400).json({ error: "invalid request: 'message' is required" });
+    res.status(400).json({
+      error: `invalid request: 'message' is required (max ${MESSAGE_MAX_CHARS} chars)`,
+    });
     return;
   }
 

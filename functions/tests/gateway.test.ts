@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Request } from "express";
-import { parseRequest, authenticate } from "../src/gateway.js";
+import {
+  parseRequest,
+  authenticate,
+  MESSAGE_MAX_CHARS,
+  HISTORY_CONTENT_MAX_CHARS,
+} from "../src/gateway.js";
 
 // Mocks for the Admin SDK + the RAG flow, so importing the gateway never boots
 // firebase-admin or loads genkit. getApps() returns non-empty so the module's
@@ -93,6 +98,26 @@ describe("parseRequest", () => {
 
   it("treats a non-array history as empty", () => {
     expect(parseRequest({ message: "hi", history: "oops" })?.history).toEqual([]);
+  });
+
+  it("accepts a message at the size cap and rejects one over it", () => {
+    expect(parseRequest({ message: "m".repeat(MESSAGE_MAX_CHARS) })).not.toBeNull();
+    expect(parseRequest({ message: "m".repeat(MESSAGE_MAX_CHARS + 1) })).toBeNull();
+  });
+
+  it("drops an oversized history turn but keeps its valid siblings", () => {
+    const out = parseRequest({
+      message: "hi",
+      history: [
+        { role: "user", content: "a" },
+        { role: "assistant", content: "b".repeat(HISTORY_CONTENT_MAX_CHARS + 1) },
+        { role: "assistant", content: "c".repeat(HISTORY_CONTENT_MAX_CHARS) },
+      ],
+    });
+    expect(out?.history).toEqual([
+      { role: "user", content: "a" },
+      { role: "assistant", content: "c".repeat(HISTORY_CONTENT_MAX_CHARS) },
+    ]);
   });
 });
 
