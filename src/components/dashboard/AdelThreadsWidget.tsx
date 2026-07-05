@@ -13,7 +13,7 @@ const MAX_THREADS = 3;
  * subscribe to here) and links back into the chat, which restores threads.
  */
 export function AdelThreadsWidget() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [threads] = useState(() => loadConversations().slice(0, MAX_THREADS));
 
   return (
@@ -34,7 +34,9 @@ export function AdelThreadsWidget() {
                 </span>
                 {c.updatedAt > 0 && (
                   <span className={styles.rowMeta}>
-                    <bdi dir="ltr">{new Date(c.updatedAt).toLocaleDateString(i18n.language)}</bdi>
+                    {/* ISO date, matching the logbook rows — locale-formatted
+                        dates embed bidi marks that scramble inside bdi. */}
+                    <bdi dir="ltr">{new Date(c.updatedAt).toISOString().slice(0, 10)}</bdi>
                   </span>
                 )}
               </Link>

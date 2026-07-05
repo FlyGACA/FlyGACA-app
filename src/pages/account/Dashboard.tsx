@@ -1,9 +1,9 @@
+import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { CurrencyBoard } from '../../components/CurrencyBoard';
-import { SectionHeader } from '../../components/SectionHeader';
 import { SetupChecklist } from '../../components/SetupChecklist';
 import { UpsellCard } from '../../components/UpsellCard';
 import { BarSparkline } from '../../components/BarSparkline';
@@ -11,10 +11,23 @@ import { BentoGrid } from '../../components/bento/BentoGrid';
 import { BentoCard } from '../../components/bento/BentoCard';
 import { StatValue } from '../../components/bento/widgets/StatValue';
 import { StatusPill } from '../../components/StatusPill';
-import { useAccount } from '../../lib/account';
+import { RolePickerCard } from '../../components/dashboard/RolePickerCard';
+import { StudyWidget } from '../../components/dashboard/StudyWidget';
+import { ToolShortcutsWidget } from '../../components/dashboard/ToolShortcutsWidget';
+import { BookmarksWidget } from '../../components/dashboard/BookmarksWidget';
+import { AdelThreadsWidget } from '../../components/dashboard/AdelThreadsWidget';
+import { UpdatesWatchWidget } from '../../components/dashboard/UpdatesWatchWidget';
+import { isUserRole, useAccount } from '../../lib/account';
 import { effectivePlan } from '../../lib/entitlements';
 import { useFeature } from '../../lib/features';
+import { toggleWidget, useDashboardPrefs } from '../../lib/dashboardPrefs';
 import { usePageMeta } from '../../lib/usePageMeta';
+import {
+  dashboardOrder,
+  quickActionsFor,
+  visibleWidgets,
+  type WidgetId,
+} from '../../calc/dashboardLayout';
 import { computeCurrency, recordCurrency, actionNeeded } from '../../calc/currency';
 import { summarizeLogbook, monthlyHours } from '../../calc/logbook';
 import { achievements, earnedCount } from '../../calc/achievements';
@@ -40,6 +53,7 @@ function Inner() {
   const plan = effectivePlan(entitlement);
   const isPro = plan !== 'free';
   const canExport = useFeature('currency-export');
+  const prefs = useDashboardPrefs();
 
   const currency = [...computeCurrency(profile, flights), ...recordCurrency(records)];
   const needs = actionNeeded(currency);
@@ -47,6 +61,10 @@ function Inner() {
   const trend = monthlyHours(flights, 6);
   const setup = profileCompleteness(profile, flights);
   const name = profile.displayName || profile.email || t('account.title');
+
+  const order = dashboardOrder(profile.role);
+  const widgets = visibleWidgets(order, prefs.hidden);
+  const showRolePicker = !isUserRole(profile.role) && !prefs.roleDismissed;
 
   const icsEvents = currency
     .filter((i) => i.expiry)
@@ -72,64 +90,57 @@ function Inner() {
   const badges = achievements(flights).sort((a, b) => Number(b.earned) - Number(a.earned));
   const earned = earnedCount(badges);
 
-  return (
-    <section className={`container ${styles.page}`}>
-      <header className={styles.hero}>
-        <CaptainAvatar size="lg" pose="smile" glow decorative className={styles.avatar} />
-        <div className={styles.heroText}>
-          <p className={styles.eyebrow}>{t('dashboard.eyebrow')}</p>
-          <h1>{t('dashboard.greeting', { name })}</h1>
-          <p className={styles.sub}>
-            <span className={styles.planBadge} data-plan={plan}>
-              {t(`account.plan.${plan}`)}
-            </span>
-            <span className={`${styles.status} ${needs ? styles.statusWarn : styles.statusOk}`}>
-              {needs ? t('dashboard.actionNeeded') : t('dashboard.allCurrent')}
-            </span>
-          </p>
-        </div>
-      </header>
+  /** Human title for a widget id — shared by tiles and the customize row. */
+  function widgetTitle(id: WidgetId): string {
+    switch (id) {
+      case 'numbers':
+        return t('dashboard.groups.numbers');
+      case 'currency':
+        return t('dashboard.currencyBoard');
+      case 'logbook':
+        return t('dashboard.logbookSummary');
+      case 'trend':
+        return t('dashboard.hoursTrend');
+      case 'study':
+        return t('dashboard.widgets.study.title');
+      case 'tools':
+        return t('dashboard.widgets.tools.title');
+      case 'bookmarks':
+        return t('dashboard.widgets.bookmarks.title');
+      case 'adel':
+        return t('dashboard.widgets.adel.title');
+      case 'updates':
+        return t('dashboard.widgets.updates.title');
+      case 'achievements':
+        return t('dashboard.achievements');
+    }
+  }
 
-      {setup.percent < 100 && (
-        <div className={styles.setupCard}>
-          <SetupChecklist completeness={setup} />
-        </div>
-      )}
-
-      <section aria-labelledby="dash-numbers">
-        <SectionHeader
-          id="dash-numbers"
-          title={t('dashboard.groups.numbers')}
-          tone="var(--neon-cyan)"
-        />
-        <BentoGrid label={t('dashboard.groups.numbers')}>
-          <BentoCard span="sm" tone="cyan">
+  /** One widget id → its bento tile(s). */
+  function renderWidget(id: WidgetId): ReactNode {
+    switch (id) {
+      case 'numbers':
+        return [
+          <BentoCard key="n-total" span="sm" tone="cyan">
             <span className={styles.metricLabel}>{t('account.totalHours')}</span>
             <StatValue value={log.totalHours} decimals={1} className={styles.metricValue} />
-          </BentoCard>
-          <BentoCard span="sm">
+          </BentoCard>,
+          <BentoCard key="n-pic" span="sm">
             <span className={styles.metricLabel}>{t('account.pic')}</span>
             <StatValue value={log.picHours} decimals={1} className={styles.metricValue} />
-          </BentoCard>
-          <BentoCard span="sm" tone="green">
+          </BentoCard>,
+          <BentoCard key="n-ldg" span="sm" tone="green">
             <span className={styles.metricLabel}>{t('account.ldg')}</span>
             <StatValue value={log.landings} className={styles.metricValue} />
-          </BentoCard>
-          <BentoCard span="sm" tone="cyan">
+          </BentoCard>,
+          <BentoCard key="n-90" span="sm" tone="cyan">
             <span className={styles.metricLabel}>{t('dashboard.last90Days')}</span>
             <StatValue value={log.last90.flightCount} className={styles.metricValue} />
-          </BentoCard>
-        </BentoGrid>
-      </section>
-
-      <section aria-labelledby="dash-activity">
-        <SectionHeader
-          id="dash-activity"
-          title={t('dashboard.groups.activity')}
-          tone="var(--neon-green)"
-        />
-        <BentoGrid label={t('dashboard.groups.activity')}>
-          <BentoCard span="wide">
+          </BentoCard>,
+        ];
+      case 'currency':
+        return (
+          <BentoCard key={id} span="wide">
             <div className={styles.tileHead}>
               <h2>{t('dashboard.currencyBoard')}</h2>
               <div className={styles.tileActions}>
@@ -146,8 +157,10 @@ function Inner() {
             </div>
             <CurrencyBoard items={currency} />
           </BentoCard>
-
-          <BentoCard span="wide">
+        );
+      case 'logbook':
+        return (
+          <BentoCard key={id} span="wide">
             <div className={styles.tileHead}>
               <h2>{t('dashboard.logbookSummary')}</h2>
               <Link to="/logbook" className={styles.cardLink}>
@@ -176,8 +189,10 @@ function Inner() {
               <p className={styles.empty}>{t('account.emptyLog')}</p>
             )}
           </BentoCard>
-
-          <BentoCard span="wide">
+        );
+      case 'trend':
+        return (
+          <BentoCard key={id} span="wide">
             <div className={styles.tileHead}>
               <h2>{t('dashboard.hoursTrend')}</h2>
               <span className={styles.cardLink}>{t('dashboard.last6Months')}</span>
@@ -187,13 +202,40 @@ function Inner() {
               title={t('dashboard.hoursTrendSummary', { hours: totalTrend.toFixed(1) })}
             />
           </BentoCard>
-        </BentoGrid>
-      </section>
-
-      <section aria-labelledby="dash-more">
-        <SectionHeader id="dash-more" title={t('dashboard.groups.more')} tone="var(--gold)" />
-        <BentoGrid label={t('dashboard.groups.more')}>
-          <BentoCard span="wide">
+        );
+      case 'study':
+        return (
+          <BentoCard key={id} span="wide">
+            <StudyWidget />
+          </BentoCard>
+        );
+      case 'tools':
+        return (
+          <BentoCard key={id} span="wide" tone="cyan">
+            <ToolShortcutsWidget />
+          </BentoCard>
+        );
+      case 'bookmarks':
+        return (
+          <BentoCard key={id} span="wide">
+            <BookmarksWidget />
+          </BentoCard>
+        );
+      case 'adel':
+        return (
+          <BentoCard key={id} span="wide" tone="green">
+            <AdelThreadsWidget />
+          </BentoCard>
+        );
+      case 'updates':
+        return (
+          <BentoCard key={id} span="wide">
+            <UpdatesWatchWidget />
+          </BentoCard>
+        );
+      case 'achievements':
+        return (
+          <BentoCard key={id} span="wide">
             <div className={styles.tileHead}>
               <h2>{t('dashboard.achievements')}</h2>
               <span className={styles.cardLink}>
@@ -219,31 +261,71 @@ function Inner() {
               ))}
             </div>
           </BentoCard>
+        );
+    }
+  }
 
-          <BentoCard span="wide">
-            <div className={styles.tileHead}>
-              <h2>{t('dashboard.quickActions')}</h2>
-            </div>
-            <div className={styles.quick}>
-              <Link to="/logbook?add=1" className={styles.quickLink}>
-                {t('dashboard.logFlight')}
+  return (
+    <section className={`container ${styles.page}`}>
+      <header className={styles.hero}>
+        <CaptainAvatar size="lg" pose="smile" glow decorative className={styles.avatar} />
+        <div className={styles.heroText}>
+          <p className={styles.eyebrow}>{t('dashboard.eyebrow')}</p>
+          <h1>{t('dashboard.greeting', { name })}</h1>
+          <p className={styles.sub}>
+            <span className={styles.planBadge} data-plan={plan}>
+              {t(`account.plan.${plan}`)}
+            </span>
+            {isUserRole(profile.role) && (
+              <span className={styles.roleBadge}>{t(`account.roles.${profile.role}`)}</span>
+            )}
+            <span className={`${styles.status} ${needs ? styles.statusWarn : styles.statusOk}`}>
+              {needs ? t('dashboard.actionNeeded') : t('dashboard.allCurrent')}
+            </span>
+          </p>
+        </div>
+      </header>
+
+      {setup.percent < 100 && (
+        <div className={styles.setupCard}>
+          <SetupChecklist completeness={setup} />
+        </div>
+      )}
+
+      {showRolePicker && <RolePickerCard />}
+
+      <BentoGrid label={t('dashboard.eyebrow')}>
+        {widgets.flatMap((id) => renderWidget(id))}
+        <BentoCard span="wide">
+          <div className={styles.tileHead}>
+            <h2>{t('dashboard.quickActions')}</h2>
+          </div>
+          <div className={styles.quick}>
+            {quickActionsFor(profile.role).map((a) => (
+              <Link key={a.to} to={a.to} className={styles.quickLink}>
+                {t(a.labelKey)}
               </Link>
-              <Link to="/records" className={styles.quickLink}>
-                {t('records.title')}
-              </Link>
-              <Link to="/currency" className={styles.quickLink}>
-                {t('currency.title')}
-              </Link>
-              <Link to="/updates" className={styles.quickLink}>
-                {t('alerts.title')}
-              </Link>
-              <Link to="/settings" className={styles.quickLink}>
-                {t('account.settings')}
-              </Link>
-            </div>
-          </BentoCard>
-        </BentoGrid>
-      </section>
+            ))}
+          </div>
+        </BentoCard>
+      </BentoGrid>
+
+      <details className={styles.customize}>
+        <summary>{t('dashboard.customize.title')}</summary>
+        <p className={styles.customizeHint}>{t('dashboard.customize.hint')}</p>
+        <div className={styles.customizeGrid}>
+          {order.map((id) => (
+            <label key={id} className={styles.customizeItem}>
+              <input
+                type="checkbox"
+                checked={!prefs.hidden.includes(id)}
+                onChange={() => toggleWidget(id)}
+              />
+              <span>{widgetTitle(id)}</span>
+            </label>
+          ))}
+        </div>
+      </details>
 
       {!isPro && <UpsellCard />}
     </section>
