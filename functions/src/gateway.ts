@@ -14,6 +14,7 @@ import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
 import { captainAdelFlow } from "./captain-adel.js";
+import { createRateLimiter } from "./rate-limit-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -87,7 +88,16 @@ export function parseRequest(body: unknown): ChatRequest | null {
 const app = express();
 // Security middleware
 app.use(helmet());
-// Rate limiting: 30 requests per minute per IP
+// req.ip = leftmost X-Forwarded-For. Without this the limiter below keys on the
+// proxy's address, collapsing every real user into ~one shared bucket (30/min
+// sitewide). The proxy-chain depth varies by front (direct function URL = 1 hop,
+// Firebase Hosting = 2, Cloudflare Worker → Hosting = 3+), so no fixed hop count
+// is right. Leftmost-XFF is client-forgeable, but a forger only shards their own
+// bucket — real browsers never send XFF — and the hard cost control is the
+// per-uid limiter on /chat below, behind auth.
+app.set("trust proxy", true);
+// Rate limiting: 30 requests per minute per IP — a best-effort backstop for
+// unauthenticated traffic (which otherwise only ever reaches the cheap 401 path).
 app.use(
   rateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -95,8 +105,14 @@ app.use(
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: "Too many requests, please try again later." },
+    skip: (req) => req.method === "OPTIONS", // CORS preflights don't burn budget
+    validate: { trustProxy: false }, // permissive trust proxy is deliberate (see above)
   }),
 );
+
+// Per-uid chat limit — the hard cost control (DESIGN §8 N4). 20 turns/min is far
+// above any human rate; state is per-instance (see rate-limit-core.ts caveat).
+const chatLimiter = createRateLimiter({ limit: 20, windowMs: 60 * 1000 });
 // CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
 // /api/* here, so the Origin we see is the page origin. Production fronts are
 // listed exactly; preview/channel deploys match a few project-scoped suffixes.
@@ -159,6 +175,13 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
   }
   if (!uid) {
     res.status(401).json({ error: "sign-in required" });
+    return;
+  }
+
+  const verdict = chatLimiter.check(`uid:${uid}`);
+  if (!verdict.allowed) {
+    res.setHeader("Retry-After", String(verdict.retryAfterSec));
+    res.status(429).json({ error: "rate_limited" });
     return;
   }
 
