@@ -14,6 +14,7 @@ import { setGlobalOptions } from "firebase-functions";
 import { onRequest } from "firebase-functions/https";
 import { defineSecret } from "firebase-functions/params";
 import app from "./gateway.js";
+import { REGION } from "./region.js";
 
 // Gemini API key — stored in Cloud Secret Manager, bound only to `chat`.
 const geminiApiKey = defineSecret("GOOGLE_GENAI_API_KEY");
@@ -23,7 +24,7 @@ setGlobalOptions({ maxInstances: 10 });
 
 export const chat = onRequest(
   {
-    region: "me-central2",
+    region: REGION,
     secrets: [geminiApiKey],
     // The 18 MB corpus + BM25 index live in memory on warm instances.
     memory: "1GiB",
