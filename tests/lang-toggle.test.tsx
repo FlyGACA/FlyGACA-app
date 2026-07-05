@@ -6,10 +6,6 @@ import { LangToggle } from '../src/components/LangToggle';
 
 // LangToggle is a crawlable <a> to the *other* language's URL of the current page.
 // Clicking it is a full navigation (the router remounts under the matching
-// basename), so here we assert the link target rather than a client-side flip.
-// The Arabic variant of a page lives at a real /ar URL, so LangToggle is a
-// cross-language <a> link (a full navigation), not a client-side toggle. It
-// shows the *other* language's glyph and points at that language's URL — the
 // basename), so here we assert the link target rather than a client-side flip. It
 // shows the other language's glyph and points at that language's URL — the
 // crawlable link between the English and Arabic documents.
@@ -22,10 +18,6 @@ afterEach(async () => {
   });
 });
 
-const renderAt = (path: string) =>
-  render(
-    <MemoryRouter initialEntries={[path]}>
-      <LangToggle className="lang-toggle" />
 const renderAt = (path: string, className?: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
@@ -40,31 +32,6 @@ describe('<LangToggle />', () => {
     expect(a).toHaveAttribute('href', '/ar/library');
     expect(a).toHaveAttribute('hreflang', 'ar');
     expect(a).toHaveTextContent('ع');
-  });
-
-  it('on Arabic, links back to the clean English URL and shows the EN glyph', async () => {
-    await act(async () => {
-      await i18n.changeLanguage('ar');
-    });
-    renderAt('/library');
-    const a = screen.getByRole('link', { name: 'تبديل اللغة' });
-    expect(a).toHaveAttribute('href', '/library');
-    expect(a).toHaveAttribute('hreflang', 'en');
-    expect(a).toHaveTextContent('EN');
-  });
-
-  it('preserves query + hash on the alternate URL', () => {
-    renderAt('/tools/crosswind?rwy=18#calc');
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/ar/tools/crosswind?rwy=18#calc');
-  });
-
-  it('passes the className through', () => {
-    renderAt('/');
-  it('on English, links to the /ar variant of the current path with the Arabic glyph', () => {
-    renderAt('/tools/crosswind');
-    const link = screen.getByRole('link', { name: 'Switch language' });
-    expect(link).toHaveTextContent('ع');
-    expect(link).toHaveAttribute('href', '/ar/tools/crosswind');
   });
 
   it('on Arabic, links back to the clean English URL and shows the EN glyph', async () => {

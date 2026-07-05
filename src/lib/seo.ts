@@ -23,41 +23,6 @@ export function normalizePath(path: string): string {
   return withLead.length > 1 ? withLead.replace(/\/+$/, '') : '/';
 }
 
-/**
- * Root-relative path for a logical `path` in `lang`. Arabic lives under a real
- * `/ar` prefix (`/` → `/ar`, `/library` → `/ar/library`) so Firebase — which
- * routes by path, never by `?lang=` query — can serve a distinct Arabic document
- * the AI crawlers actually read; English/x-default stay on the clean path.
- */
-export function localePath(path: string, lang: string): string {
-  const clean = normalizePath(path);
-  if (lang !== 'ar') return clean;
-  return clean === '/' ? '/ar' : `/ar${clean}`;
-}
-
-/** Origin-absolute canonical for a logical `path` in `lang`. English/x-default use
- *  the clean path; Arabic self-canonicalizes to its own `/ar` document. */
-export function canonicalUrl(path: string, lang: string = 'en'): string {
-  return `${SITE_ORIGIN}${localePath(path, lang)}`;
-}
-
-/** True if `pathname` is under the Arabic `/ar` document tree (`/ar`, `/ar/…`). */
-export function isArabicPath(pathname: string): boolean {
-  return pathname === '/ar' || pathname.startsWith('/ar/');
-}
-
-/**
- * Strip a leading `/ar` segment to recover the logical path the router matches:
- * `/ar` and `/ar/` → `/`, `/ar/library` → `/library`; a non-`/ar` path (including
- * look-alikes like `/archive`) passes through unchanged. The router mounts under
- * `basename: '/ar'` for Arabic, so this mirrors what React Router strips at runtime.
- */
-export function stripArPrefix(pathname: string): string {
-  if (pathname === '/ar' || pathname === '/ar/') return '/';
-  return pathname.startsWith('/ar/') ? pathname.slice(3) : pathname;
-/** True if a (normalized) path is the Arabic locale root or under it. */
-export function isArabicPath(path: string): boolean {
-  const p = normalizePath(path);
 /** True if `pathname` is under the Arabic `/ar` document tree (`/ar`, `/ar/…`). A
  *  look-alike like `/archive` is not matched. */
 export function isArabicPath(pathname: string): boolean {
@@ -102,9 +67,6 @@ export interface Alternate {
 }
 
 /**
- * hreflang alternates for a logical `path`: English at the clean URL, Arabic at
- * its real `/ar` document, x-default at the clean URL. Head + sitemap must emit
- * this exact set (see scripts/build-sitemap.mjs, scripts/prerender-head.mjs).
  * hreflang alternates for a route: the English (clean) URL, the Arabic (`/ar`)
  * URL, and an x-default at the clean URL. Independent of the active language, so
  * the same cluster is emitted on both the English and Arabic documents. `path`
@@ -115,30 +77,6 @@ export interface Alternate {
 export function hreflangAlternates(path: string): Alternate[] {
   const clean = stripArPrefix(path);
   return [
-    { hreflang: 'en', href: canonicalUrl(path, 'en') },
-    { hreflang: 'ar', href: canonicalUrl(path, 'ar') },
-    { hreflang: 'x-default', href: canonicalUrl(path, 'en') },
-  ];
-}
-
-/**
- * The URL to `location.replace` to so the path prefix matches the language, or
- * `null` when they already agree (loop-safe). The single reconciler that moves an
- * old `?lang=ar` link, a stored Arabic choice, or an Arabic browser on a clean URL
- * onto `/ar` — and drops the now-redundant `?lang=` param. Pairs with the
- * basename-mounted router (src/router.tsx) and `resolveInitialLang` in i18n.
- */
-export function localeRedirect(
-  loc: { pathname: string; search: string; hash: string },
-  lang: string,
-): string | null {
-  const target = localePath(stripArPrefix(loc.pathname), lang);
-  const params = new URLSearchParams(loc.search);
-  const hadLang = params.has('lang');
-  params.delete('lang');
-  if (target === loc.pathname && !hadLang) return null;
-  const query = params.toString();
-  return `${target}${query ? `?${query}` : ''}${loc.hash}`;
     { hreflang: 'en', href: canonicalUrl(clean, 'en') },
     { hreflang: 'ar', href: canonicalUrl(clean, 'ar') },
     { hreflang: 'x-default', href: canonicalUrl(clean, 'en') },
