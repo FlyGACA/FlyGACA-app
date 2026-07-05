@@ -25,6 +25,12 @@ jobs:
   deploy:
     name: build · deploy Cloudflare Worker
     runs-on: ubuntu-latest
+    # The secrets context is not available in if: expressions — referencing it
+    # there is a parse error that voids the whole workflow (every push logged an
+    # instant failure run). Mirror the secrets into env, and gate on env instead.
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -47,7 +53,7 @@ jobs:
           VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY }}
 
       - name: Deploy to Cloudflare Workers
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -56,5 +62,5 @@ jobs:
           command: deploy
 
       - name: Note when skipped
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN == '' || secrets.CLOUDFLARE_ACCOUNT_ID == '' }}
+        if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
         run: echo "::notice::Cloudflare secrets not set — built dist/ but skipped deploy. Add CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID to enable."

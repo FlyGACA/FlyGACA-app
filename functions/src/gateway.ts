@@ -8,12 +8,14 @@
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { logger } from "firebase-functions";
 import { defineBoolean } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
 import { captainAdelFlow } from "./captain-adel.js";
+import { createRateLimiter } from "./rate-limit-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -55,11 +57,22 @@ export async function authenticate(req: Request): Promise<{ uid?: string }> {
   return {};
 }
 
+/**
+ * Hard input caps (cost control, DESIGN N4). History *count* was always capped
+ * (12 turns); these bound the *size* of what reaches Gemini. An over-long
+ * message is rejected (400) rather than truncated — silent truncation changes
+ * the question; an over-long history turn is dropped like any other malformed
+ * turn. Exported for unit testing.
+ */
+export const MESSAGE_MAX_CHARS = 4000;
+export const HISTORY_CONTENT_MAX_CHARS = 8000;
+
 /** Coerce a raw request body into a validated `ChatRequest` (or null). Exported for unit testing. */
 export function parseRequest(body: unknown): ChatRequest | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
   if (typeof b.message !== "string" || b.message.trim() === "") return null;
+  if (b.message.length > MESSAGE_MAX_CHARS) return null;
 
   const history: ChatTurn[] = Array.isArray(b.history)
     ? (b.history as unknown[])
@@ -70,7 +83,8 @@ export function parseRequest(body: unknown): ChatRequest | null {
             (("role" in t &&
               ((t as ChatTurn).role === "user" ||
                 (t as ChatTurn).role === "assistant")) as boolean) &&
-            typeof (t as ChatTurn).content === "string",
+            typeof (t as ChatTurn).content === "string" &&
+            (t as ChatTurn).content.length <= HISTORY_CONTENT_MAX_CHARS,
       )
       .slice(-12) // cap history length (cost control, DESIGN N4)
     : [];
@@ -87,7 +101,16 @@ export function parseRequest(body: unknown): ChatRequest | null {
 const app = express();
 // Security middleware
 app.use(helmet());
-// Rate limiting: 30 requests per minute per IP
+// req.ip = leftmost X-Forwarded-For. Without this the limiter below keys on the
+// proxy's address, collapsing every real user into ~one shared bucket (30/min
+// sitewide). The proxy-chain depth varies by front (direct function URL = 1 hop,
+// Firebase Hosting = 2, Cloudflare Worker → Hosting = 3+), so no fixed hop count
+// is right. Leftmost-XFF is client-forgeable, but a forger only shards their own
+// bucket — real browsers never send XFF — and the hard cost control is the
+// per-uid limiter on /chat below, behind auth.
+app.set("trust proxy", true);
+// Rate limiting: 30 requests per minute per IP — a best-effort backstop for
+// unauthenticated traffic (which otherwise only ever reaches the cheap 401 path).
 app.use(
   rateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -95,8 +118,14 @@ app.use(
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: "Too many requests, please try again later." },
+    skip: (req) => req.method === "OPTIONS", // CORS preflights don't burn budget
+    validate: { trustProxy: false }, // permissive trust proxy is deliberate (see above)
   }),
 );
+
+// Per-uid chat limit — the hard cost control (DESIGN §8 N4). 20 turns/min is far
+// above any human rate; state is per-instance (see rate-limit-core.ts caveat).
+const chatLimiter = createRateLimiter({ limit: 20, windowMs: 60 * 1000 });
 // CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
 // /api/* here, so the Origin we see is the page origin. Production fronts are
 // listed exactly; preview/channel deploys match a few project-scoped suffixes.
@@ -162,9 +191,18 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     return;
   }
 
+  const verdict = chatLimiter.check(`uid:${uid}`);
+  if (!verdict.allowed) {
+    res.setHeader("Retry-After", String(verdict.retryAfterSec));
+    res.status(429).json({ error: "rate_limited" });
+    return;
+  }
+
   const parsed = parseRequest(req.body);
   if (!parsed) {
-    res.status(400).json({ error: "invalid request: 'message' is required" });
+    res.status(400).json({
+      error: `invalid request: 'message' is required (max ${MESSAGE_MAX_CHARS} chars)`,
+    });
     return;
   }
 
@@ -182,7 +220,7 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
         meta: { provider: out.meta.provider },
       });
     } catch (err) {
-      console.error("chat failed (buffered)", err);
+      logger.error("chat failed (buffered)", { err });
       res.status(500).json({ error: "chat failed" });
     }
     return;
@@ -217,7 +255,7 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     res.write(doneFrame());
     res.end();
   } catch (err) {
-    console.error("chat failed (stream)", err);
+    logger.error("chat failed (stream)", { err });
     if (!aborted) {
       res.write(frame({ type: "error", code: "stream_failed" }));
       res.write(doneFrame());
@@ -246,8 +284,39 @@ app.post(["/feedback", "/api/feedback"], async (req: Request, res: Response): Pr
     return;
   }
 
-  console.info("captain-adel-feedback", JSON.stringify({ ...fb, uid }));
+  // Structured jsonPayload (was a JSON string inside textPayload) — the sink is
+  // read for offline quality review, so filter on jsonPayload fields now.
+  logger.info("captain-adel-feedback", { ...fb, uid });
   res.status(204).end();
 });
+
+/** JSON 404 for unknown paths (the raw function URL has no SPA fallback). Exported for tests. */
+export function notFoundHandler(_req: Request, res: Response): void {
+  res.status(404).json({ error: "not found" });
+}
+
+/**
+ * Final safety net — Express 5 forwards rejected async handlers here (e.g. a
+ * non-AuthError rethrow from `authenticate`); the in-route try/catches stay
+ * primary. Never leak the error to the client; if headers are already out
+ * (mid-SSE) just terminate the stream rather than corrupt it. Exported for tests.
+ */
+export function errorHandler(
+  err: unknown,
+  req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Express detects error middleware by arity(4)
+  _next: NextFunction,
+): void {
+  logger.error("gateway unhandled error", { path: req.path, err });
+  if (res.headersSent) {
+    res.end();
+    return;
+  }
+  res.status(500).json({ error: "internal error" });
+}
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

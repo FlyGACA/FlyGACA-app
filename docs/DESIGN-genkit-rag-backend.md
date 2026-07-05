@@ -59,7 +59,9 @@ that the grounding verdict (`kind`) and `refusalClass` encode end-to-end.
 ### Non-functional
 - **N1 — Auth.** Honor `Authorization: Bearer <Firebase ID token>` and `X-Firebase-AppCheck`.
   App Check **enforced** in production (see [`docs/APP-CHECK-BACKEND.md`](./APP-CHECK-BACKEND.md)).
-- **N2 — Region.** Deploy in `me-central2` (co-located with the rest of the project).
+- **N2 — Region.** Deployed in `me-central1` (`functions/src/region.ts` is the single source of
+  truth; firebase.json's rewrite `region` fields must match it by hand). Moving to `me-central2`
+  (co-located with Firestore) remains a deliberate, separate migration.
 - **N3 — Secrets.** Model API keys live in **Cloud Secret Manager** (`defineSecret`), never in code
   or env files committed to the repo.
 - **N4 — Cost control.** Bounded `maxInstances`; per-session rate limiting; cancel generation when

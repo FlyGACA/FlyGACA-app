@@ -1,6 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Request } from "express";
-import { parseRequest, authenticate } from "../src/gateway.js";
+import type { NextFunction, Response } from "express";
+import {
+  parseRequest,
+  authenticate,
+  notFoundHandler,
+  errorHandler,
+  MESSAGE_MAX_CHARS,
+  HISTORY_CONTENT_MAX_CHARS,
+} from "../src/gateway.js";
 
 // Mocks for the Admin SDK + the RAG flow, so importing the gateway never boots
 // firebase-admin or loads genkit. getApps() returns non-empty so the module's
@@ -23,10 +31,28 @@ vi.mock("firebase-admin/app-check", () => ({
 vi.mock("../src/captain-adel.js", () => ({
   captainAdelFlow: Object.assign(vi.fn(), { stream: vi.fn() }),
 }));
+// Silence structured logs in tests (logger works outside a deployed function,
+// but the output is noise here).
+vi.mock("firebase-functions", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("firebase-functions")>()),
+  logger: { error: vi.fn(), info: vi.fn() },
+}));
 
 /** A minimal Express-like request carrying just the headers the gateway reads. */
 function reqWith(headers: Record<string, string> = {}): Request {
   return { header: (name: string) => headers[name] } as unknown as Request;
+}
+
+/** A minimal Express-like response recording status/json/end calls. */
+function mockRes(headersSent = false) {
+  const res = {
+    headersSent,
+    status: vi.fn(),
+    json: vi.fn(),
+    end: vi.fn(),
+  };
+  res.status.mockReturnValue(res);
+  return res as unknown as Response & typeof res;
 }
 
 beforeEach(() => {
@@ -94,6 +120,26 @@ describe("parseRequest", () => {
   it("treats a non-array history as empty", () => {
     expect(parseRequest({ message: "hi", history: "oops" })?.history).toEqual([]);
   });
+
+  it("accepts a message at the size cap and rejects one over it", () => {
+    expect(parseRequest({ message: "m".repeat(MESSAGE_MAX_CHARS) })).not.toBeNull();
+    expect(parseRequest({ message: "m".repeat(MESSAGE_MAX_CHARS + 1) })).toBeNull();
+  });
+
+  it("drops an oversized history turn but keeps its valid siblings", () => {
+    const out = parseRequest({
+      message: "hi",
+      history: [
+        { role: "user", content: "a" },
+        { role: "assistant", content: "b".repeat(HISTORY_CONTENT_MAX_CHARS + 1) },
+        { role: "assistant", content: "c".repeat(HISTORY_CONTENT_MAX_CHARS) },
+      ],
+    });
+    expect(out?.history).toEqual([
+      { role: "user", content: "a" },
+      { role: "assistant", content: "c".repeat(HISTORY_CONTENT_MAX_CHARS) },
+    ]);
+  });
 });
 
 describe("authenticate — App Check not enforced (default)", () => {
@@ -128,12 +174,39 @@ describe("authenticate — App Check not enforced (default)", () => {
   });
 });
 
+describe("notFoundHandler / errorHandler", () => {
+  const noopNext = (() => {}) as NextFunction;
+
+  it("returns JSON 404 for unknown paths", () => {
+    const res = mockRes();
+    notFoundHandler(reqWith(), res);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ error: "not found" });
+  });
+
+  it("returns sanitized JSON 500 without leaking the error", () => {
+    const res = mockRes();
+    errorHandler(new Error("secret detail"), { path: "/chat" } as Request, res, noopNext);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: "internal error" });
+  });
+
+  it("terminates instead of writing JSON when headers are already sent (mid-SSE)", () => {
+    const res = mockRes(true);
+    errorHandler(new Error("boom"), { path: "/chat" } as Request, res, noopNext);
+    expect(res.end).toHaveBeenCalled();
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
+  });
+});
+
 describe("authenticate — App Check enforced", () => {
   let enforced: typeof import("../src/gateway.js");
 
   beforeEach(async () => {
     vi.resetModules();
-    process.env.ENFORCE_APP_CHECK = "1";
+    // firebase-functions v7's defineBoolean only parses "true"/"false" — "1" is false.
+    process.env.ENFORCE_APP_CHECK = "true";
     enforced = await import("../src/gateway.js");
   });
 

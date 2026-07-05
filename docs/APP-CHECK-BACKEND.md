@@ -1,9 +1,10 @@
-# Enforcing App Check on the backend functions (`FlyGACA/flygaca`)
+# Enforcing App Check on the backend functions
 
-This repo (`gacafly/flygaca-app`) is **frontend only** — it has no Cloud Function
-definitions. The functions referenced by the app live in the separate **`FlyGACA/flygaca`**
-backend repo and are unchanged by this repo's deploys. This doc is the exact patch + checklist
-to **enforce Firebase App Check** on them. Apply it in the backend repo.
+The backend functions now live **in this repo**, under `functions/` (they were originally in a
+separate backend repo, which this doc used to target). The Stripe callables already ship with
+`enforceAppCheck: true`; the `chat` gateway verifies the token when the `ENFORCE_APP_CHECK`
+param is flipped on (default off until real traffic sends valid tokens — see ROADMAP). This doc
+is the patch + checklist to **enforce Firebase App Check** end to end.
 
 The frontend is already enforcement-ready: it initializes App Check
 (`ReCaptchaEnterpriseProvider`, gated on `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`) and attaches the
