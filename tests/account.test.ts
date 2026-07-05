@@ -193,3 +193,49 @@ describe('account store — profile', () => {
     expect(JSON.parse(localStorage.getItem('flygaca:profile')!).homeBase).toBe('OERK');
   });
 });
+
+describe('account store — role', () => {
+  it('defaults to an empty role', async () => {
+    const acct = await freshStore();
+    const { profile } = JSON.parse(acct.exportAll()) as { profile: Profile };
+    expect(profile.role).toBe('');
+  });
+
+  it('hydrates role as empty for profiles stored before the field existed', async () => {
+    localStorage.setItem(
+      'flygaca:profile',
+      JSON.stringify({ email: 'cap@example.com', displayName: 'Cap' }),
+    );
+    const acct = await freshStore();
+    const { profile } = JSON.parse(acct.exportAll()) as { profile: Profile };
+    expect(profile.role).toBe('');
+  });
+
+  it('saves and persists a chosen role', async () => {
+    const acct = await freshStore();
+    acct.saveProfile({ role: 'student' });
+    const { profile } = JSON.parse(acct.exportAll()) as { profile: Profile };
+    expect(profile.role).toBe('student');
+    expect(JSON.parse(localStorage.getItem('flygaca:profile')!).role).toBe('student');
+  });
+
+  it('keeps the role through deleteAllData, like other identity fields', async () => {
+    const acct = await freshStore();
+    acct.signIn('cap@example.com', 'Cap');
+    acct.saveProfile({ role: 'instructor', homeBase: 'OERK' });
+
+    acct.deleteAllData();
+
+    const { profile } = JSON.parse(acct.exportAll()) as { profile: Profile };
+    expect(profile.role).toBe('instructor');
+    expect(profile.homeBase).toBe('');
+  });
+
+  it('isUserRole accepts known roles and rejects everything else', async () => {
+    const acct = await freshStore();
+    expect(acct.USER_ROLES).toEqual(['pilot', 'student', 'instructor']);
+    expect(acct.isUserRole('pilot')).toBe(true);
+    expect(acct.isUserRole('')).toBe(false);
+    expect(acct.isUserRole('captain')).toBe(false);
+  });
+});

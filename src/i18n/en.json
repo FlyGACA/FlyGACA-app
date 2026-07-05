@@ -1907,6 +1907,14 @@
       "CPL": "Commercial (CPL)",
       "ATPL": "Airline (ATPL)"
     },
+    "roleLabel": "I am a…",
+    "roleSelect": "Select…",
+    "roleHint": "Tailors your dashboard to what you do — change it anytime.",
+    "roles": {
+      "pilot": "Pilot",
+      "student": "Student pilot",
+      "instructor": "Flight instructor"
+    },
     "errors": {
       "invalidEmail": "Enter a valid email address.",
       "userNotFound": "No account found with that email.",
