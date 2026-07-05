@@ -42,10 +42,10 @@ In the Stripe Dashboard, create a **webhook endpoint** → `https://<host>/api/s
 to `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`; copy
 its signing secret into `STRIPE_WEBHOOK_SECRET`.
 
-> Region note: the billing callables and the `stripeWebhook` deploy to **me-central2** (the
-> `/api/stripe-webhook` rewrite in `firebase.json` and the client's `FUNCTIONS_REGION` in
-> `src/lib/firebase.ts` both point there). The chat gateway (`/api/chat`) is a separate function in
-> `me-central1` reached by a hosting fetch — it does not use the callable region.
+> Region note: the billing callables and the `stripeWebhook` deploy to **me-central1** (the source
+> of truth is `functions/src/region.ts`; the `/api/stripe-webhook` rewrite in `firebase.json` and
+> the client's `FUNCTIONS_REGION` in `src/lib/firebase.ts` must all match it). The chat gateway
+> (`/api/chat`) is reached by the same-region hosting fetch — it does not use the callable region.
 
 ## Deploy
 
