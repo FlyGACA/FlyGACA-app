@@ -1883,7 +1883,17 @@
   "account": {
     "title": "Account",
     "signInTitle": "Sign in",
-    "signInIntro": "This preview stores your profile and logbook on this device. Real sign-in (Google / Apple / email) arrives when the backend is wired.",
+    "signInIntro": "Sync your logbook, study progress and bookmarks across devices — your data stays on this device first, sign-in adds backup and sync.",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "benefits": {
+      "eyebrow": "Why sign in",
+      "title": "One cockpit for your training and flying",
+      "pilot": "Logbook, currency and personal minimums — always at hand, on every device.",
+      "student": "Study streaks, practice exams and flashcards that follow you from ground school to checkride.",
+      "instructor": "Your ratings, endorsements and reference material, organised for every lesson.",
+      "local": "Fly GACA is local-first: everything keeps working offline, with or without an account."
+    },
     "email": "Email",
     "name": "Name",
     "password": "Password",
@@ -1906,6 +1916,14 @@
       "PPL": "Private (PPL)",
       "CPL": "Commercial (CPL)",
       "ATPL": "Airline (ATPL)"
+    },
+    "roleLabel": "I am a…",
+    "roleSelect": "Select…",
+    "roleHint": "Tailors your dashboard to what you do — change it anytime.",
+    "roles": {
+      "pilot": "Pilot",
+      "student": "Student pilot",
+      "instructor": "Flight instructor"
     },
     "errors": {
       "invalidEmail": "Enter a valid email address.",
@@ -3122,6 +3140,65 @@
     "hoursTrendSummary": "{{hours}} hours flown in the last 6 months",
     "quickActions": "Quick actions",
     "logFlight": "Log a flight",
+    "rolePicker": {
+      "title": "Make this dashboard yours",
+      "intro": "Pick what you do and we'll put your most useful widgets first.",
+      "dismiss": "Dismiss",
+      "pilotDesc": "Hours, currency and operational lookups up front.",
+      "studentDesc": "Study streaks, practice exams and reading first.",
+      "instructorDesc": "Your records, references and teaching material first."
+    },
+    "actions": {
+      "addFlight": "Log a flight",
+      "askAdel": "Ask Captain Adel",
+      "practiceExam": "Practice exam",
+      "flashcards": "Flashcards",
+      "library": "Open the library",
+      "records": "Pilot records",
+      "study": "Study hub",
+      "tools": "Flight tools",
+      "updates": "Regulatory updates"
+    },
+    "customize": {
+      "title": "Customize widgets",
+      "hint": "Hidden widgets stay a click away — nothing is deleted."
+    },
+    "widgets": {
+      "study": {
+        "title": "Ground school",
+        "streak": "Day streak",
+        "due": "Cards due for review",
+        "lastExam": "Last practice exam",
+        "resume": "Resume last quiz",
+        "open": "Open study hub",
+        "empty": "No study activity yet — start with a practice quiz."
+      },
+      "tools": {
+        "title": "Your tools",
+        "manage": "All tools",
+        "empty": "Star a tool in the toolbox and it will appear here."
+      },
+      "bookmarks": {
+        "title": "Continue reading",
+        "library": "Library",
+        "guides": "Guides",
+        "open": "Open library",
+        "empty": "Bookmark a regulation or guide to pick it up here."
+      },
+      "adel": {
+        "title": "Captain Adel",
+        "open": "Open chat",
+        "untitled": "Untitled conversation",
+        "empty": "Ask Captain Adel about any GACAR — he cites the exact Part and section."
+      },
+      "updates": {
+        "title": "Regulatory watch",
+        "watching": "Watched sources",
+        "changed": "Changed since your last visit",
+        "airacNext": "Next AIRAC in {{days}} days",
+        "open": "Open updates"
+      }
+    },
     "achievements": "Achievements",
     "achievementsEarned": "{{earned}} of {{total}} earned",
     "achievementItems": {

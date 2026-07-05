@@ -6,7 +6,7 @@ import { TextField } from '../../components/calc/TextField';
 import { SelectField, type SelectOption } from '../../components/calc/SelectField';
 import { LangToggle } from '../../components/LangToggle';
 import { Alert } from '../../components/Alert';
-import { deleteAllData, exportAll, saveProfile, useAccount } from '../../lib/account';
+import { deleteAllData, exportAll, saveProfile, useAccount, USER_ROLES } from '../../lib/account';
 import { replayOnboarding } from '../../lib/onboardingPrefs';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -47,6 +47,14 @@ function Inner() {
   }));
   if (profile.licenceType && !LICENCE_TYPES.includes(profile.licenceType as never)) {
     licenceOptions.push({ value: profile.licenceType, label: profile.licenceType });
+  }
+
+  const roleOptions: SelectOption[] = USER_ROLES.map((r) => ({
+    value: r,
+    label: t(`account.roles.${r}`),
+  }));
+  if (profile.role && !(USER_ROLES as string[]).includes(profile.role)) {
+    roleOptions.push({ value: profile.role, label: profile.role });
   }
 
   function exportJson() {
@@ -97,6 +105,14 @@ function Inner() {
           onChange={(v) => save({ homeBase: v })}
           placeholder="OERK"
           hint={t('account.homeBaseHint')}
+        />
+        <SelectField
+          label={t('account.roleLabel')}
+          value={profile.role}
+          onChange={(v) => save({ role: v })}
+          options={roleOptions}
+          placeholder={t('account.roleSelect')}
+          hint={t('account.roleHint')}
         />
         <SelectField
           label={t('account.licence')}

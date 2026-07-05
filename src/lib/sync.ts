@@ -18,6 +18,7 @@ const PROFILE_FIELDS: (keyof Profile)[] = [
   'licenceType',
   'medicalExpiry',
   'lastFlightReview',
+  'role',
 ];
 
 const FLIGHT_FIELDS: (keyof Omit<Flight, 'id'>)[] = [

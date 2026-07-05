@@ -18,6 +18,7 @@ const profile: Profile = {
   licenceType: 'PPL',
   medicalExpiry: '2027-01-01',
   lastFlightReview: '2026-01-01',
+  role: 'pilot',
 };
 
 const flight: Flight = {
@@ -49,6 +50,18 @@ describe('profile mappers', () => {
     expect(out.email).toBe('x@y.z');
     expect(out.homeBase).toBe('');
     expect(out).not.toHaveProperty('entitlement');
+  });
+
+  it('round-trips the role field', () => {
+    const doc = profileToDoc({ ...profile, role: 'instructor' });
+    expect(doc.role).toBe('instructor');
+    expect(profileFromDoc(doc).role).toBe('instructor');
+  });
+
+  it('leaves role out of the partial when hydrating a legacy doc without one', () => {
+    // A users/{uid} doc written before the role field existed.
+    const out = profileFromDoc({ email: 'x@y.z', displayName: 'Cap' });
+    expect(out).not.toHaveProperty('role');
   });
 });
 
