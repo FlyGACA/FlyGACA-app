@@ -133,7 +133,8 @@ describe("authenticate — App Check enforced", () => {
 
   beforeEach(async () => {
     vi.resetModules();
-    process.env.ENFORCE_APP_CHECK = "1";
+    // firebase-functions v7's defineBoolean only parses "true"/"false" — "1" is false.
+    process.env.ENFORCE_APP_CHECK = "true";
     enforced = await import("../src/gateway.js");
   });
 
