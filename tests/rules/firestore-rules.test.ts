@@ -45,8 +45,11 @@ const validProfile = {
   homeBase: 'OERK',
 };
 
-/** A logbook entry the rules accept. */
-const validFlight = { date: '2026-01-01', total: 1.5, remarks: 'circuits' };
+/** A logbook entry the rules accept — total is the STRING the client writes. */
+const validFlight = { date: '2026-01-01', total: '1.5', remarks: 'circuits' };
+
+/** A pilot record the rules accept. */
+const validRecord = { category: 'rating', title: 'Instrument Rating', ref: 'IR', remarks: '' };
 
 let testEnv: RulesTestEnvironment;
 
@@ -194,15 +197,21 @@ describe('users/{uid}/logbook — isolation & field bounds', () => {
     await assertFails(getDoc(doc(dbFor(BOB), `users/${ALICE}/logbook/f1`)));
   });
 
-  it('rejects negative total hours', async () => {
+  it('rejects a negative total (not a valid hours string)', async () => {
     await assertFails(
-      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, total: -1 }),
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, total: '-1' }),
     );
   });
 
-  it('rejects absurdly large total hours', async () => {
+  it('rejects an absurdly large total (over 5 integer digits)', async () => {
     await assertFails(
-      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, total: 100001 }),
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, total: '100001' }),
+    );
+  });
+
+  it('rejects a non-string total (the client always writes a string)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, total: 1.5 }),
     );
   });
 
@@ -211,6 +220,39 @@ describe('users/{uid}/logbook — isolation & field bounds', () => {
       setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), {
         ...validFlight,
         remarks: 'x'.repeat(2001),
+      }),
+    );
+  });
+});
+
+describe('users/{uid}/records — isolation & field bounds', () => {
+  it('lets an owner create a valid record', async () => {
+    await assertSucceeds(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/records/r1`), validRecord),
+    );
+  });
+
+  it("denies reading another user's records", async () => {
+    await seed(`users/${ALICE}/records/r1`, validRecord);
+    await assertFails(getDoc(doc(dbFor(BOB), `users/${ALICE}/records/r1`)));
+  });
+
+  it('lets an owner delete their own record', async () => {
+    await seed(`users/${ALICE}/records/r1`, validRecord);
+    await assertSucceeds(deleteDoc(doc(dbFor(ALICE), `users/${ALICE}/records/r1`)));
+  });
+
+  it('rejects an unknown record category', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/records/r1`), { ...validRecord, category: 'nope' }),
+    );
+  });
+
+  it('rejects an over-long record title', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/records/r1`), {
+        ...validRecord,
+        title: 'x'.repeat(201),
       }),
     );
   });
