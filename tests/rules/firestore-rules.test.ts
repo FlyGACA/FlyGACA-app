@@ -175,12 +175,18 @@ describe('users/{uid} — ownership & entitlement', () => {
     await assertSucceeds(deleteDoc(doc(dbFor(ALICE), `users/${ALICE}`)));
   });
 
-  it('accepts the role field on create and update (deployed rules unchanged)', async () => {
+  it('accepts the known role field on create and update', async () => {
     await assertSucceeds(
       setDoc(doc(dbFor(ALICE), `users/${ALICE}`), { ...validProfile, role: 'student' }),
     );
     await assertSucceeds(
       setDoc(doc(dbFor(ALICE), `users/${ALICE}`), { ...validProfile, role: 'instructor' }),
+    );
+  });
+
+  it('rejects a profile carrying an unknown field (pinned key set)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}`), { ...validProfile, hacked: true }),
     );
   });
 });
@@ -221,6 +227,18 @@ describe('users/{uid}/logbook — isolation & field bounds', () => {
         ...validFlight,
         remarks: 'x'.repeat(2001),
       }),
+    );
+  });
+
+  it('rejects a malformed (non-ISO) date', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, date: 'xxxxxxxxxxxx' }),
+    );
+  });
+
+  it('rejects a flight carrying an unknown field (pinned key set)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, hacked: true }),
     );
   });
 });
@@ -287,8 +305,19 @@ describe('stripeCustomers & default-deny', () => {
     );
   });
 
-  it('denies access to an unknown server-only collection (adelQuota)', async () => {
-    await seed('adelQuota/2026-01-01', { count: 1 });
-    await assertFails(getDoc(doc(dbFor(ALICE), 'adelQuota/2026-01-01')));
+  it('denies a client reading the stripe-events idempotency markers', async () => {
+    await seed('stripeEvents/evt_1', { type: 'checkout.session.completed' });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'stripeEvents/evt_1')));
+  });
+
+  it('denies a client writing a stripe-events marker', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), 'stripeEvents/evt_1'), { type: 'x' }),
+    );
+  });
+
+  it('denies access to any unlisted server-only collection', async () => {
+    await seed('serverOnly/x', { count: 1 });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'serverOnly/x')));
   });
 });
