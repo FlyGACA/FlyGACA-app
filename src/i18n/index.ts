@@ -29,14 +29,6 @@ export function resolveInitialLang(): Lang {
   const { pathname, search } = window.location;
   if (isArabicPath(pathname)) return 'ar';
   const param = new URLSearchParams(search).get('lang');
- * Picks the initial language, highest signal first:
- * `/ar` URL prefix → `?lang=` (back-compat for old links) → stored choice →
- * browser hint → English. The `/ar` prefix wins because the Arabic variant is a
- * real, self-canonical document there; the URL is the source of truth for it.
- */
-export function resolveInitialLang(): Lang {
-  if (isArabicPath(window.location.pathname)) return 'ar';
-  const param = new URLSearchParams(window.location.search).get('lang');
   if (param === 'en' || param === 'ar') return param;
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'en' || stored === 'ar') return stored;

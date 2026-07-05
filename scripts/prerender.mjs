@@ -16,11 +16,6 @@
  * SKIP_PRERENDER=1 to opt out explicitly.
  *
  * Route set mirrors scripts/build-sitemap.mjs: static router paths + guide slugs
- * (always), plus the dynamic library reader corpus (GACAR parts / reference /
- * handbook) up to PRERENDER_MAX snapshots (default 500; 0 = the whole corpus).
- * Any coverage gap (cap trim, failed route, whole-run skip) is still non-fatal
- * but warns loudly — as a GitHub Actions annotation in CI — so corpus growth
- * can never silently outrun the cap.
  * (always), plus every enumerable dynamic route the sitemap indexes — the library
  * reader corpus (GACAR parts / reference / handbook), aerodrome detail pages and
  * prep-pack pages — up to PRERENDER_MAX snapshots (default 560, sized to the full
@@ -96,12 +91,8 @@ for (const m of read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g))
   corpus.push(`/study/packs/${m[1]}`);
 
 // Cap total snapshots so the build stays bounded; base routes are never dropped,
-// the cap only trims the corpus tail (which the sitemap + head snapshots still
-// cover). A trim warns loudly (annotated in CI) — when it fires, raise
-// PRERENDER_MAX or set it to 0 to prerender the whole corpus.
-const MAX = Number(process.env.PRERENDER_MAX ?? 500);
-// the cap only trims the corpus tail. A trimmed tail is NOT silently fine —
-// those sitemap URLs would ship without body content, so the deploy gate
+// the cap only trims the corpus tail. A trimmed tail is NOT silently fine — those
+// sitemap URLs would ship without body content, so the deploy gate
 // (check-prerender-coverage.mjs) turns any trim into a failed deploy.
 const MAX = Number(process.env.PRERENDER_MAX ?? 560);
 const baseList = [...baseRoutes];
@@ -112,9 +103,6 @@ if (skipped > 0) {
   const dropped = corpus.slice(budget, budget + 5).join(', ');
   warn(
     `corpus capped at PRERENDER_MAX=${MAX} — ${corpusIncluded.length}/${corpus.length} reader pages prerendered; ${skipped} dropped to head-only HTML (${dropped}${skipped > 5 ? ', …' : ''}). Raise PRERENDER_MAX or set 0 for the whole corpus.`,
-  console.warn(
-    `prerender: WARNING — corpus capped at PRERENDER_MAX=${MAX}: ${corpusIncluded.length}/${corpus.length} dynamic pages prerendered, ` +
-      `${skipped} skipped. These ship WITHOUT body content and the coverage gate will fail the deploy — raise PRERENDER_MAX.`,
   );
 }
 const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();
@@ -152,14 +140,11 @@ function outPath(route) {
 
 // The Arabic snapshot lives under a real `/ar` path prefix (Firebase routes by
 // path, so this is a distinct file the crawler can fetch).
-// The Arabic variant of each route lives under /ar (SEO-PLAN 0.3). Only the
-// finite content/UI set (base routes) gets an Arabic twin — never the reader corpus.
 function outPathAr(route) {
   return route === '/'
     ? join(root, 'dist/ar/index.html')
     : join(root, 'dist/ar', route.replace(/^\//, ''), 'index.html');
 }
-const arRoutes = baseList;
 
 // Launch Chromium; on a fresh CI image the browser binary may be absent, so try
 // a one-off `playwright install chromium` and retry once. A still-failing launch
@@ -198,7 +183,6 @@ try {
 
   // Drive one route to a hydrated snapshot on disk. Waits for a real-app element
   // the static shell never contains, then dumps the live DOM.
-  const snapshot = async (url, file) => {
   // Navigate + capture the hydrated document to `file` (a real-app <footer> is
   // the signal the app rendered over the static shell).
   async function snapshot(url, file) {
@@ -207,7 +191,6 @@ try {
     const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, html);
-  };
   }
 
   let done = 0;
@@ -240,27 +223,11 @@ try {
       `wrote ${done}/${routeList.length} en routes — ${routeList.length - done} failed and kept their head-only HTML`,
     );
   }
-
-  // Arabic twins of the content/UI routes. Visiting /ar<route> boots the app in
-  // Arabic (the router reads the /ar prefix), so the captured DOM is RTL Arabic
-  // with the self-canonical /ar head. Always included (finite set), separate from
-  // the corpus budget.
-  let arDone = 0;
-  for (const route of arRoutes) {
-    const arUrl = `${BASE}/ar${route === '/' ? '' : route}`;
-    try {
-      await snapshot(arUrl, outPathAr(route));
-      arDone++;
-    } catch (err) {
-      console.warn(`  prerender: skipped /ar${route} — ${err.message}`);
-    }
-  }
-  if (arDone < arRoutes.length) {
+  if (doneAr < arRouteList.length) {
     warn(
-      `wrote ${arDone}/${arRoutes.length} ar routes — ${arRoutes.length - arDone} failed and kept their head-only HTML`,
+      `wrote ${doneAr}/${arRouteList.length} ar routes — ${arRouteList.length - doneAr} failed and kept their head-only HTML`,
     );
   }
-  console.log(`prerender: wrote ${done}/${routeList.length} en + ${arDone}/${arRoutes.length} ar routes`);
 } catch (err) {
   warn(`skipped (non-fatal) — ${err.message}`);
 } finally {
