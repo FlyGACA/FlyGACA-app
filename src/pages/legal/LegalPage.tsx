@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../../components/Disclaimer';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -41,7 +41,7 @@ export function LegalPage({ base }: { base: LegalBase }) {
       dateModified: LAST_UPDATED,
     }),
     breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
+      { name: t('nav.breadcrumbHome'), path: '/' },
       { name: title, path: doc.path },
     ]),
   ]);

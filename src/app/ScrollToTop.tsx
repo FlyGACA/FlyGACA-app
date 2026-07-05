@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 /** Resets the window scroll to the top on every route change. Without this an
  *  in-place SPA navigation keeps the previous page's scroll offset, so a new

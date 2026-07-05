@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { isArabicPath } from '../lib/seo';
 
 export const LANGS = ['en', 'ar'] as const;
 export type Lang = (typeof LANGS)[number];
@@ -17,8 +18,14 @@ const LOADERS: Record<Lang, () => Promise<{ default: Record<string, unknown> }>>
   ar: () => import('./ar.json'),
 };
 
-/** Picks the initial language: ?lang= → stored choice → browser hint → English. */
-function initialLang(): Lang {
+/**
+ * Picks the initial language, highest signal first:
+ * `/ar` URL prefix → `?lang=` (back-compat for old links) → stored choice →
+ * browser hint → English. The `/ar` prefix wins because the Arabic variant is a
+ * real, self-canonical document there; the URL is the source of truth for it.
+ */
+export function resolveInitialLang(): Lang {
+  if (isArabicPath(window.location.pathname)) return 'ar';
   const param = new URLSearchParams(window.location.search).get('lang');
   if (param === 'en' || param === 'ar') return param;
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -49,7 +56,7 @@ async function ensureLanguage(lang: Lang): Promise<void> {
  * before the first render so there is no flash of untranslated keys.
  */
 export async function bootI18n(): Promise<typeof i18n> {
-  const lng = initialLang();
+  const lng = resolveInitialLang();
   const mod = await LOADERS[lng]();
 
   await i18n.use(initReactI18next).init({

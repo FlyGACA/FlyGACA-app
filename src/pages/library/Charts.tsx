@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useUrlState } from '../../lib/useUrlState';
 import { usePageMeta } from '../../lib/usePageMeta';
-import type { ChartsIndex, ChartDoc } from '../../lib/content';
+import { dataUrl, type ChartsIndex, type ChartDoc } from '../../lib/content';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ExternalLink } from '../../components/ExternalLink';
 import { Alert } from '../../components/Alert';
 import { EmptyState } from '../../components/EmptyState';
 import styles from './Charts.module.css';
 
-/** Public path for a chart image (the index stores the legacy `assets/…` path). */
+/** Public path for a chart image (the index stores the legacy `assets/…` path);
+    routed through the configured data origin (charts live under /data/charts). */
 function chartSrc(doc: ChartDoc): string {
-  return `/${doc.image.replace(/^assets\//, '')}`;
+  return dataUrl(`/${doc.image.replace(/^assets\//, '')}`);
 }
 
 export function Charts() {

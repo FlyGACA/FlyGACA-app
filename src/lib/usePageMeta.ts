@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import i18n from '../i18n';
 import { canonicalUrl, hreflangAlternates, ogImageFor, ogLocale } from './seo';
 import type { JsonLd } from './jsonld';
@@ -110,7 +110,10 @@ export function usePageMeta(
       const fullTitle = title ? `${title} — ${SUFFIX}` : DEFAULT_TITLE;
       const desc = description ?? DEFAULT_DESC;
       const path = pathname;
-      const canonical = canonicalUrl(path);
+      // `pathname` is basename-stripped, so the Arabic canonical is derived from
+      // the active language, not the URL prefix — Arabic pages self-canonical to
+      // their `/ar` URL, English to the clean path.
+      const canonical = canonicalUrl(path, i18n.language);
       const image = ogImageFor(path);
 
       document.title = fullTitle;

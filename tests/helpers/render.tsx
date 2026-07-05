@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- test-only helper, never HMR-mounted */
 import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router';
 
 /** Writes the current location into a testid so navigation is assertable. */
 export function LocationProbe() {

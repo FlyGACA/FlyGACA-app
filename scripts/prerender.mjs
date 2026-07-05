@@ -15,13 +15,13 @@
  * headless Chromium, and the e2e webServer build must not wait on it. Set
  * SKIP_PRERENDER=1 to opt out explicitly.
  *
- * Route set mirrors scripts/build-sitemap.mjs: static router paths + guide slugs
- * (always), plus every enumerable dynamic route the sitemap indexes — the library
- * reader corpus (GACAR parts / reference / handbook), aerodrome detail pages and
- * prep-pack pages — up to PRERENDER_MAX snapshots (default 560, sized to the full
- * sitemap plus headroom; 0 = everything). If the cap ever trims routes, the
- * deploy-time gate (scripts/check-prerender-coverage.mjs) fails the deploy —
- * a sitemap URL without body content is invisible to non-JS AI crawlers.
+ * (always), Arabic twins of those finite routes under /ar, plus every enumerable
+ * dynamic route the sitemap indexes — the library reader corpus (GACAR parts /
+ * reference / handbook), aerodrome detail pages and prep-pack pages — up to
+ * PRERENDER_MAX snapshots (default 560, sized to the current sitemap plus
+ * headroom; 0 = everything). Any coverage gap stays non-fatal here but warns
+ * loudly; the deploy-time gate (scripts/check-prerender-coverage.mjs) is what
+ * turns head-only or missing sitemap URLs into a failed deploy.
  */
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -40,6 +40,13 @@ const BASE = `http://localhost:${PORT}`;
 
 const read = (p) => readFileSync(join(root, p), 'utf8');
 const readJson = (p) => JSON.parse(read(p));
+
+// Loud but non-fatal: warn on stderr, and in CI also emit a GitHub Actions
+// annotation so coverage gaps show on the run summary, not just the step log.
+function warn(msg) {
+  console.warn(`prerender: ${msg}`);
+  if (process.env.GITHUB_ACTIONS) console.log(`::warning title=prerender::${msg}`);
+}
 
 // --- Route list (same source of truth as the sitemap) --------------------------
 const PRIVATE = new Set([
@@ -80,22 +87,22 @@ for (const [seg, file] of [
 }
 for (const d of readJson('public/data/aerodromes-index.json').documents)
   corpus.push(`/tools/aerodromes/${d.icao}`);
-for (const m of read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g))
+for (const m of read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+)'/g))
   corpus.push(`/study/packs/${m[1]}`);
 
 // Cap total snapshots so the build stays bounded; base routes are never dropped,
-// the cap only trims the corpus tail. A trimmed tail is NOT silently fine —
-// those sitemap URLs would ship without body content, so the deploy gate
-// (check-prerender-coverage.mjs) turns any trim into a failed deploy.
+// the cap only trims the corpus tail. A trim warns loudly here (and becomes a
+// fatal deploy failure once check-prerender-coverage runs), so raise
+// PRERENDER_MAX or set it to 0 to prerender the whole corpus.
 const MAX = Number(process.env.PRERENDER_MAX ?? 560);
 const baseList = [...baseRoutes];
 const budget = MAX === 0 ? corpus.length : Math.max(0, MAX - baseList.length);
 const corpusIncluded = corpus.slice(0, budget);
 const skipped = corpus.length - corpusIncluded.length;
 if (skipped > 0) {
-  console.warn(
-    `prerender: WARNING — corpus capped at PRERENDER_MAX=${MAX}: ${corpusIncluded.length}/${corpus.length} dynamic pages prerendered, ` +
-      `${skipped} skipped. These ship WITHOUT body content and the coverage gate will fail the deploy — raise PRERENDER_MAX.`,
+  const dropped = corpus.slice(budget, budget + 5).join(', ');
+  warn(
+    `corpus capped at PRERENDER_MAX=${MAX} — ${corpusIncluded.length}/${corpus.length} dynamic pages prerendered; ${skipped} sitemap URLs stay head-only (${dropped}${skipped > 5 ? ', …' : ''}). Raise PRERENDER_MAX or set 0 for the whole corpus before deploy.`,
   );
 }
 const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();
@@ -122,6 +129,15 @@ function outPath(route) {
     ? join(root, 'dist/index.html')
     : join(root, 'dist', route.replace(/^\//, ''), 'index.html');
 }
+
+// The Arabic variant of each route lives under /ar (SEO-PLAN 0.3). Only the
+// finite content/UI set (base routes) gets an Arabic twin — never the reader corpus.
+function outPathAr(route) {
+  return route === '/'
+    ? join(root, 'dist/ar/index.html')
+    : join(root, 'dist/ar', route.replace(/^\//, ''), 'index.html');
+}
+const arRoutes = baseList;
 
 // Launch Chromium; on a fresh CI image the browser binary may be absent, so try
 // a one-off `playwright install chromium` and retry once. A still-failing launch
@@ -157,24 +173,54 @@ try {
 
   browser = await launchChromium(chromium);
   const page = await browser.newPage();
+
+  // Navigate + capture the hydrated document to `file` (a real-app <footer> is
+  // the signal the app rendered over the static shell).
+  async function snapshot(url, file) {
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForSelector('footer', { timeout: 15000 });
+    const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, html);
+  }
+
   let done = 0;
   for (const route of routeList) {
     try {
-      await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle', timeout: 30000 });
-      // Wait for a real-app element the static shell never contains.
-      await page.waitForSelector('footer', { timeout: 15000 });
-      const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
-      const file = outPath(route);
-      mkdirSync(dirname(file), { recursive: true });
-      writeFileSync(file, html);
+      await snapshot(`${BASE}${route}`, outPath(route));
       done++;
     } catch (err) {
       console.warn(`  prerender: skipped ${route} — ${err.message}`);
     }
   }
-  console.log(`prerender: wrote ${done}/${routeList.length} routes`);
+  if (done < routeList.length) {
+    warn(
+      `wrote ${done}/${routeList.length} en routes — ${routeList.length - done} failed and kept their head-only HTML`,
+    );
+  }
+
+  // Arabic twins of the content/UI routes. Visiting /ar<route> boots the app in
+  // Arabic (the router reads the /ar prefix), so the captured DOM is RTL Arabic
+  // with the self-canonical /ar head. Always included (finite set), separate from
+  // the corpus budget.
+  let arDone = 0;
+  for (const route of arRoutes) {
+    const arUrl = `${BASE}/ar${route === '/' ? '' : route}`;
+    try {
+      await snapshot(arUrl, outPathAr(route));
+      arDone++;
+    } catch (err) {
+      console.warn(`  prerender: skipped /ar${route} — ${err.message}`);
+    }
+  }
+  if (arDone < arRoutes.length) {
+    warn(
+      `wrote ${arDone}/${arRoutes.length} ar routes — ${arRoutes.length - arDone} failed and kept their head-only HTML`,
+    );
+  }
+  console.log(`prerender: wrote ${done}/${routeList.length} en + ${arDone}/${arRoutes.length} ar routes`);
 } catch (err) {
-  console.warn(`prerender: skipped (non-fatal) — ${err.message}`);
+  warn(`skipped (non-fatal) — ${err.message}`);
 } finally {
   await browser?.close().catch(() => {});
   preview?.kill();

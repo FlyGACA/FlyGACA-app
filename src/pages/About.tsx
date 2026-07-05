@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { CaptainAvatar } from '../components/CaptainAvatar';
@@ -54,7 +54,7 @@ export function About() {
     }),
     faqLd(faqs),
     breadcrumbLd([
-      { name: t('nav.home'), path: '/' },
+      { name: t('nav.breadcrumbHome'), path: '/' },
       { name: t('nav.about'), path: '/about' },
     ]),
   ]);

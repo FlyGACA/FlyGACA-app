@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useDebouncedValue } from '../../lib/useDebouncedValue';
@@ -184,7 +184,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>.
   const crumbs: Crumb[] = doc?.title
     ? [
-        { name: t('nav.home'), path: '/' },
+        { name: t('nav.breadcrumbHome'), path: '/' },
         { name: t('nav.library'), path: '/library' },
         { name: doc.title, path: pathname },
       ]
