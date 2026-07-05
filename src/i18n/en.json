@@ -3169,7 +3169,7 @@
         "streak": "Day streak",
         "due": "Cards due for review",
         "lastExam": "Last practice exam",
-        "resume": "Resume {{bank}}",
+        "resume": "Resume last quiz",
         "open": "Open study hub",
         "empty": "No study activity yet — start with a practice quiz."
       },

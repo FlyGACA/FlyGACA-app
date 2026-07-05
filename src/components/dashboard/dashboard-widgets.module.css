@@ -81,6 +81,37 @@
 }
 
 /* ── Shared widget internals (used inside BentoCard tiles) ── */
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.head h2 {
+  margin: 0;
+  font-size: var(--fs-h3);
+}
+.headLink {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--link);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.headLink:hover {
+  text-decoration: underline;
+}
+.proTag {
+  margin-inline-start: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  color: var(--gold);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+}
+
 .statRow {
   display: flex;
   flex-wrap: wrap;
