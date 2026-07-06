@@ -76,14 +76,15 @@ Legend: **P0** do first · effort S <½ day, M ~1 day, L multi-day · every item
       **body-visible** (real `<footer>`/`<main>` + ≥600 chars, not the SPA shell). Exits non-zero on
       failure (CI-cron ready; intentionally *not* in `verify`/`deploy` — it's a network check).
       *Done 2026-07-04. First run immediately surfaced the P0 incident above.*
-- [~] **0.2 Prerender coverage gate (M).** `scripts/prerender.mjs` warns (`console.warn`) when the
-      corpus is capped, but the cap is `PRERENDER_MAX ?? 400` and the step is **non-fatal by design**
-      (`process.exit(0)` always; CI comment: "a prerender failure never blocks the deploy"). There is
-      **no** sitemap↔dist coverage gate that fails the deploy. **Live risk:** the sitemap already has
-      530 URLs vs a 400 cap → ~130 reader pages are silently skipped on every Firebase deploy. *To do:*
-      raise the cap with headroom (≥560) and add a `check-prerender-coverage.mjs` that diffs
-      `public/sitemap.xml` vs body-prerendered `dist/` files and **fails** `deploy`. (Note: moot for
-      Vercel, which prerenders no bodies at all — see P0.b.)
+- [x] **0.2 Prerender coverage gate (M).** `scripts/prerender.mjs` now enumerates every
+      sitemap-backed dynamic route the build can expand (reader corpus + aerodromes + prep packs),
+      raises `PRERENDER_MAX` to 560, and warns loudly in CI if the corpus is ever trimmed. New
+      `scripts/check-prerender-coverage.mjs` diffs the shipped sitemap against body-prerendered
+      `dist/` output and fails the deploy when any URL is missing or head-only (`<footer>` is the
+      body marker; `PRERENDER_COVERAGE_LENIENT=1` is the emergency escape hatch). Wired into
+      `npm run check:prerender`, `deploy` / `deploy:all`, and the Firebase deploy workflow.
+      *Done 2026-07-03.* Note: this protects the Firebase path; it does **not** solve the live
+      Vercel shell issue captured in P0.b.
 - [ ] **0.3 Arabic variant prerender (M).** Structural gap: static hosts resolve by path only, so under
       the `?lang=` model the Arabic body is never served pre-rendered — a no-JS crawler always gets the
       default-language body. Confirmed by 0.1 (Arabic body present on 0/12 `?lang=ar` URLs, though that
@@ -275,3 +276,7 @@ Then 0.2 → 0.3 → 1.1 → 1.2 → 1.3 (with 2.2, 2.5 alongside content work) 
 **Log**
 - 2026-07-03 — Plan created. Items 0.2 and 0.3 confirmed as live issues during skill eval runs against repo copies.
 - 2026-07-03 — **0.2 shipped**: full sitemap↔prerender enumeration parity (adds 121 aerodromes + 6 packs + 5 capped library docs), cap 400→560, fatal coverage gate (`check:prerender`) in deploy + CI. Follow-up: run `npm run verify` before committing; 0.3 (Arabic bodies) is next and now has a gate to build against.
+  bodies, served by Vercel) — filed above; not yet fixed.
+- **2026-07-03** — **0.2 shipped**: full sitemap↔prerender enumeration parity (adds aerodromes +
+  packs alongside the reader corpus), cap 400→560, fatal coverage gate (`check:prerender`) in deploy
+  + CI.

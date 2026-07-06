@@ -22,6 +22,13 @@
  * sitemap plus headroom; 0 = everything). If the cap ever trims routes, the
  * deploy-time gate (scripts/check-prerender-coverage.mjs) fails the deploy —
  * a sitemap URL without body content is invisible to non-JS AI crawlers.
+ * (always), Arabic twins of those finite routes under /ar, plus every enumerable
+ * dynamic route the sitemap indexes — the library reader corpus (GACAR parts /
+ * reference / handbook), aerodrome detail pages and prep-pack pages — up to
+ * PRERENDER_MAX snapshots (default 560, sized to the current sitemap plus
+ * headroom; 0 = everything). Any coverage gap stays non-fatal here but warns
+ * loudly; the deploy-time gate (scripts/check-prerender-coverage.mjs) is what
+ * turns head-only or missing sitemap URLs into a failed deploy.
  */
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -94,6 +101,9 @@ for (const m of read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+
 // the cap only trims the corpus tail. A trimmed tail is NOT silently fine — those
 // sitemap URLs would ship without body content, so the deploy gate
 // (check-prerender-coverage.mjs) turns any trim into a failed deploy.
+// the cap only trims the corpus tail. A trim warns loudly here (and becomes a
+// fatal deploy failure once check-prerender-coverage runs), so raise
+// PRERENDER_MAX or set it to 0 to prerender the whole corpus.
 const MAX = Number(process.env.PRERENDER_MAX ?? 560);
 const baseList = [...baseRoutes];
 const budget = MAX === 0 ? corpus.length : Math.max(0, MAX - baseList.length);
@@ -102,7 +112,7 @@ const skipped = corpus.length - corpusIncluded.length;
 if (skipped > 0) {
   const dropped = corpus.slice(budget, budget + 5).join(', ');
   warn(
-    `corpus capped at PRERENDER_MAX=${MAX} — ${corpusIncluded.length}/${corpus.length} reader pages prerendered; ${skipped} dropped to head-only HTML (${dropped}${skipped > 5 ? ', …' : ''}). Raise PRERENDER_MAX or set 0 for the whole corpus.`,
+    `corpus capped at PRERENDER_MAX=${MAX} — ${corpusIncluded.length}/${corpus.length} dynamic pages prerendered; ${skipped} sitemap URLs stay head-only (${dropped}${skipped > 5 ? ', …' : ''}). Raise PRERENDER_MAX or set 0 for the whole corpus before deploy.`,
   );
 }
 const routeList = [...new Set([...baseList, ...corpusIncluded])].sort();

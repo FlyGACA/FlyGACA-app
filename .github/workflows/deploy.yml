@@ -69,6 +69,13 @@ jobs:
           npx playwright install --with-deps chromium
           npm run prerender
 
+      # Fatal gate (SEO-PLAN 0.2): every sitemap URL must ship with real body
+      # content — head-only or missing snapshots are invisible to the non-JS AI
+      # crawlers that decide citations, so a coverage gap must fail the deploy
+      # loudly instead of shipping silently.
+      - name: Verify prerender coverage
+        run: npm run check:prerender
+
       # When a data bucket is configured, mirror the heavy /data corpus to it and
       # drop it from the Hosting release — keeps each release ~12 MB instead of
       # ~141 MB so it can't exhaust the Firebase Hosting storage quota. Runs
