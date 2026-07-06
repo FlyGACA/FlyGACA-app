@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Request } from "express";
-import type { NextFunction, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import {
   parseRequest,
   authenticate,

@@ -48,9 +48,15 @@ rest of the plan: **fix host + indexability first, or every downstream SEO item 
 - [ ] **P0.b — Ensure the served host body-prerenders (P0, M).** Whichever host wins P0.a must serve
       `scripts/prerender.mjs` output. If Vercel: add the prerender step to its build (needs Chromium in
       the Vercel build) or a prerender/ISR equivalent. Re-run `npm run audit:ai` until green.
-- [ ] **P0.c — Reconcile the redirect & canonical (P0, S).** apex↔www redirect direction must point at
+- [~] **P0.c — Reconcile the redirect & canonical (P0, S).** apex↔www redirect direction must point at
       the indexable canonical host and match `src/lib/seo.ts` `SITE` + the sitemap. No
-      canonical→redirect→noindex chains.
+      canonical→redirect→noindex chains. *Partial — 2026-07-06:* the `vercel.json` noindex rule now
+      matches "any host except exactly `flygaca.com`", but nothing folded `www.flygaca.com` onto the
+      apex, so `www` served a live **noindexed duplicate**. Added a `www.flygaca.com →
+      https://flygaca.com` 301 in `vercel.json` `redirects[]` (mirrors the `captadel.com` entries), so
+      the only served/indexable host is the non-www canonical used by `seo.ts` `SITE_ORIGIN` + the
+      sitemap. Remaining: confirm the served host body-prerenders (P0.b) — a host decision, not a code
+      fix; see the log entry below.
 
 DoD for the incident: `npm run audit:ai` exits 0 (all sampled URLs indexable + body-visible to
 GPTBot/ClaudeBot/PerplexityBot/OAI-SearchBot).
@@ -194,6 +200,20 @@ Then 0.2 → 0.3 → 1.1 → 1.2 → 1.3 (with 2.2, 2.5 alongside content work) 
 
 ## Session log
 
+- **2026-07-06** — **Canonical/indexability fix (part of P0.c).** Added a `www.flygaca.com →
+  https://flygaca.com` 301 to `vercel.json` `redirects[]` so the non-canonical `www` host stops
+  serving a live `noindex` duplicate (the noindex rule matches every host except the bare apex; the
+  apex is the non-www canonical used by `seo.ts` `SITE_ORIGIN` + the sitemap). Verified the sitelinks
+  `SearchAction` in `index.html` targets `https://flygaca.com/library?q={search_term_string}` on the
+  canonical origin and resolves to the working Library `?q=` search — correct, no change. Reconciled
+  stale plan items against the shipped code: `courseLd` **is** wired to the study routes
+  (Paths/MockExam/Flashcards/Quiz/GroundSchool/PackDetail — item 2.3 largely done); the `/ar`
+  locale-prefix migration **is** done (`seo.ts`); noindex is now "all hosts except apex". **Could not
+  run `npm run audit:ai`** — this session's egress policy blocks outbound to `flygaca.com` (proxy 403),
+  so the live indexability/body-visibility baseline (P0.a/P0.b: is prod still `noindex`? is the served
+  host body-prerendering or shipping SPA shells?) is **unconfirmed and still open** — run the audit
+  from a network-allowed environment (CI cron or locally) to close it. Host decision (Firebase vs
+  Vercel body-prerender) remains the user's call; not touched here.
 - **2026-07-04** — Seeded this plan (reconciled to real repo state). Shipped **0.1**
   (`scripts/audit-ai-visibility.mjs` + `npm run audit:ai`) and **0.4** (AI-bot stanzas in the generated
   `robots.txt`). First audit run surfaced the **P0 incident** (canonical domain `noindex` + shell-only
