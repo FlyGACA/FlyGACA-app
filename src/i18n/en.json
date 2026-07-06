@@ -2845,7 +2845,7 @@
         },
         {
           "h": "Where your data is stored",
-          "p": "User questions are personal data and are processed in-Kingdom: Google Cloud in Dammam (me-central2), in line with the PDPL."
+          "p": "Your account data is personal data and is stored in-Kingdom on Google Cloud in Dammam (me-central2), in line with the PDPL. Chat questions are processed in a nearby Google Cloud region (me-central1)."
         },
         {
           "h": "Sharing your data",

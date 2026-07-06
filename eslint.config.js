@@ -6,7 +6,10 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dev-dist', 'coverage', 'ios', 'android', 'public'] },
+  // `functions/` is a separate package with its own toolchain and eslint config
+  // (linted by its own CI job); the root lint must not reach into it or its
+  // compiled `lib/` output — doing so flags TS rules the root config lacks.
+  { ignores: ['dist', 'dev-dist', 'coverage', 'ios', 'android', 'public', 'functions'] },
   {
     // react-hooks v6+ ships flat presets that register the plugin themselves;
     // `recommended-latest` also enables the compiler-derived rules added in v6/v7.

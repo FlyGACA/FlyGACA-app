@@ -107,11 +107,11 @@ jobs:
 
       - name: Deploy
         run: |
-          # On push to main: hosting + rules. On manual run: honor the input.
+          # On push to main: hosting + rules + indexes. On manual run: honor the input.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
             TARGETS="hosting"
           else
-            TARGETS="hosting,firestore:rules"
+            TARGETS="hosting,firestore:rules,firestore:indexes"
           fi
           echo "Deploying: ${TARGETS}"
           npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
