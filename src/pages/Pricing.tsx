@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { PageHero } from '../components/PageHero';
@@ -36,6 +36,15 @@ interface Faq {
 export function Pricing() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Stripe returns abandoned checkouts to /pricing?checkout=cancel; acknowledge it
+  // so the user knows nothing was charged, and let them clear it.
+  const showCanceled = searchParams.get('checkout') === 'cancel';
+  function dismissCanceled() {
+    const next = new URLSearchParams(searchParams);
+    next.delete('checkout');
+    setSearchParams(next, { replace: true });
+  }
   usePageMeta(
     t('meta.pricing'),
     t('metaDesc.pricing'),
@@ -207,6 +216,15 @@ export function Pricing() {
         />
       </div>
 
+      {showCanceled && (
+        <p role="status" className={styles.canceled}>
+          <span>{t('pricing.checkoutCanceled')}</span>
+          <button type="button" className={styles.canceledDismiss} onClick={dismissCanceled}>
+            {t('pricing.checkoutCanceledDismiss')}
+          </button>
+        </p>
+      )}
+
       {error && (
         <p role="alert" className={styles.error}>
           {error}
@@ -225,13 +243,11 @@ export function Pricing() {
           <span className={styles.passPrice}>
             <bdi dir="ltr">{t('pricing.pass', { n: PASS_PRICE })}</bdi>
           </span>
-          <button
-            type="button"
-            className={styles.passCta}
-            onClick={canCheckout() ? () => void checkout('pass') : undefined}
-            disabled={busy || !canCheckout()}
-          >
-            {t('pricing.passCta')}
+          {/* The one-time 90-day pass has no dedicated Stripe price yet; the
+              backend would otherwise fall back to the recurring annual Pro
+              subscription, so checkout is intentionally not wired for it. */}
+          <button type="button" className={styles.passCta} disabled aria-disabled="true">
+            {t('pricing.passComingSoon')}
           </button>
         </div>
       </section>

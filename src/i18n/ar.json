@@ -1639,6 +1639,8 @@
     "goPro": "اشترك في Pro",
     "checkoutBusy": "جارٍ فتح صفحة الدفع…",
     "checkoutError": "تعذّر بدء عملية الدفع. حاول مرة أخرى.",
+    "checkoutCanceled": "أُلغيت عملية الدفع — لم يتم أي خصم.",
+    "checkoutCanceledDismiss": "إغلاق",
     "contact": "تواصل مع المبيعات",
     "plans": {
       "free": {
@@ -1776,6 +1778,7 @@
     "passHead": "تذكرة موسم الاختبارات",
     "passLead": "تحتاجها حتى اختبارك فقط؟ وصول Pro كامل لمدة 90 يومًا، دون اشتراك.",
     "passCta": "احصل على التذكرة",
+    "passComingSoon": "متاحة عند الإطلاق",
     "schoolsEyebrow": "لمدارس وجامعات الطيران",
     "schoolsHead": "جهّز دفعة كاملة",
     "schoolsMin": "10 مقاعد كحد أدنى",
