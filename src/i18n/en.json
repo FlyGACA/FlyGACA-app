@@ -1639,6 +1639,8 @@
     "goPro": "Go Pro",
     "checkoutBusy": "Opening checkout…",
     "checkoutError": "Couldn't start checkout. Please try again.",
+    "checkoutCanceled": "Checkout canceled — you weren't charged.",
+    "checkoutCanceledDismiss": "Dismiss",
     "contact": "Contact sales",
     "plans": {
       "free": {
@@ -1776,6 +1778,7 @@
     "passHead": "Exam Season Pass",
     "passLead": "Just need it until your checkride? Full Pro access for 90 days, no subscription.",
     "passCta": "Get the pass",
+    "passComingSoon": "Available at launch",
     "schoolsEyebrow": "For flight schools & universities",
     "schoolsHead": "Equip a whole cohort",
     "schoolsMin": "min 10 seats",
