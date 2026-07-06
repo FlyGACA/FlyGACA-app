@@ -42,9 +42,13 @@ import {
   removeConversation,
   renameConversation,
   togglePin,
-  normalizeConversations,
   type Conversation,
 } from '../../calc/conversations';
+import {
+  loadConversations,
+  persistConversations,
+  newConversationId as newId,
+} from '../../lib/adelConversations';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { StatusPill } from '../../components/StatusPill';
@@ -83,53 +87,9 @@ const CAPABILITIES = [
   { id: 'bilingual', tone: 'data' as const },
   { id: 'verify', tone: 'warning' as const },
 ];
-const TRANSCRIPT_KEY = 'flygaca:adel-transcript';
-const CONV_KEY = 'flygaca:adel-conversations';
 const QUOTA_KEY = 'flygaca:adel-quota';
 const FEEDBACK_KEY = 'flygaca:adel-feedback';
 const PRO_KEY = 'flygaca:adel-pro';
-
-function newId(): string {
-  return (
-    globalThis.crypto?.randomUUID?.() ??
-    `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`
-  );
-}
-
-/**
- * Restore the saved conversation archive. Falls back to a one-time migration of
- * the legacy single transcript (`flygaca:adel-transcript`) into one conversation.
- */
-function loadConversations(): Conversation<Message>[] {
-  try {
-    const raw = localStorage.getItem(CONV_KEY);
-    if (raw) return normalizeConversations(JSON.parse(raw)) as Conversation<Message>[];
-  } catch {
-    /* ignore */
-  }
-  try {
-    const legacy = localStorage.getItem(TRANSCRIPT_KEY);
-    if (legacy) {
-      const msgs = JSON.parse(legacy) as Message[];
-      if (Array.isArray(msgs) && msgs.length > 0) {
-        return [
-          { id: newId(), title: conversationTitle(msgs), messages: msgs, updatedAt: Date.now() },
-        ];
-      }
-    }
-  } catch {
-    /* ignore */
-  }
-  return [];
-}
-
-function persistConversations(list: Conversation<Message>[]): void {
-  try {
-    localStorage.setItem(CONV_KEY, JSON.stringify(list));
-  } catch {
-    /* ignore quota / private-mode errors */
-  }
-}
 
 function loadUsage(): Usage {
   try {
@@ -160,7 +120,9 @@ export function Chat() {
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
-  const [conversations, setConversations] = useState<Conversation<Message>[]>(loadConversations);
+  const [conversations, setConversations] = useState<Conversation<Message>[]>(() =>
+    loadConversations<Message>(),
+  );
   const [activeId, setActiveId] = useState<string>(() => conversations[0]?.id ?? newId());
   const [messages, setMessages] = useState<Message[]>(() => conversations[0]?.messages ?? []);
   const [input, setInput] = useState('');

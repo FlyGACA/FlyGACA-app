@@ -58,6 +58,10 @@ jobs:
 
       # Snapshot the high-value routes into dist/<route>/index.html so production
       # (Firebase, the canonical host) serves prerendered HTML, not just the SPA
+      # shell. Non-fatal by design — a prerender failure never blocks the deploy —
+      # but any coverage gap (PRERENDER_MAX trim, failed route, whole-run skip)
+      # surfaces as a ::warning:: annotation on this run; treat one as a signal
+      # to raise PRERENDER_MAX in scripts/prerender.mjs.
       # shell. The prerender itself stays non-fatal (a Chromium hiccup shouldn't
       # crash the job mid-flight) — the coverage gate below is the fatal part.
       - name: Prerender static routes
@@ -90,6 +94,12 @@ jobs:
           echo "Stripped dist/data from the Hosting release."
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      # Fatal gate (SEO-PLAN 0.2): every sitemap URL must ship with real body
+      # content — head-only or missing snapshots are invisible to the non-JS AI
+      # crawlers that decide citations, so a coverage gap must fail the deploy
+      # loudly instead of shipping silently.
+      - name: Verify prerender coverage
+        run: npm run check:prerender
 
       - name: Authenticate to Firebase
         run: |
@@ -104,11 +114,11 @@ jobs:
 
       - name: Deploy
         run: |
-          # On push to main: hosting + rules. On manual run: honor the input.
+          # On push to main: hosting + rules + indexes. On manual run: honor the input.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
             TARGETS="hosting"
           else
-            TARGETS="hosting,firestore:rules"
+            TARGETS="hosting,firestore:rules,firestore:indexes"
           fi
           echo "Deploying: ${TARGETS}"
           npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive

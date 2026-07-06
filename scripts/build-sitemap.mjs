@@ -44,6 +44,15 @@ const staticPaths = routerPaths
 // override with their own freshness signal below.
 const urls = new Map(['/', ...staticPaths].map((p) => [p, today]));
 
+// The set of URLs with a real Arabic snapshot (dist/ar/<path>/index.html) — the
+// only URLs allowed to declare an `hreflang="ar"` alternate. It mirrors
+// scripts/prerender-head.mjs exactly: home + all static routes + guides, plus the
+// top AR_CORPUS_MAX corpus docs in parts→reference→handbook order (dynamic detail
+// pages — aerodromes, packs — are not prerendered, so they stay en/x-default only).
+// Keep AR_CORPUS_MAX identical in both scripts or scripts/check-prerender.mjs fails.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
+const arCovered = new Set(['/', ...staticPaths]);
+
 // Expand the dynamic routes we can enumerate from data, dating each entry from
 // the source document's effectiveDate/revision (or the index's generated date).
 const corpora = [
@@ -51,6 +60,7 @@ const corpora = [
   ['/library/reference', 'public/data/reference-index.json'],
   ['/library/handbook', 'public/data/ebooks-index.json'],
 ];
+let arCorpusCount = 0;
 for (const [base, file] of corpora) {
   const idx = readJson(file);
   const fallback = isDate(idx.generated) ? idx.generated.slice(0, 10) : today;
@@ -60,7 +70,12 @@ for (const [base, file] of corpora) {
       : isDate(d.revision)
         ? d.revision.slice(0, 10)
         : fallback;
-    urls.set(`${base}/${d.slug}`, lastmod);
+    const u = `${base}/${d.slug}`;
+    urls.set(u, lastmod);
+    if (arCorpusCount < AR_CORPUS_MAX) {
+      arCovered.add(u);
+      arCorpusCount++;
+    }
   }
 }
 
@@ -77,7 +92,10 @@ const draftGuides = new Set(
   ].map((m) => m[1]),
 );
 for (const slug of guideSlugs) {
-  if (!draftGuides.has(slug)) urls.set(`/guides/${slug}`, today);
+  if (!draftGuides.has(slug)) {
+    urls.set(`/guides/${slug}`, today);
+    arCovered.add(`/guides/${slug}`);
+  }
 }
 
 // Aerodrome directory → one detail page per curated ICAO (the /tools/aerodromes/:icao
@@ -107,15 +125,20 @@ function priority(u) {
   return '0.6';
 }
 
-// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean path,
-// Arabic under /ar, x-default at the clean path. The same cluster is emitted on
-// both the English and Arabic <url> entries (reciprocal hreflang).
+// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean URL,
+// Arabic at its real `/ar` document (only where a snapshot exists), and x-default
+// at the clean URL. Head-hreflang (prerender-head.mjs) must stay byte-identical to
+// this — check-prerender.mjs enforces the Arabic side.
 const arLoc = (u) => `${SITE}/ar${u === '/' ? '' : u}`;
 function alternates(u) {
+  const loc = `${SITE}${u}`;
+  const arLink = arCovered.has(u)
+    ? `<xhtml:link rel="alternate" hreflang="ar" href="${arLoc(u)}"/>`
+    : '';
   return (
-    `<xhtml:link rel="alternate" hreflang="en" href="${SITE}${u}"/>` +
-    `<xhtml:link rel="alternate" hreflang="ar" href="${arLoc(u)}"/>` +
-    `<xhtml:link rel="alternate" hreflang="x-default" href="${SITE}${u}"/>`
+    `<xhtml:link rel="alternate" hreflang="en" href="${loc}"/>` +
+    arLink +
+    `<xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>`
   );
 }
 
@@ -123,14 +146,12 @@ const urlEntry = (u, loc, lastmod) =>
   `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod>` +
   `<priority>${priority(u)}</priority>${alternates(u)}</url>`;
 
-// The content/UI routes that get a prerendered Arabic twin (SEO-PLAN 0.3):
-// static pages + hubs + tools + non-draft guides. Excludes the reader corpus,
-// aerodromes and packs (no Arabic body prerendered for those yet).
-const arPaths = new Set(['/', ...staticPaths]);
-for (const slug of guideSlugs) if (!draftGuides.has(slug)) arPaths.add(`/guides/${slug}`);
-
+// The Arabic `<url>` entries mirror `arCovered` exactly — the URLs with a real
+// dist/ar/<path> snapshot (home + static + hubs + tools + non-draft guides + the
+// top AR_CORPUS_MAX library docs). Iterating the same set keeps the emitted /ar
+// locs, their reciprocal hreflang clusters and the on-disk snapshots in lockstep.
 const sorted = [...urls.keys()].sort();
-const arSorted = [...arPaths].sort();
+const arSorted = [...arCovered].sort();
 const body = [
   ...sorted.map((u) => urlEntry(u, `${SITE}${u}`, urls.get(u))),
   ...arSorted.map((u) => urlEntry(u, arLoc(u), urls.get(u) ?? today)),

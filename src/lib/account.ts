@@ -20,6 +20,16 @@ import {
   deleteRecordDoc,
 } from './sync';
 
+/** Operational role driving dashboard personalization. */
+export type UserRole = 'pilot' | 'student' | 'instructor';
+
+export const USER_ROLES: UserRole[] = ['pilot', 'student', 'instructor'];
+
+/** Narrow an arbitrary profile string to a known role; '' or legacy values fail. */
+export function isUserRole(v: string): v is UserRole {
+  return (USER_ROLES as string[]).includes(v);
+}
+
 export interface Profile {
   email: string;
   displayName: string;
@@ -28,6 +38,8 @@ export interface Profile {
   /** ISO date (YYYY-MM-DD) or ''. */
   medicalExpiry: string;
   lastFlightReview: string;
+  /** One of USER_ROLES, or '' until chosen. */
+  role: string;
 }
 
 export interface Flight {
@@ -95,6 +107,7 @@ const DEFAULT_PROFILE: Profile = {
   licenceType: '',
   medicalExpiry: '',
   lastFlightReview: '',
+  role: '',
 };
 
 function readJson<T>(key: string, fallback: T): T {
@@ -110,7 +123,9 @@ let state: State = {
   session: localStorage.getItem(K.session),
   uid: null,
   emailVerified: false,
-  profile: readJson(K.profile, DEFAULT_PROFILE),
+  // Merge over defaults so profiles stored before a field existed (e.g. role)
+  // hydrate with '' rather than undefined.
+  profile: { ...DEFAULT_PROFILE, ...readJson(K.profile, {} as Partial<Profile>) },
   flights: readJson(K.logbook, [] as Flight[]),
   records: readJson(K.records, [] as PilotRecord[]),
   entitlement: null,
@@ -222,12 +237,14 @@ export function exportAll(): string {
 }
 
 export function deleteAllData(): void {
+  // Keeps identity-like fields (email, displayName, role); wipes flight data.
   commit({
     ...state,
     profile: {
       ...DEFAULT_PROFILE,
       email: state.profile.email,
       displayName: state.profile.displayName,
+      role: state.profile.role,
     },
     flights: [],
     records: [],

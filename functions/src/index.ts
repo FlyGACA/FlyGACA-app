@@ -6,6 +6,11 @@
  *
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
+import { setGlobalOptions } from "firebase-functions";
+import { onRequest } from "firebase-functions/https";
+import { defineSecret } from "firebase-functions/params";
+import app from "./gateway.js";
+import { REGION } from "./region.js";
 
 import {setGlobalOptions} from "firebase-functions";
 import {onRequest} from "firebase-functions/https";
@@ -14,6 +19,18 @@ import * as logger from "firebase-functions/logger";
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
+export const chat = onRequest(
+  {
+    region: REGION,
+    secrets: [geminiApiKey],
+    // The 18 MB corpus + BM25 index live in memory on warm instances.
+    memory: "1GiB",
+    // Streamed turns can be long-lived.
+    timeoutSeconds: 300,
+    invoker: "public", // public edge; auth/App Check enforced in the app
+  },
+  app,
+);
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
 // traffic spikes by instead downgrading performance. This limit is a

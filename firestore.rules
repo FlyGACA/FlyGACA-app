@@ -15,9 +15,6 @@ service cloud.firestore {
     function isOwner(uid) {
       return signedIn() && request.auth.uid == uid;
     }
-    function isHours(v) {
-      return v is number && v >= 0 && v <= 100000;
-    }
     // Simple email validation: contains @ and a dot after @, length reasonable.
     function isEmail(email) {
       return email is string
@@ -25,13 +22,36 @@ service cloud.firestore {
           && email.size() <= 254
           && email.matches('^[^@]+@[^@]+\\.[^@]+$');
     }
-    // A profile write must always carry a sane email + displayName.
+    // A profile write must carry a sane email, and every field it writes must be
+    // one of the known bounded strings — so a compromised client can't stuff the
+    // doc with arbitrary or oversized keys. `entitlement` is allowed in the key
+    // set because it is preserved across merge-updates; its VALUE is frozen
+    // separately by entitlementUntouched(). Field list mirrors PROFILE_FIELDS in
+    // src/lib/sync.ts.
     function validProfile() {
       return request.resource.data.email is string
         && isEmail(request.resource.data.email)
         && (!('displayName' in request.resource.data)
             || (request.resource.data.displayName is string
-                && request.resource.data.displayName.size() <= 120));
+                && request.resource.data.displayName.size() <= 120))
+        && (!('homeBase' in request.resource.data)
+            || (request.resource.data.homeBase is string
+                && request.resource.data.homeBase.size() <= 8))
+        && (!('licenceType' in request.resource.data)
+            || (request.resource.data.licenceType is string
+                && request.resource.data.licenceType.size() <= 40))
+        && (!('medicalExpiry' in request.resource.data)
+            || (request.resource.data.medicalExpiry is string
+                && request.resource.data.medicalExpiry.size() <= 12))
+        && (!('lastFlightReview' in request.resource.data)
+            || (request.resource.data.lastFlightReview is string
+                && request.resource.data.lastFlightReview.size() <= 12))
+        && (!('role' in request.resource.data)
+            || (request.resource.data.role is string
+                && request.resource.data.role.size() <= 20))
+        && request.resource.data.keys().hasOnly(
+             ['email', 'displayName', 'homeBase', 'licenceType', 'medicalExpiry',
+              'lastFlightReview', 'role', 'entitlement']);
     }
     // The entitlement field (the pilot's plan) is written ONLY by Cloud
     // Functions, which use the Admin SDK and bypass these rules. A client may
@@ -69,13 +89,38 @@ service cloud.firestore {
       // The pilot's logbook — one document per flight.
       match /logbook/{entry} {
         allow read, delete: if isOwner(uid);
+        // The client (src/lib/sync.ts flightToDoc) writes EVERY field as a string,
+        // including `total` (Flight.total is typed string). Validate `total` as a
+        // bounded numeric-looking string (empty, or up to 99999.99) — the old rule
+        // required a number, so every real logbook write was denied in production.
         allow create, update: if isOwner(uid)
           && request.resource.data.date is string
-          && request.resource.data.date.size() <= 12
-          && isHours(request.resource.data.total)
+          && request.resource.data.date.matches('^([0-9]{4}-[0-9]{2}-[0-9]{2})?$')
+          && request.resource.data.total is string
+          && request.resource.data.total.matches('^([0-9]{1,5}([.][0-9]{1,2})?)?$')
           && (!('remarks' in request.resource.data)
               || (request.resource.data.remarks is string
-                  && request.resource.data.remarks.size() <= 2000));
+                  && request.resource.data.remarks.size() <= 2000))
+          && request.resource.data.keys().hasOnly(
+               ['date', 'type', 'reg', 'from', 'to', 'total', 'pic', 'night',
+                'ifr', 'ldg', 'nightLdg', 'appr', 'remarks']);
+      }
+
+      // The pilot's records — ratings, aircraft, documents, endorsements. The
+      // client (src/lib/sync.ts recordToDoc) serializes every field as a string.
+      // This subcollection had no rule, so the catch-all denied it and records
+      // sync failed silently in production.
+      match /records/{entry} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.category in ['rating', 'aircraft', 'document', 'endorsement']
+          && request.resource.data.title is string
+          && request.resource.data.title.size() <= 200
+          && (!('remarks' in request.resource.data)
+              || (request.resource.data.remarks is string
+                  && request.resource.data.remarks.size() <= 2000))
+          && request.resource.data.keys().hasOnly(
+               ['category', 'title', 'ref', 'issued', 'expires', 'remarks']);
       }
     }
 
@@ -85,9 +130,16 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Everything else stays denied. This also covers server-only collections
-    // such as `adelQuota` (Captain Adel's daily-quota counters), which only
-    // the Cloud Functions Admin SDK touches.
+    // Stripe webhook idempotency markers, written ONLY by stripeWebhook (Admin
+    // SDK). Explicit deny for parity with stripeCustomers — otherwise it would
+    // fall through to the catch-all below.
+    match /stripeEvents/{id} {
+      allow read, write: if false;
+    }
+
+    // Everything else stays denied. Server-only data is written with the Admin
+    // SDK (which bypasses these rules); any client reaching an unlisted path is
+    // refused here.
     match /{document=**} {
       allow read, write: if false;
     }

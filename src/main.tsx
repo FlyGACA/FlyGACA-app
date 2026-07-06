@@ -47,24 +47,17 @@ if (isMirrorHost(window.location.hostname)) {
   document.head.appendChild(robots);
 }
 
-// A duplicate host (e.g. captadel.com) serves this same build — fold it straight
-// onto the canonical origin, preserving the path, before booting anything. This
-// is the host-agnostic safety net; an edge 301 (vercel.json) handles it sooner
-// where the duplicate is served by Vercel.
-const redirectTo = canonicalRedirect(window.location);
-
-// The Arabic variant of every content route lives under `/ar`. If the app boots
-// Arabic (an old ?lang=ar link, a stored choice, or an Arabic browser) on a
-// non-/ar URL — or English on an /ar URL — move to the matching path so the URL
-// equals the language and the canonical stays honest. Runs before the router
-// mounts (which reads the prefix to pick its basename); `localeRedirect` returns
-// null when already consistent, so this can't loop.
-const localeTo = redirectTo ? null : localeRedirect(window.location.pathname, resolveInitialLang());
+// Two pre-boot redirects, host first: a duplicate host (e.g. captadel.com) folds
+// onto the canonical origin; then the locale reconciler moves the URL so its path
+// prefix matches the language — a legacy `?lang=ar` link, a stored Arabic choice,
+// or an Arabic browser on a clean URL lands on `/ar`. Both are `location.replace`
+// (full nav) so the router remounts under the right basename. `localeRedirect`
+// returns null when already consistent, so this can't loop.
+const redirectTo =
+  canonicalRedirect(window.location) ?? localeRedirect(window.location, resolveInitialLang());
 
 if (redirectTo) {
   window.location.replace(redirectTo);
-} else if (localeTo) {
-  window.location.replace(`${localeTo}${window.location.search}${window.location.hash}`);
 } else {
   const rootEl = document.getElementById('root');
   if (!rootEl) throw new Error('Root element #root not found');

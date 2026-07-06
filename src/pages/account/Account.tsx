@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { TextField } from '../../components/calc/TextField';
+import { PasswordField } from '../../components/calc/PasswordField';
 import { Alert } from '../../components/Alert';
 import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
@@ -25,6 +26,11 @@ interface FieldErrors {
   email?: string;
   password?: string;
   general?: string;
+}
+
+/** Cheap client-side shape check so obvious typos fail before a round-trip. */
+function looksLikeEmail(v: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
 function FirebaseSignIn() {
@@ -75,10 +81,14 @@ function FirebaseSignIn() {
       </button>
       <p className={styles.or}>{t('account.or')}</p>
       <form
-        className={styles.form}
+        className={styles.authFields}
         onSubmit={(e) => {
           e.preventDefault();
           if (!email.trim() || !password) return;
+          if (!looksLikeEmail(email.trim())) {
+            setErrors({ email: t('account.errors.invalidEmail') });
+            return;
+          }
           void run(() =>
             mode === 'in'
               ? signInWithEmail(email.trim(), password)
@@ -96,11 +106,10 @@ function FirebaseSignIn() {
           placeholder="you@example.com"
           error={errors.email}
         />
-        <TextField
+        <PasswordField
           label={t('account.password')}
           value={password}
           onChange={setPassword}
-          type="password"
           autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
           error={errors.password}
         />
@@ -114,7 +123,12 @@ function FirebaseSignIn() {
             {notice}
           </Alert>
         )}
-        <button type="submit" className={styles.btn} disabled={busy || !email.trim() || !password}>
+        <button
+          type="submit"
+          className={styles.btn}
+          aria-busy={busy || undefined}
+          disabled={busy || !email.trim() || !password}
+        >
           {mode === 'in' ? t('account.signIn') : t('account.register')}
         </button>
       </form>
@@ -180,7 +194,7 @@ function LocalSignIn() {
   return (
     <>
       <form
-        className={styles.form}
+        className={styles.authFields}
         onSubmit={(e) => {
           e.preventDefault();
           if (email.trim()) signIn(email.trim(), name);
@@ -233,12 +247,36 @@ export function Account() {
 
   if (!session) {
     return (
-      <section className={`container-narrow ${styles.page}`}>
-        <header className={styles.head}>
-          <h1>{t('account.signInTitle')}</h1>
-          <p className={styles.sub}>{t('account.signInIntro')}</p>
-        </header>
-        {isAuthAvailable() ? <FirebaseSignIn /> : <LocalSignIn />}
+      <section className={`container ${styles.page}`}>
+        <div className={styles.authGrid}>
+          <div className={styles.authPanel}>
+            <header className={styles.head}>
+              <h1>{t('account.signInTitle')}</h1>
+              <p className={styles.sub}>{t('account.signInIntro')}</p>
+            </header>
+            {isAuthAvailable() ? <FirebaseSignIn /> : <LocalSignIn />}
+          </div>
+          <aside className={styles.authAside}>
+            <CaptainAvatar size="lg" pose="wave" decorative />
+            <p className={styles.asideEyebrow}>{t('account.benefits.eyebrow')}</p>
+            <h2 className={styles.asideTitle}>{t('account.benefits.title')}</h2>
+            <ul className={styles.benefitList}>
+              <li>
+                <strong>{t('account.roles.pilot')}</strong>
+                <span>{t('account.benefits.pilot')}</span>
+              </li>
+              <li>
+                <strong>{t('account.roles.student')}</strong>
+                <span>{t('account.benefits.student')}</span>
+              </li>
+              <li>
+                <strong>{t('account.roles.instructor')}</strong>
+                <span>{t('account.benefits.instructor')}</span>
+              </li>
+            </ul>
+            <p className={styles.note}>{t('account.benefits.local')}</p>
+          </aside>
+        </div>
         <Disclaimer compact />
       </section>
     );

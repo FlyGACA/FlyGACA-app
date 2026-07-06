@@ -15,6 +15,12 @@
       "has": [{ "type": "host", "value": "www.captadel.com" }],
       "destination": "https://flygaca.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.flygaca.com" }],
+      "destination": "https://flygaca.com/$1",
+      "permanent": true
     }
   ],
   "rewrites": [

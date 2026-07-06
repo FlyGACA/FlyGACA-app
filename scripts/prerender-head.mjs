@@ -47,6 +47,8 @@ const normalizePath = (p) => {
   const lead = clean.startsWith('/') ? clean : `/${clean}`;
   return lead.length > 1 ? lead.replace(/\/+$/, '') : '/';
 };
+// The Arabic document's real path mirrors src/lib/seo.ts localePath/canonicalUrl:
+// `/` → `/ar`, `/library` → `/ar/library`; English/x-default stay on the clean path.
 const stripArPrefix = (p) => {
   const n = normalizePath(p);
   if (n === AR_PREFIX) return '/';
@@ -129,6 +131,9 @@ const COURSE_ROUTES = new Set([
 
 // --- Build the route → SEO descriptor maps -------------------------------------
 const en = readJson('src/i18n/en.json');
+// Arabic bundle drives the parallel `arSeo` map — the crawler-facing Arabic
+// snapshots written to dist/ar/<path>/index.html. Arabic meta is authored (never
+// machine-translated), so we read the same keys straight from ar.json.
 const ar = readJson('src/i18n/ar.json');
 const tIn = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
 
@@ -136,6 +141,11 @@ const tIn = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k])
 // pages). English keeps its constant defaults above.
 const DEFAULT_TITLE_AR = tIn(ar.meta, 'home') ?? DEFAULT_TITLE;
 const DEFAULT_DESC_AR = tIn(ar.metaDesc, 'home') ?? DEFAULT_DESC;
+
+// Arabic descriptors for the covered set (static + tools + guides + top library
+// docs). Long-tail corpus stays English-only, capped by AR_CORPUS_MAX — the SAME
+// cap scripts/build-sitemap.mjs uses, so head-hreflang and sitemap-hreflang agree.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
 
 const PRIVATE = new Set(['/account', '/dashboard', '/currency', '/logbook', '/records', '/settings']);
 const REDIRECTS = new Set(['/guides', '/study']);
@@ -176,7 +186,6 @@ const draftGuides = new Set(
     (m) => m[1],
   ),
 );
-
 /**
  * Content/UI descriptors (static pages + tools + guides) for one language bundle.
  * Titles/descriptions come from `bundle`; JSON-LD url + inLanguage from `lang`.
@@ -256,14 +265,42 @@ function corpusDescriptors() {
   return map;
 }
 
-// English = content + corpus (clean paths); Arabic = content only (under /ar).
-const enSeo = new Map([...contentDescriptors(en, 'en'), ...corpusDescriptors()]);
+// English = content + all corpus (clean paths). Arabic = content + the top
+// AR_CORPUS_MAX corpus docs, in the same parts→reference→handbook order — matching
+// exactly the hreflang=ar set scripts/build-sitemap.mjs emits (the Arabic snapshot
+// wraps the English GACAR text in Arabic chrome + RTL; check-prerender.mjs gates it).
+const corpus = corpusDescriptors();
+const enSeo = new Map([...contentDescriptors(en, 'en'), ...corpus]);
 const arSeo = contentDescriptors(ar, 'ar');
+let arCorpusCount = 0;
+for (const [path, desc] of corpus) {
+  if (arCorpusCount >= AR_CORPUS_MAX) break;
+  arSeo.set(path, desc);
+  arCorpusCount++;
+}
 
 // --- Head transform ------------------------------------------------------------
 /** Replace a tag matching `re` with `tag`, or insert `tag` before </head> if absent. */
 function setTag(html, re, tag) {
   return re.test(html) ? html.replace(re, tag) : html.replace('</head>', `    ${tag}\n  </head>`);
+}
+
+// The Arabic home hero, built from ar.json (mirrors the English shell hero, whose
+// copy tracks en.home.*). CTAs point at the Arabic documents so the Arabic home's
+// internal links keep the crawler inside the Arabic set.
+function arHero() {
+  const h = ar.home;
+  return `<div id="app-shell">
+        <div class="s-inner">
+          <p class="s-eyebrow">${esc(h.eyebrow)}</p>
+          <h1>${esc(h.title)}</h1>
+          <p class="s-sub">${esc(h.subtitle)}</p>
+          <div class="s-cta">
+            <a class="s-btn primary" href="/ar/library">${esc(h.ctaLibrary)}</a>
+            <a class="s-btn ghost" href="/ar/chat">${esc(h.ctaChat)}</a>
+          </div>
+        </div>
+      </div>`;
 }
 
 function render(path, d, lang = 'en') {
@@ -274,6 +311,8 @@ function render(path, d, lang = 'en') {
       ? DEFAULT_TITLE_AR
       : DEFAULT_TITLE;
   const desc = d.description ?? (isAr ? DEFAULT_DESC_AR : DEFAULT_DESC);
+  // In Arabic the page self-canonicalizes to its own `/ar` document; x-default
+  // always targets the clean, param-free URL.
   const canonical = canonicalUrl(path, lang);
   let html = shell;
 
@@ -306,7 +345,9 @@ function render(path, d, lang = 'en') {
   html = setTag(html, /<meta\s+property="og:description"[^>]*>/, `<meta property="og:description" content="${esc(desc)}" />`);
   html = setTag(html, /<meta\s+property="og:url"[^>]*>/, `<meta property="og:url" content="${canonical}" />`);
   html = setTag(html, /<meta\s+property="og:image"[^>]*>/, `<meta property="og:image" content="${image}" />`);
-  html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="${ogLocale(lang)}" />`);
+  // The Arabic snapshot declares its locale so scrapers file it under ar_SA (the
+  // English default already omits og:locale; usePageMeta sets it at runtime).
+  if (isAr) html = setTag(html, /<meta\s+property="og:locale"[^>]*>/, `<meta property="og:locale" content="${ogLocale(lang)}" />`);
   // Explicit Twitter tags mirror the Open Graph values (see usePageMeta).
   html = setTag(html, /<meta\s+name="twitter:title"[^>]*>/, `<meta name="twitter:title" content="${esc(fullTitle)}" />`);
   html = setTag(html, /<meta\s+name="twitter:description"[^>]*>/, `<meta name="twitter:description" content="${esc(desc)}" />`);
@@ -319,15 +360,22 @@ function render(path, d, lang = 'en') {
     );
   }
 
-  // Strip the home hero on non-home routes, and on *every* Arabic page — the hero
-  // is baked English copy in the shell, so a no-JS Arabic reader must never see it
-  // (the runtime script strips it too once JS runs).
-  if (normalizePath(path) !== '/' || isAr) {
+  // Strip the home hero on non-home routes so crawlers don't read homepage
+  // content on every path (the runtime script does the same once JS runs). On the
+  // Arabic home, swap the English hero for the Arabic one.
+  if (normalizePath(path) !== '/') {
     html = html.replace(/<div id="app-shell">[\s\S]*?<\/script>\s*/, '');
+  } else if (isAr) {
+    html = html.replace(/<div id="app-shell">[\s\S]*?<\/script>\s*/, arHero());
   }
   return html;
 }
 
+// Arabic siblings live at dist/ar/<path>/index.html — the real per-language
+// documents Firebase can route to (it strips `?lang=`, so the query variant can
+// never be a distinct file). These are the crawler-facing Arabic bodies;
+// scripts/prerender.mjs later overwrites them with hydrated content where a
+// browser is available.
 /** Write a descriptor map to dist, under /ar for Arabic. Returns the count. */
 function writeSnapshots(map, lang) {
   const arDir = lang === 'ar';
