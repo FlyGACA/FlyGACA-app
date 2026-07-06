@@ -6,12 +6,17 @@
       {
         "source": "/api/chat",
         "function": "chat",
-        "region": "me-central2"
+        "region": "me-central1"
+      },
+      {
+        "source": "/api/feedback",
+        "function": "chat",
+        "region": "me-central1"
       },
       {
         "source": "/api/stripe-webhook",
         "function": "stripeWebhook",
-        "region": "me-central2"
+        "region": "me-central1"
       },
       {
         "source": "**",

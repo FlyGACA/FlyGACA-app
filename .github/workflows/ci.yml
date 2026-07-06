@@ -41,6 +41,33 @@ jobs:
       - name: Bundle budget
         run: npm run check:bundle
 
+  functions:
+    name: functions · lint · test · build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Matches functions/package.json engines (root jobs stay on 20).
+          node-version: 24
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
   e2e:
     name: e2e · a11y (Playwright)
     runs-on: ubuntu-latest

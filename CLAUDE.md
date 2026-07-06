@@ -5,13 +5,19 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 The **Fly GACA frontend app** — a modern TypeScript/React/Vite rebuild of the legacy no-build
-vanilla PWA (which lives in the `flygaca/flygaca` repo). Fly GACA is an independent, educational
+vanilla PWA (the original Fly GACA site, whose source is not in this GitHub org — the
+regulatory corpus was ported from it). Fly GACA is an independent, educational
 platform and open regulatory library for Saudi civil aviation. It is **not affiliated with GACA**;
 treat that as load-bearing whenever you touch user-facing copy — the product helps you find/study
 regulation, it never replaces it, and the assistant cites the exact Part/section.
 
-This repo is **frontend only**. The backend (Firebase Functions gateway) and the Captain Adel RAG
-service are separate and unchanged; the app calls the same `/api/chat` and `/api/content` endpoints.
+The repo also contains the **backend**: `functions/` holds the Firebase Cloud Functions — the
+Express gateway serving `/api/chat` + `/api/feedback` (auth, App Check, rate limiting, SSE), the
+Captain Adel RAG flow (Genkit + Gemini, see `docs/DESIGN-genkit-rag-backend.md`), and Stripe
+billing (`stripeWebhook` is the only writer of `users/{uid}.entitlement`). It is its own npm
+package with its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/`
+when you touch it (root `npm run verify` does not cover it). Deploy region is `me-central1`
+(`functions/src/region.ts`; firebase.json's rewrite regions must match).
 
 ## Architecture
 
@@ -38,7 +44,7 @@ service are separate and unchanged; the app calls the same `/api/chat` and `/api
   other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
   `FieldGrid`).
 - **Services:** `src/lib/{api,auth,entitlements,native-bridge}.ts` are the typed frontend
-  services. `entitlements.isActive` is a pure predicate mirroring `functions/entitlements-core.js`
+  services. `entitlements.isActive` is a pure predicate mirroring `functions/src/billing-core.ts`
   — the `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant.
 - **PWA / native:** `vite-plugin-pwa` generates the service worker (app shell precached,
   `/data/*` network-first). `native-bridge.ts` is inert on web and routes auth/IAP/offline-cache
@@ -65,5 +71,5 @@ it in `src/lib/tools.ts` — the typed catalog registry and single source of tru
 add a Vitest spec), build a page under `src/pages/tools/` using `CalcShell` + `useNumericInputs`
 (or `useUrlState` for string-only tools), add its strings to both i18n bundles, and register the
 route in `router.tsx`. `MIGRATION.md` is the historical log of the rebuild; `ROADMAP.md` tracks
-what's next. The legacy source (`flygaca/flygaca` repo) remains the reference for anything still
-ported from the old site.
+what's next. The legacy source (the original vanilla Fly GACA site) remains the reference for
+anything still ported from the old site.

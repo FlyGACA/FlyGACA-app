@@ -61,6 +61,17 @@
   background: color-mix(in srgb, var(--gold) 22%, transparent);
   color: var(--gold);
 }
+/* Chosen operational role, alongside the plan badge. */
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
 .status {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
@@ -234,4 +245,44 @@
 .badgeProg {
   opacity: 0.75;
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Customize disclosure (show/hide widgets) ── */
+.customize {
+  border: var(--hairline-bright);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: var(--space-4) var(--space-5);
+}
+.customize > summary {
+  cursor: pointer;
+  font-weight: var(--fw-semibold);
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+.customizeHint {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.customizeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+}
+.customizeItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 36px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.customizeItem input {
+  accent-color: var(--brand);
+  inline-size: 18px;
+  block-size: 18px;
 }

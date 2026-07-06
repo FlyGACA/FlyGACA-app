@@ -2,6 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
+import { AR_PREFIX, isArabicPath } from './lib/seo';
 
 /**
  * Lazy a named export into a route component. Every page except Home is
@@ -126,10 +127,20 @@ const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
 const Offline = lazyNamed(() => import('./pages/Offline'), 'Offline');
 
 /**
+ * The Arabic variant of every content route lives under `/ar`. When the current
+ * URL is in that prefix we mount the *same* route tree under `basename: '/ar'`,
+ * so react-router matches the `/ar`-stripped path, `useLocation()` returns the
+ * logical path, and every `<Link>` automatically prepends `/ar` — keeping all
+ * in-app navigation inside the Arabic cluster with no per-link changes.
+ */
+const basename =
+  typeof window !== 'undefined' && isArabicPath(window.location.pathname) ? AR_PREFIX : undefined;
+
+/**
  * Route table for the app. Each page lives under src/pages/. As more pages are
  * ported from the legacy site they slot in here (see MIGRATION.md).
  */
-export const router = createBrowserRouter([
+const routes = [
   {
     path: '/',
     element: <Layout />,
@@ -229,4 +240,13 @@ export const router = createBrowserRouter([
       { path: '*', element: <NotFound /> },
     ],
   },
-]);
+];
+
+/**
+ * Arabic is the SAME route tree mounted under `basename: '/ar'` when the URL is an
+ * Arabic document (`/ar`, `/ar/…`). React Router then strips the prefix — so
+ * `<Link>`s auto-prepend `/ar` (Arabic pages self-reference) and `useLocation()`
+ * reports the logical path meta/canonical code already expects. `main.tsx`'s
+ * `localeRedirect` guarantees the URL and the mounted basename always agree.
+ */
+export const router = createBrowserRouter(routes, { basename });

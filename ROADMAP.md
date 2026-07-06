@@ -3,19 +3,36 @@
 What's coming next for the Fly GACA frontend app. The legacy→TypeScript/React/Vite **rebuild is
 complete and live** — all 55 tools, the full regulatory library + search, Captain Adel chat, the
 study hub, account/commerce, and guides are shipped and deploying to production on every merge to
-`main`. This file looks **forward**; the stage-by-stage rebuild history lives in
-[`MIGRATION.md`](./MIGRATION.md).
+`main`. This file looks **forward** and is the **single source of truth for open work**; the
+stage-by-stage rebuild history lives in [`MIGRATION.md`](./MIGRATION.md) (history only — no open
+items are tracked there).
 
-Scope is unchanged: this repo is **frontend only**. The Firebase Functions gateway and the Captain
-Adel RAG brain are separate and untouched — the app calls the same `/api/chat` / `/api/content`
-endpoints and the `flygaca-app` Firebase project (`me-central2`).
+Scope note: this repo now carries the **backend too** — the Firebase Functions gateway and the
+Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestore in
+`me-central2`). The app calls them via the same `/api/chat` / `/api/feedback` endpoints on the
+`flygaca-app` Firebase project.
 
 ## How to read this
 
 - **Now / Next / Later** are horizon buckets, not date commitments — priorities shift as we learn.
-- Each item is tagged **[product]** (something users see) or **[platform]** (under-the-hood,
-  launch, or infra) so both audiences can scan to what they care about.
+- Each item is tagged **[product]** (something users see), **[platform]** (under-the-hood,
+  launch, or infra) or **[docs]** (contributor/reader-facing writing) so every audience can scan
+  to what they care about.
 - Every item links to the runbook/doc that already describes the work where one exists.
+
+## Recently shipped (post-rebuild)
+
+- **Role-aware dashboard + sign-in redesign**
+  ([#254](https://github.com/FlyGACA/FlyGACA-app/pull/254)): an operational role
+  (pilot / student / instructor) on the profile — synced via `PROFILE_FIELDS` and accepted by the
+  deployed Firestore rules unchanged — drives per-role widget ordering through the pure layout
+  engine `src/calc/dashboardLayout.ts`. Five new widgets surface existing local-first data (study
+  progress, tool favourites, library/guide bookmarks, Captain Adel threads, regulatory watch), and
+  show/hide widget customization persists via `src/lib/dashboardPrefs.ts`. Signed-out `/account`
+  became a split-panel sign-in with per-audience value props and a password show/hide toggle.
+- **Backend hardening** ([#253](https://github.com/FlyGACA/FlyGACA-app/pull/253)): `/api/feedback`
+  routing fix, region drift resolved to `me-central1`, per-uid + per-IP rate limiting, input size
+  caps, JSON error handling, and a new `functions` CI job.
 
 ## Now — production hardening & go-live confidence
 
@@ -29,16 +46,29 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
   now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
   needs Google Fonts (`fonts.gstatic.com`) network access: `node scripts/build-og-card.mjs`.
-- **[platform]** **Keep `main` green and readable.** Make the CI `build` (the `verify` chain) and
-  `e2e` jobs required checks on `main`, and use descriptive squash-merge titles — recent history
-  (`sd (#215)`, `j (#209)`, `,m (#208)`) doesn't self-describe, which matters for an open
+- **[platform]** **Re-enable and enforce CI.** The GitHub Actions **CI workflow is currently
+  disabled** (`disabled_manually`), so no build/e2e/functions job runs on pushes or PRs — re-enable
+  it under **Actions → CI → Enable workflow**. Then make the `build` (the `verify` chain), `e2e`,
+  and `functions` jobs required checks on `main`, and use descriptive squash-merge titles — recent
+  history (`sd (#215)`, `j (#209)`, `,m (#208)`) doesn't self-describe, which matters for an open
   educational repo.
+- **[platform]** **Fix the Cloudflare Workers git integration.** The `Workers Builds: flygaca`
+  check fails on every commit: the Cloudflare dashboard integration targets a Worker named
+  `flygaca`, while the repo deploys `flygaca-app` (`wrangler.toml`, `deploy-cloudflare.yml`). This
+  is a **dashboard-side** fix — repoint the integration at `flygaca-app` or disconnect it (the
+  repo's deploy path is the `deploy-cloudflare.yml` Action, unaffected). Diagnosed in
+  [#253](https://github.com/FlyGACA/FlyGACA-app/pull/253).
+- **[platform]** **Dependency hygiene.** Clear the open Dependabot alerts on `main` (2 high, 4
+  moderate at last check) and adopt a recurring update cadence (Dependabot config or a scheduled
+  bump) so security debt doesn't accrue between feature work.
 
 ## Next — this quarter-ish
 
 - **[platform]** **Native iOS/Android.** Generate the Capacitor platform projects (needs a Mac),
   then wire native Apple/Google sign-in, RevenueCat IAP (the `native-billing` branch), deep links,
-  and app icons/splash. See `docs/RUNBOOK-native.md`.
+  and app icons/splash. See `docs/RUNBOOK-native.md`. Includes **passkeys / biometric unlock** for
+  the persistent "active flight line" session — deferred from the sign-in redesign because it needs
+  the native shell.
 - **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
   initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (160 kB gzip).
 - **[platform]** **Shard the heavy data payloads.** `airports-extra.json` (21 MB) and
@@ -48,10 +78,23 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
   (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
   cache split in `vite.config.ts` when shard names change.
+- **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
+  `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
+  files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync
+  meanwhile. Patch the builder to emit the semantic shape natively, then retire the normalize step
+  — exact diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
   axe a11y checks to cover more critical flows.
+- **[product]** **Captain Adel archive search.** The saved-conversation archive already supports
+  pin and rename (`togglePin` / `renameConversation` in `src/pages/chat/Chat.tsx`); the remaining
+  gap is search. `filterConversations` in `src/calc/conversations.ts` is already written and
+  unit-tested — it only needs a search box wired into the archive UI.
+- **[product]** **Dashboard follow-ups** (building on the role-aware redesign): drag-to-reorder
+  widgets (extend `src/lib/dashboardPrefs.ts` from a hidden-set to a per-role order list), an
+  offline / cache-status widget (surface `flygaca:offline:saved` and the account `syncError`), and
+  a prominent ask-Captain-Adel entry point on the dashboard.
 - **[product]** **Global ⌘K search / command palette.** The header already shows a ⌘K search pill;
   wire it to a real app-wide palette (jump to any tool, guide, Part, or page).
 - **[product]** **Offline page.** A graceful PWA offline fallback (the app shell + network-first
@@ -63,8 +106,17 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 
 - **[product]** Content & tools expansion — more guides, quiz banks, and reading paths, deeper
   ground school, and new calculators as the corpus grows.
-- **[product]** Captain Adel enhancements — richer grounding, exam-mode ties, and saved-chat UX.
-- **[product]** Study analytics & progress insights beyond the current streak/mastery rollups.
+- **[product]** Captain Adel enhancements — richer grounding and exam-mode ties. (Saved-chat UX is
+  mostly shipped; archive search is queued under **Next**.)
+- **[product]** **Study analytics — deeper insights.** `StudyDashboard` already surfaces
+  weakest-topic focus areas, an exam-history trend, and streak milestones (7/30/100/365) off
+  `src/lib/studyProgress.ts`. The increment: per-topic mastery _trend over time_, an
+  exam-readiness signal, and instructor-facing progress views.
+- **[product]** **Instructor multi-student roster & endorsement tracking** — a roster of a CFI's
+  students with flight-status and pending-endorsement signals. **Backend-dependent**: needs
+  server-side student↔instructor relationships that don't exist yet, so it was deliberately left
+  out of the frontend-only dashboard redesign (whose instructor view centres on the CFI's own
+  records/references instead).
 - **[platform]** Push notifications and native polish once the mobile shells ship.
 - **[platform]** **Observability.** Client error monitoring (e.g. Sentry) and privacy-respecting
   usage analytics (page + tool usage only, no PII) to learn which of the 55 tools earn their
@@ -101,7 +153,8 @@ Carried over from the rebuild — these gates still apply to everything above.
 
 ## Legacy sources of truth
 
-The original no-build PWA (`flygaca/flygaca`) remains the reference when porting anything new:
+The original no-build PWA (the vanilla Fly GACA site, whose source is not in this GitHub org)
+remains the reference when porting anything new:
 `flygaca/assets/js/{auth,store,entitlements,billing,native-bridge,firebase-*}.js`,
 `flygaca/config/routes.js` (CSP), `flygaca/firestore.rules`, the `tools-*.js` family and `*-core.js`
 math, and `flygaca/assets/data/*`.

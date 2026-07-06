@@ -1,4 +1,4 @@
-# Migration tracker — legacy `flygaca/flygaca` → `FlyGACA-app`
+# Migration tracker — legacy vanilla Fly GACA monorepo → `FlyGACA-app`
 
 This rebuild migrates the **frontend app only**. The Firebase Functions gateway, the Captain Adel
 RAG service, the Python `sales_agents/`, `office/`/`docs/`, and the multi-host routing generator are
@@ -232,13 +232,9 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
 
 The stage sections above are the record: every catalog tool is live, and the tools, library,
 chat (SSE streaming + grounding), study/guides, account/billing (emulator-first), native shell
-and hardening/SEO/E2E stages are all done. Still open, none of it code in this repo's port scope:
+and hardening/SEO/E2E stages are all done.
 
-- **Production secret flip** before DNS cutover — real Firebase config, App Check enforcement,
-  Stripe live price IDs, deploy rules (see `docs/BILLING.md` for the Stripe live-ops runbook).
-- **Native IAP purchase wiring** pending the `@revenuecat/purchases-capacitor` plugin.
-- **Lighthouse perf budget** in CI and broader E2E flow coverage.
-- **Heavy ebook PDFs** (kept out of the repo/payload for now).
-
-Forward-looking work is tracked in [`ROADMAP.md`](./ROADMAP.md); this file stays the historical
-log of the rebuild.
+Open work — production secret flip, native IAP wiring, the Lighthouse perf budget and broader
+E2E coverage, and the rest — is tracked in [`ROADMAP.md`](./ROADMAP.md), the single source of
+truth for what's next. This file stays the historical log of the rebuild and no longer carries a
+parallel to-do list.

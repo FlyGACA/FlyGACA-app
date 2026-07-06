@@ -44,6 +44,15 @@ const staticPaths = routerPaths
 // override with their own freshness signal below.
 const urls = new Map(['/', ...staticPaths].map((p) => [p, today]));
 
+// The set of URLs with a real Arabic snapshot (dist/ar/<path>/index.html) — the
+// only URLs allowed to declare an `hreflang="ar"` alternate. It mirrors
+// scripts/prerender-head.mjs exactly: home + all static routes + guides, plus the
+// top AR_CORPUS_MAX corpus docs in parts→reference→handbook order (dynamic detail
+// pages — aerodromes, packs — are not prerendered, so they stay en/x-default only).
+// Keep AR_CORPUS_MAX identical in both scripts or scripts/check-prerender.mjs fails.
+const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
+const arCovered = new Set(['/', ...staticPaths]);
+
 // Expand the dynamic routes we can enumerate from data, dating each entry from
 // the source document's effectiveDate/revision (or the index's generated date).
 const corpora = [
@@ -51,6 +60,7 @@ const corpora = [
   ['/library/reference', 'public/data/reference-index.json'],
   ['/library/handbook', 'public/data/ebooks-index.json'],
 ];
+let arCorpusCount = 0;
 for (const [base, file] of corpora) {
   const idx = readJson(file);
   const fallback = isDate(idx.generated) ? idx.generated.slice(0, 10) : today;
@@ -60,7 +70,12 @@ for (const [base, file] of corpora) {
       : isDate(d.revision)
         ? d.revision.slice(0, 10)
         : fallback;
-    urls.set(`${base}/${d.slug}`, lastmod);
+    const u = `${base}/${d.slug}`;
+    urls.set(u, lastmod);
+    if (arCorpusCount < AR_CORPUS_MAX) {
+      arCovered.add(u);
+      arCorpusCount++;
+    }
   }
 }
 
@@ -77,7 +92,10 @@ const draftGuides = new Set(
   ].map((m) => m[1]),
 );
 for (const slug of guideSlugs) {
-  if (!draftGuides.has(slug)) urls.set(`/guides/${slug}`, today);
+  if (!draftGuides.has(slug)) {
+    urls.set(`/guides/${slug}`, today);
+    arCovered.add(`/guides/${slug}`);
+  }
 }
 
 // Aerodrome directory → one detail page per curated ICAO (the /tools/aerodromes/:icao
@@ -86,9 +104,9 @@ const aero = readJson('public/data/aerodromes-index.json');
 const aeroDate = isDate(aero.generated) ? aero.generated.slice(0, 10) : today;
 for (const d of aero.documents) urls.set(`/tools/aerodromes/${d.icao}`, aeroDate);
 
-// Prep packs → one detail page per pack id (src/pages/study/packs.ts). Each pack
+// Prep packs → one detail page per pack id (src/pages/study/packCatalog.ts). Each pack
 // page carries a unique localized name + description regardless of Pro gating.
-const packIds = [...read('src/pages/study/packs.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
+const packIds = [...read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
   (m) => m[1],
 );
 for (const id of packIds) urls.set(`/study/packs/${id}`, today);
@@ -107,24 +125,37 @@ function priority(u) {
   return '0.6';
 }
 
-// Per-URL hreflang alternates mirror src/lib/seo.ts: ?lang= variants + x-default.
+// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean URL,
+// Arabic at its real `/ar` document (only where a snapshot exists), and x-default
+// at the clean URL. Head-hreflang (prerender-head.mjs) must stay byte-identical to
+// this — check-prerender.mjs enforces the Arabic side.
+const arLoc = (u) => `${SITE}/ar${u === '/' ? '' : u}`;
 function alternates(u) {
   const loc = `${SITE}${u}`;
+  const arLink = arCovered.has(u)
+    ? `<xhtml:link rel="alternate" hreflang="ar" href="${arLoc(u)}"/>`
+    : '';
   return (
-    `<xhtml:link rel="alternate" hreflang="en" href="${loc}?lang=en"/>` +
-    `<xhtml:link rel="alternate" hreflang="ar" href="${loc}?lang=ar"/>` +
+    `<xhtml:link rel="alternate" hreflang="en" href="${loc}"/>` +
+    arLink +
     `<xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>`
   );
 }
 
+const urlEntry = (u, loc, lastmod) =>
+  `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod>` +
+  `<priority>${priority(u)}</priority>${alternates(u)}</url>`;
+
+// The Arabic `<url>` entries mirror `arCovered` exactly — the URLs with a real
+// dist/ar/<path> snapshot (home + static + hubs + tools + non-draft guides + the
+// top AR_CORPUS_MAX library docs). Iterating the same set keeps the emitted /ar
+// locs, their reciprocal hreflang clusters and the on-disk snapshots in lockstep.
 const sorted = [...urls.keys()].sort();
-const body = sorted
-  .map(
-    (u) =>
-      `  <url><loc>${SITE}${u}</loc><lastmod>${urls.get(u)}</lastmod>` +
-      `<priority>${priority(u)}</priority>${alternates(u)}</url>`,
-  )
-  .join('\n');
+const arSorted = [...arCovered].sort();
+const body = [
+  ...sorted.map((u) => urlEntry(u, `${SITE}${u}`, urls.get(u))),
+  ...arSorted.map((u) => urlEntry(u, arLoc(u), urls.get(u) ?? today)),
+].join('\n');
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -132,12 +163,35 @@ ${body}
 </urlset>
 `;
 
-const robots = `User-agent: *
+// Fly GACA is an independent, educational Saudi civil-aviation library that wants
+// to be crawled and cited. All agents are allowed; the AI answer engines and search
+// crawlers below are listed explicitly to document that intent (a bot that matches
+// its own group ignores the `*` group, so each must carry its own `Allow: /`). In
+// 2026 being uncitable is fatal — never add a `Disallow` here to fence out a bot.
+const CITATION_BOTS = [
+  'GPTBot', // OpenAI training/index crawler
+  'OAI-SearchBot', // ChatGPT search index
+  'ChatGPT-User', // ChatGPT live user-triggered fetches
+  'ClaudeBot', // Anthropic crawler
+  'Claude-Web', // Anthropic live fetches
+  'PerplexityBot', // Perplexity index crawler
+  'Perplexity-User', // Perplexity live user-triggered fetches
+  'Google-Extended', // Gemini / Vertex AI grounding opt-in
+  'Applebot-Extended', // Apple Intelligence opt-in
+  'Bingbot', // Bing / Copilot
+];
+const robots = `# Fly GACA — independent educational Saudi civil-aviation library.
+# We want to be crawled and cited; every agent is allowed. See scripts/build-sitemap.mjs.
+User-agent: *
 Allow: /
 
+# AI answer engines & search crawlers — explicitly welcomed (documents intent).
+${CITATION_BOTS.map((ua) => `User-agent: ${ua}\nAllow: /\n`).join('\n')}
 Sitemap: ${SITE}/sitemap.xml
 `;
 
 writeFileSync(join(root, 'public/sitemap.xml'), xml);
 writeFileSync(join(root, 'public/robots.txt'), robots);
-console.log(`sitemap: ${sorted.length} URLs (origin ${SITE})`);
+console.log(
+  `sitemap: ${sorted.length} en + ${arSorted.length} ar = ${sorted.length + arSorted.length} URLs (origin ${SITE})`,
+);

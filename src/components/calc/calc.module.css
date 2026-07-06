@@ -115,6 +115,28 @@
   white-space: nowrap;
 }
 
+/* Trailing action inside an inputRow (password show/hide) — full-height tap
+   target so it stays usable with gloves/turbulence, not an icon sliver. */
+.revealBtn {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-3);
+  border: none;
+  border-inline-start: var(--hairline);
+  background: transparent;
+  color: var(--link);
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition-color);
+}
+.revealBtn:hover {
+  color: var(--brand-hover);
+  background: var(--surface-raised);
+}
+
 .stat {
   display: flex;
   flex-direction: column;

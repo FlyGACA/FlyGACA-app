@@ -18,10 +18,9 @@ import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import Stripe from "stripe";
 import { entitlementFromSubscription, type PriceEnv } from "./billing-core.js";
+import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
-
-const REGION = "me-central2";
 
 const stripeSecret = defineSecret("STRIPE_SECRET_KEY");
 const webhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");

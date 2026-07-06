@@ -171,6 +171,15 @@ describe('users/{uid} — ownership & entitlement', () => {
     await seed(`users/${ALICE}`, validProfile);
     await assertSucceeds(deleteDoc(doc(dbFor(ALICE), `users/${ALICE}`)));
   });
+
+  it('accepts the role field on create and update (deployed rules unchanged)', async () => {
+    await assertSucceeds(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}`), { ...validProfile, role: 'student' }),
+    );
+    await assertSucceeds(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}`), { ...validProfile, role: 'instructor' }),
+    );
+  });
 });
 
 describe('users/{uid}/logbook — isolation & field bounds', () => {
