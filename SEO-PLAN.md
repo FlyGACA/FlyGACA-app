@@ -39,12 +39,15 @@ independent, citation-fatal counts**:
 This predates this session's changes (infra/host config, not code touched here). It supersedes the
 rest of the plan: **fix host + indexability first, or every downstream SEO item is invisible.**
 
-- [ ] **P0.a — Decide the canonical host & kill the noindex (P0, S–M).** Either (a) make **Firebase**
-      the served host for `flygaca.com` (so `npm run deploy`'s body prerender is what ships), or (b)
-      commit to **Vercel as primary** and run the body prerender in the Vercel build + fix the noindex
-      rule to treat `www.flygaca.com` + bare `flygaca.com` as the *canonical* host (indexable), not a
-      mirror. Pick one host; make the apex and www agree; the indexable host must match the
-      sitemap/canonical (non-www today — so either serve non-www indexable, or move canonical to www).
+- [~] **P0.a — Decide the canonical host & kill the noindex (P0, S–M).** **Decided 2026-07-06
+      (owner): Firebase Hosting is primary** — option (a). `deploy.yml` (now the only deploy
+      workflow; the racing auto-generated `firebase-hosting-merge.yml` was removed) ships the
+      body-prerendered `dist/` to Firebase on every push to `main`. Blocking discovery fixed the
+      same day: an accidental `firebase init` commit (`c1897f0`, 2026-07-05) had set `firebase.json`
+      `hosting.public` to `"y"`, so Firebase was serving a stock welcome page — restored to `dist`
+      with the full headers block. *Remaining (owner, not code):* DNS cutover of `flygaca.com` +
+      `www` from Vercel to Firebase per `docs/RUNBOOK-cutover.md`, adding `www.flygaca.com` as a
+      redirect-to-apex domain in the Firebase console; until then Vercel still serves the apex.
 - [ ] **P0.b — Ensure the served host body-prerenders (P0, M).** Whichever host wins P0.a must serve
       `scripts/prerender.mjs` output. If Vercel: add the prerender step to its build (needs Chromium in
       the Vercel build) or a prerender/ISR equivalent. Re-run `npm run audit:ai` until green.

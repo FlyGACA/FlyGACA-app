@@ -2,14 +2,25 @@
 
 The app is one Vite build (`npm run build` → `dist/`) deployable to four static fronts.
 
-- **Firebase Hosting** is the **canonical/production** front: the `/api/chat` and `/api/content`
-  Cloud Functions (the Captain Adel gateway, region `me-central2`) are co-located there. The backend
-  lives in this repo's `functions/` workspace, deployed separately via `npm run deploy:functions` —
-  the frontend `npm run build` never rebuilds it.
+- **Firebase Hosting** is the **canonical/production** front (decided 2026-07-06, closing
+  SEO-PLAN P0.a): the `/api/chat` and `/api/feedback` Cloud Functions (the Captain Adel gateway,
+  region `me-central1` — must match `functions/src/region.ts` and the `firebase.json` rewrites) are
+  co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
+  `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. Until the
+  `flygaca.com` DNS cutover to Firebase completes (see `RUNBOOK-cutover.md`), the apex is still
+  served by Vercel.
 - **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
   `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
   working. The proxy is same-origin to the browser, so the strict CSP (`connect-src 'self'`) is
   unchanged and no CORS is needed. They depend on the Firebase Functions being live.
+
+> **Incident note (2026-07-05 → 06):** an accidental `firebase init` commit (`c1897f0`) flipped
+> `firebase.json` `hosting.public` from `dist` to `y` and deleted the hosting `headers` block, so
+> every green Firebase deploy published a one-file "Welcome to Firebase Hosting" placeholder. Fixed
+> by restoring `public: "dist"` + the headers and deleting `y/`. The auto-generated
+> `firebase-hosting-merge.yml` workflow (which raced `deploy.yml` on every push to `main` and
+> deployed without the prerender) was removed at the same time — **`deploy.yml` is the only
+> production deploy workflow**.
 
 ## Build env vars (set in each platform's build settings)
 
