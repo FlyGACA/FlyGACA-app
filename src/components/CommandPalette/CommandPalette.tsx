@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { loadJson } from '../../lib/content';
+import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
 import { liveTools } from '../../lib/tools';
 import { GUIDE_SLUGS } from '../../pages/guides/guides';
 import { OPEN_CMDK_EVENT } from './openCommandPalette';
@@ -170,12 +171,11 @@ export function CommandPalette() {
   // Focus the input, lock body scroll, and restore focus to the trigger on close.
   useEffect(() => {
     if (!open) return;
-    const prevOverflow = document.body.style.overflow;
     const restoreFocusTo = document.activeElement as HTMLElement | null;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
     const id = window.setTimeout(() => inputRef.current?.focus(), 50);
     return () => {
-      document.body.style.overflow = prevOverflow;
+      unlockBodyScroll();
       window.clearTimeout(id);
       restoreFocusTo?.focus?.();
     };

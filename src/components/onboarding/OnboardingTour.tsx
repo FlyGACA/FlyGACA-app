@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CaptainAvatar } from '../CaptainAvatar';
 import { DockIcon } from '../../app/DockIcons';
 import { markOnboardingSeen } from '../../lib/onboardingPrefs';
+import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
 import styles from './OnboardingTour.module.css';
 
 /** A simple globe glyph for the bilingual step — matches the DockIcon line style. */
@@ -51,15 +52,14 @@ export default function OnboardingTour() {
 
   // Lock body scroll, move focus into the dialog, and restore it on unmount.
   useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
     const restoreFocusTo = document.activeElement as HTMLElement | null;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
     const id = window.setTimeout(
       () => boxRef.current?.querySelector<HTMLElement>('[data-autofocus]')?.focus(),
       50,
     );
     return () => {
-      document.body.style.overflow = prevOverflow;
+      unlockBodyScroll();
       window.clearTimeout(id);
       restoreFocusTo?.focus?.();
     };
