@@ -5,6 +5,7 @@ import { Disclaimer } from '../../components/Disclaimer';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { articleLd, breadcrumbLd } from '../../lib/jsonld';
 import { sectionId } from '../../calc/anchor';
+import { useScrollToHash } from '../../lib/useScrollToHash';
 import styles from './Prose.module.css';
 
 interface Section {
@@ -45,6 +46,9 @@ export function LegalPage({ base }: { base: LegalBase }) {
       { name: title, path: doc.path },
     ]),
   ]);
+
+  // Deep links to a section (#anchor) — jump once the page has rendered.
+  useScrollToHash();
 
   const sections = t(`${base}.sections`, { returnObjects: true }) as unknown as Section[];
   const [copied, setCopied] = useState<number | null>(null);

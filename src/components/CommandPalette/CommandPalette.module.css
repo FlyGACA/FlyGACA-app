@@ -110,6 +110,7 @@
 .results {
   max-block-size: 46vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-3);
 }
 

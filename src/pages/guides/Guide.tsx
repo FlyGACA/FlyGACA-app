@@ -8,6 +8,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { articleLd, breadcrumbLd, type Crumb } from '../../lib/jsonld';
 import { readingMinutes } from '../../lib/readingTime';
 import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '../../lib/guidePrefs';
+import { useScrollToHash } from '../../lib/useScrollToHash';
 import {
   GUIDE_SLUGS,
   GUIDE_TOOLS,
@@ -66,6 +67,9 @@ export function Guide() {
     // the final robots state).
     valid ? { ogType: 'article' } : { noindex: true },
   );
+
+  // Deep links to a section (#anchor) — jump once the guide has rendered.
+  useScrollToHash(valid);
 
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState<number | null>(null);

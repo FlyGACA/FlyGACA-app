@@ -396,12 +396,18 @@
     box-shadow: 0 0 10px 1px color-mix(in srgb, var(--brand-hover) 60%, transparent);
   }
 
+  /* While the sheet is open its backdrop rises above the header (--z-popover),
+     so the dock must sit above the backdrop to stay interactive. */
+  .dockRaised {
+    z-index: var(--z-overlay);
+  }
+
   /* --- "More" sheet: floats just above the dock --- */
   .sheet {
     position: fixed;
     inset-block-end: calc(var(--space-3) + var(--safe-bottom) + 72px);
     inset-inline: var(--space-4);
-    z-index: var(--z-dropdown);
+    z-index: var(--z-overlay);
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
@@ -544,12 +550,13 @@
     transform: scale(0.98);
   }
 
-  /* Dimmed backdrop behind the sheet (sits above the dock when open). */
+  /* Dimmed backdrop behind the sheet — covers the whole page including the
+     header, so no chrome stays clickable under the scrim. */
   .backdrop {
     display: block;
     position: fixed;
     inset: 0;
-    z-index: var(--z-raised);
+    z-index: var(--z-popover);
     margin: 0;
     padding: 0;
     border: 0;

@@ -31,7 +31,7 @@
   inset-block-end: calc(var(--space-5) + var(--safe-bottom, 0px));
   inset-inline: var(--space-4);
   margin-inline: auto;
-  z-index: var(--z-modal, 1000);
+  z-index: var(--z-modal);
   max-inline-size: 420px;
   display: flex;
   flex-wrap: wrap;

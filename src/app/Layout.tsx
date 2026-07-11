@@ -38,9 +38,10 @@ export function Layout() {
         {t('common.skipToContent')}
       </a>
       <ScrollToTop />
-      <ScrollProgress />
       <CommandPalette />
       <Header />
+      {/* After Header: equal z-index, so DOM order keeps the bar visible on top. */}
+      <ScrollProgress />
       <main id="main" tabIndex={-1}>
         <div key={location.pathname} className="page-enter">
           <ErrorBoundary>

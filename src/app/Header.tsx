@@ -201,7 +201,10 @@ export function Header() {
       {/* Mobile floating bottom dock — quick-access primary tabs + "More". Sits
           outside <header> so it anchors to the viewport (the header's
           backdrop-filter would otherwise become the containing block). */}
-      <nav className={styles.dock} aria-label={t('nav.primary')}>
+      <nav
+        className={`${styles.dock} ${open ? styles.dockRaised : ''}`}
+        aria-label={t('nav.primary')}
+      >
         {PRIMARY.map((item) => (
           <NavLink
             viewTransition
