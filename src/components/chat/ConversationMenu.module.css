@@ -51,7 +51,7 @@
   position: absolute;
   inset-block-start: calc(100% + var(--space-1));
   inset-inline-end: 0;
-  z-index: 20;
+  z-index: var(--z-dropdown);
   inline-size: min(80vw, 280px);
   max-block-size: 320px;
   overflow-y: auto;

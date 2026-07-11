@@ -75,6 +75,7 @@
   background: var(--surface);
   box-shadow: var(--clay-shadow);
   overflow-y: auto;
+  overscroll-behavior: contain;
   min-block-size: 320px;
   scroll-behavior: smooth;
 }

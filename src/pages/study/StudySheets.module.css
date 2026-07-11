@@ -151,7 +151,7 @@
 .fullscreen {
   position: fixed;
   inset: 0;
-  z-index: var(--z-modal, 1000);
+  z-index: var(--z-modal);
   gap: var(--space-3);
   padding: var(--space-4);
   background: var(--bg);

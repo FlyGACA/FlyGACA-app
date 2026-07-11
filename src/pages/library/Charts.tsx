@@ -7,6 +7,7 @@ import { useFetchJson } from '../../lib/useFetchJson';
 import { useUrlState } from '../../lib/useUrlState';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { dataUrl, type ChartsIndex, type ChartDoc } from '../../lib/content';
+import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ExternalLink } from '../../components/ExternalLink';
 import { Alert } from '../../components/Alert';
@@ -28,6 +29,13 @@ export function Charts() {
   const [params, setParam] = useUrlState({ chart: '' });
   const [fullscreen, setFullscreen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // The fullscreen viewer covers the viewport — the page behind must not scroll.
+  useEffect(() => {
+    if (!fullscreen) return;
+    lockBodyScroll();
+    return unlockBodyScroll;
+  }, [fullscreen]);
 
   const active = docs.find((d) => d.slug === params.chart) ?? docs[0];
   const activeIdx = active ? docs.findIndex((d) => d.slug === active.slug) : -1;

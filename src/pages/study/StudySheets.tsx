@@ -1,10 +1,11 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import { useUrlState } from '../../lib/useUrlState';
 import { usePageMeta } from '../../lib/usePageMeta';
 import type { PdfsIndex, PdfDoc } from '../../lib/content';
+import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ExternalLink } from '../../components/ExternalLink';
 import { EmptyState } from '../../components/EmptyState';
@@ -26,6 +27,13 @@ export function StudySheets() {
   const [q, setQ] = useState('');
   const [fullscreen, setFullscreen] = useState(false);
   const frameRef = useRef<HTMLIFrameElement>(null);
+
+  // The fullscreen viewer covers the viewport — the page behind must not scroll.
+  useEffect(() => {
+    if (!fullscreen) return;
+    lockBodyScroll();
+    return unlockBodyScroll;
+  }, [fullscreen]);
 
   const files = useMemo(
     () => (index.data?.documents ?? []).filter((d) => d.available && d.file),

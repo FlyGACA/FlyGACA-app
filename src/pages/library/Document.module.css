@@ -81,6 +81,7 @@
   inset-block-start: calc(var(--nav-h) + var(--space-3));
   max-block-size: calc(100dvh - var(--nav-h) - var(--space-6));
   overflow-y: auto;
+  overscroll-behavior: contain;
   border: var(--clay-border);
   border-radius: var(--clay-radius);
   background: var(--surface);
