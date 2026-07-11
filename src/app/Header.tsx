@@ -6,6 +6,7 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import { ButtonLink } from '../components/ui/Button';
+import { lockBodyScroll, unlockBodyScroll } from '../lib/scroll-lock';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 
@@ -71,8 +72,7 @@ export function Header() {
   // Escape. Focus returns to the More button when the sheet closes.
   useEffect(() => {
     if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
     // Capture the trigger now so cleanup restores focus to the same node.
     const moreEl = moreRef.current;
 
@@ -108,7 +108,7 @@ export function Header() {
     };
     window.addEventListener('keydown', onKey);
     return () => {
-      document.body.style.overflow = prevOverflow;
+      unlockBodyScroll();
       window.removeEventListener('keydown', onKey);
       window.clearTimeout(focusTimer);
       moreEl?.focus();
