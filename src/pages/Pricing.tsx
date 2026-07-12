@@ -92,14 +92,18 @@ export function Pricing() {
     setBusy(true);
     setError('');
     try {
-      await startProCheckout(variant);
+      await startProCheckout(variant, { annual });
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {
         navigate('/account');
         return;
       }
-      setError(t('pricing.checkoutError'));
+      setError(
+        code === 'student-verification-required'
+          ? t('pricing.studentVerifyNeeded')
+          : t('pricing.checkoutError'),
+      );
     } finally {
       setBusy(false);
     }
@@ -199,6 +203,16 @@ export function Pricing() {
                   <p>
                     <bdi dir="ltr">{studentPrice}</bdi> · {t('pricing.studentNote')}
                   </p>
+                  {canCheckout() && (
+                    <button
+                      type="button"
+                      className="btn"
+                      disabled={busy}
+                      onClick={() => void checkout('student')}
+                    >
+                      {t('pricing.studentCta')}
+                    </button>
+                  )}
                 </details>
               </>
             )

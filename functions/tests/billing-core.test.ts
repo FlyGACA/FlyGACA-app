@@ -15,6 +15,11 @@ describe("planForPrice", () => {
     expect(planForPrice("price_monthly", env)).toBe("pro");
     expect(planForPrice("price_annual", env)).toBe("pro");
   });
+  it("maps the discounted student prices to pro", () => {
+    const withStudent = { ...env, studentMonthly: "price_stu_m", studentAnnual: "price_stu_a" };
+    expect(planForPrice("price_stu_m", withStudent)).toBe("pro");
+    expect(planForPrice("price_stu_a", withStudent)).toBe("pro");
+  });
   it("returns null for unknown or missing prices", () => {
     expect(planForPrice("price_other", env)).toBeNull();
     expect(planForPrice(undefined, env)).toBeNull();

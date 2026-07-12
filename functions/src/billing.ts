@@ -25,6 +25,7 @@ import {
   type PriceEnv,
 } from "./billing-core.js";
 import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
+import { isStudentEmail } from "./student-core.js";
 import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
@@ -37,6 +38,9 @@ const priceAnnual = defineString("STRIPE_PRICE_PRO_ANNUAL");
 const pricePass = defineString("STRIPE_PRICE_PASS");
 // One-time Captain Adel credit-pack price (also `mode: payment`).
 const priceCredits = defineString("STRIPE_PRICE_CREDITS");
+// Discounted student subscription prices (gated on a verified academic email).
+const priceStudentMonthly = defineString("STRIPE_PRICE_STUDENT_MONTHLY");
+const priceStudentAnnual = defineString("STRIPE_PRICE_STUDENT_ANNUAL");
 const appOrigin = defineString("APP_ORIGIN");
 
 function stripeClient(): Stripe {
@@ -46,7 +50,12 @@ function stripeClient(): Stripe {
   return new Stripe(stripeSecret.value(), { apiVersion: "2025-02-24.acacia" });
 }
 function priceEnv(): PriceEnv {
-  return { proMonthly: priceMonthly.value(), proAnnual: priceAnnual.value() };
+  return {
+    proMonthly: priceMonthly.value(),
+    proAnnual: priceAnnual.value(),
+    studentMonthly: priceStudentMonthly.value(),
+    studentAnnual: priceStudentAnnual.value(),
+  };
 }
 
 /** The uid→Stripe-customer mapping doc (server-only; deny-all to clients). */
@@ -153,8 +162,33 @@ export const createCheckoutSession = onCall(
       return { url: session.url };
     }
 
-    // Recurring Pro. `monthly` uses the monthly price; anything else (annual,
-    // student, or an unknown variant) falls back to the annual price.
+    // Discounted student subscription — gated server-side on a VERIFIED academic
+    // email so the rate can't be self-claimed. Cadence follows the client toggle
+    // (`data.annual`). Ineligible callers get a stable code the UI explains.
+    if (variant === "student") {
+      const email = request.auth?.token?.email as string | undefined;
+      const emailVerified = request.auth?.token?.email_verified as boolean | undefined;
+      if (!isStudentEmail(email, emailVerified)) {
+        throw new HttpsError("failed-precondition", "student-verification-required");
+      }
+      const studentPrice = request.data?.annual
+        ? priceStudentAnnual.value()
+        : priceStudentMonthly.value();
+      const session = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        customer,
+        line_items: [{ price: studentPrice, quantity: 1 }],
+        client_reference_id: uid,
+        allow_promotion_codes: true,
+        success_url: `${origin}/account?checkout=success`,
+        cancel_url: `${origin}/pricing?checkout=cancel`,
+      });
+      logger.info("funnel", { event: "checkout_started", kind: "student", uid });
+      return { url: session.url };
+    }
+
+    // Recurring Pro. `monthly` uses the monthly price; anything else (annual or an
+    // unknown variant) falls back to the annual price.
     const price = variant === "monthly" ? priceMonthly.value() : priceAnnual.value();
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",

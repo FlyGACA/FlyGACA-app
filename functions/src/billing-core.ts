@@ -17,12 +17,22 @@ export interface Entitlement {
 export interface PriceEnv {
   proMonthly?: string;
   proAnnual?: string;
+  /** Discounted student prices — grant the same `pro` plan. */
+  studentMonthly?: string;
+  studentAnnual?: string;
 }
 
 /** The plan a price grants, or null when the price isn't recognised. */
 export function planForPrice(priceId: string | undefined, env: PriceEnv): Plan | null {
   if (!priceId) return null;
-  if (priceId === env.proMonthly || priceId === env.proAnnual) return "pro";
+  if (
+    priceId === env.proMonthly ||
+    priceId === env.proAnnual ||
+    priceId === env.studentMonthly ||
+    priceId === env.studentAnnual
+  ) {
+    return "pro";
+  }
   return null;
 }
 
