@@ -14,11 +14,12 @@ import { defineBoolean, defineInt } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
-import { getFirestore } from "firebase-admin/firestore";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { captainAdelFlow } from "./captain-adel.js";
 import { createRateLimiter } from "./rate-limit-core.js";
 import { isPaidActive, type Entitlement } from "./billing-core.js";
 import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
+import { extractApiKey, hashApiKey } from "./api-key-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -126,7 +127,11 @@ app.use(
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: "Too many requests, please try again later." },
-    skip: (req) => req.method === "OPTIONS", // CORS preflights don't burn budget
+    // CORS preflights don't burn budget; licensed API traffic (/v1) is governed by
+    // the per-key limiter below, not this per-IP app backstop (a partner's calls
+    // share one IP).
+    skip: (req) =>
+      req.method === "OPTIONS" || req.path.startsWith("/v1") || req.path.startsWith("/api/v1"),
     validate: { trustProxy: false }, // permissive trust proxy is deliberate (see above)
   }),
 );
@@ -134,6 +139,9 @@ app.use(
 // Per-uid chat limit — the hard cost control (DESIGN §8 N4). 20 turns/min is far
 // above any human rate; state is per-instance (see rate-limit-core.ts caveat).
 const chatLimiter = createRateLimiter({ limit: 20, windowMs: 60 * 1000 });
+// Per-API-key limit for the licensed /v1 API (higher than a single human, still a
+// cost ceiling; per-instance like chatLimiter).
+const apiKeyLimiter = createRateLimiter({ limit: 60, windowMs: 60 * 1000 });
 
 /**
  * Read the server-owned entitlement for `uid` (`users/{uid}.entitlement`). On any
@@ -362,6 +370,64 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
       res.write(doneFrame());
       res.end();
     }
+  }
+});
+
+// Licensed Captain Adel API (DESIGN — data/API licensing). External callers (LMS
+// vendors, schools' portals) authenticate with a minted API key — not a Firebase
+// user or App Check — and receive a plain buffered JSON answer + citations. The key
+// is looked up by hash, rate-limited and metered per key. Streaming, history and
+// the Pro tier stay app-only; this surface is deliberately minimal.
+app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promise<void> => {
+  const key = extractApiKey(req.header("authorization"), req.header("x-api-key"));
+  if (!key) {
+    res.status(401).json({ error: "api key required" });
+    return;
+  }
+  const hash = hashApiKey(key);
+
+  const verdict = apiKeyLimiter.check(`key:${hash}`);
+  if (!verdict.allowed) {
+    res.setHeader("Retry-After", String(verdict.retryAfterSec));
+    res.status(429).json({ error: "rate_limited" });
+    return;
+  }
+
+  const db = getFirestore();
+  const keyDoc = await db.collection("apiKeys").doc(hash).get();
+  if (!keyDoc.exists || keyDoc.data()?.active === false) {
+    res.status(401).json({ error: "invalid api key" });
+    return;
+  }
+
+  const parsed = parseRequest(req.body);
+  if (!parsed) {
+    res.status(400).json({
+      error: `invalid request: 'message' is required (max ${MESSAGE_MAX_CHARS} chars)`,
+    });
+    return;
+  }
+
+  // Meter per key (best-effort; billing/quota reads this offline). Never blocks the
+  // answer on the write.
+  void db
+    .collection("apiUsage")
+    .doc(hash)
+    .set({ count: FieldValue.increment(1), lastUsedAt: FieldValue.serverTimestamp() }, { merge: true })
+    .catch((err) => logger.error("api usage metering failed", { err }));
+
+  try {
+    const out = await captainAdelFlow(parsed);
+    res.json({
+      answer: out.answer,
+      sources: out.sources,
+      kind: out.kind,
+      refusalClass: out.refusalClass,
+      meta: { provider: out.meta.provider },
+    });
+  } catch (err) {
+    logger.error("v1/ask failed", { err });
+    res.status(500).json({ error: "ask failed" });
   }
 });
 

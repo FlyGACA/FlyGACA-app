@@ -354,3 +354,17 @@ describe('referral bookkeeping — fully server-only', () => {
     await assertFails(setDoc(doc(dbFor(BOB), `referrals/${BOB}`), { referrerUid: ALICE }));
   });
 });
+
+describe('licensed-API keys — fully server-only', () => {
+  it('denies a client reading an API key hash or its usage meter', async () => {
+    await seed('apiKeys/deadbeef', { active: true, label: 'Acme' });
+    await seed('apiUsage/deadbeef', { count: 5 });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'apiKeys/deadbeef')));
+    await assertFails(getDoc(doc(dbFor(ALICE), 'apiUsage/deadbeef')));
+  });
+
+  it('denies a client minting or metering a key', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), 'apiKeys/deadbeef'), { active: true }));
+    await assertFails(setDoc(doc(dbFor(ALICE), 'apiUsage/deadbeef'), { count: 999 }));
+  });
+});
