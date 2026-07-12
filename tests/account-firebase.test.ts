@@ -68,6 +68,7 @@ describe('account store — Firebase auth binding', () => {
       profile: { homeBase: 'OERK' },
       flights: [{ ...FLIGHT, id: 'srv1', remarks: 'from server' }],
       entitlement: { plan: 'pro', source: 'stripe' },
+      chatCredits: 0,
     });
 
     const { result } = renderHook(() => acct.useAccount());
@@ -91,6 +92,7 @@ describe('account store — Firebase auth binding', () => {
       profile: {},
       flights: [],
       entitlement: { plan: 'pro', source: 'stripe' },
+      chatCredits: 0,
     });
 
     const { result } = renderHook(() => acct.useAccount());

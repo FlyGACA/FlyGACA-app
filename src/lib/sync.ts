@@ -109,9 +109,11 @@ export interface LoadedAccount {
   flights: Flight[];
   records?: PilotRecord[];
   entitlement: Entitlement | null;
+  /** Purchased Captain Adel credits (server-written, owner-readable); 0 when none. */
+  chatCredits: number;
 }
 
-/** One-time hydration of the user's profile, logbook, records and entitlement. */
+/** One-time hydration of the user's profile, logbook, records, entitlement & credits. */
 export async function loadAccount(uid: string): Promise<LoadedAccount | null> {
   const db = await getDb();
   if (!db) return null;
@@ -120,11 +122,14 @@ export async function loadAccount(uid: string): Promise<LoadedAccount | null> {
   const data = userSnap.data();
   const lbSnap = await getDocs(collection(db, 'users', uid, 'logbook'));
   const recSnap = await getDocs(collection(db, 'users', uid, 'records'));
+  const creditSnap = await getDoc(doc(db, 'chatCredits', uid));
+  const balance = Number(creditSnap.data()?.balance ?? 0);
   return {
     profile: profileFromDoc(data),
     flights: lbSnap.docs.map((d) => flightFromDoc(d.id, d.data())),
     records: recSnap.docs.map((d) => recordFromDoc(d.id, d.data())),
     entitlement: entitlementFromDoc(data),
+    chatCredits: Number.isFinite(balance) && balance > 0 ? Math.floor(balance) : 0,
   };
 }
 

@@ -13,6 +13,13 @@
 /** Free questions a signed-in free user may ask per UTC day. Must match src/calc/chatQuota.ts. */
 export const FREE_DAILY_LIMIT = 5;
 
+/**
+ * Questions granted by one purchased credit pack (a one-time top-up for free users
+ * who hit the daily limit but won't subscribe). Credits are spent only after the
+ * day's free allowance is used and never expire. Mirror in src/lib/billing.ts.
+ */
+export const CREDIT_PACK_SIZE = 50;
+
 /** Persisted per-uid usage document (`chatUsage/{uid}`). */
 export interface DailyUsage {
   /** UTC calendar day, `YYYY-MM-DD`. */

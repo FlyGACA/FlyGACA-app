@@ -691,7 +691,9 @@
     },
     "quota": {
       "left": "{{n}} of {{limit}} free questions left today",
-      "exhausted": "You've used today's free questions. Go Pro for unlimited access to Captain Adel."
+      "exhausted": "You've used today's free questions. Go Pro for unlimited access to Captain Adel.",
+      "credits": "{{n}} question credits left",
+      "buyCredits": "Buy {{n}} more questions"
     },
     "groups": {
       "airspace": "Airspace & weather",

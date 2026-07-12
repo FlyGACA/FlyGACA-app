@@ -321,3 +321,19 @@ describe('stripeCustomers & default-deny', () => {
     await assertFails(getDoc(doc(dbFor(ALICE), 'serverOnly/x')));
   });
 });
+
+describe('chatCredits — owner-readable, server-only writes', () => {
+  it('lets an owner read their own purchased credit balance', async () => {
+    await seed(`chatCredits/${ALICE}`, { balance: 50 });
+    await assertSucceeds(getDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`)));
+  });
+
+  it("denies reading another user's credit balance", async () => {
+    await seed(`chatCredits/${ALICE}`, { balance: 50 });
+    await assertFails(getDoc(doc(dbFor(BOB), `chatCredits/${ALICE}`)));
+  });
+
+  it('denies a client writing its own credit balance (no self-grant)', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`), { balance: 999 }));
+  });
+});

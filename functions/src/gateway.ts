@@ -175,6 +175,29 @@ async function consumeFreeQuota(
     return { allowed: true, retryAfterSec: 0 };
   }
 }
+
+/**
+ * Spend one purchased Captain Adel credit for `uid` (transaction on
+ * `chatCredits/{uid}`) — used only after the daily free allowance is exhausted.
+ * Returns true when a credit was spent, false when the balance is empty. On a
+ * transaction error returns false (fail closed): this path is only reached after a
+ * successful quota read, so a failure here is rare and the caller just 429s.
+ */
+async function consumeCredit(uid: string): Promise<boolean> {
+  const ref = getFirestore().collection("chatCredits").doc(uid);
+  try {
+    return await getFirestore().runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      const balance = snap.exists ? Number(snap.data()?.balance ?? 0) : 0;
+      if (!(balance >= 1)) return false;
+      tx.set(ref, { balance: Math.floor(balance) - 1 }, { merge: true });
+      return true;
+    });
+  } catch (err) {
+    logger.error("chat credit transaction failed", { uid, err });
+    return false;
+  }
+}
 // CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
 // /api/* here, so the Origin we see is the page origin. Production fronts are
 // listed exactly; preview/channel deploys match a few project-scoped suffixes.
@@ -263,7 +286,9 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
   if (!paid) {
     parsed.provider = undefined; // collapse a client-requested 'pro' tier to flash
     const quota = await consumeFreeQuota(uid);
-    if (!quota.allowed) {
+    // Past the daily free allowance a purchased credit (if any) covers the turn;
+    // only 429 when neither free questions nor credits remain.
+    if (!quota.allowed && !(await consumeCredit(uid))) {
       res.setHeader("Retry-After", String(quota.retryAfterSec));
       res.status(429).json({ error: "quota_exceeded" });
       return;

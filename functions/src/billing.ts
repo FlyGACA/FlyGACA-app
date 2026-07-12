@@ -23,6 +23,7 @@ import {
   type Entitlement,
   type PriceEnv,
 } from "./billing-core.js";
+import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
 import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
@@ -33,6 +34,8 @@ const priceMonthly = defineString("STRIPE_PRICE_PRO_MONTHLY");
 const priceAnnual = defineString("STRIPE_PRICE_PRO_ANNUAL");
 // One-time Exam Season Pass price (Stripe `mode: payment`, not a subscription).
 const pricePass = defineString("STRIPE_PRICE_PASS");
+// One-time Captain Adel credit-pack price (also `mode: payment`).
+const priceCredits = defineString("STRIPE_PRICE_CREDITS");
 const appOrigin = defineString("APP_ORIGIN");
 
 function stripeClient(): Stripe {
@@ -93,6 +96,18 @@ async function grantPass(uid: string): Promise<void> {
   await ref.set({ entitlement }, { merge: true });
 }
 
+/**
+ * Top up a user's Captain Adel credit balance by one pack (`chatCredits/{uid}` —
+ * server-written, owner-readable so the app can show/spend it). `FieldValue.increment`
+ * is atomic; the webhook's per-event marker keeps a Stripe retry from double-counting.
+ */
+async function addCredits(uid: string): Promise<void> {
+  await getFirestore()
+    .collection("chatCredits")
+    .doc(uid)
+    .set({ balance: FieldValue.increment(CREDIT_PACK_SIZE) }, { merge: true });
+}
+
 export const createCheckoutSession = onCall(
   {
     region: REGION,
@@ -116,17 +131,17 @@ export const createCheckoutSession = onCall(
     const customer = await ensureCustomer(stripe, uid, request.auth?.token?.email as string | undefined);
     const variant = request.data?.plan;
 
-    // The one-time Exam Season Pass is a `payment` (not `subscription`) checkout;
-    // the webhook grants a fixed-duration entitlement when it completes.
-    if (variant === "pass") {
+    // One-time purchases (`payment`, not `subscription`): the Exam Season Pass and
+    // Captain Adel credit packs. The webhook fulfils them by `metadata.kind`, which
+    // it needs because client_reference_id alone doesn't carry the intent.
+    if (variant === "pass" || variant === "credits") {
+      const price = variant === "pass" ? pricePass.value() : priceCredits.value();
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
         customer,
-        line_items: [{ price: pricePass.value(), quantity: 1 }],
+        line_items: [{ price, quantity: 1 }],
         client_reference_id: uid,
-        // Tag the session so the webhook can distinguish a pass from any other
-        // one-time payment — client_reference_id alone doesn't carry intent.
-        metadata: { uid, kind: "pass" },
+        metadata: { uid, kind: variant },
         allow_promotion_codes: true,
         success_url: `${origin}/account?checkout=success`,
         cancel_url: `${origin}/pricing?checkout=cancel`,
@@ -212,13 +227,10 @@ export const stripeWebhook = onRequest(
         if (uid && session.mode === "subscription" && session.subscription) {
           const sub = await stripe.subscriptions.retrieve(session.subscription as string);
           await writeEntitlement(uid, sub);
-        } else if (
-          uid &&
-          session.mode === "payment" &&
-          session.payment_status === "paid" &&
-          session.metadata?.kind === "pass"
-        ) {
-          await grantPass(uid);
+        } else if (uid && session.mode === "payment" && session.payment_status === "paid") {
+          const kind = session.metadata?.kind;
+          if (kind === "pass") await grantPass(uid);
+          else if (kind === "credits") await addCredits(uid);
         }
       } else if (
         event.type === "customer.subscription.updated" ||

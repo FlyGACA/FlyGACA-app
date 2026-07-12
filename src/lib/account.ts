@@ -90,6 +90,8 @@ interface State {
   records: PilotRecord[];
   /** Server-written; read-only, used only to gate UI. */
   entitlement: Entitlement | null;
+  /** Purchased Captain Adel credits (server-written, owner-readable); 0 when none. */
+  chatCredits: number;
   /** True when the last Firestore write-through failed — local is ahead of server. */
   syncError: boolean;
 }
@@ -130,6 +132,7 @@ let state: State = {
   flights: readJson(K.logbook, [] as Flight[]),
   records: readJson(K.records, [] as PilotRecord[]),
   entitlement: null,
+  chatCredits: 0,
   syncError: false,
 };
 
@@ -169,6 +172,7 @@ export function signOut(): void {
     uid: null,
     emailVerified: false,
     entitlement: null,
+    chatCredits: 0,
     syncError: false,
   });
 }
@@ -303,6 +307,7 @@ function connectAuth(): void {
             flights: loaded.flights.length ? loaded.flights : state.flights,
             records: loaded.records && loaded.records.length ? loaded.records : state.records,
             entitlement: loaded.entitlement,
+            chatCredits: loaded.chatCredits,
             syncError: false,
           });
         }
@@ -316,6 +321,7 @@ function connectAuth(): void {
         uid: null,
         emailVerified: false,
         entitlement: null,
+        chatCredits: 0,
         syncError: false,
       });
     }
@@ -341,6 +347,7 @@ export async function refreshAccount(): Promise<void> {
         flights: loaded.flights.length ? loaded.flights : state.flights,
         records: loaded.records?.length ? loaded.records : state.records,
         entitlement: loaded.entitlement,
+        chatCredits: loaded.chatCredits,
         syncError: false,
       });
     }

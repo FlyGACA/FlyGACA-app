@@ -12,9 +12,13 @@ import { billingChannel, isNative } from './native-bridge';
 import { isFirebaseConfigured, getFns, getFirebaseAuth } from './firebase';
 
 // 'monthly' / 'annual' are the standard Pro cadences; 'student' is the verified
-// student rate and 'pass' the 90-day Exam Season Pass — both resolve to a Pro
-// entitlement server-side (the Cloud Function maps the variant to a price).
-export type ProPlan = 'monthly' | 'annual' | 'student' | 'pass';
+// student rate and 'pass' the 90-day Exam Season Pass. 'credits' is a one-time
+// Captain Adel question pack. The Cloud Function maps each variant to a Stripe
+// price (subscription for the cadences, one-time payment for pass/credits).
+export type ProPlan = 'monthly' | 'annual' | 'student' | 'pass' | 'credits';
+
+/** Questions per purchased credit pack. Mirror of functions/src/chat-quota-core.ts. */
+export const CREDIT_PACK_SIZE = 50;
 
 /** Whether the web Stripe checkout can run in this runtime. */
 export function canCheckout(): boolean {
