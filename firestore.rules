@@ -137,6 +137,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Per-uid Captain Adel free-question counters, written ONLY by the chat
+    // gateway (Admin SDK) to enforce the daily free allowance server-side. A
+    // client must never read or write it — the app's own counter is a separate
+    // localStorage nudge, not this authoritative record.
+    match /chatUsage/{uid} {
+      allow read, write: if false;
+    }
+
     // Everything else stays denied. Server-only data is written with the Admin
     // SDK (which bypasses these rules); any client reaching an unlisted path is
     // refused here.

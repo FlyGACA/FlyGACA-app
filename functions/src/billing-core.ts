@@ -26,6 +26,30 @@ export function planForPrice(priceId: string | undefined, env: PriceEnv): Plan |
   return null;
 }
 
+/**
+ * The plan actually in force for an entitlement `now`: a paid plan whose `expiresAt`
+ * has passed collapses to `free`, and a non-expiring grant (school/staff) stands.
+ * Mirrors `effectivePlan` in src/lib/entitlements.ts so the gateway gates on exactly
+ * the rule the app uses to show UI. Read-only: never grants — only interprets what
+ * the Stripe webhook (the sole writer) persisted.
+ */
+export function effectivePlan(
+  ent: Entitlement | null | undefined,
+  now: Date = new Date(),
+): Plan {
+  if (!ent || ent.plan === "free") return "free";
+  if (!ent.expiresAt) return ent.plan; // non-expiring grant (school/staff)
+  return new Date(ent.expiresAt).getTime() > now.getTime() ? ent.plan : "free";
+}
+
+/** Whether an entitlement grants an active paid plan (pro or school) right now. */
+export function isPaidActive(
+  ent: Entitlement | null | undefined,
+  now: Date = new Date(),
+): boolean {
+  return effectivePlan(ent, now) !== "free";
+}
+
 /** Stripe subscription statuses that grant an active paid plan. */
 const ACTIVE_STATUSES = new Set(["active", "trialing"]);
 

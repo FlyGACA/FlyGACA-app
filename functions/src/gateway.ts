@@ -14,8 +14,11 @@ import { defineBoolean } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
+import { getFirestore } from "firebase-admin/firestore";
 import { captainAdelFlow } from "./captain-adel.js";
 import { createRateLimiter } from "./rate-limit-core.js";
+import { isPaidActive, type Entitlement } from "./billing-core.js";
+import { checkDailyQuota, type DailyUsage } from "./chat-quota-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -126,6 +129,52 @@ app.use(
 // Per-uid chat limit — the hard cost control (DESIGN §8 N4). 20 turns/min is far
 // above any human rate; state is per-instance (see rate-limit-core.ts caveat).
 const chatLimiter = createRateLimiter({ limit: 20, windowMs: 60 * 1000 });
+
+/**
+ * Read the server-owned entitlement for `uid` (`users/{uid}.entitlement`). On any
+ * Firestore error, resolve to `null` (treated as free) — failing toward the cheap
+ * path keeps a transient blip from handing out the Pro model / unlimited chat. The
+ * per-uid burst limiter above remains the hard cost backstop either way.
+ */
+async function readEntitlement(uid: string): Promise<Entitlement | null> {
+  try {
+    const snap = await getFirestore().collection("users").doc(uid).get();
+    const ent = snap.exists
+      ? (snap.data()?.entitlement as Entitlement | undefined)
+      : undefined;
+    return ent ?? null;
+  } catch (err) {
+    logger.error("entitlement read failed", { uid, err });
+    return null;
+  }
+}
+
+/**
+ * Atomically consume one free-tier question for `uid` in a Firestore transaction on
+ * `chatUsage/{uid}` — durable across instances, unlike the in-memory burst limiter,
+ * so the daily allowance can't be reset by clearing localStorage or spreading load
+ * across function instances. On a transaction error it fails open (allowed); the
+ * per-uid burst limiter is the hard backstop. `chatUsage` is server-only (deny-all
+ * in firestore.rules).
+ */
+async function consumeFreeQuota(
+  uid: string,
+): Promise<{ allowed: boolean; retryAfterSec: number }> {
+  const db = getFirestore();
+  const ref = db.collection("chatUsage").doc(uid);
+  try {
+    return await db.runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      const raw = snap.exists ? (snap.data() as Partial<DailyUsage>) : null;
+      const verdict = checkDailyQuota(raw);
+      if (verdict.allowed) tx.set(ref, verdict.usage);
+      return { allowed: verdict.allowed, retryAfterSec: verdict.retryAfterSec };
+    });
+  } catch (err) {
+    logger.error("chat quota transaction failed", { uid, err });
+    return { allowed: true, retryAfterSec: 0 };
+  }
+}
 // CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
 // /api/* here, so the Origin we see is the page origin. Production fronts are
 // listed exactly; preview/channel deploys match a few project-scoped suffixes.
@@ -204,6 +253,21 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
       error: `invalid request: 'message' is required (max ${MESSAGE_MAX_CHARS} chars)`,
     });
     return;
+  }
+
+  // Plan gate — the server is the source of truth (DESIGN §8). Free users are held
+  // to the daily free-question allowance and never get the Pro model, regardless of
+  // what the client sends; the app's localStorage counter and Pro toggle are only
+  // UI nudges. Checked after parseRequest so a malformed turn never burns quota.
+  const paid = isPaidActive(await readEntitlement(uid));
+  if (!paid) {
+    parsed.provider = undefined; // collapse a client-requested 'pro' tier to flash
+    const quota = await consumeFreeQuota(uid);
+    if (!quota.allowed) {
+      res.setHeader("Retry-After", String(quota.retryAfterSec));
+      res.status(429).json({ error: "quota_exceeded" });
+      return;
+    }
   }
 
   const streaming = req.query.stream === "1";

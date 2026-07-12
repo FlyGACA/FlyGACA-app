@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { entitlementFromSubscription, planForPrice } from "../src/billing-core.js";
+import {
+  effectivePlan,
+  entitlementFromSubscription,
+  isPaidActive,
+  planForPrice,
+} from "../src/billing-core.js";
 
 const env = { proMonthly: "price_monthly", proAnnual: "price_annual" };
 
@@ -46,5 +51,50 @@ describe("entitlementFromSubscription", () => {
     expect(
       entitlementFromSubscription({ status: "active", priceId: "price_monthly", env }).expiresAt,
     ).toBeUndefined();
+  });
+});
+
+describe("effectivePlan", () => {
+  const now = new Date("2026-07-12T10:00:00Z");
+  const future = new Date("2026-08-01T00:00:00Z").toISOString();
+  const past = new Date("2026-07-01T00:00:00Z").toISOString();
+
+  it("treats a null/undefined or free entitlement as free", () => {
+    expect(effectivePlan(null, now)).toBe("free");
+    expect(effectivePlan(undefined, now)).toBe("free");
+    expect(effectivePlan({ plan: "free" }, now)).toBe("free");
+  });
+
+  it("keeps a paid plan whose expiry is in the future", () => {
+    expect(effectivePlan({ plan: "pro", expiresAt: future, source: "stripe" }, now)).toBe("pro");
+    expect(effectivePlan({ plan: "school", expiresAt: future, source: "school" }, now)).toBe(
+      "school",
+    );
+  });
+
+  it("collapses a paid plan whose expiry has passed to free", () => {
+    expect(effectivePlan({ plan: "pro", expiresAt: past, source: "stripe" }, now)).toBe("free");
+  });
+
+  it("keeps a non-expiring grant (no expiresAt) — e.g. school/staff", () => {
+    expect(effectivePlan({ plan: "school", source: "school" }, now)).toBe("school");
+    expect(effectivePlan({ plan: "pro", source: "staff" }, now)).toBe("pro");
+  });
+});
+
+describe("isPaidActive", () => {
+  const now = new Date("2026-07-12T10:00:00Z");
+  const future = new Date("2026-08-01T00:00:00Z").toISOString();
+  const past = new Date("2026-07-01T00:00:00Z").toISOString();
+
+  it("is false for free / null / lapsed entitlements", () => {
+    expect(isPaidActive(null, now)).toBe(false);
+    expect(isPaidActive({ plan: "free" }, now)).toBe(false);
+    expect(isPaidActive({ plan: "pro", expiresAt: past, source: "stripe" }, now)).toBe(false);
+  });
+
+  it("is true for an active or non-expiring paid entitlement", () => {
+    expect(isPaidActive({ plan: "pro", expiresAt: future, source: "stripe" }, now)).toBe(true);
+    expect(isPaidActive({ plan: "school", source: "school" }, now)).toBe(true);
   });
 });
