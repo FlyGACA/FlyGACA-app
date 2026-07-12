@@ -61,13 +61,14 @@ export interface QuotaVerdict {
 export function checkDailyQuota(
   raw: Partial<DailyUsage> | null | undefined,
   now: Date = new Date(),
+  limit: number = FREE_DAILY_LIMIT,
 ): QuotaVerdict {
   const today = dayKey(now);
   const count =
     raw && raw.day === today && typeof raw.count === "number" && raw.count >= 0
       ? Math.floor(raw.count)
       : 0;
-  const allowed = count < FREE_DAILY_LIMIT;
+  const allowed = count < limit;
   return {
     allowed,
     usage: { day: today, count: allowed ? count + 1 : count },

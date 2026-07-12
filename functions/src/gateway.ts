@@ -10,7 +10,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "firebase-functions";
-import { defineBoolean } from "firebase-functions/params";
+import { defineBoolean, defineInt } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
@@ -18,7 +18,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { captainAdelFlow } from "./captain-adel.js";
 import { createRateLimiter } from "./rate-limit-core.js";
 import { isPaidActive, type Entitlement } from "./billing-core.js";
-import { checkDailyQuota, type DailyUsage } from "./chat-quota-core.js";
+import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -26,6 +26,11 @@ import type { ChatRequest, ChatTurn } from "./contract.js";
 if (getApps().length === 0) initializeApp();
 
 const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: false });
+
+// Free Captain Adel questions per day — a deploy-time param so the free-tier limit
+// can be tuned (A/B 3 vs 5/day) without a code change. The client counter stays a
+// separate nudge; this is the enforced value.
+const FREE_DAILY_LIMIT_PARAM = defineInt("FREE_DAILY_LIMIT", { default: FREE_DAILY_LIMIT });
 
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 export class AuthError extends Error {}
@@ -159,6 +164,7 @@ async function readEntitlement(uid: string): Promise<Entitlement | null> {
  */
 async function consumeFreeQuota(
   uid: string,
+  limit: number,
 ): Promise<{ allowed: boolean; retryAfterSec: number }> {
   const db = getFirestore();
   const ref = db.collection("chatUsage").doc(uid);
@@ -166,7 +172,7 @@ async function consumeFreeQuota(
     return await db.runTransaction(async (tx) => {
       const snap = await tx.get(ref);
       const raw = snap.exists ? (snap.data() as Partial<DailyUsage>) : null;
-      const verdict = checkDailyQuota(raw);
+      const verdict = checkDailyQuota(raw, new Date(), limit);
       if (verdict.allowed) tx.set(ref, verdict.usage);
       return { allowed: verdict.allowed, retryAfterSec: verdict.retryAfterSec };
     });
@@ -285,13 +291,19 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
   const paid = isPaidActive(await readEntitlement(uid));
   if (!paid) {
     parsed.provider = undefined; // collapse a client-requested 'pro' tier to flash
-    const quota = await consumeFreeQuota(uid);
+    const quota = await consumeFreeQuota(uid, FREE_DAILY_LIMIT_PARAM.value());
     // Past the daily free allowance a purchased credit (if any) covers the turn;
     // only 429 when neither free questions nor credits remain.
-    if (!quota.allowed && !(await consumeCredit(uid))) {
-      res.setHeader("Retry-After", String(quota.retryAfterSec));
-      res.status(429).json({ error: "quota_exceeded" });
-      return;
+    if (!quota.allowed) {
+      const credit = await consumeCredit(uid);
+      // Structured funnel events (Cloud Logging → offline conversion analysis):
+      // hitting the wall is the upsell moment; a spent credit is micro-revenue.
+      logger.info("funnel", { event: credit ? "credit_spent" : "quota_exhausted", uid });
+      if (!credit) {
+        res.setHeader("Retry-After", String(quota.retryAfterSec));
+        res.status(429).json({ error: "quota_exceeded" });
+        return;
+      }
     }
   }
 

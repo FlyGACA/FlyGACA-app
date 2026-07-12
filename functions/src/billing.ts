@@ -13,6 +13,7 @@
  * STRIPE_PRICE_PRO_MONTHLY / STRIPE_PRICE_PRO_ANNUAL / APP_ORIGIN. See docs/BILLING.md.
  */
 import { onCall, onRequest, HttpsError } from "firebase-functions/https";
+import { logger } from "firebase-functions";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
@@ -94,6 +95,7 @@ async function grantPass(uid: string): Promise<void> {
   const current = snap.exists ? (snap.data()?.entitlement as Entitlement | undefined) : undefined;
   const entitlement = entitlementFromPass(new Date(), current);
   await ref.set({ entitlement }, { merge: true });
+  logger.info("funnel", { event: "pass_granted", uid });
 }
 
 /**
@@ -106,6 +108,7 @@ async function addCredits(uid: string): Promise<void> {
     .collection("chatCredits")
     .doc(uid)
     .set({ balance: FieldValue.increment(CREDIT_PACK_SIZE) }, { merge: true });
+  logger.info("funnel", { event: "credits_purchased", uid });
 }
 
 export const createCheckoutSession = onCall(
@@ -146,6 +149,7 @@ export const createCheckoutSession = onCall(
         success_url: `${origin}/account?checkout=success`,
         cancel_url: `${origin}/pricing?checkout=cancel`,
       });
+      logger.info("funnel", { event: "checkout_started", kind: variant, uid });
       return { url: session.url };
     }
 
@@ -161,6 +165,7 @@ export const createCheckoutSession = onCall(
       success_url: `${origin}/account?checkout=success`,
       cancel_url: `${origin}/pricing?checkout=cancel`,
     });
+    logger.info("funnel", { event: "checkout_started", kind: variant ?? "annual", uid });
     return { url: session.url };
   },
 );

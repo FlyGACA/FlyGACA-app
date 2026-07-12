@@ -75,4 +75,13 @@ describe("checkDailyQuota", () => {
     const v = checkDailyQuota({ day: today, count: 1.9 }, now);
     expect(v.usage.count).toBe(2);
   });
+
+  it("honours a custom limit (for A/B tuning of the free tier)", () => {
+    // limit 3: the 3rd is allowed, the 4th is blocked.
+    expect(checkDailyQuota({ day: today, count: 2 }, now, 3).allowed).toBe(true);
+    expect(checkDailyQuota({ day: today, count: 3 }, now, 3).allowed).toBe(false);
+    // limit 1: only the first free question per day.
+    expect(checkDailyQuota(null, now, 1).allowed).toBe(true);
+    expect(checkDailyQuota({ day: today, count: 1 }, now, 1).allowed).toBe(false);
+  });
 });
