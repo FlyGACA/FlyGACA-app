@@ -12,6 +12,9 @@ import { defineSecret } from "firebase-functions/params";
 import app from "./gateway.js";
 import { REGION } from "./region.js";
 
+// Staff / complimentary full-access grant (see ./staff.ts).
+export { claimStaffAccess } from "./staff.js";
+
 import {setGlobalOptions} from "firebase-functions";
 import {onRequest} from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";

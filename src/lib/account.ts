@@ -9,6 +9,7 @@
 import { useSyncExternalStore } from 'react';
 import type { Entitlement } from './entitlements';
 import { isAuthAvailable, onAuthChange } from './auth';
+import { claimStaffAccessIfEligible } from './staff';
 import {
   loadAccount,
   saveProfileDoc,
@@ -287,6 +288,10 @@ function connectAuth(): void {
         },
       });
       try {
+        // Staff auto-grant: a verified allowlisted email (e.g. @flygaca.com) gets
+        // the complimentary entitlement written server-side before we hydrate, so
+        // the fresh plan is included in loadAccount below. No-ops for everyone else.
+        await claimStaffAccessIfEligible(user.email, user.emailVerified);
         const loaded = await loadAccount(user.uid);
         // The Firestore round-trip can outlive the session: if the user signed
         // out or switched accounts while it was in flight, do NOT re-apply this
