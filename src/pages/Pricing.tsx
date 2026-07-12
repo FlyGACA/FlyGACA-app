@@ -243,12 +243,21 @@ export function Pricing() {
           <span className={styles.passPrice}>
             <bdi dir="ltr">{t('pricing.pass', { n: PASS_PRICE })}</bdi>
           </span>
-          {/* The one-time 90-day pass has no dedicated Stripe price yet; the
-              backend would otherwise fall back to the recurring annual Pro
-              subscription, so checkout is intentionally not wired for it. */}
-          <button type="button" className={styles.passCta} disabled aria-disabled="true">
-            {t('pricing.passComingSoon')}
-          </button>
+          {canCheckout() ? (
+            <button
+              type="button"
+              className={styles.passCta}
+              disabled={busy}
+              onClick={() => void checkout('pass')}
+            >
+              {t('pricing.passCta')}
+            </button>
+          ) : (
+            // Native shells buy through store IAP, not Stripe web checkout.
+            <button type="button" className={styles.passCta} disabled aria-disabled="true">
+              {t('pricing.passComingSoon')}
+            </button>
+          )}
         </div>
       </section>
 

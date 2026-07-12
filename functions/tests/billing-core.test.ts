@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  PASS_DAYS,
   effectivePlan,
+  entitlementFromPass,
   entitlementFromSubscription,
   isPaidActive,
   planForPrice,
@@ -96,5 +98,51 @@ describe("isPaidActive", () => {
   it("is true for an active or non-expiring paid entitlement", () => {
     expect(isPaidActive({ plan: "pro", expiresAt: future, source: "stripe" }, now)).toBe(true);
     expect(isPaidActive({ plan: "school", source: "school" }, now)).toBe(true);
+  });
+});
+
+describe("entitlementFromPass", () => {
+  const now = new Date("2026-07-12T10:00:00Z");
+  const passExpiry = new Date(now.getTime() + PASS_DAYS * 24 * 60 * 60 * 1000).toISOString();
+
+  it("grants PASS_DAYS of Pro from now for a new/free buyer", () => {
+    expect(entitlementFromPass(now)).toEqual({
+      plan: "pro",
+      source: "stripe",
+      expiresAt: passExpiry,
+    });
+    expect(entitlementFromPass(now, { plan: "free" })).toEqual({
+      plan: "pro",
+      source: "stripe",
+      expiresAt: passExpiry,
+    });
+  });
+
+  it("extends a paid plan that expires sooner than the pass window", () => {
+    const soon = new Date("2026-07-20T00:00:00Z").toISOString();
+    expect(
+      entitlementFromPass(now, { plan: "pro", expiresAt: soon, source: "stripe" }).expiresAt,
+    ).toBe(passExpiry);
+  });
+
+  it("never shortens a later existing expiry", () => {
+    const later = new Date("2027-01-01T00:00:00Z").toISOString();
+    expect(
+      entitlementFromPass(now, { plan: "pro", expiresAt: later, source: "stripe" }).expiresAt,
+    ).toBe(later);
+  });
+
+  it("preserves an active school tier", () => {
+    const later = new Date("2027-01-01T00:00:00Z").toISOString();
+    expect(entitlementFromPass(now, { plan: "school", expiresAt: later, source: "school" })).toEqual(
+      { plan: "school", source: "stripe", expiresAt: later },
+    );
+  });
+
+  it("treats a lapsed paid plan as free (fresh 90-day pass)", () => {
+    const past = new Date("2026-01-01T00:00:00Z").toISOString();
+    expect(
+      entitlementFromPass(now, { plan: "pro", expiresAt: past, source: "stripe" }).expiresAt,
+    ).toBe(passExpiry);
   });
 });

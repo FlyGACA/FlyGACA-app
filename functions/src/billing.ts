@@ -17,7 +17,12 @@ import { defineSecret, defineString } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import Stripe from "stripe";
-import { entitlementFromSubscription, type PriceEnv } from "./billing-core.js";
+import {
+  entitlementFromSubscription,
+  entitlementFromPass,
+  type Entitlement,
+  type PriceEnv,
+} from "./billing-core.js";
 import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
@@ -26,6 +31,8 @@ const stripeSecret = defineSecret("STRIPE_SECRET_KEY");
 const webhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
 const priceMonthly = defineString("STRIPE_PRICE_PRO_MONTHLY");
 const priceAnnual = defineString("STRIPE_PRICE_PRO_ANNUAL");
+// One-time Exam Season Pass price (Stripe `mode: payment`, not a subscription).
+const pricePass = defineString("STRIPE_PRICE_PASS");
 const appOrigin = defineString("APP_ORIGIN");
 
 function stripeClient(): Stripe {
@@ -72,6 +79,20 @@ async function writeEntitlement(uid: string, sub: Stripe.Subscription): Promise<
   await getFirestore().collection("users").doc(uid).set({ entitlement }, { merge: true });
 }
 
+/**
+ * Grant a one-time Exam Season Pass entitlement (PASS_DAYS of Pro). Reads the
+ * current entitlement so the pass never shortens a later paid expiry or downgrades
+ * an active school grant (see entitlementFromPass). Idempotent under the webhook's
+ * per-event marker, so a Stripe retry can't stack extra days.
+ */
+async function grantPass(uid: string): Promise<void> {
+  const ref = getFirestore().collection("users").doc(uid);
+  const snap = await ref.get();
+  const current = snap.exists ? (snap.data()?.entitlement as Entitlement | undefined) : undefined;
+  const entitlement = entitlementFromPass(new Date(), current);
+  await ref.set({ entitlement }, { merge: true });
+}
+
 export const createCheckoutSession = onCall(
   {
     region: REGION,
@@ -91,11 +112,31 @@ export const createCheckoutSession = onCall(
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
     const stripe = stripeClient();
-    const plan = request.data?.plan === "monthly" ? "monthly" : "annual";
-    const price = plan === "monthly" ? priceMonthly.value() : priceAnnual.value();
     const origin = appOrigin.value();
     const customer = await ensureCustomer(stripe, uid, request.auth?.token?.email as string | undefined);
+    const variant = request.data?.plan;
 
+    // The one-time Exam Season Pass is a `payment` (not `subscription`) checkout;
+    // the webhook grants a fixed-duration entitlement when it completes.
+    if (variant === "pass") {
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        customer,
+        line_items: [{ price: pricePass.value(), quantity: 1 }],
+        client_reference_id: uid,
+        // Tag the session so the webhook can distinguish a pass from any other
+        // one-time payment — client_reference_id alone doesn't carry intent.
+        metadata: { uid, kind: "pass" },
+        allow_promotion_codes: true,
+        success_url: `${origin}/account?checkout=success`,
+        cancel_url: `${origin}/pricing?checkout=cancel`,
+      });
+      return { url: session.url };
+    }
+
+    // Recurring Pro. `monthly` uses the monthly price; anything else (annual,
+    // student, or an unknown variant) falls back to the annual price.
+    const price = variant === "monthly" ? priceMonthly.value() : priceAnnual.value();
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer,
@@ -167,10 +208,17 @@ export const stripeWebhook = onRequest(
     try {
       if (event.type === "checkout.session.completed") {
         const session = event.data.object;
-        const uid = session.client_reference_id;
-        if (uid && session.subscription) {
+        const uid = session.client_reference_id ?? (session.metadata?.uid as string | undefined);
+        if (uid && session.mode === "subscription" && session.subscription) {
           const sub = await stripe.subscriptions.retrieve(session.subscription as string);
           await writeEntitlement(uid, sub);
+        } else if (
+          uid &&
+          session.mode === "payment" &&
+          session.payment_status === "paid" &&
+          session.metadata?.kind === "pass"
+        ) {
+          await grantPass(uid);
         }
       } else if (
         event.type === "customer.subscription.updated" ||
