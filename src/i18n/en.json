@@ -6,6 +6,10 @@
     "done": "Get started",
     "goThere": "Take me there",
     "progress": "{{current}} of {{total}}",
+    "hintLabel": "New to Fly GACA",
+    "hintText": "New to Fly GACA?",
+    "hintTake": "Take the 30-second tour",
+    "hintDismiss": "Dismiss",
     "steps": {
       "welcome": {
         "title": "Welcome to Fly GACA",

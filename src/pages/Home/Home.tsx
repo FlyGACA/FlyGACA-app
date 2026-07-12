@@ -7,6 +7,7 @@ import { FlightDivider } from '../../components/FlightDivider';
 import { Marquee } from '../../components/Marquee';
 import { HeroAmbient } from '../../components/HeroAmbient';
 import { AdelHeroWidget } from '../../components/AdelHeroWidget';
+import { OnboardingHint } from '../../components/onboarding/OnboardingHint';
 import { SectionHeader } from '../../components/SectionHeader';
 import { Stepper } from '../../components/Stepper';
 import { BentoGrid } from '../../components/bento/BentoGrid';
@@ -91,6 +92,10 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      <div className="container">
+        <OnboardingHint />
+      </div>
 
       <Marquee />
 

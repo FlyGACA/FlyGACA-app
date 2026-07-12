@@ -6,6 +6,10 @@
     "done": "لنبدأ",
     "goThere": "اصطحبني إلى هناك",
     "progress": "{{current}} من {{total}}",
+    "hintLabel": "جديد في Fly GACA",
+    "hintText": "جديد في Fly GACA؟",
+    "hintTake": "خذ الجولة (٣٠ ثانية)",
+    "hintDismiss": "إغلاق",
     "steps": {
       "welcome": {
         "title": "أهلًا بك في فلاي جاكا",

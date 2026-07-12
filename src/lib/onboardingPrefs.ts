@@ -67,3 +67,37 @@ export function replayOnboarding(): void {
   }
   emit();
 }
+
+/**
+ * Whether the tour modal is open *right now*. This is deliberately separate from
+ * "seen": the tour no longer auto-opens over the hero on first visit — it opens
+ * only on demand (the dismissible Home hint, or the Settings "replay"), so a
+ * first-time visitor sees the product, not a modal. In-memory only (session-scoped).
+ */
+let tourOpen = false;
+const openListeners = new Set<() => void>();
+
+export function useTourOpen(): boolean {
+  return useSyncExternalStore(
+    (l) => {
+      openListeners.add(l);
+      return () => openListeners.delete(l);
+    },
+    () => tourOpen,
+    () => false, // server / prerender: the tour is never open in a snapshot
+  );
+}
+
+/** Open the tour modal on demand. */
+export function openTour(): void {
+  if (tourOpen) return;
+  tourOpen = true;
+  for (const l of openListeners) l();
+}
+
+/** Close the tour modal (every dismissal path calls this alongside markOnboardingSeen). */
+export function closeTour(): void {
+  if (!tourOpen) return;
+  tourOpen = false;
+  for (const l of openListeners) l();
+}
