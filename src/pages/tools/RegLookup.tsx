@@ -34,26 +34,28 @@ export function RegLookup({ id, base, columns, adelPrompt }: RegLookupProps) {
       <p className={styles.confirm} role="note">
         {t(`${base}.confirm`)}
       </p>
-      <table className={table.table}>
-        <thead>
-          <tr>
-            {columns.map((c) => (
-              <th key={c.field}>{t(c.labelKey)}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => (
-            <tr key={i}>
-              {columns.map((c, j) => (
-                <td key={c.field} style={j === 0 ? { fontWeight: 600 } : undefined}>
-                  {r[c.field]}
-                </td>
+      <div className={table.tableWrap}>
+        <table className={table.table}>
+          <thead>
+            <tr>
+              {columns.map((c) => (
+                <th key={c.field}>{t(c.labelKey)}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={i}>
+                {columns.map((c, j) => (
+                  <td key={c.field} style={j === 0 ? { fontWeight: 600 } : undefined}>
+                    {r[c.field]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </CalcShell>
   );
 }

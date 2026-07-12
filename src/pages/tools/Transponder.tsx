@@ -25,22 +25,24 @@ export function Transponder() {
       formula={t('transponder.formula')}
     >
       <TextField label={t('transponder.filter')} value={q} onChange={setQ} placeholder="7700" />
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>{t('transponder.codeCol')}</th>
-            <th>{t('transponder.meaningCol')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((c) => (
-            <tr key={c.code}>
-              <td style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>{c.code}</td>
-              <td>{c.meaning}</td>
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>{t('transponder.codeCol')}</th>
+              <th>{t('transponder.meaningCol')}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map((c) => (
+              <tr key={c.code}>
+                <td style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 700 }}>{c.code}</td>
+                <td>{c.meaning}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </CalcShell>
   );
 }
