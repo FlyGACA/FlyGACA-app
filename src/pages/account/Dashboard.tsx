@@ -6,6 +6,7 @@ import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { CurrencyBoard } from '../../components/CurrencyBoard';
 import { SetupChecklist } from '../../components/SetupChecklist';
 import { UpsellCard } from '../../components/UpsellCard';
+import { ReferralCard } from '../../components/ReferralCard';
 import { BarSparkline } from '../../components/BarSparkline';
 import { BentoGrid } from '../../components/bento/BentoGrid';
 import { BentoCard } from '../../components/bento/BentoCard';
@@ -328,6 +329,7 @@ function Inner() {
       </details>
 
       {!isPro && <UpsellCard />}
+      <ReferralCard />
     </section>
   );
 }

@@ -3288,6 +3288,12 @@
       "adel": "Plan renewals with Captain Adel"
     }
   },
+  "referral": {
+    "title": "Invite a fellow pilot",
+    "subtitle": "Share your link — you both get 30 free Captain Adel questions when they subscribe.",
+    "copy": "Copy link",
+    "copied": "Copied!"
+  },
   "setup": {
     "title": "Get current",
     "subtitle": "A few steps to set up your currency tracking.",

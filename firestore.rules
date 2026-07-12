@@ -154,6 +154,17 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Referral bookkeeping — the code → referrer mapping and the once-per-referee
+    // reward markers. Written ONLY server-side (the referral callable + webhook);
+    // the client learns its own code from the callable's return, never by reading
+    // here. Fully denied so codes/rewards can't be enumerated or forged.
+    match /referralCodes/{code} {
+      allow read, write: if false;
+    }
+    match /referrals/{uid} {
+      allow read, write: if false;
+    }
+
     // Everything else stays denied. Server-only data is written with the Admin
     // SDK (which bypasses these rules); any client reaching an unlisted path is
     // refused here.

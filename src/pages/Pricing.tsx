@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
@@ -10,6 +10,7 @@ import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from 
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
 import { annualSavingsPct, monthlyEquivalent } from '../lib/pricing';
+import { captureRefFromUrl, getStoredRef } from '../lib/referral';
 import styles from './Pricing.module.css';
 
 /**
@@ -88,11 +89,16 @@ export function Pricing() {
     ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
     : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
 
+  // Persist an inbound ?ref=CODE so it survives the sign-in / Stripe round-trip.
+  useEffect(() => {
+    captureRefFromUrl();
+  }, []);
+
   async function checkout(variant: ProPlan) {
     setBusy(true);
     setError('');
     try {
-      await startProCheckout(variant, { annual });
+      await startProCheckout(variant, { annual, ref: getStoredRef() });
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {

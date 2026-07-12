@@ -26,6 +26,12 @@ import {
 } from "./billing-core.js";
 import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
 import { isStudentEmail } from "./student-core.js";
+import {
+  referralCode,
+  normalizeCode,
+  isValidCode,
+  REFERRAL_REWARD_CREDITS,
+} from "./referral-core.js";
 import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
@@ -112,12 +118,41 @@ async function grantPass(uid: string): Promise<void> {
  * server-written, owner-readable so the app can show/spend it). `FieldValue.increment`
  * is atomic; the webhook's per-event marker keeps a Stripe retry from double-counting.
  */
-async function addCredits(uid: string): Promise<void> {
+async function grantCredits(uid: string, amount: number): Promise<void> {
   await getFirestore()
     .collection("chatCredits")
     .doc(uid)
-    .set({ balance: FieldValue.increment(CREDIT_PACK_SIZE) }, { merge: true });
+    .set({ balance: FieldValue.increment(amount) }, { merge: true });
+}
+
+async function addCredits(uid: string): Promise<void> {
+  await grantCredits(uid, CREDIT_PACK_SIZE);
   logger.info("funnel", { event: "credits_purchased", uid });
+}
+
+/**
+ * Reward a completed referral. `ref` is the normalized code carried on the checkout
+ * session; resolve it to the referrer and, once per referee, credit BOTH sides. The
+ * `referrals/{refereeUid}` marker (created transactionally via `create`) makes it
+ * idempotent across a user's multiple purchases and blocks self-referral.
+ */
+async function processReferral(refereeUid: string, ref: string | undefined): Promise<void> {
+  if (!ref || !isValidCode(ref)) return;
+  const db = getFirestore();
+  const codeSnap = await db.collection("referralCodes").doc(ref).get();
+  const referrerUid = codeSnap.exists ? (codeSnap.data()?.uid as string | undefined) : undefined;
+  if (!referrerUid || referrerUid === refereeUid) return; // unknown code or self-referral
+  // Claim the one reward this referee is worth; `create` fails if it already exists.
+  const claimed = await db
+    .collection("referrals")
+    .doc(refereeUid)
+    .create({ referrerUid, at: FieldValue.serverTimestamp() })
+    .then(() => true)
+    .catch(() => false);
+  if (!claimed) return;
+  await grantCredits(referrerUid, REFERRAL_REWARD_CREDITS);
+  await grantCredits(refereeUid, REFERRAL_REWARD_CREDITS);
+  logger.info("funnel", { event: "referral_rewarded", referrerUid, refereeUid });
 }
 
 export const createCheckoutSession = onCall(
@@ -142,6 +177,10 @@ export const createCheckoutSession = onCall(
     const origin = appOrigin.value();
     const customer = await ensureCustomer(stripe, uid, request.auth?.token?.email as string | undefined);
     const variant = request.data?.plan;
+    // Referral attribution: a valid code rides on the session metadata so the
+    // webhook can reward both sides when this checkout converts.
+    const ref = normalizeCode(request.data?.ref as string | undefined);
+    const refMeta: Record<string, string> = isValidCode(ref) ? { ref } : {};
 
     // One-time purchases (`payment`, not `subscription`): the Exam Season Pass and
     // Captain Adel credit packs. The webhook fulfils them by `metadata.kind`, which
@@ -153,7 +192,7 @@ export const createCheckoutSession = onCall(
         customer,
         line_items: [{ price, quantity: 1 }],
         client_reference_id: uid,
-        metadata: { uid, kind: variant },
+        metadata: { uid, kind: variant, ...refMeta },
         allow_promotion_codes: true,
         success_url: `${origin}/account?checkout=success`,
         cancel_url: `${origin}/pricing?checkout=cancel`,
@@ -179,6 +218,7 @@ export const createCheckoutSession = onCall(
         customer,
         line_items: [{ price: studentPrice, quantity: 1 }],
         client_reference_id: uid,
+        metadata: refMeta,
         allow_promotion_codes: true,
         success_url: `${origin}/account?checkout=success`,
         cancel_url: `${origin}/pricing?checkout=cancel`,
@@ -195,12 +235,32 @@ export const createCheckoutSession = onCall(
       customer,
       line_items: [{ price, quantity: 1 }],
       client_reference_id: uid,
+      metadata: refMeta,
       allow_promotion_codes: true,
       success_url: `${origin}/account?checkout=success`,
       cancel_url: `${origin}/pricing?checkout=cancel`,
     });
     logger.info("funnel", { event: "checkout_started", kind: variant ?? "annual", uid });
     return { url: session.url };
+  },
+);
+
+export const getReferralCode = onCall(
+  {
+    region: REGION,
+    timeoutSeconds: 20,
+    memory: "256MiB",
+    maxInstances: 5,
+    enforceAppCheck: true,
+  },
+  async (request) => {
+    const uid = request.auth?.uid;
+    if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
+    const code = referralCode(uid);
+    // Persist the reverse mapping (code → referrer) so the webhook can resolve a
+    // referral at the referee's checkout. Deterministic + merge = idempotent.
+    await getFirestore().collection("referralCodes").doc(code).set({ uid }, { merge: true });
+    return { code };
   },
 );
 
@@ -263,13 +323,16 @@ export const stripeWebhook = onRequest(
       if (event.type === "checkout.session.completed") {
         const session = event.data.object;
         const uid = session.client_reference_id ?? (session.metadata?.uid as string | undefined);
+        const ref = session.metadata?.ref as string | undefined;
         if (uid && session.mode === "subscription" && session.subscription) {
           const sub = await stripe.subscriptions.retrieve(session.subscription as string);
           await writeEntitlement(uid, sub);
+          await processReferral(uid, ref);
         } else if (uid && session.mode === "payment" && session.payment_status === "paid") {
           const kind = session.metadata?.kind;
           if (kind === "pass") await grantPass(uid);
           else if (kind === "credits") await addCredits(uid);
+          await processReferral(uid, ref);
         }
       } else if (
         event.type === "customer.subscription.updated" ||

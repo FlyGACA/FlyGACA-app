@@ -32,7 +32,7 @@ export function canCheckout(): boolean {
  */
 export async function startProCheckout(
   plan: ProPlan = 'annual',
-  opts?: { annual?: boolean },
+  opts?: { annual?: boolean; ref?: string },
 ): Promise<void> {
   if (billingChannel() === 'revenuecat' || isNative()) {
     // RevenueCat IAP is wired in the native shell (Batch: native IAP).
@@ -48,11 +48,11 @@ export async function startProCheckout(
   const { httpsCallable } = await import('firebase/functions');
   // `annual` selects the cadence for the student rate; the server ignores it for
   // the cadence-encoded Pro variants.
-  const create = httpsCallable<{ plan: ProPlan; annual?: boolean }, { url?: string }>(
+  const create = httpsCallable<{ plan: ProPlan; annual?: boolean; ref?: string }, { url?: string }>(
     fns,
     'createCheckoutSession',
   );
-  const res = await create({ plan, annual: opts?.annual });
+  const res = await create({ plan, annual: opts?.annual, ref: opts?.ref });
   const url = res.data?.url;
   if (!url) throw new Error('no-url');
   window.location.assign(url);

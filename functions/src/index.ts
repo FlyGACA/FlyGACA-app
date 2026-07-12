@@ -13,8 +13,14 @@ import { defineSecret } from "firebase-functions/params";
 import app from "./gateway.js";
 import { REGION } from "./region.js";
 
-// Stripe billing — checkout/portal callables and the entitlement webhook.
-export { createCheckoutSession, createBillingPortalSession, stripeWebhook } from "./billing.js";
+// Stripe billing — checkout/portal callables, the entitlement webhook, and the
+// referral-code callable.
+export {
+  createCheckoutSession,
+  createBillingPortalSession,
+  getReferralCode,
+  stripeWebhook,
+} from "./billing.js";
 
 // Staff / complimentary full-access grant (see ./staff.ts).
 export { claimStaffAccess } from "./staff.js";

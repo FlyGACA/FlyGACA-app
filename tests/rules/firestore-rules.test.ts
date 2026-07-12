@@ -337,3 +337,20 @@ describe('chatCredits — owner-readable, server-only writes', () => {
     await assertFails(setDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`), { balance: 999 }));
   });
 });
+
+describe('referral bookkeeping — fully server-only', () => {
+  it('denies a client reading the code → referrer mapping', async () => {
+    await seed('referralCodes/ABCDEFGH', { uid: ALICE });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'referralCodes/ABCDEFGH')));
+  });
+
+  it('denies a client writing a referral code mapping', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), 'referralCodes/ABCDEFGH'), { uid: ALICE }));
+  });
+
+  it('denies a client reading or writing a referral reward marker', async () => {
+    await seed(`referrals/${BOB}`, { referrerUid: ALICE });
+    await assertFails(getDoc(doc(dbFor(BOB), `referrals/${BOB}`)));
+    await assertFails(setDoc(doc(dbFor(BOB), `referrals/${BOB}`), { referrerUid: ALICE }));
+  });
+});
