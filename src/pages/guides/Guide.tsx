@@ -39,10 +39,13 @@ export function Guide() {
 
   // One crumb trail feeds both the JSON-LD and the visible <Breadcrumbs/> so they
   // can never drift. Empty for unknown slugs (the page renders <NotFound/>).
+  // The Guides + Study hubs merged into /learn; anchor the crumb on the live hub
+  // (200, defaults to the Guides tab) rather than the /guides redirect, so both
+  // the visible trail and the JSON-LD keep hub context.
   const crumbs: Crumb[] = valid
     ? [
         { name: t('nav.breadcrumbHome'), path: '/' },
-        { name: t('guides.title'), path: '/guides' },
+        { name: t('nav.learn'), path: '/learn' },
         { name: t(`${base}.name`), path: `/guides/${slug}` },
       ]
     : [];
@@ -127,7 +130,7 @@ export function Guide() {
       </div>
       <Breadcrumbs items={crumbs} />
       <p className={styles.back}>
-        <Link to="/guides">← {t('guides.title')}</Link>
+        <Link to="/learn">← {t('nav.learn')}</Link>
       </p>
       <header>
         <span className={styles.headMeta}>

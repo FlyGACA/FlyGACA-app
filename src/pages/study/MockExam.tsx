@@ -8,6 +8,7 @@ import { courseLd } from '../../lib/jsonld';
 import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
 import { UpsellCard } from '../../components/UpsellCard';
+import { HubBackLink } from '../../components/HubBackLink';
 import styles from './Study.module.css';
 
 type ExamQuestion = QuizQuestion & { bank: string };
@@ -67,6 +68,7 @@ export function MockExam() {
   if (!started) {
     return (
       <section className={`container-narrow ${styles.page}`}>
+        <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
         <h1>{t('study.exam')}</h1>
         <p className={styles.subtitle}>{t('study.examDesc')}</p>
         <p className={styles.qProgress}>{t('study.examPassMark', { n: data.exam.passMark })}</p>

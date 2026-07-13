@@ -8,6 +8,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
+import { HubBackLink } from '../../components/HubBackLink';
 import { buildSession, isSynthetic } from './session';
 import styles from './Study.module.css';
 
@@ -82,6 +83,7 @@ export function Quiz() {
   if (!bank) {
     return (
       <Shell>
+        <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
         <h1>{t('study.quiz')}</h1>
         <p className={styles.subtitle}>{t('study.pickBank')}</p>
         <ul className={styles.banks}>
