@@ -53,6 +53,7 @@ import { Disclaimer } from '../../components/Disclaimer';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { StatusPill } from '../../components/StatusPill';
 import { UpsellCard } from '../../components/UpsellCard';
+import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '../../lib/billing';
 import { GroundingBadge } from '../../components/chat/GroundingBadge';
 import { RichText } from '../../components/chat/RichText';
 import { MessageActions } from '../../components/chat/MessageActions';
@@ -137,10 +138,22 @@ export function Chat() {
   const abortRef = useRef<AbortController | null>(null);
   const sentInitial = useRef(false);
 
-  const { entitlement, session } = useAccount();
+  const { entitlement, session, chatCredits } = useAccount();
   const isPro = hasFeature(entitlement, 'adel-unlimited');
   const left = remaining(currentUsage(usage));
-  const gated = !isPro && isExhausted(currentUsage(usage));
+  // Purchased credits cover questions past the daily free allowance, so having a
+  // balance lifts the gate (the server spends a credit when the free quota is out).
+  const gated = !isPro && isExhausted(currentUsage(usage)) && chatCredits <= 0;
+
+  // Buy a one-time question pack (Stripe redirects on success; a signed-in chat
+  // user won't hit 'sign-in-required', and offline/unconfigured errors are inert).
+  async function buyCredits(): Promise<void> {
+    try {
+      await startProCheckout('credits');
+    } catch {
+      /* redirected on success; ignore */
+    }
+  }
 
   const gacar = useFetchJson<GacarIndex>('/data/gacar-index.json');
   const validSlugs = useRef<Set<string>>(new Set());
@@ -677,6 +690,11 @@ export function Chat() {
         <div className={styles.gate}>
           <p className={styles.gateNote}>{t('chat.quota.exhausted')}</p>
           <UpsellCard variant="inline" />
+          {canCheckout() && (
+            <button type="button" className="btn" onClick={() => void buyCredits()}>
+              {t('chat.quota.buyCredits', { n: CREDIT_PACK_SIZE })}
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -722,6 +740,8 @@ export function Chat() {
               <span>{t('chat.proModel')}</span>
               <span className={styles.proHint}>{t('chat.proModelHint')}</span>
             </label>
+          ) : chatCredits > 0 && isExhausted(currentUsage(usage)) ? (
+            <p className={styles.quota}>{t('chat.quota.credits', { n: chatCredits })}</p>
           ) : (
             <p className={styles.quota}>
               {t('chat.quota.left', { n: left, limit: FREE_DAILY_LIMIT })}

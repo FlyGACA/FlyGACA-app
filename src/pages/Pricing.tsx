@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
@@ -10,6 +10,7 @@ import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from 
 import { useAccount } from '../lib/account';
 import { effectivePlan } from '../lib/entitlements';
 import { annualSavingsPct, monthlyEquivalent } from '../lib/pricing';
+import { captureRefFromUrl, getStoredRef } from '../lib/referral';
 import styles from './Pricing.module.css';
 
 /**
@@ -88,18 +89,27 @@ export function Pricing() {
     ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
     : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
 
+  // Persist an inbound ?ref=CODE so it survives the sign-in / Stripe round-trip.
+  useEffect(() => {
+    captureRefFromUrl();
+  }, []);
+
   async function checkout(variant: ProPlan) {
     setBusy(true);
     setError('');
     try {
-      await startProCheckout(variant);
+      await startProCheckout(variant, { annual, ref: getStoredRef() });
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {
         navigate('/account');
         return;
       }
-      setError(t('pricing.checkoutError'));
+      setError(
+        code === 'student-verification-required'
+          ? t('pricing.studentVerifyNeeded')
+          : t('pricing.checkoutError'),
+      );
     } finally {
       setBusy(false);
     }
@@ -199,6 +209,16 @@ export function Pricing() {
                   <p>
                     <bdi dir="ltr">{studentPrice}</bdi> · {t('pricing.studentNote')}
                   </p>
+                  {canCheckout() && (
+                    <button
+                      type="button"
+                      className="btn"
+                      disabled={busy}
+                      onClick={() => void checkout('student')}
+                    >
+                      {t('pricing.studentCta')}
+                    </button>
+                  )}
                 </details>
               </>
             )
@@ -243,12 +263,21 @@ export function Pricing() {
           <span className={styles.passPrice}>
             <bdi dir="ltr">{t('pricing.pass', { n: PASS_PRICE })}</bdi>
           </span>
-          {/* The one-time 90-day pass has no dedicated Stripe price yet; the
-              backend would otherwise fall back to the recurring annual Pro
-              subscription, so checkout is intentionally not wired for it. */}
-          <button type="button" className={styles.passCta} disabled aria-disabled="true">
-            {t('pricing.passComingSoon')}
-          </button>
+          {canCheckout() ? (
+            <button
+              type="button"
+              className={styles.passCta}
+              disabled={busy}
+              onClick={() => void checkout('pass')}
+            >
+              {t('pricing.passCta')}
+            </button>
+          ) : (
+            // Native shells buy through store IAP, not Stripe web checkout.
+            <button type="button" className={styles.passCta} disabled aria-disabled="true">
+              {t('pricing.passComingSoon')}
+            </button>
+          )}
         </div>
       </section>
 

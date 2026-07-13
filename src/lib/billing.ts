@@ -12,9 +12,13 @@ import { billingChannel, isNative } from './native-bridge';
 import { isFirebaseConfigured, getFns, getFirebaseAuth } from './firebase';
 
 // 'monthly' / 'annual' are the standard Pro cadences; 'student' is the verified
-// student rate and 'pass' the 90-day Exam Season Pass — both resolve to a Pro
-// entitlement server-side (the Cloud Function maps the variant to a price).
-export type ProPlan = 'monthly' | 'annual' | 'student' | 'pass';
+// student rate and 'pass' the 90-day Exam Season Pass. 'credits' is a one-time
+// Captain Adel question pack. The Cloud Function maps each variant to a Stripe
+// price (subscription for the cadences, one-time payment for pass/credits).
+export type ProPlan = 'monthly' | 'annual' | 'student' | 'pass' | 'credits';
+
+/** Questions per purchased credit pack. Mirror of functions/src/chat-quota-core.ts. */
+export const CREDIT_PACK_SIZE = 50;
 
 /** Whether the web Stripe checkout can run in this runtime. */
 export function canCheckout(): boolean {
@@ -26,7 +30,10 @@ export function canCheckout(): boolean {
  * Stripe-hosted page. On native: IAP is handled by RevenueCat in the shell, so
  * this throws `native-billing` for the caller to route into the native flow.
  */
-export async function startProCheckout(plan: ProPlan = 'annual'): Promise<void> {
+export async function startProCheckout(
+  plan: ProPlan = 'annual',
+  opts?: { annual?: boolean; ref?: string },
+): Promise<void> {
   if (billingChannel() === 'revenuecat' || isNative()) {
     // RevenueCat IAP is wired in the native shell (Batch: native IAP).
     throw new Error('native-billing');
@@ -39,8 +46,13 @@ export async function startProCheckout(plan: ProPlan = 'annual'): Promise<void> 
   const fns = await getFns();
   if (!fns) throw new Error('billing-unavailable');
   const { httpsCallable } = await import('firebase/functions');
-  const create = httpsCallable<{ plan: ProPlan }, { url?: string }>(fns, 'createCheckoutSession');
-  const res = await create({ plan });
+  // `annual` selects the cadence for the student rate; the server ignores it for
+  // the cadence-encoded Pro variants.
+  const create = httpsCallable<{ plan: ProPlan; annual?: boolean; ref?: string }, { url?: string }>(
+    fns,
+    'createCheckoutSession',
+  );
+  const res = await create({ plan, annual: opts?.annual, ref: opts?.ref });
   const url = res.data?.url;
   if (!url) throw new Error('no-url');
   window.location.assign(url);

@@ -321,3 +321,50 @@ describe('stripeCustomers & default-deny', () => {
     await assertFails(getDoc(doc(dbFor(ALICE), 'serverOnly/x')));
   });
 });
+
+describe('chatCredits — owner-readable, server-only writes', () => {
+  it('lets an owner read their own purchased credit balance', async () => {
+    await seed(`chatCredits/${ALICE}`, { balance: 50 });
+    await assertSucceeds(getDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`)));
+  });
+
+  it("denies reading another user's credit balance", async () => {
+    await seed(`chatCredits/${ALICE}`, { balance: 50 });
+    await assertFails(getDoc(doc(dbFor(BOB), `chatCredits/${ALICE}`)));
+  });
+
+  it('denies a client writing its own credit balance (no self-grant)', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`), { balance: 999 }));
+  });
+});
+
+describe('referral bookkeeping — fully server-only', () => {
+  it('denies a client reading the code → referrer mapping', async () => {
+    await seed('referralCodes/ABCDEFGH', { uid: ALICE });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'referralCodes/ABCDEFGH')));
+  });
+
+  it('denies a client writing a referral code mapping', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), 'referralCodes/ABCDEFGH'), { uid: ALICE }));
+  });
+
+  it('denies a client reading or writing a referral reward marker', async () => {
+    await seed(`referrals/${BOB}`, { referrerUid: ALICE });
+    await assertFails(getDoc(doc(dbFor(BOB), `referrals/${BOB}`)));
+    await assertFails(setDoc(doc(dbFor(BOB), `referrals/${BOB}`), { referrerUid: ALICE }));
+  });
+});
+
+describe('licensed-API keys — fully server-only', () => {
+  it('denies a client reading an API key hash or its usage meter', async () => {
+    await seed('apiKeys/deadbeef', { active: true, label: 'Acme' });
+    await seed('apiUsage/deadbeef', { count: 5 });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'apiKeys/deadbeef')));
+    await assertFails(getDoc(doc(dbFor(ALICE), 'apiUsage/deadbeef')));
+  });
+
+  it('denies a client minting or metering a key', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), 'apiKeys/deadbeef'), { active: true }));
+    await assertFails(setDoc(doc(dbFor(ALICE), 'apiUsage/deadbeef'), { count: 999 }));
+  });
+});

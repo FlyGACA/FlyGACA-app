@@ -10,12 +10,16 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "firebase-functions";
-import { defineBoolean } from "firebase-functions/params";
+import { defineBoolean, defineInt } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getAppCheck } from "firebase-admin/app-check";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { captainAdelFlow } from "./captain-adel.js";
 import { createRateLimiter } from "./rate-limit-core.js";
+import { isPaidActive, type Entitlement } from "./billing-core.js";
+import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
+import { extractApiKey, hashApiKey } from "./api-key-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -23,6 +27,11 @@ import type { ChatRequest, ChatTurn } from "./contract.js";
 if (getApps().length === 0) initializeApp();
 
 const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: false });
+
+// Free Captain Adel questions per day — a deploy-time param so the free-tier limit
+// can be tuned (A/B 3 vs 5/day) without a code change. The client counter stays a
+// separate nudge; this is the enforced value.
+const FREE_DAILY_LIMIT_PARAM = defineInt("FREE_DAILY_LIMIT", { default: FREE_DAILY_LIMIT });
 
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 export class AuthError extends Error {}
@@ -118,7 +127,11 @@ app.use(
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: "Too many requests, please try again later." },
-    skip: (req) => req.method === "OPTIONS", // CORS preflights don't burn budget
+    // CORS preflights don't burn budget; licensed API traffic (/v1) is governed by
+    // the per-key limiter below, not this per-IP app backstop (a partner's calls
+    // share one IP).
+    skip: (req) =>
+      req.method === "OPTIONS" || req.path.startsWith("/v1") || req.path.startsWith("/api/v1"),
     validate: { trustProxy: false }, // permissive trust proxy is deliberate (see above)
   }),
 );
@@ -126,6 +139,79 @@ app.use(
 // Per-uid chat limit — the hard cost control (DESIGN §8 N4). 20 turns/min is far
 // above any human rate; state is per-instance (see rate-limit-core.ts caveat).
 const chatLimiter = createRateLimiter({ limit: 20, windowMs: 60 * 1000 });
+// Per-API-key limit for the licensed /v1 API (higher than a single human, still a
+// cost ceiling; per-instance like chatLimiter).
+const apiKeyLimiter = createRateLimiter({ limit: 60, windowMs: 60 * 1000 });
+
+/**
+ * Read the server-owned entitlement for `uid` (`users/{uid}.entitlement`). On any
+ * Firestore error, resolve to `null` (treated as free) — failing toward the cheap
+ * path keeps a transient blip from handing out the Pro model / unlimited chat. The
+ * per-uid burst limiter above remains the hard cost backstop either way.
+ */
+async function readEntitlement(uid: string): Promise<Entitlement | null> {
+  try {
+    const snap = await getFirestore().collection("users").doc(uid).get();
+    const ent = snap.exists
+      ? (snap.data()?.entitlement as Entitlement | undefined)
+      : undefined;
+    return ent ?? null;
+  } catch (err) {
+    logger.error("entitlement read failed", { uid, err });
+    return null;
+  }
+}
+
+/**
+ * Atomically consume one free-tier question for `uid` in a Firestore transaction on
+ * `chatUsage/{uid}` — durable across instances, unlike the in-memory burst limiter,
+ * so the daily allowance can't be reset by clearing localStorage or spreading load
+ * across function instances. On a transaction error it fails open (allowed); the
+ * per-uid burst limiter is the hard backstop. `chatUsage` is server-only (deny-all
+ * in firestore.rules).
+ */
+async function consumeFreeQuota(
+  uid: string,
+  limit: number,
+): Promise<{ allowed: boolean; retryAfterSec: number }> {
+  const db = getFirestore();
+  const ref = db.collection("chatUsage").doc(uid);
+  try {
+    return await db.runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      const raw = snap.exists ? (snap.data() as Partial<DailyUsage>) : null;
+      const verdict = checkDailyQuota(raw, new Date(), limit);
+      if (verdict.allowed) tx.set(ref, verdict.usage);
+      return { allowed: verdict.allowed, retryAfterSec: verdict.retryAfterSec };
+    });
+  } catch (err) {
+    logger.error("chat quota transaction failed", { uid, err });
+    return { allowed: true, retryAfterSec: 0 };
+  }
+}
+
+/**
+ * Spend one purchased Captain Adel credit for `uid` (transaction on
+ * `chatCredits/{uid}`) — used only after the daily free allowance is exhausted.
+ * Returns true when a credit was spent, false when the balance is empty. On a
+ * transaction error returns false (fail closed): this path is only reached after a
+ * successful quota read, so a failure here is rare and the caller just 429s.
+ */
+async function consumeCredit(uid: string): Promise<boolean> {
+  const ref = getFirestore().collection("chatCredits").doc(uid);
+  try {
+    return await getFirestore().runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      const balance = snap.exists ? Number(snap.data()?.balance ?? 0) : 0;
+      if (!(balance >= 1)) return false;
+      tx.set(ref, { balance: Math.floor(balance) - 1 }, { merge: true });
+      return true;
+    });
+  } catch (err) {
+    logger.error("chat credit transaction failed", { uid, err });
+    return false;
+  }
+}
 // CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
 // /api/* here, so the Origin we see is the page origin. Production fronts are
 // listed exactly; preview/channel deploys match a few project-scoped suffixes.
@@ -206,6 +292,29 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     return;
   }
 
+  // Plan gate — the server is the source of truth (DESIGN §8). Free users are held
+  // to the daily free-question allowance and never get the Pro model, regardless of
+  // what the client sends; the app's localStorage counter and Pro toggle are only
+  // UI nudges. Checked after parseRequest so a malformed turn never burns quota.
+  const paid = isPaidActive(await readEntitlement(uid));
+  if (!paid) {
+    parsed.provider = undefined; // collapse a client-requested 'pro' tier to flash
+    const quota = await consumeFreeQuota(uid, FREE_DAILY_LIMIT_PARAM.value());
+    // Past the daily free allowance a purchased credit (if any) covers the turn;
+    // only 429 when neither free questions nor credits remain.
+    if (!quota.allowed) {
+      const credit = await consumeCredit(uid);
+      // Structured funnel events (Cloud Logging → offline conversion analysis):
+      // hitting the wall is the upsell moment; a spent credit is micro-revenue.
+      logger.info("funnel", { event: credit ? "credit_spent" : "quota_exhausted", uid });
+      if (!credit) {
+        res.setHeader("Retry-After", String(quota.retryAfterSec));
+        res.status(429).json({ error: "quota_exceeded" });
+        return;
+      }
+    }
+  }
+
   const streaming = req.query.stream === "1";
 
   if (!streaming) {
@@ -261,6 +370,64 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
       res.write(doneFrame());
       res.end();
     }
+  }
+});
+
+// Licensed Captain Adel API (DESIGN — data/API licensing). External callers (LMS
+// vendors, schools' portals) authenticate with a minted API key — not a Firebase
+// user or App Check — and receive a plain buffered JSON answer + citations. The key
+// is looked up by hash, rate-limited and metered per key. Streaming, history and
+// the Pro tier stay app-only; this surface is deliberately minimal.
+app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promise<void> => {
+  const key = extractApiKey(req.header("authorization"), req.header("x-api-key"));
+  if (!key) {
+    res.status(401).json({ error: "api key required" });
+    return;
+  }
+  const hash = hashApiKey(key);
+
+  const verdict = apiKeyLimiter.check(`key:${hash}`);
+  if (!verdict.allowed) {
+    res.setHeader("Retry-After", String(verdict.retryAfterSec));
+    res.status(429).json({ error: "rate_limited" });
+    return;
+  }
+
+  const db = getFirestore();
+  const keyDoc = await db.collection("apiKeys").doc(hash).get();
+  if (!keyDoc.exists || keyDoc.data()?.active === false) {
+    res.status(401).json({ error: "invalid api key" });
+    return;
+  }
+
+  const parsed = parseRequest(req.body);
+  if (!parsed) {
+    res.status(400).json({
+      error: `invalid request: 'message' is required (max ${MESSAGE_MAX_CHARS} chars)`,
+    });
+    return;
+  }
+
+  // Meter per key (best-effort; billing/quota reads this offline). Never blocks the
+  // answer on the write.
+  void db
+    .collection("apiUsage")
+    .doc(hash)
+    .set({ count: FieldValue.increment(1), lastUsedAt: FieldValue.serverTimestamp() }, { merge: true })
+    .catch((err) => logger.error("api usage metering failed", { err }));
+
+  try {
+    const out = await captainAdelFlow(parsed);
+    res.json({
+      answer: out.answer,
+      sources: out.sources,
+      kind: out.kind,
+      refusalClass: out.refusalClass,
+      meta: { provider: out.meta.provider },
+    });
+  } catch (err) {
+    logger.error("v1/ask failed", { err });
+    res.status(500).json({ error: "ask failed" });
   }
 });
 

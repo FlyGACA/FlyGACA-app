@@ -9,6 +9,7 @@
 import { useSyncExternalStore } from 'react';
 import type { Entitlement } from './entitlements';
 import { isAuthAvailable, onAuthChange } from './auth';
+import { claimStaffAccessIfEligible } from './staff';
 import {
   loadAccount,
   saveProfileDoc,
@@ -89,6 +90,8 @@ interface State {
   records: PilotRecord[];
   /** Server-written; read-only, used only to gate UI. */
   entitlement: Entitlement | null;
+  /** Purchased Captain Adel credits (server-written, owner-readable); 0 when none. */
+  chatCredits: number;
   /** True when the last Firestore write-through failed — local is ahead of server. */
   syncError: boolean;
 }
@@ -129,6 +132,7 @@ let state: State = {
   flights: readJson(K.logbook, [] as Flight[]),
   records: readJson(K.records, [] as PilotRecord[]),
   entitlement: null,
+  chatCredits: 0,
   syncError: false,
 };
 
@@ -168,6 +172,7 @@ export function signOut(): void {
     uid: null,
     emailVerified: false,
     entitlement: null,
+    chatCredits: 0,
     syncError: false,
   });
 }
@@ -287,6 +292,10 @@ function connectAuth(): void {
         },
       });
       try {
+        // Staff auto-grant: a verified allowlisted email (e.g. @flygaca.com) gets
+        // the complimentary entitlement written server-side before we hydrate, so
+        // the fresh plan is included in loadAccount below. No-ops for everyone else.
+        await claimStaffAccessIfEligible(user.email, user.emailVerified);
         const loaded = await loadAccount(user.uid);
         // The Firestore round-trip can outlive the session: if the user signed
         // out or switched accounts while it was in flight, do NOT re-apply this
@@ -298,6 +307,7 @@ function connectAuth(): void {
             flights: loaded.flights.length ? loaded.flights : state.flights,
             records: loaded.records && loaded.records.length ? loaded.records : state.records,
             entitlement: loaded.entitlement,
+            chatCredits: loaded.chatCredits,
             syncError: false,
           });
         }
@@ -311,6 +321,7 @@ function connectAuth(): void {
         uid: null,
         emailVerified: false,
         entitlement: null,
+        chatCredits: 0,
         syncError: false,
       });
     }
@@ -336,6 +347,7 @@ export async function refreshAccount(): Promise<void> {
         flights: loaded.flights.length ? loaded.flights : state.flights,
         records: loaded.records?.length ? loaded.records : state.records,
         entitlement: loaded.entitlement,
+        chatCredits: loaded.chatCredits,
         syncError: false,
       });
     }

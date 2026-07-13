@@ -691,7 +691,9 @@
     },
     "quota": {
       "left": "{{n}} of {{limit}} free questions left today",
-      "exhausted": "You've used today's free questions. Go Pro for unlimited access to Captain Adel."
+      "exhausted": "You've used today's free questions. Go Pro for unlimited access to Captain Adel.",
+      "credits": "{{n}} question credits left",
+      "buyCredits": "Buy {{n}} more questions"
     },
     "groups": {
       "airspace": "Airspace & weather",
@@ -1775,6 +1777,8 @@
     "moneyBack": "30-day money-back guarantee",
     "studentToggle": "Studying full-time? Get student pricing",
     "studentNote": "verified at checkout",
+    "studentCta": "Get the student rate",
+    "studentVerifyNeeded": "Sign in with your verified academic (.edu) email to unlock the student rate.",
     "passHead": "Exam Season Pass",
     "passLead": "Just need it until your checkride? Full Pro access for 90 days, no subscription.",
     "passCta": "Get the pass",
@@ -3283,6 +3287,12 @@
       "unlimited": "Unlimited logbook entries",
       "adel": "Plan renewals with Captain Adel"
     }
+  },
+  "referral": {
+    "title": "Invite a fellow pilot",
+    "subtitle": "Share your link — you both get 30 free Captain Adel questions when they subscribe.",
+    "copy": "Copy link",
+    "copied": "Copied!"
   },
   "setup": {
     "title": "Get current",

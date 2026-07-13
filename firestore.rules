@@ -137,6 +137,44 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Per-uid Captain Adel free-question counters, written ONLY by the chat
+    // gateway (Admin SDK) to enforce the daily free allowance server-side. A
+    // client must never read or write it — the app's own counter is a separate
+    // localStorage nudge, not this authoritative record.
+    match /chatUsage/{uid} {
+      allow read, write: if false;
+    }
+
+    // Per-uid purchased Captain Adel credit balance. Written ONLY server-side (the
+    // Stripe webhook tops it up; the gateway spends it), but the OWNER may read it
+    // so the app can show the balance and lift the daily-limit gate. Never
+    // client-writable — a client can't grant itself credits.
+    match /chatCredits/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    // Referral bookkeeping — the code → referrer mapping and the once-per-referee
+    // reward markers. Written ONLY server-side (the referral callable + webhook);
+    // the client learns its own code from the callable's return, never by reading
+    // here. Fully denied so codes/rewards can't be enumerated or forged.
+    match /referralCodes/{code} {
+      allow read, write: if false;
+    }
+    match /referrals/{uid} {
+      allow read, write: if false;
+    }
+
+    // Licensed-API key hashes and their per-key usage meters. Minted + read only by
+    // the backend (Admin SDK / the mint script); the raw key lives with the partner,
+    // never here. Fully denied to clients.
+    match /apiKeys/{hash} {
+      allow read, write: if false;
+    }
+    match /apiUsage/{hash} {
+      allow read, write: if false;
+    }
+
     // Everything else stays denied. Server-only data is written with the Admin
     // SDK (which bypasses these rules); any client reaching an unlisted path is
     // refused here.
