@@ -7,6 +7,7 @@ import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import { ButtonLink } from '../components/ui/Button';
 import { lockBodyScroll, unlockBodyScroll } from '../lib/scroll-lock';
+import { useAccount } from '../lib/account';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 
@@ -14,6 +15,16 @@ interface NavItem {
   to: string;
   key: string;
 }
+
+// The signed-in daily-use pages, surfaced in the mobile "More" sheet (and the
+// desktop account menu) so a returning pilot doesn't have to dig through /account.
+const SIGNED_IN: NavItem[] = [
+  { to: '/dashboard', key: 'account.dashboard' },
+  { to: '/logbook', key: 'account.logbook' },
+  { to: '/records', key: 'account.records' },
+  { to: '/currency', key: 'account.currency' },
+  { to: '/settings', key: 'account.settings' },
+];
 
 // Routes that are live in this build link internally; the rest are placeholders
 // pointing at their eventual paths (tracked in MIGRATION.md).
@@ -59,6 +70,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const location = useLocation();
+  const { session } = useAccount();
+  const signedIn = Boolean(session);
   const sheetRef = useRef<HTMLElement>(null);
   const moreRef = useRef<HTMLButtonElement>(null);
 
@@ -269,6 +282,37 @@ export function Header() {
             </li>
           ))}
         </ul>
+
+        {/* When signed in, surface the daily-use pages that otherwise hide
+            behind /account, so a returning pilot reaches them in one tap. */}
+        {signedIn && (
+          <>
+            <div className={styles.sheetDivider} aria-hidden="true" />
+            <p className={styles.sheetLabel} aria-hidden="true">
+              {t('nav.account')}
+            </p>
+            <ul className={styles.sheetList}>
+              {SIGNED_IN.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    viewTransition
+                    to={item.to}
+                    className={({ isActive }) =>
+                      isActive ? `${styles.sheetLink} ${styles.sheetActive}` : styles.sheetLink
+                    }
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className={styles.sheetIcon}>
+                      <DockIcon route={item.to} />
+                    </span>
+                    {t(item.key)}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
         <div className={styles.sheetDivider} aria-hidden="true" />
         <Link
           className={styles.sheetCta}
