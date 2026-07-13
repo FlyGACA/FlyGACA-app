@@ -99,26 +99,28 @@ export function RoutePlanner() {
 
       {legs.length > 0 && (
         <>
-          <table className={table.table}>
-            <thead>
-              <tr>
-                <th>{t('routePlanner.legCol')}</th>
-                <th>{t('routePlanner.distCol')}</th>
-                <th>{t('routePlanner.bearingCol')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {legs.map((l, i) => (
-                <tr key={i}>
-                  <td>
-                    {l.from} → {l.to}
-                  </td>
-                  <td>{Math.round(l.distanceNm)} NM</td>
-                  <td>{Math.round(l.bearingDeg)}°</td>
+          <div className={table.tableWrap}>
+            <table className={table.table}>
+              <thead>
+                <tr>
+                  <th>{t('routePlanner.legCol')}</th>
+                  <th>{t('routePlanner.distCol')}</th>
+                  <th>{t('routePlanner.bearingCol')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {legs.map((l, i) => (
+                  <tr key={i}>
+                    <td>
+                      {l.from} → {l.to}
+                    </td>
+                    <td>{Math.round(l.distanceNm)} NM</td>
+                    <td>{Math.round(l.bearingDeg)}°</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <OutputGrid>
             <ResultStat
               label={t('routePlanner.total')}

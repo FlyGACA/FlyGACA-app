@@ -4,6 +4,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { itemListLd } from '../../lib/jsonld';
 import { useFeature } from '../../lib/features';
 import { Disclaimer } from '../../components/Disclaimer';
+import { HubBackLink } from '../../components/HubBackLink';
 import { PACKS, PACKS_GATED, packItemCount } from './packCatalog';
 import styles from './Study.module.css';
 
@@ -24,6 +25,7 @@ export function Packs() {
 
   return (
     <section className={`container ${styles.page}`}>
+      <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
       <header className={styles.head}>
         <h1>{t('study.packs')}</h1>
         <p className={styles.subtitle}>{t('study.packsDesc')}</p>

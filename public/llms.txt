@@ -14,7 +14,7 @@ Important: Fly GACA is **not affiliated with GACA** (the General Authority of Ci
 
 ## Tools (flight calculators)
 
-- [Flight Tools & Calculators](https://flygaca.com/tools): 54 free calculators — crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders, and more.
+- [Flight Tools & Calculators](https://flygaca.com/tools): 55 free calculators — crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders, and more.
 
 ## Guides
 

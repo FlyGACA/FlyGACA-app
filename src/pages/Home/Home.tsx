@@ -7,6 +7,7 @@ import { FlightDivider } from '../../components/FlightDivider';
 import { Marquee } from '../../components/Marquee';
 import { HeroAmbient } from '../../components/HeroAmbient';
 import { AdelHeroWidget } from '../../components/AdelHeroWidget';
+import { OnboardingHint } from '../../components/onboarding/OnboardingHint';
 import { SectionHeader } from '../../components/SectionHeader';
 import { Stepper } from '../../components/Stepper';
 import { BentoGrid } from '../../components/bento/BentoGrid';
@@ -18,6 +19,7 @@ import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { faqLd } from '../../lib/jsonld';
 import { GUIDE_SLUGS } from '../guides/guides';
+import { liveTools } from '../../lib/tools';
 import styles from './Home.module.css';
 
 // The bento dashboard (and its framer-motion runtime) is split off the home
@@ -29,7 +31,8 @@ const HomeDashboard = lazy(() => import('../../components/bento/HomeDashboard'))
 // `GUIDE_SLUGS` count the Learn hub surfaces.
 const TRUST_STATS = [
   { value: 74, key: 'parts' },
-  { value: 55, key: 'tools' },
+  // Derived from the registry (single source of truth) so the count can't drift.
+  { value: liveTools().length, key: 'tools' },
   { value: GUIDE_SLUGS.length, key: 'guides' },
 ] as const;
 
@@ -89,6 +92,10 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      <div className="container">
+        <OnboardingHint />
+      </div>
 
       <Marquee />
 

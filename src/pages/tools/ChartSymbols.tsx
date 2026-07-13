@@ -27,22 +27,24 @@ export function ChartSymbols() {
       formula={t('chartSymbols.formula')}
     >
       <TextField label={t('chartSymbols.filter')} value={q} onChange={setQ} placeholder="CTR" />
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>{t('chartSymbols.symbolCol')}</th>
-            <th>{t('chartSymbols.meaningCol')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((i) => (
-            <tr key={i.symbol}>
-              <td style={{ fontWeight: 700, color: 'var(--accent-bright)' }}>{i.symbol}</td>
-              <td>{i.meaning}</td>
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>{t('chartSymbols.symbolCol')}</th>
+              <th>{t('chartSymbols.meaningCol')}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map((i) => (
+              <tr key={i.symbol}>
+                <td style={{ fontWeight: 700, color: 'var(--accent-bright)' }}>{i.symbol}</td>
+                <td>{i.meaning}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </CalcShell>
   );
 }

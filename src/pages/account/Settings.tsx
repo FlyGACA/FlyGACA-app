@@ -7,7 +7,7 @@ import { SelectField, type SelectOption } from '../../components/calc/SelectFiel
 import { LangToggle } from '../../components/LangToggle';
 import { Alert } from '../../components/Alert';
 import { deleteAllData, exportAll, saveProfile, useAccount, USER_ROLES } from '../../lib/account';
-import { replayOnboarding } from '../../lib/onboardingPrefs';
+import { replayOnboarding, openTour } from '../../lib/onboardingPrefs';
 import { effectivePlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
@@ -161,6 +161,7 @@ function Inner() {
           className={styles.btn}
           onClick={() => {
             replayOnboarding();
+            openTour();
             navigate('/');
           }}
         >

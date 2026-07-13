@@ -8,6 +8,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { Disclaimer } from '../../components/Disclaimer';
 import { SectionHeader } from '../../components/SectionHeader';
+import { HubBackLink } from '../../components/HubBackLink';
 import styles from './GroundSchool.module.css';
 
 /** Per-module accent — cycles the Falcon hues from the design-token map. */
@@ -31,6 +32,7 @@ export function GroundSchool() {
 
   return (
     <section className={`container-narrow ${styles.page}`}>
+      <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
       {loading && <p>{t('common.loading')}</p>}
       {error && <p role="alert">{t('common.loadError')}</p>}
       {data && (

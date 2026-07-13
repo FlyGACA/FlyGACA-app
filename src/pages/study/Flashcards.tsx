@@ -9,6 +9,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
+import { HubBackLink } from '../../components/HubBackLink';
 import styles from './Study.module.css';
 
 function shuffle<T>(arr: T[]): T[] {
@@ -69,6 +70,7 @@ export function Flashcards() {
   if (!bank) {
     return (
       <section className={`container-narrow ${styles.page}`}>
+        <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
         <h1>{t('study.flashcards')}</h1>
         <p className={styles.subtitle}>{t('study.pickBank')}</p>
         <ul className={styles.banks}>

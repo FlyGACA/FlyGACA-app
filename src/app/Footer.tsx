@@ -129,6 +129,11 @@ export function Footer() {
                   {t('nav.pricing')}
                 </Link>
               </li>
+              <li>
+                <Link to="/schools" viewTransition>
+                  {t('nav.schools')}
+                </Link>
+              </li>
             </ul>
           </nav>
 

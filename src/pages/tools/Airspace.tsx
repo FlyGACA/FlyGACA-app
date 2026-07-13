@@ -53,22 +53,24 @@ export function Airspace() {
       formula={t('airspace.formula')}
       related={[{ to: '/tools/vfr-minima', label: t('tools.items.vfr-minima.name') }]}
     >
-      <table className={table.table}>
-        <thead>
-          <tr>
-            <th>{t('airspace.classCol')}</th>
-            <th>{t('airspace.rulesCol')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.cls}>
-              <td style={{ fontWeight: 700, color: 'var(--accent-bright)' }}>{r.cls}</td>
-              <td>{r.rules}</td>
+      <div className={table.tableWrap}>
+        <table className={table.table}>
+          <thead>
+            <tr>
+              <th>{t('airspace.classCol')}</th>
+              <th>{t('airspace.rulesCol')}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.cls}>
+                <td style={{ fontWeight: 700, color: 'var(--accent-bright)' }}>{r.cls}</td>
+                <td>{r.rules}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {data && data.airspaces.length > 0 && (
         <section aria-labelledby="airspace-zones">

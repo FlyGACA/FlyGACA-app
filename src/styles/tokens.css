@@ -160,6 +160,7 @@
   --space-4: 1rem;
   --space-5: 1.5rem;
   --space-6: 2rem;
+  --space-7: 2.5rem; /* 40px — bridges 6↔8; live consumers reference it (calc, reader, study) */
   --space-8: 3rem;
   --space-10: 4rem;
   --space-12: 6rem;
@@ -329,13 +330,16 @@
 }
 
 /* =================================================================
-   Always dark — Fly GACA is a cockpit view and must render dark on
-   every device, regardless of the OS colour-scheme preference. There is
-   intentionally NO light theme: no `prefers-color-scheme: light` switch
-   and no `[data-theme="light"]` opt-in. Do not re-add either — the whole
-   palette above is dark-first and the app has no light reading surface.
-   `color-scheme: dark` (set on :root) keeps native controls, scrollbars
-   and form widgets dark to match.
+   Dark-first by default — Fly GACA renders dark on every device
+   regardless of the OS colour-scheme preference: there is intentionally
+   NO `prefers-color-scheme: light` auto-switch. `color-scheme: dark` (set
+   on :root) keeps native controls, scrollbars and form widgets dark.
+
+   There is ONE opt-in light surface: the Day / reading theme
+   (`[data-theme="day"]`, below), for long-form regulation reading. It is
+   explicit and user-selected via the ThemeToggle — never automatic — and
+   re-points `color-scheme: light` for itself. Do not add a
+   `prefers-color-scheme: light` switch; the default stays dark.
    ================================================================= */
 
 /* =================================================================
@@ -443,4 +447,105 @@ html[data-theme='cockpit'] {
     #ffb000 65%,
     #ffc23d 100%
   );
+}
+
+/* =================================================================
+   Day / reading theme — the ONE opt-in LIGHT surface, for long-form
+   regulation reading (see the note above the Cockpit block). Explicit and
+   user-selected via ThemeToggle; never automatic. It re-points the same raw
+   Falcon hues + semantic tokens the Cockpit block does, onto an ivory canvas
+   with dark ink, and flips `color-scheme: light` so native controls follow.
+
+   The signature hero band stays DARK on the light page: --falcon-stroke /
+   --grad-brand / --grad-title / --glass-* literal-hex the deck navy, so the
+   band renders as the dark falcon strip over ivory with its light --moon text
+   intact — no override needed (and --glass-* are pinned dark below so the hero
+   search glass keeps its dark-on-dark contrast). Brand/accent hues are darkened
+   for AA text-contrast on ivory; elevation switches to the cool light shadows
+   (--shadow-1/2/3), retiring the dual shadow system for this theme.
+   ================================================================= */
+html[data-theme='day'] {
+  color-scheme: light;
+
+  /* --- Ivory canvas ramp (replaces the navy) --- */
+  --falcon-night: #f5f2ed; /* --bg inherits this */
+  --falcon-deep: #fbf8f2; /* --surface inherits this */
+  --falcon-mist: #e5dfd3; /* --border inherits this */
+  --falcon-mist-2: #d8cfbe; /* raised border on light */
+  --surface-raised: #ffffff; /* hover / raised card */
+  --surface-sunken: #ece7db; /* input wells (base color-mix would go dark) */
+  --border-bright: #d8cfbe;
+  --border-input: #7d8894; /* clears WCAG 1.4.11 3:1 vs ivory surfaces */
+
+  /* --- Ink text (dark on ivory) --- */
+  --text: #16212c; /* primary (~13:1 on --bg) */
+  --text-muted: #3f4a55; /* secondary — --ink-soft (~8.5:1) */
+  --text-dim: #5c6873; /* tertiary / captions — AA (~5:1) */
+  --text-on-brand: #ffffff; /* white on the teal fill */
+
+  /* --- Brand roles — darkened for AA text-contrast on ivory --- */
+  --falcon-teal: #2a6580; /* --brand; white text ~4.7:1 */
+  --teal-bright: #1c5a72; /* --brand-hover / --link / focus — darker teal */
+  --falcon-sage: #3f7d5c; /* --accent — deepened green */
+  --sage-bright: #2f6a4a;
+  --falcon-gold: #9a7623; /* heritage gold, readable on light */
+  --falcon-gold-soft: #b8944a;
+  --falcon-clay: #b1442b; /* caution / hold — deepened clay */
+  --link: #1c5a72;
+  --success: #2f7d4f;
+  --warning: #8a5f14;
+  --focus: #1c5a72;
+
+  /* Re-mix the brand tints onto the new (darker) brand hue. */
+  --brand-tint: color-mix(in srgb, var(--brand) 10%, transparent);
+  --brand-tint-strong: color-mix(in srgb, var(--brand) 16%, transparent);
+
+  /* --- Elevation → the cool, low-spread light shadows (retire dual system) --- */
+  --elev-1: var(--shadow-1);
+  --elev-2: var(--shadow-2);
+  --elev-3: var(--shadow-3);
+  /* Top sheen would be a dark smear on ivory — make it a soft white highlight. */
+  --sheen-top: rgba(255, 255, 255, 0.7);
+
+  /* --- Category accents → darker-luminance so bars/borders read on ivory --- */
+  --cat-1: #1c5a72;
+  --cat-2: #3f7d5c;
+  --cat-3: #9a7623;
+  --cat-4: #2a6580;
+  --cat-5: #b1442b;
+
+  /* --- Neon functional accents → darkened (bright neon vanishes on ivory) --- */
+  --neon-green: #2f7d4f;
+  --neon-cyan: #1c6f8a;
+  --bento-surface: #fbf8f2;
+  --bento-gutter: #ece7db;
+  --diagram-runway: #c9c0b0;
+  --glow-neon-green: radial-gradient(
+    closest-side,
+    rgba(47, 125, 79, 0.14),
+    rgba(47, 125, 79, 0) 70%
+  );
+  --glow-neon-cyan: radial-gradient(
+    closest-side,
+    rgba(28, 111, 138, 0.14),
+    rgba(28, 111, 138, 0) 70%
+  );
+  --glow-teal: radial-gradient(closest-side, rgba(42, 101, 128, 0.16), rgba(42, 101, 128, 0) 70%);
+  --glow-sage: radial-gradient(closest-side, rgba(63, 125, 92, 0.14), rgba(63, 125, 92, 0) 70%);
+  --glow-stat-cyan: 0 0 14px color-mix(in srgb, var(--neon-cyan) 22%, transparent);
+  --glow-stat-green: 0 0 14px color-mix(in srgb, var(--neon-green) 22%, transparent);
+
+  /* --- Skeleton shimmer tuned for light --- */
+  --skeleton-base: #e9e3d8;
+  --skeleton-shine: #f6f2ea;
+
+  /* --- Command-palette result tags → darker-luminance for the now-light dialog --- */
+  --tag-regulation: #1c6f8a;
+  --tag-tool: #9a7623;
+  --tag-guide: #7a52a0;
+
+  /* --- Keep the hero instrument-glass DARK over the (still dark) falcon band, so
+     its light --moon text and glass border stay legible on the ivory page. --- */
+  --glass-bg: color-mix(in srgb, #0a0e12 45%, transparent);
+  --glass-bg-strong: color-mix(in srgb, #0a0e12 65%, transparent);
 }

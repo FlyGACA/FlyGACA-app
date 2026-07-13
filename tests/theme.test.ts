@@ -47,6 +47,21 @@ describe('theme store', () => {
     expect(metaColor()).toBe('#0A0E12');
   });
 
+  it('applyTheme sets the day (light) theme + its ivory theme-color', async () => {
+    const m = await import('../src/lib/theme');
+    m.applyTheme('day');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('day');
+    expect(metaColor()).toBe('#F5F2ED');
+    m.applyTheme('falcon');
+    expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
+  });
+
+  it('readTheme reads a stored day choice', async () => {
+    const m = await import('../src/lib/theme');
+    localStorage.setItem(KEY, 'day');
+    expect(m.readTheme()).toBe('day');
+  });
+
   it('persistTheme writes the storage key', async () => {
     const m = await import('../src/lib/theme');
     m.persistTheme('cockpit');

@@ -4,8 +4,9 @@ import '../src/i18n';
 import { ThemeToggle } from '../src/components/ThemeToggle';
 import { setTheme } from '../src/lib/theme';
 
-// ThemeToggle flips the Cockpit / Night-Ops dark theme on <html> and reflects
-// pressed state via aria-pressed — the night-ops entry point in the chrome.
+// ThemeToggle cycles the three themes on <html> via data-theme: Falcon (default,
+// no attribute) → Cockpit / Night-Ops → Day (light reading) → back. Its label
+// names the theme the next click will switch to.
 
 afterEach(() => {
   cleanup();
@@ -15,21 +16,27 @@ afterEach(() => {
 });
 
 describe('<ThemeToggle />', () => {
-  it('renders an accessible toggle button, unpressed on the default theme', () => {
+  it('labels the button with the next theme on the default (Falcon) theme', () => {
     render(<ThemeToggle />);
-    const btn = screen.getByRole('button', { name: 'Toggle night-ops theme' });
-    expect(btn).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'Switch to night-ops theme' })).toBeInTheDocument();
   });
 
-  it('engages cockpit mode on click — sets data-theme and aria-pressed', () => {
+  it('cycles falcon → cockpit → day → falcon on successive clicks', () => {
     render(<ThemeToggle />);
-    const btn = screen.getByRole('button', { name: 'Toggle night-ops theme' });
-    fireEvent.click(btn);
-    expect(btn).toHaveAttribute('aria-pressed', 'true');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('cockpit');
-    fireEvent.click(btn);
-    expect(btn).toHaveAttribute('aria-pressed', 'false');
-    expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
+    const btn = () => screen.getByRole('button');
+    const root = document.documentElement;
+
+    fireEvent.click(btn());
+    expect(root.getAttribute('data-theme')).toBe('cockpit');
+    expect(btn()).toHaveAccessibleName('Switch to day (reading) theme');
+
+    fireEvent.click(btn());
+    expect(root.getAttribute('data-theme')).toBe('day');
+    expect(btn()).toHaveAccessibleName('Switch to Falcon (dark) theme');
+
+    fireEvent.click(btn());
+    expect(root.hasAttribute('data-theme')).toBe(false);
+    expect(btn()).toHaveAccessibleName('Switch to night-ops theme');
   });
 
   it('passes the className through to the button', () => {

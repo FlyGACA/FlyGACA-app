@@ -3,9 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Copy, Check, ShareNetwork, GraduationCap } from '@phosphor-icons/react';
 import { Disclaimer } from './Disclaimer';
+import { Breadcrumbs } from './Breadcrumbs';
 import { adelLink } from '../lib/adel';
 import { usePageMeta } from '../lib/usePageMeta';
-import { breadcrumbLd, softwareAppLd, type JsonLd } from '../lib/jsonld';
+import { breadcrumbLd, softwareAppLd, type Crumb, type JsonLd } from '../lib/jsonld';
 import { shareCurrent } from '../lib/share';
 import { useFeature } from '../lib/features';
 import {
@@ -100,16 +101,19 @@ export function CalcShell({
     setPresetName('');
     setNaming(false);
   }
+  // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>, so the
+  // on-page nav and the structured data never drift (mirrors the Document reader).
+  const crumbs: Crumb[] = [
+    { name: t('nav.breadcrumbHome'), path: '/' },
+    { name: t('nav.tools'), path: '/tools' },
+    { name: title, path: pathname },
+  ];
   usePageMeta(
     title,
     intro,
     [
       primaryLd ?? softwareAppLd({ title, description: intro, path: pathname }),
-      breadcrumbLd([
-        { name: t('nav.breadcrumbHome'), path: '/' },
-        { name: t('nav.tools'), path: '/tools' },
-        { name: title, path: pathname },
-      ]),
+      breadcrumbLd(crumbs),
     ],
     noindex ? { noindex: true } : undefined,
   );
@@ -159,6 +163,7 @@ export function CalcShell({
   return (
     <article className={`container-narrow ${styles.shell} page-enter`}>
       <header className={styles.head}>
+        <Breadcrumbs items={crumbs} />
         {category && <p className={styles.eyebrow}>{category}</p>}
         <h1>{title}</h1>
         {intro && <p className={styles.intro}>{intro}</p>}

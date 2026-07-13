@@ -10,7 +10,7 @@ import { ScrollProgress } from '../components/ScrollProgress';
 import { CommandPalette } from '../components/CommandPalette/CommandPalette';
 import { PwaPrompts } from '../components/pwa/PwaPrompts';
 import { AnalyticsProvider } from '../components/AnalyticsProvider';
-import { useOnboardingSeen } from '../lib/onboardingPrefs';
+import { useTourOpen } from '../lib/onboardingPrefs';
 
 // Lazy so the modal + its CSS stay out of the initial bundle (160 kB budget) —
 // only fetched on a genuine first visit to the home route.
@@ -25,11 +25,10 @@ import { useOfflineBookmarkSync } from '../lib/useOfflineSync';
 export function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
-  const onboardingSeen = useOnboardingSeen();
 
-  // First-run welcome tour: only on a fresh visit to the home route, so a
-  // deep-linked tool or regulation is never interrupted.
-  const showTour = !onboardingSeen && location.pathname === '/';
+  // The welcome tour is on-demand — opened from the dismissible Home hint or the
+  // Settings "replay" — so it never auto-covers the hero on a first visit.
+  const showTour = useTourOpen();
   useOfflineBookmarkSync();
 
   return (

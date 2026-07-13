@@ -7,6 +7,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
+import { HubBackLink } from '../../components/HubBackLink';
 import styles from './Paths.module.css';
 
 export function Paths() {
@@ -26,6 +27,7 @@ export function Paths() {
 
   return (
     <section className={`container ${styles.page}`}>
+      <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
       <header className={styles.head}>
         <h1>{t('study.paths')}</h1>
         <p className={styles.subtitle}>{t('study.pathsDesc')}</p>

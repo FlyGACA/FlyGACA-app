@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CaptainAvatar } from '../CaptainAvatar';
 import { DockIcon } from '../../app/DockIcons';
-import { markOnboardingSeen } from '../../lib/onboardingPrefs';
+import { markOnboardingSeen, closeTour } from '../../lib/onboardingPrefs';
 import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
 import styles from './OnboardingTour.module.css';
 
@@ -67,6 +67,7 @@ export default function OnboardingTour() {
 
   function dismiss() {
     markOnboardingSeen();
+    closeTour();
   }
 
   // Escape dismisses from anywhere inside; Tab is trapped within the box so

@@ -75,7 +75,7 @@ export function StudySheets() {
   return (
     <section className={`container ${styles.page}`}>
       <p className={styles.back}>
-        <Link to="/study">← {t('study.title')}</Link>
+        <Link to="/learn?tab=practice">← {t('nav.learn')}</Link>
       </p>
       <header className={styles.head}>
         <h1>{t('sheets.title')}</h1>

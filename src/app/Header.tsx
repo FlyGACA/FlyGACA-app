@@ -7,6 +7,8 @@ import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import { ButtonLink } from '../components/ui/Button';
 import { lockBodyScroll, unlockBodyScroll } from '../lib/scroll-lock';
+import { useAccount } from '../lib/account';
+import { effectivePlan } from '../lib/entitlements';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 
@@ -14,6 +16,16 @@ interface NavItem {
   to: string;
   key: string;
 }
+
+// The signed-in daily-use pages, surfaced in the mobile "More" sheet (and the
+// desktop account menu) so a returning pilot doesn't have to dig through /account.
+const SIGNED_IN: NavItem[] = [
+  { to: '/dashboard', key: 'account.dashboard' },
+  { to: '/logbook', key: 'account.logbook' },
+  { to: '/records', key: 'account.records' },
+  { to: '/currency', key: 'account.currency' },
+  { to: '/settings', key: 'account.settings' },
+];
 
 // Routes that are live in this build link internally; the rest are placeholders
 // pointing at their eventual paths (tracked in MIGRATION.md).
@@ -54,11 +66,135 @@ function useScrolled(threshold = 8): boolean {
   return scrolled;
 }
 
+/** Desktop account dropdown — a native <details> (keyboard/AT-friendly, mirrors
+ *  ConversationMenu) that reveals the signed-in daily surfaces plus the /account
+ *  hub, so they aren't buried a click deep behind a single nav link. Closes on
+ *  outside-click, Escape, and route change. */
+function AccountMenu() {
+  const { t } = useTranslation();
+  const ref = useRef<HTMLDetailsElement>(null);
+  const { pathname } = useLocation();
+
+  const close = () => {
+    if (ref.current) ref.current.open = false;
+  };
+  // Close on route change so a picked destination doesn't leave the menu open.
+  useEffect(close, [pathname]);
+  // Dismiss on outside pointerdown or Escape while open.
+  useEffect(() => {
+    const onDown = (e: PointerEvent) => {
+      if (ref.current?.open && !ref.current.contains(e.target as Node)) close();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && ref.current?.open) {
+        close();
+        ref.current.querySelector<HTMLElement>('summary')?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
+
+  return (
+    <details ref={ref} className={styles.accountMenu}>
+      <summary className={styles.accountSummary}>
+        <DockIcon route="/account" width={18} height={18} />
+        {t('nav.account')}
+        <svg
+          className={styles.accountCaret}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </summary>
+      <div className={styles.accountPanel} role="menu">
+        {SIGNED_IN.map((item) => (
+          <NavLink
+            viewTransition
+            key={item.to}
+            to={item.to}
+            role="menuitem"
+            className={({ isActive }) =>
+              isActive ? `${styles.accountItem} ${styles.accountItemActive}` : styles.accountItem
+            }
+            onClick={close}
+          >
+            <span className={styles.accountItemIcon}>
+              <DockIcon route={item.to} />
+            </span>
+            {t(item.key)}
+          </NavLink>
+        ))}
+        <div className={styles.accountMenuDivider} aria-hidden="true" />
+        <NavLink
+          viewTransition
+          to="/account"
+          role="menuitem"
+          className={({ isActive }) =>
+            isActive ? `${styles.accountItem} ${styles.accountItemActive}` : styles.accountItem
+          }
+          onClick={close}
+        >
+          <span className={styles.accountItemIcon}>
+            <DockIcon route="/account" />
+          </span>
+          {t('nav.manageAccount')}
+        </NavLink>
+      </div>
+    </details>
+  );
+}
+
 export function Header() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const location = useLocation();
+  const { session, entitlement } = useAccount();
+  const signedIn = Boolean(session);
+  // A paying pilot shouldn't be shown "Go Pro" — point the header CTA at their
+  // dashboard home instead, aligning the primary CTA to a single target by plan.
+  const isPro = signedIn && effectivePlan(entitlement) !== 'free';
+  const ctaTo = isPro ? '/dashboard' : '/pricing';
+  const ctaLabel = isPro ? t('account.dashboard') : t('common.goPro');
+  const ctaIcon = isPro ? (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="7" height="9" rx="1.5" />
+      <rect x="14" y="3" width="7" height="5" rx="1.5" />
+      <rect x="14" y="12" width="7" height="9" rx="1.5" />
+      <rect x="3" y="16" width="7" height="5" rx="1.5" />
+    </svg>
+  ) : (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
+    </svg>
+  );
   const sheetRef = useRef<HTMLElement>(null);
   const moreRef = useRef<HTMLButtonElement>(null);
 
@@ -134,18 +270,23 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Desktop inline nav (hidden ≤860px, where the bottom dock takes over). */}
+          {/* Desktop inline nav (hidden ≤860px, where the bottom dock takes over).
+              When signed in, /account becomes a dropdown surfacing the daily pages. */}
           <nav className={styles.links} aria-label={t('nav.primary')}>
-            {NAV.map((item) => (
-              <NavLink
-                viewTransition
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => (isActive ? styles.active : undefined)}
-              >
-                {t(item.key)}
-              </NavLink>
-            ))}
+            {NAV.map((item) =>
+              item.to === '/account' && signedIn ? (
+                <AccountMenu key={item.to} />
+              ) : (
+                <NavLink
+                  viewTransition
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => (isActive ? styles.active : undefined)}
+                >
+                  {t(item.key)}
+                </NavLink>
+              ),
+            )}
           </nav>
 
           <div className={styles.actions}>
@@ -174,25 +315,8 @@ export function Header() {
             <ThemeToggle className={styles.langToggle} />
             <LangToggle className={styles.langToggle} />
             <InstallButton />
-            <ButtonLink
-              className={styles.cta}
-              to="/pricing"
-              viewTransition
-              icon={
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
-                </svg>
-              }
-            >
-              {t('common.goPro')}
+            <ButtonLink className={styles.cta} to={ctaTo} viewTransition icon={ctaIcon}>
+              {ctaLabel}
             </ButtonLink>
           </div>
         </div>
@@ -269,25 +393,41 @@ export function Header() {
             </li>
           ))}
         </ul>
+
+        {/* When signed in, surface the daily-use pages that otherwise hide
+            behind /account, so a returning pilot reaches them in one tap. */}
+        {signedIn && (
+          <>
+            <div className={styles.sheetDivider} aria-hidden="true" />
+            <p className={styles.sheetLabel} aria-hidden="true">
+              {t('nav.account')}
+            </p>
+            <ul className={styles.sheetList}>
+              {SIGNED_IN.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    viewTransition
+                    to={item.to}
+                    className={({ isActive }) =>
+                      isActive ? `${styles.sheetLink} ${styles.sheetActive}` : styles.sheetLink
+                    }
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className={styles.sheetIcon}>
+                      <DockIcon route={item.to} />
+                    </span>
+                    {t(item.key)}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
         <div className={styles.sheetDivider} aria-hidden="true" />
-        <Link
-          className={styles.sheetCta}
-          to="/pricing"
-          onClick={() => setOpen(false)}
-          viewTransition
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
-          </svg>
-          {t('common.goPro')}
+        <Link className={styles.sheetCta} to={ctaTo} onClick={() => setOpen(false)} viewTransition>
+          {ctaIcon}
+          {ctaLabel}
         </Link>
       </nav>
     </>
