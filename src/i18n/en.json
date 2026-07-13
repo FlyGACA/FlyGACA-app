@@ -369,19 +369,13 @@
       "soon": "Coming soon"
     },
     "categories": {
-      "wind-runway": "Wind & runway",
-      "atmosphere": "Atmosphere & altitude",
-      "speed": "Speed",
-      "climb-descent": "Climb, descent & turns",
+      "performance": "Performance & runway",
+      "atmosphere-weather": "Atmosphere & weather",
       "navigation": "Navigation & planning",
-      "fuel-weight": "Fuel & weight",
-      "time-cycles": "Time & cycles",
-      "weather": "Weather & decoding",
-      "gacar": "GACAR reference",
-      "currency": "Currency & validity",
-      "procedures": "Procedures & R/T",
-      "reference": "Quick reference",
-      "directory": "Directory & glossary"
+      "weight-fuel": "Weight & fuel",
+      "procedures": "Procedures & airspace",
+      "regulations": "Regulations & currency",
+      "reference": "Quick reference"
     },
     "items": {
       "crosswind": {

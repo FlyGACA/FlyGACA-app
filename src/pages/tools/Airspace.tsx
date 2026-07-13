@@ -49,7 +49,7 @@ export function Airspace() {
     <CalcShell
       title={t('tools.items.airspace.name')}
       intro={t('tools.items.airspace.blurb')}
-      category={t('tools.categories.directory')}
+      category={t('tools.categories.procedures')}
       formula={t('airspace.formula')}
       related={[{ to: '/tools/vfr-minima', label: t('tools.items.vfr-minima.name') }]}
     >

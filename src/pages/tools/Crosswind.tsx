@@ -69,7 +69,7 @@ export function Crosswind() {
     <CalcShell
       title={t('crosswind.title')}
       intro={t('crosswind.intro')}
-      category={t('tools.categories.wind-runway')}
+      category={t('tools.categories.performance')}
       formula={t('crosswind.formula')}
       onExample={() => {
         set('rwy', EXAMPLE.rwy);

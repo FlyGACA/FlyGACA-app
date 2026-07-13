@@ -17,7 +17,7 @@ export function Altimeter() {
     <CalcShell
       title={t('tools.items.altimeter.name')}
       intro={t('tools.items.altimeter.blurb')}
-      category={t('tools.categories.atmosphere')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('altimeter.formula')}
       onExample={() => {
         set('qnh', '1011');

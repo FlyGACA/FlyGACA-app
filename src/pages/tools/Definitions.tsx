@@ -26,7 +26,7 @@ export function Definitions() {
     <CalcShell
       title={t('tools.items.definitions.name')}
       intro={t('tools.items.definitions.blurb')}
-      category={t('tools.categories.directory')}
+      category={t('tools.categories.procedures')}
       related={[{ to: '/library/part-1', label: t('definitionsTool.openPart') }]}
     >
       <TextField

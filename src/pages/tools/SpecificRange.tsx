@@ -15,7 +15,7 @@ export function SpecificRange() {
     <CalcShell
       title={t('tools.items.specific-range.name')}
       intro={t('tools.items.specific-range.blurb')}
-      category={t('tools.categories.fuel-weight')}
+      category={t('tools.categories.weight-fuel')}
       formula={t('specificRange.formula')}
       onExample={() => {
         set('gs', '120');

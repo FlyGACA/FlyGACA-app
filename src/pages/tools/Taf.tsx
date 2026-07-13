@@ -35,7 +35,7 @@ export function Taf() {
     <CalcShell
       title={t('tools.items.taf.name')}
       intro={t('tools.items.taf.blurb')}
-      category={t('tools.categories.weather')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('wx.cavok')}
       onExample={() => set('raw', EXAMPLE)}
       related={[{ to: '/tools/metar', label: t('tools.items.metar.name') }]}

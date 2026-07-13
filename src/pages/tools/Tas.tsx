@@ -32,7 +32,7 @@ export function Tas() {
     <CalcShell
       title={t('tas.title')}
       intro={t('tas.intro')}
-      category={t('tools.categories.speed')}
+      category={t('tools.categories.performance')}
       formula={t('tas.formula')}
       onExample={() => {
         set('cas', EXAMPLE.cas);

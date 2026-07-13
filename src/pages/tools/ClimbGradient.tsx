@@ -15,7 +15,7 @@ export function ClimbGradient() {
     <CalcShell
       title={t('tools.items.climb-gradient.name')}
       intro={t('tools.items.climb-gradient.blurb')}
-      category={t('tools.categories.climb-descent')}
+      category={t('tools.categories.performance')}
       formula={t('climb.formula')}
       onExample={() => {
         set('grad', '318');

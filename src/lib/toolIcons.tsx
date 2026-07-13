@@ -11,19 +11,13 @@
  */
 import type { Icon, IconWeight } from '@phosphor-icons/react';
 import {
-  Wind,
-  Thermometer,
   Gauge,
-  TrendUp,
+  CloudSun,
   Compass,
   GasPump,
-  Clock,
-  CloudSun,
-  ClipboardText,
-  IdentificationCard,
   AirTrafficControl,
+  ClipboardText,
   BookOpen,
-  Folders,
 } from '@phosphor-icons/react';
 import type { ToolCategoryId } from './tools';
 
@@ -31,19 +25,13 @@ import type { ToolCategoryId } from './tools';
 export const TOOL_ICON_WEIGHT: IconWeight = 'regular';
 
 const CATEGORY_ICONS: Record<ToolCategoryId, Icon> = {
-  'wind-runway': Wind,
-  atmosphere: Thermometer,
-  speed: Gauge,
-  'climb-descent': TrendUp,
+  performance: Gauge,
+  'atmosphere-weather': CloudSun,
   navigation: Compass,
-  'fuel-weight': GasPump,
-  'time-cycles': Clock,
-  weather: CloudSun,
-  gacar: ClipboardText,
-  currency: IdentificationCard,
+  'weight-fuel': GasPump,
   procedures: AirTrafficControl,
+  regulations: ClipboardText,
   reference: BookOpen,
-  directory: Folders,
 };
 
 interface CategoryIconProps {

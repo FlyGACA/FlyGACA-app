@@ -7,19 +7,13 @@
  */
 
 export type ToolCategoryId =
-  | 'wind-runway'
-  | 'atmosphere'
-  | 'speed'
-  | 'climb-descent'
+  | 'performance'
+  | 'atmosphere-weather'
   | 'navigation'
-  | 'fuel-weight'
-  | 'time-cycles'
-  | 'weather'
-  | 'gacar'
-  | 'currency'
+  | 'weight-fuel'
   | 'procedures'
-  | 'reference'
-  | 'directory';
+  | 'regulations'
+  | 'reference';
 
 export interface ToolMeta {
   id: string;
@@ -33,19 +27,13 @@ export interface ToolMeta {
 
 /** Display order of the categories in the hub. */
 export const TOOL_CATEGORIES: ToolCategoryId[] = [
-  'wind-runway',
-  'atmosphere',
-  'speed',
-  'climb-descent',
+  'performance',
+  'atmosphere-weather',
   'navigation',
-  'fuel-weight',
-  'time-cycles',
-  'weather',
-  'gacar',
-  'currency',
+  'weight-fuel',
   'procedures',
+  'regulations',
   'reference',
-  'directory',
 ];
 
 const t = (
@@ -63,51 +51,51 @@ const t = (
 });
 
 export const TOOLS: ToolMeta[] = [
-  // Wind & runway
-  t('crosswind', 'wind-runway', 'live', { keywords: ['xwind', 'headwind', 'runway'] }),
-  t('wind-table', 'wind-runway', 'live', { keywords: ['all runways', 'components'] }),
-  t('hydroplaning', 'wind-runway', 'live', {
+  // Performance & runway — wind/runway, speed, climb/descent/turns
+  t('crosswind', 'performance', 'live', { keywords: ['xwind', 'headwind', 'runway'] }),
+  t('wind-table', 'performance', 'live', { keywords: ['all runways', 'components'] }),
+  t('hydroplaning', 'performance', 'live', {
     keywords: ['aquaplaning', 'tyre', 'tire'],
   }),
-  t('takeoff-landing', 'wind-runway', 'live', {
+  t('takeoff-landing', 'performance', 'live', {
     keywords: ['tora', 'lda', 'distance', 'performance'],
   }),
-
-  // Atmosphere & altitude
-  t('density-altitude', 'atmosphere', 'live', { keywords: ['da', 'pa', 'isa'] }),
-  t('pressure-altitude', 'atmosphere', 'live', {
-    keywords: ['pa', 'flight level', 'fl'],
-  }),
-  t('isa', 'atmosphere', 'live', { keywords: ['standard atmosphere', 'deviation'] }),
-  t('altimeter', 'atmosphere', 'live', { keywords: ['qnh', 'qfe', 'setting'] }),
-  t('cloud-base', 'atmosphere', 'live', { keywords: ['dew point', 'spread', 'lcl'] }),
-  t('true-altitude', 'atmosphere', 'live', {
-    keywords: ['temperature error', 'cold weather', 'isa deviation'],
-  }),
-
-  // Speed
-  t('tas', 'speed', 'live', { keywords: ['true airspeed', 'cas', 'mach'] }),
-  t('mach', 'speed', 'live', { keywords: ['speed of sound', 'tas'] }),
-
-  // Climb, descent & turns
-  t('climb-gradient', 'climb-descent', 'live', {
+  t('tas', 'performance', 'live', { keywords: ['true airspeed', 'cas', 'mach'] }),
+  t('mach', 'performance', 'live', { keywords: ['speed of sound', 'tas'] }),
+  t('climb-gradient', 'performance', 'live', {
     keywords: ['ft/nm', 'fpm', 'sid', 'percent'],
   }),
-  t('top-of-descent', 'climb-descent', 'live', { keywords: ['tod', 'descent point'] }),
-  t('descent-vdp', 'climb-descent', 'live', {
+  t('top-of-descent', 'performance', 'live', { keywords: ['tod', 'descent point'] }),
+  t('descent-vdp', 'performance', 'live', {
     keywords: ['rate', 'vdp', 'glidepath'],
   }),
-  t('standard-rate-turn', 'climb-descent', 'live', {
+  t('standard-rate-turn', 'performance', 'live', {
     keywords: ['rate one', 'bank', 'radius'],
   }),
-  t('top-of-climb', 'climb-descent', 'live', {
+  t('top-of-climb', 'performance', 'live', {
     keywords: ['toc', 'time to climb', 'fuel'],
   }),
-  t('turn-performance', 'climb-descent', 'live', {
+  t('turn-performance', 'performance', 'live', {
     keywords: ['turn radius', 'rate of turn', 'bank'],
   }),
 
-  // Navigation & planning
+  // Atmosphere & weather — atmosphere/altitude, weather decoding
+  t('density-altitude', 'atmosphere-weather', 'live', { keywords: ['da', 'pa', 'isa'] }),
+  t('pressure-altitude', 'atmosphere-weather', 'live', {
+    keywords: ['pa', 'flight level', 'fl'],
+  }),
+  t('isa', 'atmosphere-weather', 'live', { keywords: ['standard atmosphere', 'deviation'] }),
+  t('altimeter', 'atmosphere-weather', 'live', { keywords: ['qnh', 'qfe', 'setting'] }),
+  t('cloud-base', 'atmosphere-weather', 'live', { keywords: ['dew point', 'spread', 'lcl'] }),
+  t('true-altitude', 'atmosphere-weather', 'live', {
+    keywords: ['temperature error', 'cold weather', 'isa deviation'],
+  }),
+  t('metar', 'atmosphere-weather', 'live', { keywords: ['decode', 'observation'] }),
+  t('taf', 'atmosphere-weather', 'live', { badge: 'new', keywords: ['forecast', 'decode'] }),
+  t('notam', 'atmosphere-weather', 'live', { keywords: ['q code', 'decode'] }),
+  t('met-brief', 'atmosphere-weather', 'live', { keywords: ['route', 'weather briefing'] }),
+
+  // Navigation & planning — navigation, time & cycles
   t('wind-triangle', 'navigation', 'live', {
     keywords: ['heading', 'groundspeed', 'wca'],
   }),
@@ -127,51 +115,44 @@ export const TOOLS: ToolMeta[] = [
   t('pivotal-altitude', 'navigation', 'live', {
     keywords: ['eights on pylons', 'commercial maneuver'],
   }),
+  t('zulu-clock', 'navigation', 'live', { keywords: ['utc', 'ksa', 'local', 'z'] }),
+  t('airac', 'navigation', 'live', { keywords: ['cycle', '28 day', 'effective'] }),
+  t('sun-times', 'navigation', 'live', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
 
-  // Fuel & weight
-  t('fuel', 'fuel-weight', 'live', { keywords: ['burn', 'endurance', 'range'] }),
-  t('specific-range', 'fuel-weight', 'live', {
+  // Weight & fuel
+  t('fuel', 'weight-fuel', 'live', { keywords: ['burn', 'endurance', 'range'] }),
+  t('specific-range', 'weight-fuel', 'live', {
     keywords: ['nm per kg', 'efficiency'],
   }),
-  t('weight-balance', 'fuel-weight', 'live', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
+  t('weight-balance', 'weight-fuel', 'live', { keywords: ['cg', 'mac', 'moment', 'wb'] }),
 
-  // Time & cycles
-  t('zulu-clock', 'time-cycles', 'live', { keywords: ['utc', 'ksa', 'local', 'z'] }),
-  t('airac', 'time-cycles', 'live', { keywords: ['cycle', '28 day', 'effective'] }),
-  t('sun-times', 'time-cycles', 'live', { keywords: ['sunrise', 'sunset', 'twilight', 'night'] }),
-
-  // Weather & decoding
-  t('metar', 'weather', 'live', { keywords: ['decode', 'observation'] }),
-  t('taf', 'weather', 'live', { badge: 'new', keywords: ['forecast', 'decode'] }),
-  t('notam', 'weather', 'live', { keywords: ['q code', 'decode'] }),
-  t('met-brief', 'weather', 'live', { keywords: ['route', 'weather briefing'] }),
-
-  // GACAR regulatory lookups
-  t('vfr-minima', 'gacar', 'live', {
-    badge: 'new',
-    keywords: ['visibility', 'cloud clearance', 'airspace'],
-  }),
-  t('oxygen', 'gacar', 'live', { badge: 'new', keywords: ['o2', 'altitude', 'part 91'] }),
-  t('fuel-reserves', 'gacar', 'live', {
-    keywords: ['reserve', 'alternate', 'part 121'],
-  }),
-  t('conversion-checker', 'gacar', 'live', { keywords: ['foreign licence', 'convert'] }),
-
-  // Currency & validity
-  t('part61-currency', 'currency', 'live', {
-    keywords: ['90 day', 'night', 'passenger', 'recency'],
-  }),
-  t('medical-validity', 'currency', 'live', {
-    badge: 'new',
-    keywords: ['class 1', 'class 2', 'expiry'],
-  }),
-  t('flight-review', 'currency', 'live', { badge: 'new', keywords: ['ipc', 'bfr', 'due'] }),
-
-  // Procedures & R/T
+  // Procedures & airspace — procedures/R/T, directory & glossary
   t('holding', 'procedures', 'live', { keywords: ['entry', 'teardrop', 'parallel'] }),
   t('procedural-separation', 'procedures', 'live', { keywords: ['separation', 'minima'] }),
   t('vfr-brief', 'procedures', 'live', { keywords: ['checklist', 'preflight'] }),
   t('loa', 'procedures', 'live', { keywords: ['letter of authorization'] }),
+  t('aerodromes', 'procedures', 'live', { keywords: ['airport', 'icao', 'oerk', 'oejn'] }),
+  t('airspace', 'procedures', 'live', { keywords: ['frequency', 'acc', 'tma', 'ctr'] }),
+  t('definitions', 'procedures', 'live', { keywords: ['glossary', 'part 1', 'terms'] }),
+
+  // Regulations & currency — GACAR lookups, currency & validity
+  t('vfr-minima', 'regulations', 'live', {
+    badge: 'new',
+    keywords: ['visibility', 'cloud clearance', 'airspace'],
+  }),
+  t('oxygen', 'regulations', 'live', { badge: 'new', keywords: ['o2', 'altitude', 'part 91'] }),
+  t('fuel-reserves', 'regulations', 'live', {
+    keywords: ['reserve', 'alternate', 'part 121'],
+  }),
+  t('conversion-checker', 'regulations', 'live', { keywords: ['foreign licence', 'convert'] }),
+  t('part61-currency', 'regulations', 'live', {
+    keywords: ['90 day', 'night', 'passenger', 'recency'],
+  }),
+  t('medical-validity', 'regulations', 'live', {
+    badge: 'new',
+    keywords: ['class 1', 'class 2', 'expiry'],
+  }),
+  t('flight-review', 'regulations', 'live', { badge: 'new', keywords: ['ipc', 'bfr', 'due'] }),
 
   // Quick reference
   t('transponder', 'reference', 'live', {
@@ -182,11 +163,6 @@ export const TOOLS: ToolMeta[] = [
   }),
   t('units', 'reference', 'live', { keywords: ['converter', 'feet', 'metres', 'knots'] }),
   t('chart-symbols', 'reference', 'live', { keywords: ['legend', 'vfr chart'] }),
-
-  // Directory & glossary
-  t('aerodromes', 'directory', 'live', { keywords: ['airport', 'icao', 'oerk', 'oejn'] }),
-  t('airspace', 'directory', 'live', { keywords: ['frequency', 'acc', 'tma', 'ctr'] }),
-  t('definitions', 'directory', 'live', { keywords: ['glossary', 'part 1', 'terms'] }),
 ];
 
 export const liveTools = () => TOOLS.filter((x) => x.status === 'live');

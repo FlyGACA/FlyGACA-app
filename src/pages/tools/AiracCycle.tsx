@@ -27,7 +27,7 @@ export function AiracCycle() {
     <CalcShell
       title={t('tools.items.airac.name')}
       intro={t('tools.items.airac.blurb')}
-      category={t('tools.categories.time-cycles')}
+      category={t('tools.categories.navigation')}
       formula={t('airac.formula')}
       onExample={() => set('date', fmtDate(new Date()))}
       related={[{ to: '/tools/zulu-clock', label: t('tools.items.zulu-clock.name') }]}

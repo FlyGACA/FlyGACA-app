@@ -15,7 +15,7 @@ export function DescentVdp() {
     <CalcShell
       title={t('tools.items.descent-vdp.name')}
       intro={t('tools.items.descent-vdp.blurb')}
-      category={t('tools.categories.climb-descent')}
+      category={t('tools.categories.performance')}
       formula={t('vdp.formula')}
       onExample={() => {
         set('hat', '540');

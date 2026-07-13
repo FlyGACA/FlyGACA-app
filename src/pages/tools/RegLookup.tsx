@@ -26,7 +26,7 @@ export function RegLookup({ id, base, columns, adelPrompt }: RegLookupProps) {
     <CalcShell
       title={t(`tools.items.${id}.name`)}
       intro={t(`tools.items.${id}.blurb`)}
-      category={t('tools.categories.gacar')}
+      category={t('tools.categories.regulations')}
       formula={t(`${base}.formula`)}
       adelPrompt={() => adelPrompt}
       related={[{ to: '/library', label: t('reg.openLibrary') }]}

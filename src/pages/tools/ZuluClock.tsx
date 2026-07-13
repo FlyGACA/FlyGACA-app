@@ -22,7 +22,7 @@ export function ZuluClock() {
     <CalcShell
       title={t('tools.items.zulu-clock.name')}
       intro={t('tools.items.zulu-clock.blurb')}
-      category={t('tools.categories.time-cycles')}
+      category={t('tools.categories.navigation')}
       formula={t('zulu.formula')}
       onExample={() => {
         set('mode', 'utc');

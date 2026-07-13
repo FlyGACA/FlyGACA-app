@@ -24,7 +24,7 @@ export function Part61Currency() {
     <CalcShell
       title={t('tools.items.part61-currency.name')}
       intro={t('tools.items.part61-currency.blurb')}
-      category={t('tools.categories.currency')}
+      category={t('tools.categories.regulations')}
       formula={t('part61Currency.formula')}
       onExample={() => {
         set('last', '2024-01-15');
