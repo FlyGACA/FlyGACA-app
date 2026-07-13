@@ -17,7 +17,7 @@ export function CloudBase() {
     <CalcShell
       title={t('tools.items.cloud-base.name')}
       intro={t('tools.items.cloud-base.blurb')}
-      category={t('tools.categories.atmosphere')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('cloudBase.formula')}
       onExample={() => {
         set('temp', '34');

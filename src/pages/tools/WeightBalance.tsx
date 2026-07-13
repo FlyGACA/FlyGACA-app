@@ -43,7 +43,7 @@ export function WeightBalance() {
     <CalcShell
       title={t('tools.items.weight-balance.name')}
       intro={t('tools.items.weight-balance.blurb')}
-      category={t('tools.categories.fuel-weight')}
+      category={t('tools.categories.weight-fuel')}
       formula={t('weightBalance.formula')}
       onExample={() => {
         set('ew', '1000');

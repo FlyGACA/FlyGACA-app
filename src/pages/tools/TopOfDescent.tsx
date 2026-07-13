@@ -15,7 +15,7 @@ export function TopOfDescent() {
     <CalcShell
       title={t('tools.items.top-of-descent.name')}
       intro={t('tools.items.top-of-descent.blurb')}
-      category={t('tools.categories.climb-descent')}
+      category={t('tools.categories.performance')}
       formula={t('tod.formula')}
       onExample={() => {
         set('alt', '3000');

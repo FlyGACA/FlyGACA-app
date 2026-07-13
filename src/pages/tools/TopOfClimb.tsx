@@ -15,7 +15,7 @@ export function TopOfClimb() {
     <CalcShell
       title={t('tools.items.top-of-climb.name')}
       intro={t('tools.items.top-of-climb.blurb')}
-      category={t('tools.categories.climb-descent')}
+      category={t('tools.categories.performance')}
       formula={t('topOfClimb.formula')}
       onExample={() => {
         set('gain', '10000');

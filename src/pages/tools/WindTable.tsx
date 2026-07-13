@@ -16,7 +16,7 @@ export function WindTable() {
     <CalcShell
       title={t('tools.items.wind-table.name')}
       intro={t('tools.items.wind-table.blurb')}
-      category={t('tools.categories.wind-runway')}
+      category={t('tools.categories.performance')}
       formula={t('windTable.formula')}
       onExample={() => {
         set('dir', '120');

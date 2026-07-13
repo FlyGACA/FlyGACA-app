@@ -16,7 +16,7 @@ export function Isa() {
     <CalcShell
       title={t('tools.items.isa.name')}
       intro={t('tools.items.isa.blurb')}
-      category={t('tools.categories.atmosphere')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('isaTool.formula')}
       onExample={() => {
         set('pa', '10000');

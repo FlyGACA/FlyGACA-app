@@ -36,7 +36,7 @@ export function AerodromeDetail() {
 
   if (loading || (!inCore && (extraLoading || (data && !extra)))) {
     return (
-      <CalcShell title={code} category={t('tools.categories.directory')}>
+      <CalcShell title={code} category={t('tools.categories.procedures')}>
         <p>{t('common.loading')}</p>
       </CalcShell>
     );
@@ -44,7 +44,7 @@ export function AerodromeDetail() {
   if (error || !airport) {
     return (
       // Unknown ICAO (or a failed load) has no content to index — noindex the soft-404.
-      <CalcShell title={code} category={t('tools.categories.directory')} noindex>
+      <CalcShell title={code} category={t('tools.categories.procedures')} noindex>
         <p role="alert">{error ? t('common.loadError') : t('aerodromesTool.notFound')}</p>
         <Link className={styles.back} to="/tools/aerodromes">
           ← {t('aerodromesTool.backToList')}
@@ -68,7 +68,7 @@ export function AerodromeDetail() {
     <CalcShell
       title={`${a.icao} — ${name}`}
       intro={[city, country].filter(Boolean).join(', ')}
-      category={t('tools.categories.directory')}
+      category={t('tools.categories.procedures')}
       formula={t('aerodromesTool.formula')}
       adelPrompt={adelPrompt}
       related={[{ to: '/tools/aerodromes', label: t('aerodromesTool.backToList') }]}

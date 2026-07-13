@@ -369,19 +369,13 @@
       "soon": "قريبًا"
     },
     "categories": {
-      "wind-runway": "الرياح والمدرج",
-      "atmosphere": "الغلاف الجوي والارتفاع",
-      "speed": "السرعة",
-      "climb-descent": "الصعود والهبوط والدوران",
+      "performance": "الأداء والمدرج",
+      "atmosphere-weather": "الغلاف الجوي والطقس",
       "navigation": "الملاحة والتخطيط",
-      "fuel-weight": "الوقود والوزن",
-      "time-cycles": "الوقت والدورات",
-      "weather": "الطقس وفك الترميز",
-      "gacar": "مرجع GACAR",
-      "currency": "الصلاحية والحداثة",
-      "procedures": "الإجراءات والاتصالات",
-      "reference": "مرجع سريع",
-      "directory": "الدليل والمصطلحات"
+      "weight-fuel": "الوزن والوقود",
+      "procedures": "الإجراءات والمجال الجوي",
+      "regulations": "الأنظمة والصلاحية",
+      "reference": "مرجع سريع"
     },
     "items": {
       "crosswind": {

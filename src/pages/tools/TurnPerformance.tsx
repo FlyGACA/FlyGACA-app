@@ -15,7 +15,7 @@ export function TurnPerformance() {
     <CalcShell
       title={t('tools.items.turn-performance.name')}
       intro={t('tools.items.turn-performance.blurb')}
-      category={t('tools.categories.climb-descent')}
+      category={t('tools.categories.performance')}
       formula={t('turnPerf.formula')}
       onExample={() => {
         set('tas', '120');

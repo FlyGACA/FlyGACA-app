@@ -19,7 +19,7 @@ export function Mach() {
     <CalcShell
       title={t('tools.items.mach.name')}
       intro={t('tools.items.mach.blurb')}
-      category={t('tools.categories.speed')}
+      category={t('tools.categories.performance')}
       formula={t('mach.formula')}
       onExample={() => {
         set('mode', 'tas');

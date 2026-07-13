@@ -24,7 +24,7 @@ export function MedicalValidity() {
     <CalcShell
       title={t('tools.items.medical-validity.name')}
       intro={t('tools.items.medical-validity.blurb')}
-      category={t('tools.categories.currency')}
+      category={t('tools.categories.regulations')}
       formula={t('medicalValidity.formula')}
       onExample={() => {
         set('issue', '2024-03-01');

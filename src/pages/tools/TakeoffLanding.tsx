@@ -29,7 +29,7 @@ export function TakeoffLanding() {
     <CalcShell
       title={t('tools.items.takeoff-landing.name')}
       intro={t('tools.items.takeoff-landing.blurb')}
-      category={t('tools.categories.wind-runway')}
+      category={t('tools.categories.performance')}
       formula={t('runwayPerf.formula')}
       onExample={() => {
         set('book', '600');

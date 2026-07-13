@@ -16,7 +16,7 @@ export function Fuel() {
     <CalcShell
       title={t('tools.items.fuel.name')}
       intro={t('tools.items.fuel.blurb')}
-      category={t('tools.categories.fuel-weight')}
+      category={t('tools.categories.weight-fuel')}
       formula={t('fuel.formula')}
       onExample={() => {
         set('fob', '120');

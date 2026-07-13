@@ -38,7 +38,7 @@ export function MetBrief() {
     <CalcShell
       title={t('tools.items.met-brief.name')}
       intro={t('tools.items.met-brief.blurb')}
-      category={t('tools.categories.weather')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('metBrief.note')}
       onExample={() => set('route', 'OERK OEJN OEDF')}
       adelPrompt={() => (icaos.length ? t('metBrief.adel', { route: icaos.join(' ') }) : null)}

@@ -24,7 +24,7 @@ export function FlightReview() {
     <CalcShell
       title={t('tools.items.flight-review.name')}
       intro={t('tools.items.flight-review.blurb')}
-      category={t('tools.categories.currency')}
+      category={t('tools.categories.regulations')}
       formula={t('flightReview.formula')}
       onExample={() => {
         set('last', '2023-06-01');

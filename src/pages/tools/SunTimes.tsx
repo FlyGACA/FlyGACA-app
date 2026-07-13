@@ -38,7 +38,7 @@ export function SunTimes() {
     <CalcShell
       title={t('tools.items.sun-times.name')}
       intro={t('tools.items.sun-times.blurb')}
-      category={t('tools.categories.time-cycles')}
+      category={t('tools.categories.navigation')}
       formula={t('sunTimes.formula')}
       onExample={() => {
         set('lat', '24.71');

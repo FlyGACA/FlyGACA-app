@@ -15,7 +15,7 @@ export function StandardRateTurn() {
     <CalcShell
       title={t('tools.items.standard-rate-turn.name')}
       intro={t('tools.items.standard-rate-turn.blurb')}
-      category={t('tools.categories.climb-descent')}
+      category={t('tools.categories.performance')}
       formula={t('turn.formula')}
       onExample={() => set('tas', '120')}
       adelPrompt={() =>

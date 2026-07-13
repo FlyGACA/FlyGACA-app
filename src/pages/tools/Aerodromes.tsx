@@ -93,7 +93,7 @@ export function Aerodromes() {
     <CalcShell
       title={t('tools.items.aerodromes.name')}
       intro={t('tools.items.aerodromes.blurb')}
-      category={t('tools.categories.directory')}
+      category={t('tools.categories.procedures')}
       formula={t('aerodromesTool.formula')}
       adelPrompt={adelPrompt}
     >

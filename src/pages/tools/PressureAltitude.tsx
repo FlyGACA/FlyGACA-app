@@ -19,7 +19,7 @@ export function PressureAltitude() {
     <CalcShell
       title={t('tools.items.pressure-altitude.name')}
       intro={t('tools.items.pressure-altitude.blurb')}
-      category={t('tools.categories.atmosphere')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('pressureAltitude.formula')}
       onExample={() => {
         set('elev', '650');

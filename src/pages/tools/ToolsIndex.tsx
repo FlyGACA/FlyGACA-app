@@ -37,11 +37,11 @@ function TitleWithIcon({ icon, children }: { icon: ReactNode; children: ReactNod
 
 /** Quick-pick categories surfaced as chips in the hero. */
 const POPULAR_CATS: ToolCategoryId[] = [
-  'wind-runway',
+  'performance',
   'navigation',
-  'fuel-weight',
-  'weather',
-  'gacar',
+  'weight-fuel',
+  'atmosphere-weather',
+  'regulations',
 ];
 
 /** Curated flagship tools surfaced in the "Start here" row at the top of the
@@ -362,6 +362,7 @@ export function ToolsIndex() {
                     {t(`tools.categories.${cat}`)}
                   </TitleWithIcon>
                 }
+                count={t('tools.resultCount', { count: tools.length })}
                 tone={catTone(cat)}
               />
               {renderGrid(tools)}

@@ -30,7 +30,7 @@ export function DensityAltitude() {
     <CalcShell
       title={t('densityAltitude.title')}
       intro={t('densityAltitude.intro')}
-      category={t('tools.categories.atmosphere')}
+      category={t('tools.categories.atmosphere-weather')}
       formula={t('densityAltitude.formula')}
       onExample={() => {
         set('elev', EXAMPLE.elev);

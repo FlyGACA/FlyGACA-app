@@ -15,7 +15,7 @@ export function Hydroplaning() {
     <CalcShell
       title={t('tools.items.hydroplaning.name')}
       intro={t('tools.items.hydroplaning.blurb')}
-      category={t('tools.categories.wind-runway')}
+      category={t('tools.categories.performance')}
       formula={t('hydroplaning.formula')}
       onExample={() => set('psi', '120')}
       adelPrompt={() =>
