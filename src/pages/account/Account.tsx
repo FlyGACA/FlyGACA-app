@@ -325,18 +325,12 @@ export function Account() {
         </Alert>
       )}
 
+      {/* The signed-in home is /dashboard; the daily surfaces (currency, logbook,
+          records) live there and in the account nav menu, so this hub stays
+          focused on identity, billing and settings. */}
       <div className={styles.linkRow}>
-        <Link to="/dashboard" className={styles.btn}>
+        <Link to="/dashboard" className={`${styles.btn} ${styles.btnPrimary}`}>
           {t('account.dashboard')}
-        </Link>
-        <Link to="/currency" className={styles.btn}>
-          {t('currency.title')}
-        </Link>
-        <Link to="/logbook" className={styles.btn}>
-          {t('account.logbook')}
-        </Link>
-        <Link to="/records" className={styles.btn}>
-          {t('records.title')}
         </Link>
         <Link to="/settings" className={styles.btn}>
           {t('account.settings')}

@@ -8,6 +8,7 @@ import { openCommandPalette } from '../components/CommandPalette/openCommandPale
 import { ButtonLink } from '../components/ui/Button';
 import { lockBodyScroll, unlockBodyScroll } from '../lib/scroll-lock';
 import { useAccount } from '../lib/account';
+import { effectivePlan } from '../lib/entitlements';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 
@@ -159,8 +160,41 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const scrolled = useScrolled();
   const location = useLocation();
-  const { session } = useAccount();
+  const { session, entitlement } = useAccount();
   const signedIn = Boolean(session);
+  // A paying pilot shouldn't be shown "Go Pro" — point the header CTA at their
+  // dashboard home instead, aligning the primary CTA to a single target by plan.
+  const isPro = signedIn && effectivePlan(entitlement) !== 'free';
+  const ctaTo = isPro ? '/dashboard' : '/pricing';
+  const ctaLabel = isPro ? t('account.dashboard') : t('common.goPro');
+  const ctaIcon = isPro ? (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="7" height="9" rx="1.5" />
+      <rect x="14" y="3" width="7" height="5" rx="1.5" />
+      <rect x="14" y="12" width="7" height="9" rx="1.5" />
+      <rect x="3" y="16" width="7" height="5" rx="1.5" />
+    </svg>
+  ) : (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
+    </svg>
+  );
   const sheetRef = useRef<HTMLElement>(null);
   const moreRef = useRef<HTMLButtonElement>(null);
 
@@ -281,25 +315,8 @@ export function Header() {
             <ThemeToggle className={styles.langToggle} />
             <LangToggle className={styles.langToggle} />
             <InstallButton />
-            <ButtonLink
-              className={styles.cta}
-              to="/pricing"
-              viewTransition
-              icon={
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
-                </svg>
-              }
-            >
-              {t('common.goPro')}
+            <ButtonLink className={styles.cta} to={ctaTo} viewTransition icon={ctaIcon}>
+              {ctaLabel}
             </ButtonLink>
           </div>
         </div>
@@ -408,24 +425,9 @@ export function Header() {
         )}
 
         <div className={styles.sheetDivider} aria-hidden="true" />
-        <Link
-          className={styles.sheetCta}
-          to="/pricing"
-          onClick={() => setOpen(false)}
-          viewTransition
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
-          </svg>
-          {t('common.goPro')}
+        <Link className={styles.sheetCta} to={ctaTo} onClick={() => setOpen(false)} viewTransition>
+          {ctaIcon}
+          {ctaLabel}
         </Link>
       </nav>
     </>
