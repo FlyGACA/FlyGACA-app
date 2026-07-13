@@ -6,15 +6,17 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
     <meta name="theme-color" content="#0A0E12" />
-    <!-- No-flash theme init: apply the persisted Cockpit / Night-Ops theme before
-         any paint so the charcoal/amber tokens are live for the critical-CSS hero
-         and first React render. Keep the key + hex in sync with src/lib/theme.ts. -->
+    <!-- No-flash theme init: apply the persisted Cockpit / Night-Ops or Day /
+         reading theme before any paint so the tokens are live for the critical-CSS
+         hero and first React render. Keep the keys + hexes in sync with
+         src/lib/theme.ts (THEME_COLOR). -->
     <script>
       try {
-        if (localStorage.getItem('flygaca:theme') === 'cockpit') {
-          document.documentElement.setAttribute('data-theme', 'cockpit');
+        var t = localStorage.getItem('flygaca:theme');
+        if (t === 'cockpit' || t === 'day') {
+          document.documentElement.setAttribute('data-theme', t);
           var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', '#121212');
+          if (m) m.setAttribute('content', t === 'day' ? '#F5F2ED' : '#121212');
         }
       } catch (e) {}
     </script>

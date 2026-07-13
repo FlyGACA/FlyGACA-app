@@ -1,9 +1,10 @@
 /**
- * Theme state: the Falcon (default) dark palette vs the Cockpit / Night-Ops
- * dark palette (amber/charcoal, night-vision friendly). The choice is applied
- * as `data-theme` on <html> — `cockpit` sets the attribute, `falcon` removes it
- * so the `:root` defaults reign — and the token overrides in `tokens.css`
- * (`html[data-theme="cockpit"]`) cascade app-wide. Persisted to localStorage.
+ * Theme state: the Falcon (default) dark palette, the Cockpit / Night-Ops dark
+ * palette (amber/charcoal, night-vision friendly), and the Day / reading light
+ * palette (ivory/ink, for long-form regulation reading). The choice is applied
+ * as `data-theme` on <html> — `falcon` removes the attribute so the `:root`
+ * defaults reign, every other theme sets its own — and the token overrides in
+ * `tokens.css` (`html[data-theme="…"]`) cascade app-wide. Persisted to localStorage.
  *
  * A `useSyncExternalStore` wrapper (mirroring `toolPrefs.ts`) keeps the Header
  * and Footer toggles in lockstep. The persisted key + the two theme-color hexes
@@ -11,20 +12,21 @@
  */
 import { useSyncExternalStore } from 'react';
 
-export const THEMES = ['falcon', 'cockpit'] as const;
+export const THEMES = ['falcon', 'cockpit', 'day'] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const STORAGE_KEY = 'flygaca:theme';
 
 /** Mobile browser-chrome colour per theme — mirrors the <meta name="theme-color">
- *  default in index.html (Falcon) and the inline no-flash script (Cockpit). */
+ *  default in index.html (Falcon) and the inline no-flash script (Cockpit / Day). */
 const THEME_COLOR: Record<Theme, string> = {
   falcon: '#0A0E12',
   cockpit: '#121212',
+  day: '#F5F2ED',
 };
 
 function isTheme(v: unknown): v is Theme {
-  return v === 'falcon' || v === 'cockpit';
+  return v === 'falcon' || v === 'cockpit' || v === 'day';
 }
 
 /** localStorage → 'falcon' (default). Tolerates storage being unavailable. */
@@ -41,8 +43,9 @@ export function readTheme(): Theme {
 export function applyTheme(theme: Theme): void {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
-  if (theme === 'cockpit') root.setAttribute('data-theme', 'cockpit');
-  else root.removeAttribute('data-theme');
+  // Falcon is the default (no attribute); every other theme sets its own.
+  if (theme === 'falcon') root.removeAttribute('data-theme');
+  else root.setAttribute('data-theme', theme);
 
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', THEME_COLOR[theme]);

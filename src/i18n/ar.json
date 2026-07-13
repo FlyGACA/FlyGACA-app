@@ -62,6 +62,12 @@
     "switchLanguage": "تبديل اللغة",
     "langToggleLabel": "EN",
     "toggleTheme": "تبديل وضع الطيران الليلي",
+    "switchToTheme": "التبديل إلى سمة {{name}}",
+    "themeNames": {
+      "falcon": "الصقر (داكن)",
+      "cockpit": "الوضع الليلي",
+      "day": "النهار (قراءة)"
+    },
     "goPro": "اشترك",
     "search": "بحث",
     "loading": "جارٍ التحميل…",

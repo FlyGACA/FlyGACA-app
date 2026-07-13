@@ -62,6 +62,12 @@
     "switchLanguage": "Switch language",
     "langToggleLabel": "ع",
     "toggleTheme": "Toggle night-ops theme",
+    "switchToTheme": "Switch to {{name}} theme",
+    "themeNames": {
+      "falcon": "Falcon (dark)",
+      "cockpit": "night-ops",
+      "day": "day (reading)"
+    },
     "goPro": "Go Pro",
     "search": "Search",
     "loading": "Loading…",
