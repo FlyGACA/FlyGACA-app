@@ -2759,7 +2759,18 @@
     "dueToday": "Due today",
     "examHistory": "Recent exams",
     "resume": "Resume",
-    "examProGate": "Mock exams are part of Pro, unlimited timed exams with a per-bank breakdown."
+    "examProGate": "Mock exams are part of Pro, unlimited timed exams with a per-bank breakdown.",
+    "packMastery": "Overall mastery",
+    "packInside": "What's inside",
+    "packReading": "Reference reading",
+    "packReadingDesc": "Go deeper with the official source documents behind this pack.",
+    "sections": "{{n}} sections",
+    "statBanks": "Quizzes",
+    "statReading": "Reading",
+    "statSheets": "Sheets",
+    "statBestExam": "Best exam",
+    "askAdel": "Ask Captain Adel",
+    "askAdelPrompt": "Give me a focused study briefing on {{topic}} for the Saudi GACA written exam, and cite the exact GACAR Part or AIP section."
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",

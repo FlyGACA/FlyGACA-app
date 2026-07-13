@@ -811,6 +811,126 @@
             "kind": "reference",
             "id": "aeronautical-information-manual-aim"
           }
+        },
+        {
+          "q": "In the Kingdom of Saudi Arabia, the transition level is —",
+          "options": [
+            "Fixed by GACA at FL 150",
+            "Always 3,000 FT above the aerodrome",
+            "Set by each pilot before departure",
+            "Equal to the transition altitude"
+          ],
+          "answer": 0,
+          "explain": "The Saudi AIP states the transition level (TL) has been determined by GACA as fixed at FL 150, with a minimum of 1,000 FT vertical separation above the transition altitude.",
+          "cite": "AIP-KSA ENR 1.1"
+        },
+        {
+          "q": "Unless authorised otherwise, an aircraft operated below 10,000 FT within the Jeddah FIR must not exceed —",
+          "options": [
+            "200 KT",
+            "230 KT",
+            "250 KT",
+            "300 KT"
+          ],
+          "answer": 2,
+          "explain": "The Saudi AIP sets a speed limit of 250 KT (about 288 MPH / 460 KPH) for aircraft operated below ALT 10,000 FT anywhere in the Jeddah FIR, unless authorised to the contrary by the President or ATC.",
+          "cite": "AIP-KSA ENR 1.1"
+        },
+        {
+          "q": "In the Saudi AIP, horizontal distances used for navigation are expressed in —",
+          "options": [
+            "Kilometres",
+            "Statute miles",
+            "Nautical miles",
+            "Metres"
+          ],
+          "answer": 2,
+          "explain": "AIP GEN 2.1 lists the units of measurement: navigation distances are given in nautical miles and tenths, altitudes and elevations in feet, and speeds in knots.",
+          "cite": "AIP-KSA GEN 2.1"
+        },
+        {
+          "q": "According to AIP GEN 2.1, vertical speed (rate of climb or descent) is expressed in —",
+          "options": [
+            "Metres per second",
+            "Feet per minute",
+            "Knots",
+            "Feet per second"
+          ],
+          "answer": 1,
+          "explain": "The AIP units-of-measurement table gives vertical speed in feet per minute, altitudes in feet, and horizontal speed in knots.",
+          "cite": "AIP-KSA GEN 2.1"
+        },
+        {
+          "q": "Within Saudi controlled airspace, a serviceable SSR transponder should have —",
+          "options": [
+            "Mode C selected at all times unless otherwise instructed",
+            "The transponder off until requested by ATC",
+            "Only Mode A selected below FL 100",
+            "Code 7000 selected at all times"
+          ],
+          "answer": 0,
+          "explain": "AIP ENR 1.6 requires Mode C to be selected at all times unless ATC instructs otherwise, so controllers receive pressure-altitude data.",
+          "cite": "AIP-KSA ENR 1.6"
+        },
+        {
+          "q": "The abbreviation \"AFIS\" refers to —",
+          "options": [
+            "Automatic Flight Information Service",
+            "Aerodrome Flight Information Service",
+            "Airways Flight Inspection System",
+            "Aeronautical Fixed Information Service"
+          ],
+          "answer": 1,
+          "explain": "AIP GEN 3.3 lists Aerodrome Flight Information Service (AFIS) among the ATS units, providing information and alerting service to aerodrome traffic where no control service is given.",
+          "cite": "AIP-KSA GEN 3.3"
+        },
+        {
+          "q": "Which ICAO document sets the standards for the aeronautical information services that the AIP implements?",
+          "options": [
+            "Annex 11",
+            "Annex 14",
+            "Annex 15",
+            "Annex 4"
+          ],
+          "answer": 2,
+          "explain": "ICAO Annex 15 — Aeronautical Information Services — defines how States collect, publish and update aeronautical information, including the AIP, AIRAC and NOTAM systems.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "An AIP Supplement is used to publish —",
+          "options": [
+            "Permanent changes incorporated into the AIP pages",
+            "Temporary changes of long duration (usually three months or more) or extensive text",
+            "Short-notice perishable information for immediate action",
+            "The list of valid NOTAMs"
+          ],
+          "answer": 1,
+          "explain": "An AIP Supplement carries temporary changes of long duration (typically three months or more) or information with extensive text/graphics; short-notice perishable items go out by NOTAM, and permanent changes go in an AIP Amendment.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "The GEN part of the AIP primarily contains —",
+          "options": [
+            "Aerodrome charts and approach plates",
+            "General information: authorities, units of measurement, abbreviations and regulations",
+            "Airways and en-route significant points",
+            "Only the AIRAC schedule"
+          ],
+          "answer": 1,
+          "explain": "GEN (General) holds administrative and general information — responsible authorities, units of measurement, abbreviations, and applicable regulations — while ENR covers en-route and AD covers aerodromes.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "A \"Trigger NOTAM\" is issued to —",
+          "options": [
+            "Announce and give brief details of a forthcoming AIP Amendment or Supplement",
+            "Close a runway at short notice",
+            "Cancel all outstanding NOTAMs at a location",
+            "Report unserviceable navigation aids only"
+          ],
+          "answer": 0,
+          "explain": "A Trigger NOTAM draws attention to, and gives a short reference for, an AIRAC AIP Amendment or Supplement, so operators know a permanent change is about to take effect.",
+          "cite": "ICAO Annex 15"
         }
       ]
     },

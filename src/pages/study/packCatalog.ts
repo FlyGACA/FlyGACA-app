@@ -16,6 +16,8 @@ export interface Pack {
   pathIds?: string[];
   /** pdfs-index.json slugs. */
   sheetSlugs?: string[];
+  /** reference-index.json slugs — deeper corpus reading surfaced on the pack. */
+  librarySlugs?: string[];
 }
 
 export const PACKS: Pack[] = [
@@ -46,6 +48,16 @@ export const PACKS: Pack[] = [
     pro: true,
     bankIds: ['aip-ais', 'airspace'],
     sheetSlugs: ['aeronautical-information-manual-aim'],
+    librarySlugs: [
+      'saudi-aip-gen-2-1',
+      'saudi-aip-gen-2-2',
+      'saudi-aip-gen-3-3',
+      'saudi-aip-gen-3-4',
+      'saudi-aip-enr-1-1',
+      'saudi-aip-enr-1-2',
+      'saudi-aip-enr-1-4',
+      'saudi-aip-enr-1-6',
+    ],
   },
   {
     id: 'elp',
@@ -77,6 +89,7 @@ export function packItemCount(p: Pack): number {
     p.bankIds.length +
     (p.moduleIds?.length ?? 0) +
     (p.pathIds?.length ?? 0) +
-    (p.sheetSlugs?.length ?? 0)
+    (p.sheetSlugs?.length ?? 0) +
+    (p.librarySlugs?.length ?? 0)
   );
 }
