@@ -148,6 +148,107 @@
   box-shadow: 0 0 8px color-mix(in srgb, var(--brand-hover) 70%, transparent);
 }
 
+/* --- Desktop account dropdown (signed-in) --- */
+.accountMenu {
+  position: relative;
+}
+.accountMenu > summary {
+  list-style: none;
+  cursor: pointer;
+  /* Match the sibling nav links' pill affordance. */
+  color: color-mix(in srgb, var(--text-muted) 35%, var(--text));
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  transition: var(--transition-color);
+}
+.accountMenu > summary::-webkit-details-marker {
+  display: none;
+}
+.accountMenu > summary:hover {
+  color: var(--text);
+  background: var(--brand-tint);
+}
+.accountMenu[open] > summary {
+  color: var(--brand-hover);
+  background: var(--brand-tint);
+}
+.accountCaret {
+  inline-size: 14px;
+  block-size: 14px;
+  transition: transform var(--dur) var(--ease);
+}
+.accountMenu[open] .accountCaret {
+  transform: rotate(180deg);
+}
+
+.accountPanel {
+  position: absolute;
+  inset-block-start: calc(100% + var(--space-1));
+  inset-inline-end: 0;
+  z-index: var(--z-dropdown, 60);
+  min-inline-size: 15rem;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--surface-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-2);
+  animation: accountMenuIn var(--dur) var(--ease-entry);
+}
+@keyframes accountMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  min-block-size: 44px;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  transition: var(--transition-color);
+}
+.accountItem:hover {
+  color: var(--text);
+  background: var(--brand-tint);
+  text-decoration: none;
+}
+.accountItemActive {
+  color: var(--brand-hover);
+  background: var(--brand-tint);
+}
+.accountItemIcon {
+  display: inline-flex;
+  inline-size: 20px;
+  block-size: 20px;
+  color: var(--text-dim);
+}
+.accountItem:hover .accountItemIcon,
+.accountItemActive .accountItemIcon {
+  color: inherit;
+}
+.accountMenuDivider {
+  block-size: 1px;
+  margin-block: var(--space-1);
+  margin-inline: var(--space-2);
+  background: var(--border);
+}
+
 .actions {
   display: flex;
   align-items: center;
