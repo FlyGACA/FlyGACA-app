@@ -191,21 +191,33 @@ function LocalSignIn() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
   return (
     <>
       <form
         className={styles.authFields}
         onSubmit={(e) => {
           e.preventDefault();
-          if (email.trim()) signIn(email.trim(), name);
+          const trimmed = email.trim();
+          if (!trimmed) return;
+          if (!looksLikeEmail(trimmed)) {
+            setError(t('account.errors.invalidEmail'));
+            return;
+          }
+          setError('');
+          signIn(trimmed, name);
         }}
       >
         <TextField
           label={t('account.email')}
           value={email}
-          onChange={setEmail}
+          onChange={(v) => {
+            setEmail(v);
+            if (error) setError('');
+          }}
           type="email"
           placeholder="you@example.com"
+          error={error}
         />
         <TextField label={t('account.name')} value={name} onChange={setName} />
         <button
