@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { CaptainAvatar } from '../../components/CaptainAvatar';
+import { BrandMark } from '../../components/BrandMark';
 import { CurrencyBoard } from '../../components/CurrencyBoard';
 import { SetupChecklist } from '../../components/SetupChecklist';
 import { UpsellCard } from '../../components/UpsellCard';
@@ -269,7 +269,7 @@ function Inner() {
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.hero}>
-        <CaptainAvatar size="lg" pose="smile" glow decorative className={styles.avatar} />
+        <BrandMark />
         <div className={styles.heroText}>
           <p className={styles.eyebrow}>{t('dashboard.eyebrow')}</p>
           <h1>{t('dashboard.greeting', { name })}</h1>
