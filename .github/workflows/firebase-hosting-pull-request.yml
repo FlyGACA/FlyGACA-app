@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # Real public web config for flygaca-app (Auth/Firestore) — mirrors deploy.yml
+      # so previews exercise real Firebase sign-in, not the local-first fallback.
+      - name: Provide build env
+        run: cp .env.example .env.local
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
