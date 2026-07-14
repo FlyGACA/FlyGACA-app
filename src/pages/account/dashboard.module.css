@@ -12,9 +12,6 @@
   gap: var(--space-5);
   flex-wrap: wrap;
 }
-.avatar {
-  flex-shrink: 0;
-}
 .heroText {
   display: flex;
   flex-direction: column;

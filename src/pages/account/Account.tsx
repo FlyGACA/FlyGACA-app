@@ -5,6 +5,7 @@ import { TextField } from '../../components/calc/TextField';
 import { PasswordField } from '../../components/calc/PasswordField';
 import { Alert } from '../../components/Alert';
 import { Disclaimer } from '../../components/Disclaimer';
+import { BrandMark } from '../../components/BrandMark';
 import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { StatusPill } from '../../components/StatusPill';
 import { SubscriptionPanel } from '../../components/account/SubscriptionPanel';
@@ -257,7 +258,7 @@ export function Account() {
             {isAuthAvailable() ? <FirebaseSignIn /> : <LocalSignIn />}
           </div>
           <aside className={styles.authAside}>
-            <CaptainAvatar size="lg" pose="wave" decorative />
+            <BrandMark />
             <p className={styles.asideEyebrow}>{t('account.benefits.eyebrow')}</p>
             <h2 className={styles.asideTitle}>{t('account.benefits.title')}</h2>
             <ul className={styles.benefitList}>
