@@ -19,7 +19,7 @@ import { BookmarksWidget } from '../../components/dashboard/BookmarksWidget';
 import { AdelThreadsWidget } from '../../components/dashboard/AdelThreadsWidget';
 import { UpdatesWatchWidget } from '../../components/dashboard/UpdatesWatchWidget';
 import { isUserRole, useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiPlan } from '../../lib/entitlements';
 import { useFeature } from '../../lib/features';
 import { toggleWidget, useDashboardPrefs } from '../../lib/dashboardPrefs';
 import { usePageMeta } from '../../lib/usePageMeta';
@@ -51,7 +51,7 @@ function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { profile, flights, records, entitlement } = useAccount();
-  const plan = effectivePlan(entitlement);
+  const plan = uiPlan(entitlement);
   const isPro = plan !== 'free';
   const canExport = useFeature('currency-export');
   const prefs = useDashboardPrefs();

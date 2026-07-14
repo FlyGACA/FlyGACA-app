@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { effectivePlan, isActive, type Entitlement } from '../src/lib/entitlements';
+import {
+  effectivePlan,
+  FREE_FOR_EVERYONE,
+  isActive,
+  uiIsPro,
+  uiPlan,
+  type Entitlement,
+} from '../src/lib/entitlements';
 
 // `isActive` / `effectivePlan` gate paid UI across the app (Header, account,
 // Dashboard) and mirror the server-only predicate in functions/entitlements-core.js.
@@ -58,5 +65,29 @@ describe('effectivePlan', () => {
     expect(effectivePlan({ plan: 'free' }, NOW)).toBe('free');
     const lapsed: Entitlement = { plan: 'pro', expiresAt: '2026-01-01T00:00:00Z' };
     expect(effectivePlan(lapsed, NOW)).toBe('free');
+  });
+});
+
+// `uiPlan` / `uiIsPro` are the PRESENTATIONAL reads the UI gates on. While the
+// FREE_FOR_EVERYONE promo is on they treat every visitor as Pro (all paywalls open);
+// with it off they mirror `effectivePlan` exactly. The pure predicates above stay
+// truthful either way (the chat quota UI and the server mirror rely on them).
+describe('uiPlan / uiIsPro (presentational promo)', () => {
+  const lapsed: Entitlement = { plan: 'pro', expiresAt: '2026-01-01T00:00:00Z' };
+
+  it('presents missing/free/lapsed visitors as Pro while the promo is on', () => {
+    const expected = FREE_FOR_EVERYONE ? 'pro' : 'free';
+    expect(uiPlan(null, NOW)).toBe(expected);
+    expect(uiPlan({ plan: 'free' }, NOW)).toBe(expected);
+    expect(uiPlan(lapsed, NOW)).toBe(expected);
+    expect(uiIsPro(null, NOW)).toBe(FREE_FOR_EVERYONE);
+    expect(uiIsPro({ plan: 'free' }, NOW)).toBe(FREE_FOR_EVERYONE);
+  });
+
+  it('never downgrades a genuinely active higher tier', () => {
+    // school stays school even under the promo; an active pro stays pro.
+    expect(uiPlan({ plan: 'school', source: 'school' }, NOW)).toBe('school');
+    expect(uiPlan({ plan: 'pro', expiresAt: '2026-12-31T00:00:00Z' }, NOW)).toBe('pro');
+    expect(uiIsPro({ plan: 'school', source: 'school' }, NOW)).toBe(true);
   });
 });

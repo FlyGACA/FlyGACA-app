@@ -14,7 +14,7 @@ import {
   sumHours,
   useAccount,
 } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiIsPro } from '../../lib/entitlements';
 import {
   summarizeLogbook,
   flightsToCsv,
@@ -70,7 +70,7 @@ function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { flights, entitlement, syncError } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = uiIsPro(entitlement);
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [params, setParams] = useSearchParams();
