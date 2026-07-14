@@ -47,7 +47,11 @@ export const PACKS: Pack[] = [
     id: 'aip',
     pro: true,
     bankIds: ['aip-ais', 'airspace'],
-    sheetSlugs: ['aeronautical-information-manual-aim'],
+    sheetSlugs: [
+      'saudi-aip-study-sheet-en',
+      'saudi-aip-study-sheet-ar',
+      'aeronautical-information-manual-aim',
+    ],
     librarySlugs: [
       'saudi-aip-gen-2-1',
       'saudi-aip-gen-2-2',

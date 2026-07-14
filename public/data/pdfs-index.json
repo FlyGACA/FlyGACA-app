@@ -55,6 +55,20 @@
    "category": "study-sheets",
    "file": "assets/study-sheets/saelpt-study-sheet.pdf",
    "available": true
+  },
+  {
+   "title": "Saudi AIP — Study Guide (EN)",
+   "slug": "saudi-aip-study-sheet-en",
+   "category": "study-sheets",
+   "file": "assets/study-sheets/saudi-aip-study-sheet-en.pdf",
+   "available": true
+  },
+  {
+   "title": "الدليل الدراسي لدليل الطيران (AIP) — عربي",
+   "slug": "saudi-aip-study-sheet-ar",
+   "category": "study-sheets",
+   "file": "assets/study-sheets/saudi-aip-study-sheet-ar.pdf",
+   "available": true
   }
  ]
 }
