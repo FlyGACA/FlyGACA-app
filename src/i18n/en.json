@@ -1975,6 +1975,8 @@
     "needSignIn": "Sign in to use your account.",
     "goSignIn": "Go to sign in",
     "localNote": "Saved on this device only (local-first preview).",
+    "unavailableTitle": "Sign-in is temporarily unavailable.",
+    "unavailableBody": "Accounts aren't reachable right now. You can keep using the library, tools and study material — your progress is saved on this device and will sync once sign-in is back.",
     "dashboard": "Dashboard",
     "open": "Open",
     "currency": "Currency & validity",

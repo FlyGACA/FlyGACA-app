@@ -221,6 +221,21 @@ function LocalSignIn() {
   );
 }
 
+/**
+ * Shown in a PRODUCTION build when Firebase auth isn't configured. It deliberately
+ * offers NO form and mints NO session — a config-less deploy must never present a
+ * working "email + name" sign-in that looks like a real account. The email+name
+ * `LocalSignIn` is a local-first dev convenience only (see the chooser below).
+ */
+function AuthUnavailable() {
+  const { t } = useTranslation();
+  return (
+    <Alert tone="warning" role="status">
+      <strong>{t('account.unavailableTitle')}</strong> {t('account.unavailableBody')}
+    </Alert>
+  );
+}
+
 export function Account() {
   const { t } = useTranslation();
   // Session-gated dashboard — keep it out of the index (no SEO value; a thin,
@@ -254,7 +269,13 @@ export function Account() {
               <h1>{t('account.signInTitle')}</h1>
               <p className={styles.sub}>{t('account.signInIntro')}</p>
             </header>
-            {isAuthAvailable() ? <FirebaseSignIn /> : <LocalSignIn />}
+            {isAuthAvailable() ? (
+              <FirebaseSignIn />
+            ) : import.meta.env.DEV ? (
+              <LocalSignIn />
+            ) : (
+              <AuthUnavailable />
+            )}
           </div>
           <aside className={styles.authAside}>
             <CaptainAvatar size="lg" pose="wave" decorative />
