@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiPlan } from '../../lib/entitlements';
 import { startBillingPortal } from '../../lib/billing';
 import { isAuthAvailable } from '../../lib/auth';
 import { StatusPill } from '../StatusPill';
@@ -25,8 +25,13 @@ function fmtDate(iso?: string): string | null {
 export function SubscriptionPanel() {
   const { t } = useTranslation();
   const { entitlement } = useAccount();
-  const plan = effectivePlan(entitlement);
+  const plan = uiPlan(entitlement);
   const isPaid = plan !== 'free';
+  // Stripe self-service only applies to a genuine Stripe subscription. Gate the
+  // "Manage" button + renewal/source rows on the real record (not the presentational
+  // `plan`) so complimentary/promo and staff/school grants don't render a portal
+  // button that has no Stripe customer behind it.
+  const hasStripeSub = entitlement?.source === 'stripe';
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -69,8 +74,9 @@ export function SubscriptionPanel() {
               </div>
             )}
           </dl>
-          {/* The Stripe portal is web-only; native manages via the App Store. */}
-          {isAuthAvailable() && (
+          {/* The Stripe portal is web-only; native manages via the App Store. Only a
+              real Stripe subscription has a portal to manage. */}
+          {isAuthAvailable() && hasStripeSub && (
             <button
               type="button"
               className={styles.manage}

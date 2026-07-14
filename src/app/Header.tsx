@@ -8,7 +8,7 @@ import { openCommandPalette } from '../components/CommandPalette/openCommandPale
 import { ButtonLink } from '../components/ui/Button';
 import { lockBodyScroll, unlockBodyScroll } from '../lib/scroll-lock';
 import { useAccount } from '../lib/account';
-import { effectivePlan } from '../lib/entitlements';
+import { uiIsPro } from '../lib/entitlements';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 
@@ -164,7 +164,7 @@ export function Header() {
   const signedIn = Boolean(session);
   // A paying pilot shouldn't be shown "Go Pro" — point the header CTA at their
   // dashboard home instead, aligning the primary CTA to a single target by plan.
-  const isPro = signedIn && effectivePlan(entitlement) !== 'free';
+  const isPro = signedIn && uiIsPro(entitlement);
   const ctaTo = isPro ? '/dashboard' : '/pricing';
   const ctaLabel = isPro ? t('account.dashboard') : t('common.goPro');
   const ctaIcon = isPro ? (

@@ -8,7 +8,7 @@ import { LangToggle } from '../../components/LangToggle';
 import { Alert } from '../../components/Alert';
 import { deleteAllData, exportAll, saveProfile, useAccount, USER_ROLES } from '../../lib/account';
 import { replayOnboarding, openTour } from '../../lib/onboardingPrefs';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiPlan } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
 
@@ -30,7 +30,7 @@ function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { profile, entitlement, syncError } = useAccount();
-  const plan = effectivePlan(entitlement);
+  const plan = uiPlan(entitlement);
   const [saved, setSaved] = useState(false);
 
   // Save-on-change with a transient "Saved" confirmation.

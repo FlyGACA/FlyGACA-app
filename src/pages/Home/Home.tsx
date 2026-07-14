@@ -15,7 +15,7 @@ import { BentoCard, type BentoSpan, type BentoTone } from '../../components/bent
 import { ButtonLink } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiIsPro } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { faqLd } from '../../lib/jsonld';
 import { GUIDE_SLUGS } from '../guides/guides';
@@ -57,7 +57,7 @@ interface Demo {
 export function Home() {
   const { t } = useTranslation();
   const { entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = uiIsPro(entitlement);
 
   const steps = t('home.how.steps', { returnObjects: true }) as unknown as Step[];
   const reasons = t('home.why.items', { returnObjects: true }) as unknown as Step[];

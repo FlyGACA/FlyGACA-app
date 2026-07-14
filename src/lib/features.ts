@@ -9,7 +9,7 @@
  * that reads the live entitlement from the global account store.
  */
 import { useAccount } from './account';
-import { effectivePlan, type Entitlement, type Plan } from './entitlements';
+import { effectivePlan, FREE_FOR_EVERYONE, type Entitlement, type Plan } from './entitlements';
 
 export type Feature =
   | 'adel-unlimited' // Captain Adel beyond the free daily quota / pro model
@@ -52,5 +52,7 @@ export function hasFeature(
 /** React hook: does the signed-in user's live entitlement unlock `feature`? */
 export function useFeature(feature: Feature): boolean {
   const { entitlement } = useAccount();
-  return hasFeature(entitlement, feature);
+  // The FREE_FOR_EVERYONE promo opens every gated feature in the UI. `hasFeature`
+  // itself stays pure so the chat gate (which reads it directly) remains honest.
+  return FREE_FOR_EVERYONE || hasFeature(entitlement, feature);
 }

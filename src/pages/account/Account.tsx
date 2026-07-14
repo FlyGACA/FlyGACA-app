@@ -10,7 +10,7 @@ import { CaptainAvatar } from '../../components/CaptainAvatar';
 import { StatusPill } from '../../components/StatusPill';
 import { SubscriptionPanel } from '../../components/account/SubscriptionPanel';
 import { refreshAccount, signIn, signOut, useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiPlan } from '../../lib/entitlements';
 import {
   isAuthAvailable,
   registerWithEmail,
@@ -255,7 +255,7 @@ export function Account() {
   // login-walled page to a crawler).
   usePageMeta(t('meta.account'), undefined, undefined, { noindex: true });
   const { session, uid, emailVerified, profile, entitlement, syncError } = useAccount();
-  const plan = effectivePlan(entitlement);
+  const plan = uiPlan(entitlement);
   const [params, setParams] = useSearchParams();
   const checkout = params.get('checkout');
 

@@ -5,7 +5,7 @@ import { CurrencyBoard } from '../../components/CurrencyBoard';
 import { UpsellCard } from '../../components/UpsellCard';
 import { Disclaimer } from '../../components/Disclaimer';
 import { useAccount } from '../../lib/account';
-import { effectivePlan } from '../../lib/entitlements';
+import { uiIsPro } from '../../lib/entitlements';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { computeCurrency, recordCurrency } from '../../calc/currency';
 import { buildIcs } from '../../calc/ics';
@@ -27,7 +27,7 @@ function Inner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { profile, flights, records, entitlement } = useAccount();
-  const isPro = effectivePlan(entitlement) !== 'free';
+  const isPro = uiIsPro(entitlement);
   const items = [...computeCurrency(profile, flights), ...recordCurrency(records)];
   const adelHref = adelLink(t('dashboard.adelRenewalPrompt'));
 
