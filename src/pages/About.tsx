@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react';
-import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { CaptainAvatar } from '../components/CaptainAvatar';
@@ -9,6 +8,7 @@ import { SectionHeader } from '../components/SectionHeader';
 import { Stepper } from '../components/Stepper';
 import { BentoGrid } from '../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
+import { ButtonLink } from '../components/ui/Button';
 import { usePageMeta } from '../lib/usePageMeta';
 import { articleLd, breadcrumbLd, faqLd, organizationLd } from '../lib/jsonld';
 import styles from './About.module.css';
@@ -60,7 +60,7 @@ export function About() {
   ]);
 
   return (
-    <div className={`container ${styles.page}`}>
+    <div className={`container section-shell ${styles.page}`}>
       <PageHero
         eyebrow={t('about.eyebrow')}
         title={t('about.title')}
@@ -114,12 +114,16 @@ export function About() {
           <p className={styles.ctaLead}>{t('about.cta.lead')}</p>
         </div>
         <div className={styles.ctaActions}>
-          <Link className="btn btn-primary" to="/library">
+          <ButtonLink
+            variant="primary"
+            to="/library"
+            trailingIcon={<span aria-hidden="true">→</span>}
+          >
             {t('about.cta.browse')}
-          </Link>
-          <Link className="btn" to="/chat">
+          </ButtonLink>
+          <ButtonLink variant="clay" to="/chat" trailingIcon={<span aria-hidden="true">→</span>}>
             {t('about.cta.ask')}
-          </Link>
+          </ButtonLink>
         </div>
       </section>
 

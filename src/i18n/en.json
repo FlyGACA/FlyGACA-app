@@ -1679,6 +1679,11 @@
     "cmpYes": "Included",
     "cmpNo": "Not included",
     "faqHead": "Frequently asked",
+    "faqHelpTitle": "Need a billing answer fast?",
+    "faqHelpBody": "Search the common questions, or contact sales if your case involves cohorts, invoicing, or procurement.",
+    "faqSearchPlaceholder": "Search pricing questions",
+    "faqNoMatchTitle": "No matching answer found",
+    "faqNoMatchBody": "Try a different keyword or contact sales for a specific billing case.",
     "compare": [
       {
         "feature": "Regulatory library",

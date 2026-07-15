@@ -154,6 +154,11 @@
   --space-10: 4rem;
   --space-12: 6rem;
   --space-16: 8rem;
+  --space-20: 10rem;
+
+  /* Section rhythm (2026 premium cadence) */
+  --section-y: clamp(6rem, 4.8rem + 3vw, 10rem);
+  --section-y-tight: clamp(4rem, 3.2rem + 2.2vw, 6rem);
 
   /* --- Radii (brand tile radius = 0.22 x side) --- */
   --radius-sm: 8px;
@@ -161,6 +166,7 @@
   --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-pill: 999px;
+  --radius-squircle: 2rem;
 
   /* --- Elevation ---
      Named 3-tier ladder: layered ambient + key shadows, softer and larger-radius
@@ -211,16 +217,16 @@
   --nav-h: calc(var(--nav-content-h) + var(--safe-top));
 
   /* --- Motion --- */
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-glide: cubic-bezier(0.2, 0.7, 0.2, 1); /* button / control glide (Design System) */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-glide: cubic-bezier(0.28, 0.84, 0.22, 1); /* button / control glide (Design System) */
   --ease-lift: var(--ease-entry); /* card lift — shares the kinetic-entry curve */
-  --dur: 0.2s;
-  --dur-slow: 0.4s;
+  --dur: 0.26s;
+  --dur-slow: 0.56s;
   --dur-fast: 120ms; /* transform-only micro feedback (press, raise) */
 
   /* --- Interaction tokens — the shared press/hover grammar --- */
-  --press-scale: 0.97;
-  --hover-raise: -2px;
+  --press-scale: 0.98;
+  --hover-raise: -3px;
   --transition-color:
     color var(--dur) var(--ease), background var(--dur) var(--ease),
     border-color var(--dur) var(--ease);
@@ -261,10 +267,16 @@
   --z-tooltip: 400;
 
   /* --- 2027 kinetic-entry motion --- */
-  --ease-entry: cubic-bezier(0.16, 1, 0.3, 1); /* ultra-premium dampened deceleration */
-  --dur-entry: 620ms; /* per-card scale + fade settle */
+  --ease-entry: cubic-bezier(0.18, 0.9, 0.15, 1); /* ultra-premium dampened deceleration */
+  --dur-entry: 760ms; /* per-card scale + fade settle */
   --dur-stagger: 70ms; /* delay step between bento items */
   --lift-hover: 1.015; /* micro scale-lift on hover */
+
+  /* Double-bezel physical shell */
+  --bezel-shell-bg: color-mix(in srgb, var(--text) 4%, transparent);
+  --bezel-shell-border: color-mix(in srgb, var(--text) 10%, transparent);
+  --bezel-core-bg: var(--surface);
+  --bezel-core-radius: calc(var(--radius-squircle) - 0.375rem);
 
   /* --- Translucent finishes (token-derived — never a raw colour) --- */
   --sheen-top: color-mix(in srgb, var(--text) 6%, transparent); /* glassy top highlight */

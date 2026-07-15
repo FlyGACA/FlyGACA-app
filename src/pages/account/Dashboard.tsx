@@ -73,7 +73,7 @@ function Inner() {
   const earned = earnedCount(badges);
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <header className={styles.hero}>
         <CaptainAvatar size="lg" pose="smile" glow decorative className={styles.avatar} />
         <div className={styles.heroText}>

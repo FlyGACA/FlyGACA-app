@@ -79,7 +79,24 @@ export function Home() {
               <ButtonLink to="/library" variant="clayPrimary" data-magnetic>
                 {t('home.ctaLibrary')}
               </ButtonLink>
-              <ButtonLink to="/chat" variant="clay" data-magnetic>
+              <ButtonLink
+                to="/chat"
+                variant="clay"
+                data-magnetic
+                trailingIcon={
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M7 17L17 7M9 7h8v8" />
+                  </svg>
+                }
+              >
                 {t('home.ctaChat')}
               </ButtonLink>
             </div>
@@ -172,7 +189,23 @@ export function Home() {
                 <p className={styles.ctaLead}>{t('home.convert.proLead')}</p>
               </div>
               <div className={styles.ctaActions}>
-                <ButtonLink variant="clayPrimary" to="/dashboard">
+                <ButtonLink
+                  variant="clayPrimary"
+                  to="/dashboard"
+                  trailingIcon={
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M7 17L17 7M9 7h8v8" />
+                    </svg>
+                  }
+                >
                   {t('home.convert.proCta')}
                 </ButtonLink>
               </div>
@@ -184,7 +217,23 @@ export function Home() {
                 <p className={styles.ctaLead}>{t('home.convert.lead')}</p>
               </div>
               <div className={styles.ctaActions}>
-                <ButtonLink variant="clayPrimary" to="/pricing">
+                <ButtonLink
+                  variant="clayPrimary"
+                  to="/pricing"
+                  trailingIcon={
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M7 17L17 7M9 7h8v8" />
+                    </svg>
+                  }
+                >
                   {t('home.convert.cta')}
                 </ButtonLink>
               </div>

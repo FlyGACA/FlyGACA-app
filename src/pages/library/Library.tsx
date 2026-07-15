@@ -338,7 +338,7 @@ export function Library() {
   const listClass = `${hub.grid} ${view === 'list' ? hub.list : ''} stagger-grid`;
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <SearchHero
         eyebrow={t('library.eyebrow')}
         title={t('library.title')}

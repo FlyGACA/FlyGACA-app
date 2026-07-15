@@ -1,5 +1,5 @@
 .prose {
-  padding-block: var(--space-8);
+  padding-block: 0;
 }
 
 .prose header {
@@ -17,10 +17,27 @@
 
 /* Cross-document nav — move between the four legal docs without the footer. */
 .docsNav {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+  padding: calc(var(--space-3) + 0.4rem);
   margin-block-end: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--bezel-shell-border);
+  background: var(--bezel-shell-bg);
+}
+.docsNav::before {
+  content: '';
+  position: absolute;
+  inset: 0.4rem;
+  border-radius: calc(var(--radius-lg) - 0.4rem);
+  background: var(--bezel-core-bg);
+  box-shadow: var(--elev-1), var(--edge-sheen);
+}
+.docsNav > * {
+  position: relative;
+  z-index: 1;
 }
 .docLink {
   padding: var(--space-1) var(--space-3);
@@ -44,11 +61,24 @@
 
 /* "On this page" table of contents. */
 .onThisPage {
+  position: relative;
   margin-block: var(--space-5);
-  padding: var(--space-4);
-  border: var(--hairline);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
+  padding: calc(var(--space-4) + 0.4rem);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--bezel-shell-border);
+  background: var(--bezel-shell-bg);
+}
+.onThisPage::before {
+  content: '';
+  position: absolute;
+  inset: 0.4rem;
+  border-radius: calc(var(--radius-lg) - 0.4rem);
+  background: var(--bezel-core-bg);
+  box-shadow: var(--elev-1), var(--edge-sheen);
+}
+.onThisPage > * {
+  position: relative;
+  z-index: 1;
 }
 .onThisPageLabel {
   font-size: var(--fs-xs);

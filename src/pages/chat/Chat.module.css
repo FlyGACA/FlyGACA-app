@@ -1,5 +1,5 @@
 .page {
-  padding-block: var(--space-8);
+  padding-block: var(--section-y-tight);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -70,8 +70,8 @@
   flex-direction: column;
   gap: var(--space-4);
   padding: var(--space-5);
-  border: var(--clay-border);
-  border-radius: var(--clay-radius);
+  border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
+  border-radius: var(--bezel-core-radius);
   background: var(--surface);
   box-shadow: var(--clay-shadow);
   overflow-y: auto;
@@ -166,7 +166,7 @@
 .suggestion {
   min-height: 44px;
   padding: var(--space-2) var(--space-4);
-  border: var(--hairline-bright);
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
   border-radius: var(--radius-pill);
   background: var(--surface-raised);
   color: var(--text);
@@ -251,7 +251,7 @@
 
 .bubble {
   padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
+  border-radius: var(--bezel-core-radius);
   white-space: pre-wrap;
   /* A long pasted URL / citation must wrap inside the bubble, not stretch the
      message row past 85% and force horizontal scroll on a phone. */

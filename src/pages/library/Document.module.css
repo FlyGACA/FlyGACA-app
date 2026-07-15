@@ -1,5 +1,5 @@
 .page {
-  padding-block: var(--space-8);
+  padding-block: 0;
 }
 
 /* Reading progress bar — fixed below the nav, full-width */

@@ -50,7 +50,7 @@ function Inner() {
   }
 
   return (
-    <section className={`container-narrow ${styles.page}`}>
+    <section className={`container-narrow section-shell ${styles.page}`}>
       <header className={styles.head}>
         <h1>{t('currency.title')}</h1>
         <p className={styles.sub}>{t('currency.intro')}</p>

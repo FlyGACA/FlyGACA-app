@@ -66,7 +66,7 @@ export function LegalPage({ base }: { base: LegalBase }) {
   });
 
   return (
-    <article className={`container-narrow ${styles.prose}`}>
+    <article className={`container-narrow section-shell ${styles.prose}`}>
       <header>
         <p className={styles.eyebrow}>{t('legal.eyebrow')}</p>
         <h1>{title}</h1>

@@ -22,6 +22,8 @@ interface BaseProps {
   variant?: ButtonVariant;
   /** Leading glyph — sized and gapped by the `.btn` flex layout. */
   icon?: ReactNode;
+  /** Trailing icon rendered in an inner "island" wrapper. */
+  trailingIcon?: ReactNode;
   className?: string;
 }
 
@@ -32,6 +34,7 @@ function btnClass(variant: ButtonVariant, className?: string): string {
 export function Button({
   variant = 'primary',
   icon,
+  trailingIcon,
   className,
   children,
   ...rest
@@ -39,7 +42,8 @@ export function Button({
   return (
     <button className={btnClass(variant, className)} {...rest}>
       {icon}
-      {children}
+      <span className="btn-label">{children}</span>
+      {trailingIcon && <span className="btn-trail">{trailingIcon}</span>}
     </button>
   );
 }
@@ -47,6 +51,7 @@ export function Button({
 export function ButtonLink({
   variant = 'primary',
   icon,
+  trailingIcon,
   className,
   children,
   ...rest
@@ -54,7 +59,8 @@ export function ButtonLink({
   return (
     <Link className={btnClass(variant, className)} {...rest}>
       {icon}
-      {children}
+      <span className="btn-label">{children}</span>
+      {trailingIcon && <span className="btn-trail">{trailingIcon}</span>}
     </Link>
   );
 }

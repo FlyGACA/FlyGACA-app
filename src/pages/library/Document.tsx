@@ -446,7 +446,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
       : null;
 
   return (
-    <article className={`container ${styles.page}`}>
+    <article className={`container section-shell ${styles.page}`}>
       {html && (
         <div className={styles.readingTrack} aria-hidden="true">
           <div className={styles.readingBar} style={{ inlineSize: `${progress}%` }} />

@@ -1,5 +1,5 @@
 .page {
-  padding-block: var(--space-8);
+  padding-block: 0;
 }
 
 .back {
@@ -153,6 +153,11 @@
   background: var(--falcon-night);
   box-shadow: var(--clay-shadow);
   overflow: hidden;
+}
+@media (max-width: 768px) {
+  .map {
+    block-size: min(62dvh, 460px);
+  }
 }
 
 /* Fullscreen viewer: cover the viewport; the map fills the remaining space. */

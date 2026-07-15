@@ -6,7 +6,7 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import { InstallButton } from '../components/pwa/InstallButton';
 import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
 import { ButtonLink } from '../components/ui/Button';
-import { DockIcon, MoreIcon } from './DockIcons';
+import { DockIcon } from './DockIcons';
 import styles from './Header.module.css';
 
 interface NavItem {
@@ -118,7 +118,7 @@ export function Header() {
   return (
     <>
       <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
-        <div className={`container ${styles.inner}`}>
+        <div className={styles.inner}>
           <Link className={styles.lockup} to="/" aria-label={t('nav.home')} viewTransition>
             <img
               className={styles.mark}
@@ -178,7 +178,7 @@ export function Header() {
               className={styles.cta}
               to="/pricing"
               viewTransition
-              icon={
+              trailingIcon={
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -188,7 +188,7 @@ export function Header() {
                   strokeLinejoin="round"
                   aria-hidden="true"
                 >
-                  <path d="M12 3l1.9 4.8L18.7 9l-4.8 1.9L12 15.7l-1.9-4.8L5.3 9l4.8-1.9z" />
+                  <path d="M7 17L17 7M9 7h8v8" />
                 </svg>
               }
             >
@@ -223,7 +223,13 @@ export function Header() {
           aria-controls="more-sheet"
           onClick={() => setOpen((v) => !v)}
         >
-          <MoreIcon />
+          <span
+            className={`${styles.hamburger} ${open ? styles.hamburgerOpen : ''}`}
+            aria-hidden="true"
+          >
+            <span />
+            <span />
+          </span>
           <span>{t('nav.more')}</span>
         </button>
       </nav>

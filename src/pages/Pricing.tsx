@@ -47,6 +47,7 @@ export function Pricing() {
   const [annual, setAnnual] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [faqQuery, setFaqQuery] = useState('');
   const f = (base: string) => t(`${base}.features`, { returnObjects: true }) as unknown as string[];
   const savePct = annualSavingsPct(PRO_PRICE.monthly, PRO_PRICE.annual);
   const compare = t('pricing.compare', { returnObjects: true }) as unknown as CompareRow[];
@@ -70,6 +71,13 @@ export function Pricing() {
     return v;
   };
   const faqs = t('pricing.faq', { returnObjects: true }) as unknown as Faq[];
+  const faqNeedle = faqQuery.trim().toLowerCase();
+  const filteredFaqs = faqNeedle
+    ? faqs.filter(
+        (item) =>
+          item.q.toLowerCase().includes(faqNeedle) || item.a.toLowerCase().includes(faqNeedle),
+      )
+    : faqs;
   const schoolPoints = t('pricing.schoolsPoints', { returnObjects: true }) as unknown as string[];
 
   const proPrice = annual
@@ -112,7 +120,7 @@ export function Pricing() {
   const isPaid = plan !== 'free';
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <PageHero
         align="center"
         eyebrow={t('pricing.eyebrow')}
@@ -231,7 +239,10 @@ export function Pricing() {
             onClick={canCheckout() ? () => void checkout('pass') : undefined}
             disabled={busy || !canCheckout()}
           >
-            {t('pricing.passCta')}
+            <span className={styles.ctaLabel}>{t('pricing.passCta')}</span>
+            <span className={styles.ctaTrail} aria-hidden="true">
+              →
+            </span>
           </button>
         </div>
       </section>
@@ -281,19 +292,54 @@ export function Pricing() {
           </p>
         </div>
         <Link to="/schools" className={styles.schoolsCta}>
-          {t('pricing.schoolsCta')}
+          <span className={styles.ctaLabel}>{t('pricing.schoolsCta')}</span>
+          <span className={styles.ctaTrail} aria-hidden="true">
+            →
+          </span>
         </Link>
       </section>
 
       <section className={styles.faqSection} aria-labelledby="faq-head">
         <SectionHeader id="faq-head" title={t('pricing.faqHead')} tone="var(--cat-5)" />
-        <div className={styles.faqList}>
-          {faqs.map((item) => (
-            <details key={item.q} className={styles.faq}>
-              <summary>{item.q}</summary>
-              <p>{item.a}</p>
-            </details>
-          ))}
+        <div className={styles.faqLayout}>
+          <aside className={styles.faqAside}>
+            <p className={styles.faqAsideTitle}>{t('pricing.faqHelpTitle')}</p>
+            <p className={styles.faqAsideBody}>{t('pricing.faqHelpBody')}</p>
+            <Link to="/schools" className={styles.faqAsideCta}>
+              <span className={styles.ctaLabel}>{t('pricing.contact')}</span>
+              <span className={styles.ctaTrail} aria-hidden="true">
+                →
+              </span>
+            </Link>
+          </aside>
+
+          <div className={styles.faqMain}>
+            <label className={styles.faqSearchWrap}>
+              <span className="sr-only">{t('pricing.faqSearchPlaceholder')}</span>
+              <input
+                className={styles.faqSearch}
+                type="search"
+                value={faqQuery}
+                onChange={(e) => setFaqQuery(e.target.value)}
+                placeholder={t('pricing.faqSearchPlaceholder')}
+              />
+            </label>
+            {filteredFaqs.length > 0 ? (
+              <div className={styles.faqList}>
+                {filteredFaqs.map((item) => (
+                  <article key={item.q} className={styles.faq}>
+                    <h3 className={styles.faqQ}>{item.q}</h3>
+                    <p className={styles.faqA}>{item.a}</p>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <article className={styles.faqEmpty} role="status">
+                <h3>{t('pricing.faqNoMatchTitle')}</h3>
+                <p>{t('pricing.faqNoMatchBody')}</p>
+              </article>
+            )}
+          </div>
         </div>
       </section>
 
@@ -357,11 +403,17 @@ function Plan({
       </ul>
       {ctaHref ? (
         <Link className={styles.cta} to={ctaHref}>
-          {cta}
+          <span className={styles.ctaLabel}>{cta}</span>
+          <span className={styles.ctaTrail} aria-hidden="true">
+            →
+          </span>
         </Link>
       ) : (
         <button type="button" className={styles.cta} disabled={ctaDisabled} onClick={ctaOnClick}>
-          {cta}
+          <span className={styles.ctaLabel}>{cta}</span>
+          <span className={styles.ctaTrail} aria-hidden="true">
+            →
+          </span>
         </button>
       )}
       {belowCta}

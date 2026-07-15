@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '../components/Disclaimer';
 import { CaptainAvatar } from '../components/CaptainAvatar';
@@ -9,6 +8,7 @@ import { SectionHeader } from '../components/SectionHeader';
 import { Stepper } from '../components/Stepper';
 import { BentoGrid } from '../components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
+import { ButtonLink } from '../components/ui/Button';
 import { usePageMeta } from '../lib/usePageMeta';
 import { faqLd, breadcrumbLd } from '../lib/jsonld';
 import styles from './Schools.module.css';
@@ -61,7 +61,7 @@ export function Schools() {
   }
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <PageHero
         eyebrow={t('schools.eyebrow')}
         title={t('schools.title')}
@@ -145,8 +145,11 @@ export function Schools() {
               rows={4}
             />
           </label>
-          <button type="submit" className={styles.send}>
-            {t('schools.form.send')}
+          <button type="submit" className={`btn ${styles.send}`}>
+            <span className="btn-label">{t('schools.form.send')}</span>
+            <span className="btn-trail" aria-hidden="true">
+              →
+            </span>
           </button>
         </form>
         <p className={styles.orEmail}>
@@ -173,11 +176,18 @@ export function Schools() {
           <p className={styles.ctaLead}>{t('schools.cta.lead')}</p>
         </div>
         <div className={styles.ctaActions}>
-          <Link className="btn btn-clay-primary" to="/pricing">
+          <ButtonLink
+            variant="clayPrimary"
+            to="/pricing"
+            trailingIcon={<span aria-hidden="true">→</span>}
+          >
             {t('schools.cta.plans')}
-          </Link>
+          </ButtonLink>
           <a className="btn btn-clay" href="#schools-form-head">
-            {t('schools.cta.contact')}
+            <span className="btn-label">{t('schools.cta.contact')}</span>
+            <span className="btn-trail" aria-hidden="true">
+              →
+            </span>
           </a>
         </div>
       </section>

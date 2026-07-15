@@ -4,7 +4,7 @@
    ============================================================ */
 
 .page {
-  padding-block: var(--space-8) var(--space-12);
+  padding-block: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
@@ -198,8 +198,9 @@
 /* ── CTA button ── */
 .cta {
   margin-block-start: auto;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
   justify-content: center;
   min-height: 48px;
   padding: var(--space-3) var(--space-5);
@@ -214,6 +215,28 @@
   cursor: pointer;
   box-shadow: var(--clay-shadow);
   transition: var(--transition-interactive);
+}
+.ctaLabel {
+  white-space: nowrap;
+}
+.ctaTrail {
+  inline-size: 1.95rem;
+  block-size: 1.95rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  transition: transform var(--dur) var(--ease-glide);
+}
+.cta:hover .ctaTrail {
+  transform: translateX(2px) translateY(-1px) scale(1.04);
+}
+.highlight .cta .ctaTrail,
+.schoolsCta .ctaTrail {
+  background: color-mix(in srgb, var(--text-on-brand) 16%, transparent);
+  border-color: color-mix(in srgb, var(--text-on-brand) 30%, transparent);
 }
 .cta:hover {
   box-shadow: var(--clay-shadow-hover);
@@ -374,40 +397,141 @@
   color: var(--text-dim);
 }
 
-/* ── FAQ accordion ── */
+/* ── FAQ grid ── */
 .faqSection {
   margin-block-start: var(--space-4);
 }
-.faqList {
+.faqLayout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.6fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.faqAside {
+  position: sticky;
+  inset-block-start: calc(var(--nav-h) + var(--space-4));
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  max-inline-size: 70ch;
-  margin-inline: auto;
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+  padding: var(--space-4);
+  box-shadow: var(--clay-shadow);
+}
+.faqAsideTitle {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+.faqAsideBody {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+}
+.faqAsideCta {
+  margin-block-start: var(--space-2);
+  inline-size: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: var(--clay-border);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  transition: var(--transition-interactive);
+}
+.faqAsideCta:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: var(--clay-shadow-hover);
+}
+.faqMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.faqSearchWrap {
+  display: block;
+}
+.faqSearch {
+  inline-size: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  color: var(--text);
+  font: inherit;
+  transition: var(--transition-interactive);
+}
+.faqSearch::placeholder {
+  color: var(--text-dim);
+}
+.faqSearch:focus {
+  outline: none;
+  border-color: var(--brand-hover);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 24%, transparent);
+}
+.faqList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  max-inline-size: none;
+  margin-inline: 0;
 }
 .faq {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   border: var(--clay-border);
   border-radius: var(--clay-radius);
   background: var(--surface);
   box-shadow: var(--clay-shadow);
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-4) var(--space-5);
 }
-.faq summary {
-  cursor: pointer;
+.faqQ {
+  margin: 0;
+  font-size: var(--fs-base);
   font-weight: var(--fw-semibold);
-  min-height: 32px;
-  display: flex;
-  align-items: center;
 }
-.faq summary:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-.faq p {
-  margin-block: var(--space-3) var(--space-1);
+.faqA {
+  margin: 0;
   color: var(--text-muted);
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
+}
+.faqEmpty {
+  border: 1px dashed color-mix(in srgb, var(--text) 22%, transparent);
+  border-radius: var(--clay-radius);
+  background: color-mix(in srgb, var(--surface-raised) 85%, transparent);
+  padding: var(--space-5);
+}
+.faqEmpty h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-lg);
+}
+.faqEmpty p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+@media (max-width: 900px) {
+  .faqLayout {
+    grid-template-columns: 1fr;
+  }
+  .faqAside {
+    position: static;
+  }
+}
+@media (max-width: 760px) {
+  .faqList {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Trust banner + plan-aware intro ── */
@@ -494,6 +618,9 @@
   white-space: nowrap;
 }
 .passCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   min-height: 44px;
   padding: var(--space-2) var(--space-5);
   border: var(--clay-border);
@@ -574,6 +701,7 @@
   min-height: 48px;
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--clay-radius);
   background: var(--brand);
@@ -588,4 +716,30 @@
   box-shadow: var(--clay-shadow-hover);
   transform: translateY(-1px);
   text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .toggle {
+    inline-size: 100%;
+    justify-content: center;
+  }
+  .toggle button {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .passBand,
+  .schoolsBand {
+    padding: var(--space-5);
+  }
+  .passAside {
+    inline-size: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
+  }
+  .passCta,
+  .schoolsCta {
+    justify-content: center;
+    inline-size: 100%;
+  }
 }

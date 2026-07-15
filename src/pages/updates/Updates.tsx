@@ -54,7 +54,7 @@ export function Updates() {
   const loading = src.loading || status.loading;
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <header className={styles.head}>
         <p className={styles.eyebrow}>{t('alerts.eyebrow')}</p>
         <h1>{t('alerts.title')}</h1>

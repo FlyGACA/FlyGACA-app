@@ -3,13 +3,26 @@
 
 .card {
   position: relative;
+  border-radius: var(--radius-squircle);
+  padding: 0.4rem;
+  background: var(--bezel-shell-bg);
+  border: 1px solid var(--bezel-shell-border);
+}
+
+.core {
+  min-inline-size: 0;
+  min-block-size: 100%;
   background: var(--surface);
-  border: var(--hairline-bright);
-  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
+  border-radius: var(--bezel-core-radius);
   box-shadow: var(--elev-1), var(--edge-sheen);
+  padding: var(--space-5);
 }
 
 .raised {
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+}
+.raised .core {
   background: var(--surface-raised);
   box-shadow: var(--elev-2), var(--edge-sheen);
 }
@@ -19,8 +32,10 @@
 }
 .interactive:hover {
   transform: translateY(var(--hover-raise));
+}
+.interactive:hover .core {
   box-shadow: var(--elev-2), var(--edge-sheen);
-  border-color: color-mix(in srgb, var(--cat-color, var(--brand)) 40%, var(--border-bright));
+  border-color: color-mix(in srgb, var(--cat-color, var(--brand)) 48%, var(--border-bright));
 }
 .interactive:active {
   transform: scale(var(--press-scale));
@@ -37,8 +52,10 @@
 .accent::before {
   content: '';
   position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: 3px;
-  background: var(--cat-color, var(--brand));
+  inset-block-start: 0.7rem;
+  inset-block-end: 0.7rem;
+  inset-inline-start: 0.5rem;
+  inline-size: 2px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--cat-color, var(--brand)) 88%, white 12%);
 }

@@ -1,15 +1,18 @@
 .nav {
   position: sticky;
-  inset-block-start: 0;
+  inset-block-start: calc(var(--safe-top) + var(--space-3));
   z-index: var(--z-sticky);
-  block-size: var(--nav-h);
-  padding-block-start: var(--safe-top);
+  inline-size: min(100% - 2 * var(--space-4), var(--container));
+  min-block-size: var(--nav-content-h);
+  margin-inline: auto;
   display: flex;
   align-items: center;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  border-block-end: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  box-shadow: var(--elev-2);
   transition:
     background var(--dur) var(--ease),
     box-shadow var(--dur) var(--ease),
@@ -17,17 +20,17 @@
 }
 /* Elevated state — firmer surface, hairline + a quiet shadow once scrolled. */
 .nav.scrolled {
-  background: var(--surface-overlay);
-  border-block-end-color: var(--border);
-  box-shadow: var(--elev-1);
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  border-color: color-mix(in srgb, var(--text) 20%, transparent);
+  box-shadow: var(--elev-3);
 }
 /* Brand-gradient hairline along the bottom edge; reveals on scroll. The mask
    fades it out at both ends so it reads as a jeweled edge, not a stripe. */
 .nav::after {
   content: '';
   position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
+  inset-block-end: 1px;
+  inset-inline: 4%;
   block-size: 1px;
   background: var(--grad-brand);
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
@@ -44,6 +47,8 @@
   align-items: center;
   gap: var(--space-4);
   inline-size: 100%;
+  min-block-size: var(--nav-content-h);
+  padding-inline: var(--space-4);
 }
 
 /* --- Brand lockup: mark + wordmark --- */
@@ -381,6 +386,37 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+  .hamburger {
+    position: relative;
+    inline-size: 18px;
+    block-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hamburger span {
+    position: absolute;
+    inline-size: 13px;
+    block-size: 1.5px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    transform-origin: center;
+    transition:
+      transform var(--dur) var(--ease-glide),
+      opacity var(--dur) var(--ease-glide);
+  }
+  .hamburger span:first-child {
+    transform: translateY(-3px);
+  }
+  .hamburger span:last-child {
+    transform: translateY(3px);
+  }
+  .hamburgerOpen span:first-child {
+    transform: rotate(45deg);
+  }
+  .hamburgerOpen span:last-child {
+    transform: rotate(-45deg);
+  }
   .dockItem:hover {
     color: var(--text);
     text-decoration: none;
@@ -396,31 +432,32 @@
     box-shadow: 0 0 10px 1px color-mix(in srgb, var(--brand-hover) 60%, transparent);
   }
 
-  /* --- "More" sheet: floats just above the dock --- */
+  /* --- "More" sheet: expanded glass overlay --- */
   .sheet {
     position: fixed;
-    inset-block-end: calc(var(--space-3) + var(--safe-bottom) + 72px);
-    inset-inline: var(--space-4);
-    z-index: var(--z-dropdown);
+    inset-block-start: calc(var(--space-3) + var(--safe-top));
+    inset-block-end: calc(var(--space-3) + var(--safe-bottom));
+    inset-inline: var(--space-3);
+    z-index: var(--z-overlay);
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
     inline-size: auto;
-    max-inline-size: 30rem;
-    margin-inline: auto;
-    max-block-size: calc(100dvh - var(--nav-h) - 120px);
+    max-inline-size: none;
+    margin-inline: 0;
+    max-block-size: none;
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding: var(--space-3);
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
-    backdrop-filter: blur(18px) saturate(150%);
-    -webkit-backdrop-filter: blur(18px) saturate(150%);
-    border: var(--hairline-bright);
-    border-radius: var(--radius-xl);
+    padding: var(--space-6) var(--space-5) var(--space-5);
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(26px) saturate(145%);
+    -webkit-backdrop-filter: blur(26px) saturate(145%);
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    border-radius: var(--radius-squircle);
     box-shadow: var(--elev-3), var(--edge-sheen);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(12px) scale(0.98);
+    transform: translateY(20px) scale(0.985);
     transform-origin: bottom center;
     transition:
       opacity var(--dur) var(--ease),
@@ -451,13 +488,13 @@
     @starting-style {
       .sheet.open {
         opacity: 0;
-        transform: translateY(12px) scale(0.98);
+        transform: translateY(20px) scale(0.985);
       }
     }
   }
   /* Section label atop the sheet. */
   .sheetLabel {
-    margin-block: var(--space-1) var(--space-2);
+    margin-block: 0 var(--space-4);
     margin-inline: var(--space-2);
     font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
@@ -471,7 +508,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--space-1);
   }
   /* Icon + label row — mirrors the dock's iconography. */
   .sheetLink {
@@ -479,13 +516,41 @@
     align-items: center;
     gap: var(--space-3);
     inline-size: 100%;
-    min-block-size: 48px;
+    min-block-size: 56px;
     padding-inline: var(--space-3);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     color: color-mix(in srgb, var(--text-muted) 30%, var(--text));
     font-size: var(--fs-base);
     font-weight: var(--fw-medium);
-    transition: var(--transition-color);
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      color var(--dur) var(--ease),
+      background var(--dur) var(--ease),
+      opacity var(--dur-slow) var(--ease-entry),
+      transform var(--dur-slow) var(--ease-entry);
+  }
+  .open .sheetLink {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .open .sheetList li:nth-child(1) .sheetLink {
+    transition-delay: 80ms;
+  }
+  .open .sheetList li:nth-child(2) .sheetLink {
+    transition-delay: 120ms;
+  }
+  .open .sheetList li:nth-child(3) .sheetLink {
+    transition-delay: 160ms;
+  }
+  .open .sheetList li:nth-child(4) .sheetLink {
+    transition-delay: 200ms;
+  }
+  .open .sheetList li:nth-child(5) .sheetLink {
+    transition-delay: 240ms;
+  }
+  .open .sheetList li:nth-child(6) .sheetLink {
+    transition-delay: 280ms;
   }
   .sheetLink:hover {
     color: var(--text);
@@ -520,7 +585,7 @@
     justify-content: center;
     gap: var(--space-2);
     inline-size: 100%;
-    min-block-size: 48px;
+    min-block-size: 52px;
     padding-inline: var(--space-4);
     border-radius: var(--radius-pill);
     background: var(--brand);
@@ -549,13 +614,13 @@
     display: block;
     position: fixed;
     inset: 0;
-    z-index: var(--z-raised);
+    z-index: var(--z-dropdown);
     margin: 0;
     padding: 0;
     border: 0;
-    background: color-mix(in srgb, var(--falcon-night) 62%, transparent);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background: color-mix(in srgb, var(--falcon-night) 78%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     cursor: pointer;
     opacity: 0;
     visibility: hidden;

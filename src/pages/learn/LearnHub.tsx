@@ -108,7 +108,7 @@ export function LearnHub() {
   }));
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <SearchHero
         eyebrow={t('learn.eyebrow')}
         title={t('learn.title')}

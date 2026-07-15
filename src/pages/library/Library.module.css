@@ -1,5 +1,5 @@
 .page {
-  padding-block: var(--space-8);
+  padding-block: 0;
 }
 
 /* Segmented control (Design System §08) — raised active tab on an inset track. */

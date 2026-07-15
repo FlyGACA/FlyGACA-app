@@ -22,11 +22,16 @@ export function Card({
   as: Tag = 'div',
   className,
   style,
+  children,
   ...rest
 }: CardProps) {
   const classes = [styles.card, variant !== 'default' && styles[variant], className]
     .filter(Boolean)
     .join(' ');
   const merged = accent ? ({ ...style, '--cat-color': accent } as CSSProperties) : style;
-  return <Tag className={classes} style={merged} {...rest} />;
+  return (
+    <Tag className={classes} style={merged} {...rest}>
+      <div className={styles.core}>{children}</div>
+    </Tag>
+  );
 }

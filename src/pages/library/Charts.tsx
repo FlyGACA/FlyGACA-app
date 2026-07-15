@@ -149,7 +149,7 @@ export function Charts() {
   }, [go]);
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <p className={styles.back}>
         <Link to="/library">← {t('library.title')}</Link>
       </p>

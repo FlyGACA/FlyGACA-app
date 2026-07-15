@@ -32,10 +32,23 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Subtle global grain to avoid sterile flat dark surfaces. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-base);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.05' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+  opacity: 0.04;
+}
+
 /* Sticky-footer frame: React mounts here, so the viewport-height column lives on
    #root (not body). main grows to absorb slack, pinning the footer to the bottom
    on short pages — otherwise body's dark background showed below the footer. */
 #root {
+  position: relative;
+  z-index: var(--z-raised);
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
@@ -112,11 +125,24 @@ main {
   main {
     padding-block-end: calc(var(--nav-content-h) + var(--space-4) + var(--safe-bottom));
   }
+
+  .container,
+  .container-narrow {
+    width: min(100% - 2 * var(--space-4), 100%);
+  }
+
+  .section-shell {
+    padding-block: var(--section-y-tight);
+  }
 }
 
 .container-narrow {
   width: min(100% - 2 * var(--space-4), var(--container-narrow));
   margin-inline: auto;
+}
+
+.section-shell {
+  padding-block: var(--section-y);
 }
 
 /* --- Buttons --- */
@@ -142,6 +168,27 @@ main {
 }
 .btn:active {
   transform: scale(var(--press-scale));
+}
+.btn-label {
+  white-space: nowrap;
+}
+.btn-trail {
+  inline-size: 1.95rem;
+  block-size: 1.95rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  transition: transform var(--dur) var(--ease-glide);
+}
+.btn-trail > * {
+  inline-size: 0.95rem;
+  block-size: 0.95rem;
+}
+.btn:hover .btn-trail {
+  transform: translateX(2px) translateY(-1px) scale(1.04);
 }
 /* Sage focus ring (Design System §07) — keyboard navigation only. */
 .btn:focus-visible {
@@ -236,6 +283,34 @@ main {
 .btn-clay-primary:active {
   box-shadow: var(--clay-shadow-press);
   transform: scale(0.97);
+}
+
+/* --- Shared high-end composition utilities --- */
+.eyebrow-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 0.3rem 0.7rem;
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  color: var(--text-muted);
+}
+
+.bezel-shell {
+  border-radius: var(--radius-squircle);
+  padding: 0.4rem;
+  background: var(--bezel-shell-bg);
+  border: 1px solid var(--bezel-shell-border);
+}
+
+.bezel-core {
+  border-radius: var(--bezel-core-radius);
+  background: var(--bezel-core-bg);
+  box-shadow: var(--elev-1), var(--edge-sheen);
 }
 
 /* --- Form utilities (generic, outside calculators) --- */

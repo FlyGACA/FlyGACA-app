@@ -1,5 +1,5 @@
 .page {
-  padding-block: var(--space-8);
+  padding-block: var(--section-y-tight);
 }
 
 /* Filters + sort/view controls between the hero and the catalogue. */
@@ -8,6 +8,10 @@
   flex-direction: column;
   gap: var(--space-4);
   margin-block-end: var(--space-6);
+  border-radius: var(--radius-squircle);
+  padding: var(--space-3);
+  background: var(--bezel-shell-bg);
+  border: 1px solid var(--bezel-shell-border);
 }
 .toolbar {
   display: flex;
@@ -127,8 +131,8 @@
   padding: var(--space-3) var(--space-4);
   padding-inline-start: var(--space-5);
   padding-inline-end: calc(var(--space-4) + 34px);
-  border: var(--hairline);
-  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
+  border-radius: var(--bezel-core-radius);
   background: var(--surface);
   color: inherit;
   overflow: hidden;
@@ -174,8 +178,8 @@
 .card {
   position: relative;
   overflow: hidden;
-  border: var(--hairline-bright);
-  border-radius: var(--clay-radius);
+  border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
+  border-radius: var(--bezel-core-radius);
   background:
     radial-gradient(
       140px 90px at 100% 0%,

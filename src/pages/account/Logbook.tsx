@@ -142,7 +142,7 @@ function Inner() {
   const months = useMemo(() => monthTotals(flights, 6), [flights]);
 
   return (
-    <section className={`container ${styles.page}`}>
+    <section className={`container section-shell ${styles.page}`}>
       <header className={styles.head}>
         <h1>{t('account.logbook')}</h1>
       </header>

@@ -71,7 +71,7 @@ function Inner() {
   const editing = editId ? records.find((r) => r.id === editId) : undefined;
 
   return (
-    <section className={`container ${account.page}`}>
+    <section className={`container section-shell ${account.page}`}>
       <header className={account.head}>
         <h1>{t('records.title')}</h1>
         <p className={account.sub}>{t('records.intro')}</p>
