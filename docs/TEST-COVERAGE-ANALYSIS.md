@@ -80,7 +80,14 @@ the Pro path. This is the highest value-per-test work available.
   isolation; lower priority than the two above, but the prompt assembly is
   already partially covered by `captain-adel-prompt.test.ts`.
 
-### 3. Frontend offline / sync data integrity (`sync.ts` 48%, `useOfflineSync.ts` 0%, `offlineCache.ts` 78%)
+### 3. Frontend offline / sync data integrity (`sync.ts` 48%, `useOfflineSync.ts` 0%, `offlineCache.ts` 78%) — ✅ addressed in this PR
+
+> **Update:** `tests/sync-io.test.ts` and `tests/offline-sync.test.tsx` now cover
+> the `sync.ts` I/O helpers (`loadAccount` + the write-throughs) and the
+> `useOfflineBookmarkSync` hook. `sync.ts` moved 48% → 92% and `useOfflineSync.ts`
+> 0% → 83%; the "client never serializes `entitlement`" invariant is now an
+> explicit assertion. §1, §2, §4, §5 remain open.
+
 
 `sync.ts` maps Firestore docs ⇄ Profile/Flight/Entitlement. The pure mappers are
 tested, but the I/O helpers (lines ~118–182) — the read/merge/write paths that
