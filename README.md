@@ -4,9 +4,7 @@
 
 <div align="center">
 
-<img src="public/brand/flygaca-mark.png" alt="Fly GACA logo" width="120" />
-<br />
-<img src="public/img/og-card.png" alt="Fly GACA — independent educational platform for Saudi civil aviation" width="100%" />
+<img src="public/brand/flygaca-mark.png" alt="Fly GACA logo" width="160" />
 
 # ✈️ Fly GACA
 
