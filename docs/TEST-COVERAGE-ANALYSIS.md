@@ -1,0 +1,150 @@
+# Test coverage analysis — July 2026
+
+A snapshot of where the automated tests stand today and where the gaps carry the
+most risk. Numbers come from `npm run test:coverage` (frontend, v8) and
+`npx vitest run --coverage --coverage.all` inside `functions/` (backend, v8).
+This is an assessment + proposal, not a change to the suites themselves.
+
+## Headline numbers
+
+| Suite | Statements | Branches | Functions | Lines |
+| --- | --- | --- | --- | --- |
+| Frontend (`src/calc` + `src/lib` + `src/components`) | 67.9% | 69.1% | 69.9% | 68.1% |
+| Backend (`functions/src`, all files) | 35.3% | 46.0% | 45.7% | 34.4% |
+
+The frontend numbers are healthy and gated by a ratchet in `vitest.config.ts`
+(statements 65 / branches 64 / functions 68 / lines 65). The backend number
+looks alarming but is **mostly by design**: the backend deliberately splits pure
+logic into `*-core.ts` files, which are exhaustively tested (105 passing tests),
+and leaves the thin I/O "wiring" files uncovered. The real question is whether
+that untested wiring is genuinely trivial — in a few security-critical cases it
+is not.
+
+Test-file counts today: **130** frontend unit specs, **14** backend specs,
+**1** Firestore-rules suite (`npm run test:rules`), **3** Playwright E2E specs
+(`e2e/`).
+
+## What is already well covered (don't regress)
+
+- **`src/calc/**` — 97% statements.** The pure aviation math (METAR/TAF/NOTAM
+  parsing, crosswind, altimetry, weight & balance, TAS/ISA, holding, sun times,
+  logbook, currency) is the crown jewel of the suite. Every tool has a spec.
+- **Backend `*-core.ts` files — effectively 100%.** `billing-core`,
+  `chat-quota-core`, `rate-limit-core`, `referral-core`, `feedback-core`,
+  `api-key-core`, `staff-core`, `student-core`, `school-core` all have dedicated
+  specs. This is the right pattern.
+- **Typed frontend services** `api.ts` (97%), `billing.ts` (91%), `content.ts`
+  (96%), `jsonld.ts`/`seo.ts` (100%), and the prefs stores (`libraryPrefs`,
+  `guidePrefs`, `toolPrefs`, `studyProgress`) are all in the 90s.
+- **i18n parity** is enforced structurally (`tests/i18n-parity.test.ts`).
+
+## Proposed areas to improve, in priority order
+
+### 1. Backend gateway request handlers — highest risk (`functions/src/gateway.ts`, 24.9%)
+
+This is the single most important gap. `gateway.ts` is the Express entry point:
+auth, App Check enforcement, CORS origin allow-listing, free-quota consumption,
+paid-credit metering, and the `/chat`, `/v1/ask`, `/feedback` routes. Today the
+tests cover only the *pure exported helpers* — `parseRequest`, `authenticate`,
+`notFoundHandler`, `errorHandler` — and leave the **route handlers themselves
+untested** (lines ~261–457). That means the actual enforcement paths have no
+regression net:
+
+- `consumeFreeQuota` / `consumeCredit` — the metering that decides whether a
+  request is free, paid from credit, or rejected. A bug here is either lost
+  revenue or a free-tier bypass.
+- `readEntitlement` gating of the Pro/streaming path.
+- `isAllowedOrigin` CORS enforcement (a regression here is a security issue).
+- The `/v1/ask` API-key surface: key extraction, hash lookup, per-key rate limit.
+
+**Proposal:** add a `gateway-routes` spec using `supertest` (or Express's request
+mock) against the exported `app`, with `firebase-admin` and the Genkit flow
+mocked. Assert: anonymous vs. authed quota outcomes, 429 on rate-limit, 401 on
+missing API key, 403 on a disallowed origin, and that a free user never reaches
+the Pro path. This is the highest value-per-test work available.
+
+### 2. Backend Stripe & RAG wiring (`billing.ts` 0%, `captain-adel.ts` 0%, `corpus.ts` 44%)
+
+- **`billing.ts` (0%)** is the Stripe webhook handler — per `CLAUDE.md` the
+  *only writer* of `users/{uid}.entitlement`. The pure decision logic lives in
+  `billing-core.ts` and is tested, but the webhook plumbing (signature
+  verification branch, event-type routing, idempotency, entitlement write) is
+  not. Given this is the money path, at least the event-routing and the
+  "ignore unknown/duplicate event" branches deserve tests with a mocked Stripe
+  client.
+- **`corpus.ts` (44%)** is RAG retrieval — the citation accuracy that the whole
+  "Captain Adel cites the exact Part/section" promise rests on. Worth raising:
+  the chunk-selection and citation-shaping branches (lines ~223–248) are the
+  ones that, if broken, produce wrong or missing citations.
+- **`captain-adel.ts` (0%)** is the Genkit/Gemini flow. Harder to test in
+  isolation; lower priority than the two above, but the prompt assembly is
+  already partially covered by `captain-adel-prompt.test.ts`.
+
+### 3. Frontend offline / sync data integrity (`sync.ts` 48%, `useOfflineSync.ts` 0%, `offlineCache.ts` 78%) — ✅ addressed in this PR
+
+> **Update:** `tests/sync-io.test.ts` and `tests/offline-sync.test.tsx` now cover
+> the `sync.ts` I/O helpers (`loadAccount` + the write-throughs) and the
+> `useOfflineBookmarkSync` hook. `sync.ts` moved 48% → 92% and `useOfflineSync.ts`
+> 0% → 83%; the "client never serializes `entitlement`" invariant is now an
+> explicit assertion. §1, §2, §4, §5 remain open.
+
+
+`sync.ts` maps Firestore docs ⇄ Profile/Flight/Entitlement. The pure mappers are
+tested, but the I/O helpers (lines ~118–182) — the read/merge/write paths that
+decide what the client persists — are not. The load-bearing invariant here is
+that **the client never writes the server-only `entitlement` field**
+(`profileToDoc` omits it, enforced by `firestore.rules`). There is a rules test,
+but no unit test pinning `profileToDoc`'s omission of `entitlement` as a
+first-class assertion. A pilot losing/duplicating logbook entries on a flaky
+connection is the failure this guards against.
+
+**Proposal:** unit-test `profileToDoc`/`docToProfile` round-trips (explicitly
+asserting `entitlement` is never serialized), and give `useOfflineSync` a
+render-hook test for its online-gated, slug-deduped bookmark-warming.
+
+### 4. Untested frontend hooks & small stores (all 0%)
+
+Low individual risk but cheap to cover and currently invisible to the ratchet:
+`referral.ts`, `updatesPrefs.ts`, `useBookmarkGate.ts`, `useDebouncedValue.ts`,
+`useReducedMotion.ts`, `useViewMode.ts`. Two are worth prioritizing:
+
+- **`useBookmarkGate.ts` (0%)** encodes a real product/billing rule: adding a
+  bookmark requires Pro, removing is always allowed, free users route to
+  `/pricing`. That one-directional gate is exactly the kind of logic that breaks
+  silently on a refactor — it deserves a test.
+- **`referral.ts` (0%)** transports the `?ref=` code into checkout. A regression
+  means silently dropped referral attribution (revenue/growth impact).
+
+### 5. `CalcShell.tsx` (52%) — the shared calculator frame
+
+Every tool renders inside `CalcShell` (copy-link · try-an-example ·
+ask-Captain-Adel · disclaimer). The individual calculators are well tested, but
+the shell's own interactive affordances (the copy-link handler, the
+"try an example" seeding, the Ask-Adel hand-off) are under-covered (lines
+~134–136, 224–273). A component test with Testing Library would cover the
+buttons once and protect every tool page at the frame level.
+
+## What we should *not* chase
+
+Large swaths of `src/components` sit at 0% — `bento/*` widgets, `aerodrome/*`
+visuals, hero/marquee/decorative components. These are presentational and are
+(correctly) covered by the Playwright E2E suite and visual review, not unit
+tests. Chasing their line coverage would be low-value busywork. The coverage
+`include` in `vitest.config.ts` already scopes the ratchet to the
+unit-testable layers; keep it that way.
+
+## Suggested sequencing
+
+1. **Gateway route handlers** (§1) — biggest risk reduction, unblocks raising
+   the backend from ~35% toward parity with the frontend.
+2. **Stripe webhook + corpus citation branches** (§2) — protects the money path
+   and the citation promise.
+3. **`sync.ts` mappers + `entitlement` omission** (§3) — data-integrity net for
+   offline/multi-device pilots.
+4. **`useBookmarkGate` + `referral`** (§4) — cheap, protects billing/growth
+   rules.
+5. **`CalcShell`** (§5) — one test, broad protection across all tools.
+
+Once §1–§3 land, the backend `functions/` suite should adopt a coverage ratchet
+of its own (mirroring the frontend's `vitest.config.ts` thresholds) so the newly
+covered wiring can't silently regress.
