@@ -46,11 +46,13 @@ localStorage.setItem(
 );
 localStorage.setItem('flygaca:guide-bookmarks', JSON.stringify(['gacar-explained']));
 localStorage.setItem('flygaca:updates-watch', JSON.stringify(['gacar-91', 'aip']));
+localStorage.setItem('flygaca:offline:saved', JSON.stringify(['gacar-part-91', 'gacar-part-61']));
 
 const { StudyWidget } = await import('../src/components/dashboard/StudyWidget');
 const { ToolShortcutsWidget } = await import('../src/components/dashboard/ToolShortcutsWidget');
 const { BookmarksWidget } = await import('../src/components/dashboard/BookmarksWidget');
 const { AdelThreadsWidget } = await import('../src/components/dashboard/AdelThreadsWidget');
+const { OfflineWidget } = await import('../src/components/dashboard/OfflineWidget');
 const { RolePickerCard } = await import('../src/components/dashboard/RolePickerCard');
 
 describe('StudyWidget', () => {
@@ -116,6 +118,22 @@ describe('AdelThreadsWidget', () => {
     localStorage.removeItem('flygaca:adel-transcript');
     renderWithRouter(<AdelThreadsWidget />);
     expect(screen.getByText(/cites the exact part and section/i)).toBeInTheDocument();
+  });
+});
+
+describe('OfflineWidget', () => {
+  it('shows the saved-offline count and a healthy sync status', () => {
+    renderWithRouter(<OfflineWidget />);
+    expect(screen.getByText('2')).toBeInTheDocument(); // two docs saved offline
+    expect(screen.getByText(/synced/i)).toBeInTheDocument();
+  });
+
+  it('prompts to save when nothing is cached offline', async () => {
+    vi.resetModules();
+    localStorage.setItem('flygaca:offline:saved', JSON.stringify([]));
+    const { OfflineWidget: Empty } = await import('../src/components/dashboard/OfflineWidget');
+    renderWithRouter(<Empty />);
+    expect(screen.getByText(/lose signal/i)).toBeInTheDocument();
   });
 });
 
