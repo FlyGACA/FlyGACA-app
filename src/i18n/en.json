@@ -3223,6 +3223,15 @@
         "changed": "Changed since your last visit",
         "airacNext": "Next AIRAC in {{days}} days",
         "open": "Open updates"
+      },
+      "offline": {
+        "title": "Offline & sync",
+        "manage": "Manage offline",
+        "savedLabel": "Saved for offline",
+        "syncLabel": "Cloud sync",
+        "syncOn": "Synced",
+        "syncOff": "Sync pending",
+        "empty": "Save a regulation for offline reading and it will be here when you lose signal."
       }
     },
     "achievements": "Achievements",

@@ -17,6 +17,7 @@ export type WidgetId =
   | 'bookmarks'
   | 'adel'
   | 'updates'
+  | 'offline'
   | 'achievements';
 
 /** Every widget, in the default (pilot) order. */
@@ -30,6 +31,7 @@ export const ALL_WIDGETS: WidgetId[] = [
   'bookmarks',
   'adel',
   'updates',
+  'offline',
   'achievements',
 ];
 
@@ -48,6 +50,7 @@ export function dashboardOrder(role: string): WidgetId[] {
         'trend',
         'tools',
         'updates',
+        'offline',
         'achievements',
       ];
     case 'instructor':
@@ -62,6 +65,7 @@ export function dashboardOrder(role: string): WidgetId[] {
         'trend',
         'adel',
         'updates',
+        'offline',
         'achievements',
       ];
     default:
@@ -76,6 +80,7 @@ export function dashboardOrder(role: string): WidgetId[] {
         'bookmarks',
         'adel',
         'study',
+        'offline',
         'achievements',
       ];
   }

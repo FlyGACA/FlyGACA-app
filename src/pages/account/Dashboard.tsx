@@ -18,6 +18,7 @@ import { ToolShortcutsWidget } from '../../components/dashboard/ToolShortcutsWid
 import { BookmarksWidget } from '../../components/dashboard/BookmarksWidget';
 import { AdelThreadsWidget } from '../../components/dashboard/AdelThreadsWidget';
 import { UpdatesWatchWidget } from '../../components/dashboard/UpdatesWatchWidget';
+import { OfflineWidget } from '../../components/dashboard/OfflineWidget';
 import { isUserRole, useAccount } from '../../lib/account';
 import { uiPlan } from '../../lib/entitlements';
 import { useFeature } from '../../lib/features';
@@ -112,6 +113,8 @@ function Inner() {
         return t('dashboard.widgets.adel.title');
       case 'updates':
         return t('dashboard.widgets.updates.title');
+      case 'offline':
+        return t('dashboard.widgets.offline.title');
       case 'achievements':
         return t('dashboard.achievements');
     }
@@ -232,6 +235,12 @@ function Inner() {
         return (
           <BentoCard key={id} span="wide">
             <UpdatesWatchWidget />
+          </BentoCard>
+        );
+      case 'offline':
+        return (
+          <BentoCard key={id} span="wide">
+            <OfflineWidget />
           </BentoCard>
         );
       case 'achievements':
