@@ -10,30 +10,42 @@
 
 # ✈️ Fly GACA
 
-**The independent flight deck for Saudi civil aviation — *find it · study it · always verify against GACA***
+### The independent flight deck for Saudi civil aviation
+
+**_find it · study it · always verify against GACA_**
 
 <p align="center">
-  <a href="https://github.com/gacafly/FlyGACA-app/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/gacafly/FlyGACA-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=2d6e8a" alt="Build Status" />
+  <a href="https://github.com/FlyGACA/FlyGACA-app/actions/workflows/ci.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/FlyGACA/FlyGACA-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=2d6e8a" alt="Build Status" />
   </a>
-  <a href="https://github.com/gacafly/FlyGACA-app/releases">
+  <a href="https://github.com/FlyGACA/FlyGACA-app/releases">
     <img src="https://img.shields.io/badge/version-0.1.0-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="Version" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="License" />
   </a>
   <a href="https://flygaca.com">
-    <img src="https://img.shields.io/badge/PWA-ready-8fc9a8?style=for-the-badge&logo=pwa&logoColor=white&labelColor=0a0e12" alt="PWA Ready" />
+    <img src="https://img.shields.io/badge/PWA-installable-8fc9a8?style=for-the-badge&logo=pwa&logoColor=white&labelColor=0a0e12" alt="PWA Ready" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0a0e12" alt="Vite" />
-  <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white&labelColor=0a0e12" alt="React" />
+  <img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0a0e12" alt="Vite" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white&labelColor=0a0e12" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0a0e12" alt="TypeScript" />
   <img src="https://img.shields.io/badge/i18n-EN%20%E2%87%84%20AR-8fc9a8?style=flat-square&logo=i18next&logoColor=white&labelColor=0a0e12" alt="i18next" />
   <img src="https://img.shields.io/badge/Capacitor-iOS%20%2F%20Android-119EFF?style=flat-square&logo=capacitor&logoColor=white&labelColor=0a0e12" alt="Capacitor" />
-  <img src="https://img.shields.io/badge/Firebase-Hosting-FFCA28?style=flat-square&logo=firebase&logoColor=white&labelColor=0a0e12" alt="Firebase" />
+  <img src="https://img.shields.io/badge/Firebase-me--central1-FFCA28?style=flat-square&logo=firebase&logoColor=white&labelColor=0a0e12" alt="Firebase" />
+</p>
+
+<p align="center">
+  <a href="https://flygaca.com"><b>🌐 Live app</b></a>
+  &nbsp;·&nbsp;
+  <a href="#-get-started-in-60-seconds"><b>⚡ Quick start</b></a>
+  &nbsp;·&nbsp;
+  <a href="#-architecture--tech-stack"><b>🏗️ Architecture</b></a>
+  &nbsp;·&nbsp;
+  <a href="#-contribute"><b>🤝 Contribute</b></a>
 </p>
 
 </div>
@@ -45,58 +57,59 @@
 
 ## 📑 Table of Contents
 
-- [About the Project](#about-the-project)
-- [Key Features](#key-features)
-- [Get Started in 60 Seconds](#get-started-in-60-seconds)
-- [Architecture & Tech Stack](#architecture--tech-stack)
-- [Deploy](#deploy)
-- [Contribute](#contribute)
-- [License](#license)
-- [Contact](#contact)
+- [About the Project](#-about-the-project)
+- [Key Features](#-key-features)
+- [Get Started in 60 Seconds](#-get-started-in-60-seconds)
+- [Architecture & Tech Stack](#-architecture--tech-stack)
+- [Deploy](#-deploy)
+- [Contribute](#-contribute)
+- [License](#-license)
+- [Contact](#-contact)
 
 ---
 
-## About the Project
+## 🎯 About the Project
 
-**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. We transform the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into an accessible, searchable, and highly reliable resource. 
+**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. It turns the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into something accessible, searchable, and genuinely reliable.
 
-This repository houses the modern frontend rebuild. We leverage Vite 6, React 18, and Capacitor to deliver a blazing-fast, offline-capable Progressive Web App (PWA) and native shell. Access the full regulatory corpus, utilize over 50 aviation calculators, and learn with **Captain Adel**, our Retrieval-Augmented AI flight instructor.
+This repository is the modern rebuild — a strict-TypeScript **React 19 + Vite 8** frontend plus its **Firebase Cloud Functions** backend. Together they ship a blazing-fast, offline-capable Progressive Web App (and native iOS/Android shells via Capacitor) that puts the full regulatory corpus, **55+ aviation calculators**, and **Captain Adel** — a citation-first Retrieval-Augmented AI instructor — in the palm of your hand.
 
 > [!NOTE]
-> The backend gateway (`functions/`, Genkit) proxies `/api/chat` to Captain Adel and handles Stripe billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/` to keep the JS bundle incredibly light.
+> The backend gateway (`functions/`) is an Express + Genkit service running in **`me-central1`**. It proxies `/api/chat` to Captain Adel's RAG flow (Gemini) and handles Stripe billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/`, so the JS bundle stays feather-light.
 
 ---
 
-## Key Features
+## 🚀 Key Features
 
-Explore a powerful suite designed to accelerate study, enhance flight planning, and democratize access to aviation regulations.
+Everything below is built to accelerate study, sharpen flight planning, and democratize access to aviation regulation.
 
-| Feature | Benefit |
+| Feature | What you get |
 | :--- | :--- |
-| 📚 **Open GACAR Library** | Stream the full regulatory corpus seamlessly at runtime. Your JS bundle remains extremely lightweight. |
-| 🤖 **Captain Adel AI** | Ask aviation questions and receive citation-first answers grounded entirely in official regulation. |
-| 🧮 **50+ Flight Tools** | Calculate crosswind, density altitude, weight & balance, and more using shareable, unit-tested math modules. |
-| 🌦️ **Weather & Ops** | Decode METARs/TAFs, parse NOTAMs, and view the current AIRAC cycle with instant clarity. |
-| 🗺️ **Charts & Airspace** | Navigate interactive Leaflet maps equipped with Saudi aerodrome and approach-chart data. |
-| 🎓 **Ground School** | Master concepts using spaced-repetition flashcards, mock exams, and structured learning paths. |
-| 🌍 **Bilingual & RTL** | Toggle instantly between English and Arabic. CSS logical properties ensure perfect UI mirroring. |
-| 📲 **PWA & Native Ready** | Install offline via Workbox, or deploy first-class iOS/Android native shells using Capacitor. |
+| 📚 **Open GACAR Library** | The full regulatory corpus, streamed at runtime — never bundled, always fast. |
+| 🤖 **Captain Adel AI** | Ask anything; get **citation-first** answers grounded entirely in official regulation. |
+| 🧮 **55+ Flight Tools** | Crosswind, density altitude, weight & balance, and more — shareable, URL-stateful, unit-tested math. |
+| 🌦️ **Weather & Ops** | Decode METARs/TAFs, parse NOTAMs, and track the current AIRAC cycle at a glance. |
+| 🗺️ **Charts & Airspace** | Interactive Leaflet maps loaded with Saudi aerodrome and approach-chart data. |
+| 🎓 **Ground School** | Spaced-repetition flashcards, mock exams, and structured learning paths. |
+| 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching; CSS logical properties mirror the whole UI automatically. |
+| 📲 **PWA & Native** | Install offline via Workbox, or ship first-class iOS/Android shells with Capacitor. |
 
 ---
 
-## Get Started in 60 Seconds
+## ⚡ Get Started in 60 Seconds
 
-Accelerate your workflow. Get a local development environment running in under a minute.
+Get a local dev environment running in under a minute.
 
 ### Prerequisites
-- **Node.js** `>= 20` (LTS recommended)
+
+- **Node.js** `20` (matches CI)
 - **npm** `>= 10`
 
 ### Quick Start
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/gacafly/FlyGACA-app.git
+git clone https://github.com/FlyGACA/FlyGACA-app.git
 cd FlyGACA-app
 
 # 2. Install dependencies
@@ -105,45 +118,70 @@ npm install
 # 3. (Optional) Configure your local environment
 cp .env.example .env.local
 
-# 4. Launch the development server
+# 4. Launch the dev server
 npm run dev
 ```
-Navigate to **`http://localhost:5173`** to view the app. *(Note: Without VITE_FIREBASE_* variables, the app runs local-first — backend features like Captain Adel AI will be unavailable).*
+
+Open **`http://localhost:5173`** and you're flying. 🛫
+
+> [!TIP]
+> Without `VITE_FIREBASE_*` variables set, the app runs **local-first** — the corpus, tools, and ground school all work offline; only backend features like Captain Adel AI stay dark until you wire up Firebase.
 
 ---
 
-## Architecture & Tech Stack
+## 🏗️ Architecture & Tech Stack
 
-Engineered for performance, offline reliability, and strict type safety. 
+Engineered for performance, offline reliability, and strict type safety.
+
+<table>
+<tr><td>
+
+**Frontend**
+- ⚛️ React 19 · Vite 8 · TypeScript (strict)
+- 🧭 `react-router` — single route table
+- 🎨 CSS Modules + design tokens (logical properties)
+- 🌐 i18next — bilingual EN/AR with RTL mirroring
+- 📦 `vite-plugin-pwa` (Workbox) service worker
+
+</td><td>
+
+**Backend & Native**
+- 🔥 Firebase Cloud Functions (Express) · `me-central1`
+- 🧠 Genkit + Gemini RAG (Captain Adel)
+- 💳 Stripe billing & entitlements
+- 📱 Capacitor iOS / Android shells
+- 🗄️ Static JSON corpus streamed from `public/data/`
+
+</td></tr>
+</table>
 
 ### Core Commands
 
-> [!TIP]  
-> Execute all quality gates before committing. CI workflows will enforce these checks strictly.
+> [!TIP]
+> `npm run verify` chains **every** CI gate — `typecheck → lint → format:check → test → build → check:bundle`. A green local `verify` means a green CI.
 
 ```bash
-npm run typecheck    # Validate strict TypeScript (tsc -b --noEmit)
-npm run lint         # Enforce ESLint standards
-npm run test         # Run Vitest (calc correctness & i18n parity)
-npm run test:e2e     # Run Playwright (smoke & accessibility testing)
-npm run build        # Compile production assets to dist/
-npm run preview      # Serve the production build locally
+npm run verify      # ⭐ Run the full CI gate before every commit
+npm run typecheck   # Strict TypeScript (tsc -b --noEmit)
+npm run lint        # ESLint
+npm run test        # Vitest — calc correctness & i18n parity
+npm run test:e2e    # Playwright — smoke & accessibility
+npm run build       # Production assets → dist/
+npm run preview     # Serve the production build locally
 ```
 
 ### Native Mobile Shells
 
-Deploy the web payload seamlessly to native devices.
-
 ```bash
-npm run cap:sync     # Synchronize the web payload to iOS/Android shells
-npm run cap:open     # Launch the iOS project directly in Xcode
+npm run cap:sync    # Sync the web payload into the iOS/Android shells
+npm run cap:open    # Open the iOS project in Xcode
 ```
 
 ---
 
-## Deploy
+## 🌍 Deploy
 
-Scale across any edge network. Firebase Hosting is canonical, while Vercel, Cloudflare, and Netlify act as mirror fronts proxying `/api/*`.
+Firebase Hosting is **canonical**; Vercel, Cloudflare, and Netlify run as mirror fronts that proxy `/api/*`.
 
 <div align="center">
 
@@ -154,54 +192,52 @@ Scale across any edge network. Firebase Hosting is canonical, while Vercel, Clou
 
 </div>
 
-### Push to Production
-
 ```bash
-# Firebase (Canonical)
+# Firebase (canonical)
 npm run deploy        # Build, prerender, and deploy to Hosting
 npm run deploy:all    # Deploy Hosting, Functions, and Firestore rules
 
-# Mirror Fronts
+# Mirror fronts
 # Vercel       vercel deploy --prod
 # Cloudflare   npx wrangler deploy            # Worker + dist/ assets (wrangler.toml)
 # Netlify      netlify deploy --build --prod
 ```
 
-> [!NOTE]  
-> For advanced CI logic, multi-platform deployment commands, and production cutover steps, reference the Runbooks in `docs/` (`RUNBOOK-deploy.md`, `RUNBOOK-firebase.md`, `RUNBOOK-cutover.md`).
+> [!NOTE]
+> For CI logic, multi-platform deploy commands, and cutover steps, see the runbooks in `docs/` — `RUNBOOK-deploy.md`, `RUNBOOK-firebase.md`, `RUNBOOK-native.md`, and `RUNBOOK-cutover.md`.
 
 ---
 
-## Contribute
+## 🤝 Contribute
 
-Join the mission to modernize Saudi general aviation. We welcome all PRs! 🛫
+Join the mission to modernize Saudi general aviation. PRs welcome! 🛫
 
-1. **Fork** the project and create a feature branch (`git checkout -b feature/amazing-feature`).
-2. **Build** your changes. Adhere to our strict bilingual standard (`en.json` & `ar.json`) and use CSS logical properties exclusively.
-3. **Verify** stability by running `npm run typecheck && npm run lint && npm run test`.
-4. **Commit** with semantic messages (`feat: add amazing feature`).
+1. **Fork** the project and create a feature branch — `git checkout -b feature/amazing-feature`.
+2. **Build** your change. Adhere to the two enforced conventions: **bilingual keys in both** `en.json` **and** `ar.json`, and **CSS logical properties only** (no hard-coded colours, no physical `left`/`right`).
+3. **Verify** with `npm run verify` — this is the same gate CI runs.
+4. **Commit** with a semantic message — `feat: add amazing feature`.
 5. **Push** and open a Pull Request.
 
-> [!TIP]  
-> Creating educational content? Run `npm run new:guide` to scaffold guide templates. Read [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md) for details.
+> [!TIP]
+> Adding a tool or a guide? Register tools in `src/lib/tools.ts` (the single source of truth) and lift the math into `src/calc/`. Authoring educational content? Run `npm run new:guide` and read [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md). New contributors should skim [`CLAUDE.md`](CLAUDE.md) for the enforced conventions and [`ROADMAP.md`](ROADMAP.md) for what's next.
 
 ---
 
-## License
+## 📄 License
 
-Distributed under the **MIT License**. Reference [`LICENSE`](LICENSE) for more information.
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 ---
 
-## Contact
+## 📬 Contact
 
 | | |
 | :--- | :--- |
-| **Author** | FlyGACA |
-| **GitHub** | [@gacafly](https://github.com/gacafly) |
+| **Author** | Fly GACA |
+| **GitHub** | [@FlyGACA](https://github.com/FlyGACA) |
 | **Email** | [i@flygaca.com](mailto:i@flygaca.com) |
 | **Website** | [flygaca.com](https://flygaca.com) |
-| **Project Link** | [github.com/gacafly/FlyGACA-app](https://github.com/gacafly/FlyGACA-app) |
+| **Project** | [github.com/FlyGACA/FlyGACA-app](https://github.com/FlyGACA/FlyGACA-app) |
 
 ---
 
