@@ -46,6 +46,10 @@
   <a href="#-contribute"><b>🤝 Contribute</b></a>
 </p>
 
+<br />
+
+<img src="docs/screenshots/review-2026-07/home-hero.png" alt="Fly GACA home screen — the regulatory library, Captain Adel AI, and 55+ flight tools" width="100%" />
+
 </div>
 
 > [!IMPORTANT]
@@ -57,6 +61,7 @@
 
 - [About the Project](#-about-the-project)
 - [Key Features](#-key-features)
+- [A Look Inside](#-a-look-inside)
 - [Get Started in 60 Seconds](#-get-started-in-60-seconds)
 - [Architecture & Tech Stack](#-architecture--tech-stack)
 - [Deploy](#-deploy)
@@ -91,6 +96,43 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 | 🎓 **Ground School** | Spaced-repetition flashcards, mock exams, and structured learning paths. |
 | 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching; CSS logical properties mirror the whole UI automatically. |
 | 📲 **PWA & Native** | Install offline via Workbox, or ship first-class iOS/Android shells with Capacitor. |
+
+---
+
+## 📸 A Look Inside
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <a href="https://flygaca.com/chat">
+        <img src="docs/screenshots/review-2026-07/chat-signed-out.png" alt="Captain Adel — citation-first AI flight instructor" width="100%" />
+      </a>
+      <br /><sub><b>🤖 Captain Adel</b> · citation-first AI instructor</sub>
+    </td>
+    <td width="50%" align="center">
+      <a href="https://flygaca.com/tools/crosswind">
+        <img src="docs/screenshots/review-2026-07/tool-crosswind.png" alt="Crosswind & headwind calculator with shareable URL state" width="100%" />
+      </a>
+      <br /><sub><b>🧮 Flight tools</b> · shareable, URL-stateful math</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <a href="https://flygaca.com/ar">
+        <img src="docs/screenshots/review-2026-07/home-arabic-rtl.png" alt="Fully mirrored Arabic (RTL) layout" width="100%" />
+      </a>
+      <br /><sub><b>🌍 Bilingual & RTL</b> · fully mirrored Arabic</sub>
+    </td>
+    <td width="50%" align="center">
+      <a href="https://flygaca.com/pricing">
+        <img src="docs/screenshots/review-2026-07/pricing.png" alt="Pricing — free core library with Pro upgrade" width="100%" />
+      </a>
+      <br /><sub><b>💳 Pricing</b> · free core library, Pro upgrade</sub>
+    </td>
+  </tr>
+</table>
+
+<div align="center"><sub>Screenshots from the live app — explore it at <a href="https://flygaca.com">flygaca.com</a>.</sub></div>
 
 ---
 
@@ -130,6 +172,32 @@ Open **`http://localhost:5173`** and you're flying. 🛫
 ## 🏗️ Architecture & Tech Stack
 
 Engineered for performance, offline reliability, and strict type safety.
+
+```mermaid
+flowchart LR
+    U([👩‍✈️ Browser / PWA / Native shell])
+
+    subgraph EDGE["🌐 Firebase Hosting · canonical"]
+      SPA["React 19 SPA<br/>(prerendered head + SW)"]
+    end
+
+    subgraph API["🔥 Cloud Functions · me-central1"]
+      GW["Express gateway<br/>/api/chat · /api/feedback"]
+      RAG["🧠 Captain Adel<br/>Genkit + Gemini RAG"]
+      BILL["💳 Stripe billing<br/>+ entitlements"]
+    end
+
+    DATA[("🗄️ Static JSON corpus<br/>public/data/ · network-first")]
+    FS[("Firestore")]
+
+    U --> SPA
+    SPA -->|"lazy fetch"| DATA
+    SPA -->|"SSE"| GW
+    GW --> RAG
+    GW --> BILL
+    RAG --> FS
+    BILL --> FS
+```
 
 <table>
 <tr><td>
