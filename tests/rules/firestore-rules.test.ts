@@ -316,6 +316,19 @@ describe('stripeCustomers & default-deny', () => {
     );
   });
 
+  it('denies a client reading the school-invite roster', async () => {
+    await seed('schoolInvites/cadet@academy.edu.sa', { email: 'cadet@academy.edu.sa' });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'schoolInvites/cadet@academy.edu.sa')));
+  });
+
+  it('denies a client writing a school invite (self-forging a seat)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), 'schoolInvites/cadet@academy.edu.sa'), {
+        email: 'cadet@academy.edu.sa',
+      }),
+    );
+  });
+
   it('denies access to any unlisted server-only collection', async () => {
     await seed('serverOnly/x', { count: 1 });
     await assertFails(getDoc(doc(dbFor(ALICE), 'serverOnly/x')));

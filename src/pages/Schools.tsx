@@ -21,6 +21,12 @@ interface Faq {
   q: string;
   a: string;
 }
+interface Tier {
+  name: string;
+  seats: string;
+  blurb: string;
+  features: string[];
+}
 
 const FEATURE_TONES: BentoTone[] = ['default', 'cyan', 'green'];
 
@@ -36,6 +42,7 @@ const SEAT_STATS = [
 export function Schools() {
   const { t } = useTranslation();
   const features = t('schools.features', { returnObjects: true }) as unknown as Section[];
+  const tiers = t('schools.packages.tiers', { returnObjects: true }) as unknown as Tier[];
   const steps = t('schools.how.steps', { returnObjects: true }) as unknown as Section[];
   const faqs = t('schools.faq', { returnObjects: true }) as unknown as Faq[];
   const email = t('schools.email');
@@ -93,6 +100,42 @@ export function Schools() {
             </BentoCard>
           ))}
         </BentoGrid>
+      </section>
+
+      {/* AIP exam-prep cohorts — three-tier packaging. Seat pricing stays
+          "talk to us"; no invented prices on the public page. */}
+      <section className={styles.block} aria-labelledby="schools-packages">
+        <p className={styles.blockEyebrow}>{t('schools.packages.eyebrow')}</p>
+        <SectionHeader
+          id="schools-packages"
+          title={t('schools.packages.title')}
+          tone="var(--cat-4)"
+        />
+        <p className={styles.formIntro}>{t('schools.packages.intro')}</p>
+        <div className={styles.tiers}>
+          {tiers.map((tier, i) => (
+            <div key={tier.name} className={`${styles.tier} ${i === 1 ? styles.tierFeatured : ''}`}>
+              {i === 1 && (
+                <span className={styles.tierTag}>{t('schools.packages.tagPopular')}</span>
+              )}
+              <h3 className={styles.tierName}>{tier.name}</h3>
+              <p className={styles.tierSeats}>
+                <span className={styles.tierSeatsLabel}>{t('schools.packages.seatsLabel')}</span>
+                {tier.seats}
+              </p>
+              <p className={styles.tierBlurb}>{tier.blurb}</p>
+              <ul className={styles.tierFeatures}>
+                {tier.features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+              <a className="btn btn-clay" href="#schools-form-head">
+                {t('schools.cta.contact')}
+              </a>
+            </div>
+          ))}
+        </div>
+        <p className={styles.tierNote}>{t('schools.packages.note')}</p>
       </section>
 
       {/* How it works — enquire → assign → study. */}

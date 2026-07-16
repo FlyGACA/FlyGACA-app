@@ -2,9 +2,11 @@
 /**
  * Provision (or revoke) Fly GACA school seats. Grants the `school`/`school`
  * entitlement — non-expiring, or dated to a contract end — to every account whose
- * email is on the roster you pass. Schools are invoiced offline, so this is the
- * day-one seat mechanism (a self-serve seat dashboard can follow). Idempotent;
- * safe to re-run as a roster changes.
+ * email is on the roster you pass, AND writes a `schoolInvites/{email}` doc so a
+ * roster member who hasn't signed up yet self-unlocks on first sign-in (via the
+ * `claimSchoolSeat` callable) instead of needing a re-run. Schools are invoiced
+ * offline, so this is the day-one seat mechanism. Idempotent; safe to re-run as a
+ * roster changes. `--revoke` clears both the entitlement and the invite.
  *
  * The email parsing + entitlement shape MIRROR functions/src/school-core.ts.
  *
@@ -79,24 +81,43 @@ const auth = getAuth();
 const db = getFirestore();
 
 let done = 0;
-const skipped = [];
+let invited = 0;
+const pending = [];
 for (const email of emails) {
+  // Invite doc — keyed by email, mirrors school-core.inviteKeyForEmail so
+  // claimSchoolSeat finds it. On revoke we delete it; on grant we upsert it (with
+  // the optional contract end) so a not-yet-registered member can self-unlock.
+  const inviteRef = db.collection("schoolInvites").doc(email);
+
   let user;
   try {
     user = await auth.getUserByEmail(email);
   } catch {
-    skipped.push(email); // no account yet — re-run after they sign in
-    continue;
+    user = null; // no account yet — the invite doc lets them self-unlock on sign-in
   }
-  console.log(`${dryRun ? "[dry-run] would " : ""}${label} → ${email} (${user.uid})`);
+
+  const who = user ? `${email} (${user.uid})` : `${email} (invite only — no account yet)`;
+  console.log(`${dryRun ? "[dry-run] would " : ""}${label} → ${who}`);
+
   if (!dryRun) {
-    await db.collection("users").doc(user.uid).set({ entitlement }, { merge: true });
+    if (user) await db.collection("users").doc(user.uid).set({ entitlement }, { merge: true });
+    if (revoke) await inviteRef.delete();
+    else await inviteRef.set(expiresAt ? { email, expiresAt } : { email }, { merge: true });
   }
-  done += 1;
+
+  if (user) done += 1;
+  else {
+    invited += 1;
+    pending.push(email);
+  }
 }
 
-console.log(`\nDone. ${dryRun ? "Would apply to" : "Applied to"} ${done} of ${emails.length} email(s).`);
-if (skipped.length) {
-  console.log(`No account yet (skipped, re-run after they sign in): ${skipped.join(", ")}`);
+console.log(
+  `\nDone. ${dryRun ? "Would apply to" : "Applied to"} ${done} existing account(s)` +
+    `${revoke ? "" : ` and ${dryRun ? "would invite" : "invited"} ${invited} not-yet-registered`}` +
+    ` of ${emails.length} email(s).`,
+);
+if (!revoke && pending.length) {
+  console.log(`Invited (self-unlock on first sign-in): ${pending.join(", ")}`);
 }
 process.exit(0);

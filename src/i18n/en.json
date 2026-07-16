@@ -1874,6 +1874,52 @@
       "modules": "Ground-school modules",
       "languages": "Bilingual"
     },
+    "packages": {
+      "eyebrow": "AIP exam prep for cohorts",
+      "title": "Run a Saudi AIP cohort, and see who's ready",
+      "intro": "Put a group through structured, bilingual Saudi AIP preparation — ICAO Annex 15, the AIRAC cycle, and the full GEN / ENR / AD structure — with cited practice, a Mock Exam, and a readiness report for your training file. Seat pricing is by invoice; tell us your numbers below.",
+      "seatsLabel": "Seats",
+      "tagPopular": "Most popular",
+      "note": "Preparation only — Fly GACA is not affiliated with GACA and never replaces the official exam or eAIP. Every item cites the exact Part/section.",
+      "tiers": [
+        {
+          "name": "Cohort",
+          "seats": "Up to 25 · single intake",
+          "blurb": "One group, one 90-day intake.",
+          "features": [
+            "AIP prep pack: Annex 15 · GEN/ENR/AD · AIRAC",
+            "Bilingual study sheets (EN + AR) + Mock Exam",
+            "Captain Adel assistant, cited answers",
+            "Admin dashboard: invite by email/CSV",
+            "Readiness report (CSV)",
+            "Email support"
+          ]
+        },
+        {
+          "name": "Academy",
+          "seats": "Up to 100 · rolling, 12 months",
+          "blurb": "Rolling intakes across the year.",
+          "features": [
+            "Everything in Cohort",
+            "Co-branded landing with your logo",
+            "Readiness report (PDF + CSV)",
+            "Custom pass threshold + \"ready\" flag",
+            "Priority support + onboarding session"
+          ]
+        },
+        {
+          "name": "Institution",
+          "seats": "100+ · SSO",
+          "blurb": "For larger academies and operators.",
+          "features": [
+            "Everything in Academy",
+            "SSO (Google Workspace / Microsoft Entra)",
+            "Content-mapping workshop to your syllabus",
+            "Named success contact + support SLA"
+          ]
+        }
+      ]
+    },
     "how": {
       "eyebrow": "How it works",
       "title": "From enquiry to a flying cohort",

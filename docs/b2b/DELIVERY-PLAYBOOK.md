@@ -1,7 +1,8 @@
 # Cohort Delivery Playbook
 
 How to onboard, run, and report on a B2B AIP-prep cohort. Includes the **manual path** for
-cohort #1 — before the org/seat entitlement and admin dashboard (`PLAN.md` §8) ship — so we can
+cohort #1 — using the existing `grant-school-seats.mjs` provisioning + self-serve `claimSchoolSeat`,
+before the admin dashboard (`PLAN.md` §8) ships — so we can
 sell and deliver immediately.
 
 > Fly GACA is not affiliated with GACA. Everything below is preparation; candidates verify
@@ -20,10 +21,15 @@ sell and deliver immediately.
 3. Provision seats:
    - **With admin dashboard (target state):** admin uploads the CSV under `/business/admin`;
      invites fire automatically; each seat gets the `org` entitlement on accept.
-   - **Manual (cohort #1):** grant Pro-equivalent access to each roster email via the existing
-     entitlement path, tag them with the cohort id in Firestore, and send a branded invite email
-     with the study loop instructions. Track the roster in a shared sheet until the dashboard
-     exists.
+   - **Manual (cohort #1) — the day-one path, works today:** save the roster as `roster.csv`
+     (one email per line) and, from `functions/` with Admin credentials, run
+     `node scripts/grant-school-seats.mjs --file=roster.csv` (add `--expires=YYYY-MM-DD` for a
+     contract end; `--dry-run` to preview; `--revoke` to offboard). It grants the invoiced
+     `school` entitlement — which unlocks every Pro feature — to each existing account, and writes
+     an invite for every roster email that has no account yet so those members **self-unlock on
+     their first sign-in** (via `claimSchoolSeat`) with no re-run needed. Idempotent. Send a
+     branded invite email with the study-loop instructions and track the roster in a shared sheet
+     until the admin dashboard exists.
 4. Send the org admin the **kickoff pack**: the `SALES-ONE-PAGER` study loop, the study-sheet
    PDFs (EN + AR), and a one-paragraph "how your candidates start" note.
 
@@ -62,11 +68,11 @@ sell and deliver immediately.
 ## Manual-mode checklist (cohort #1, no dashboard yet)
 
 - [ ] Roster CSV received and stored in the shared tracker with a cohort id.
-- [ ] Each email granted access via the entitlement path; access verified by a test login.
+- [ ] Roster provisioned with `grant-school-seats.mjs`; access verified by a test login.
 - [ ] Branded invite + study loop emailed to every candidate.
 - [ ] Weekly progress pulled manually (per-seat coverage + Mock Exam score) into the tracker.
 - [ ] Readiness computed by hand from the tracker; CSV report built and delivered.
-- [ ] Retro captured → feeds the requirements for the automated admin dashboard (`PLAN.md` §8.2).
+- [ ] Retro captured → feeds the requirements for the automated admin dashboard (`PLAN.md` §8.1).
 
 ## Definitions
 

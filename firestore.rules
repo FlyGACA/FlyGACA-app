@@ -137,6 +137,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // School-seat invite roster, keyed by invited email. Provisioned ONLY by an
+    // admin (Admin SDK) and read ONLY by the claimSchoolSeat callable to decide a
+    // grant — never client-readable/writable, so the roster can't be enumerated or
+    // a seat self-forged.
+    match /schoolInvites/{email} {
+      allow read, write: if false;
+    }
+
     // Per-uid Captain Adel free-question counters, written ONLY by the chat
     // gateway (Admin SDK) to enforce the daily free allowance server-side. A
     // client must never read or write it — the app's own counter is a separate
