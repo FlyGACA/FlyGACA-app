@@ -86,7 +86,21 @@ export function dashboardOrder(role: string): WidgetId[] {
   }
 }
 
-/** Drop hidden widgets, preserving role order. */
+/**
+ * Compose the user's saved custom order over a role default. Widgets named in
+ * `saved` (in that sequence) lead; any widget the saved order doesn't mention —
+ * e.g. one added to the app after the user last reordered — is appended in its
+ * role-default position, so new widgets always surface instead of vanishing.
+ * Unknown ids in `saved` are ignored. An empty `saved` yields the role default.
+ */
+export function orderedWidgets(roleOrder: WidgetId[], saved: string[]): WidgetId[] {
+  const known = new Set(roleOrder);
+  const head = saved.filter((id): id is WidgetId => known.has(id as WidgetId));
+  const headSet = new Set(head);
+  return [...head, ...roleOrder.filter((id) => !headSet.has(id))];
+}
+
+/** Drop hidden widgets, preserving order. */
 export function visibleWidgets(order: WidgetId[], hidden: string[]): WidgetId[] {
   return order.filter((id) => !hidden.includes(id));
 }

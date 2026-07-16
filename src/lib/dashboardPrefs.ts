@@ -8,18 +8,25 @@ import { useSyncExternalStore } from 'react';
 import { toggleId } from './toolPrefs';
 
 const HIDDEN_KEY = 'flygaca:dashboard-hidden';
+const ORDER_KEY = 'flygaca:dashboard-order';
 const ROLE_DISMISS_KEY = 'flygaca:dashboard-role-dismissed';
 
 export interface DashboardPrefs {
   /** Widget ids the user has hidden via the Customize row. */
   hidden: string[];
+  /**
+   * The user's custom widget order (via the Customize reorder controls). Empty
+   * means "follow the role default"; a saved order overrides it across roles,
+   * mirroring how `hidden` applies globally.
+   */
+  order: string[];
   /** True once the role-picker card has been dismissed without choosing. */
   roleDismissed: boolean;
 }
 
-function readHidden(): string[] {
+function readList(key: string): string[] {
   try {
-    const v = localStorage.getItem(HIDDEN_KEY);
+    const v = localStorage.getItem(key);
     const parsed = v ? (JSON.parse(v) as unknown) : [];
     return Array.isArray(parsed) ? (parsed.filter((x) => typeof x === 'string') as string[]) : [];
   } catch {
@@ -35,7 +42,11 @@ function readDismissed(): boolean {
   }
 }
 
-let state: DashboardPrefs = { hidden: readHidden(), roleDismissed: readDismissed() };
+let state: DashboardPrefs = {
+  hidden: readList(HIDDEN_KEY),
+  order: readList(ORDER_KEY),
+  roleDismissed: readDismissed(),
+};
 
 const listeners = new Set<() => void>();
 function emit() {
@@ -58,6 +69,17 @@ export function toggleWidget(id: string): void {
   state = { ...state, hidden: toggleId(state.hidden, id) };
   try {
     localStorage.setItem(HIDDEN_KEY, JSON.stringify(state.hidden));
+  } catch {
+    /* storage unavailable — keep in-memory */
+  }
+  emit();
+}
+
+/** Persist a fully-resolved widget order from the Customize reorder controls. */
+export function setWidgetOrder(order: string[]): void {
+  state = { ...state, order };
+  try {
+    localStorage.setItem(ORDER_KEY, JSON.stringify(order));
   } catch {
     /* storage unavailable — keep in-memory */
   }

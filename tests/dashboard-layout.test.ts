@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ALL_WIDGETS,
   dashboardOrder,
+  orderedWidgets,
   quickActionsFor,
   visibleWidgets,
 } from '../src/calc/dashboardLayout';
@@ -32,6 +33,29 @@ describe('dashboardOrder', () => {
       expect(order.indexOf('currency')).toBeLessThan(order.indexOf('achievements'));
       expect(order.indexOf('currency')).toBeLessThan(order.indexOf('adel'));
     }
+  });
+});
+
+describe('orderedWidgets', () => {
+  it('leads with the saved order, then appends unmentioned widgets in role order', () => {
+    const roleOrder = dashboardOrder('pilot');
+    const saved = ['adel', 'currency'];
+    const out = orderedWidgets(roleOrder, saved);
+    expect(out.slice(0, 2)).toEqual(['adel', 'currency']);
+    // Every widget still present exactly once (nothing dropped or duplicated).
+    expect([...out].sort()).toEqual([...ALL_WIDGETS].sort());
+    expect(new Set(out).size).toBe(out.length);
+  });
+
+  it('returns the role default when nothing is saved', () => {
+    const roleOrder = dashboardOrder('student');
+    expect(orderedWidgets(roleOrder, [])).toEqual(roleOrder);
+  });
+
+  it('ignores unknown ids in the saved order', () => {
+    const roleOrder = dashboardOrder('pilot');
+    expect(orderedWidgets(roleOrder, ['nope', 'adel'])[0]).toBe('adel');
+    expect([...orderedWidgets(roleOrder, ['nope'])].sort()).toEqual([...ALL_WIDGETS].sort());
   });
 });
 
