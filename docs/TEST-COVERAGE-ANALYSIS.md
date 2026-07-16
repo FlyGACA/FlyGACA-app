@@ -40,7 +40,16 @@ Test-file counts today: **130** frontend unit specs, **14** backend specs,
 
 ## Proposed areas to improve, in priority order
 
-### 1. Backend gateway request handlers — highest risk (`functions/src/gateway.ts`, 24.9%)
+### 1. Backend gateway request handlers — highest risk (`functions/src/gateway.ts`, 24.9%) — ✅ addressed
+
+> **Update:** `functions/tests/gateway-routes.test.ts` now drives the real Express
+> `app` over an in-process HTTP server (firebase-admin + the RAG flow mocked,
+> with a small in-memory Firestore) and asserts the enforcement paths: anonymous
+> 401, blank-message 400, paid-user quota bypass, free-question consumption,
+> credit spend after the daily allowance, `quota_exceeded` 429, disallowed-Origin
+> 403 + preflight/suffix allow, the `/v1/ask` API-key surface (401 / invalid-key
+> 401 / metered 200), and feedback 204/400. `gateway.ts` moved 24.9% → 74%; the
+> remaining gap is the SSE streaming branch (lower risk). §2, §4, §5 remain open.
 
 This is the single most important gap. `gateway.ts` is the Express entry point:
 auth, App Check enforcement, CORS origin allow-listing, free-quota consumption,
