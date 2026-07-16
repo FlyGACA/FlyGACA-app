@@ -132,23 +132,36 @@ Instrument via the existing analytics (Amplitude) — new events: `cohort_create
 
 ## 8. What we have to build (product gaps)
 
-Ordered by necessity. Most of the *content* exists; the gaps are org plumbing.
+Ordered by necessity. Most of the *content* exists — and, it turns out, so does the day-one seat
+mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
 
-1. **Org / seat entitlement.** Extend the entitlement model so one payer grants N seats. Reuse
-   `stripeWebhook` as the only writer; add an `org`/`team` shape and a member→org mapping in
-   Firestore (deny-all client writes, mirror the `stripeCustomers` pattern). *(Backend +
-   `firestore.rules`.)*
+**Already built (reuse, don't rebuild):**
+
+- **School-seat entitlement + roster provisioning.** `functions/src/school-core.ts` defines the
+  invoiced `school` tier (which satisfies every Pro feature via the plan rank) and roster
+  parsing; `functions/scripts/grant-school-seats.mjs` grants/revokes it per roster email via the
+  Admin SDK — idempotent, optional contract-expiry, `--dry-run`. This *is* the org/seat
+  entitlement for cohort #1: an admin runs it against the roster and every existing account
+  unlocks. Emails with no account yet are reported and picked up on a re-run after they sign in.
+  On the marketing side, `/schools` already sells bulk seats and feeds an enquiry form.
+
+**Still to build (in priority order):**
+
+1. **Self-serve seat claim.** A `claimSchoolSeat` callable mirroring `claimStaffAccess` so an
+   invited member auto-unlocks on sign-in instead of waiting for a script re-run. Needs an
+   eligibility source the callable can check — a Firestore roster/allowlist an admin populates
+   (mirror the `stripeCustomers` deny-all-client-writes pattern). **This is the one real design
+   decision left** (what makes an email eligible: an invite doc vs. a verified school domain).
 2. **Admin dashboard (MVP).** Invite by email/CSV, list seats, per-seat coverage + Mock Exam
-   score, cohort roll-up. Lives under `/business/admin` behind the org entitlement.
-3. **Readiness report export.** CSV first (from the same data the dashboard reads), PDF later
-   via the existing Playwright HTML→PDF generator pattern (`scripts/build-*-sheet.mjs`).
-4. **Co-branded landing / `/for-schools` page.** Org logo + name; `<Disclaimer />` unchanged.
-5. **Seat overage true-up.** Report seats-in-use vs. purchased `quantity`; surface for billing.
-6. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
+   score, cohort roll-up. Lives under `/business/admin` behind the `school` entitlement. Until
+   this ships, the `grant-school-seats.mjs` script + a shared tracker cover provisioning.
+3. **Readiness report export.** CSV first (per-seat coverage + best Mock Exam score + ready flag),
+   PDF later via the existing Playwright HTML→PDF generator pattern (`scripts/build-*-sheet.mjs`).
+4. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
+5. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
 
-MVP for the first paid cohort = items **1–3** (org entitlement + a minimal admin view + CSV
-report). Everything else is fast-follow. See `DELIVERY-PLAYBOOK.md` for how to run cohort #1
-manually while 1–3 are being built.
+**Cohort #1 needs nothing new** — the existing `grant-school-seats.mjs` provisions it today (see
+`DELIVERY-PLAYBOOK.md`). Items 1–3 are what turn a hands-on delivery into a self-serve product.
 
 ## 9. Risks & mitigations
 
@@ -158,14 +171,14 @@ manually while 1–3 are being built.
 | Content drift vs. real AIP (AIRAC cycles) | Corpus is versioned; add an AIRAC-freshness note per cohort; `sync-gaca.mjs` keeps the library current. |
 | "We already train from PDFs" objection | Lead with bilingual + Mock Exam readiness reporting + Captain Adel citations — the report is the wedge. |
 | Long procurement cycles | Start with the smallest paid Cohort tier / single intake to get in the door. |
-| Building org billing before demand is proven | Run cohort #1 with manual seat provisioning; only build §8.1 once a second buyer is real. |
+| Building self-serve seat billing before demand is proven | Cohort #1 provisions today via `grant-school-seats.mjs`; only build the self-serve claim + admin (§8.1–2) once a second buyer is real. |
 
 ## 10. Timeline (indicative)
 
 | Phase | Weeks | Outcome |
 | --- | --- | --- |
 | Validate | 0–4 | 3 design-partner LOIs; pricing confirmed; `SALES-ONE-PAGER` + proposal live. |
-| Build MVP | 2–8 | Org entitlement + admin MVP + CSV report (§8.1–3). |
+| Build MVP | 2–8 | Self-serve seat claim + admin MVP + CSV report (§8.1–3); seat provisioning already ships. |
 | Deliver | 6–14 | First 3 cohorts run; readiness reports shipped; case study drafted. |
 | Expand | 14+ | `/for-schools` live; outbound sequence; Academy tier sold; SSO on demand. |
 

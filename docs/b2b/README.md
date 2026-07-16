@@ -22,10 +22,11 @@ per-person consumer Pro.
 ## The one-line version
 
 The content already exists (the `aip` pack: `aip-ais` + `airspace` banks, bilingual study
-sheets, the AIM reader, the eAIP GEN/ENR reading path, and the Mock Exam). B2B wraps it in
-**seats + an admin + a readiness report** and sells it to the organisation. The near-term build
-is org/seat entitlement, a minimal admin view, and a CSV report (`PLAN.md` §8); cohort #1 can be
-delivered manually today (`DELIVERY-PLAYBOOK.md`).
+sheets, the AIM reader, the eAIP GEN/ENR reading path, and the Mock Exam), and so does seat
+provisioning (`functions/scripts/grant-school-seats.mjs` grants the invoiced `school`
+entitlement from a roster). B2B wraps it in **seats + an admin + a readiness report** and sells
+it to the organisation. Cohort #1 can be delivered today; the near-term build is the self-serve
+seat claim, a minimal admin view, and a CSV report (`PLAN.md` §8).
 
 ## Status
 
