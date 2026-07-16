@@ -4,6 +4,7 @@
  *  - `chat`            — the Captain Adel gateway (Express app in ./gateway).
  *  - Stripe billing    — checkout / portal callables + the webhook (./billing).
  *  - `claimStaffAccess`— complimentary staff full-access grant (./staff).
+ *  - `claimSchoolSeat` — self-serve school-seat grant (domain/invite, ./school).
  *
  * Deploy region is pinned in ./region (must match firebase.json's rewrite regions).
  */
@@ -24,6 +25,10 @@ export {
 
 // Staff / complimentary full-access grant (see ./staff.ts).
 export { claimStaffAccess } from "./staff.js";
+
+// Self-serve school-seat grant — verified email on an approved domain or the invite
+// roster self-unlocks the `school` entitlement (see ./school.ts).
+export { claimSchoolSeat } from "./school.js";
 
 // The Google GenAI API key the Captain Adel flow (genkit `googleAI()`) reads from
 // the environment. Bound as a secret so it is available to the `chat` container.

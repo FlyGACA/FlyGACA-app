@@ -1,8 +1,8 @@
 # Cohort Delivery Playbook
 
 How to onboard, run, and report on a B2B AIP-prep cohort. Includes the **manual path** for
-cohort #1 — using the existing `grant-school-seats.mjs` provisioning, before the self-serve seat
-claim and admin dashboard (`PLAN.md` §8) ship — so we can
+cohort #1 — using the existing `grant-school-seats.mjs` provisioning + self-serve `claimSchoolSeat`,
+before the admin dashboard (`PLAN.md` §8) ships — so we can
 sell and deliver immediately.
 
 > Fly GACA is not affiliated with GACA. Everything below is preparation; candidates verify
@@ -25,8 +25,9 @@ sell and deliver immediately.
      (one email per line) and, from `functions/` with Admin credentials, run
      `node scripts/grant-school-seats.mjs --file=roster.csv` (add `--expires=YYYY-MM-DD` for a
      contract end; `--dry-run` to preview; `--revoke` to offboard). It grants the invoiced
-     `school` entitlement — which unlocks every Pro feature — to each existing account, is
-     idempotent, and reports emails with no account yet so you re-run after they sign in. Send a
+     `school` entitlement — which unlocks every Pro feature — to each existing account, and writes
+     an invite for every roster email that has no account yet so those members **self-unlock on
+     their first sign-in** (via `claimSchoolSeat`) with no re-run needed. Idempotent. Send a
      branded invite email with the study-loop instructions and track the roster in a shared sheet
      until the admin dashboard exists.
 4. Send the org admin the **kickoff pack**: the `SALES-ONE-PAGER` study loop, the study-sheet
@@ -71,7 +72,7 @@ sell and deliver immediately.
 - [ ] Branded invite + study loop emailed to every candidate.
 - [ ] Weekly progress pulled manually (per-seat coverage + Mock Exam score) into the tracker.
 - [ ] Readiness computed by hand from the tracker; CSV report built and delivered.
-- [ ] Retro captured → feeds the requirements for the automated admin dashboard (`PLAN.md` §8.2).
+- [ ] Retro captured → feeds the requirements for the automated admin dashboard (`PLAN.md` §8.1).
 
 ## Definitions
 

@@ -7,9 +7,10 @@
  * Exposed via useSyncExternalStore so components re-render on any change.
  */
 import { useSyncExternalStore } from 'react';
-import type { Entitlement } from './entitlements';
+import { effectivePlan, type Entitlement } from './entitlements';
 import { isAuthAvailable, onAuthChange } from './auth';
 import { claimStaffAccessIfEligible } from './staff';
+import { claimSchoolSeatIfEligible } from './school';
 import {
   loadAccount,
   saveProfileDoc,
@@ -296,7 +297,15 @@ function connectAuth(): void {
         // the complimentary entitlement written server-side before we hydrate, so
         // the fresh plan is included in loadAccount below. No-ops for everyone else.
         await claimStaffAccessIfEligible(user.email, user.emailVerified);
-        const loaded = await loadAccount(user.uid);
+        let loaded = await loadAccount(user.uid);
+        // School-seat auto-grant: only for a verified user with no active paid plan
+        // (skips paying/staff/already-school users). The invite path can't be
+        // pre-checked client-side, so we gate on the loaded plan being free, then
+        // re-hydrate once when a seat is actually granted.
+        if (loaded && effectivePlan(loaded.entitlement) === 'free' && user.emailVerified) {
+          const granted = await claimSchoolSeatIfEligible(user.email, user.emailVerified);
+          if (granted && state.uid === user.uid) loaded = await loadAccount(user.uid);
+        }
         // The Firestore round-trip can outlive the session: if the user signed
         // out or switched accounts while it was in flight, do NOT re-apply this
         // user's profile/entitlement onto the now-different session.
