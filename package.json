@@ -51,7 +51,7 @@
     "@capacitor/browser": "^8.0.3",
     "@capacitor/ios": "^8.4.1",
     "@capacitor/keyboard": "^8.0.5",
-    "@capacitor/preferences": "^6.0.4",
+    "@capacitor/preferences": "^8.0.1",
     "@capacitor/share": "^6.0.4",
     "@capacitor/splash-screen": "^6.0.4",
     "@capacitor/status-bar": "^6.0.3",
