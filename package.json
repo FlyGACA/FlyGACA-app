@@ -54,7 +54,7 @@
     "@capacitor/preferences": "^6.0.4",
     "@capacitor/share": "^6.0.4",
     "@capacitor/splash-screen": "^6.0.4",
-    "@capacitor/status-bar": "^6.0.3",
+    "@capacitor/status-bar": "^8.0.3",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/readex-pro": "^5.2.11",
     "@phosphor-icons/react": "^2.1.10",
