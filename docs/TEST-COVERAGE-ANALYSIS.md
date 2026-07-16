@@ -111,7 +111,15 @@ connection is the failure this guards against.
 asserting `entitlement` is never serialized), and give `useOfflineSync` a
 render-hook test for its online-gated, slug-deduped bookmark-warming.
 
-### 4. Untested frontend hooks & small stores (all 0%)
+### 4. Untested frontend hooks & small stores (all 0%) — ✅ the two priorities addressed
+
+> **Update:** `tests/bookmark-gate.test.tsx` and `tests/referral.test.ts` cover
+> the two flagged priorities. `useBookmarkGate.ts` 0% → 100% (all four
+> add/remove × free/Pro branches, including the free-user `/pricing` route) and
+> `referral.ts` 0% → 96% (normalize, `?ref=` capture, shareable link, and the
+> `getReferralCode` fetch across configured/unconfigured/empty/error paths). The
+> remaining tiny stores (`updatesPrefs`, `useDebouncedValue`, `useReducedMotion`,
+> `useViewMode`) are still open but low-risk.
 
 Low individual risk but cheap to cover and currently invisible to the ratchet:
 `referral.ts`, `updatesPrefs.ts`, `useBookmarkGate.ts`, `useDebouncedValue.ts`,
