@@ -43,6 +43,16 @@ describe('dashboardPrefs store', () => {
     expect(hidden).not.toContain(7 as never); // non-strings filtered on read
   });
 
+  it('persists and hydrates a custom widget order', async () => {
+    const prefs = await freshStore();
+    prefs.setWidgetOrder(['adel', 'currency', 'numbers']);
+    expect(JSON.parse(localStorage.getItem('flygaca:dashboard-order')!)).toEqual([
+      'adel',
+      'currency',
+      'numbers',
+    ]);
+  });
+
   it('records the role-prompt dismissal', async () => {
     const prefs = await freshStore();
     prefs.dismissRolePrompt();

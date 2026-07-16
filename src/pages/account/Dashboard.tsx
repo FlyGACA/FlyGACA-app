@@ -22,10 +22,12 @@ import { OfflineWidget } from '../../components/dashboard/OfflineWidget';
 import { isUserRole, useAccount } from '../../lib/account';
 import { uiPlan } from '../../lib/entitlements';
 import { useFeature } from '../../lib/features';
-import { toggleWidget, useDashboardPrefs } from '../../lib/dashboardPrefs';
+import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '../../lib/dashboardPrefs';
+import { moveId } from '../../lib/toolPrefs';
 import { usePageMeta } from '../../lib/usePageMeta';
 import {
   dashboardOrder,
+  orderedWidgets,
   quickActionsFor,
   visibleWidgets,
   type WidgetId,
@@ -64,9 +66,14 @@ function Inner() {
   const setup = profileCompleteness(profile, flights);
   const name = profile.displayName || profile.email || t('account.title');
 
-  const order = dashboardOrder(profile.role);
+  const order = orderedWidgets(dashboardOrder(profile.role), prefs.order);
   const widgets = visibleWidgets(order, prefs.hidden);
   const showRolePicker = !isUserRole(profile.role) && !prefs.roleDismissed;
+
+  /** Nudge a widget earlier (-1) or later (+1) in the saved order. */
+  function reorder(id: WidgetId, delta: number): void {
+    setWidgetOrder(moveId(order, id, delta));
+  }
 
   const icsEvents = currency
     .filter((i) => i.expiry)
@@ -323,18 +330,40 @@ function Inner() {
       <details className={styles.customize}>
         <summary>{t('dashboard.customize.title')}</summary>
         <p className={styles.customizeHint}>{t('dashboard.customize.hint')}</p>
-        <div className={styles.customizeGrid}>
-          {order.map((id) => (
-            <label key={id} className={styles.customizeItem}>
-              <input
-                type="checkbox"
-                checked={!prefs.hidden.includes(id)}
-                onChange={() => toggleWidget(id)}
-              />
-              <span>{widgetTitle(id)}</span>
-            </label>
+        <ul className={styles.customizeList}>
+          {order.map((id, i) => (
+            <li key={id} className={styles.customizeItem}>
+              <label className={styles.customizeToggle}>
+                <input
+                  type="checkbox"
+                  checked={!prefs.hidden.includes(id)}
+                  onChange={() => toggleWidget(id)}
+                />
+                <span>{widgetTitle(id)}</span>
+              </label>
+              <div className={styles.reorder}>
+                <button
+                  type="button"
+                  className={styles.reorderBtn}
+                  onClick={() => reorder(id, -1)}
+                  disabled={i === 0}
+                  aria-label={t('dashboard.customize.moveUp', { name: widgetTitle(id) })}
+                >
+                  <span aria-hidden="true">↑</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.reorderBtn}
+                  onClick={() => reorder(id, 1)}
+                  disabled={i === order.length - 1}
+                  aria-label={t('dashboard.customize.moveDown', { name: widgetTitle(id) })}
+                >
+                  <span aria-hidden="true">↓</span>
+                </button>
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </details>
 
       {!isPro && <UpsellCard />}

@@ -3187,7 +3187,9 @@
     },
     "customize": {
       "title": "Customize widgets",
-      "hint": "Hidden widgets stay a click away — nothing is deleted."
+      "hint": "Show, hide or reorder your dashboard — hidden widgets stay a click away and nothing is deleted.",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down"
     },
     "widgets": {
       "study": {

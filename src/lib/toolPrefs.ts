@@ -20,6 +20,22 @@ export function toggleId(list: string[], id: string): string[] {
   return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
 }
 
+/**
+ * Move `id` by `delta` positions within `list` (negative = earlier). The
+ * target index is clamped to the bounds, so nudging the first item up or the
+ * last item down is a no-op. Returns the original list if `id` is absent.
+ */
+export function moveId(list: string[], id: string, delta: number): string[] {
+  const from = list.indexOf(id);
+  if (from === -1) return list;
+  const to = Math.max(0, Math.min(list.length - 1, from + delta));
+  if (to === from) return list;
+  const next = [...list];
+  next.splice(from, 1);
+  next.splice(to, 0, id);
+  return next;
+}
+
 export interface ToolPrefs {
   favorites: string[];
   recents: string[];
