@@ -153,20 +153,39 @@ mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
   so an invited/domain member unlocks without a script re-run — and roster emails with no account
   yet self-unlock on their first sign-in. Grant-only, idempotent, App Check enforced.
 
+- **Cohort seat report** *(built).* `functions/scripts/school-cohort-report.mjs` reports each
+  roster email's **seat** status — active / invited / expired / none — from the account
+  `entitlement` + the `schoolInvites` roster, with a `--csv` export for the shared tracker. Status
+  logic is the pure `schoolSeatStatus` in `school-core.ts` (tested).
+
+**Two prerequisites blocking the rest (discovered while building the above):**
+
+- **Study progress is local-first.** `src/lib/studyProgress.ts` keeps quiz coverage, Mock Exam
+  scores and the streak in `localStorage` only — nothing is written to Firestore. So the
+  **readiness dimension** (coverage %, Mock Exam score, "ready") has no server-side data to report;
+  it needs a study-progress sync (per-user Firestore write on quiz/exam completion, deny-all-else
+  rules) before any automated readiness report or dashboard column is possible. This is a
+  deliberate architecture change (the app is offline-first), so it's a decision, not a given.
+- **No org→admin ownership model.** `schoolInvites` are global (provisioned by the ops script),
+  not owned by a customer admin, and there is no `orgs/{id}` doc. An **in-app** admin dashboard
+  needs that model so an admin can scope "my cohort" and read only their members. The ops report
+  script sidesteps this (an operator runs it against the roster file).
+
 **Still to build (in priority order):**
 
-1. **Admin dashboard (MVP).** Invite by email/CSV, list seats, per-seat coverage + Mock Exam
-   score, cohort roll-up. Lives under `/business/admin` behind the `school` entitlement. Until
-   this ships, the `grant-school-seats.mjs` script (which now also writes invites) + a shared
-   tracker cover provisioning.
-2. **Readiness report export.** CSV first (per-seat coverage + best Mock Exam score + ready flag),
-   PDF later via the existing Playwright HTML→PDF generator pattern (`scripts/build-*-sheet.mjs`).
-3. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
-4. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
+1. **Study-progress sync** *(prerequisite for 2–3).* Persist per-user quiz/exam results to
+   Firestore (owner-read, server/owner-write), mirroring `studyProgress.ts`. Unblocks readiness.
+2. **Readiness report export.** Once (1) lands: extend the cohort report with coverage %, best
+   Mock Exam score, and the ready flag; CSV first, PDF later via the Playwright HTML→PDF pattern.
+3. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
+   seats, cohort roll-up under `/business/admin`. Until it ships, `grant-school-seats.mjs` +
+   `school-cohort-report.mjs` + a shared tracker cover provisioning and status.
+4. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
+5. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
 
-**Cohort #1 needs nothing new** — `grant-school-seats.mjs` provisions existing accounts and invites
-the rest, who self-unlock via `claimSchoolSeat` on sign-in (see `DELIVERY-PLAYBOOK.md`). The admin
-dashboard (item 1) is what turns hands-on provisioning into a self-serve product.
+**Cohort #1 needs nothing new** — `grant-school-seats.mjs` provisions accounts and invites the
+rest (who self-unlock via `claimSchoolSeat`), and `school-cohort-report.mjs` gives the weekly seat
+status (see `DELIVERY-PLAYBOOK.md`). Study readiness is tracked by hand until progress sync (item 1).
 
 ## 9. Risks & mitigations
 
@@ -176,14 +195,14 @@ dashboard (item 1) is what turns hands-on provisioning into a self-serve product
 | Content drift vs. real AIP (AIRAC cycles) | Corpus is versioned; add an AIRAC-freshness note per cohort; `sync-gaca.mjs` keeps the library current. |
 | "We already train from PDFs" objection | Lead with bilingual + Mock Exam readiness reporting + Captain Adel citations — the report is the wedge. |
 | Long procurement cycles | Start with the smallest paid Cohort tier / single intake to get in the door. |
-| Building the admin dashboard before demand is proven | Cohort #1 provisions today via `grant-school-seats.mjs` + self-serve `claimSchoolSeat`; only build the admin dashboard (§8.1) once a second buyer is real. |
+| Building the admin dashboard before demand is proven | Cohort #1 provisions + reports today via `grant-school-seats.mjs` + `claimSchoolSeat` + `school-cohort-report.mjs`; only build progress sync/readiness/admin (§8.1–3) once a second buyer is real. |
 
 ## 10. Timeline (indicative)
 
 | Phase | Weeks | Outcome |
 | --- | --- | --- |
 | Validate | 0–4 | 3 design-partner LOIs; pricing confirmed; `SALES-ONE-PAGER` + proposal live. |
-| Build MVP | 2–8 | Admin MVP + CSV report (§8.1–2); seat provisioning + self-serve claim already ship. |
+| Build MVP | 2–8 | Study-progress sync → readiness report → admin MVP (§8.1–3); provisioning, self-serve claim + seat report already ship. |
 | Deliver | 6–14 | First 3 cohorts run; readiness reports shipped; case study drafted. |
 | Expand | 14+ | `/for-schools` live; outbound sequence; Academy tier sold; SSO on demand. |
 

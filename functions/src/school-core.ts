@@ -6,7 +6,7 @@
  * an admin has approved — a member's VERIFIED email can self-unlock on sign-in. The
  * grant is the top `school` tier, which satisfies every Pro feature via the plan rank.
  */
-import type { Entitlement } from "./billing-core.js";
+import { effectivePlan, type Entitlement } from "./billing-core.js";
 
 /**
  * Email domains whose VERIFIED addresses self-unlock a school seat (e.g. an
@@ -72,4 +72,33 @@ export function isApprovedSchoolDomain(
   const at = e.lastIndexOf("@");
   if (at <= 0) return false;
   return domains.includes(e.slice(at + 1));
+}
+
+/** A roster email's seat status for the cohort report. */
+export type SeatStatus =
+  | "active" // has an in-force school-tier seat (school or staff grant)
+  | "expired" // had a school seat whose contract end has passed
+  | "invited" // on the invite roster but not yet an active seat (may lack an account)
+  | "none"; // known account, but no seat and no invite
+
+/**
+ * Derive a roster email's seat status from the server data the cohort report can see:
+ * the account's `entitlement` (if the account exists) and whether an invite doc is on
+ * the roster. Pure so the report script and its test agree on the rules:
+ *  - an in-force school-tier plan → `active` (a live school or staff grant);
+ *  - a `school` plan whose `expiresAt` has passed → `expired`;
+ *  - otherwise an invite on the roster → `invited` (covers not-yet-registered members);
+ *  - else `none`.
+ * Note: this is the SEAT dimension only. Study coverage / Mock Exam "ready" reporting
+ * needs per-user progress server-side, which is local-first today (see PLAN.md §8).
+ */
+export function schoolSeatStatus(
+  input: { entitlement?: Entitlement | null; hasInvite: boolean },
+  now: Date = new Date(),
+): SeatStatus {
+  const ent = input.entitlement;
+  if (effectivePlan(ent, now) === "school") return "active";
+  if (ent?.plan === "school") return "expired"; // school plan but effectivePlan lapsed it
+  if (input.hasInvite) return "invited";
+  return "none";
 }
