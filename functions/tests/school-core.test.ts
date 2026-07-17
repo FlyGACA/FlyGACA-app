@@ -4,6 +4,7 @@ import {
   parseSeatEmails,
   inviteKeyForEmail,
   isApprovedSchoolDomain,
+  schoolSeatStatus,
 } from "../src/school-core.js";
 
 describe("schoolEntitlement", () => {
@@ -96,5 +97,48 @@ describe("isApprovedSchoolDomain", () => {
 
   it("defaults to the empty allowlist — nothing auto-grants until configured", () => {
     expect(isApprovedSchoolDomain("cadet@academy.edu.sa", true)).toBe(false);
+  });
+});
+
+describe("schoolSeatStatus", () => {
+  const now = new Date("2026-07-17T00:00:00Z");
+
+  it("is active for a non-expiring school grant", () => {
+    expect(schoolSeatStatus({ entitlement: schoolEntitlement(), hasInvite: true }, now)).toBe(
+      "active",
+    );
+  });
+
+  it("is active for a staff grant (school tier via a different source)", () => {
+    expect(
+      schoolSeatStatus({ entitlement: { plan: "school", source: "staff" }, hasInvite: false }, now),
+    ).toBe("active");
+  });
+
+  it("is active for a school seat still within its contract end", () => {
+    const ent = schoolEntitlement("2026-12-31T23:59:59.000Z");
+    expect(schoolSeatStatus({ entitlement: ent, hasInvite: false }, now)).toBe("active");
+  });
+
+  it("is expired for a school seat whose contract end has passed", () => {
+    const ent = schoolEntitlement("2026-06-30T23:59:59.000Z");
+    expect(schoolSeatStatus({ entitlement: ent, hasInvite: true }, now)).toBe("expired");
+  });
+
+  it("is invited when there is an invite but no active seat", () => {
+    expect(schoolSeatStatus({ entitlement: null, hasInvite: true }, now)).toBe("invited");
+    expect(schoolSeatStatus({ entitlement: { plan: "free" }, hasInvite: true }, now)).toBe(
+      "invited",
+    );
+  });
+
+  it("is none for a known account with no seat and no invite", () => {
+    expect(schoolSeatStatus({ entitlement: { plan: "free" }, hasInvite: false }, now)).toBe("none");
+    expect(schoolSeatStatus({ entitlement: undefined, hasInvite: false }, now)).toBe("none");
+  });
+
+  it("does not treat a paid (pro) plan as a school seat", () => {
+    const ent: import("../src/billing-core.js").Entitlement = { plan: "pro", source: "stripe" };
+    expect(schoolSeatStatus({ entitlement: ent, hasInvite: false }, now)).toBe("none");
   });
 });
