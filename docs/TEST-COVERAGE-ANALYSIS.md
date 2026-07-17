@@ -132,7 +132,15 @@ Low individual risk but cheap to cover and currently invisible to the ratchet:
 - **`referral.ts` (0%)** transports the `?ref=` code into checkout. A regression
   means silently dropped referral attribution (revenue/growth impact).
 
-### 5. `CalcShell.tsx` (52%) — the shared calculator frame
+### 5. `CalcShell.tsx` (52%) — the shared calculator frame — ✅ addressed
+
+> **Update:** `tests/calc-shell-presets.test.tsx` adds the affordances the base
+> `calc-shell.test.tsx` didn't reach — the share button (Web Share + clipboard
+> fallback), the "How it works" collapsible, and the full Pro preset lifecycle
+> (save → list → load-navigates → remove, plus the blank-name guard). `useFeature`
+> is forced to Pro (matching the current `FREE_FOR_EVERYONE` promo) and
+> `react-router` is partially mocked to spy on navigation. `CalcShell.tsx` moved
+> 52% → 85%. Only §2 (below) remains.
 
 Every tool renders inside `CalcShell` (copy-link · try-an-example ·
 ask-Captain-Adel · disclaimer). The individual calculators are well tested, but

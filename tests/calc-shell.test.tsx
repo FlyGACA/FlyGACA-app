@@ -67,9 +67,7 @@ describe('<CalcShell />', () => {
       await act(async () => {
         vi.advanceTimersByTime(1500);
       });
-      expect(
-        screen.getByRole('button', { name: 'Copy link to this setup' }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Copy link to this setup' })).toBeInTheDocument();
     } finally {
       vi.unstubAllGlobals();
       vi.useRealTimers();
