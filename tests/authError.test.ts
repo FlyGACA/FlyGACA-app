@@ -22,6 +22,32 @@ describe('authErrorInfo', () => {
     expect(authErrorInfo('auth/network-request-failed').field).toBe('general');
   });
 
+  it('routes deployment/config errors to the general line with their own message', () => {
+    expect(authErrorInfo('auth/operation-not-allowed')).toEqual({
+      field: 'general',
+      key: 'account.errors.providerDisabled',
+    });
+    expect(authErrorInfo('auth/unauthorized-domain')).toEqual({
+      field: 'general',
+      key: 'account.errors.unauthorizedDomain',
+    });
+    expect(authErrorInfo('auth/api-key-not-valid').key).toBe('account.errors.config');
+    expect(authErrorInfo('auth/invalid-api-key').key).toBe('account.errors.config');
+    expect(authErrorInfo('auth/firebase-app-check-token-is-invalid').key).toBe(
+      'account.errors.config',
+    );
+  });
+
+  it('folds the URL-embedded referrer-blocked code onto unauthorized-domain', () => {
+    expect(authErrorInfo('auth/requests-from-referer-are-blocked')).toEqual({
+      field: 'general',
+      key: 'account.errors.unauthorizedDomain',
+    });
+    expect(
+      authErrorInfo('auth/requests-from-referer-https://preview.vercel.app-are-blocked'),
+    ).toEqual({ field: 'general', key: 'account.errors.unauthorizedDomain' });
+  });
+
   it('falls back to a general message for unknown or missing codes', () => {
     const fallback = { field: 'general', key: 'account.authError' };
     expect(authErrorInfo('auth/something-new')).toEqual(fallback);

@@ -59,3 +59,26 @@ Then check:
 3. Deploy `firestore.rules` (`npm run deploy:rules`). Leave `VITE_FIREBASE_EMULATOR` unset.
 
 Stripe/RevenueCat billing is Batch 3c (`src/lib/billing.ts`).
+
+## Authorizing a domain (preview deploys & new hosts)
+
+Sign-in (Google popup **and** email/password) fails on any origin the Firebase project doesn't
+recognise — most commonly an ephemeral **Vercel/preview** domain
+(`…-flygaca-app.vercel.app`). The symptom is a sign-in that fails with a Firebase error code the app
+now surfaces on the Account page (`auth/unauthorized-domain`,
+`auth/requests-from-referer-…-are-blocked`, `auth/operation-not-allowed`, or an App Check rejection —
+see the `MAP` in `src/calc/authError.ts`). It is **not** a bad-credentials problem; the fix is to add
+the domain to every allowlist below:
+
+1. **Firebase Console → Authentication → Settings → Authorized domains** — add the exact host.
+   Wildcards like `*.vercel.app` are **not** accepted, so each ephemeral preview hash would need its
+   own entry; prefer testing on the production/custom domain (or a stable Vercel alias) instead.
+2. **Google Cloud Console → Security → reCAPTCHA Enterprise → the site key** matching
+   `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` → add the domain to the key's **Domains** list. The key is
+   domain-scoped, so App Check can't mint a token on an unregistered origin.
+3. **Google Cloud Console → APIs & Services → Credentials → the Browser API key** → if it has
+   **HTTP-referrer** restrictions, add the domain there too, otherwise Identity Toolkit returns
+   `requests-from-referer-…-are-blocked`.
+
+Stable custom domains are the reliable target; ephemeral preview hashes change on every deploy and
+are impractical to keep allowlisted.

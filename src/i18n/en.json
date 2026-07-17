@@ -1991,7 +1991,10 @@
       "emailInUse": "An account already exists with that email.",
       "weakPassword": "Password must be at least 6 characters.",
       "tooManyRequests": "Too many attempts. Try again in a little while.",
-      "network": "Network error. Check your connection and try again."
+      "network": "Network error. Check your connection and try again.",
+      "providerDisabled": "This sign-in method is turned off for this app.",
+      "unauthorizedDomain": "This site isn't authorized for sign-in yet. If you're on a preview link, use the main site.",
+      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site."
     },
     "subscription": {
       "title": "Subscription",
