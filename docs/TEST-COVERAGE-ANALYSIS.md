@@ -72,7 +72,18 @@ mocked. Assert: anonymous vs. authed quota outcomes, 429 on rate-limit, 401 on
 missing API key, 403 on a disallowed origin, and that a free user never reaches
 the Pro path. This is the highest value-per-test work available.
 
-### 2. Backend Stripe & RAG wiring (`billing.ts` 0%, `captain-adel.ts` 0%, `corpus.ts` 44%)
+### 2. Backend Stripe & RAG wiring (`billing.ts` 0%, `captain-adel.ts` 0%, `corpus.ts` 44%) — ✅ the two priorities addressed
+
+> **Update:** `functions/tests/billing-webhook.test.ts` and
+> `functions/tests/corpus-citations.test.ts` cover the money path and the
+> citation path. `billing.ts` moved 0% → 59% — the `stripeWebhook` handler is now
+> tested end-to-end (signature 400, at-least-once idempotency, subscription /
+> pass / credits / referral routing, and the roll-back-and-500 on a handler
+> error) with Stripe + an in-memory Firestore mocked; the remaining gap is the
+> checkout/portal callables. `corpus.ts` moved 44% → 89% — `searchHref`,
+> `toChatSource` (lineage-aware citation assembly), and BM25 `retrieve` via the
+> `__setIndexForTest` hook. `captain-adel.ts` (the Genkit flow) stays open and
+> lower-priority. **This completes the plan (§1–§5).**
 
 - **`billing.ts` (0%)** is the Stripe webhook handler — per `CLAUDE.md` the
   *only writer* of `users/{uid}.entitlement`. The pure decision logic lives in
