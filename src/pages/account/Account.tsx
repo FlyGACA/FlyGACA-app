@@ -52,8 +52,15 @@ function FirebaseSignIn() {
       await fn();
       // The account store adopts the session via onAuthChange.
     } catch (e) {
-      const { field, key } = authErrorInfo((e as { code?: string }).code);
-      setErrors({ [field]: t(key) });
+      const code = (e as { code?: string }).code;
+      const { field, key } = authErrorInfo(code);
+      // When we fell back to the generic message the real code is unknown to us —
+      // append it (Firebase codes are non-secret) and log the full error so a
+      // deployment/config failure on a preview domain is diagnosable instead of
+      // masquerading as a bad-credentials message.
+      const generic = key === 'account.authError';
+      if (generic) console.error('Auth failure', code, e);
+      setErrors({ [field]: generic && code ? `${t(key)} (${code})` : t(key) });
     } finally {
       setBusy(false);
     }
