@@ -18,6 +18,8 @@ per-person consumer Pro.
 4. **[`PROPOSAL-TEMPLATE.md`](./PROPOSAL-TEMPLATE.md)** — fill-in-the-blanks quote / SOW.
 5. **[`DELIVERY-PLAYBOOK.md`](./DELIVERY-PLAYBOOK.md)** — how to run a cohort, incl. the manual
    path for cohort #1 before the admin dashboard ships.
+6. **[`DESIGN-study-progress-sync.md`](./DESIGN-study-progress-sync.md)** — design for the readiness
+   prerequisite (persisting per-user study scores to Firestore). *Signed off + built, ships dark.*
 
 ## The one-line version
 

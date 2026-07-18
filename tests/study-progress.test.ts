@@ -4,8 +4,10 @@ import {
   nextStreak,
   pushHistory,
   toggleIndex,
+  toProgressSummary,
   EXAM_HISTORY_MAX,
   type ExamResult,
+  type StudyState,
 } from '../src/lib/studyProgress';
 
 describe('pushHistory', () => {
@@ -57,5 +59,51 @@ describe('nextStreak', () => {
       day: '2024-06-01',
       count: 1,
     });
+  });
+});
+
+describe('toProgressSummary', () => {
+  const base: StudyState = {
+    quizBest: { 'aip-ais': 80, airspace: 60 },
+    gsDone: { 'air-law': true },
+    fcKnown: {},
+    fcSrs: {},
+    pathDone: {},
+    streak: { day: '2026-07-17', count: 3 },
+    exam: { pct: 72, passed: false, date: '2026-07-16' },
+    examHistory: [
+      { pct: 55, passed: false, date: '2026-07-10' },
+      { pct: 88, passed: true, date: '2026-07-14' },
+    ],
+    flagged: { 'aip-ais': [1, 2] },
+    lastBank: 'aip-ais',
+  };
+  const now = new Date('2026-07-17T12:00:00.000Z');
+
+  it('projects scores + completion only — no answers, SRS, flagged or lastBank', () => {
+    const s = toProgressSummary(base, now);
+    expect(s).toEqual({
+      quizBest: { 'aip-ais': 80, airspace: 60 },
+      exam: { pct: 72, passed: false, date: '2026-07-16' },
+      examBest: 88,
+      examCount: 2,
+      gsDone: { 'air-law': true },
+      updatedAt: '2026-07-17T12:00:00.000Z',
+    });
+    expect(Object.keys(s)).not.toContain('flagged');
+    expect(Object.keys(s)).not.toContain('fcSrs');
+    expect(Object.keys(s)).not.toContain('lastBank');
+  });
+
+  it('examBest falls back to the last exam when history is empty', () => {
+    const s = toProgressSummary({ ...base, examHistory: [] }, now);
+    expect(s.examBest).toBe(72);
+    expect(s.examCount).toBe(0);
+  });
+
+  it('is 0 with no exams at all', () => {
+    const s = toProgressSummary({ ...base, exam: null, examHistory: [] }, now);
+    expect(s.examBest).toBe(0);
+    expect(s.exam).toBeNull();
   });
 });

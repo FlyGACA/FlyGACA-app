@@ -155,6 +155,50 @@ export function useStudyProgress(): StudyState {
   );
 }
 
+/** Non-React subscription to progress changes (for the B2B progress-sync writer). */
+export function subscribeStudyProgress(cb: () => void): () => void {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+
+/** Current study state snapshot (for the progress-sync writer). */
+export function getStudyState(): StudyState {
+  return state;
+}
+
+/**
+ * Compact, server-syncable readiness projection of the study state — the SCORES +
+ * COMPLETION a B2B readiness report needs, and nothing more (no answers, no flashcard
+ * SRS, no flagged questions). See docs/b2b/DESIGN-study-progress-sync.md. Pure so the
+ * local→doc mapping is unit-testable without Firestore.
+ */
+export interface ProgressSummary {
+  /** bankId → best quiz % (0–100). */
+  quizBest: Record<string, number>;
+  /** Last Mock Exam result. */
+  exam: ExamResult | null;
+  /** Best Mock Exam % across history (denormalised for the report). */
+  examBest: number;
+  /** Number of Mock Exam attempts retained (for the "median attempts" KPI). */
+  examCount: number;
+  /** moduleId → completed (ground-school). */
+  gsDone: Record<string, boolean>;
+  /** ISO write time (client clock) — staleness / last-active. */
+  updatedAt: string;
+}
+
+export function toProgressSummary(s: StudyState, now: Date = new Date()): ProgressSummary {
+  const examBest = s.examHistory.reduce((max, r) => (r.pct > max ? r.pct : max), s.exam?.pct ?? 0);
+  return {
+    quizBest: s.quizBest,
+    exam: s.exam,
+    examBest,
+    examCount: s.examHistory.length,
+    gsDone: s.gsDone,
+    updatedAt: now.toISOString(),
+  };
+}
+
 export function recordStudyDay(now: Date = new Date()): void {
   const today = dayStr(now);
   const yesterday = dayStr(new Date(now.getTime() - 86400000));
