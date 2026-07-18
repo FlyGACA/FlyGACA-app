@@ -14,9 +14,10 @@ import { subscribeStudyProgress, getStudyState, toProgressSummary } from './stud
 
 /**
  * Master switch. While false, `startStudyProgressSync` is a no-op, so nothing is
- * written and behaviour is identical to today. Flip to true once the rules ship.
+ * written. Now enabled — the `users/{uid}/progress` rules are on main (deploy them
+ * with/before hosting; until they land, writes 403 and are swallowed as best-effort).
  */
-export const SYNC_STUDY_PROGRESS = false;
+export const SYNC_STUDY_PROGRESS = true;
 
 /** Debounce window — coalesce a burst of quiz/exam writes into one upload. */
 const DEBOUNCE_MS = 5000;

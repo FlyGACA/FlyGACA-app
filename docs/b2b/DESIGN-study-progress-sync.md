@@ -9,8 +9,9 @@ signed-in users** (doubles as backup; the report only reads a roster's own uids)
 `SYNC_STUDY_PROGRESS` (in `src/lib/studyProgressSync.ts`), flip to `true` once the rules are
 deployed. Implemented per this doc: the `users/{uid}/progress/summary` rules + tests, the pure
 `toProgressSummary` projection + tests, and the debounced best-effort writer wired into
-`account.ts` (lazy-loaded, so it stays out of the initial bundle). The `/settings` consent notice
-and the report's readiness columns are the remaining follow-ups.
+`account.ts` (lazy-loaded, so it stays out of the initial bundle). `SYNC_STUDY_PROGRESS` is now
+**on**, the `/settings` consent notice ships for school-seat members, and the readiness columns are
+live in `school-cohort-report.mjs`. Remaining: deploy the rules with hosting; a branded PDF report.
 
 > **Not affiliated with GACA.** This stores a member's *practice* progress to power a training
 > readiness report; it is not an exam record and never replaces the official GACA exam.

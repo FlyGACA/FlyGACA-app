@@ -5,6 +5,7 @@ import {
   inviteKeyForEmail,
   isApprovedSchoolDomain,
   schoolSeatStatus,
+  schoolReadiness,
 } from "../src/school-core.js";
 
 describe("schoolEntitlement", () => {
@@ -140,5 +141,44 @@ describe("schoolSeatStatus", () => {
   it("does not treat a paid (pro) plan as a school seat", () => {
     const ent: import("../src/billing-core.js").Entitlement = { plan: "pro", source: "stripe" };
     expect(schoolSeatStatus({ entitlement: ent, hasInvite: false }, now)).toBe("none");
+  });
+});
+
+describe("schoolReadiness", () => {
+  const AIP = ["aip-ais", "airspace"];
+
+  it("is ready when every bank and the mock exam meet the threshold", () => {
+    const r = schoolReadiness({ quizBest: { "aip-ais": 80, airspace: 90 }, examBest: 76 }, AIP);
+    expect(r).toEqual({ coveredBanks: 2, totalBanks: 2, examBest: 76, ready: true });
+  });
+
+  it("is not ready when a bank is below the threshold", () => {
+    const r = schoolReadiness({ quizBest: { "aip-ais": 80, airspace: 60 }, examBest: 90 }, AIP);
+    expect(r.coveredBanks).toBe(1);
+    expect(r.ready).toBe(false);
+  });
+
+  it("is not ready when the mock exam is below the threshold", () => {
+    const r = schoolReadiness({ quizBest: { "aip-ais": 80, airspace: 90 }, examBest: 70 }, AIP);
+    expect(r.ready).toBe(false);
+  });
+
+  it("honours a custom threshold", () => {
+    const s = { quizBest: { "aip-ais": 65, airspace: 65 }, examBest: 65 };
+    expect(schoolReadiness(s, AIP, 60).ready).toBe(true);
+    expect(schoolReadiness(s, AIP, 75).ready).toBe(false);
+  });
+
+  it("treats a seat with no synced progress as not ready, zero coverage", () => {
+    expect(schoolReadiness(null, AIP)).toEqual({
+      coveredBanks: 0,
+      totalBanks: 2,
+      examBest: 0,
+      ready: false,
+    });
+  });
+
+  it("is never ready with no expected banks", () => {
+    expect(schoolReadiness({ quizBest: {}, examBest: 100 }, []).ready).toBe(false);
   });
 });
