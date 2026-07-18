@@ -20,6 +20,12 @@ import { createRateLimiter } from "./rate-limit-core.js";
 import { isPaidActive, type Entitlement } from "./billing-core.js";
 import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
 import { extractApiKey, hashApiKey } from "./api-key-core.js";
+import {
+  anonymousAuthContext,
+  extractBearerToken,
+  toAuthContext,
+  type AuthContext,
+} from "./auth-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -38,11 +44,14 @@ export class AuthError extends Error {}
 
 /**
  * Verify the Firebase ID token (optional → anonymous) and App Check token
- * (enforced in prod). Returns the uid when a valid token was presented.
+ * (enforced in prod). Returns the caller's auth context — `uid` plus the
+ * `email`/`emailVerified` claims — when a valid token was presented; an anonymous
+ * context otherwise. The token-parsing and claim-reading are the pure `auth-core`
+ * helpers; only the `verifyIdToken` / App Check calls live here.
  *
  * Exported for unit testing; the route handlers below are the only callers.
  */
-export async function authenticate(req: Request): Promise<{ uid?: string }> {
+export async function authenticate(req: Request): Promise<AuthContext> {
   const appCheckToken = req.header("X-Firebase-AppCheck");
   if (ENFORCE_APP_CHECK.value()) {
     if (!appCheckToken) throw new AuthError("missing App Check token");
@@ -53,17 +62,16 @@ export async function authenticate(req: Request): Promise<{ uid?: string }> {
     }
   }
 
-  const authz = req.header("Authorization");
-  const idToken = authz?.startsWith("Bearer ") ? authz.slice(7) : undefined;
+  const idToken = extractBearerToken(req.header("Authorization"));
   if (idToken) {
     try {
       const decoded = await getAuth().verifyIdToken(idToken);
-      return { uid: decoded.uid };
+      return toAuthContext(decoded);
     } catch {
       // An invalid ID token is treated as anonymous, not fatal (mirrors legacy).
     }
   }
-  return {};
+  return anonymousAuthContext();
 }
 
 /**
@@ -263,8 +271,9 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
   // absent/invalid ID token (anonymous) is rejected with 401, distinct from the
   // App Check 403 above.
   let uid: string | undefined;
+  let emailVerified = false;
   try {
-    ({ uid } = await authenticate(req));
+    ({ uid, emailVerified } = await authenticate(req));
   } catch (err) {
     if (err instanceof AuthError) {
       res.status(403).json({ error: err.message });
@@ -306,7 +315,12 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
       const credit = await consumeCredit(uid);
       // Structured funnel events (Cloud Logging → offline conversion analysis):
       // hitting the wall is the upsell moment; a spent credit is micro-revenue.
-      logger.info("funnel", { event: credit ? "credit_spent" : "quota_exhausted", uid });
+      // `emailVerified` lets us segment conversion by verified-vs-unverified sign-up.
+      logger.info("funnel", {
+        event: credit ? "credit_spent" : "quota_exhausted",
+        uid,
+        emailVerified,
+      });
       if (!credit) {
         res.setHeader("Retry-After", String(quota.retryAfterSec));
         res.status(429).json({ error: "quota_exceeded" });

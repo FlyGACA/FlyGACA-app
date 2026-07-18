@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { authErrorInfo } from '../src/calc/authError';
+import { authErrorInfo, isAuthDismiss } from '../src/calc/authError';
 
 describe('authErrorInfo', () => {
   it('routes credential errors to the password field', () => {
@@ -48,10 +48,44 @@ describe('authErrorInfo', () => {
     ).toEqual({ field: 'general', key: 'account.errors.unauthorizedDomain' });
   });
 
+  it('maps the newer opaque credential and disabled-account codes', () => {
+    expect(authErrorInfo('auth/invalid-login-credentials').key).toBe('account.errors.wrongPassword');
+    expect(authErrorInfo('auth/missing-password')).toEqual({
+      field: 'password',
+      key: 'account.errors.missingPassword',
+    });
+    expect(authErrorInfo('auth/user-disabled')).toEqual({
+      field: 'email',
+      key: 'account.errors.userDisabled',
+    });
+  });
+
+  it('routes a blocked (not dismissed) popup to the general line', () => {
+    expect(authErrorInfo('auth/popup-blocked')).toEqual({
+      field: 'general',
+      key: 'account.errors.popupBlocked',
+    });
+  });
+
   it('falls back to a general message for unknown or missing codes', () => {
     const fallback = { field: 'general', key: 'account.authError' };
     expect(authErrorInfo('auth/something-new')).toEqual(fallback);
     expect(authErrorInfo(undefined)).toEqual(fallback);
     expect(authErrorInfo('')).toEqual(fallback);
+  });
+});
+
+describe('isAuthDismiss', () => {
+  it('flags user-dismissed popup codes', () => {
+    expect(isAuthDismiss('auth/popup-closed-by-user')).toBe(true);
+    expect(isAuthDismiss('auth/cancelled-popup-request')).toBe(true);
+    expect(isAuthDismiss('auth/user-cancelled')).toBe(true);
+  });
+
+  it('does not flag a genuinely blocked popup or other errors', () => {
+    expect(isAuthDismiss('auth/popup-blocked')).toBe(false);
+    expect(isAuthDismiss('auth/wrong-password')).toBe(false);
+    expect(isAuthDismiss(undefined)).toBe(false);
+    expect(isAuthDismiss('')).toBe(false);
   });
 });

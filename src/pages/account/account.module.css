@@ -91,6 +91,127 @@
   }
 }
 
+/* ── Sign in / Create account segmented tabs ── */
+.authTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: var(--hairline-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+}
+.authTab {
+  min-block-size: 40px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: var(--transition-color);
+}
+.authTab:hover {
+  color: var(--text);
+}
+.authTab[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--elev-1);
+}
+.authTab:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ── Branded Google button (icon beside label) ── */
+.googleBtn {
+  composes: btn btn-clay from global;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+.googleIcon {
+  inline-size: 18px;
+  block-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Divider "or" with a hairline either side. */
+.or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+.or::before,
+.or::after {
+  content: '';
+  flex: 1;
+  block-size: 1px;
+  background: var(--border);
+}
+
+/* ── Password strength meter ── */
+.pwMeter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: calc(-1 * var(--space-2));
+}
+.pwBars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-1);
+}
+.pwBar {
+  block-size: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  transition: background var(--dur) var(--ease);
+}
+.pwBar[data-on][data-level='weak'] {
+  background: var(--color-error);
+}
+.pwBar[data-on][data-level='fair'] {
+  background: var(--warning);
+}
+.pwBar[data-on][data-level='good'] {
+  background: var(--brand);
+}
+.pwBar[data-on][data-level='strong'] {
+  background: var(--color-success);
+}
+.pwLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.pwLabel[data-level='weak'] {
+  color: var(--color-error);
+}
+.pwLabel[data-level='fair'] {
+  color: var(--warning);
+}
+.pwLabel[data-level='good'] {
+  color: var(--brand-hover);
+}
+.pwLabel[data-level='strong'] {
+  color: var(--color-success);
+}
+
+/* Terms/Privacy acknowledgement under the sign-up form. */
+.legalNote {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
 /* Signed-in identity header (avatar + name + plan badge). */
 .identity {
   display: flex;
@@ -124,12 +245,6 @@
 .note {
   color: var(--text-dim);
   font-size: var(--fs-xs);
-  margin: 0;
-}
-.or {
-  text-align: center;
-  color: var(--text-dim);
-  font-size: var(--fs-sm);
   margin: 0;
 }
 .linkBtn {

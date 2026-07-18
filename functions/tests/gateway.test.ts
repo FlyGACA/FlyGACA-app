@@ -144,26 +144,36 @@ describe("parseRequest", () => {
 describe("authenticate — App Check not enforced (default)", () => {
   it("returns anonymous when no Authorization header is present", async () => {
     const out = await authenticate(reqWith());
-    expect(out).toEqual({});
+    expect(out).toEqual({ emailVerified: false });
     expect(h.verifyIdToken).not.toHaveBeenCalled();
   });
 
   it("returns the uid for a valid bearer token", async () => {
     h.verifyIdToken.mockResolvedValue({ uid: "u1" });
     const out = await authenticate(reqWith({ Authorization: "Bearer good" }));
-    expect(out).toEqual({ uid: "u1" });
+    expect(out).toEqual({ uid: "u1", email: undefined, emailVerified: false });
     expect(h.verifyIdToken).toHaveBeenCalledWith("good");
+  });
+
+  it("surfaces the email/email_verified claims from the token", async () => {
+    h.verifyIdToken.mockResolvedValue({
+      uid: "u1",
+      email: "cap@example.com",
+      email_verified: true,
+    });
+    const out = await authenticate(reqWith({ Authorization: "Bearer good" }));
+    expect(out).toEqual({ uid: "u1", email: "cap@example.com", emailVerified: true });
   });
 
   it("falls back to anonymous when the ID token is invalid", async () => {
     h.verifyIdToken.mockRejectedValue(new Error("bad token"));
     const out = await authenticate(reqWith({ Authorization: "Bearer bad" }));
-    expect(out).toEqual({});
+    expect(out).toEqual({ emailVerified: false });
   });
 
   it("ignores a non-Bearer Authorization scheme", async () => {
     const out = await authenticate(reqWith({ Authorization: "Basic abc" }));
-    expect(out).toEqual({});
+    expect(out).toEqual({ emailVerified: false });
     expect(h.verifyIdToken).not.toHaveBeenCalled();
   });
 
@@ -231,7 +241,7 @@ describe("authenticate — App Check enforced", () => {
     const out = await enforced.authenticate(
       reqWith({ "X-Firebase-AppCheck": "ok", Authorization: "Bearer good" }),
     );
-    expect(out).toEqual({ uid: "u2" });
+    expect(out).toEqual({ uid: "u2", email: undefined, emailVerified: false });
     expect(h.verifyToken).toHaveBeenCalledWith("ok");
   });
 });

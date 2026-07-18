@@ -12,6 +12,22 @@ export interface AuthErrorInfo {
   key: string;
 }
 
+/**
+ * Codes that mean "the user dismissed the sign-in popup themselves" — closing the
+ * Google window or opening a second one. They are not failures, so the form should
+ * clear its busy state silently rather than flash a scary error.
+ */
+const DISMISS_CODES = new Set([
+  'auth/popup-closed-by-user',
+  'auth/cancelled-popup-request',
+  'auth/user-cancelled',
+]);
+
+/** Whether `code` is a user-dismissed popup rather than a real error to surface. */
+export function isAuthDismiss(code: string | undefined | null): boolean {
+  return !!code && DISMISS_CODES.has(code);
+}
+
 const MAP: Record<string, AuthErrorInfo> = {
   'auth/invalid-email': { field: 'email', key: 'account.errors.invalidEmail' },
   'auth/user-not-found': { field: 'email', key: 'account.errors.userNotFound' },
@@ -19,8 +35,13 @@ const MAP: Record<string, AuthErrorInfo> = {
   'auth/wrong-password': { field: 'password', key: 'account.errors.wrongPassword' },
   // Newer Firebase returns a single opaque code for a bad email/password pair.
   'auth/invalid-credential': { field: 'password', key: 'account.errors.wrongPassword' },
+  'auth/invalid-login-credentials': { field: 'password', key: 'account.errors.wrongPassword' },
+  'auth/missing-password': { field: 'password', key: 'account.errors.missingPassword' },
   'auth/weak-password': { field: 'password', key: 'account.errors.weakPassword' },
+  'auth/user-disabled': { field: 'email', key: 'account.errors.userDisabled' },
   'auth/too-many-requests': { field: 'general', key: 'account.errors.tooManyRequests' },
+  // The popup was blocked by the browser (not dismissed) — tell the user why.
+  'auth/popup-blocked': { field: 'general', key: 'account.errors.popupBlocked' },
   'auth/network-request-failed': { field: 'general', key: 'account.errors.network' },
   // Deployment/config failures — these have nothing to do with the user's
   // credentials, so they must NOT read as "check your details". They typically

@@ -19,13 +19,18 @@ import {
   signInWithEmail,
   signInWithGoogle,
 } from '../../lib/auth';
-import { authErrorInfo } from '../../calc/authError';
+import { authErrorInfo, isAuthDismiss } from '../../calc/authError';
+import { MIN_PASSWORD_LENGTH, passwordStrength } from '../../calc/passwordStrength';
 import { usePageMeta } from '../../lib/usePageMeta';
 import styles from './account.module.css';
+
+/** Sign-in vs create-account. Lifted to `Account` so the panel heading tracks it. */
+type AuthMode = 'in' | 'up';
 
 interface FieldErrors {
   email?: string;
   password?: string;
+  confirm?: string;
   general?: string;
 }
 
@@ -34,25 +39,121 @@ function looksLikeEmail(v: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
-function FirebaseSignIn() {
+/** Google's four-colour "G", inline so the button carries the brand affordance with no network fetch. */
+function GoogleIcon() {
+  return (
+    <svg className={styles.googleIcon} viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62Z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.47.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58Z"
+      />
+    </svg>
+  );
+}
+
+/**
+ * The sign-up Terms/Privacy acknowledgement. Renders the translated sentence with
+ * `{terms}`/`{privacy}` placeholders swapped for real links — the ordering (and RTL
+ * mirroring) stays in the translator's hands, and we avoid pulling react-i18next's
+ * heavier `<Trans>` into the initial vendor chunk.
+ */
+function LegalLine() {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const parts = t('account.createLegal').split(/(\{terms\}|\{privacy\})/);
+  return (
+    <p className={styles.legalNote}>
+      {parts.map((part, i) => {
+        if (part === '{terms}')
+          return (
+            <Link key={i} to="/terms" className={styles.inlineLink}>
+              {t('account.termsLink')}
+            </Link>
+          );
+        if (part === '{privacy}')
+          return (
+            <Link key={i} to="/privacy" className={styles.inlineLink}>
+              {t('account.privacyLink')}
+            </Link>
+          );
+        return part;
+      })}
+    </p>
+  );
+}
+
+/** Segmented strength meter (4 bars) for the sign-up password. Hidden until the user types. */
+function PasswordMeter({ value }: { value: string }) {
+  const { t } = useTranslation();
+  const { score, label } = passwordStrength(value);
+  if (!value) return null;
+  return (
+    <div className={styles.pwMeter}>
+      <div className={styles.pwBars} aria-hidden="true">
+        {[1, 2, 3, 4].map((i) => (
+          <span
+            key={i}
+            className={styles.pwBar}
+            data-on={i <= score || undefined}
+            data-level={label}
+          />
+        ))}
+      </div>
+      <span className={styles.pwLabel} data-level={label} role="status">
+        {t('account.pwStrength', { label: t(`account.pw.${label}`) })}
+      </span>
+    </div>
+  );
+}
+
+function FirebaseAuth({
+  mode,
+  onModeChange,
+}: {
+  mode: AuthMode;
+  onModeChange: (m: AuthMode) => void;
+}) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [name, setName] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
 
-  async function run(fn: () => Promise<unknown>) {
-    setBusy(true);
+  function reset() {
     setErrors({});
     setNotice('');
+  }
+
+  function switchMode(next: AuthMode) {
+    if (next === mode) return;
+    reset();
+    onModeChange(next);
+  }
+
+  async function run(fn: () => Promise<unknown>) {
+    setBusy(true);
+    reset();
     try {
       await fn();
       // The account store adopts the session via onAuthChange.
     } catch (e) {
       const code = (e as { code?: string }).code;
+      // A user who just closed the Google popup didn't fail — say nothing.
+      if (isAuthDismiss(code)) return;
       const { field, key } = authErrorInfo(code);
       // When we fell back to the generic message the real code is unknown to us —
       // append it (Firebase codes are non-secret) and log the full error so a
@@ -77,34 +178,79 @@ function FirebaseSignIn() {
     });
   }
 
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const mail = email.trim();
+    if (!mail || !password) return;
+    reset();
+    if (!looksLikeEmail(mail)) {
+      setErrors({ email: t('account.errors.invalidEmail') });
+      return;
+    }
+    if (mode === 'up') {
+      if (password.length < MIN_PASSWORD_LENGTH) {
+        setErrors({ password: t('account.errors.weakPassword') });
+        return;
+      }
+      if (confirm !== password) {
+        setErrors({ confirm: t('account.errors.passwordMismatch') });
+        return;
+      }
+    }
+    void run(() =>
+      mode === 'in'
+        ? signInWithEmail(mail, password)
+        : registerWithEmail(mail, password, name.trim() || undefined),
+    );
+  }
+
   return (
     <>
+      <div className={styles.authTabs} role="tablist" aria-label={t('account.tabsLabel')}>
+        <button
+          type="button"
+          role="tab"
+          id="auth-tab-in"
+          aria-selected={mode === 'in'}
+          className={styles.authTab}
+          onClick={() => switchMode('in')}
+        >
+          {t('account.signIn')}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="auth-tab-up"
+          aria-selected={mode === 'up'}
+          className={styles.authTab}
+          onClick={() => switchMode('up')}
+        >
+          {t('account.register')}
+        </button>
+      </div>
+
       <button
         type="button"
-        className={`${styles.btn} ${styles.btnPrimary}`}
+        className={styles.googleBtn}
         disabled={busy}
         onClick={() => void run(signInWithGoogle)}
       >
+        <GoogleIcon />
         {t('account.continueGoogle')}
       </button>
-      <p className={styles.or}>{t('account.or')}</p>
-      <form
-        className={styles.authFields}
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!email.trim() || !password) return;
-          if (!looksLikeEmail(email.trim())) {
-            setErrors({ email: t('account.errors.invalidEmail') });
-            return;
-          }
-          void run(() =>
-            mode === 'in'
-              ? signInWithEmail(email.trim(), password)
-              : registerWithEmail(email.trim(), password, name.trim() || undefined),
-          );
-        }}
-      >
-        {mode === 'up' && <TextField label={t('account.name')} value={name} onChange={setName} />}
+      <p className={styles.or}>
+        <span>{t('account.or')}</span>
+      </p>
+
+      <form className={styles.authFields} onSubmit={submit}>
+        {mode === 'up' && (
+          <TextField
+            label={t('account.name')}
+            value={name}
+            onChange={setName}
+            autoComplete="name"
+          />
+        )}
         <TextField
           label={t('account.email')}
           value={email}
@@ -121,6 +267,18 @@ function FirebaseSignIn() {
           autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
           error={errors.password}
         />
+        {mode === 'up' && (
+          <>
+            <PasswordMeter value={password} />
+            <PasswordField
+              label={t('account.confirmPassword')}
+              value={confirm}
+              onChange={setConfirm}
+              autoComplete="new-password"
+              error={errors.confirm}
+            />
+          </>
+        )}
         {errors.general && (
           <Alert tone="error" role="alert" icon="⚠">
             {errors.general}
@@ -133,27 +291,22 @@ function FirebaseSignIn() {
         )}
         <button
           type="submit"
-          className={styles.btn}
+          className={`${styles.btn} ${styles.btnPrimary}`}
           aria-busy={busy || undefined}
           disabled={busy || !email.trim() || !password}
         >
           {mode === 'in' ? t('account.signIn') : t('account.register')}
         </button>
       </form>
-      <div className={styles.signInLinks}>
-        <button
-          type="button"
-          className={styles.linkBtn}
-          onClick={() => setMode((m) => (m === 'in' ? 'up' : 'in'))}
-        >
-          {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
-        </button>
-        {mode === 'in' && (
+
+      {mode === 'in' && (
+        <div className={styles.signInLinks}>
           <button type="button" className={styles.linkBtn} disabled={busy} onClick={forgotPassword}>
             {t('account.forgotPassword')}
           </button>
-        )}
-      </div>
+        </div>
+      )}
+      {mode === 'up' && <LegalLine />}
     </>
   );
 }
@@ -265,6 +418,10 @@ export function Account() {
   const plan = uiPlan(entitlement);
   const [params, setParams] = useSearchParams();
   const checkout = params.get('checkout');
+  // Sign-in vs create-account, held here so the panel heading/intro track the tab.
+  const [authMode, setAuthMode] = useState<AuthMode>('in');
+  const firebaseAuth = isAuthAvailable();
+  const creating = firebaseAuth && authMode === 'up';
 
   // After a Stripe checkout returns, the entitlement is granted asynchronously by
   // the webhook — poll a few times so the new plan appears without a manual reload.
@@ -286,11 +443,13 @@ export function Account() {
         <div className={styles.authGrid}>
           <div className={styles.authPanel}>
             <header className={styles.head}>
-              <h1>{t('account.signInTitle')}</h1>
-              <p className={styles.sub}>{t('account.signInIntro')}</p>
+              <h1>{t(creating ? 'account.createTitle' : 'account.signInTitle')}</h1>
+              <p className={styles.sub}>
+                {t(creating ? 'account.createIntro' : 'account.signInIntro')}
+              </p>
             </header>
-            {isAuthAvailable() ? (
-              <FirebaseSignIn />
+            {firebaseAuth ? (
+              <FirebaseAuth mode={authMode} onModeChange={setAuthMode} />
             ) : import.meta.env.DEV ? (
               <LocalSignIn />
             ) : (
