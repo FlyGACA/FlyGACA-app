@@ -82,8 +82,13 @@ the Pro path. This is the highest value-per-test work available.
 > error) with Stripe + an in-memory Firestore mocked; the remaining gap is the
 > checkout/portal callables. `corpus.ts` moved 44% → 89% — `searchHref`,
 > `toChatSource` (lineage-aware citation assembly), and BM25 `retrieve` via the
-> `__setIndexForTest` hook. `captain-adel.ts` (the Genkit flow) stays open and
-> lower-priority. **This completes the plan (§1–§5).**
+> `__setIndexForTest` hook. **This completes the plan (§1–§5).**
+>
+> **Follow-up:** `functions/tests/captain-adel-flow.test.ts` now also covers
+> `captain-adel.ts` (0% → 100% lines) — the server-side grounding logic that the
+> analysis had left open: the deterministic refusal that never calls the model on
+> a low-confidence retrieval, the grounded/partial verdict thresholds, history
+> mapping, and flash/pro model selection, with Genkit/Gemini mocked.
 
 - **`billing.ts` (0%)** is the Stripe webhook handler — per `CLAUDE.md` the
   *only writer* of `users/{uid}.entitlement`. The pure decision logic lives in
