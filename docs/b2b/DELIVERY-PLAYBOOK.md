@@ -44,24 +44,24 @@ sell and deliver immediately.
 
 - Candidates work the loop per `CURRICULUM.md`: study sheet → eAIP reading → question bank →
   Mock Exam → review misses against citations → repeat.
-- **Weekly seat check** — from `functions/`, run
+- **Weekly cohort report** — from `functions/`, run
   `node scripts/school-cohort-report.mjs --file=roster.csv` (add `--csv=cohort-status.csv` to
-  export) to see who has an active seat, a pending invite, or an expired/absent one. Reconcile
-  against the shared tracker; nudge inactive/unclaimed seats at day 5 and day 12 (email).
+  export; `--threshold=` / `--banks=` to tune the pass mark and pack). It shows, per seat: seat
+  status (active / invited / expired / none), **coverage** (quiz banks ≥ threshold), **best Mock
+  Exam %**, **last active**, and a **ready** flag. Reconcile against the tracker; nudge inactive,
+  unclaimed, or not-yet-ready seats at day 5 and day 12 (email).
 - Captain Adel is available the whole time for "where in the AIP…" questions.
 
-> **Study progress is not yet server-visible.** Coverage % and Mock Exam scores live in each
-> candidate's browser (local-first, `src/lib/studyProgress.ts`), so the report covers the **seat**
-> dimension only. Until server-side progress sync exists (PLAN.md §8), collect study readiness the
-> low-tech way — a short self-report/screenshot from the admin, or the candidate's in-app Study
-> dashboard — and record it in the tracker by hand.
+> **Progress sync must be deployed for the readiness columns to populate.** They read
+> `users/{uid}/progress/summary`, written once `SYNC_STUDY_PROGRESS` is on **and** the
+> `firestore.rules` change is deployed. A seat that has synced nothing shows `ready: —` — chase the
+> deploy, or fall back to the candidate's in-app Study dashboard for that seat.
 
 ## Phase D — Readiness & report (end of window)
 
-1. **Seat status:** `school-cohort-report.mjs --csv=…` → who holds an active seat vs. pending/expired.
-2. **Study readiness (manual for now):** per candidate, **full bank coverage + Mock Exam ≥ threshold**
-   at least once, gathered from their in-app Study dashboard (self-reported) until progress sync lands.
-   The in-app scores are authoritative; the tracker just records them.
+1. Run `school-cohort-report.mjs --csv=…` for the final cohort status + readiness in one pass.
+2. **Ready** = every expected quiz bank ≥ threshold AND Mock Exam ≥ threshold (default the AIP
+   pack at 75%). The in-app scores are authoritative; the report reads the synced projection.
 3. Deliver to the org admin with a short summary: N seats active, N candidates ready, standouts,
    and who needs another pass.
 4. Log the outcome and ask for the case-study quote (design partners) or renewal/expansion.
@@ -77,9 +77,11 @@ sell and deliver immediately.
 - [ ] Roster CSV received and stored in the shared tracker with a cohort id.
 - [ ] Roster provisioned with `grant-school-seats.mjs`; access verified by a test login.
 - [ ] Branded invite + study loop emailed to every candidate.
-- [ ] Weekly seat status via `school-cohort-report.mjs --csv=…`; reconciled with the tracker.
-- [ ] Study coverage + Mock Exam scores pulled manually (in-app Study dashboard) into the tracker.
-- [ ] Readiness computed by hand from the tracker; report built and delivered.
+- [ ] Weekly cohort report via `school-cohort-report.mjs --csv=…` (seat status + readiness);
+      reconciled with the tracker.
+- [ ] Progress sync deployed (rules + `SYNC_STUDY_PROGRESS`) so readiness columns populate; any
+      `ready: —` seats chased or pulled from their in-app Study dashboard.
+- [ ] Final report built from the CSV and delivered.
 - [ ] Retro captured → feeds the requirements for progress sync + the admin dashboard (`PLAN.md` §8).
 
 ## Definitions

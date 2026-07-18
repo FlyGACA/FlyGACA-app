@@ -171,22 +171,27 @@ mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
   needs that model so an admin can scope "my cohort" and read only their members. The ops report
   script sidesteps this (an operator runs it against the roster file).
 
-- **Study-progress sync** *(built, ships dark; design in `DESIGN-study-progress-sync.md`).*
+- **Study-progress sync** *(built + enabled; design in `DESIGN-study-progress-sync.md`).*
   `users/{uid}/progress/summary` — a per-user readiness projection (quiz best + Mock Exam history +
   ground-school completion, **scores/completion only, no answers**) written by a debounced,
   best-effort client sync (`src/lib/studyProgressSync.ts`); local store stays source of truth.
-  Owner-scoped + key-allowlisted + size-capped rules (with tests). Gated by `SYNC_STUDY_PROGRESS`
-  (currently `false`) — flip to `true` once the rules are deployed to unblock the readiness report.
+  Owner-scoped + key-allowlisted + size-capped rules (with tests). `SYNC_STUDY_PROGRESS` is now
+  `true` — **deploy the `firestore.rules` change with/before hosting** (until then writes 403 and
+  are swallowed). A `/settings` consent notice shows to school-seat members.
+
+- **Readiness report** *(built).* `school-cohort-report.mjs` reads each seat's `progress/summary`
+  and reports **coverage** (quiz banks ≥ threshold), **best Mock Exam %**, **last active**, and a
+  **ready** flag (all expected banks ≥ threshold AND Mock Exam ≥ threshold; `--banks`/`--threshold`
+  configurable, default the AIP pack at 75%), with a `--csv` export. Status logic is the pure
+  `schoolReadiness` in `school-core.ts` (tested). A seat that has synced nothing shows `ready: —`.
 
 **Still to build (in priority order):**
 
-1. **Readiness report export.** Extend `school-cohort-report.mjs` to read each seat's
-   `progress/summary` → coverage % + best Mock Exam score + the ready flag; CSV first, PDF later
-   via the Playwright HTML→PDF pattern. (Also: enable `SYNC_STUDY_PROGRESS` + a `/settings` consent
-   notice.)
-2. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
+1. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
    seats, cohort roll-up under `/business/admin`. Until it ships, `grant-school-seats.mjs` +
-   `school-cohort-report.mjs` + a shared tracker cover provisioning and status.
+   `school-cohort-report.mjs` + a shared tracker cover provisioning, status and readiness.
+2. **Readiness report PDF.** Cohort-branded PDF via the Playwright HTML→PDF pattern
+   (`scripts/build-*-sheet.mjs`); the CSV already ships.
 3. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
 4. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
 

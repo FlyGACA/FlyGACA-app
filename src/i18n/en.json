@@ -2024,6 +2024,7 @@
     "needSignIn": "Sign in to use your account.",
     "goSignIn": "Go to sign in",
     "localNote": "Saved on this device only (local-first preview).",
+    "seatProgressNote": "Your school seat: your study progress (quiz and mock-exam scores) is shared with your school for its readiness reporting. Fly GACA is not affiliated with GACA — this is practice progress, not an exam record.",
     "unavailableTitle": "Sign-in is temporarily unavailable.",
     "unavailableBody": "Accounts aren't reachable right now. You can keep using the library, tools and study material — your progress is saved on this device and will sync once sign-in is back.",
     "dashboard": "Dashboard",

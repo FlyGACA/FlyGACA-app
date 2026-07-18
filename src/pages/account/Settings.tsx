@@ -185,6 +185,12 @@ function Inner() {
         </button>
       </div>
       <p className={styles.note}>{t('account.localNote')}</p>
+
+      {/* School-seat members: their study progress powers their school's readiness
+          report. Shown only for a school seat (source === 'school'), not staff/consumer. */}
+      {entitlement?.source === 'school' && (
+        <p className={styles.note}>{t('account.seatProgressNote')}</p>
+      )}
     </section>
   );
 }

@@ -102,3 +102,42 @@ export function schoolSeatStatus(
   if (input.hasInvite) return "invited";
   return "none";
 }
+
+/** The scores/completion projection a seat's `users/{uid}/progress/summary` holds. */
+export interface ProgressSummaryLike {
+  quizBest?: Record<string, number> | null;
+  examBest?: number | null;
+}
+
+/** A seat's study readiness, computed from its progress summary against a pack. */
+export interface Readiness {
+  /** Expected banks whose best score meets the threshold. */
+  coveredBanks: number;
+  /** Expected banks for the pack. */
+  totalBanks: number;
+  /** Best Mock Exam % (0 when none). */
+  examBest: number;
+  /** Ready to sit: every expected bank ≥ threshold AND Mock Exam ≥ threshold. */
+  ready: boolean;
+}
+
+/**
+ * Compute a seat's study readiness from its progress summary (or null when the seat
+ * has synced nothing yet). Pure, so the cohort report and its test agree: a seat is
+ * `ready` when it has covered every expected quiz bank at `threshold` AND scored at
+ * least `threshold` on the Mock Exam. Mirrors the readiness definition in
+ * DELIVERY-PLAYBOOK.md. `expectedBanks` is the pack's quiz banks (e.g. the AIP pack's
+ * `aip-ais` + `airspace`); `threshold` is the org's pass mark (default 75).
+ */
+export function schoolReadiness(
+  summary: ProgressSummaryLike | null | undefined,
+  expectedBanks: readonly string[],
+  threshold = 75,
+): Readiness {
+  const quizBest = summary?.quizBest ?? {};
+  const examBest = summary?.examBest ?? 0;
+  const coveredBanks = expectedBanks.filter((b) => (quizBest[b] ?? 0) >= threshold).length;
+  const totalBanks = expectedBanks.length;
+  const ready = totalBanks > 0 && coveredBanks === totalBanks && examBest >= threshold;
+  return { coveredBanks, totalBanks, examBest, ready };
+}
