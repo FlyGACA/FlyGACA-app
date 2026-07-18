@@ -187,9 +187,11 @@ mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
 
 **Still to build (in priority order):**
 
-1. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
-   seats, cohort roll-up under `/business/admin`. Until it ships, `grant-school-seats.mjs` +
-   `school-cohort-report.mjs` + a shared tracker cover provisioning, status and readiness.
+1. **Admin dashboard (MVP)** *(design in `DESIGN-admin-dashboard.md`, awaiting sign-off).* Needs an
+   `orgs/{id}` + admin-ownership model; a server-aggregated `getCohortReadiness` callable (so an
+   admin never cross-reads member progress), a read-only cohort table under `/business/admin`, then
+   self-serve provisioning. Until it ships, `grant-school-seats.mjs` + `school-cohort-report.mjs` +
+   a shared tracker cover provisioning, status and readiness.
 2. **Readiness report PDF.** Cohort-branded PDF via the Playwright HTML→PDF pattern
    (`scripts/build-*-sheet.mjs`); the CSV already ships.
 3. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
