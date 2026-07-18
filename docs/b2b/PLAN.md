@@ -173,8 +173,9 @@ mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
 
 **Still to build (in priority order):**
 
-1. **Study-progress sync** *(prerequisite for 2–3).* Persist per-user quiz/exam results to
-   Firestore (owner-read, server/owner-write), mirroring `studyProgress.ts`. Unblocks readiness.
+1. **Study-progress sync** *(prerequisite for 2–3; design in `DESIGN-study-progress-sync.md`).*
+   Persist a per-user readiness projection (quiz best + Mock Exam history) to Firestore
+   (owner-read, server/owner-write), local store stays source of truth. Unblocks readiness.
 2. **Readiness report export.** Once (1) lands: extend the cohort report with coverage %, best
    Mock Exam score, and the ready flag; CSV first, PDF later via the Playwright HTML→PDF pattern.
 3. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
