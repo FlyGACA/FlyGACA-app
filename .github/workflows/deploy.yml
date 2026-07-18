@@ -47,7 +47,7 @@ jobs:
         env:
           VITE_SITE_URL: https://flygaca.com
           # Optional: set to enable App Check (see docs/APP-CHECK-BACKEND.md).
-          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY }}
+          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: 6Lc84VgtAAAAABLBpU8ji5afO223aFYjwrCorFIT
           # Optional: serve the ~130 MB /data corpus off a bucket to keep each
           # Hosting release small (see the "Offload data corpus" step + docs/
           # DATA-HOSTING.md). Empty → the app fetches /data same-origin as before.
