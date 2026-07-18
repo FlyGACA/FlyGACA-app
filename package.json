@@ -60,6 +60,7 @@
     "@phosphor-icons/react": "^2.1.10",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "ai": "^7.0.31",
     "firebase": "^12.16.0",
     "framer-motion": "^12.42.2",
     "i18next": "^26.3.6",
