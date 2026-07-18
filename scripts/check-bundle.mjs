@@ -16,8 +16,10 @@ const DIST = 'dist';
 // majors: react-dom 19's renderer is ~14 kB gz heavier than 18.3 and
 // react-router 7's core ~9 kB heavier than 6.30, partly offset by Vite 8's Oxc
 // minifier. Measured floor after the upgrades: 180.3 kB gz (app-shell index
-// chunk unchanged at ~71 kB). Tighten as the shell shrinks.
-const BUDGET_KB = 183;
+// chunk unchanged at ~71 kB). Re-based again 183 → 186 in 2026-07 after routine
+// dependabot patch bumps (react-i18next, vite/rolldown runtime chunk, etc.)
+// pushed the measured floor to ~184 kB gz. Tighten as the shell shrinks.
+const BUDGET_KB = 186;
 
 const html = readFileSync(join(DIST, 'index.html'), 'utf8');
 const files = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+\.js)"/g)].map((m) => m[1]);
