@@ -21,9 +21,12 @@ import {
 } from '../../lib/auth';
 import { authErrorInfo } from '../../calc/authError';
 import { usePageMeta } from '../../lib/usePageMeta';
+import { useForm } from '../../hooks/useForm';
+import { PasswordStrength } from '../../components/account/PasswordStrength';
 import styles from './account.module.css';
 
 interface FieldErrors {
+  name?: string;
   email?: string;
   password?: string;
   general?: string;
@@ -37,45 +40,122 @@ function looksLikeEmail(v: string): boolean {
 function FirebaseSignIn() {
   const { t } = useTranslation();
   const [mode, setMode] = useState<'in' | 'up'>('in');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [animating, setAnimating] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
 
-  async function run(fn: () => Promise<unknown>) {
+  const toggleMode = () => {
+    setAnimating(true);
+    setTimeout(() => {
+      setMode((m) => (m === 'in' ? 'up' : 'in'));
+      setErrors({});
+      setNotice('');
+      loginForm.resetForm();
+      signupForm.resetForm();
+    }, 200);
+    setTimeout(() => {
+      setAnimating(false);
+    }, 400);
+  };
+
+  async function run(fn: () => Promise<unknown>, setFormErrors?: (errs: Partial<Record<string, string>>) => void) {
     setBusy(true);
     setErrors({});
     setNotice('');
     try {
       await fn();
-      // The account store adopts the session via onAuthChange.
     } catch (e) {
       const code = (e as { code?: string }).code;
       const { field, key } = authErrorInfo(code);
-      // When we fell back to the generic message the real code is unknown to us —
-      // append it (Firebase codes are non-secret) and log the full error so a
-      // deployment/config failure on a preview domain is diagnosable instead of
-      // masquerading as a bad-credentials message.
+      const errorMessage = t(key);
       const generic = key === 'account.authError';
       if (generic) console.error('Auth failure', code, e);
-      setErrors({ [field]: generic && code ? `${t(key)} (${code})` : t(key) });
+      
+      if (setFormErrors && (field === 'email' || field === 'password')) {
+        setFormErrors({ [field]: errorMessage });
+      } else {
+        setErrors({ [field]: errorMessage });
+      }
     } finally {
       setBusy(false);
     }
   }
 
+  const loginForm = useForm({
+    initialValues: { email: '', password: '' },
+    validate: (values) => {
+      const errs: FieldErrors = {};
+      if (!values.email.trim()) {
+        errs.email = t('account.errors.invalidEmail');
+      } else if (!looksLikeEmail(values.email.trim())) {
+        errs.email = t('account.errors.invalidEmail');
+      }
+      if (!values.password) {
+        errs.password = t('account.passwordRequired');
+      }
+      return errs;
+    },
+    onSubmit: async (values) => {
+      await run(
+        () => signInWithEmail(values.email.trim(), values.password),
+        loginForm.setErrors
+      );
+    }
+  });
+
+  const signupForm = useForm({
+    initialValues: { name: '', email: '', password: '', confirmPassword: '' },
+    validate: (values) => {
+      const errs: FieldErrors & { confirmPassword?: string } = {};
+      if (!values.name.trim()) {
+        errs.name = t('account.nameRequired');
+      }
+      if (!values.email.trim()) {
+        errs.email = t('account.errors.invalidEmail');
+      } else if (!looksLikeEmail(values.email.trim())) {
+        errs.email = t('account.errors.invalidEmail');
+      }
+      if (!values.password) {
+        errs.password = t('account.passwordRequired');
+      } else {
+        const hasNumber = /\d/.test(values.password);
+        const hasSpecial = /[^A-Za-z0-9]/.test(values.password);
+        const hasMixed = /[a-z]/.test(values.password) && /[A-Z]/.test(values.password);
+        if (values.password.length < 8 || !hasNumber || !hasSpecial || !hasMixed) {
+          errs.password = t('account.errors.passwordTooWeak');
+        }
+      }
+      if (values.password !== values.confirmPassword) {
+        errs.confirmPassword = t('account.errors.passwordsDoNotMatch');
+      }
+      return errs;
+    },
+    onSubmit: async (values) => {
+      await run(
+        () => registerWithEmail(values.email.trim(), values.password, values.name.trim() || undefined),
+        signupForm.setErrors
+      );
+    }
+  });
+
   function forgotPassword() {
-    if (!email.trim()) {
-      setErrors({ email: t('account.resetNeedEmail') });
+    const emailToUse = mode === 'in' ? loginForm.values.email.trim() : signupForm.values.email.trim();
+    if (!emailToUse) {
+      if (mode === 'in') {
+        loginForm.setErrors({ email: t('account.resetNeedEmail') });
+      } else {
+        signupForm.setErrors({ email: t('account.resetNeedEmail') });
+      }
       return;
     }
     void run(async () => {
-      await sendPasswordReset(email.trim());
+      await sendPasswordReset(emailToUse);
       setNotice(t('account.resetSent'));
     });
   }
+
+  const containerClass = `${styles.fadeTransition} ${animating ? styles.animating : ''}`;
 
   return (
     <>
@@ -88,63 +168,116 @@ function FirebaseSignIn() {
         {t('account.continueGoogle')}
       </button>
       <p className={styles.or}>{t('account.or')}</p>
-      <form
-        className={styles.authFields}
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!email.trim() || !password) return;
-          if (!looksLikeEmail(email.trim())) {
-            setErrors({ email: t('account.errors.invalidEmail') });
-            return;
-          }
-          void run(() =>
-            mode === 'in'
-              ? signInWithEmail(email.trim(), password)
-              : registerWithEmail(email.trim(), password, name.trim() || undefined),
-          );
-        }}
-      >
-        {mode === 'up' && <TextField label={t('account.name')} value={name} onChange={setName} />}
-        <TextField
-          label={t('account.email')}
-          value={email}
-          onChange={setEmail}
-          type="email"
-          autoComplete="email"
-          placeholder="you@example.com"
-          error={errors.email}
-        />
-        <PasswordField
-          label={t('account.password')}
-          value={password}
-          onChange={setPassword}
-          autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
-          error={errors.password}
-        />
-        {errors.general && (
-          <Alert tone="error" role="alert" icon="⚠">
-            {errors.general}
-          </Alert>
+      
+      <div className={containerClass}>
+        {mode === 'in' ? (
+          <form className={styles.authFields} onSubmit={loginForm.handleSubmit} noValidate>
+            <TextField
+              label={t('account.email')}
+              value={loginForm.values.email}
+              onChange={(v) => loginForm.setFieldValue('email', v)}
+              onBlur={() => loginForm.handleBlur('email')}
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              error={loginForm.touched.email ? loginForm.errors.email : undefined}
+            />
+            <PasswordField
+              label={t('account.password')}
+              value={loginForm.values.password}
+              onChange={(v) => loginForm.setFieldValue('password', v)}
+              onBlur={() => loginForm.handleBlur('password')}
+              autoComplete="current-password"
+              error={loginForm.touched.password ? loginForm.errors.password : undefined}
+            />
+            {errors.general && (
+              <Alert tone="error" role="alert" icon="⚠">
+                {errors.general}
+              </Alert>
+            )}
+            {notice && (
+              <Alert tone="success" role="status" icon="✓">
+                {notice}
+              </Alert>
+            )}
+            <button
+              type="submit"
+              className={styles.btn}
+              aria-busy={busy || undefined}
+              disabled={busy || !loginForm.values.email.trim() || !loginForm.values.password}
+            >
+              {t('account.signIn')}
+            </button>
+          </form>
+        ) : (
+          <form className={styles.authFields} onSubmit={signupForm.handleSubmit} noValidate>
+            <TextField
+              label={t('account.name')}
+              value={signupForm.values.name}
+              onChange={(v) => signupForm.setFieldValue('name', v)}
+              onBlur={() => signupForm.handleBlur('name')}
+              error={signupForm.touched.name ? signupForm.errors.name : undefined}
+            />
+            <TextField
+              label={t('account.email')}
+              value={signupForm.values.email}
+              onChange={(v) => signupForm.setFieldValue('email', v)}
+              onBlur={() => signupForm.handleBlur('email')}
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              error={signupForm.touched.email ? signupForm.errors.email : undefined}
+            />
+            <PasswordField
+              label={t('account.password')}
+              value={signupForm.values.password}
+              onChange={(v) => signupForm.setFieldValue('password', v)}
+              onBlur={() => signupForm.handleBlur('password')}
+              autoComplete="new-password"
+              error={signupForm.touched.password ? signupForm.errors.password : undefined}
+            />
+            <PasswordStrength password={signupForm.values.password} />
+            <PasswordField
+              label={t('account.confirmPassword')}
+              value={signupForm.values.confirmPassword}
+              onChange={(v) => signupForm.setFieldValue('confirmPassword', v)}
+              onBlur={() => signupForm.handleBlur('confirmPassword')}
+              autoComplete="new-password"
+              error={signupForm.touched.confirmPassword ? signupForm.errors.confirmPassword : undefined}
+            />
+            {errors.general && (
+              <Alert tone="error" role="alert" icon="⚠">
+                {errors.general}
+              </Alert>
+            )}
+            {notice && (
+              <Alert tone="success" role="status" icon="✓">
+                {notice}
+              </Alert>
+            )}
+            <button
+              type="submit"
+              className={styles.btn}
+              aria-busy={busy || undefined}
+              disabled={
+                busy ||
+                !signupForm.values.name.trim() ||
+                !signupForm.values.email.trim() ||
+                !signupForm.values.password ||
+                !signupForm.values.confirmPassword
+              }
+            >
+              {t('account.register')}
+            </button>
+          </form>
         )}
-        {notice && (
-          <Alert tone="success" role="status" icon="✓">
-            {notice}
-          </Alert>
-        )}
-        <button
-          type="submit"
-          className={styles.btn}
-          aria-busy={busy || undefined}
-          disabled={busy || !email.trim() || !password}
-        >
-          {mode === 'in' ? t('account.signIn') : t('account.register')}
-        </button>
-      </form>
+      </div>
+
       <div className={styles.signInLinks}>
         <button
           type="button"
           className={styles.linkBtn}
-          onClick={() => setMode((m) => (m === 'in' ? 'up' : 'in'))}
+          onClick={toggleMode}
         >
           {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
         </button>

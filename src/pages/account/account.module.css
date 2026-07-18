@@ -429,3 +429,15 @@
 .last {
   white-space: nowrap;
 }
+
+/* ── Transitions for form switching ── */
+.fadeTransition {
+  opacity: 1;
+  transition: opacity 0.20s ease-in-out, transform 0.20s ease-in-out;
+  transform: translateY(0);
+}
+.animating {
+  opacity: 0;
+  transform: translateY(4px);
+}
+

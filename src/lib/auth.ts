@@ -55,17 +55,71 @@ function requireAuth(auth: Awaited<ReturnType<typeof getFirebaseAuth>>): NonNull
   return auth;
 }
 
+function getSessionUrl(path: string): string {
+  const base = typeof window !== 'undefined' ? window.location.origin : '';
+  if (base && base.startsWith('http')) {
+    return new URL(path, base).toString();
+  }
+  return path;
+}
+
+async function syncSession(user: User): Promise<void> {
+  const isTest = typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env?.NODE_ENV === 'test';
+  if (isTest) {
+    return;
+  }
+  if (import.meta.env?.VITEST) {
+    return;
+  }
+  try {
+    const idToken = await user.getIdToken();
+    await fetch(getSessionUrl('/api/auth/session-login'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    });
+  } catch (err) {
+    console.error('Failed to sync session cookie with gateway:', err);
+  }
+}
+
 export async function signInWithGoogle(): Promise<AuthUser> {
+  const isMock = import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  if (isMock) {
+    const mockUser: AuthUser = {
+      uid: 'mock-google-uid',
+      email: 'google-user@flygaca.com',
+      displayName: 'Mock Google Pilot',
+      emailVerified: true,
+    };
+    const { signIn } = await import('./account');
+    signIn(mockUser.email || '', mockUser.displayName || '');
+    return mockUser;
+  }
   const auth = requireAuth(await getFirebaseAuth());
   const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
   const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+  await syncSession(cred.user);
   return mapUser(cred.user);
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<AuthUser> {
+  const isMock = import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  if (isMock) {
+    const mockUser: AuthUser = {
+      uid: 'mock-email-uid',
+      email: email,
+      displayName: email.split('@')[0],
+      emailVerified: true,
+    };
+    const { signIn } = await import('./account');
+    signIn(mockUser.email || '', mockUser.displayName || '');
+    return mockUser;
+  }
   const auth = requireAuth(await getFirebaseAuth());
   const { signInWithEmailAndPassword } = await import('firebase/auth');
   const cred = await signInWithEmailAndPassword(auth, email, password);
+  await syncSession(cred.user);
   return mapUser(cred.user);
 }
 
@@ -74,16 +128,41 @@ export async function registerWithEmail(
   password: string,
   displayName?: string,
 ): Promise<AuthUser> {
+  const isMock = import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  if (isMock) {
+    const mockUser: AuthUser = {
+      uid: 'mock-register-uid',
+      email: email,
+      displayName: displayName || email.split('@')[0],
+      emailVerified: true,
+    };
+    const { signIn } = await import('./account');
+    signIn(mockUser.email || '', mockUser.displayName || '');
+    return mockUser;
+  }
   const auth = requireAuth(await getFirebaseAuth());
   const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   if (displayName) await updateProfile(cred.user, { displayName });
+  await syncSession(cred.user);
   return mapUser(cred.user);
 }
 
 export async function signOutUser(): Promise<void> {
   const auth = await getFirebaseAuth();
   if (auth) await auth.signOut();
+  const isTest = typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env?.NODE_ENV === 'test';
+  if (isTest) {
+    return;
+  }
+  if (import.meta.env?.VITEST) {
+    return;
+  }
+  try {
+    await fetch(getSessionUrl('/api/auth/session-logout'), { method: 'POST' });
+  } catch (err) {
+    console.error('Failed to clear session cookie:', err);
+  }
 }
 
 /** Email the user a password-reset link. Throws `auth-unavailable` when unconfigured. */

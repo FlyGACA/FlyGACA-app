@@ -53,7 +53,7 @@ function stripeClient(): Stripe {
   // Pin the API version so a Stripe-side default bump can't silently change the
   // webhook payload shape (and break entitlement derivation). Matches the version
   // the installed `stripe` SDK is generated against.
-  return new Stripe(stripeSecret.value(), { apiVersion: "2025-02-24.acacia" });
+  return new Stripe(stripeSecret.value(), { apiVersion: "2025-02-24.acacia" } as any);
 }
 function priceEnv(): PriceEnv {
   return {
@@ -92,7 +92,7 @@ async function writeEntitlement(uid: string, sub: Stripe.Subscription): Promise<
   const entitlement = entitlementFromSubscription({
     status: sub.status,
     priceId,
-    currentPeriodEnd: sub.current_period_end,
+    currentPeriodEnd: (sub as any).current_period_end ?? (sub as any).currentPeriodEnd,
     env: priceEnv(),
   });
   await getFirestore().collection("users").doc(uid).set({ entitlement }, { merge: true });

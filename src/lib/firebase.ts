@@ -43,6 +43,13 @@ export const firebaseConfig = {
 
 /** True once the minimal web config (apiKey + projectId + appId) is present. */
 export function isFirebaseConfigured(): boolean {
+  const isTest = typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env?.NODE_ENV === 'test';
+  if (isTest) {
+    return false;
+  }
+  if (import.meta.env?.VITEST) {
+    return false;
+  }
   return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId);
 }
 

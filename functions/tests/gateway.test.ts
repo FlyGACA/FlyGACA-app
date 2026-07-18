@@ -14,6 +14,7 @@ import {
 // `initializeApp()` guard is a no-op.
 const h = vi.hoisted(() => ({
   verifyIdToken: vi.fn(),
+  verifySessionCookie: vi.fn(),
   verifyToken: vi.fn(),
 }));
 
@@ -22,7 +23,10 @@ vi.mock("firebase-admin/app", () => ({
   getApps: () => [{}],
 }));
 vi.mock("firebase-admin/auth", () => ({
-  getAuth: () => ({ verifyIdToken: h.verifyIdToken }),
+  getAuth: () => ({
+    verifyIdToken: h.verifyIdToken,
+    verifySessionCookie: h.verifySessionCookie,
+  }),
 }));
 vi.mock("firebase-admin/app-check", () => ({
   getAppCheck: () => ({ verifyToken: h.verifyToken }),
@@ -39,7 +43,14 @@ vi.mock("firebase-functions", async (importOriginal) => ({
 
 /** A minimal Express-like request carrying just the headers the gateway reads. */
 function reqWith(headers: Record<string, string> = {}): Request {
-  return { header: (name: string) => headers[name] } as unknown as Request;
+  const lowercased: Record<string, string> = {};
+  Object.keys(headers).forEach((k) => {
+    lowercased[k.toLowerCase()] = headers[k];
+  });
+  return {
+    header: (name: string) => headers[name],
+    headers: lowercased,
+  } as unknown as Request;
 }
 
 /** A minimal Express-like response recording status/json/end calls. */
@@ -146,6 +157,13 @@ describe("authenticate — App Check not enforced (default)", () => {
     const out = await authenticate(reqWith());
     expect(out).toEqual({});
     expect(h.verifyIdToken).not.toHaveBeenCalled();
+  });
+
+  it("returns the uid for a valid session cookie", async () => {
+    h.verifySessionCookie.mockResolvedValue({ uid: "u2" });
+    const out = await authenticate(reqWith({ Cookie: "session=goodcookie" }));
+    expect(out).toEqual({ uid: "u2" });
+    expect(h.verifySessionCookie).toHaveBeenCalledWith("goodcookie", true);
   });
 
   it("returns the uid for a valid bearer token", async () => {
