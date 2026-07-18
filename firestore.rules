@@ -122,6 +122,31 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(
                ['category', 'title', 'ref', 'issued', 'expires', 'remarks']);
       }
+
+      // Study-progress readiness projection (one `summary` doc). The owner
+      // writes SCORES + COMPLETION only — never answers (see
+      // src/lib/studyProgress.ts toProgressSummary + docs/b2b). The B2B readiness
+      // report reads it server-side (Admin SDK). Key-allowlisted, bounded and
+      // owner-scoped so a client can't bloat it or read another member's.
+      match /progress/{doc} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(
+               ['quizBest', 'exam', 'examBest', 'examCount', 'gsDone', 'updatedAt'])
+          && request.resource.data.updatedAt is string
+          && request.resource.data.updatedAt.size() <= 40
+          && request.resource.data.quizBest is map
+          && request.resource.data.quizBest.keys().size() <= 100
+          && request.resource.data.gsDone is map
+          && request.resource.data.gsDone.keys().size() <= 100
+          && (!('examBest' in request.resource.data)
+              || (request.resource.data.examBest is number
+                  && request.resource.data.examBest >= 0
+                  && request.resource.data.examBest <= 100))
+          && (!('examCount' in request.resource.data)
+              || (request.resource.data.examCount is int
+                  && request.resource.data.examCount >= 0));
+      }
     }
 
     // The uid → Stripe-customer mapping, written ONLY by the billing functions

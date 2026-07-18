@@ -278,6 +278,8 @@ export function sumHours(flights: Flight[], key: keyof Flight): number {
  * Firebase session. When Firebase is off this never runs, so the store stays
  * purely local-first.
  */
+let stopProgressSync: (() => void) | null = null;
+
 function connectAuth(): void {
   void onAuthChange(async (user) => {
     if (user) {
@@ -291,6 +293,14 @@ function connectAuth(): void {
           email: user.email ?? state.profile.email,
           displayName: user.displayName ?? state.profile.displayName,
         },
+      });
+      // Start syncing this user's study-progress projection (best-effort; a no-op
+      // while the SYNC_STUDY_PROGRESS flag is off). Lazy-loaded so it stays out of
+      // the initial bundle; guarded so a late import can't start a stale session.
+      stopProgressSync?.();
+      stopProgressSync = null;
+      void import('./studyProgressSync').then(({ startStudyProgressSync }) => {
+        if (state.uid === user.uid) stopProgressSync = startStudyProgressSync(user.uid);
       });
       try {
         // Staff auto-grant: a verified allowlisted email (e.g. @flygaca.com) gets
@@ -324,6 +334,8 @@ function connectAuth(): void {
         /* offline / rules — keep the local cache */
       }
     } else if (state.uid) {
+      stopProgressSync?.();
+      stopProgressSync = null;
       commit({
         ...state,
         session: null,

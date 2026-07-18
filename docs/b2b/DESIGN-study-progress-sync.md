@@ -1,7 +1,16 @@
 # Design proposal — study-progress sync (readiness prerequisite)
 
-Status: **Proposal for sign-off.** Owner: Fly GACA. Last updated: 2026-07-17.
+Status: **Signed off + implemented (ships dark).** Owner: Fly GACA. Last updated: 2026-07-18.
 Unblocks: `PLAN.md` §8.2 (readiness report) and §8.3 (admin dashboard).
+
+**Sign-off decisions (§9):** store **scores + completion only** (no answers); sync for **all
+signed-in users** (doubles as backup; the report only reads a roster's own uids); consent via a
+**`/settings` notice + the proposal/DPA clause** (no per-member toggle); ship **dark** behind
+`SYNC_STUDY_PROGRESS` (in `src/lib/studyProgressSync.ts`), flip to `true` once the rules are
+deployed. Implemented per this doc: the `users/{uid}/progress/summary` rules + tests, the pure
+`toProgressSummary` projection + tests, and the debounced best-effort writer wired into
+`account.ts` (lazy-loaded, so it stays out of the initial bundle). The `/settings` consent notice
+and the report's readiness columns are the remaining follow-ups.
 
 > **Not affiliated with GACA.** This stores a member's *practice* progress to power a training
 > readiness report; it is not an exam record and never replaces the official GACA exam.

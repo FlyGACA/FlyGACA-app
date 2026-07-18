@@ -24,13 +24,7 @@ import {
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import {
-  doc,
-  getDoc,
-  setDoc,
-  deleteDoc,
-  type Firestore,
-} from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, type Firestore } from 'firebase/firestore';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RULES = readFileSync(resolve(HERE, '../../firestore.rules'), 'utf8');
@@ -95,12 +89,12 @@ describe('users/{uid} — ownership & entitlement', () => {
     await assertSucceeds(getDoc(doc(dbFor(ALICE), `users/${ALICE}`)));
   });
 
-  it('denies reading another user\'s profile', async () => {
+  it("denies reading another user's profile", async () => {
     await seed(`users/${ALICE}`, validProfile);
     await assertFails(getDoc(doc(dbFor(BOB), `users/${ALICE}`)));
   });
 
-  it('denies writing to another user\'s profile', async () => {
+  it("denies writing to another user's profile", async () => {
     await assertFails(setDoc(doc(dbFor(BOB), `users/${ALICE}`), validProfile));
   });
 
@@ -193,9 +187,7 @@ describe('users/{uid} — ownership & entitlement', () => {
 
 describe('users/{uid}/logbook — isolation & field bounds', () => {
   it('lets an owner create a valid flight', async () => {
-    await assertSucceeds(
-      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), validFlight),
-    );
+    await assertSucceeds(setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), validFlight));
   });
 
   it("denies reading another user's logbook", async () => {
@@ -232,7 +224,10 @@ describe('users/{uid}/logbook — isolation & field bounds', () => {
 
   it('rejects a malformed (non-ISO) date', async () => {
     await assertFails(
-      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), { ...validFlight, date: 'xxxxxxxxxxxx' }),
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/logbook/f1`), {
+        ...validFlight,
+        date: 'xxxxxxxxxxxx',
+      }),
     );
   });
 
@@ -245,9 +240,7 @@ describe('users/{uid}/logbook — isolation & field bounds', () => {
 
 describe('users/{uid}/records — isolation & field bounds', () => {
   it('lets an owner create a valid record', async () => {
-    await assertSucceeds(
-      setDoc(doc(dbFor(ALICE), `users/${ALICE}/records/r1`), validRecord),
-    );
+    await assertSucceeds(setDoc(doc(dbFor(ALICE), `users/${ALICE}/records/r1`), validRecord));
   });
 
   it("denies reading another user's records", async () => {
@@ -276,11 +269,61 @@ describe('users/{uid}/records — isolation & field bounds', () => {
   });
 });
 
+describe('users/{uid}/progress — readiness projection', () => {
+  const validSummary = {
+    quizBest: { 'aip-ais': 80 },
+    exam: { pct: 72, passed: false, date: '2026-07-16' },
+    examBest: 88,
+    examCount: 2,
+    gsDone: { 'air-law': true },
+    updatedAt: '2026-07-17T12:00:00.000Z',
+  };
+
+  it('lets an owner write their progress summary', async () => {
+    await assertSucceeds(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/progress/summary`), validSummary),
+    );
+  });
+
+  it("denies reading another user's progress", async () => {
+    await seed(`users/${ALICE}/progress/summary`, validSummary);
+    await assertFails(getDoc(doc(dbFor(BOB), `users/${ALICE}/progress/summary`)));
+  });
+
+  it("denies writing another user's progress", async () => {
+    await assertFails(setDoc(doc(dbFor(BOB), `users/${ALICE}/progress/summary`), validSummary));
+  });
+
+  it('rejects an unexpected key (e.g. syncing answers)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/progress/summary`), {
+        ...validSummary,
+        answers: { 'aip-ais': [1, 2, 3] },
+      }),
+    );
+  });
+
+  it('rejects an out-of-range examBest', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/progress/summary`), {
+        ...validSummary,
+        examBest: 140,
+      }),
+    );
+  });
+
+  it('rejects an oversized quizBest map', async () => {
+    const quizBest: Record<string, number> = {};
+    for (let i = 0; i < 101; i += 1) quizBest[`bank-${i}`] = 50;
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `users/${ALICE}/progress/summary`), { ...validSummary, quizBest }),
+    );
+  });
+});
+
 describe('waitlist — write-only', () => {
   it('lets anyone submit a valid email', async () => {
-    await assertSucceeds(
-      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com' }),
-    );
+    await assertSucceeds(setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com' }));
   });
 
   it('rejects a malformed waitlist email', async () => {
@@ -311,9 +354,7 @@ describe('stripeCustomers & default-deny', () => {
   });
 
   it('denies a client writing a stripe-events marker', async () => {
-    await assertFails(
-      setDoc(doc(dbFor(ALICE), 'stripeEvents/evt_1'), { type: 'x' }),
-    );
+    await assertFails(setDoc(doc(dbFor(ALICE), 'stripeEvents/evt_1'), { type: 'x' }));
   });
 
   it('denies a client reading the school-invite roster', async () => {

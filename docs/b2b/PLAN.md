@@ -171,18 +171,24 @@ mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
   needs that model so an admin can scope "my cohort" and read only their members. The ops report
   script sidesteps this (an operator runs it against the roster file).
 
+- **Study-progress sync** *(built, ships dark; design in `DESIGN-study-progress-sync.md`).*
+  `users/{uid}/progress/summary` — a per-user readiness projection (quiz best + Mock Exam history +
+  ground-school completion, **scores/completion only, no answers**) written by a debounced,
+  best-effort client sync (`src/lib/studyProgressSync.ts`); local store stays source of truth.
+  Owner-scoped + key-allowlisted + size-capped rules (with tests). Gated by `SYNC_STUDY_PROGRESS`
+  (currently `false`) — flip to `true` once the rules are deployed to unblock the readiness report.
+
 **Still to build (in priority order):**
 
-1. **Study-progress sync** *(prerequisite for 2–3; design in `DESIGN-study-progress-sync.md`).*
-   Persist a per-user readiness projection (quiz best + Mock Exam history) to Firestore
-   (owner-read, server/owner-write), local store stays source of truth. Unblocks readiness.
-2. **Readiness report export.** Once (1) lands: extend the cohort report with coverage %, best
-   Mock Exam score, and the ready flag; CSV first, PDF later via the Playwright HTML→PDF pattern.
-3. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
+1. **Readiness report export.** Extend `school-cohort-report.mjs` to read each seat's
+   `progress/summary` → coverage % + best Mock Exam score + the ready flag; CSV first, PDF later
+   via the Playwright HTML→PDF pattern. (Also: enable `SYNC_STUDY_PROGRESS` + a `/settings` consent
+   notice.)
+2. **Admin dashboard (MVP).** Needs an `orgs/{id}` + admin-ownership model; invite by CSV, list
    seats, cohort roll-up under `/business/admin`. Until it ships, `grant-school-seats.mjs` +
    `school-cohort-report.mjs` + a shared tracker cover provisioning and status.
-4. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
-5. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
+3. **Seat overage true-up.** Report seats-in-use vs. contracted count; surface for billing.
+4. **SSO (Enterprise only, later).** Defer until an Enterprise deal requires it.
 
 **Cohort #1 needs nothing new** — `grant-school-seats.mjs` provisions accounts and invites the
 rest (who self-unlock via `claimSchoolSeat`), and `school-cohort-report.mjs` gives the weekly seat
