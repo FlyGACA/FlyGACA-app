@@ -6,6 +6,7 @@ import {
   isApprovedSchoolDomain,
   schoolSeatStatus,
   schoolReadiness,
+  cohortRow,
 } from "../src/school-core.js";
 
 describe("schoolEntitlement", () => {
@@ -180,5 +181,65 @@ describe("schoolReadiness", () => {
 
   it("is never ready with no expected banks", () => {
     expect(schoolReadiness({ quizBest: {}, examBest: 100 }, []).ready).toBe(false);
+  });
+});
+
+describe("cohortRow", () => {
+  const AIP = ["aip-ais", "airspace"];
+  const now = new Date("2026-07-18T00:00:00Z");
+
+  it("combines an active seat with full readiness into a ready row", () => {
+    const row = cohortRow(
+      {
+        email: "cadet@academy.edu.sa",
+        entitlement: schoolEntitlement(),
+        hasInvite: true,
+        summary: { quizBest: { "aip-ais": 90, airspace: 80 }, examBest: 85, updatedAt: "2026-07-17T10:00:00Z" },
+      },
+      AIP,
+      75,
+      now,
+    );
+    expect(row).toEqual({
+      email: "cadet@academy.edu.sa",
+      status: "active",
+      source: "school",
+      coverage: "2/2",
+      coveredBanks: 2,
+      totalBanks: 2,
+      examBest: 85,
+      ready: true,
+      hasProgress: true,
+      lastActive: "2026-07-17",
+    });
+  });
+
+  it("marks a seat with no synced progress hasProgress:false and not ready", () => {
+    const row = cohortRow(
+      { email: "new@academy.edu.sa", entitlement: schoolEntitlement(), hasInvite: true, summary: null },
+      AIP,
+      75,
+      now,
+    );
+    expect(row.hasProgress).toBe(false);
+    expect(row.ready).toBe(false);
+    expect(row.coverage).toBe("0/2");
+    expect(row.lastActive).toBe("");
+  });
+
+  it("reflects a lapsed seat as expired regardless of readiness", () => {
+    const row = cohortRow(
+      {
+        email: "old@academy.edu.sa",
+        entitlement: schoolEntitlement("2026-06-30T23:59:59Z"),
+        hasInvite: false,
+        summary: { quizBest: { "aip-ais": 90, airspace: 90 }, examBest: 90 },
+      },
+      AIP,
+      75,
+      now,
+    );
+    expect(row.status).toBe("expired");
+    expect(row.ready).toBe(true); // readiness is independent of seat status
   });
 });

@@ -52,7 +52,9 @@ const appOrigin = defineString("APP_ORIGIN");
 function stripeClient(): Stripe {
   // Pin the API version so a Stripe-side default bump can't silently change the
   // webhook payload shape (and break entitlement derivation). Matches the version
-  // the installed `stripe` SDK is generated against.
+  // the installed `stripe` SDK is generated against. Cast: the pinned string may
+  // predate the SDK's apiVersion union literal.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Stripe(stripeSecret.value(), { apiVersion: "2025-02-24.acacia" } as any);
 }
 function priceEnv(): PriceEnv {
@@ -92,7 +94,11 @@ async function writeEntitlement(uid: string, sub: Stripe.Subscription): Promise<
   const entitlement = entitlementFromSubscription({
     status: sub.status,
     priceId,
-    currentPeriodEnd: (sub as any).current_period_end ?? (sub as any).currentPeriodEnd,
+    currentPeriodEnd:
+      (sub as unknown as { current_period_end?: number; currentPeriodEnd?: number })
+        .current_period_end ??
+      (sub as unknown as { current_period_end?: number; currentPeriodEnd?: number })
+        .currentPeriodEnd,
     env: priceEnv(),
   });
   await getFirestore().collection("users").doc(uid).set({ entitlement }, { merge: true });

@@ -33,25 +33,28 @@ export function useForm<T extends Record<string, unknown>>({
         }
       });
     },
-    [validate]
+    [validate],
   );
 
-  const setFieldValue = useCallback((name: keyof T, value: unknown) => {
-    setValues((prev) => {
-      const nextValues = { ...prev, [name]: value };
-      if (touched[name]) {
-        validateField(name, value, nextValues);
-      }
-      return nextValues;
-    });
-  }, [touched, validateField]);
+  const setFieldValue = useCallback(
+    (name: keyof T, value: unknown) => {
+      setValues((prev) => {
+        const nextValues = { ...prev, [name]: value };
+        if (touched[name]) {
+          validateField(name, value, nextValues);
+        }
+        return nextValues;
+      });
+    },
+    [touched, validateField],
+  );
 
   const handleBlur = useCallback(
     (name: keyof T) => {
       setTouched((prev) => ({ ...prev, [name]: true }));
       validateField(name, values[name], values);
     },
-    [values, validateField]
+    [values, validateField],
   );
 
   const handleSubmit = useCallback(
@@ -83,7 +86,7 @@ export function useForm<T extends Record<string, unknown>>({
         }
       }
     },
-    [values, validate, onSubmit]
+    [values, validate, onSubmit],
   );
 
   const resetForm = useCallback(() => {

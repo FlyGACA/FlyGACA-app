@@ -118,6 +118,7 @@ const Settings = lazyNamed(() => import('./pages/account/Settings'), 'Settings')
 // Marketing / legal
 const Pricing = lazyNamed(() => import('./pages/Pricing'), 'Pricing');
 const Schools = lazyNamed(() => import('./pages/Schools'), 'Schools');
+const BusinessAdmin = lazyNamed(() => import('./pages/business/Admin'), 'BusinessAdmin');
 const About = lazyNamed(() => import('./pages/About'), 'About');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
@@ -231,6 +232,7 @@ const routes = [
       { path: 'settings', element: <Settings /> },
       { path: 'pricing', element: <Pricing /> },
       { path: 'schools', element: <Schools /> },
+      { path: 'business/admin', element: <BusinessAdmin /> },
       { path: 'about', element: <About /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },

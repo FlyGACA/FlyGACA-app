@@ -72,7 +72,7 @@ export async function authenticate(req: Request): Promise<{ uid?: string }> {
     try {
       const decoded = await getAuth().verifySessionCookie(sessionCookie, true);
       return { uid: decoded.uid };
-    } catch (err) {
+    } catch {
       // If session cookie is expired/invalid, let it fall through to auth header check
     }
   }

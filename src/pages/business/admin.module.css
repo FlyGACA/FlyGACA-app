@@ -1,0 +1,85 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-block: var(--space-6);
+}
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.muted {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Stat tiles ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-4);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.statValue {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  color: var(--accent-bright);
+}
+.statLabel {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--text-muted);
+}
+
+/* ── Cohort table ── */
+.tableWrap {
+  inline-size: 100%;
+  overflow-x: auto;
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+}
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.table th,
+.table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: start;
+  border-block-end: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table th {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--text-muted);
+  font-weight: var(--fw-semibold);
+}
+.table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}
+.note {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-body);
+  margin: 0;
+  max-inline-size: 72ch;
+}
