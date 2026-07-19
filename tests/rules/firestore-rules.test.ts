@@ -326,8 +326,26 @@ describe('waitlist — write-only', () => {
     await assertSucceeds(setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com' }));
   });
 
+  it('lets a submission carry an optional topic (a soon-pack id)', async () => {
+    await assertSucceeds(
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', topic: 'cpl' }),
+    );
+  });
+
   it('rejects a malformed waitlist email', async () => {
     await assertFails(setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'nope' }));
+  });
+
+  it('rejects an over-long topic', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', topic: 'x'.repeat(41) }),
+    );
+  });
+
+  it('rejects a submission carrying an unknown field (pinned key set)', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', hacked: true }),
+    );
   });
 
   it('denies reading the waitlist', async () => {
@@ -389,6 +407,29 @@ describe('chatCredits — owner-readable, server-only writes', () => {
 
   it('denies a client writing its own credit balance (no self-grant)', async () => {
     await assertFails(setDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`), { balance: 999 }));
+  });
+});
+
+describe('packEntitlements — owner-readable, server-only writes', () => {
+  const owned = { packs: { medical: { purchasedAt: '2026-07-19T00:00:00.000Z', source: 'stripe' } } };
+
+  it('lets an owner read their own purchased packs', async () => {
+    await seed(`packEntitlements/${ALICE}`, owned);
+    await assertSucceeds(getDoc(doc(dbFor(ALICE), `packEntitlements/${ALICE}`)));
+  });
+
+  it("denies reading another user's purchased packs", async () => {
+    await seed(`packEntitlements/${ALICE}`, owned);
+    await assertFails(getDoc(doc(dbFor(BOB), `packEntitlements/${ALICE}`)));
+  });
+
+  it('denies a client writing its own pack ownership (no self-grant)', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), `packEntitlements/${ALICE}`), owned));
+  });
+
+  it('denies deleting a server-set pack ownership doc', async () => {
+    await seed(`packEntitlements/${ALICE}`, owned);
+    await assertFails(deleteDoc(doc(dbFor(ALICE), `packEntitlements/${ALICE}`)));
   });
 });
 

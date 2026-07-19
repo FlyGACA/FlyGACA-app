@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type {
@@ -9,38 +10,45 @@ import type {
   QuizData,
 } from '../../lib/content';
 import { useStudyProgress } from '../../lib/studyProgress';
-import { useFeature } from '../../lib/features';
+import { useAccount, refreshAccount } from '../../lib/account';
+import { hasPackAccess, ownsPack } from '../../lib/packEntitlements';
+import { canCheckout, startPackCheckout } from '../../lib/billing';
+import { captureRefFromUrl, getStoredRef } from '../../lib/referral';
 import { usePageMeta } from '../../lib/usePageMeta';
 import { courseLd } from '../../lib/jsonld';
 import { adelLink } from '../../lib/adel';
 import { Disclaimer } from '../../components/Disclaimer';
 import { ProgressBar } from '../../components/ProgressBar';
-import { PACKS, PACKS_GATED } from './packCatalog';
+import { findPack, packItemCount, PREP_PACK_PRICE } from '../../lib/prepCatalog';
 import { NotFound } from '../NotFound';
 import styles from './Study.module.css';
 
 export function PackDetail() {
   const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const pack = PACKS.find((p) => p.id === id);
+  const navigate = useNavigate();
+  const pack = findPack(id);
+  // `soon` packs are announced but have no content/detail page — treat as not found
+  // so the storefront card (with its waitlist form) is the only surface for them.
+  const shown = pack && pack.status === 'live' ? pack : undefined;
 
-  // A study pack is a curated, free course. An unknown id renders <NotFound/>, so
+  // A pack detail page is indexable; an unknown/soon id renders <NotFound/>, so
   // noindex it here (this hook runs before that early return).
   usePageMeta(
-    pack ? t(`study.packCatalog.${pack.id}.name`) : undefined,
-    pack ? t(`study.packCatalog.${pack.id}.desc`) : undefined,
-    pack
+    shown ? t(`study.packCatalog.${shown.id}.name`) : undefined,
+    shown ? t(`study.packCatalog.${shown.id}.desc`) : undefined,
+    shown
       ? courseLd({
-          title: t(`study.packCatalog.${pack.id}.name`),
-          description: t(`study.packCatalog.${pack.id}.desc`),
-          path: `/study/packs/${pack.id}`,
+          title: t(`study.packCatalog.${shown.id}.name`),
+          description: t(`study.packCatalog.${shown.id}.desc`),
+          path: `/study/packs/${shown.id}`,
           lang: i18n.language,
         })
       : undefined,
-    pack ? undefined : { noindex: true },
+    shown ? undefined : { noindex: true },
   );
 
-  const canUsePro = useFeature('prep-packs');
+  const { entitlement, ownedPacks } = useAccount();
   const { quizBest, flagged, exam } = useStudyProgress();
   const quiz = useFetchJson<QuizData>('/data/quiz.json');
   const gs = useFetchJson<GroundSchoolData>('/data/groundschool.json');
@@ -48,45 +56,132 @@ export function PackDetail() {
   const pdfs = useFetchJson<PdfsIndex>('/data/pdfs-index.json');
   const refs = useFetchJson<CorpusIndex>('/data/reference-index.json');
 
-  if (!pack) return <NotFound />;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const checkout = searchParams.get('checkout');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
 
-  const packName = t(`study.packCatalog.${pack.id}.name`);
-  const packDesc = t(`study.packCatalog.${pack.id}.desc`);
+  // Persist an inbound ?ref=CODE so it survives the sign-in / Stripe round-trip.
+  useEffect(() => {
+    captureRefFromUrl();
+  }, []);
 
-  const locked = PACKS_GATED && pack.pro && !canUsePro;
-  if (locked) {
+  // After a pack checkout returns, ownership is granted asynchronously by the
+  // webhook — poll a few times so the unlocked pack appears without a manual reload.
+  useEffect(() => {
+    if (checkout !== 'success') return;
+    void refreshAccount();
+    let n = 0;
+    const poll = window.setInterval(() => {
+      void refreshAccount();
+      if (++n >= 8) window.clearInterval(poll);
+    }, 2500);
+    return () => window.clearInterval(poll);
+  }, [checkout]);
+
+  if (!shown) return <NotFound />;
+  const pack2 = shown;
+
+  const packName = t(`study.packCatalog.${pack2.id}.name`);
+  const packDesc = t(`study.packCatalog.${pack2.id}.desc`);
+  const access = hasPackAccess(pack2, entitlement, ownedPacks);
+  const owned = ownsPack(pack2, ownedPacks);
+  const justPurchased = checkout === 'success' && owned;
+
+  function dismissCheckoutParam() {
+    const next = new URLSearchParams(searchParams);
+    next.delete('checkout');
+    setSearchParams(next, { replace: true });
+  }
+
+  async function buy() {
+    setBusy(true);
+    setError('');
+    try {
+      await startPackCheckout(pack2.id, { ref: getStoredRef() });
+    } catch (e) {
+      const code = e instanceof Error ? e.message : '';
+      if (code === 'sign-in-required') {
+        navigate('/account');
+        return;
+      }
+      setError(t('study.packCheckoutError'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Locked = a paid pack the user neither owns nor has via a plan. Show a real product
+  // page: what's inside, price, Buy (or "included with Pro"). Buy is web-only.
+  if (!access) {
     return (
       <section className={`container ${styles.page}`}>
         <p className={styles.back}>
           <Link to="/study/packs">← {t('study.packs')}</Link>
         </p>
-        <h1>{packName}</h1>
-        <p className={styles.subtitle}>{packDesc}</p>
-        <Link to="/pricing" className={styles.primary} style={{ textDecoration: 'none' }}>
-          {t('study.packGo')}
-        </Link>
+        <header className={styles.packHero}>
+          <div className={styles.packHeroTop}>
+            <h1>{packName}</h1>
+            <span className={styles.proTag}>{t('study.packPaid')}</span>
+          </div>
+          <p className={styles.packHeroDesc}>{packDesc}</p>
+
+          <p className={styles.packInsideLine}>
+            {t('study.packItemCount', { n: packItemCount(pack2) })} ·{' '}
+            {t('study.questions', { n: countQuestions(quiz.data, pack2.bankIds) })}
+          </p>
+
+          <div className={styles.packBuyRow}>
+            <span className={styles.packBuyPrice}>
+              <bdi dir="ltr">{t('study.packPriceOnce', { n: PREP_PACK_PRICE })}</bdi>
+            </span>
+            {canCheckout() ? (
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={busy}
+                onClick={() => void buy()}
+              >
+                {busy ? t('pricing.checkoutBusy') : t('study.packBuy')}
+              </button>
+            ) : (
+              // Native shells buy through store IAP, not Stripe web checkout.
+              <button type="button" className={styles.primary} disabled aria-disabled="true">
+                {t('pricing.passComingSoon')}
+              </button>
+            )}
+          </div>
+          <p className={styles.packIncludedWith}>
+            <Link to="/pricing">{t('study.packIncludedWithPro')}</Link>
+          </p>
+          {error && (
+            <p role="alert" className={styles.notifyError}>
+              {error}
+            </p>
+          )}
+        </header>
         <Disclaimer compact />
       </section>
     );
   }
 
-  const banks = (quiz.data?.banks ?? []).filter((b) => pack.bankIds.includes(b.id));
-  const modules = (gs.data?.modules ?? []).filter((m) => pack.moduleIds?.includes(m.id));
-  const readingPaths = (paths.data?.paths ?? []).filter((p) => pack.pathIds?.includes(p.id));
-  const sheets = (pdfs.data?.documents ?? []).filter((d) => pack.sheetSlugs?.includes(d.slug));
+  const banks = (quiz.data?.banks ?? []).filter((b) => pack2.bankIds.includes(b.id));
+  const modules = (gs.data?.modules ?? []).filter((m) => pack2.moduleIds?.includes(m.id));
+  const readingPaths = (paths.data?.paths ?? []).filter((p) => pack2.pathIds?.includes(p.id));
+  const sheets = (pdfs.data?.documents ?? []).filter((d) => pack2.sheetSlugs?.includes(d.slug));
   // Keep the pack's own slug order so the reading list reads GEN → ENR, not index order.
-  const reading = (pack.librarySlugs ?? [])
+  const reading = (pack2.librarySlugs ?? [])
     .map((slug) => refs.data?.documents.find((d) => d.slug === slug))
     .filter((d): d is NonNullable<typeof d> => d != null);
 
   // Overall mastery = mean of each bank's best quiz score (unattempted banks count 0),
   // so the meter reflects progress across the whole pack, not a single good run.
-  const mastery = pack.bankIds.length
+  const mastery = pack2.bankIds.length
     ? Math.round(
-        pack.bankIds.reduce((sum, bid) => sum + (quizBest[bid] ?? 0), 0) / pack.bankIds.length,
+        pack2.bankIds.reduce((sum, bid) => sum + (quizBest[bid] ?? 0), 0) / pack2.bankIds.length,
       )
     : 0;
-  const flaggedCount = pack.bankIds.reduce((n, bid) => n + (flagged[bid]?.length ?? 0), 0);
+  const flaggedCount = pack2.bankIds.reduce((n, bid) => n + (flagged[bid]?.length ?? 0), 0);
 
   const adelHref = adelLink(t('study.askAdelPrompt', { topic: packName }));
 
@@ -96,10 +191,33 @@ export function PackDetail() {
         <Link to="/study/packs">← {t('study.packs')}</Link>
       </p>
 
+      {justPurchased && (
+        <p role="status" className={styles.purchaseOk}>
+          <span>{t('study.packPurchaseSuccess')}</span>
+          <button type="button" className={styles.canceledDismiss} onClick={dismissCheckoutParam}>
+            {t('pricing.checkoutCanceledDismiss')}
+          </button>
+        </p>
+      )}
+      {checkout === 'cancel' && (
+        <p role="status" className={styles.purchaseCancel}>
+          <span>{t('study.packCheckoutCanceled')}</span>
+          <button type="button" className={styles.canceledDismiss} onClick={dismissCheckoutParam}>
+            {t('pricing.checkoutCanceledDismiss')}
+          </button>
+        </p>
+      )}
+
       <header className={styles.packHero}>
         <div className={styles.packHeroTop}>
           <h1>{packName}</h1>
-          {pack.pro && <span className={styles.proTag}>{t('study.packPro')}</span>}
+          {owned ? (
+            <span className={styles.ownedTag}>{t('study.packOwned')}</span>
+          ) : (
+            pack2.access === 'paid' && (
+              <span className={styles.includedTag}>{t('study.packIncluded')}</span>
+            )
+          )}
         </div>
         <p className={styles.packHeroDesc}>{packDesc}</p>
 
@@ -141,11 +259,20 @@ export function PackDetail() {
         <div className={styles.packActionRow}>
           {banks.length > 0 && (
             <Link
-              to={`/study/quiz?pack=${pack.id}`}
+              to={`/study/quiz?pack=${pack2.id}`}
               className={styles.primary}
               style={{ textDecoration: 'none' }}
             >
               {t('study.startPackQuiz')}
+            </Link>
+          )}
+          {banks.length > 0 && (
+            <Link
+              to={`/study/exam?pack=${pack2.id}`}
+              className={styles.secondary}
+              style={{ textDecoration: 'none' }}
+            >
+              {t('study.packExamStart')}
             </Link>
           )}
           {adelHref && (
@@ -153,9 +280,6 @@ export function PackDetail() {
               {t('study.askAdel')}
             </Link>
           )}
-          <Link to="/study/exam" className={styles.secondary} style={{ textDecoration: 'none' }}>
-            {t('study.exam')}
-          </Link>
           {flaggedCount > 0 && (
             <Link
               to="/study/quiz?review=flagged"
@@ -291,5 +415,14 @@ export function PackDetail() {
         <Disclaimer compact />
       </div>
     </section>
+  );
+}
+
+/** Total questions across a pack's banks — for the locked page's "what's inside". */
+function countQuestions(data: QuizData | null | undefined, bankIds: string[]): number {
+  if (!data) return 0;
+  return bankIds.reduce(
+    (n, id) => n + (data.banks.find((b) => b.id === id)?.questions.length ?? 0),
+    0,
   );
 }

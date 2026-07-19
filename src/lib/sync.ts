@@ -111,9 +111,21 @@ export interface LoadedAccount {
   entitlement: Entitlement | null;
   /** Purchased Captain Adel credits (server-written, owner-readable); 0 when none. */
   chatCredits: number;
+  /** Purchased exam-prep pack ids (server-written, owner-readable); [] when none. */
+  ownedPacks: string[];
 }
 
-/** One-time hydration of the user's profile, logbook, records, entitlement & credits. */
+/**
+ * The owned pack ids from a `packEntitlements/{uid}` doc — the keys of its `packs`
+ * map. Kept catalog-agnostic (no prepCatalog import) so this stays out of the
+ * initial bundle; the storefront validates ids against the catalog when it renders.
+ */
+export function ownedPacksFromDoc(data: Record<string, unknown> | undefined): string[] {
+  const packs = (data?.packs ?? {}) as Record<string, unknown>;
+  return packs && typeof packs === 'object' ? Object.keys(packs) : [];
+}
+
+/** One-time hydration of the user's profile, logbook, records, entitlement, credits & packs. */
 export async function loadAccount(uid: string): Promise<LoadedAccount | null> {
   const db = await getDb();
   if (!db) return null;
@@ -124,12 +136,14 @@ export async function loadAccount(uid: string): Promise<LoadedAccount | null> {
   const recSnap = await getDocs(collection(db, 'users', uid, 'records'));
   const creditSnap = await getDoc(doc(db, 'chatCredits', uid));
   const balance = Number(creditSnap.data()?.balance ?? 0);
+  const packSnap = await getDoc(doc(db, 'packEntitlements', uid));
   return {
     profile: profileFromDoc(data),
     flights: lbSnap.docs.map((d) => flightFromDoc(d.id, d.data())),
     records: recSnap.docs.map((d) => recordFromDoc(d.id, d.data())),
     entitlement: entitlementFromDoc(data),
     chatCredits: Number.isFinite(balance) && balance > 0 ? Math.floor(balance) : 0,
+    ownedPacks: ownedPacksFromDoc(packSnap.data()),
   };
 }
 

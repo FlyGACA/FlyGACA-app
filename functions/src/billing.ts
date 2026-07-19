@@ -21,6 +21,7 @@ import Stripe from "stripe";
 import {
   entitlementFromSubscription,
   entitlementFromPass,
+  sellablePackId,
   type Entitlement,
   type PriceEnv,
 } from "./billing-core.js";
@@ -44,6 +45,11 @@ const priceAnnual = defineString("STRIPE_PRICE_PRO_ANNUAL");
 const pricePass = defineString("STRIPE_PRICE_PASS");
 // One-time Captain Adel credit-pack price (also `mode: payment`).
 const priceCredits = defineString("STRIPE_PRICE_CREDITS");
+// One-time exam-prep pack price (`mode: payment`). ONE flat SAR-39 price shared by
+// every sellable pack; the bought pack is carried in the session's `metadata.packId`
+// so a new pack ships without a new price/env. Per-pack revenue attribution comes
+// from the Checkout Session metadata (Stripe Sigma / exports).
+const pricePrepPack = defineString("STRIPE_PRICE_PREP_PACK");
 // Discounted student subscription prices (gated on a verified academic email).
 const priceStudentMonthly = defineString("STRIPE_PRICE_STUDENT_MONTHLY");
 const priceStudentAnnual = defineString("STRIPE_PRICE_STUDENT_ANNUAL");
@@ -131,6 +137,31 @@ async function addCredits(uid: string): Promise<void> {
 }
 
 /**
+ * Record ownership of a one-time exam-prep pack purchase (`packEntitlements/{uid}` —
+ * server-written, owner-readable so the app can unlock the pack). Ownership is a
+ * permanent per-pack grant, independent of the subscription plan. Re-validates the
+ * `packId` against SELLABLE_PACK_IDS so a tampered/`soon`/stale id from the session
+ * metadata can never grant access; an invalid id is LOGGED and skipped rather than
+ * thrown — throwing would roll back the webhook's idempotency marker and make Stripe
+ * retry a permanently-bad event forever. The merge-write is idempotent under retry.
+ */
+async function grantPack(uid: string, rawPackId: unknown): Promise<void> {
+  const packId = sellablePackId(rawPackId);
+  if (!packId) {
+    logger.error("pack_grant_rejected", { uid, packId: String(rawPackId) });
+    return;
+  }
+  await getFirestore()
+    .collection("packEntitlements")
+    .doc(uid)
+    .set(
+      { packs: { [packId]: { purchasedAt: new Date().toISOString(), source: "stripe" } } },
+      { merge: true },
+    );
+  logger.info("funnel", { event: "pack_granted", uid, packId });
+}
+
+/**
  * Reward a completed referral. `ref` is the normalized code carried on the checkout
  * session; resolve it to the referrer and, once per referee, credit BOTH sides. The
  * `referrals/{refereeUid}` marker (created transactionally via `create`) makes it
@@ -181,6 +212,26 @@ export const createCheckoutSession = onCall(
     // webhook can reward both sides when this checkout converts.
     const ref = normalizeCode(request.data?.ref as string | undefined);
     const refMeta: Record<string, string> = isValidCode(ref) ? { ref } : {};
+
+    // One-time exam-prep pack purchase (`payment`). The specific pack rides on
+    // `metadata.packId`; the webhook grants ownership by it. Validate up front so an
+    // unknown/`soon` id never opens a Checkout, and again at fulfilment (grantPack).
+    if (variant === "pack") {
+      const packId = sellablePackId(request.data?.packId);
+      if (!packId) throw new HttpsError("invalid-argument", "unknown-pack");
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        customer,
+        line_items: [{ price: pricePrepPack.value(), quantity: 1 }],
+        client_reference_id: uid,
+        metadata: { uid, kind: "pack", packId, ...refMeta },
+        allow_promotion_codes: true,
+        success_url: `${origin}/study/packs/${packId}?checkout=success`,
+        cancel_url: `${origin}/study/packs/${packId}?checkout=cancel`,
+      });
+      logger.info("funnel", { event: "checkout_started", kind: "pack", packId, uid });
+      return { url: session.url };
+    }
 
     // One-time purchases (`payment`, not `subscription`): the Exam Season Pass and
     // Captain Adel credit packs. The webhook fulfils them by `metadata.kind`, which
@@ -332,6 +383,7 @@ export const stripeWebhook = onRequest(
           const kind = session.metadata?.kind;
           if (kind === "pass") await grantPass(uid);
           else if (kind === "credits") await addCredits(uid);
+          else if (kind === "pack") await grantPack(uid, session.metadata?.packId);
           await processReferral(uid, ref);
         }
       } else if (

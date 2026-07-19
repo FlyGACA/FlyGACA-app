@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '../../lib/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
@@ -10,6 +10,9 @@ import { ProgressBar } from '../../components/ProgressBar';
 import { Disclaimer } from '../../components/Disclaimer';
 import { HubBackLink } from '../../components/HubBackLink';
 import { buildSession, isSynthetic } from './session';
+import { findPack } from '../../lib/prepCatalog';
+import { hasPackAccess } from '../../lib/packEntitlements';
+import { useAccount } from '../../lib/account';
 import styles from './Study.module.css';
 
 /** Fisher–Yates shuffle (returns a new array). */
@@ -41,12 +44,20 @@ export function Quiz() {
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { quizBest, flagged } = useStudyProgress();
+  const { entitlement, ownedPacks } = useAccount();
   const [bank, setBank] = useState<QuizBank | null>(null);
   const [params, setParams] = useSearchParams();
 
+  // A combined pack session is a paid surface — resolve the pack and gate on access
+  // so `/study/quiz?pack=medical` can't bypass the storefront paywall. Per-bank
+  // (`?bank=`) and flagged-review sessions stay open (free surfaces).
+  const packParam = params.get('pack');
+  const gatedPack = packParam ? findPack(packParam) : undefined;
+  const packLocked = !!gatedPack && !hasPackAccess(gatedPack, entitlement, ownedPacks);
+
   // Launch a focused session (pack / single bank / flagged review) from the URL.
   useEffect(() => {
-    if (!data || bank) return;
+    if (!data || bank || packLocked) return;
     const sess = buildSession(
       data,
       { pack: params.get('pack'), bank: params.get('bank'), review: params.get('review') },
@@ -56,7 +67,7 @@ export function Quiz() {
     if (sess) setBank(sess);
     // Build once when data/params resolve; flagged/t are snapshotted intentionally.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, params, bank]);
+  }, [data, params, bank, packLocked]);
 
   const openBank = (b: QuizBank) => {
     setBank(b);
@@ -79,6 +90,24 @@ export function Quiz() {
         </div>
       </Shell>
     );
+
+  if (packLocked && gatedPack) {
+    return (
+      <Shell>
+        <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
+        <h1>{t(`study.packCatalog.${gatedPack.id}.name`)}</h1>
+        <p className={styles.subtitle}>{t('study.packLockedNote')}</p>
+        <Link
+          to={`/study/packs/${gatedPack.id}`}
+          className={styles.primary}
+          style={{ textDecoration: 'none' }}
+        >
+          {t('study.packView')}
+        </Link>
+        <Disclaimer compact />
+      </Shell>
+    );
+  }
 
   if (!bank) {
     return (

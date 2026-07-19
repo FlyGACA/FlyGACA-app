@@ -20,18 +20,30 @@ const h = vi.hoisted(() => ({
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
 }));
 
-function writeDoc(coll: string, id: string, val: Record<string, unknown>, opts?: { merge?: boolean }) {
-  h.stores[coll] ??= {};
-  const cur = opts?.merge ? (h.stores[coll][id] ?? {}) : {};
+function isPlainObject(v: unknown): v is Record<string, unknown> {
+  return !!v && typeof v === "object" && !Array.isArray(v) && !("__inc" in (v as object));
+}
+
+/** Merge one level, honouring the `__inc` sentinel and Firestore's nested-map deep-merge. */
+function mergeInto(cur: Record<string, unknown>, val: Record<string, unknown>): Record<string, unknown> {
   const next: Record<string, unknown> = { ...cur };
   for (const [k, v] of Object.entries(val)) {
     if (v && typeof v === "object" && "__inc" in (v as object)) {
-      next[k] = Number((cur as Record<string, unknown>)[k] ?? 0) + (v as { __inc: number }).__inc;
+      next[k] = Number(cur[k] ?? 0) + (v as { __inc: number }).__inc;
+    } else if (isPlainObject(v) && isPlainObject(cur[k])) {
+      // Firestore set(..., { merge: true }) deep-merges nested map fields.
+      next[k] = mergeInto(cur[k] as Record<string, unknown>, v);
     } else {
       next[k] = v;
     }
   }
-  h.stores[coll][id] = next;
+  return next;
+}
+
+function writeDoc(coll: string, id: string, val: Record<string, unknown>, opts?: { merge?: boolean }) {
+  h.stores[coll] ??= {};
+  const cur = opts?.merge ? (h.stores[coll][id] ?? {}) : {};
+  h.stores[coll][id] = mergeInto(cur as Record<string, unknown>, val);
 }
 
 function makeDoc(coll: string, id: string) {
@@ -102,6 +114,7 @@ beforeAll(async () => {
     STRIPE_PRICE_STUDENT_ANNUAL: "price_student_annual",
     STRIPE_PRICE_PASS: "price_pass",
     STRIPE_PRICE_CREDITS: "price_credits",
+    STRIPE_PRICE_PREP_PACK: "price_prep_pack",
     APP_ORIGIN: "https://flygaca.com",
   });
   stripeWebhook = (await import("../src/billing.js")).stripeWebhook as typeof stripeWebhook;
@@ -204,6 +217,67 @@ describe("stripeWebhook — checkout.session.completed", () => {
     const res = mockRes();
     await invoke(res);
     expect(h.stores.chatCredits?.u1?.balance).toBe(CREDIT_PACK_SIZE);
+  });
+
+  it("records pack ownership for a paid 'pack' checkout", async () => {
+    h.event = {
+      id: "evt_pack",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: "u1",
+          mode: "payment",
+          payment_status: "paid",
+          metadata: { kind: "pack", packId: "medical" },
+        },
+      },
+    };
+    const res = mockRes();
+    await invoke(res);
+    expect(res.json).toHaveBeenCalledWith({ received: true });
+    const packs = h.stores.packEntitlements?.u1?.packs as Record<string, unknown>;
+    expect(packs?.medical).toMatchObject({ source: "stripe" });
+  });
+
+  it("merges a second pack purchase without dropping the first", async () => {
+    h.stores.packEntitlements = {
+      u1: { packs: { aip: { purchasedAt: "2026-01-01T00:00:00.000Z", source: "stripe" } } },
+    };
+    h.event = {
+      id: "evt_pack2",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: "u1",
+          mode: "payment",
+          payment_status: "paid",
+          metadata: { kind: "pack", packId: "elp" },
+        },
+      },
+    };
+    const res = mockRes();
+    await invoke(res);
+    const packs = h.stores.packEntitlements?.u1?.packs as Record<string, unknown>;
+    expect(Object.keys(packs).sort()).toEqual(["aip", "elp"]);
+  });
+
+  it("acks 200 without writing for an unknown/tampered packId", async () => {
+    h.event = {
+      id: "evt_pack_bad",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: "u1",
+          mode: "payment",
+          payment_status: "paid",
+          metadata: { kind: "pack", packId: "cpl" }, // 'soon' pack — not sellable
+        },
+      },
+    };
+    const res = mockRes();
+    await invoke(res);
+    expect(res.json).toHaveBeenCalledWith({ received: true });
+    expect(h.stores.packEntitlements).toBeUndefined();
   });
 
   it("rewards a valid referral on both sides", async () => {
