@@ -200,6 +200,36 @@
   gap: var(--space-3);
 }
 
+/* ── Admin dashboard discovery band ── */
+.adminBand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface);
+  box-shadow: var(--clay-shadow);
+}
+.adminContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-inline-size: 52ch;
+  text-align: center;
+}
+.adminTitle {
+  font-size: var(--fs-h3);
+  margin: 0;
+}
+.adminLead {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  margin: 0;
+}
+
 /* ── AIP exam-prep cohort packages ── */
 .tiers {
   display: grid;

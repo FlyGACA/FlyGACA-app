@@ -1999,6 +1999,11 @@
           "p": "Your cohort studies the library, practices, and asks Captain Adel, in English or Arabic."
         }
       ]
+    },
+    "admin": {
+      "title": "Already a school partner?",
+      "lead": "Manage your cohort seats, onboard students, and view study readiness.",
+      "cta": "Go to admin dashboard"
     }
   },
   "account": {

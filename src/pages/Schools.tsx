@@ -145,6 +145,17 @@ export function Schools() {
         <Stepper steps={steps.map((s) => ({ title: s.h, body: s.p }))} />
       </section>
 
+      {/* Admin dashboard link for existing partners. */}
+      <section className={styles.adminBand}>
+        <div className={styles.adminContent}>
+          <h2 className={styles.adminTitle}>{t('schools.admin.title')}</h2>
+          <p className={styles.adminLead}>{t('schools.admin.lead')}</p>
+          <Link className="btn btn-primary" to="/business/admin">
+            {t('schools.admin.cta')}
+          </Link>
+        </div>
+      </section>
+
       <section className={styles.formWrap} aria-labelledby="schools-form-head">
         <SectionHeader id="schools-form-head" title={t('schools.formHead')} tone="var(--cat-3)" />
         <p className={styles.formIntro}>{t('schools.formIntro')}</p>
