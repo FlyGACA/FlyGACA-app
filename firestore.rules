@@ -170,6 +170,17 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // B2B org (school) records + their member index. Provisioned ONLY by the
+    // Admin SDK (the grant-org / grant-school-seats scripts and claimSchoolSeat);
+    // read ONLY by the owner-verified getMyOrgs / getCohortReadiness callables.
+    // Never client-readable/writable, so a cohort can't be enumerated or forged.
+    match /orgs/{orgId} {
+      allow read, write: if false;
+      match /members/{uid} {
+        allow read, write: if false;
+      }
+    }
+
     // Per-uid Captain Adel free-question counters, written ONLY by the chat
     // gateway (Admin SDK) to enforce the daily free allowance server-side. A
     // client must never read or write it — the app's own counter is a separate

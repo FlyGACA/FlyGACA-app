@@ -1794,6 +1794,35 @@
     "schoolsMin": "min 10 seats",
     "schoolsCta": "Book a demo"
   },
+  "business": {
+    "admin": {
+      "title": "Cohort dashboard",
+      "loading": "Loading your cohort…",
+      "noAccess": "This dashboard is for school administrators. Your account isn't an admin of any cohort — if you manage a school, ask us to set you up.",
+      "subtitle": "Seat status and study readiness (pass mark {{threshold}}%). Readiness is practice progress, not an exam result.",
+      "seats": "Seats",
+      "active": "Active",
+      "ready": "Ready",
+      "yes": "Yes",
+      "no": "No",
+      "exportCsv": "Export CSV",
+      "note": "Readiness = every expected quiz bank and the Mock Exam at or above the pass mark. Fly GACA is not affiliated with GACA; this reports practice progress and never replaces the official exam.",
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "invited": "Invited",
+        "none": "No seat"
+      },
+      "col": {
+        "email": "Candidate",
+        "seat": "Seat",
+        "coverage": "Coverage",
+        "exam": "Mock Exam",
+        "readyCol": "Ready",
+        "active": "Last active"
+      }
+    }
+  },
   "schools": {
     "title": "Fly GACA for schools",
     "subtitle": "Equip every student with the Saudi regulatory library, flight tools and Captain Adel.",

@@ -48,6 +48,7 @@ export const claimSchoolSeat = onCall(
     // Source 1 — approved domain (pure, no read). Source 2 — an invite doc the admin
     // provisioned; only looked up when the domain path didn't already qualify.
     let expiresAt: string | undefined;
+    let orgId: string | undefined;
     let eligible = isApprovedSchoolDomain(email, emailVerified);
     if (!eligible) {
       const key = inviteKeyForEmail(email);
@@ -57,6 +58,8 @@ export const claimSchoolSeat = onCall(
           eligible = true;
           const e = invite.data()?.expiresAt;
           if (typeof e === "string") expiresAt = e;
+          const o = invite.data()?.orgId;
+          if (typeof o === "string") orgId = o;
         }
       }
     }
@@ -72,6 +75,17 @@ export const claimSchoolSeat = onCall(
     // (a live school/staff grant), so we never overwrite it or clobber it.
     if (effectivePlan(current) !== "school") {
       await ref.set({ entitlement: schoolEntitlement(expiresAt) }, { merge: true });
+    }
+
+    // If the invite named an org, index this member so the org's owner-verified
+    // cohort dashboard can enumerate them (server-only doc; merge = idempotent).
+    if (orgId) {
+      await db
+        .collection("orgs")
+        .doc(orgId)
+        .collection("members")
+        .doc(uid)
+        .set({ email: email.trim().toLowerCase(), claimedAt: new Date().toISOString() }, { merge: true });
     }
     return { granted: true as const, plan: "school" as const };
   },

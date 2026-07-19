@@ -141,3 +141,50 @@ export function schoolReadiness(
   const ready = totalBanks > 0 && coveredBanks === totalBanks && examBest >= threshold;
   return { coveredBanks, totalBanks, examBest, ready };
 }
+
+/** One row of the cohort dashboard/report for a member — seat status + readiness. */
+export interface CohortRow {
+  email: string;
+  status: SeatStatus;
+  source: string;
+  coverage: string; // "covered/total"
+  coveredBanks: number;
+  totalBanks: number;
+  examBest: number;
+  ready: boolean;
+  /** null when the member has synced no progress yet (dashboard shows "—"). */
+  hasProgress: boolean;
+  lastActive: string;
+}
+
+/**
+ * Assemble a cohort row from the server data the dashboard/report sees for one
+ * member. Pure so the `getCohortReadiness` callable and the CLI report agree exactly
+ * — both feed it `{entitlement, hasInvite, summary}` and the pack's expected banks.
+ */
+export function cohortRow(
+  input: {
+    email: string;
+    entitlement?: Entitlement | null;
+    hasInvite: boolean;
+    summary?: (ProgressSummaryLike & { updatedAt?: string }) | null;
+  },
+  expectedBanks: readonly string[],
+  threshold = 75,
+  now: Date = new Date(),
+): CohortRow {
+  const status = schoolSeatStatus({ entitlement: input.entitlement, hasInvite: input.hasInvite }, now);
+  const r = schoolReadiness(input.summary, expectedBanks, threshold);
+  return {
+    email: input.email,
+    status,
+    source: input.entitlement?.source ?? "",
+    coverage: `${r.coveredBanks}/${r.totalBanks}`,
+    coveredBanks: r.coveredBanks,
+    totalBanks: r.totalBanks,
+    examBest: r.examBest,
+    ready: r.ready,
+    hasProgress: !!input.summary,
+    lastActive: input.summary?.updatedAt ? String(input.summary.updatedAt).slice(0, 10) : "",
+  };
+}

@@ -12,25 +12,33 @@ export function PasswordStrength({ password = '' }: PasswordStrengthProps) {
   const requirements = useMemo(() => {
     return [
       { id: 'length', label: t('account.ruleLength'), test: (val: string) => val.length >= 8 },
-      { id: 'mixed', label: t('account.ruleMixed'), test: (val: string) => /[a-z]/.test(val) && /[A-Z]/.test(val) },
+      {
+        id: 'mixed',
+        label: t('account.ruleMixed'),
+        test: (val: string) => /[a-z]/.test(val) && /[A-Z]/.test(val),
+      },
       { id: 'number', label: t('account.ruleNumber'), test: (val: string) => /\d/.test(val) },
-      { id: 'special', label: t('account.ruleSpecial'), test: (val: string) => /[^A-Za-z0-9]/.test(val) }
+      {
+        id: 'special',
+        label: t('account.ruleSpecial'),
+        test: (val: string) => /[^A-Za-z0-9]/.test(val),
+      },
     ];
   }, [t]);
 
   const results = useMemo(() => {
-    return requirements.map(req => ({
+    return requirements.map((req) => ({
       ...req,
-      met: req.test(password)
+      met: req.test(password),
     }));
   }, [password, requirements]);
 
   const score = useMemo(() => {
     if (!password) return -1;
-    const lengthMet = results.find(r => r.id === 'length')?.met;
+    const lengthMet = results.find((r) => r.id === 'length')?.met;
     if (!lengthMet) return 0;
-    
-    const metCount = results.filter(r => r.id !== 'length' && r.met).length;
+
+    const metCount = results.filter((r) => r.id !== 'length' && r.met).length;
     if (metCount === 0) return 1;
     if (metCount === 1 || metCount === 2) return 2;
     return 3;
@@ -39,11 +47,16 @@ export function PasswordStrength({ password = '' }: PasswordStrengthProps) {
   const strengthLabel = useMemo(() => {
     if (score === -1) return '';
     switch (score) {
-      case 0: return t('account.passwordWeak');
-      case 1: return t('account.passwordFair');
-      case 2: return t('account.passwordGood');
-      case 3: return t('account.passwordStrong');
-      default: return '';
+      case 0:
+        return t('account.passwordWeak');
+      case 1:
+        return t('account.passwordFair');
+      case 2:
+        return t('account.passwordGood');
+      case 3:
+        return t('account.passwordStrong');
+      default:
+        return '';
     }
   }, [score, t]);
 
@@ -65,10 +78,7 @@ export function PasswordStrength({ password = '' }: PasswordStrengthProps) {
 
       <ul className={styles.rulesList}>
         {results.map((res) => (
-          <li
-            key={res.id}
-            className={res.met ? styles.ruleMet : styles.ruleUnmet}
-          >
+          <li key={res.id} className={res.met ? styles.ruleMet : styles.ruleUnmet}>
             <span className={styles.bullet} aria-hidden="true">
               {res.met ? '✓' : '○'}
             </span>

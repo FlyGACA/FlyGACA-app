@@ -59,7 +59,10 @@ function FirebaseSignIn() {
     }, 400);
   };
 
-  async function run(fn: () => Promise<unknown>, setFormErrors?: (errs: Partial<Record<string, string>>) => void) {
+  async function run(
+    fn: () => Promise<unknown>,
+    setFormErrors?: (errs: Partial<Record<string, string>>) => void,
+  ) {
     setBusy(true);
     setErrors({});
     setNotice('');
@@ -71,7 +74,7 @@ function FirebaseSignIn() {
       const errorMessage = t(key);
       const generic = key === 'account.authError';
       if (generic) console.error('Auth failure', code, e);
-      
+
       if (setFormErrors && (field === 'email' || field === 'password')) {
         setFormErrors({ [field]: errorMessage });
       } else {
@@ -97,11 +100,8 @@ function FirebaseSignIn() {
       return errs;
     },
     onSubmit: async (values) => {
-      await run(
-        () => signInWithEmail(values.email.trim(), values.password),
-        loginForm.setErrors
-      );
-    }
+      await run(() => signInWithEmail(values.email.trim(), values.password), loginForm.setErrors);
+    },
   });
 
   const signupForm = useForm({
@@ -133,14 +133,16 @@ function FirebaseSignIn() {
     },
     onSubmit: async (values) => {
       await run(
-        () => registerWithEmail(values.email.trim(), values.password, values.name.trim() || undefined),
-        signupForm.setErrors
+        () =>
+          registerWithEmail(values.email.trim(), values.password, values.name.trim() || undefined),
+        signupForm.setErrors,
       );
-    }
+    },
   });
 
   function forgotPassword() {
-    const emailToUse = mode === 'in' ? loginForm.values.email.trim() : signupForm.values.email.trim();
+    const emailToUse =
+      mode === 'in' ? loginForm.values.email.trim() : signupForm.values.email.trim();
     if (!emailToUse) {
       if (mode === 'in') {
         loginForm.setErrors({ email: t('account.resetNeedEmail') });
@@ -168,7 +170,7 @@ function FirebaseSignIn() {
         {t('account.continueGoogle')}
       </button>
       <p className={styles.or}>{t('account.or')}</p>
-      
+
       <div className={containerClass}>
         {mode === 'in' ? (
           <form className={styles.authFields} onSubmit={loginForm.handleSubmit} noValidate>
@@ -243,7 +245,9 @@ function FirebaseSignIn() {
               onChange={(v) => signupForm.setFieldValue('confirmPassword', v)}
               onBlur={() => signupForm.handleBlur('confirmPassword')}
               autoComplete="new-password"
-              error={signupForm.touched.confirmPassword ? signupForm.errors.confirmPassword : undefined}
+              error={
+                signupForm.touched.confirmPassword ? signupForm.errors.confirmPassword : undefined
+              }
             />
             {errors.general && (
               <Alert tone="error" role="alert" icon="⚠">
@@ -274,11 +278,7 @@ function FirebaseSignIn() {
       </div>
 
       <div className={styles.signInLinks}>
-        <button
-          type="button"
-          className={styles.linkBtn}
-          onClick={toggleMode}
-        >
+        <button type="button" className={styles.linkBtn} onClick={toggleMode}>
           {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
         </button>
         {mode === 'in' && (

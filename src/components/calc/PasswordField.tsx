@@ -15,7 +15,14 @@ interface PasswordFieldProps {
  * Password input sharing the calculator field styling, with a show/hide
  * toggle. Kept separate from TextField so its ~30 call sites stay untouched.
  */
-export function PasswordField({ label, value, onChange, error, autoComplete, onBlur }: PasswordFieldProps) {
+export function PasswordField({
+  label,
+  value,
+  onChange,
+  error,
+  autoComplete,
+  onBlur,
+}: PasswordFieldProps) {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const fieldClass = [styles.field, error ? styles.fieldInvalid : ''].filter(Boolean).join(' ');

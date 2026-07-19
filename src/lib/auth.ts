@@ -64,7 +64,8 @@ function getSessionUrl(path: string): string {
 }
 
 async function syncSession(user: User): Promise<void> {
-  const isTest = typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env?.NODE_ENV === 'test';
+  const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
+  const isTest = typeof proc !== 'undefined' && proc.env?.NODE_ENV === 'test';
   if (isTest) {
     return;
   }
@@ -84,7 +85,8 @@ async function syncSession(user: User): Promise<void> {
 }
 
 export async function signInWithGoogle(): Promise<AuthUser> {
-  const isMock = import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  const isMock =
+    import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
   if (isMock) {
     const mockUser: AuthUser = {
       uid: 'mock-google-uid',
@@ -104,7 +106,8 @@ export async function signInWithGoogle(): Promise<AuthUser> {
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<AuthUser> {
-  const isMock = import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  const isMock =
+    import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
   if (isMock) {
     const mockUser: AuthUser = {
       uid: 'mock-email-uid',
@@ -128,7 +131,8 @@ export async function registerWithEmail(
   password: string,
   displayName?: string,
 ): Promise<AuthUser> {
-  const isMock = import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  const isMock =
+    import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
   if (isMock) {
     const mockUser: AuthUser = {
       uid: 'mock-register-uid',
@@ -151,7 +155,8 @@ export async function registerWithEmail(
 export async function signOutUser(): Promise<void> {
   const auth = await getFirebaseAuth();
   if (auth) await auth.signOut();
-  const isTest = typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env?.NODE_ENV === 'test';
+  const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
+  const isTest = typeof proc !== 'undefined' && proc.env?.NODE_ENV === 'test';
   if (isTest) {
     return;
   }
