@@ -21,6 +21,8 @@ import styles from './Pricing.module.css';
 const PRO_PRICE = { monthly: 59, annual: 449 };
 const STUDENT_PRICE = { monthly: 39, annual: 299 };
 const PASS_PRICE = 149;
+// One-time per-pack exam-prep price. Mirror of PREP_PACK_PRICE in src/lib/prepCatalog.ts.
+const PREP_PRICE = 39;
 const SCHOOL_FROM = 250;
 
 interface CompareRow {
@@ -278,6 +280,24 @@ export function Pricing() {
               {t('pricing.passComingSoon')}
             </button>
           )}
+        </div>
+      </section>
+
+      {/* Exam Prep packs — the one-time, per-certificate path (ASA/Gleim-style). */}
+      <section className={styles.passBand} aria-labelledby="prep-head">
+        <div>
+          <h2 id="prep-head" className={styles.passHead}>
+            {t('pricing.prepHead')}
+          </h2>
+          <p className={styles.passLead}>{t('pricing.prepLead')}</p>
+        </div>
+        <div className={styles.passAside}>
+          <span className={styles.passPrice}>
+            <bdi dir="ltr">{t('pricing.prepPer', { n: PREP_PRICE })}</bdi>
+          </span>
+          <Link to="/study/packs" className={styles.passCta}>
+            {t('pricing.prepCta')}
+          </Link>
         </div>
       </section>
 

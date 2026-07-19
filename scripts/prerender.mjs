@@ -94,8 +94,9 @@ for (const [seg, file] of [
 }
 for (const d of readJson('public/data/aerodromes-index.json').documents)
   corpus.push(`/tools/aerodromes/${d.icao}`);
-for (const m of read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+)'/g))
-  corpus.push(`/study/packs/${m[1]}`);
+// LIVE packs only — `soon` packs have no detail route (see build-sitemap.mjs).
+for (const m of read('src/lib/prepCatalog.ts').matchAll(/\bid:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'/g))
+  if (m[2] === 'live') corpus.push(`/study/packs/${m[1]}`);
 
 // Cap total snapshots so the build stays bounded; base routes are never dropped,
 // the cap only trims the corpus tail. A trimmed tail is NOT silently fine — those

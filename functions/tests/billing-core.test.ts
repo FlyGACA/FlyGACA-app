@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   PASS_DAYS,
+  SELLABLE_PACK_IDS,
   effectivePlan,
   entitlementFromPass,
   entitlementFromSubscription,
   isPaidActive,
   planForPrice,
+  sellablePackId,
 } from "../src/billing-core.js";
 
 const env = { proMonthly: "price_monthly", proAnnual: "price_annual" };
@@ -103,6 +105,31 @@ describe("isPaidActive", () => {
   it("is true for an active or non-expiring paid entitlement", () => {
     expect(isPaidActive({ plan: "pro", expiresAt: future, source: "stripe" }, now)).toBe(true);
     expect(isPaidActive({ plan: "school", source: "school" }, now)).toBe(true);
+  });
+});
+
+describe("sellablePackId", () => {
+  it("accepts every sellable pack id", () => {
+    for (const id of SELLABLE_PACK_IDS) expect(sellablePackId(id)).toBe(id);
+  });
+
+  it("rejects a 'soon' / unknown pack id", () => {
+    expect(sellablePackId("cpl")).toBeNull();
+    expect(sellablePackId("ir")).toBeNull();
+    expect(sellablePackId("atpl")).toBeNull();
+    expect(sellablePackId("airspace-vfr")).toBeNull(); // free pack — never sold one-time
+    expect(sellablePackId("nope")).toBeNull();
+  });
+
+  it("rejects non-string input", () => {
+    expect(sellablePackId(undefined)).toBeNull();
+    expect(sellablePackId(null)).toBeNull();
+    expect(sellablePackId(42)).toBeNull();
+    expect(sellablePackId({ id: "ppl-exam" })).toBeNull();
+  });
+
+  it("mirrors the paid+live packs (guards against catalog drift)", () => {
+    expect([...SELLABLE_PACK_IDS]).toEqual(["ppl-exam", "medical", "aip", "elp", "conversion"]);
   });
 });
 

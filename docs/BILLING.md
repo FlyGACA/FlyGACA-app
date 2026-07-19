@@ -1,7 +1,8 @@
 # Billing (Stripe) — setup & verification
 
-The app sells **Pro** via Stripe Checkout (web) / RevenueCat IAP (native iOS). The web flow and the
-backend functions live in this repo; the entitlement is granted server-side and read-only on the client.
+The app sells **Pro** (recurring), the **Exam Season Pass** and **exam-prep packs** (one-time) via
+Stripe Checkout (web) / RevenueCat IAP (native iOS). The web flow and the backend functions live in
+this repo; the entitlement / pack ownership is granted server-side and read-only on the client.
 
 ## Pieces
 
@@ -9,10 +10,20 @@ backend functions live in this repo; the entitlement is granted server-side and 
   callables below and redirect to the Stripe-hosted page. `effectivePlan(entitlement)` gates UI;
   `refreshAccount()` re-reads the entitlement after a checkout returns.
 - **Backend** (`functions/src/billing.ts`):
-  - `createCheckoutSession` (callable) — creates a subscription Checkout Session.
+  - `createCheckoutSession` (callable) — creates a Checkout Session. Subscription mode for the Pro/
+    student cadences; **one-time payment** mode for the Exam Season Pass (`kind: 'pass'`), Captain
+    Adel credit packs (`kind: 'credits'`) and exam-prep packs (`kind: 'pack'`, `packId`), tagged via
+    the session `metadata` so the webhook knows how to fulfil each.
   - `createBillingPortalSession` (callable) — opens the Stripe customer portal.
-  - `stripeWebhook` (HTTP, `/api/stripe-webhook`) — the **only** writer of `users/{uid}.entitlement`,
-    derived by `functions/src/billing-core.ts` from the subscription status + price.
+  - `stripeWebhook` (HTTP, `/api/stripe-webhook`) — the **only** writer of `users/{uid}.entitlement`
+    (derived by `functions/src/billing-core.ts` from the subscription status + price), of the pass
+    grant, of `chatCredits/{uid}`, and of `packEntitlements/{uid}` (pack ownership).
+- **Exam-prep packs**: one Stripe Product with **one flat SAR-39 one-time price** shared by every
+  sellable pack; the bought pack rides on `metadata.packId`, validated server-side against
+  `SELLABLE_PACK_IDS` in `functions/src/billing-core.ts` (which mirrors the paid + live packs in
+  `src/lib/prepCatalog.ts`). Per-pack revenue attribution comes from the Checkout Session metadata
+  (Stripe Sigma / exports) rather than separate products. Ownership is written to
+  `packEntitlements/{uid}` (server-only write, owner-readable — same shape as `chatCredits`).
 - **Mapping**: `stripeCustomers/{uid}` ↔ Stripe customer id (server-only; deny-all in `firestore.rules`).
 
 ## Configure (Firebase project)
@@ -30,11 +41,22 @@ firebase functions:secrets:set STRIPE_SECRET_KEY        # sk_live_… / sk_test_
 firebase functions:secrets:set STRIPE_WEBHOOK_SECRET    # whsec_… (from the webhook endpoint)
 ```
 
+For the **exam-prep packs**, create one more Product — **Fly GACA Exam Prep Pack** — with a single
+**one-time** price of **SAR 39**; copy its id into `STRIPE_PRICE_PREP_PACK`. The same price is reused
+for every pack (the pack id travels in the session metadata). To sell a pack that is `status: 'soon'`
+today, flip it to `'live'` in `src/lib/prepCatalog.ts` **and** add its id to `SELLABLE_PACK_IDS` in
+`functions/src/billing-core.ts`, then redeploy the functions — no new Stripe price is needed.
+
 Params (set in `.env.<project>` for functions, or via the deploy prompt):
 
 ```
-STRIPE_PRICE_PRO_MONTHLY=price_…      # recurring monthly price id
-STRIPE_PRICE_PRO_ANNUAL=price_…       # recurring annual price id
+STRIPE_PRICE_PRO_MONTHLY=price_…      # recurring monthly price id (→ pro)
+STRIPE_PRICE_PRO_ANNUAL=price_…       # recurring annual price id (→ pro)
+STRIPE_PRICE_STUDENT_MONTHLY=price_…  # discounted student monthly (→ pro; verified academic email)
+STRIPE_PRICE_STUDENT_ANNUAL=price_…   # discounted student annual (→ pro; verified academic email)
+STRIPE_PRICE_PASS=price_…             # one-time Exam Season Pass (→ 90 days pro)
+STRIPE_PRICE_CREDITS=price_…          # one-time Captain Adel credit pack (→ +50 credits)
+STRIPE_PRICE_PREP_PACK=price_…        # one-time exam-prep pack, flat SAR 39 (→ pack ownership)
 APP_ORIGIN=https://flygaca.com        # used for checkout success/cancel + portal return URLs
 ```
 
@@ -57,17 +79,17 @@ npm run deploy                     # build + deploy hosting (picks up the rewrit
 # …or all three at once:  npm run deploy:all
 ```
 
-## App Check (enable last)
+## App Check
 
-The client already attaches an App Check token to the callables when `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`
-is set (`src/lib/firebase.ts`), but the callables do **not** yet enforce it. Enable enforcement only **after**
-real traffic is sending valid tokens, or checkout will be blocked:
+The billing callables (`createCheckoutSession` / `createBillingPortalSession`) **already declare
+`enforceAppCheck: true`** in `functions/src/billing.ts`, and the client attaches an App Check token
+when `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` is set (`src/lib/firebase.ts`). For checkout to work in
+production you must therefore have App Check configured end-to-end:
 
 1. Create a reCAPTCHA Enterprise key (Google Cloud console) and register it under Firebase → App Check.
 2. Set `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` in the production build (GitHub Actions secret) and deploy the client.
-3. Watch App Check request metrics until verified requests dominate.
-4. Only then add `enforceAppCheck: true` to `createCheckoutSession` / `createBillingPortalSession` (see
-   `docs/APP-CHECK-BACKEND.md`) and redeploy the functions.
+3. Watch App Check request metrics; verified requests should dominate before you enforce at the
+   project level. See `docs/APP-CHECK-BACKEND.md` for the enforcement rollout.
 
 ## Verify end-to-end (test mode)
 
@@ -78,6 +100,19 @@ real traffic is sending valid tokens, or checkout will be blocked:
 4. Confirm `users/{uid}.entitlement` = `{ plan: 'pro', source: 'stripe', expiresAt }` in Firestore.
 5. **Manage subscription** (panel or Pricing) opens the Stripe portal; cancelling there fires
    `customer.subscription.deleted` → the webhook writes `{ plan: 'free' }` and the UI drops Pro.
+
+### Exam-prep pack purchase
+
+1. Sign in → **/study/packs** → open a paid pack (e.g. *Aviation medical*) → **Buy this pack** →
+   complete checkout with test card `4242 4242 4242 4242`.
+2. Stripe redirects to `/study/packs/<id>?checkout=success`; the page polls `refreshAccount()` and
+   the pack unlocks (its content + the "Owned" badge appear) once the webhook lands.
+3. Confirm `packEntitlements/{uid}` in Firestore = `{ packs: { <id>: { purchasedAt, source: 'stripe' } } }`.
+4. As a **Pro subscriber**, the same pack shows **Included in Pro** with no Buy button (access comes
+   from the plan, not ownership).
+5. Idempotency: `stripe events resend <evt_id>` for the pack's `checkout.session.completed` must not
+   create a duplicate or error — the `stripeEvents/{id}` marker acks the replay and the merge-write
+   is a no-op.
 
 ## Tests
 
