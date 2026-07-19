@@ -119,3 +119,78 @@ export const getCohortReadiness = onCall(CALL_OPTS, async (request) => {
     rows,
   };
 });
+
+/** Provision new seats for an org (admin invites new members). */
+export const provisionSeats = onCall(CALL_OPTS, async (request) => {
+  const uid = request.auth?.uid;
+  if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
+
+  const data = request.data as { orgId?: string; emails?: string[]; expiresAt?: string } | undefined;
+  const orgId = data?.orgId;
+  const emails = data?.emails;
+  const expiresAt = data?.expiresAt;
+
+  if (!orgId || typeof orgId !== "string") {
+    throw new HttpsError("invalid-argument", "orgId-required");
+  }
+  if (!Array.isArray(emails) || !emails.length) {
+    throw new HttpsError("invalid-argument", "emails-required");
+  }
+  if (expiresAt && typeof expiresAt !== "string") {
+    throw new HttpsError("invalid-argument", "expiresAt-must-be-ISO-string");
+  }
+
+  const db = getFirestore();
+  const orgSnap = await db.collection("orgs").doc(orgId).get();
+  if (!orgSnap.exists) throw new HttpsError("not-found", "org-not-found");
+  const org = orgSnap.data() as OrgDoc;
+
+  // Ownership gate.
+  if (!(org.ownerUids ?? []).includes(uid)) {
+    throw new HttpsError("permission-denied", "not-an-owner");
+  }
+
+  // Seat-limit check.
+  const seatLimit = org.seatLimit;
+  if (typeof seatLimit === "number") {
+    const memberSnap = await orgSnap.ref.collection("members").count().get();
+    const seatsUsed = memberSnap.data().count;
+    const newCount = seatsUsed + emails.length;
+    if (newCount > seatLimit) {
+      throw new HttpsError(
+        "resource-exhausted",
+        `seat-limit-exceeded: ${seatsUsed}/${seatLimit} used, requested ${emails.length}`,
+      );
+    }
+  }
+
+  // Import here to avoid circular dependency with school-core.
+  const { inviteKeyForEmail } = await import("./school-core.js");
+
+  // Create invites (or update if already exists, idempotent via merge=true).
+  const results = await Promise.all(
+    emails.map(async (email) => {
+      try {
+        const trimmed = email.trim().toLowerCase();
+        const key = inviteKeyForEmail(trimmed);
+        if (!key) throw new Error("invalid-email");
+        const doc = {
+          email: trimmed,
+          orgId,
+          createdAt: new Date().toISOString(),
+        } as Record<string, unknown>;
+        if (expiresAt) doc.expiresAt = expiresAt;
+        await db.collection("schoolInvites").doc(key).set(doc, { merge: true });
+        return { email: trimmed, success: true };
+      } catch (err) {
+        return {
+          email,
+          success: false,
+          error: err instanceof Error ? err.message : "unknown-error",
+        };
+      }
+    }),
+  );
+
+  return { results };
+});

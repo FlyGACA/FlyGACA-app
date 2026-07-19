@@ -30,9 +30,10 @@ export { claimStaffAccess } from "./staff.js";
 // roster self-unlocks the `school` entitlement (see ./school.ts).
 export { claimSchoolSeat } from "./school.js";
 
-// B2B org admin — owner-verified cohort read path for the /business/admin dashboard
-// (see ./org.ts). Read-only; no writes/grants.
-export { getMyOrgs, getCohortReadiness } from "./org.js";
+// B2B org admin — owner-verified cohort read + provisioning for the /business/admin
+// dashboard (see ./org.ts). Callables: read-only path (getMyOrgs, getCohortReadiness)
+// and self-serve provisioning (provisionSeats).
+export { getMyOrgs, getCohortReadiness, provisionSeats } from "./org.js";
 
 // The Google GenAI API key the Captain Adel flow (genkit `googleAI()`) reads from
 // the environment. Bound as a secret so it is available to the `chat` container.
