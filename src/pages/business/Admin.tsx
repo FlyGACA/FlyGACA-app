@@ -6,6 +6,7 @@ import { usePageMeta } from '../../lib/usePageMeta';
 import {
   getMyOrgs,
   getCohortReadiness,
+  provisionSeats,
   type OrgSummary,
   type CohortReadiness,
   type CohortRow,
@@ -31,6 +32,7 @@ type State =
 function Inner() {
   const { t } = useTranslation();
   const [state, setState] = useState<State>({ kind: 'loading' });
+  const [showInvitePanel, setShowInvitePanel] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -72,7 +74,17 @@ function Inner() {
     );
   }
 
-  const { data } = state;
+  const { data, orgs } = state;
+  const org = orgs[0];
+  const handleInviteClose = async () => {
+    setShowInvitePanel(false);
+    // Refresh cohort data after provisioning.
+    const updated = await getCohortReadiness(org.id);
+    if (updated) {
+      setState({ kind: 'ready', orgs, data: updated });
+    }
+  };
+
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>
@@ -120,10 +132,22 @@ function Inner() {
       </div>
 
       <div className={styles.actions}>
+        <button type="button" className="btn btn-clay" onClick={() => setShowInvitePanel(true)}>
+          {t('business.admin.addSeats')}
+        </button>
         <button type="button" className="btn btn-clay" onClick={() => exportCsv(data)}>
           {t('business.admin.exportCsv')}
         </button>
       </div>
+
+      {showInvitePanel && (
+        <ProvisionPanel
+          orgId={data.orgId}
+          seatLimit={org.seatLimit}
+          seatsUsed={data.counts.total}
+          onClose={handleInviteClose}
+        />
+      )}
 
       <p className={styles.note}>{t('business.admin.note')}</p>
       <Disclaimer />
@@ -165,4 +189,124 @@ function exportCsv(data: CohortReadiness) {
   a.download = `${data.orgId}-cohort.csv`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+interface ProvisionPanelProps {
+  orgId: string;
+  seatLimit: number | null;
+  seatsUsed: number;
+  onClose: () => void;
+}
+
+function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanelProps) {
+  const { t } = useTranslation();
+  const [emails, setEmails] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [results, setResults] = useState<Array<{
+    email: string;
+    success: boolean;
+    error?: string;
+  }> | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const emailList = emails
+      .split('\n')
+      .map((e) => e.trim())
+      .filter(Boolean);
+    const res = await provisionSeats(orgId, emailList, expiresAt || undefined);
+    if (res) {
+      setResults(res.results);
+    } else {
+      setResults(emailList.map((e) => ({ email: e, success: false, error: 'network-error' })));
+    }
+    setIsSubmitting(false);
+  };
+
+  const availableSeats = seatLimit !== null ? seatLimit - seatsUsed : null;
+  const canAddMore = availableSeats === null || availableSeats > 0;
+
+  return (
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modalHead}>
+          <h2>{t('business.admin.addSeats')}</h2>
+          <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        {results ? (
+          <div className={styles.modalBody}>
+            <h3>{t('business.admin.provisionResults')}</h3>
+            <ul className={styles.resultsList}>
+              {results.map((r) => (
+                <li key={r.email} className={r.success ? styles.resultSuccess : styles.resultError}>
+                  <bdi dir="ltr">{r.email}</bdi>
+                  {r.success ? '✓' : `✗ ${r.error}`}
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="btn btn-primary" onClick={onClose}>
+              {t('business.admin.done')}
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className={styles.modalBody}>
+            {seatLimit !== null && (
+              <div className={styles.seatInfo}>
+                {t('business.admin.seatUsage', {
+                  used: seatsUsed,
+                  limit: seatLimit,
+                  available: availableSeats,
+                })}
+              </div>
+            )}
+
+            {!canAddMore && (
+              <div className={styles.warning}>{t('business.admin.seatLimitReached')}</div>
+            )}
+
+            <div className={styles.formGroup}>
+              <label htmlFor="emails">{t('business.admin.emailsLabel')}</label>
+              <textarea
+                id="emails"
+                value={emails}
+                onChange={(e) => setEmails(e.target.value)}
+                placeholder={t('business.admin.emailsPlaceholder')}
+                disabled={!canAddMore}
+                rows={5}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="expiresAt">{t('business.admin.expirationLabel')}</label>
+              <input
+                type="date"
+                id="expiresAt"
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+                disabled={!canAddMore}
+              />
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button type="button" className="btn btn-clay" onClick={onClose}>
+                {t('business.admin.cancel')}
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isSubmitting || !canAddMore || !emails.trim()}
+              >
+                {isSubmitting ? t('business.admin.provisioning') : t('business.admin.sendInvites')}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
 }

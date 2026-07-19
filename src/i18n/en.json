@@ -184,12 +184,30 @@
     },
     "synced": "synced {{mins}} min ago with GACA",
     "marquee": [
-      { "code": "§61.57", "text": "recency of experience" },
-      { "code": "E6B", "text": "weight & balance · crosswind" },
-      { "code": "74", "text": "GACAR Parts indexed" },
-      { "code": "61", "text": "aerodromes mapped" },
-      { "code": "13", "text": "VFR charts" },
-      { "code": "211", "text": "reference documents" }
+      {
+        "code": "§61.57",
+        "text": "recency of experience"
+      },
+      {
+        "code": "E6B",
+        "text": "weight & balance · crosswind"
+      },
+      {
+        "code": "74",
+        "text": "GACAR Parts indexed"
+      },
+      {
+        "code": "61",
+        "text": "aerodromes mapped"
+      },
+      {
+        "code": "13",
+        "text": "VFR charts"
+      },
+      {
+        "code": "211",
+        "text": "reference documents"
+      }
     ],
     "adel": {
       "id": "Captain Adel",
@@ -1771,7 +1789,11 @@
       "pro": "You're on Pro, thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
+    "schoolsPoints": [
+      "Bulk seat licences",
+      "Admin dashboard & usage",
+      "Syllabus-aligned study"
+    ],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
@@ -1820,7 +1842,18 @@
         "exam": "Mock Exam",
         "readyCol": "Ready",
         "active": "Last active"
-      }
+      },
+      "addSeats": "Add seats",
+      "provisionResults": "Invitation results",
+      "done": "Done",
+      "seatUsage": "{{used}} of {{limit}} seats used ({{available}} available)",
+      "seatLimitReached": "Seat limit reached. No more seats can be added.",
+      "emailsLabel": "Email addresses",
+      "emailsPlaceholder": "pilot1@example.com\npilot2@example.com",
+      "expirationLabel": "Expiration date (optional)",
+      "cancel": "Cancel",
+      "sendInvites": "Send invites",
+      "provisioning": "Sending invites…"
     }
   },
   "schools": {
@@ -3043,10 +3076,22 @@
     ],
     "contactTitle": "Contact",
     "stats": [
-      { "value": "74", "label": "GACAR Parts" },
-      { "value": "55", "label": "Flight tools" },
-      { "value": "2", "label": "Languages · EN / AR" },
-      { "value": "Free", "label": "Open reference" }
+      {
+        "value": "74",
+        "label": "GACAR Parts"
+      },
+      {
+        "value": "55",
+        "label": "Flight tools"
+      },
+      {
+        "value": "2",
+        "label": "Languages · EN / AR"
+      },
+      {
+        "value": "Free",
+        "label": "Open reference"
+      }
     ],
     "cta": {
       "title": "Start with the regulation",

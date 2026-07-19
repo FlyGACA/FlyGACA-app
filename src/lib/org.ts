@@ -61,3 +61,12 @@ export async function getMyOrgs(): Promise<OrgSummary[]> {
 export async function getCohortReadiness(orgId: string): Promise<CohortReadiness | null> {
   return call<CohortReadiness>('getCohortReadiness', { orgId });
 }
+
+/** Provision new seats for an org (add email invites). Returns success/error for each email. */
+export async function provisionSeats(
+  orgId: string,
+  emails: string[],
+  expiresAt?: string,
+): Promise<{ results: Array<{ email: string; success: boolean; error?: string }> } | null> {
+  return call('provisionSeats', { orgId, emails, expiresAt });
+}
