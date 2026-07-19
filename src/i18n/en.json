@@ -1853,7 +1853,14 @@
       "expirationLabel": "Expiration date (optional)",
       "cancel": "Cancel",
       "sendInvites": "Send invites",
-      "provisioning": "Sending invites…"
+      "provisioning": "Sending invites…",
+      "tabManual": "Manual entry",
+      "tabCsv": "CSV upload",
+      "csvLabel": "CSV file",
+      "csvSelected": "Selected: {{name}}",
+      "csvEmpty": "CSV file is empty or contains no valid emails.",
+      "csvParseError": "Could not parse CSV file. Ensure it's a valid CSV with emails in the first column.",
+      "csvHint": "Upload a CSV file with email addresses in the first column (one email per row)."
     }
   },
   "schools": {

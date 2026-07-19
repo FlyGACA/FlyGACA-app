@@ -201,21 +201,72 @@ interface ProvisionPanelProps {
 function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanelProps) {
   const { t } = useTranslation();
   const [emails, setEmails] = useState('');
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [inputMode, setInputMode] = useState<'manual' | 'csv'>('manual');
   const [expiresAt, setExpiresAt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [csvError, setCsvError] = useState('');
   const [results, setResults] = useState<Array<{
     email: string;
     success: boolean;
     error?: string;
   }> | null>(null);
 
+  const parseCSV = async (file: File): Promise<string[]> => {
+    const text = await file.text();
+    return text
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => line.split(',')[0].trim())
+      .filter((email) => email);
+  };
+
+  const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCsvError('');
+    setCsvFile(file);
+
+    try {
+      const emailsFromCsv = await parseCSV(file);
+      if (emailsFromCsv.length === 0) {
+        setCsvError(t('business.admin.csvEmpty'));
+        setCsvFile(null);
+        return;
+      }
+    } catch (err) {
+      setCsvError(t('business.admin.csvParseError'));
+      setCsvFile(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const emailList = emails
-      .split('\n')
-      .map((e) => e.trim())
-      .filter(Boolean);
+
+    let emailList: string[] = [];
+    if (inputMode === 'manual') {
+      emailList = emails
+        .split('\n')
+        .map((e) => e.trim())
+        .filter(Boolean);
+    } else if (csvFile) {
+      try {
+        emailList = await parseCSV(csvFile);
+      } catch (err) {
+        setCsvError(t('business.admin.csvParseError'));
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    if (emailList.length === 0) {
+      setIsSubmitting(false);
+      return;
+    }
+
     const res = await provisionSeats(orgId, emailList, expiresAt || undefined);
     if (res) {
       setResults(res.results);
@@ -269,17 +320,62 @@ function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanel
               <div className={styles.warning}>{t('business.admin.seatLimitReached')}</div>
             )}
 
-            <div className={styles.formGroup}>
-              <label htmlFor="emails">{t('business.admin.emailsLabel')}</label>
-              <textarea
-                id="emails"
-                value={emails}
-                onChange={(e) => setEmails(e.target.value)}
-                placeholder={t('business.admin.emailsPlaceholder')}
-                disabled={!canAddMore}
-                rows={5}
-              />
+            <div className={styles.inputModeTabs}>
+              <button
+                type="button"
+                className={`${styles.tab} ${inputMode === 'manual' ? styles.tabActive : ''}`}
+                onClick={() => {
+                  setInputMode('manual');
+                  setCsvError('');
+                  setCsvFile(null);
+                }}
+              >
+                {t('business.admin.tabManual')}
+              </button>
+              <button
+                type="button"
+                className={`${styles.tab} ${inputMode === 'csv' ? styles.tabActive : ''}`}
+                onClick={() => {
+                  setInputMode('csv');
+                  setEmails('');
+                }}
+              >
+                {t('business.admin.tabCsv')}
+              </button>
             </div>
+
+            {inputMode === 'manual' ? (
+              <div className={styles.formGroup}>
+                <label htmlFor="emails">{t('business.admin.emailsLabel')}</label>
+                <textarea
+                  id="emails"
+                  value={emails}
+                  onChange={(e) => setEmails(e.target.value)}
+                  placeholder={t('business.admin.emailsPlaceholder')}
+                  disabled={!canAddMore}
+                  rows={5}
+                />
+              </div>
+            ) : (
+              <div className={styles.formGroup}>
+                <label htmlFor="csvFile">{t('business.admin.csvLabel')}</label>
+                <input
+                  type="file"
+                  id="csvFile"
+                  accept=".csv"
+                  onChange={handleCsvUpload}
+                  disabled={!canAddMore}
+                  className={styles.fileInput}
+                />
+                {csvFile && (
+                  <p className={styles.fileInfo}>
+                    {t('business.admin.csvSelected', { name: csvFile.name })}
+                  </p>
+                )}
+                {csvError && <p className={styles.csvErrorMsg}>{csvError}</p>}
+                <p className={styles.csvHint}>{t('business.admin.csvHint')}</p>
+              </div>
+            )}
 
             <div className={styles.formGroup}>
               <label htmlFor="expiresAt">{t('business.admin.expirationLabel')}</label>
@@ -299,7 +395,11 @@ function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanel
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={isSubmitting || !canAddMore || !emails.trim()}
+                disabled={
+                  isSubmitting ||
+                  !canAddMore ||
+                  (inputMode === 'manual' ? !emails.trim() : !csvFile)
+                }
               >
                 {isSubmitting ? t('business.admin.provisioning') : t('business.admin.sendInvites')}
               </button>
