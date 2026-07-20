@@ -33,6 +33,18 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
 - **Backend hardening** ([#253](https://github.com/FlyGACA/FlyGACA-app/pull/253)): `/api/feedback`
   routing fix, region drift resolved to `me-central1`, per-uid + per-IP rate limiting, input size
   caps, JSON error handling, and a new `functions` CI job.
+- **Captain Adel archive search.** The saved-conversation archive now searches titles and message
+  bodies: the pure `filterConversations` helper (`src/calc/conversations.ts`) is wired into the
+  history menu in `src/components/chat/ConversationMenu.tsx`, alongside the existing pin/rename,
+  with empty- and no-match states.
+- **Global ⌘K search / command palette.** The header ⌘K pill opens a real app-wide palette
+  (`src/components/CommandPalette/CommandPalette.tsx`) that jumps to any live tool, guide,
+  regulatory Part, or aerodrome, driven off the `tools`/guides registries so it can't drift.
+- **Dashboard follow-ups** (on the role-aware redesign): per-role widget reordering persisted via
+  the `order` list in `src/lib/dashboardPrefs.ts`, an offline / cache-status widget, and an
+  ask-Captain-Adel entry point — all wired through `src/pages/account/Dashboard.tsx`.
+- **Offline page.** A graceful PWA offline fallback route (`src/pages/Offline.tsx`), backing the
+  app-shell precache + network-first `/data/*` caching already configured in `vite.config.ts`.
 
 ## Now — production hardening & go-live confidence
 
@@ -87,18 +99,6 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
   axe a11y checks to cover more critical flows.
-- **[product]** **Captain Adel archive search.** The saved-conversation archive already supports
-  pin and rename (`togglePin` / `renameConversation` in `src/pages/chat/Chat.tsx`); the remaining
-  gap is search. `filterConversations` in `src/calc/conversations.ts` is already written and
-  unit-tested — it only needs a search box wired into the archive UI.
-- **[product]** **Dashboard follow-ups** (building on the role-aware redesign): drag-to-reorder
-  widgets (extend `src/lib/dashboardPrefs.ts` from a hidden-set to a per-role order list), an
-  offline / cache-status widget (surface `flygaca:offline:saved` and the account `syncError`), and
-  a prominent ask-Captain-Adel entry point on the dashboard.
-- **[product]** **Global ⌘K search / command palette.** The header already shows a ⌘K search pill;
-  wire it to a real app-wide palette (jump to any tool, guide, Part, or page).
-- **[product]** **Offline page.** A graceful PWA offline fallback (the app shell + network-first
-  `/data/*` caching are already in place).
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
   the sitemap, and tool↔library cross-links. See `docs/SEO-STRATEGY.md`.
 
@@ -106,8 +106,8 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 
 - **[product]** Content & tools expansion — more guides, quiz banks, and reading paths, deeper
   ground school, and new calculators as the corpus grows.
-- **[product]** Captain Adel enhancements — richer grounding and exam-mode ties. (Saved-chat UX is
-  mostly shipped; archive search is queued under **Next**.)
+- **[product]** Captain Adel enhancements — richer grounding and exam-mode ties. (Saved-chat UX,
+  including archive search, is shipped — see **Recently shipped**.)
 - **[product]** **Study analytics — deeper insights.** `StudyDashboard` already surfaces
   weakest-topic focus areas, an exam-history trend, and streak milestones (7/30/100/365) off
   `src/lib/studyProgress.ts`. The increment: per-topic mastery _trend over time_, an
