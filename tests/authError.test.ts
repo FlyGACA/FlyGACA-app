@@ -38,6 +38,23 @@ describe('authErrorInfo', () => {
     );
   });
 
+  it('routes popup failures to the general line with the popup-blocked message', () => {
+    expect(authErrorInfo('auth/popup-blocked')).toEqual({
+      field: 'general',
+      key: 'account.errors.popupBlocked',
+    });
+    expect(authErrorInfo('auth/popup-closed-by-user').key).toBe('account.errors.popupBlocked');
+    expect(authErrorInfo('auth/cancelled-popup-request').key).toBe('account.errors.popupBlocked');
+  });
+
+  it('routes unsupported-environment and internal errors to the config line', () => {
+    expect(authErrorInfo('auth/operation-not-supported-in-this-environment').key).toBe(
+      'account.errors.config',
+    );
+    expect(authErrorInfo('auth/internal-error').key).toBe('account.errors.config');
+    expect(authErrorInfo('auth/missing-app-check-token').key).toBe('account.errors.config');
+  });
+
   it('folds the URL-embedded referrer-blocked code onto unauthorized-domain', () => {
     expect(authErrorInfo('auth/requests-from-referer-are-blocked')).toEqual({
       field: 'general',

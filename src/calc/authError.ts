@@ -36,6 +36,23 @@ const MAP: Record<string, AuthErrorInfo> = {
   'auth/api-key-not-valid': { field: 'general', key: 'account.errors.config' },
   'auth/invalid-api-key': { field: 'general', key: 'account.errors.config' },
   'auth/firebase-app-check-token-is-invalid': { field: 'general', key: 'account.errors.config' },
+  // The reCAPTCHA/App Check token couldn't be minted — usually the serving origin
+  // isn't registered on the reCAPTCHA Enterprise key. Same class as the config
+  // errors above (see the "all auth failing" triage in docs/RUNBOOK-firebase.md).
+  'auth/firebase-app-check-token-is-invalid.': { field: 'general', key: 'account.errors.config' },
+  'auth/missing-app-check-token': { field: 'general', key: 'account.errors.config' },
+  // A popup the user (or the browser) blocked/closed. Not a credential problem —
+  // the Google flow falls back to a full-page redirect, so this is a soft nudge.
+  'auth/popup-blocked': { field: 'general', key: 'account.errors.popupBlocked' },
+  'auth/popup-closed-by-user': { field: 'general', key: 'account.errors.popupBlocked' },
+  'auth/cancelled-popup-request': { field: 'general', key: 'account.errors.popupBlocked' },
+  // Popups aren't supported here (some in-app / native webviews). The redirect
+  // fallback handles it; if it still surfaces, it's environmental, not credentials.
+  'auth/operation-not-supported-in-this-environment': {
+    field: 'general',
+    key: 'account.errors.config',
+  },
+  'auth/internal-error': { field: 'general', key: 'account.errors.config' },
 };
 
 export function authErrorInfo(code: string | undefined | null): AuthErrorInfo {

@@ -2092,7 +2092,9 @@
       "network": "Network error. Check your connection and try again.",
       "providerDisabled": "This sign-in method is turned off for this app.",
       "unauthorizedDomain": "This site isn't authorized for sign-in yet. If you're on a preview link, use the main site.",
-      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site."
+      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site.",
+      "popupBlocked": "The sign-in popup was blocked or closed. Redirecting you to continue…",
+      "technicalDetail": "(code: {{code}})"
     },
     "subscription": {
       "title": "Subscription",

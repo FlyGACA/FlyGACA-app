@@ -47,7 +47,11 @@ export async function onAuthChange(cb: (user: AuthUser | null) => void): Promise
     return () => {};
   }
   const { onAuthStateChanged } = await import('firebase/auth');
-  return onAuthStateChanged(auth, (u) => cb(u ? mapUser(u) : null));
+  const unsub = onAuthStateChanged(auth, (u) => cb(u ? mapUser(u) : null));
+  // Resolve any pending Google redirect (mobile / native webview flow). Fire and
+  // forget — onAuthStateChanged above will then emit the signed-in user.
+  void completeRedirectSignIn(auth);
+  return unsub;
 }
 
 function requireAuth(auth: Awaited<ReturnType<typeof getFirebaseAuth>>): NonNullable<typeof auth> {
@@ -84,7 +88,39 @@ async function syncSession(user: User): Promise<void> {
   }
 }
 
-export async function signInWithGoogle(): Promise<AuthUser> {
+/**
+ * Popup failures that mean "this environment can't do a popup" — a blocked/closed
+ * popup or a webview that doesn't support one. We retry these as a full-page
+ * redirect rather than surfacing them as an error (in-app browsers and the
+ * Capacitor native webview routinely block popups). A real config problem
+ * (unauthorized domain, App Check) is NOT in this set, so it still surfaces.
+ */
+const POPUP_FALLBACK_CODES = new Set([
+  'auth/popup-blocked',
+  'auth/popup-closed-by-user',
+  'auth/cancelled-popup-request',
+  'auth/operation-not-supported-in-this-environment',
+]);
+
+/**
+ * When a Google sign-in returns via `signInWithRedirect`, this resolves the
+ * pending result on the next page load and syncs the session cookie. Best-effort:
+ * no pending redirect (the common case) resolves to `null` and no-ops, and any
+ * error is swallowed so bootstrap never breaks. Invoked once from `onAuthChange`.
+ */
+async function completeRedirectSignIn(
+  auth: NonNullable<Awaited<ReturnType<typeof getFirebaseAuth>>>,
+) {
+  try {
+    const { getRedirectResult } = await import('firebase/auth');
+    const cred = await getRedirectResult(auth);
+    if (cred?.user) await syncSession(cred.user);
+  } catch (err) {
+    console.error('Failed to complete Google redirect sign-in:', err);
+  }
+}
+
+export async function signInWithGoogle(): Promise<AuthUser | null> {
   const isMock =
     import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
   if (isMock) {
@@ -99,10 +135,30 @@ export async function signInWithGoogle(): Promise<AuthUser> {
     return mockUser;
   }
   const auth = requireAuth(await getFirebaseAuth());
-  const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
-  const cred = await signInWithPopup(auth, new GoogleAuthProvider());
-  await syncSession(cred.user);
-  return mapUser(cred.user);
+  const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth');
+  const provider = new GoogleAuthProvider();
+
+  // Native webviews (Capacitor) can't host the popup at all — go straight to the
+  // redirect flow. The page navigates away and `completeRedirectSignIn` finishes
+  // the sign-in on return, so this resolves to `null` here (no user to map yet).
+  if (isNative()) {
+    await signInWithRedirect(auth, provider);
+    return null;
+  }
+
+  try {
+    const cred = await signInWithPopup(auth, provider);
+    await syncSession(cred.user);
+    return mapUser(cred.user);
+  } catch (err) {
+    const code = (err as { code?: string }).code;
+    if (code && POPUP_FALLBACK_CODES.has(code)) {
+      // Popup unavailable in this browser — fall back to a full-page redirect.
+      await signInWithRedirect(auth, provider);
+      return null;
+    }
+    throw err;
+  }
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<AuthUser> {
