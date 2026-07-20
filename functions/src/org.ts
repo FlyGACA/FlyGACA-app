@@ -18,6 +18,7 @@ import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import type { Entitlement } from "./billing-core.js";
 import { cohortRow, type CohortRow } from "./school-core.js";
+import { buildInvite, checkSeatLimit, parseProvisionInput } from "./org-core.js";
 import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
@@ -125,20 +126,9 @@ export const provisionSeats = onCall(CALL_OPTS, async (request) => {
   const uid = request.auth?.uid;
   if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
 
-  const data = request.data as { orgId?: string; emails?: string[]; expiresAt?: string } | undefined;
-  const orgId = data?.orgId;
-  const emails = data?.emails;
-  const expiresAt = data?.expiresAt;
-
-  if (!orgId || typeof orgId !== "string") {
-    throw new HttpsError("invalid-argument", "orgId-required");
-  }
-  if (!Array.isArray(emails) || !emails.length) {
-    throw new HttpsError("invalid-argument", "emails-required");
-  }
-  if (expiresAt && typeof expiresAt !== "string") {
-    throw new HttpsError("invalid-argument", "expiresAt-must-be-ISO-string");
-  }
+  const parsed = parseProvisionInput(request.data);
+  if (!parsed.ok) throw new HttpsError("invalid-argument", parsed.code);
+  const { orgId, emails, expiresAt } = parsed.value;
 
   const db = getFirestore();
   const orgSnap = await db.collection("orgs").doc(orgId).get();
@@ -150,38 +140,23 @@ export const provisionSeats = onCall(CALL_OPTS, async (request) => {
     throw new HttpsError("permission-denied", "not-an-owner");
   }
 
-  // Seat-limit check.
+  // Seat-limit check (only when the org has a limit — skip the count read otherwise).
   const seatLimit = org.seatLimit;
   if (typeof seatLimit === "number") {
     const memberSnap = await orgSnap.ref.collection("members").count().get();
     const seatsUsed = memberSnap.data().count;
-    const newCount = seatsUsed + emails.length;
-    if (newCount > seatLimit) {
-      throw new HttpsError(
-        "resource-exhausted",
-        `seat-limit-exceeded: ${seatsUsed}/${seatLimit} used, requested ${emails.length}`,
-      );
-    }
+    const check = checkSeatLimit({ seatsUsed, seatLimit, requested: emails.length });
+    if (!check.ok) throw new HttpsError("resource-exhausted", check.message);
   }
-
-  // Import here to avoid circular dependency with school-core.
-  const { inviteKeyForEmail } = await import("./school-core.js");
 
   // Create invites (or update if already exists, idempotent via merge=true).
   const results = await Promise.all(
     emails.map(async (email) => {
+      const invite = buildInvite(email, orgId, { expiresAt });
+      if (!invite) return { email, success: false, error: "invalid-email" };
       try {
-        const trimmed = email.trim().toLowerCase();
-        const key = inviteKeyForEmail(trimmed);
-        if (!key) throw new Error("invalid-email");
-        const doc = {
-          email: trimmed,
-          orgId,
-          createdAt: new Date().toISOString(),
-        } as Record<string, unknown>;
-        if (expiresAt) doc.expiresAt = expiresAt;
-        await db.collection("schoolInvites").doc(key).set(doc, { merge: true });
-        return { email: trimmed, success: true };
+        await db.collection("schoolInvites").doc(invite.key).set(invite.doc, { merge: true });
+        return { email: invite.doc.email, success: true };
       } catch (err) {
         return {
           email,
