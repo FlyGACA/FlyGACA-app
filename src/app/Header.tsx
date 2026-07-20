@@ -27,8 +27,9 @@ const SIGNED_IN: NavItem[] = [
   { to: '/settings', key: 'account.settings' },
 ];
 
-// Routes that are live in this build link internally; the rest are placeholders
-// pointing at their eventual paths (tracked in MIGRATION.md).
+// Primary top-level destinations. Every route here is live (the legacy→React
+// rebuild is complete — see MIGRATION.md); when signed in, /account renders as a
+// dropdown (AccountMenu) surfacing the daily pages.
 const NAV: NavItem[] = [
   { to: '/library', key: 'nav.library' },
   { to: '/chat', key: 'nav.captainAdel' },
