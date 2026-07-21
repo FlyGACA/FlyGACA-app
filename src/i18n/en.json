@@ -3246,6 +3246,13 @@
       }
     ]
   },
+  "flavor": {
+    "home": "Home",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "getFullApp": "Get the full Fly GACA app"
+  },
   "footer": {
     "tagline": "Every Saudi reg. One captain on the answer. An independent educational reference for civil aviation in the Kingdom.",
     "explore": "Explore",

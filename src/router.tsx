@@ -1,8 +1,10 @@
 import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
+import { FlavorRoot } from './app/flavor/FlavorRoot';
 import { Home } from './pages/Home/Home';
 import { AR_PREFIX, isArabicPath } from './lib/seo';
+import { FLAVOR, IS_FLAVOR_APP } from './flavors/current';
 
 /**
  * Lazy a named export into a route component. Every page except Home is
@@ -104,7 +106,10 @@ const GroundSchool = lazyNamed(() => import('./pages/study/GroundSchool'), 'Grou
 const MockExam = lazyNamed(() => import('./pages/study/MockExam'), 'MockExam');
 const Paths = lazyNamed(() => import('./pages/study/Paths'), 'Paths');
 const Packs = lazyNamed(() => import('./pages/study/Packs'), 'Packs');
-const PackDetail = lazyNamed(() => import('./pages/study/PackDetail'), 'PackDetail');
+const PackDetail = lazyNamed(
+  () => import('./pages/study/PackDetail'),
+  'PackDetail',
+) as ComponentType<{ fixedId?: string; standalone?: boolean }>;
 const StudySheets = lazyNamed(() => import('./pages/study/StudySheets'), 'StudySheets');
 
 // Account
@@ -127,6 +132,11 @@ const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPag
 const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
 const Offline = lazyNamed(() => import('./pages/Offline'), 'Offline');
 
+// Standalone prep-app (flavor) chrome — FlavorRoot is a tiny eager shell that
+// lazy-loads the real layout, so on the main web build (where the flavor tree
+// is never mounted) none of the flavor chunks are ever fetched.
+const FlavorSettings = lazyNamed(() => import('./app/flavor/FlavorSettings'), 'FlavorSettings');
+
 /**
  * The Arabic variant of every content route lives under `/ar`. When the current
  * URL is in that prefix we mount the *same* route tree under `basename: '/ar'`,
@@ -138,10 +148,48 @@ const basename =
   typeof window !== 'undefined' && isArabicPath(window.location.pathname) ? AR_PREFIX : undefined;
 
 /**
+ * Route table for a standalone prep app: the pack dashboard is home, plus the
+ * shared study runners (their data is already sliced to the pack by
+ * scripts/build-flavor.mjs), the Document reader for the pack's reading list,
+ * slim settings and the legal pages. Every path literal here also exists in the
+ * main table below, so scripts/build-sitemap.mjs's textual scan of this file
+ * (and the prerender coverage that mirrors it) is unaffected.
+ */
+const flavorRoutes = [
+  {
+    path: '/',
+    element: <FlavorRoot />,
+    children: [
+      { index: true, element: <PackDetail fixedId={FLAVOR.packId} standalone /> },
+      { path: 'study/quiz', element: <Quiz /> },
+      { path: 'study/flashcards', element: <Flashcards /> },
+      { path: 'study/groundschool', element: <GroundSchool /> },
+      { path: 'study/exam', element: <MockExam /> },
+      { path: 'study/paths', element: <Paths /> },
+      { path: 'study/sheets', element: <StudySheets /> },
+      // In-app links from the shared runners point at the pack's storefront
+      // routes; in a single-pack app both collapse onto the dashboard.
+      { path: 'study/packs', element: <Navigate to="/" replace /> },
+      { path: 'study/packs/:id', element: <Navigate to="/" replace /> },
+      { path: 'library/reference/:slug', element: <Document kind="reference" /> },
+      { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
+      { path: 'library/:slug', element: <Document /> },
+      { path: 'settings', element: <FlavorSettings /> },
+      { path: 'disclaimer', element: <DisclaimerPage /> },
+      { path: 'terms', element: <TermsPage /> },
+      { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'safety', element: <SafetyPage /> },
+      { path: 'offline', element: <Offline /> },
+      { path: '*', element: <NotFound /> },
+    ],
+  },
+];
+
+/**
  * Route table for the app. Each page lives under src/pages/. As more pages are
  * ported from the legacy site they slot in here (see MIGRATION.md).
  */
-const routes = [
+const mainRoutes = [
   {
     path: '/',
     element: <Layout />,
@@ -243,6 +291,9 @@ const routes = [
     ],
   },
 ];
+
+/** Flavor builds swap in the reduced tree; the main web app is untouched. */
+export const routes = IS_FLAVOR_APP ? flavorRoutes : mainRoutes;
 
 /**
  * Arabic is the SAME route tree mounted under `basename: '/ar'` when the URL is an
