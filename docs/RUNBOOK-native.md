@@ -88,6 +88,42 @@ Source art lives outside the generated project so it survives regeneration:
 5. After approval: keep phased release on; verify the installed app cold-launches offline
    (airplane mode) before releasing to 100%.
 
+## Per-flavor app pipeline (the standalone prep-app suite)
+
+Each live paid prep pack ships as its own **paid-upfront** App Store app (the
+ASA/Gleim model — see `docs/STORE-SUITE.md` for the store strategy). The flavor
+registry (`src/flavors/registry.ts`) is the source of truth: pack ↔ bundle id ↔
+names ↔ manifest. Owning the app IS owning the pack (`FLAVOR_GRANTED_PACK_IDS`
+→ `hasPackAccess`), so the apps have no sign-in, no IAP SDK, no Firebase, and
+work fully offline from first launch.
+
+```bash
+npm run build:flavor -- elp    # sliced, branded web bundle in dist/ (any OS)
+npm run preview                # click through it at localhost, incl. offline
+npm run flavor:ios -- elp      # macOS: fresh ios/ + best-practice config + art + Xcode
+```
+
+- `build:flavor` stages the pack's data slice under `.flavor/<id>/public/`
+  (only that pack's quiz banks, ground-school modules, paths, sheets, and every
+  corpus doc its content cites — `scripts/lib/flavor-slice.mjs`), then builds
+  with `VITE_APP_FLAVOR` set. The service worker precaches the whole slice.
+  Needs Node ≥ 22.18 (imports the TS registry directly).
+- `flavor:ios` regenerates `ios/` from scratch for the chosen flavor (so
+  `ios/`/`android/` stay generated-never-committed — they are fully gitignored),
+  then applies the best-practice plist config above via PlistBuddy and runs
+  `@capacitor/assets` with `native/assets/<id>/` art.
+- **One flavor at a time**: `dist/` and `ios/` always hold the last flavor
+  built. Rebuild when switching; nothing is shared between flavor archives.
+- The main web app is untouched: with `VITE_APP_FLAVOR` unset every build is
+  the full Fly GACA app, byte-for-byte (`npm run verify` + the flavor tests pin
+  this).
+
+Known gaps, acceptable for v1: reading-path steps that deep-link into surfaces
+a flavor app doesn't mount (e.g. `/tools/*`) land on the in-app NotFound page,
+and the flavor bundle still carries the main app's never-fetched lazy route
+chunks (~2 MB of dead weight in the shipped binary). Both are follow-ups, not
+blockers.
+
 ## Things the native shell still needs (later stages)
 
 - **Auth / IAP:** native Apple/Google sign-in and RevenueCat IAP are part of Stage 3 (real

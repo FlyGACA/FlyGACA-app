@@ -15,14 +15,12 @@ playwright-report/
 blob-report/
 /playwright/.cache/
 
-# Capacitor native build artifacts (ios/ and android/ are generated on the Mac,
-# never committed — see docs/RUNBOOK-native.md)
-ios/App/Pods/
-ios/App/build/
-ios/App/App/public/
-ios/App/App/capacitor.config.json
-android/.gradle/
-android/app/build/
+# Capacitor platform projects are generated on the Mac, never committed — and
+# the per-flavor pipeline (scripts/flavor-ios.mjs) regenerates ios/ for ONE
+# flavor at a time, so a committed project would always be the wrong app.
+# See docs/RUNBOOK-native.md.
+/ios/
+/android/
 
 # Xcode user state / caches
 xcuserdata/
