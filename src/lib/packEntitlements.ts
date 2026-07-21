@@ -13,10 +13,15 @@
 import { isActive, type Entitlement } from './entitlements';
 import { PACKS_GATED, type Pack } from './prepCatalog';
 import { useAccount } from './account';
+import { FLAVOR_GRANTED_PACK_IDS } from '../flavors/current';
 
 /**
  * Whether the user may use `pack`. Free packs (and everything when the gate is off)
- * are always open; a paid pack needs ownership or an active plan.
+ * are always open; a paid pack needs ownership or an active plan — or it is the
+ * pack a standalone flavor app was bought as (paid-upfront: owning the app IS
+ * owning the pack, so `FLAVOR_GRANTED_PACK_IDS` carries it). That list is the
+ * constant `[]` on every main build, so the web paywall — including its promo
+ * immunity — is untouched.
  */
 export function hasPackAccess(
   pack: Pack,
@@ -25,7 +30,11 @@ export function hasPackAccess(
   now?: Date,
 ): boolean {
   if (!PACKS_GATED || pack.access === 'free') return true;
-  return ownedPackIds.includes(pack.id) || isActive(ent, now);
+  return (
+    FLAVOR_GRANTED_PACK_IDS.includes(pack.id) ||
+    ownedPackIds.includes(pack.id) ||
+    isActive(ent, now)
+  );
 }
 
 /**

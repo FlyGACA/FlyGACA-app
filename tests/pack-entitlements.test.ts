@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hasPackAccess, ownsPack } from '../src/lib/packEntitlements';
 import { FREE_FOR_EVERYONE, type Entitlement } from '../src/lib/entitlements';
 import { PACKS_GATED, type Pack } from '../src/lib/prepCatalog';
@@ -68,6 +68,30 @@ describe('hasPackAccess', () => {
     // Documents current behaviour: with the gate ON, a paid unowned pack is locked.
     expect(PACKS_GATED).toBe(true);
     expect(hasPackAccess(paidPack, { plan: 'free' }, [], NOW)).toBe(false);
+  });
+});
+
+describe('flavor grant (standalone prep-app builds)', () => {
+  // A flavor app is paid upfront: owning the app IS owning its pack. The grant
+  // rides in FLAVOR_GRANTED_PACK_IDS (compiled from VITE_APP_FLAVOR), so the
+  // suite above — which runs with the env unset — doubles as proof that main
+  // builds keep an empty grant list and identical paywall semantics.
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it('unlocks exactly the flavor’s own pack, nothing else', async () => {
+    vi.stubEnv('VITE_APP_FLAVOR', 'medical');
+    vi.resetModules();
+    const fresh = await import('../src/lib/packEntitlements');
+    // Its own pack: open with no account, no entitlement, no ownership.
+    expect(fresh.hasPackAccess(paidPack, null, [], NOW)).toBe(true);
+    // A different paid pack stays locked — the grant is not a skeleton key.
+    const otherPaid: Pack = { ...paidPack, id: 'aip' };
+    expect(fresh.hasPackAccess(otherPaid, null, [], NOW)).toBe(false);
+    // And the grant is access, not purchase — "Owned" badges still need a buy.
+    expect(fresh.ownsPack(paidPack, [])).toBe(false);
   });
 });
 
