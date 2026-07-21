@@ -180,7 +180,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
   (Preferences), `share()` and `openExternal()` fall back to web APIs in a browser. Plugins load via
   `import()` behind an `isNative()` guard, so the **web bundle only ships `@capacitor/core`** (the
   plugin web stubs split into tiny on-demand chunks).
-- **Capacitor v6 plugins:** app, status-bar, splash-screen, keyboard, preferences, share, browser,
+- **Capacitor v8 plugins:** app, status-bar, splash-screen, keyboard, preferences, share, browser,
   plus the ios/android platform packages. `capacitor.config.ts` sets the dark background, manual
   splash hide and keyboard resize.
 - **Safe-area insets** (`src/styles/native.css`): the sticky-header height folds in the top inset

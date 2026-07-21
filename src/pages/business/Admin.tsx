@@ -236,7 +236,7 @@ function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanel
         setCsvFile(null);
         return;
       }
-    } catch (err) {
+    } catch {
       setCsvError(t('business.admin.csvParseError'));
       setCsvFile(null);
     }
@@ -255,7 +255,7 @@ function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanel
     } else if (csvFile) {
       try {
         emailList = await parseCSV(csvFile);
-      } catch (err) {
+      } catch {
         setCsvError(t('business.admin.csvParseError'));
         setIsSubmitting(false);
         return;
