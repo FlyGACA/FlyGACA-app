@@ -1,7 +1,12 @@
 {
   "hosting": {
     "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/rag-chunks.json"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/rag-chunks.json"
+    ],
     "rewrites": [
       {
         "source": "/api/chat",
@@ -169,14 +174,26 @@
         "npm --prefix \"$RESOURCE_DIR\" run build"
       ],
       "source": "functions",
-      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
     }
   ],
   "apphosting": [
     {
       "backendId": "flygaca",
       "rootDir": "/",
-      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "functions"]
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions"
+      ]
     }
   ],
   "storage": {
