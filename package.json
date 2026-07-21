@@ -37,6 +37,8 @@
     "test:coverage": "vitest run --coverage",
     "test:rules": "firebase emulators:exec --only firestore \"vitest run --config vitest.rules.config.ts\"",
     "test:e2e": "playwright test",
+    "build:flavor": "node scripts/build-flavor.mjs",
+    "flavor:ios": "node scripts/flavor-ios.mjs",
     "cap:sync": "npm run build && cap sync",
     "cap:open": "cap open ios",
     "serve": "npm run build && firebase emulators:start --only hosting",
