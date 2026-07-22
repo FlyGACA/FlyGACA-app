@@ -19,8 +19,10 @@ separate native codebase, only the platform projects Capacitor generates plus th
 
 ## Generating the platform projects (macOS, first time)
 
-The `ios/` and `android/` folders are **generated on the build machine**, not committed here.
-Capacitor's `add` step needs Xcode + CocoaPods (iOS) / Android Studio + JDK (Android):
+The `ios/` and `android/` folders are **generated on the build machine**, not committed here — the
+one exception is the tracked iOS localization resources under `ios/App/App/{en,ar}.lproj/` (see
+[Arabic app-name localization](#arabic-app-name-localization)). Capacitor's `add` step needs Xcode +
+CocoaPods (iOS) / Android Studio + JDK (Android):
 
 ```bash
 npm ci
@@ -34,6 +36,39 @@ npm run cap:open              # open ios/App in Xcode
 
 After the first `add`, the day-to-day loop is just **`npm run cap:sync`** then build/run from
 Xcode / Android Studio.
+
+## Arabic app-name localization
+
+The WebView content is already fully bilingual + RTL (`src/i18n`), but the **native app name** shown
+under the home-screen icon comes from the iOS bundle, not the web layer. To localize it, the shell
+carries per-language `InfoPlist.strings` that override `CFBundleDisplayName` / `CFBundleName`:
+
+- `ios/App/App/en.lproj/InfoPlist.strings` → `Fly GACA`
+- `ios/App/App/ar.lproj/InfoPlist.strings` → `فلاي جاكا`
+
+Both mirror `common.appName` in the matching `src/i18n/*.json` bundle, so the native name matches the
+brand everywhere. **These two files are the localization source of truth and are tracked in git**,
+even though the rest of `ios/` is generated. If `npx cap add ios` reports the platform already exists
+because these tracked files are present, relocate them first (`mv ios /tmp/ios-l10n`), run
+`cap add ios`, then restore the two `.strings` files into `ios/App/App/{en,ar}.lproj/`.
+
+The `.strings` files only take effect once the Xcode project knows about Arabic and links the
+localized group. That wiring lives in `ios/App/App.xcodeproj/project.pbxproj` (generated on the Mac),
+so do it once in Xcode after generating the platform:
+
+1. **Register the region** — select the **App** project (blue icon) → **Info** tab →
+   **Localizations** → **+** → choose **Arabic (ar)**, accept the default file selection. This adds
+   `ar` to the project's `knownRegions`.
+2. **Add the base strings file** — in the Project navigator, right-click the **App** group →
+   **Add Files to "App"…** → select `ios/App/App/en.lproj/InfoPlist.strings` → **Add**. Xcode
+   recognizes the `.lproj` and creates the localized (variant) group.
+3. **Link Arabic** — select the added `InfoPlist.strings` → **File inspector** → under
+   **Localization**, tick **Arabic**. Because `ar.lproj/InfoPlist.strings` already exists, Xcode
+   links it automatically into the same variant group.
+
+Verify by launching on a simulator set to Arabic (**Settings → General → Language & Region →
+العربية**): the home-screen label should read **فلاي جاكا**. `npm run cap:sync` does not touch these
+files, so the localization survives day-to-day syncs.
 
 ## Things the native shell still needs (later stages)
 
