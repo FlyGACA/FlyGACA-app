@@ -191,22 +191,6 @@
      }
     },
     {
-     "q": "How long is one AIRAC cycle?",
-     "options": [
-      "7 days",
-      "14 days",
-      "28 days",
-      "30 days"
-     ],
-     "answer": 2,
-     "explain": "AIRAC information is published on a fixed 28-day cycle, per ICAO Annex 15.",
-     "cite": "Aeronautical Information Manual",
-     "citeRef": {
-      "kind": "reference",
-      "id": "aeronautical-information-manual-aim"
-     }
-    },
-    {
      "q": "Where would you find runway and aerodrome frequency data in the AIP?",
      "options": [
       "GEN section",

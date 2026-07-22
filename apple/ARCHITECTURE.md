@@ -1,8 +1,8 @@
 # Fly GACA iOS App Family — Architecture
 
 The native SwiftUI products: **one shared codebase, one App Store app per module**
-(PPL, ELPT, AIP today; IFR, CPL, FOI, AGI as their content lands), sold together
-via an App Store **app bundle**. Every app carries the identical core feature
+(PPL, ELPT, AIP, CPL, IR, ATPL today; FOI, AGI and more as their content lands), sold
+together via an App Store **app bundle**. Every app carries the identical core feature
 set — Study mode, Quizzing, Flashcards (spaced repetition), Mock/Practice tests,
 and timed scored Exam Prep with analytics — and none of it is per-app code.
 
@@ -175,7 +175,13 @@ apple/
     PPL/  { PPL.xcconfig,  Content/ }   ← com.flygaca.ppl,  module ppl-exam
     ELPT/ { ELPT.xcconfig, Content/ }   ← com.flygaca.elpt, module elp
     AIP/  { AIP.xcconfig,  Content/ }   ← com.flygaca.aip,  module aip
+    CPL/  { CPL.xcconfig,  Content/ }   ← com.flygaca.cpl,  module cpl
+    IR/   { IR.xcconfig,   Content/ }   ← com.flygaca.ir,   module ir
+    ATPL/ { ATPL.xcconfig, Content/ }   ← com.flygaca.atpl, module atpl
 ```
+
+The `xcconfig` + `Content/` folder for CPL/IR/ATPL already exist in this repo; only the
+Xcode **target** wiring (the click-path in README.md) remains a Mac-side step.
 
 The Xcode **project** (`apple/FlyGACA.xcodeproj`, one app target per store
 product) is created on a Mac — see README.md for the click-path. Reusable UI is
@@ -195,9 +201,12 @@ place for per-module view code to accumulate.
 - **Wave 1:** PPL, ELPT, AIP (content exists today) → then the first app bundle
   ("Saudi Pilot Study Pack") with completing-the-bundle credit for users who
   already bought one. Apple allows up to 10 apps per bundle.
-- **Wave 2:** IFR (`ir`), CPL (`cpl`), FOI (`foi`), AGI (`agi`) as content
-  lands. FOI/AGI are net-new packs — they enter `prepCatalog.ts` first, the
-  apps inherit them.
+- **Wave 2:** CPL (`cpl`), IR (`ir`), ATPL (`atpl`) — their packs are now live in
+  `prepCatalog.ts` with GACAR-cited draft banks, so the apps inherit them; the
+  `Content/` slices are emitted by `scripts/build-ios-content.mjs`. See
+  `docs/APPS-FAMILY-ROADMAP.md` for the full lineup.
+- **Wave 3+:** FOI (`foi`), AGI (`agi`), Dispatcher, AME and the rest — net-new
+  packs that enter `prepCatalog.ts` first, then the apps inherit them.
 - **Family continuity:** App Group (shared SwiftData store) + shared Keychain
   group (Firebase auth in Phase 4) make the apps feel like one product on
   device.

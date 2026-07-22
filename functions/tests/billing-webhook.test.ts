@@ -270,7 +270,7 @@ describe("stripeWebhook — checkout.session.completed", () => {
           client_reference_id: "u1",
           mode: "payment",
           payment_status: "paid",
-          metadata: { kind: "pack", packId: "cpl" }, // 'soon' pack — not sellable
+          metadata: { kind: "pack", packId: "foi" }, // future/unlisted pack — not sellable
         },
       },
     };

@@ -326,9 +326,9 @@ describe('waitlist — write-only', () => {
     await assertSucceeds(setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com' }));
   });
 
-  it('lets a submission carry an optional topic (a soon-pack id)', async () => {
+  it('lets a submission carry an optional topic (e.g. an announced-pack id)', async () => {
     await assertSucceeds(
-      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', topic: 'cpl' }),
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', topic: 'foi' }),
     );
   });
 
