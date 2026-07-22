@@ -53,8 +53,31 @@ because these tracked files are present, relocate them first (`mv ios /tmp/ios-l
 `cap add ios`, then restore the two `.strings` files into `ios/App/App/{en,ar}.lproj/`.
 
 The `.strings` files only take effect once the Xcode project knows about Arabic and links the
-localized group. That wiring lives in `ios/App/App.xcodeproj/project.pbxproj` (generated on the Mac),
-so do it once in Xcode after generating the platform:
+localized group. That wiring lives in `ios/App/App.xcodeproj/project.pbxproj` (generated on the Mac).
+
+### Automated (recommended)
+
+Run the setup script **once, on macOS, right after `cap add ios`**:
+
+```bash
+npm run cap:localize          # node scripts/native/ios-localize.mjs
+```
+
+It parses `project.pbxproj` with Apple's `plutil` (no fragile text munging) and idempotently:
+
+- adds `ar` / `en` / `Base` to the project's `knownRegions`;
+- links `InfoPlist.strings` as a localized variant group in the App target's resources — or, if the
+  generated project uses Xcode-16 synchronized folder groups, leaves the auto-included `.lproj`
+  files alone;
+- ensures `Info.plist` carries `CFBundleDisplayName` / `CFBundleName` and declares
+  `CFBundleLocalizations = ["en", "ar"]`.
+
+Re-running is safe (it no-ops when already wired). Open the project in Xcode once afterwards so it
+normalizes the `pbxproj` formatting before you commit `ios/`.
+
+### Manual (Xcode GUI equivalent)
+
+If you'd rather click through it, the script mirrors these steps:
 
 1. **Register the region** — select the **App** project (blue icon) → **Info** tab →
    **Localizations** → **+** → choose **Arabic (ar)**, accept the default file selection. This adds
