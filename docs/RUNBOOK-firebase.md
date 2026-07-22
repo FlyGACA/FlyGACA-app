@@ -39,6 +39,7 @@ npm run dev
 ```
 
 Then check:
+
 - **Auth:** register + sign in (email/password) and Google (the emulator stubs the popup). The header
   reflects the signed-in user; `getIdToken()` returns a token (DevTools → Network → `/api/chat`).
 - **Firestore round-trip:** edit the profile and add a logbook flight → confirm `users/{uid}` and
@@ -82,3 +83,38 @@ the domain to every allowlist below:
 
 Stable custom domains are the reliable target; ephemeral preview hashes change on every deploy and
 are impractical to keep allowlisted.
+
+## Triage: ALL sign-in fails (Google **and** email/password) on **every** domain
+
+When _both_ Google and email/password register/sign-in fail on the production domain too — not just an
+ephemeral preview — the cause is almost never the app code (the whole flow is a few SDK calls, covered
+by tests). It's a **project/Console setting** that gates every auth call at once. The Account page now
+appends the raw Firebase code to the on-screen error (e.g. `(code: auth/…)`); read it and match it to
+the step below. Work top-down — these are ordered by how often they cause a total outage.
+
+1. **Providers enabled** — Console → Authentication → **Sign-in method**: confirm **Email/Password**
+   _and_ **Google** are both _Enabled_. A disabled provider returns `auth/operation-not-allowed`
+   (shown as "this sign-in method is turned off").
+2. **reCAPTCHA Enterprise for Firebase Auth enforcement** — Console → Authentication → **Settings**:
+   if bot/abuse protection (reCAPTCHA Enterprise) is set to **Enforce**, every auth call needs a valid
+   reCAPTCHA token, which the SDK can only mint on an origin registered on the key
+   (`VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`, currently `6Lc84Vgt…`). If your serving domains aren't on the
+   key's **Domains** list (Google Cloud → Security → reCAPTCHA Enterprise), _all_ auth fails. Fix:
+   add every serving origin to the key (see list below), or switch enforcement to **Audit** until the
+   domains are registered. Surfaces as `auth/firebase-app-check-token-is-invalid` /
+   `auth/missing-app-check-token` / `auth/internal-error`. **This is the most common cause of a total
+   outage on this project**, because every host build ships the key (`cp .env.example .env.local`).
+3. **Authorized domains** — Console → Authentication → **Settings → Authorized domains**: every
+   serving host must be listed. Missing → `auth/unauthorized-domain` (Google) — email/password is
+   unaffected by this one, so if email _also_ fails it's step 2 or 4, not this.
+4. **Browser API key** (`AIzaSyCJUd5…`) — Google Cloud → APIs & Services → **Credentials**: the key
+   must be enabled, have the **Identity Toolkit API** allowed, and — if it has **HTTP-referrer**
+   restrictions — list every serving host, else Identity Toolkit returns
+   `requests-from-referer-…-are-blocked` for _all_ auth.
+5. **Config actually shipped** — if the Account page shows the "temporarily unavailable" card with
+   **no form or Google button at all**, the deployed bundle is missing `VITE_FIREBASE_*`
+   (`isFirebaseConfigured()` is false). Confirm the host build injects them (all fronts run
+   `cp .env.example .env.local`; a host with its own env settings could override/omit them).
+
+Serving origins to register in steps 2–4: `flygaca.com`, `www.flygaca.com`, `flygaca-app.web.app`,
+`flygaca-app.firebaseapp.com`, plus any active `*.vercel.app` / `*.netlify.app` alias.

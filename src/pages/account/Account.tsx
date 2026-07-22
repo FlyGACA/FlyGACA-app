@@ -71,9 +71,17 @@ function FirebaseSignIn() {
     } catch (e) {
       const code = (e as { code?: string }).code;
       const { field, key } = authErrorInfo(code);
-      const errorMessage = t(key);
       const generic = key === 'account.authError';
       if (generic) console.error('Auth failure', code, e);
+
+      let errorMessage = t(key);
+      // For deployment/config/unknown failures (never credential ones), append the
+      // raw Firebase code so the exact cause is visible and copyable from the page —
+      // it maps 1:1 to the triage steps in docs/RUNBOOK-firebase.md and ends the
+      // "still broken but which error?" guessing loop.
+      if (field === 'general' && code) {
+        errorMessage = `${errorMessage} ${t('account.errors.technicalDetail', { code })}`;
+      }
 
       if (setFormErrors && (field === 'email' || field === 'password')) {
         setFormErrors({ [field]: errorMessage });

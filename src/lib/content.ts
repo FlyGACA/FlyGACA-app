@@ -36,7 +36,12 @@ export async function fetchJson<T>(
     // A truncated/malformed body should surface as a load error at the call
     // site (retryable, evicted from loadJson's cache), not as a downstream
     // render crash on a value that was silently cast to T.
-    throw new Error(`Failed to parse ${path}: ${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(
+      `Failed to parse ${path}: ${err instanceof Error ? err.message : String(err)}`,
+      {
+        cause: err,
+      },
+    );
   }
   if (validate && !validate(data)) {
     throw new Error(`Failed to validate ${path}: unexpected shape`);
