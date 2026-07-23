@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+  width: 1200px; height: 675px;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: white;
+  display: flex; flex-direction: column;
+  padding: 60px;
+  overflow: hidden;
+}
+.title { font-size: 72px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+.title span { background: linear-gradient(90deg, #a855f7, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { font-size: 28px; color: #94a3b8; margin-top: 12px; font-weight: 300; }
+.grid { display: flex; gap: 30px; margin-top: 50px; flex: 1; }
+.division { flex: 1; }
+.division-title { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 14px; }
+.division-title.red { color: #f87171; }
+.division-title.purple { color: #a855f7; }
+.division-title.green { color: #4ade80; }
+.agent { 
+  background: rgba(255,255,255,0.06); 
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 8px 12px; 
+  margin-bottom: 6px; font-size: 13px; 
+  display: flex; align-items: center; gap: 8px;
+}
+.agent .icon { font-size: 16px; }
+.badge {
+  position: absolute; bottom: 60px; right: 60px;
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  padding: 12px 24px; border-radius: 30px;
+  font-size: 18px; font-weight: 700;
+}
+.bottom { 
+  margin-top: auto; display: flex; justify-content: space-between; align-items: end;
+}
+.author { font-size: 18px; color: #64748b; }
+.author b { color: #e2e8f0; }
+.compatible { font-size: 14px; color: #64748b; text-align: right; line-height: 1.8; }
+.compatible b { color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="title"><span>THE AGENCY ROSTER</span></div>
+<div class="subtitle">24 Specialized AI Agent Skills — Works with ANY AI Tool</div>
+
+<div class="grid">
+  <div class="division">
+    <div class="division-title red">🔴 Engineering</div>
+    <div class="agent"><span class="icon">⚛️</span> Frontend Developer</div>
+    <div class="agent"><span class="icon">🔧</span> Backend Architect</div>
+    <div class="agent"><span class="icon">📱</span> Mobile App Builder</div>
+    <div class="agent"><span class="icon">🤖</span> AI Engineer</div>
+    <div class="agent"><span class="icon">🛠️</span> DevOps Automator</div>
+    <div class="agent"><span class="icon">⚡</span> Rapid Prototyper</div>
+    <div class="agent"><span class="icon">🏗️</span> Senior Developer</div>
+    <div class="agent"><span class="icon">🛡️</span> Security Engineer</div>
+  </div>
+  <div class="division">
+    <div class="division-title purple">🎨 Design</div>
+    <div class="agent"><span class="icon">🎨</span> UI Designer</div>
+    <div class="agent"><span class="icon">🔍</span> UX Researcher</div>
+    <div class="agent"><span class="icon">🏛️</span> MUX Architect</div>
+    <div class="agent"><span class="icon">🛡️</span> Brand Guardian</div>
+    <div class="agent"><span class="icon">🎬</span> Visual Storyteller</div>
+    <div class="agent"><span class="icon">✨</span> Whimsy Injector</div>
+    <div class="agent"><span class="icon">🖼️</span> Image Prompt Engineer</div>
+  </div>
+  <div class="division">
+    <div class="division-title green">🟢 Business</div>
+    <div class="agent"><span class="icon">🏢</span> Agent Architect</div>
+    <div class="agent"><span class="icon">💰</span> Business & Monetization</div>
+    <div class="agent"><span class="icon">✍️</span> Content Creator</div>
+    <div class="agent"><span class="icon">🔄</span> n8n Automator</div>
+    <div class="agent"><span class="icon">💬</span> WhatsApp Commerce</div>
+    <div class="agent"><span class="icon">🎙️</span> Vocal Specialist</div>
+    <div class="agent"><span class="icon">🧠</span> AI Models & Routing</div>
+    <div class="agent"><span class="icon">🔍</span> Research & Watch</div>
+    <div class="agent"><span class="icon">🔬</span> NVIDIA SkillSpector</div>
+  </div>
+</div>
+
+<div class="bottom">
+  <div class="author">Created by <b>Ziri Yahi</b></div>
+  <div class="compatible">
+    <b>Claude Code</b> · <b>Cursor</b> · <b>ChatGPT</b> · <b>Copilot</b> · <b>Hermes</b> · <b>Any AI</b>
+  </div>
+</div>
+</body>
+</html>
