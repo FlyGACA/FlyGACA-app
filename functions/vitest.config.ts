@@ -6,7 +6,8 @@ export default defineConfig({
     include: ["tests/**/*.test.ts"],
     environment: "node",
     coverage: {
-      // Opt-in via `npm run test:coverage`; wired into the `functions` CI gate.
+      // Opt-in via `npm run test:coverage` (a local ratchet, same as the app's root
+      // vitest.config.ts — CI runs `npm test`, so run this before pushing).
       provider: "v8",
       reporter: ["text", "html"],
       // Measure the whole backend source, not just what the tests happen to import,

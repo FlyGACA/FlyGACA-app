@@ -59,13 +59,15 @@ server core.
 
 ## Phase 2 — Untested hooks + pure widget helpers  *(cheap wins → raise the ratchet)*
 
-- [ ] `src/hooks/useForm.ts` (0%, 110 lines) — validate-on-blur/change, submit gating +
+- [x] `src/hooks/useForm.ts` (0%, 110 lines) — validate-on-blur/change, submit gating +
       focus-first-invalid, successful submit toggling `isSubmitting`, `resetForm`.
-- [ ] `src/hooks/useViewMode.ts`, `useDebouncedValue.ts`, `usePrefersReducedMotion.ts` (all 0%).
-- [ ] `src/lib/prefs/updatesPrefs.ts` (0%) — clone `library-prefs-store.test.ts`.
+- [x] `src/hooks/useViewMode.ts`, `useDebouncedValue.ts`, `usePrefersReducedMotion.ts` (all 0%).
+- [x] `src/lib/prefs/updatesPrefs.ts` (0%) — clone `library-prefs-store.test.ts`.
 - [ ] `RadarWidget.buildBlips()` in `src/components/bento/widgets/RadarWidget.tsx` (0%) — export
-      the pure helper and pin its corpus→polar mapping.
-- [ ] Raise the `vitest.config.ts` thresholds to just below the new live numbers.
+      the pure helper and pin its corpus→polar mapping. *(Deferred: needs a one-line `export` on
+      production source; pending sign-off.)*
+- [x] Raise the `vitest.config.ts` thresholds to just below the new live numbers
+      (now 75/72/77/76, up from 72/70/73/72).
 
 ## Phase 3 — Widget / peripheral-chat render smoke  *(lower risk)*
 

@@ -37,10 +37,10 @@ export default defineConfig({
       // can't silently regress, while today's run still passes. Raise as cover
       // grows. (`npm run test:coverage` prints the live figures.)
       thresholds: {
-        statements: 72,
-        branches: 70,
-        functions: 73,
-        lines: 72,
+        statements: 75,
+        branches: 72,
+        functions: 77,
+        lines: 76,
       },
     },
   },
