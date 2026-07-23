@@ -14,7 +14,7 @@ concurrency:
 jobs:
   swift-test:
     name: Swift Package Tests
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 20
     permissions:
       contents: read
@@ -76,7 +76,7 @@ jobs:
 
   ios-build:
     name: Build iOS App (${{ matrix.app }})
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [swift-test, content-validation]
     timeout-minutes: 30
     permissions:
@@ -114,7 +114,7 @@ jobs:
 
   ios-build-release:
     name: Build iOS App Release (${{ matrix.app }})
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [swift-test, content-validation]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     timeout-minutes: 40
@@ -166,14 +166,12 @@ jobs:
 
   ios-testflight:
     name: TestFlight (${{ matrix.app }})
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [swift-test, content-validation, check-signing]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.check-signing.outputs.enabled == 'true'
     timeout-minutes: 45
     permissions:
       contents: read
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_15.4.app
     strategy:
       fail-fast: false
       matrix:

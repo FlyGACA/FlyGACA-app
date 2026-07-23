@@ -114,9 +114,11 @@ per-app in App Store Connect.
   (`fail-fast: false`); the next real push gets a fresh number.
 - **"No suitable application records found"** — the app record doesn't exist in App
   Store Connect yet (Step 2.1).
-- **`DEVELOPER_DIR` path not found** — GitHub retired the pinned Xcode version on the
-  runner image. Bump `DEVELOPER_DIR: /Applications/Xcode_15.4.app` in
-  `.github/workflows/ios.yml` to a version present on the current `macos-14` image.
+- **"future Xcode project file format" errors** — XcodeGen emits the Xcode 16
+  project format, so iOS jobs must run on an image whose default Xcode is 16+
+  (currently `macos-15`). If a job needs a specific Xcode version, set
+  `DEVELOPER_DIR: /Applications/Xcode_<version>.app` to a path present on the
+  runner image.
 - **If `altool` upload is ever removed**: switch ExportOptions `destination` from
   `export` to `upload` — `xcodebuild -exportArchive` then uploads directly (at the
   cost of no `.ipa` artifact).
