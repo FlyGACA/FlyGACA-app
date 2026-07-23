@@ -4,7 +4,7 @@ import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
 import { FieldGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
-import loa from './Loa.module.css';
+import loa from '@/pages/tools/procedures/Loa.module.css';
 
 export function FlightPlan() {
   const { t } = useTranslation();

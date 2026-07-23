@@ -154,7 +154,8 @@ RAG embeddings) hold the datastore schemas.
 The legacy→React migration is **complete** (all catalog tools are live). To add a tool: register
 it in `src/lib/tools.ts` — the typed catalog registry and single source of truth (`status:
 'soon'` until it ships, then flip to `'live'`) — lift its math into `src/calc/<tool>.ts` (pure,
-add a Vitest spec), build a page under `src/pages/tools/` using `CalcShell` + `useNumericInputs`
+add a Vitest spec), build a page under `src/pages/tools/<category>/` (the folder matching the
+registry's `category`; `ToolsIndex` alone stays at the `tools/` root) using `CalcShell` + `useNumericInputs`
 (or `useUrlState` for string-only tools), add its strings to both i18n bundles, and register the
 route in `router.tsx`. Names/blurbs/category labels resolve from i18n by id, so the registry holds
 only structure (route, category, status, keywords).
