@@ -50,3 +50,7 @@ sync-input/assets/
 
 # Generated Captain Adel source art (regenerate via npm run gen:captain) — kept out of the deploy
 captain-art/
+
+# Python bytecode (skill helper scripts)
+__pycache__/
+*.py[cod]
