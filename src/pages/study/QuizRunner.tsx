@@ -5,16 +5,7 @@ import { useStudyProgress, setQuizBest, toggleFlag } from '@/lib/studyProgress';
 import { ProgressBar } from '@/components/ProgressBar';
 import { isSynthetic } from './session';
 import styles from './Study.module.css';
-
-/** Fisher–Yates shuffle (returns a new array). */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+import { shuffle } from '@/calc/study/shuffle';
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return <section className={`container-narrow ${styles.page}`}>{children}</section>;

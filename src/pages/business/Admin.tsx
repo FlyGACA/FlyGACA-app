@@ -12,6 +12,7 @@ import {
 } from '@/lib/services/org';
 import { ProvisionPanel } from './ProvisionPanel';
 import styles from './admin.module.css';
+import { triggerDownload } from '@/lib/download';
 
 /** Cohort admin dashboard — an org owner sees their seats + study readiness. */
 export function BusinessAdmin() {
@@ -182,11 +183,5 @@ function exportCsv(data: CohortReadiness) {
       r.lastActive,
     ].join(','),
   );
-  const blob = new Blob([`${[header, ...lines].join('\n')}\n`], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${data.orgId}-cohort.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  triggerDownload(`${data.orgId}-cohort.csv`, `${[header, ...lines].join('\n')}\n`, 'text/csv');
 }

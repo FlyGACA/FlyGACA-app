@@ -38,6 +38,7 @@ import { achievements, earnedCount } from '@/calc/pilot/achievements';
 import { profileCompleteness } from '@/calc/pilot/onboarding';
 import { buildIcs } from '@/calc/pilot/ics';
 import styles from './dashboard.module.css';
+import { triggerDownload } from '@/lib/download';
 
 export function Dashboard() {
   const { t } = useTranslation();
@@ -84,13 +85,7 @@ function Inner() {
       navigate('/pricing');
       return;
     }
-    const blob = new Blob([buildIcs(icsEvents)], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'flygaca-currency.ics';
-    a.click();
-    URL.revokeObjectURL(url);
+    triggerDownload('flygaca-currency.ics', buildIcs(icsEvents), 'text/calendar');
   }
 
   const totalTrend = trend.reduce((s, b) => s + b.hours, 0);

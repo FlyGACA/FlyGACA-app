@@ -28,16 +28,7 @@ import type { Flight } from '@/lib/services/account';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';
 import styles from './account.module.css';
-
-function download(name: string, data: string, mime: string) {
-  const blob = new Blob([data], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+import { triggerDownload } from '@/lib/download';
 
 export function Logbook() {
   const { t } = useTranslation();
@@ -98,7 +89,7 @@ function Inner() {
     setSort((s) => ({ key, dir: s.key === key && s.dir === 'desc' ? 'asc' : 'desc' }));
 
   function exportJson() {
-    download('flygaca-logbook.json', exportAll(), 'application/json');
+    triggerDownload('flygaca-logbook.json', exportAll(), 'application/json');
   }
 
   function exportCsv() {
@@ -107,7 +98,7 @@ function Inner() {
       navigate('/pricing');
       return;
     }
-    download('flygaca-logbook.csv', flightsToCsv(flights), 'text/csv');
+    triggerDownload('flygaca-logbook.csv', flightsToCsv(flights), 'text/csv');
   }
 
   async function importCsv(file: File) {
