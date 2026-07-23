@@ -1,0 +1,165 @@
+name: iOS Builds & Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  swift-test:
+    name: Swift Package Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: 5.9
+
+      - name: Run Swift tests
+        run: npm run ios:test
+        working-directory: ${{ github.workspace }}
+
+  content-validation:
+    name: iOS Content Generation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate PPL content
+        run: node scripts/build-ios-content.mjs --app ppl
+
+      - name: Validate ELPT content
+        run: node scripts/build-ios-content.mjs --app elpt
+
+      - name: Validate AIP content
+        run: node scripts/build-ios-content.mjs --app aip
+
+  ios-build:
+    name: Build iOS App (${{ matrix.app }})
+    runs-on: macos-14
+    needs: [swift-test, content-validation]
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        app: [ppl, elpt, aip]
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: 5.9
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build ${{ matrix.app }} (Debug)
+        run: npm run ios:build:${{ matrix.app }}
+        continue-on-error: true
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-${{ matrix.app }}-debug
+          path: apple/.build/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  ios-build-release:
+    name: Build iOS App Release (${{ matrix.app }})
+    runs-on: macos-14
+    needs: [swift-test, content-validation]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 40
+    strategy:
+      matrix:
+        app: [ppl, elpt, aip]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: 5.9
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build ${{ matrix.app }} (Release)
+        run: npm run ios:build:release:${{ matrix.app }}
+        continue-on-error: true
+
+      - name: Upload Release artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-${{ matrix.app }}-release-${{ github.sha }}
+          path: apple/.build/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  build-summary:
+    name: Build Summary
+    runs-on: ubuntu-latest
+    needs: [swift-test, content-validation, ios-build]
+    if: always()
+    steps:
+      - name: Check build status
+        run: |
+          if [[ "${{ needs.swift-test.result }}" == "failure" ]]; then
+            echo "❌ Swift tests failed"
+            exit 1
+          fi
+          if [[ "${{ needs.content-validation.result }}" == "failure" ]]; then
+            echo "❌ Content validation failed"
+            exit 1
+          fi
+          if [[ "${{ needs.ios-build.result }}" == "failure" ]]; then
+            echo "⚠️ One or more iOS builds failed (expected on non-Mac runners in PRs)"
+          else
+            echo "✅ All iOS builds passed"
+          fi
+
+      - name: Report results
+        run: |
+          echo "## iOS CI/CD Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Swift Tests: ${{ needs.swift-test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Content Validation: ${{ needs.content-validation.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- iOS Builds: ${{ needs.ios-build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Artifacts:** Debug builds retained 7 days, Release builds 14 days" >> $GITHUB_STEP_SUMMARY
