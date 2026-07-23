@@ -130,8 +130,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ios-build-${{ matrix.app }}-release-${{ github.sha }}
-          path: apple/.build/
+          path: |
+            apple/.build/*.xcarchive
+            apple/.build/dSYMs
           retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload dSYM symbols
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-dsyms-${{ matrix.app }}-${{ github.sha }}
+          path: apple/.build/dSYMs/
+          retention-days: 30
           if-no-files-found: ignore
 
   build-summary:

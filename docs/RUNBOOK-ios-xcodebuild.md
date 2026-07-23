@@ -199,18 +199,58 @@ xcrun llvm-cov show -instr-profile .build/debug/codecov/default.profdata \
   .build/debug/FlyGACAKitPackageTests.xctest/Contents/MacOS/FlyGACAKitPackageTests
 ```
 
+### Release Builds & dSYM Symbols
+
+Release builds are automatically created on every push to `main` by the CI workflow.
+
+**Local Release Build:**
+```bash
+npm run ios:build:release:ppl
+```
+
+This creates:
+- XCArchive: `apple/.build/PPL-Release.xcarchive`
+- dSYM symbols: `apple/.build/dSYMs/FlyGACAApp.app.dSYM`
+
+**In CI (GitHub Actions):**
+- Release builds run as a separate matrix job (only on main branch)
+- XCArchives uploaded with 14-day retention
+- dSYM files extracted and stored separately (30-day retention)
+- All artifacts tagged with commit SHA for traceability
+
+**Using dSYM for Crash Analysis (Phase 4 preparation):**
+
+Once crash reporting is integrated (Phase 4), dSYM files enable:
+- Stack trace symbolication (convert addresses → source lines)
+- Crash reporting tool integration (Sentry, Crashlytics, etc.)
+- Performance profiling with meaningful function names
+
+dSYM files are stored in GitHub Actions artifacts and can be downloaded for local debugging:
+```bash
+# Download from GitHub Actions artifact
+# Then use lldb to load symbols:
+lldb <binary>
+target symbols add <path-to-dSYM>/Contents/Resources/DWARF/<binary-name>
+```
+
 ## CI/CD Integration
 
 See [`.github/workflows/ios.yml`](#) for the GitHub Actions workflow that:
 
-- Runs `npm run ios:test` on every push (Swift tests, no simulator)
-- Builds all three apps in parallel matrix
-- Creates XCArchives for release builds on `main`
-- Stores artifacts with 7-day retention
+- **Phase 2:** Runs `npm run ios:test` on every push (Swift tests, no simulator)
+- **Phase 2:** Builds all three apps in parallel matrix (debug builds, 7-day retention)
+- **Phase 3:** Creates XCArchives for release builds on `main` branch pushes
+- **Phase 3:** Extracts and stores dSYM symbols (30-day retention) for crash reporting
+- **Phase 3:** Tags all release artifacts with git commit SHA for traceability
+
+**Artifact Retention:**
+- Debug builds: 7 days (PR + main)
+- Release XCArchives: 14 days (main only)
+- dSYM symbols: 30 days (main only) — prepared for Phase 4 crash reporting integration
 
 The workflow is triggered by:
-- Push to `main` branch
-- All pull requests
+- Push to `main` branch (all jobs, including release builds)
+- All pull requests (debug builds only)
 - Manual `workflow_dispatch`
 
 ## Troubleshooting
@@ -265,22 +305,24 @@ If missing, follow `apple/README.md` to recreate the project.
 
 ## Phase Roadmap
 
-### Phase 1 ✅ (Current)
+### Phase 1 ✅ (Complete)
 - Local npm scripts for build/test
 - xcodebuild wrapper orchestration
 - Content generation integration
 
-### Phase 2 (Week 2)
+### Phase 2 ✅ (Complete)
 - GitHub Actions CI/CD matrix workflow
-- Parallel builds of all three apps
+- Parallel builds of all three apps (PPL, ELPT, AIP)
 - Swift test integration in CI
+- Security compliance (explicit permissions blocks)
 
-### Phase 3 (Week 3)
-- Release builds on `main` branch
-- XCArchive creation and retention
-- dSYM upload prep
+### Phase 3 ✅ (Complete)
+- Release builds on `main` branch (conditional on main push)
+- XCArchive creation for Release configuration
+- dSYM extraction and 30-day retention
+- Tagged artifacts with git commit SHA
 
-### Phase 4 (Month 2-3)
+### Phase 4 (Deferred: Month 2-3)
 - Code signing via Xcode Cloud
 - TestFlight automation
 - App Store Connect integration

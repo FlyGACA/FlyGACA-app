@@ -172,16 +172,43 @@ build_app() {
   # Run xcodebuild
   local build_start=$(date +%s)
 
-  if ! xcodebuild \
-    -project "$XCODE_PROJECT" \
-    -scheme "$SCHEME" \
-    -configuration "$CONFIG_NAME" \
-    -derivedDataPath "$PROJECT_ROOT/apple/.build" \
-    -arch arm64 \
-    -sdk iphoneos \
-    build; then
-    log_error "Build failed for $app"
-    return 1
+  if [ "$CONFIG_NAME" = "Release" ]; then
+    # Archive for Release builds (enables dSYM extraction)
+    local archive_path="$PROJECT_ROOT/apple/.build/${SCHEME}-${CONFIG_NAME}.xcarchive"
+
+    if ! xcodebuild \
+      -project "$XCODE_PROJECT" \
+      -scheme "$SCHEME" \
+      -configuration "$CONFIG_NAME" \
+      -archivePath "$archive_path" \
+      -arch arm64 \
+      -sdk iphoneos \
+      archive; then
+      log_error "Archive failed for $app"
+      return 1
+    fi
+
+    # Extract dSYMs from archive for crash reporting
+    local dsyms_dir="$PROJECT_ROOT/apple/.build/dSYMs"
+    mkdir -p "$dsyms_dir"
+
+    if [ -d "$archive_path/dSYMs" ]; then
+      cp -r "$archive_path/dSYMs"/* "$dsyms_dir/" 2>/dev/null || true
+      log_success "dSYMs extracted to $dsyms_dir"
+    fi
+  else
+    # Build for Debug configuration
+    if ! xcodebuild \
+      -project "$XCODE_PROJECT" \
+      -scheme "$SCHEME" \
+      -configuration "$CONFIG_NAME" \
+      -derivedDataPath "$PROJECT_ROOT/apple/.build" \
+      -arch arm64 \
+      -sdk iphoneos \
+      build; then
+      log_error "Build failed for $app"
+      return 1
+    fi
   fi
 
   local build_end=$(date +%s)
