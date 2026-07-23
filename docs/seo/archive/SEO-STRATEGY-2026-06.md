@@ -1,3 +1,6 @@
+> **ARCHIVED 2026-07-23.** Superseded by the root `SEO-PLAN.md` (the live backlog, driven by the
+> `flygaca-seo` skill). Kept for historical rationale — do not execute items from this file.
+
 # Fly GACA — SEO Strategy & Technical Blueprint
 
 > **Scope.** A production-ready, multi-layered SEO strategy for **FlyGACA.com**, the independent

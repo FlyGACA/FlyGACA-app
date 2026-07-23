@@ -1,3 +1,5 @@
+> Working file of `docs/RUNBOOK-openseo.md` (openseo audit runs write here). The live SEO backlog is the root `SEO-PLAN.md`.
+
 # Fly GACA — Keyword Research
 
 _Last reviewed: 2026-06-23_
