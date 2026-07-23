@@ -22,7 +22,8 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     css: false,
     coverage: {
-      // Opt-in via `npm run test:coverage`.
+      // `npm run test:coverage` — the CI unit-tests job runs this, so the ratchet
+      // below gates merges.
       provider: 'v8',
       reporter: ['text', 'html'],
       // Focus on the unit-testable layers. Pages, app chrome (src/app) and the

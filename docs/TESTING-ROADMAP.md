@@ -63,9 +63,11 @@ server core.
       focus-first-invalid, successful submit toggling `isSubmitting`, `resetForm`.
 - [x] `src/hooks/useViewMode.ts`, `useDebouncedValue.ts`, `usePrefersReducedMotion.ts` (all 0%).
 - [x] `src/lib/prefs/updatesPrefs.ts` (0%) — clone `library-prefs-store.test.ts`.
-- [ ] `RadarWidget.buildBlips()` in `src/components/bento/widgets/RadarWidget.tsx` (0%) — export
-      the pure helper and pin its corpus→polar mapping. *(Deferred: needs a one-line `export` on
-      production source; pending sign-off.)*
+- [x] `RadarWidget.buildBlips()` in `src/components/bento/widgets/RadarWidget.tsx` (0%) — exported
+      the pure helper and pinned its corpus→polar mapping.
+- [x] Wire the coverage ratchet into CI: both the app and `functions` jobs now run
+      `npm run test:coverage`, so the thresholds gate merges (previously they ran `npm run test`,
+      making the ratchet local-only).
 - [x] Raise the `vitest.config.ts` thresholds to just below the new live numbers
       (now 75/72/77/76, up from 72/70/73/72).
 
