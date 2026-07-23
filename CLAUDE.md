@@ -54,7 +54,13 @@ firebase.json's rewrite regions must match).
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
 - **Calculators:** pure, DOM-free logic in `src/calc/*` (aviation math plus chat/study/speech/text
-  helpers — no DOM/i18n) so it is unit-testable; the
+  helpers — no DOM/i18n) so it is unit-testable. The flat directory self-clusters: aviation tool
+  math (`isa`, `tas`, `crosswind`, `holding`, `runway*`, … — one module per catalog tool) plus
+  helper clusters — chat/voice (`chat*`, `conversations`, `transcript`, `markdown`, `speech`,
+  `textToSpeech`, `voiceSelection`), pilot records (`currency`, `logbook`, `recency`,
+  `achievements`, `onboarding`, `ics`), library (`anchor`, `corpusNav`, `changeTracking`,
+  `offlineManifest`, `libraryFilter`), study (`srs`), and app shell (`authError`,
+  `dashboardLayout`, `toolPresets`). The
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
   disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
   `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
