@@ -9,7 +9,7 @@ import {
   aircraftTotals,
   monthTotals,
 } from '@/calc/logbook';
-import type { Flight } from '@/lib/account';
+import type { Flight } from '@/lib/services/account';
 
 const now = new Date('2024-06-01T12:00:00Z');
 

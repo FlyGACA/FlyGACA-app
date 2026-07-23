@@ -8,8 +8,13 @@
  * is unit-testable without a backend; `useFeature` is the React-side convenience
  * that reads the live entitlement from the global account store.
  */
-import { useAccount } from './account';
-import { effectivePlan, FREE_FOR_EVERYONE, type Entitlement, type Plan } from './entitlements';
+import { useAccount } from '@/lib/services/account';
+import {
+  effectivePlan,
+  FREE_FOR_EVERYONE,
+  type Entitlement,
+  type Plan,
+} from '@/lib/services/entitlements';
 
 export type Feature =
   | 'adel-unlimited' // Captain Adel beyond the free daily quota / pro model

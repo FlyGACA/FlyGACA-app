@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { isArabicPath } from '@/lib/seo';
+import { isArabicPath } from '@/lib/seo/seo';
 
 export const LANGS = ['en', 'ar'] as const;
 export type Lang = (typeof LANGS)[number];

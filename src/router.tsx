@@ -2,7 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
-import { AR_PREFIX, isArabicPath } from './lib/seo';
+import { AR_PREFIX, isArabicPath } from '@/lib/seo/seo';
 
 /**
  * Lazy a named export into a route component. Every page except Home is

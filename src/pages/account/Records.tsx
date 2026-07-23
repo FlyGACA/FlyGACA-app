@@ -9,7 +9,7 @@ import {
   deleteRecord,
   useAccount,
   type RecordCategory,
-} from '@/lib/account';
+} from '@/lib/services/account';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { parseISO } from '@/calc/recency';
 import account from './account.module.css';

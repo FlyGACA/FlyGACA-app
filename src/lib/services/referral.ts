@@ -4,7 +4,7 @@
  * validates the code and grants the rewards — this module only transports the token.
  * Inert without Firebase.
  */
-import { isFirebaseConfigured, getFns } from './firebase';
+import { isFirebaseConfigured, getFns } from '@/lib/services/firebase';
 
 const REF_KEY = 'flygaca:ref';
 

@@ -5,12 +5,17 @@ import { Disclaimer } from '@/components/Disclaimer';
 import { PageHero } from '@/components/PageHero';
 import { SectionHeader } from '@/components/SectionHeader';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { faqLd } from '@/lib/jsonld';
-import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from '@/lib/billing';
-import { useAccount } from '@/lib/account';
-import { effectivePlan } from '@/lib/entitlements';
-import { annualSavingsPct, monthlyEquivalent } from '@/lib/pricing';
-import { captureRefFromUrl, getStoredRef } from '@/lib/referral';
+import { faqLd } from '@/lib/seo/jsonld';
+import {
+  canCheckout,
+  startBillingPortal,
+  startProCheckout,
+  type ProPlan,
+} from '@/lib/services/billing';
+import { useAccount } from '@/lib/services/account';
+import { effectivePlan } from '@/lib/services/entitlements';
+import { annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
+import { captureRefFromUrl, getStoredRef } from '@/lib/services/referral';
 import styles from './Pricing.module.css';
 
 /**

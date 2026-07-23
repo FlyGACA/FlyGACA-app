@@ -7,7 +7,7 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import { useUrlState } from '@/hooks/useUrlState';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { dataUrl, type ChartsIndex, type ChartDoc } from '@/lib/content';
-import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
 import { Disclaimer } from '@/components/Disclaimer';
 import { ExternalLink } from '@/components/ExternalLink';
 import { Alert } from '@/components/Alert';

@@ -15,7 +15,7 @@ const h = vi.hoisted(() => ({
   lastCallableName: '' as string,
 }));
 
-vi.mock('@/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   isFirebaseConfigured: () => h.configured,
   getFns: () => Promise.resolve(h.fns),
 }));
@@ -36,7 +36,7 @@ import {
   getStoredRef,
   referralLink,
   fetchReferralCode,
-} from '@/lib/referral';
+} from '@/lib/services/referral';
 
 const REF_KEY = 'flygaca:ref';
 const origHref = window.location.href;

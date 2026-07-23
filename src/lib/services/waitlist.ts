@@ -5,7 +5,7 @@
  * no-op in the local-first build. `topic` records what the person is waiting for —
  * e.g. a `soon` exam-prep pack id.
  */
-import { getDb } from './firebase';
+import { getDb } from '@/lib/services/firebase';
 
 export async function notifyWaitlist(email: string, topic?: string): Promise<void> {
   const db = await getDb();

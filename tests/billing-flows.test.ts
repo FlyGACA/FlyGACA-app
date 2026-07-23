@@ -18,12 +18,12 @@ const h = vi.hoisted(() => ({
   lastArg: null as unknown,
 }));
 
-vi.mock('@/lib/native-bridge', () => ({
+vi.mock('@/lib/native/nativeBridge', () => ({
   isNative: () => h.native,
   billingChannel: () => h.channel,
 }));
 
-vi.mock('@/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   isFirebaseConfigured: () => h.configured,
   getFirebaseAuth: () => Promise.resolve({ currentUser: h.currentUser }),
   getFns: () => Promise.resolve(h.fns),
@@ -39,10 +39,10 @@ vi.mock('firebase/functions', () => ({
   },
 }));
 
-type BillingModule = typeof import('@/lib/billing');
+type BillingModule = typeof import('@/lib/services/billing');
 async function load(): Promise<BillingModule> {
   vi.resetModules();
-  return import('@/lib/billing');
+  return import('@/lib/services/billing');
 }
 
 // jsdom's window.location.assign is non-configurable, so swap the whole

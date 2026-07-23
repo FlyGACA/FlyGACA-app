@@ -8,10 +8,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SAVED_KEY = 'flygaca:offline:saved';
 
-type Mod = typeof import('@/lib/offlineCache');
+type Mod = typeof import('@/lib/native/offlineCache');
 async function fresh(): Promise<Mod> {
   vi.resetModules();
-  return import('@/lib/offlineCache');
+  return import('@/lib/native/offlineCache');
 }
 
 /** A minimal in-memory Cache API double. */

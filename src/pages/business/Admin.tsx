@@ -10,7 +10,7 @@ import {
   type OrgSummary,
   type CohortReadiness,
   type CohortRow,
-} from '@/lib/org';
+} from '@/lib/services/org';
 import styles from './admin.module.css';
 
 /** Cohort admin dashboard — an org owner sees their seats + study readiness. */

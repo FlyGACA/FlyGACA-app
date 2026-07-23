@@ -10,7 +10,7 @@ import { Stepper } from '@/components/Stepper';
 import { BentoGrid } from '@/components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '@/components/bento/BentoCard';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { articleLd, breadcrumbLd, faqLd, organizationLd } from '@/lib/jsonld';
+import { articleLd, breadcrumbLd, faqLd, organizationLd } from '@/lib/seo/jsonld';
 import styles from './About.module.css';
 
 interface Section {

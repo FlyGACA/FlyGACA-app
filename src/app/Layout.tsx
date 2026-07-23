@@ -10,7 +10,7 @@ import { ScrollProgress } from '@/components/ScrollProgress';
 import { CommandPalette } from '@/components/CommandPalette/CommandPalette';
 import { PwaPrompts } from '@/components/pwa/PwaPrompts';
 import { AnalyticsProvider } from '@/components/AnalyticsProvider';
-import { useTourOpen } from '@/lib/onboardingPrefs';
+import { useTourOpen } from '@/lib/prefs/onboardingPrefs';
 
 // Lazy so the modal + its CSS stay out of the initial bundle (160 kB budget) —
 // only fetched on a genuine first visit to the home route.

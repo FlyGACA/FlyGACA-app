@@ -7,10 +7,10 @@
  * Exposed via useSyncExternalStore so components re-render on any change.
  */
 import { useSyncExternalStore } from 'react';
-import { effectivePlan, type Entitlement } from './entitlements';
-import { isAuthAvailable, onAuthChange } from './auth';
-import { claimStaffAccessIfEligible } from './staff';
-import { claimSchoolSeatIfEligible } from './school';
+import { effectivePlan, type Entitlement } from '@/lib/services/entitlements';
+import { isAuthAvailable, onAuthChange } from '@/lib/services/auth';
+import { claimStaffAccessIfEligible } from '@/lib/services/staff';
+import { claimSchoolSeatIfEligible } from '@/lib/services/school';
 import {
   loadAccount,
   saveProfileDoc,
@@ -20,7 +20,7 @@ import {
   addRecordDoc,
   updateRecordDoc,
   deleteRecordDoc,
-} from './sync';
+} from '@/lib/services/sync';
 
 /** Operational role driving dashboard personalization. */
 export type UserRole = 'pilot' | 'student' | 'instructor';
@@ -169,7 +169,7 @@ export function signIn(email: string, name: string): void {
 }
 
 export function signOut(): void {
-  void import('./auth').then(({ signOutUser }) => signOutUser());
+  void import('@/lib/services/auth').then(({ signOutUser }) => signOutUser());
   commit({
     ...state,
     session: null,
@@ -303,7 +303,7 @@ function connectAuth(): void {
       // the initial bundle; guarded so a late import can't start a stale session.
       stopProgressSync?.();
       stopProgressSync = null;
-      void import('./studyProgressSync').then(({ startStudyProgressSync }) => {
+      void import('@/lib/services/studyProgressSync').then(({ startStudyProgressSync }) => {
         if (state.uid === user.uid) stopProgressSync = startStudyProgressSync(user.uid);
       });
       try {

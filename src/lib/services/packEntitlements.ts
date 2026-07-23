@@ -10,9 +10,9 @@
  * `useFeature` — so the app-wide `FREE_FOR_EVERYONE` promo cannot silently open a
  * paid pack. This mirrors how the chat surface gates on the pure `hasFeature`.
  */
-import { isActive, type Entitlement } from './entitlements';
-import { PACKS_GATED, type Pack } from './prepCatalog';
-import { useAccount } from './account';
+import { isActive, type Entitlement } from '@/lib/services/entitlements';
+import { PACKS_GATED, type Pack } from '@/lib/prepCatalog';
+import { useAccount } from '@/lib/services/account';
 
 /**
  * Whether the user may use `pack`. Free packs (and everything when the gate is off)

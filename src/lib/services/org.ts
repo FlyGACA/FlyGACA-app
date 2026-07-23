@@ -5,7 +5,7 @@
  * Firebase configured) and best-effort: a network/permission failure resolves to a
  * safe empty result so the page can render a "no access" state rather than throw.
  */
-import { isFirebaseConfigured, getFns } from './firebase';
+import { isFirebaseConfigured, getFns } from '@/lib/services/firebase';
 
 /** One cohort member row — seat status + study readiness (mirrors school-core.CohortRow). */
 export interface CohortRow {

@@ -17,7 +17,7 @@ const h = vi.hoisted(() => ({
   lastPayload: undefined as unknown,
 }));
 
-vi.mock('@/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   isFirebaseConfigured: () => h.configured,
   getFns: () => Promise.resolve(h.fns),
 }));
@@ -33,7 +33,7 @@ vi.mock('firebase/functions', () => ({
   },
 }));
 
-import { getMyOrgs, getCohortReadiness, provisionSeats } from '@/lib/org';
+import { getMyOrgs, getCohortReadiness, provisionSeats } from '@/lib/services/org';
 
 beforeEach(() => {
   h.configured = true;

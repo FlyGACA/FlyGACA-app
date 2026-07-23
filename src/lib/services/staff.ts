@@ -6,7 +6,7 @@
  * allowlist) — the pre-check below is only to avoid calling the function for the
  * overwhelming majority of users who aren't staff. Inert in the local-first build.
  */
-import { isFirebaseConfigured, getFns } from './firebase';
+import { isFirebaseConfigured, getFns } from '@/lib/services/firebase';
 
 // Mirror of functions/src/staff-core.ts — NOT a security boundary (the callable
 // re-verifies server-side), just a cheap client-side filter. Keep in sync.

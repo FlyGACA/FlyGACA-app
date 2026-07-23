@@ -7,7 +7,7 @@ import {
   EXPIRING_SOON_DAYS,
 } from '@/calc/currency';
 import { recencyByDays, validityByMonths, parseISO } from '@/calc/recency';
-import type { Flight, Profile } from '@/lib/account';
+import type { Flight, Profile } from '@/lib/services/account';
 
 const now = new Date('2024-06-01T12:00:00Z');
 
@@ -154,7 +154,7 @@ describe('computeCurrency — passenger & night & ifr', () => {
 });
 
 describe('recordCurrency', () => {
-  const rec = (over: Partial<import('@/lib/account').PilotRecord> = {}) => ({
+  const rec = (over: Partial<import('@/lib/services/account').PilotRecord> = {}) => ({
     id: 'r1',
     category: 'rating' as const,
     title: 'Instrument Rating',

@@ -13,8 +13,8 @@ import {
   exportAll,
   sumHours,
   useAccount,
-} from '@/lib/account';
-import { uiIsPro } from '@/lib/entitlements';
+} from '@/lib/services/account';
+import { uiIsPro } from '@/lib/services/entitlements';
 import {
   summarizeLogbook,
   flightsToCsv,
@@ -25,7 +25,7 @@ import {
   monthTotals,
   type SortDir,
 } from '@/calc/logbook';
-import type { Flight } from '@/lib/account';
+import type { Flight } from '@/lib/services/account';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';
 import styles from './account.module.css';

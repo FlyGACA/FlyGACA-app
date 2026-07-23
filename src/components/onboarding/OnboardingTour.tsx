@@ -3,8 +3,8 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CaptainAvatar } from '@/components/CaptainAvatar';
 import { DockIcon } from '@/app/DockIcons';
-import { markOnboardingSeen, closeTour } from '@/lib/onboardingPrefs';
-import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
+import { markOnboardingSeen, closeTour } from '@/lib/prefs/onboardingPrefs';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
 import styles from './OnboardingTour.module.css';
 
 /** A simple globe glyph for the bilingual step — matches the DockIcon line style. */

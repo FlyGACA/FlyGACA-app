@@ -16,9 +16,11 @@ const h = vi.hoisted(() => ({
   saveDocs: vi.fn((_: unknown) => Promise.resolve()),
 }));
 
-vi.mock('@/lib/pwa', () => ({ useOnline: () => h.online }));
-vi.mock('@/lib/libraryPrefs', () => ({ useLibraryPrefs: () => ({ bookmarks: h.bookmarks }) }));
-vi.mock('@/lib/offlineCache', () => ({
+vi.mock('@/lib/native/pwa', () => ({ useOnline: () => h.online }));
+vi.mock('@/lib/prefs/libraryPrefs', () => ({
+  useLibraryPrefs: () => ({ bookmarks: h.bookmarks }),
+}));
+vi.mock('@/lib/native/offlineCache', () => ({
   offlineSupported: () => h.supported,
   loadSaved: () => h.saved,
   saveDocs: h.saveDocs,

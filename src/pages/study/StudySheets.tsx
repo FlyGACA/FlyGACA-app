@@ -5,7 +5,7 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import { useUrlState } from '@/hooks/useUrlState';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import type { PdfsIndex, PdfDoc } from '@/lib/content';
-import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
 import { Disclaimer } from '@/components/Disclaimer';
 import { ExternalLink } from '@/components/ExternalLink';
 import { EmptyState } from '@/components/EmptyState';

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '@/lib/account';
-import { uiPlan } from '@/lib/entitlements';
-import { startBillingPortal } from '@/lib/billing';
-import { isAuthAvailable } from '@/lib/auth';
+import { useAccount } from '@/lib/services/account';
+import { uiPlan } from '@/lib/services/entitlements';
+import { startBillingPortal } from '@/lib/services/billing';
+import { isAuthAvailable } from '@/lib/services/auth';
 import { StatusPill } from '@/components/StatusPill';
 import { Alert } from '@/components/Alert';
 import styles from './SubscriptionPanel.module.css';

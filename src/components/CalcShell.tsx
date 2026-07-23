@@ -6,9 +6,9 @@ import { Disclaimer } from './Disclaimer';
 import { Breadcrumbs } from './Breadcrumbs';
 import { adelLink } from '@/lib/adel';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { breadcrumbLd, softwareAppLd, type Crumb, type JsonLd } from '@/lib/jsonld';
+import { breadcrumbLd, softwareAppLd, type Crumb, type JsonLd } from '@/lib/seo/jsonld';
 import { shareCurrent } from '@/lib/share';
-import { useFeature } from '@/lib/features';
+import { useFeature } from '@/lib/services/features';
 import {
   addPreset,
   removePreset,

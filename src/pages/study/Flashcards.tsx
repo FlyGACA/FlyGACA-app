@@ -6,7 +6,7 @@ import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
 import { dueKeys, masteredCount } from '@/calc/srs';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { courseLd } from '@/lib/jsonld';
+import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Disclaimer } from '@/components/Disclaimer';
 import { HubBackLink } from '@/components/HubBackLink';

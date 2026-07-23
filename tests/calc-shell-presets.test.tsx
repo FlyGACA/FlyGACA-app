@@ -16,7 +16,7 @@ vi.mock('react-router', async (orig) => ({
   ...(await orig<typeof import('react-router')>()),
   useNavigate: () => h.navigate,
 }));
-vi.mock('@/lib/features', () => ({ useFeature: () => true })); // Pro
+vi.mock('@/lib/services/features', () => ({ useFeature: () => true })); // Pro
 vi.mock('@/lib/share', () => ({ shareCurrent: vi.fn(() => Promise.resolve(h.shareResult)) }));
 
 import { CalcShell } from '@/components/CalcShell';

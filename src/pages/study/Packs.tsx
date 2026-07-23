@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { itemListLd } from '@/lib/jsonld';
-import { useAccount } from '@/lib/account';
-import { hasPackAccess, ownsPack } from '@/lib/packEntitlements';
-import { notifyWaitlist } from '@/lib/waitlist';
+import { itemListLd } from '@/lib/seo/jsonld';
+import { useAccount } from '@/lib/services/account';
+import { hasPackAccess, ownsPack } from '@/lib/services/packEntitlements';
+import { notifyWaitlist } from '@/lib/services/waitlist';
 import { Disclaimer } from '@/components/Disclaimer';
 import { HubBackLink } from '@/components/HubBackLink';
 import {

@@ -9,8 +9,8 @@ import { BrandMark } from '@/components/BrandMark';
 import { CaptainAvatar } from '@/components/CaptainAvatar';
 import { StatusPill } from '@/components/StatusPill';
 import { SubscriptionPanel } from '@/components/account/SubscriptionPanel';
-import { refreshAccount, signIn, signOut, useAccount } from '@/lib/account';
-import { uiPlan } from '@/lib/entitlements';
+import { refreshAccount, signIn, signOut, useAccount } from '@/lib/services/account';
+import { uiPlan } from '@/lib/services/entitlements';
 import {
   isAuthAvailable,
   registerWithEmail,
@@ -18,7 +18,7 @@ import {
   sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
-} from '@/lib/auth';
+} from '@/lib/services/auth';
 import { authErrorInfo } from '@/calc/authError';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useForm } from '@/hooks/useForm';

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import OnboardingTour from '@/components/onboarding/OnboardingTour';
-import { TOUR_VERSION, replayOnboarding } from '@/lib/onboardingPrefs';
+import { TOUR_VERSION, replayOnboarding } from '@/lib/prefs/onboardingPrefs';
 
 const KEY = 'flygaca:onboarding-seen';
 

@@ -5,9 +5,9 @@ import { Disclaimer } from '@/components/Disclaimer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { adelLink } from '@/lib/adel';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { articleLd, breadcrumbLd, type Crumb } from '@/lib/jsonld';
+import { articleLd, breadcrumbLd, type Crumb } from '@/lib/seo/jsonld';
 import { readingMinutes } from '@/lib/readingTime';
-import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '@/lib/guidePrefs';
+import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '@/lib/prefs/guidePrefs';
 import { useScrollToHash } from '@/hooks/useScrollToHash';
 import {
   GUIDE_SLUGS,

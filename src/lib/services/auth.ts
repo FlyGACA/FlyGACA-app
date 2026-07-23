@@ -4,8 +4,8 @@
  * local-first account store (`account.ts`) keeps working without a backend.
  */
 import type { User } from 'firebase/auth';
-import { isNative } from './native-bridge';
-import { isFirebaseConfigured, getFirebaseAuth } from './firebase';
+import { isNative } from '@/lib/native/nativeBridge';
+import { isFirebaseConfigured, getFirebaseAuth } from '@/lib/services/firebase';
 
 export interface AuthUser {
   uid: string;
@@ -130,7 +130,7 @@ export async function signInWithGoogle(): Promise<AuthUser | null> {
       displayName: 'Mock Google Pilot',
       emailVerified: true,
     };
-    const { signIn } = await import('./account');
+    const { signIn } = await import('@/lib/services/account');
     signIn(mockUser.email || '', mockUser.displayName || '');
     return mockUser;
   }
@@ -171,7 +171,7 @@ export async function signInWithEmail(email: string, password: string): Promise<
       displayName: email.split('@')[0],
       emailVerified: true,
     };
-    const { signIn } = await import('./account');
+    const { signIn } = await import('@/lib/services/account');
     signIn(mockUser.email || '', mockUser.displayName || '');
     return mockUser;
   }
@@ -196,7 +196,7 @@ export async function registerWithEmail(
       displayName: displayName || email.split('@')[0],
       emailVerified: true,
     };
-    const { signIn } = await import('./account');
+    const { signIn } = await import('@/lib/services/account');
     signIn(mockUser.email || '', mockUser.displayName || '');
     return mockUser;
   }

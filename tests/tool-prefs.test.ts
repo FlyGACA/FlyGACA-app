@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addRecent, moveId, toggleId } from '@/lib/toolPrefs';
+import { addRecent, moveId, toggleId } from '@/lib/prefs/toolPrefs';
 
 describe('addRecent', () => {
   it('prepends most-recent-first and de-duplicates', () => {

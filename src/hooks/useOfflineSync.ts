@@ -10,9 +10,9 @@
  */
 import { useEffect } from 'react';
 import { CORPUS } from '@/lib/content';
-import { useLibraryPrefs } from '@/lib/libraryPrefs';
-import { useOnline } from '@/lib/pwa';
-import { loadSaved, offlineSupported, saveDocs } from '@/lib/offlineCache';
+import { useLibraryPrefs } from '@/lib/prefs/libraryPrefs';
+import { useOnline } from '@/lib/native/pwa';
+import { loadSaved, offlineSupported, saveDocs } from '@/lib/native/offlineCache';
 
 interface IdleWindow {
   requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;

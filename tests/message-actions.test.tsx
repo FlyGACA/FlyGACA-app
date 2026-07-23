@@ -3,7 +3,7 @@ import { render, screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '@/i18n';
 import { MessageActions } from '@/components/chat/MessageActions';
-import * as nativeBridge from '@/lib/native-bridge';
+import * as nativeBridge from '@/lib/native/nativeBridge';
 
 afterEach(() => {
   cleanup();

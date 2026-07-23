@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { hasPackAccess, ownsPack } from '@/lib/packEntitlements';
-import { FREE_FOR_EVERYONE, type Entitlement } from '@/lib/entitlements';
+import { hasPackAccess, ownsPack } from '@/lib/services/packEntitlements';
+import { FREE_FOR_EVERYONE, type Entitlement } from '@/lib/services/entitlements';
 import { PACKS_GATED, type Pack } from '@/lib/prepCatalog';
 
 // hasPackAccess is the paywall for the exam-prep product line. Its contract:

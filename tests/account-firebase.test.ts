@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import type { Flight } from '@/lib/account';
+import type { Flight } from '@/lib/services/account';
 
 // The Firebase-connected path of the account store. We mock auth (so the store
 // believes Firebase is configured and binds to onAuthChange) and the Firestore
@@ -12,7 +12,7 @@ const h = vi.hoisted(() => ({
   authCb: null as null | ((u: unknown) => void),
 }));
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('@/lib/services/auth', () => ({
   isAuthAvailable: () => true,
   onAuthChange: (cb: (u: unknown) => void) => {
     h.authCb = cb;
@@ -21,7 +21,7 @@ vi.mock('@/lib/auth', () => ({
   signOutUser: vi.fn(() => Promise.resolve()),
 }));
 
-vi.mock('@/lib/sync', () => ({
+vi.mock('@/lib/services/sync', () => ({
   loadAccount: vi.fn(() => Promise.resolve(null)),
   saveProfileDoc: vi.fn(() => Promise.resolve()),
   addFlightDoc: vi.fn(() => Promise.resolve()),
@@ -44,14 +44,14 @@ const FLIGHT: Omit<Flight, 'id'> = {
   remarks: '',
 };
 
-type AccountModule = typeof import('@/lib/account');
-type SyncModule = typeof import('@/lib/sync');
+type AccountModule = typeof import('@/lib/services/account');
+type SyncModule = typeof import('@/lib/services/sync');
 
 /** Re-import the mocked sync + the store; connectAuth runs and captures authCb. */
 async function load(): Promise<{ acct: AccountModule; sync: SyncModule }> {
   vi.resetModules();
-  const sync = await import('@/lib/sync');
-  const acct = await import('@/lib/account');
+  const sync = await import('@/lib/services/sync');
+  const acct = await import('@/lib/services/account');
   return { acct, sync };
 }
 

@@ -7,9 +7,9 @@
  * logbook, but NEVER the server-only `entitlement` field — so `profileToDoc`
  * deliberately omits it.
  */
-import type { Profile, Flight, PilotRecord } from './account';
-import type { Entitlement, Plan } from './entitlements';
-import { getDb } from './firebase';
+import type { Profile, Flight, PilotRecord } from '@/lib/services/account';
+import type { Entitlement, Plan } from '@/lib/services/entitlements';
+import { getDb } from '@/lib/services/firebase';
 
 const PROFILE_FIELDS: (keyof Profile)[] = [
   'email',

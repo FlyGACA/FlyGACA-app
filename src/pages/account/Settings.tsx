@@ -6,9 +6,15 @@ import { TextField } from '@/components/calc/TextField';
 import { SelectField, type SelectOption } from '@/components/calc/SelectField';
 import { LangToggle } from '@/components/LangToggle';
 import { Alert } from '@/components/Alert';
-import { deleteAllData, exportAll, saveProfile, useAccount, USER_ROLES } from '@/lib/account';
-import { replayOnboarding, openTour } from '@/lib/onboardingPrefs';
-import { uiPlan } from '@/lib/entitlements';
+import {
+  deleteAllData,
+  exportAll,
+  saveProfile,
+  useAccount,
+  USER_ROLES,
+} from '@/lib/services/account';
+import { replayOnboarding, openTour } from '@/lib/prefs/onboardingPrefs';
+import { uiPlan } from '@/lib/services/entitlements';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import styles from './account.module.css';
 

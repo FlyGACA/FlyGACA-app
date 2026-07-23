@@ -8,8 +8,8 @@ import {
   updateFlightDoc,
   recordToDoc,
   recordFromDoc,
-} from '@/lib/sync';
-import type { Profile, Flight, PilotRecord } from '@/lib/account';
+} from '@/lib/services/sync';
+import type { Profile, Flight, PilotRecord } from '@/lib/services/account';
 
 const profile: Profile = {
   email: 'pilot@example.com',

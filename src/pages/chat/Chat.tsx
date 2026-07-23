@@ -8,13 +8,13 @@ import {
   type ChatTurn,
   type GroundingKind,
 } from '@/lib/api';
-import { getIdToken } from '@/lib/auth';
-import { getAppCheckToken } from '@/lib/firebase';
+import { getIdToken } from '@/lib/services/auth';
+import { getAppCheckToken } from '@/lib/services/firebase';
 import { sessionId } from '@/lib/session';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useFetchJson } from '@/hooks/useFetchJson';
-import { useAccount } from '@/lib/account';
-import { hasFeature } from '@/lib/features';
+import { useAccount } from '@/lib/services/account';
+import { hasFeature } from '@/lib/services/features';
 import type { GacarIndex } from '@/lib/content';
 import {
   consume,
@@ -53,7 +53,7 @@ import { Disclaimer } from '@/components/Disclaimer';
 import { CaptainAvatar } from '@/components/CaptainAvatar';
 import { StatusPill } from '@/components/StatusPill';
 import { UpsellCard } from '@/components/UpsellCard';
-import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '@/lib/billing';
+import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '@/lib/services/billing';
 import { GroundingBadge } from '@/components/chat/GroundingBadge';
 import { RichText } from '@/components/chat/RichText';
 import { MessageActions } from '@/components/chat/MessageActions';

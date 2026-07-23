@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { type Lang } from '@/i18n';
-import { localePath } from '@/lib/seo';
+import { localePath } from '@/lib/seo/seo';
 
 /**
  * Bilingual toggle. A real `<a href>` to the *other* language's URL of the current

@@ -6,9 +6,9 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { InstallButton } from '@/components/pwa/InstallButton';
 import { openCommandPalette } from '@/components/CommandPalette/openCommandPalette';
 import { ButtonLink } from '@/components/ui/Button';
-import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
-import { useAccount } from '@/lib/account';
-import { uiIsPro } from '@/lib/entitlements';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
+import { useAccount } from '@/lib/services/account';
+import { uiIsPro } from '@/lib/services/entitlements';
 import { DockIcon, MoreIcon } from './DockIcons';
 import styles from './Header.module.css';
 

@@ -8,7 +8,7 @@
  * no cheap client filter for the invite path, so the *caller* gates this on a free
  * plan (see src/lib/account.ts) to avoid calling it for paying/already-granted users.
  */
-import { isFirebaseConfigured, getFns } from './firebase';
+import { isFirebaseConfigured, getFns } from '@/lib/services/firebase';
 
 /**
  * Ask the gateway to grant a school seat for the signed-in user. Best-effort and

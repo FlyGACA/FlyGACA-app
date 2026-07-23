@@ -9,8 +9,8 @@
  * for `users/{uid}/progress/summary` are green in CI, at which point flip it to true.
  * The doc holds SCORES + COMPLETION only — never answers (see `toProgressSummary`).
  */
-import { isFirebaseConfigured, getDb } from './firebase';
-import { subscribeStudyProgress, getStudyState, toProgressSummary } from './studyProgress';
+import { isFirebaseConfigured, getDb } from '@/lib/services/firebase';
+import { subscribeStudyProgress, getStudyState, toProgressSummary } from '@/lib/studyProgress';
 
 /**
  * Master switch. While false, `startStudyProgressSync` is a no-op, so nothing is

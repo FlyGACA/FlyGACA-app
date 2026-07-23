@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { StatusPill } from '@/components/StatusPill';
-import { loadSaved } from '@/lib/offlineCache';
-import { useAccount } from '@/lib/account';
+import { loadSaved } from '@/lib/native/offlineCache';
+import { useAccount } from '@/lib/services/account';
 import styles from './dashboard-widgets.module.css';
 
 /**

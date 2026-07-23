@@ -5,7 +5,7 @@
  * reuse the pure helpers from toolPrefs.
  */
 import { useSyncExternalStore } from 'react';
-import { toggleId } from './toolPrefs';
+import { toggleId } from '@/lib/prefs/toolPrefs';
 
 const HIDDEN_KEY = 'flygaca:dashboard-hidden';
 const ORDER_KEY = 'flygaca:dashboard-order';

@@ -6,7 +6,7 @@ import type { HeroStat } from '@/components/SearchHero';
 import { SectionHeader } from '@/components/SectionHeader';
 import { Disclaimer } from '@/components/Disclaimer';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { itemListLd } from '@/lib/jsonld';
+import { itemListLd } from '@/lib/seo/jsonld';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { GroundSchoolData, QuizData } from '@/lib/content';
 import { GuidesBrowser } from '@/pages/guides/GuidesBrowser';

@@ -1,17 +1,17 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import type { Flight, Profile } from '@/lib/account';
+import type { Flight, Profile } from '@/lib/services/account';
 
 // The local-first account store. With no Firebase config (the test case) the
 // store never connects to auth, so every mutation stays purely local +
 // persisted to localStorage. We re-import a fresh module per test so each one
 // gets a clean, deterministic store initialised from the current localStorage.
 
-type AccountModule = typeof import('@/lib/account');
+type AccountModule = typeof import('@/lib/services/account');
 
 async function freshStore(): Promise<AccountModule> {
   vi.resetModules();
-  return import('@/lib/account');
+  return import('@/lib/services/account');
 }
 
 const FLIGHT: Omit<Flight, 'id'> = {

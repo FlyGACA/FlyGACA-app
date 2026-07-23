@@ -7,7 +7,7 @@ import { ViewToggle } from '@/components/hub/ViewToggle';
 import { SortSelect } from '@/components/hub/SortSelect';
 import { useViewMode } from '@/hooks/useViewMode';
 import { readingMinutes } from '@/lib/readingTime';
-import { useGuidePrefs, toggleBookmark } from '@/lib/guidePrefs';
+import { useGuidePrefs, toggleBookmark } from '@/lib/prefs/guidePrefs';
 import {
   LIVE_GUIDE_SLUGS,
   GUIDE_META,

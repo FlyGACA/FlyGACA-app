@@ -25,10 +25,10 @@ import './styles/tokens.css';
 import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
-import { initNative } from './lib/native-bridge';
-import { captureReferral } from './lib/share';
-import { canonicalRedirect, isMirrorHost, localeRedirect } from './lib/seo';
-import { applyTheme, readTheme } from './lib/theme';
+import { initNative } from '@/lib/native/nativeBridge';
+import { captureReferral } from '@/lib/share';
+import { canonicalRedirect, isMirrorHost, localeRedirect } from '@/lib/seo/seo';
+import { applyTheme, readTheme } from '@/lib/theme';
 
 // Reflect the persisted theme on <html> before first paint. The inline script in
 // index.html already does this for the cockpit case to avoid a colour flash; this

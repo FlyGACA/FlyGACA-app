@@ -4,7 +4,7 @@
  * effects. Hour/landing columns are free-text strings in the store, so every
  * read is coerced through `num`.
  */
-import type { Flight } from '@/lib/account';
+import type { Flight } from '@/lib/services/account';
 import { addDays, addMonths, parseISO } from './recency';
 
 const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;

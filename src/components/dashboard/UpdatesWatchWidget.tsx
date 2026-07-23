@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
-import { useFeature } from '@/lib/features';
-import { useUpdatesPrefs } from '@/lib/updatesPrefs';
+import { useFeature } from '@/lib/services/features';
+import { useUpdatesPrefs } from '@/lib/prefs/updatesPrefs';
 import {
   airacStatus,
   mergeSources,

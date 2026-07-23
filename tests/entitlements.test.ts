@@ -6,7 +6,7 @@ import {
   uiIsPro,
   uiPlan,
   type Entitlement,
-} from '@/lib/entitlements';
+} from '@/lib/services/entitlements';
 
 // `isActive` / `effectivePlan` gate paid UI across the app (Header, account,
 // Dashboard) and mirror the server-only predicate in functions/entitlements-core.js.

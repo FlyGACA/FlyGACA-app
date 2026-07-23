@@ -52,7 +52,8 @@ firebase.json's rewrite regions must match).
   runtime via `src/lib/content.ts` (`fetchJson`) + the `useFetchJson` hook — the heavy corpus never
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
-- **Calculators:** pure math in `src/calc/*` (no DOM/i18n) so it is unit-testable; the
+- **Calculators:** pure, DOM-free logic in `src/calc/*` (aviation math plus chat/study/speech/text
+  helpers — no DOM/i18n) so it is unit-testable; the
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
   disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
   `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
@@ -61,10 +62,14 @@ firebase.json's rewrite regions must match).
   legacy `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every
   other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
   `FieldGrid`).
-- **Services:** `src/lib/*.ts` are the typed frontend services (`api`, `auth`, `firebase`,
-  `entitlements`, `features`, `billing`, `pricing`, `referral`, `staff`, `org`, `packEntitlements`,
-  `prepCatalog`, `waitlist`, `native-bridge`, `offlineCache`, `sync`, `studyProgressSync`,
-  `analytics`, `seo`, `jsonld`, …); the shared React hooks live in `src/hooks/`
+- **Services:** `src/lib/` holds the typed frontend services, grouped by concern:
+  `src/lib/services/` (Firebase/account: `firebase`, `auth`, `account`, `sync`, `org`, `staff`,
+  `school`, `entitlements`, `packEntitlements`, `features`, `billing`, `pricing`, `referral`,
+  `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference stores),
+  `src/lib/seo/` (`seo`, `jsonld`), `src/lib/native/` (`nativeBridge`, `pwa`, `offlineCache`),
+  with cross-cutting modules (`api`, `content`, `analytics`, `theme`, …) at the `src/lib/` root.
+  `tools.ts` and `prepCatalog.ts` stay pinned at the `src/lib/` root — pipeline scripts under
+  `scripts/` parse them by that literal path. The shared React hooks live in `src/hooks/`
   (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta`, …). `entitlements.isActive` is a pure
   predicate mirroring `functions/src/billing-core.ts`, and `features.ts` (`FEATURE_PLAN` /
   `useFeature`) is the single source of truth for which plan unlocks which premium feature — but the
@@ -79,7 +84,7 @@ firebase.json's rewrite regions must match).
   offline. Study progress lives client-side (`src/lib/studyProgress.ts` is the source of truth);
   `studyProgressSync.ts` is an upload-only backup that feeds the B2B cohort readiness report.
 - **PWA / native:** `vite-plugin-pwa` generates the service worker (app shell precached,
-  `/data/*` network-first). `native-bridge.ts` is inert on web and routes auth/IAP/offline-cache
+  `/data/*` network-first). `src/lib/native/nativeBridge.ts` is inert on web and routes auth/IAP/offline-cache
   through Capacitor plugins inside the native shell (`capacitor.config.ts`; iOS + Android).
 
 ## Backend (`functions/`)

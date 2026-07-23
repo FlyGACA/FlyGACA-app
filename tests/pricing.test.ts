@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { annualSavingsPct, monthlyEquivalent } from '@/lib/pricing';
+import { annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
 
 describe('annualSavingsPct', () => {
   it('computes the discount of annual vs 12× monthly', () => {

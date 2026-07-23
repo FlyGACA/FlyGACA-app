@@ -9,7 +9,7 @@
  * and any item we cannot assess from the logged data reports `unknown` rather
  * than asserting a pass: the tool never overstates currency.
  */
-import type { Flight, PilotRecord, Profile } from '@/lib/account';
+import type { Flight, PilotRecord, Profile } from '@/lib/services/account';
 import { addDays, parseISO, validityByMonths, type Validity } from './recency';
 
 const DAY = 86400000;

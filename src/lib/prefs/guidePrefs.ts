@@ -5,7 +5,7 @@
  * its pure `toggleId` transform) so the two stores stay consistent.
  */
 import { useSyncExternalStore } from 'react';
-import { toggleId } from './toolPrefs';
+import { toggleId } from '@/lib/prefs/toolPrefs';
 
 const BOOKMARK_KEY = 'flygaca:guide-bookmarks';
 const READ_KEY = 'flygaca:guide-read';

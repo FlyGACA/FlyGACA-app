@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { achievements, earnedCount } from '@/calc/achievements';
-import type { Flight } from '@/lib/account';
+import type { Flight } from '@/lib/services/account';
 
 const flight = (over: Partial<Flight> = {}): Flight => ({
   id: Math.random().toString(36),

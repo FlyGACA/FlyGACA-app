@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { itemListLd } from '@/lib/jsonld';
+import { itemListLd } from '@/lib/seo/jsonld';
 import { CORPUS, fetchJson, searchEntryLink, searchHref, toSearchRef } from '@/lib/content';
 import type { CorpusDoc, CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '@/lib/content';
 import {
@@ -15,7 +15,7 @@ import {
   removeSearch,
   searchKey,
   bookmarkKey,
-} from '@/lib/libraryPrefs';
+} from '@/lib/prefs/libraryPrefs';
 import { useBookmarkGate } from '@/hooks/useBookmarkGate';
 import { Disclaimer } from '@/components/Disclaimer';
 import { SectionHeader } from '@/components/SectionHeader';

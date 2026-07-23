@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { useFeature } from '@/lib/features';
-import { useUpdatesPrefs, markAllSeen, toggleWatch, hasBaseline } from '@/lib/updatesPrefs';
+import { useFeature } from '@/lib/services/features';
+import { useUpdatesPrefs, markAllSeen, toggleWatch, hasBaseline } from '@/lib/prefs/updatesPrefs';
 import {
   airacStatus,
   changedSources,

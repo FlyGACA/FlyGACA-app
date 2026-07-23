@@ -5,7 +5,7 @@
  * in src/calc/offlineManifest.ts; this module owns the DOM/Cache + persistence.
  */
 import { addSaved, listSaved, removeSaved } from '@/calc/offlineManifest';
-import { dataUrl } from './content';
+import { dataUrl } from '@/lib/content';
 
 /** Must match the workbox runtimeCaching cacheName in vite.config.ts. */
 const CACHE = 'flygaca-data';

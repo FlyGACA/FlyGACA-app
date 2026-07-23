@@ -7,7 +7,7 @@
  * Site-wide Organization + WebSite live statically in `index.html` (present in
  * the initial HTML); these per-page builders describe the current document.
  */
-import { OG_IMAGE, SITE_ORIGIN, canonicalUrl } from './seo';
+import { OG_IMAGE, SITE_ORIGIN, canonicalUrl } from '@/lib/seo/seo';
 
 export type JsonLd = Record<string, unknown>;
 

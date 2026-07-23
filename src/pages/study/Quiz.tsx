@@ -5,14 +5,14 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, setQuizBest, setLastBank, toggleFlag } from '@/lib/studyProgress';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { courseLd } from '@/lib/jsonld';
+import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Disclaimer } from '@/components/Disclaimer';
 import { HubBackLink } from '@/components/HubBackLink';
 import { buildSession, isSynthetic } from './session';
 import { findPack } from '@/lib/prepCatalog';
-import { hasPackAccess } from '@/lib/packEntitlements';
-import { useAccount } from '@/lib/account';
+import { hasPackAccess } from '@/lib/services/packEntitlements';
+import { useAccount } from '@/lib/services/account';
 import styles from './Study.module.css';
 
 /** Fisher–Yates shuffle (returns a new array). */

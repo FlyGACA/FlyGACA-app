@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SITE_ORIGIN } from '@/lib/seo';
+import { SITE_ORIGIN } from '@/lib/seo/seo';
 import {
   ORG_ID,
   SITE_ID,
@@ -13,7 +13,7 @@ import {
   softwareAppLd,
   techArticleLd,
   webSiteLd,
-} from '@/lib/jsonld';
+} from '@/lib/seo/jsonld';
 
 describe('organization + website', () => {
   it('uses stable @id anchors matching the static graph', () => {

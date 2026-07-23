@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach, beforeEach } from 'vitest';
 import { cleanup, screen, act } from '@testing-library/react';
 import i18n from '@/i18n';
 import { SubscriptionPanel } from '@/components/account/SubscriptionPanel';
-import { FREE_FOR_EVERYONE } from '@/lib/entitlements';
+import { FREE_FOR_EVERYONE } from '@/lib/services/entitlements';
 import { renderWithRouter } from './helpers/render';
 
 // With no Firebase configured the account store starts on the default (free)

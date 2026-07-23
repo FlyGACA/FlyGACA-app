@@ -8,8 +8,8 @@
  * Errors are thrown as stable codes the UI maps to copy:
  *   'billing-unavailable' · 'sign-in-required' · 'native-billing' · 'no-url'
  */
-import { billingChannel, isNative } from './native-bridge';
-import { isFirebaseConfigured, getFns, getFirebaseAuth } from './firebase';
+import { billingChannel, isNative } from '@/lib/native/nativeBridge';
+import { isFirebaseConfigured, getFns, getFirebaseAuth } from '@/lib/services/firebase';
 
 // 'monthly' / 'annual' are the standard Pro cadences; 'student' is the verified
 // student rate and 'pass' the 90-day Exam Season Pass. 'credits' is a one-time

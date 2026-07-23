@@ -8,9 +8,9 @@ import { CORPUS } from '@/lib/content';
 import type { CorpusIndex, LibraryKind } from '@/lib/content';
 import { docNeighbors, relatedDocs } from '@/calc/corpusNav';
 import { adelLink } from '@/lib/adel';
-import { loadSaved, offlineSupported, removeDoc, saveDoc } from '@/lib/offlineCache';
+import { loadSaved, offlineSupported, removeDoc, saveDoc } from '@/lib/native/offlineCache';
 import { shareCurrent } from '@/lib/share';
-import { useOnline } from '@/lib/pwa';
+import { useOnline } from '@/lib/native/pwa';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   useLibraryPrefs,
@@ -20,11 +20,11 @@ import {
   isBookmarked,
   docKey,
   type LibNote,
-} from '@/lib/libraryPrefs';
+} from '@/lib/prefs/libraryPrefs';
 import { useBookmarkGate } from '@/hooks/useBookmarkGate';
-import { useFeature } from '@/lib/features';
+import { useFeature } from '@/lib/services/features';
 import { SelectionPopover, type SelectionRect } from '@/components/library/SelectionPopover';
-import { breadcrumbLd, techArticleLd, type Crumb } from '@/lib/jsonld';
+import { breadcrumbLd, techArticleLd, type Crumb } from '@/lib/seo/jsonld';
 import { Disclaimer } from '@/components/Disclaimer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import styles from './Document.module.css';

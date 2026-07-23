@@ -4,7 +4,7 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import { linkHref, type PathsIndex } from '@/lib/content';
 import { useStudyProgress, togglePathStep } from '@/lib/studyProgress';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { courseLd } from '@/lib/jsonld';
+import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Disclaimer } from '@/components/Disclaimer';
 import { HubBackLink } from '@/components/HubBackLink';

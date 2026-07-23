@@ -2,7 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { loadJson } from '@/lib/content';
-import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
 import { liveTools } from '@/lib/tools';
 import { GUIDE_SLUGS } from '@/pages/guides/guides';
 import { OPEN_CMDK_EVENT } from './openCommandPalette';

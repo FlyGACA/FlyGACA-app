@@ -1,5 +1,11 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { isNative, platform, billingChannel, toAppPath, nativeStore } from '@/lib/native-bridge';
+import {
+  isNative,
+  platform,
+  billingChannel,
+  toAppPath,
+  nativeStore,
+} from '@/lib/native/nativeBridge';
 
 describe('native-bridge on the web', () => {
   it('reports web platform and is not native', () => {

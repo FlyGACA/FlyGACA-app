@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { profileCompleteness } from '@/calc/onboarding';
-import type { Flight, Profile } from '@/lib/account';
+import type { Flight, Profile } from '@/lib/services/account';
 
 const profile = (
   over: Partial<Profile> = {},

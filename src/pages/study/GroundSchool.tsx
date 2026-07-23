@@ -5,7 +5,7 @@ import { linkHref, type GroundSchoolData, type GsLesson } from '@/lib/content';
 import { adelLink } from '@/lib/adel';
 import { useStudyProgress, toggleLesson } from '@/lib/studyProgress';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { courseLd } from '@/lib/jsonld';
+import { courseLd } from '@/lib/seo/jsonld';
 import { Disclaimer } from '@/components/Disclaimer';
 import { SectionHeader } from '@/components/SectionHeader';
 import { HubBackLink } from '@/components/HubBackLink';

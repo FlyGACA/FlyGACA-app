@@ -19,11 +19,11 @@ import { BookmarksWidget } from '@/components/dashboard/BookmarksWidget';
 import { AdelThreadsWidget } from '@/components/dashboard/AdelThreadsWidget';
 import { UpdatesWatchWidget } from '@/components/dashboard/UpdatesWatchWidget';
 import { OfflineWidget } from '@/components/dashboard/OfflineWidget';
-import { isUserRole, useAccount } from '@/lib/account';
-import { uiPlan } from '@/lib/entitlements';
-import { useFeature } from '@/lib/features';
-import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '@/lib/dashboardPrefs';
-import { moveId } from '@/lib/toolPrefs';
+import { isUserRole, useAccount } from '@/lib/services/account';
+import { uiPlan } from '@/lib/services/entitlements';
+import { useFeature } from '@/lib/services/features';
+import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '@/lib/prefs/dashboardPrefs';
+import { moveId } from '@/lib/prefs/toolPrefs';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   dashboardOrder,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchReferralCode, referralLink } from '@/lib/referral';
+import { fetchReferralCode, referralLink } from '@/lib/services/referral';
 import styles from './ReferralCard.module.css';
 
 /**
