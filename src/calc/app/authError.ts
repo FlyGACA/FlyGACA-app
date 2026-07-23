@@ -66,3 +66,18 @@ export function authErrorInfo(code: string | undefined | null): AuthErrorInfo {
   }
   return { field: 'general', key: 'account.authError' };
 }
+
+/**
+ * The failure classes whose remedy is "sign in on the authorized main site"
+ * rather than fixing credentials: the domain isn't on the Firebase authorized
+ * list / API-key referrer allowlist (`unauthorizedDomain`), or the origin can't
+ * mint an App Check / API-key token (`config`). These are exactly the errors a
+ * preview/mirror deploy hits, so the Account page offers a click-through to the
+ * canonical origin when it sees one. Credential, provider-disabled (turned off
+ * everywhere), and popup errors deliberately don't qualify — the main site
+ * wouldn't help.
+ */
+export function isDomainAuthError(code: string | undefined | null): boolean {
+  const { key } = authErrorInfo(code);
+  return key === 'account.errors.unauthorizedDomain' || key === 'account.errors.config';
+}

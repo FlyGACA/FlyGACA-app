@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { authErrorInfo } from '@/calc/app/authError';
+import { authErrorInfo, isDomainAuthError } from '@/calc/app/authError';
 
 describe('authErrorInfo', () => {
   it('routes credential errors to the password field', () => {
@@ -63,6 +63,25 @@ describe('authErrorInfo', () => {
     expect(
       authErrorInfo('auth/requests-from-referer-https://preview.vercel.app-are-blocked'),
     ).toEqual({ field: 'general', key: 'account.errors.unauthorizedDomain' });
+  });
+
+  it('flags domain/config failures whose remedy is the authorized main site', () => {
+    expect(isDomainAuthError('auth/unauthorized-domain')).toBe(true);
+    expect(isDomainAuthError('auth/requests-from-referer-are-blocked')).toBe(true);
+    expect(
+      isDomainAuthError('auth/requests-from-referer-https://preview.vercel.app-are-blocked'),
+    ).toBe(true);
+    expect(isDomainAuthError('auth/api-key-not-valid')).toBe(true);
+    expect(isDomainAuthError('auth/missing-app-check-token')).toBe(true);
+  });
+
+  it('does not flag credential, provider-disabled, popup, or unknown errors as domain issues', () => {
+    expect(isDomainAuthError('auth/wrong-password')).toBe(false);
+    expect(isDomainAuthError('auth/invalid-email')).toBe(false);
+    expect(isDomainAuthError('auth/operation-not-allowed')).toBe(false);
+    expect(isDomainAuthError('auth/popup-blocked')).toBe(false);
+    expect(isDomainAuthError('auth/something-new')).toBe(false);
+    expect(isDomainAuthError(undefined)).toBe(false);
   });
 
   it('falls back to a general message for unknown or missing codes', () => {
