@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizData, QuizQuestion } from '@/lib/content';
 import { setExamResult, useStudyProgress } from '@/lib/studyProgress';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/jsonld';
 import { useFeature } from '@/lib/features';
 import { findPack, type Pack } from '@/lib/prepCatalog';

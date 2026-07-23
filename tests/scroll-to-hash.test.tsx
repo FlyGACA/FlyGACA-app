@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { useScrollToHash } from '@/lib/useScrollToHash';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 
 const scrollIntoView = vi.fn();
 

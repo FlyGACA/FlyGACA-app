@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import styles from './FlightDivider.module.css';
 
 /**

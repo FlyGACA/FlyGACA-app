@@ -24,7 +24,7 @@ import { uiPlan } from '@/lib/entitlements';
 import { useFeature } from '@/lib/features';
 import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '@/lib/dashboardPrefs';
 import { moveId } from '@/lib/toolPrefs';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   dashboardOrder,
   orderedWidgets,

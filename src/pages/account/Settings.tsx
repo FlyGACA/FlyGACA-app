@@ -9,7 +9,7 @@ import { Alert } from '@/components/Alert';
 import { deleteAllData, exportAll, saveProfile, useAccount, USER_ROLES } from '@/lib/account';
 import { replayOnboarding, openTour } from '@/lib/onboardingPrefs';
 import { uiPlan } from '@/lib/entitlements';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import styles from './account.module.css';
 
 /** GACAR pilot licence types, in progression order. */

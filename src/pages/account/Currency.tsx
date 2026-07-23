@@ -6,7 +6,7 @@ import { UpsellCard } from '@/components/UpsellCard';
 import { Disclaimer } from '@/components/Disclaimer';
 import { useAccount } from '@/lib/account';
 import { uiIsPro } from '@/lib/entitlements';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { computeCurrency, recordCurrency } from '@/calc/currency';
 import { buildIcs } from '@/calc/ics';
 import { adelLink } from '@/lib/adel';

@@ -26,7 +26,7 @@ import {
   type SortDir,
 } from '@/calc/logbook';
 import type { Flight } from '@/lib/account';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';
 import styles from './account.module.css';
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import { useFeature } from '@/lib/features';
 import { useUpdatesPrefs } from '@/lib/updatesPrefs';
 import {

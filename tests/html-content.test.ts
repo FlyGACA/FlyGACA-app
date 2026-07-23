@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeHtml, tocFromHtml } from '@/lib/useFetchText';
+import { sanitizeHtml, tocFromHtml } from '@/hooks/useFetchText';
 
 // sanitizeHtml is defense-in-depth over the trusted-but-machine-made GACAR HTML
 // corpus; tocFromHtml drives the reader's in-page navigation. Both are pure.

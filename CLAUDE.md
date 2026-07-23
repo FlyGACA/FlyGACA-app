@@ -64,7 +64,8 @@ firebase.json's rewrite regions must match).
 - **Services:** `src/lib/*.ts` are the typed frontend services (`api`, `auth`, `firebase`,
   `entitlements`, `features`, `billing`, `pricing`, `referral`, `staff`, `org`, `packEntitlements`,
   `prepCatalog`, `waitlist`, `native-bridge`, `offlineCache`, `sync`, `studyProgressSync`,
-  `analytics`, `seo`, `jsonld`, …) plus a family of `use*` hooks. `entitlements.isActive` is a pure
+  `analytics`, `seo`, `jsonld`, …); the shared React hooks live in `src/hooks/`
+  (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta`, …). `entitlements.isActive` is a pure
   predicate mirroring `functions/src/billing-core.ts`, and `features.ts` (`FEATURE_PLAN` /
   `useFeature`) is the single source of truth for which plan unlocks which premium feature — but the
   `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant, and true

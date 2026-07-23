@@ -4,7 +4,7 @@ import { NumberField } from '@/components/calc/NumberField';
 import { TextField } from '@/components/calc/TextField';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
-import { useNumericInputs } from '@/lib/useNumericInputs';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { sunTimes } from '@/calc/sun';
 import { formatHm, shiftTime, KSA_OFFSET_MIN } from '@/calc/zulu';
 

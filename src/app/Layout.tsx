@@ -15,7 +15,7 @@ import { useTourOpen } from '@/lib/onboardingPrefs';
 // Lazy so the modal + its CSS stay out of the initial bundle (160 kB budget) —
 // only fetched on a genuine first visit to the home route.
 const OnboardingTour = lazy(() => import('@/components/onboarding/OnboardingTour'));
-import { useOfflineBookmarkSync } from '@/lib/useOfflineSync';
+import { useOfflineBookmarkSync } from '@/hooks/useOfflineSync';
 
 /** The shared chrome: header + routed page + footer. Replaces the legacy
  *  build-chrome.js stamper — the chrome is now a component, never copied.

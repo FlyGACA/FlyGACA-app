@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '@/components/bento/BentoCard';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import { type QuizData } from '@/lib/content';
 import { GUIDE_SLUGS } from '@/pages/guides/guides';
 import shared from './widgets.module.css';

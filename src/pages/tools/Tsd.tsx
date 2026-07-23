@@ -3,7 +3,7 @@ import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
-import { useNumericInputs } from '@/lib/useNumericInputs';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { solveTsd } from '@/calc/tsd';
 
 export function Tsd() {

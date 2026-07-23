@@ -3,9 +3,9 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
-import { useFetchJson } from '@/lib/useFetchJson';
-import { useDebouncedValue } from '@/lib/useDebouncedValue';
-import { useUrlState } from '@/lib/useUrlState';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useUrlState } from '@/hooks/useUrlState';
 import { fetchJson, type Airport, type AirportsIndex } from '@/lib/content';
 import {
   REGION_FILTERS,

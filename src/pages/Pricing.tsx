@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '@/components/Disclaimer';
 import { PageHero } from '@/components/PageHero';
 import { SectionHeader } from '@/components/SectionHeader';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { faqLd } from '@/lib/jsonld';
 import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from '@/lib/billing';
 import { useAccount } from '@/lib/account';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useFeature } from '@/lib/features';
 import { useUpdatesPrefs, markAllSeen, toggleWatch, hasBaseline } from '@/lib/updatesPrefs';
 import {

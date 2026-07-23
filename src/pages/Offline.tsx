@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useOnline } from '@/lib/pwa';
 import { CaptainAvatar } from '@/components/CaptainAvatar';
 import styles from './Offline.module.css';

@@ -30,7 +30,7 @@ vi.mock('@/lib/content', () => ({
   },
 }));
 
-import { useOfflineBookmarkSync } from '@/lib/useOfflineSync';
+import { useOfflineBookmarkSync } from '@/hooks/useOfflineSync';
 
 beforeEach(() => {
   vi.useFakeTimers();

@@ -10,7 +10,7 @@ import {
   useAccount,
   type RecordCategory,
 } from '@/lib/account';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { parseISO } from '@/calc/recency';
 import account from './account.module.css';
 import styles from './records.module.css';

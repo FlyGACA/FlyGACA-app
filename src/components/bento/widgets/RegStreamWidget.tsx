@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '@/components/bento/BentoCard';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import { CORPUS, type GacarIndex } from '@/lib/content';
 import { StatValue } from './StatValue';
 import { StatusPill } from '@/components/StatusPill';

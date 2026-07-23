@@ -5,7 +5,7 @@ import { Copy, Check, ShareNetwork, GraduationCap } from '@phosphor-icons/react'
 import { Disclaimer } from './Disclaimer';
 import { Breadcrumbs } from './Breadcrumbs';
 import { adelLink } from '@/lib/adel';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { breadcrumbLd, softwareAppLd, type Crumb, type JsonLd } from '@/lib/jsonld';
 import { shareCurrent } from '@/lib/share';
 import { useFeature } from '@/lib/features';

@@ -18,7 +18,7 @@ vi.mock('react-router', () => ({ useNavigate: () => h.navigate }));
 vi.mock('@/lib/features', () => ({ useFeature: () => h.canBookmark }));
 vi.mock('@/lib/libraryPrefs', () => ({ toggleBookmark: h.toggleBookmark }));
 
-import { useBookmarkGate } from '@/lib/useBookmarkGate';
+import { useBookmarkGate } from '@/hooks/useBookmarkGate';
 
 const bookmark = {
   kind: 'regulations',

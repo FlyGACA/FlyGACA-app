@@ -9,10 +9,10 @@
  * Read-only against libraryPrefs.
  */
 import { useEffect } from 'react';
-import { CORPUS } from './content';
-import { useLibraryPrefs } from './libraryPrefs';
-import { useOnline } from './pwa';
-import { loadSaved, offlineSupported, saveDocs } from './offlineCache';
+import { CORPUS } from '@/lib/content';
+import { useLibraryPrefs } from '@/lib/libraryPrefs';
+import { useOnline } from '@/lib/pwa';
+import { loadSaved, offlineSupported, saveDocs } from '@/lib/offlineCache';
 
 interface IdleWindow {
   requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from '@/pages/account/RequireSession';
 import { Disclaimer } from '@/components/Disclaimer';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   getMyOrgs,
   getCohortReadiness,

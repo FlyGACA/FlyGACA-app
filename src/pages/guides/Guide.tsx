@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '@/components/Disclaimer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { adelLink } from '@/lib/adel';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { articleLd, breadcrumbLd, type Crumb } from '@/lib/jsonld';
 import { readingMinutes } from '@/lib/readingTime';
 import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '@/lib/guidePrefs';
-import { useScrollToHash } from '@/lib/useScrollToHash';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 import {
   GUIDE_SLUGS,
   GUIDE_TOOLS,

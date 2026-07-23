@@ -7,8 +7,8 @@
  * surfaces (currency export, prep packs) so the upgrade flow lives in one place.
  */
 import { useNavigate } from 'react-router';
-import { useFeature } from './features';
-import { toggleBookmark, type LibBookmark } from './libraryPrefs';
+import { useFeature } from '@/lib/features';
+import { toggleBookmark, type LibBookmark } from '@/lib/libraryPrefs';
 
 export interface BookmarkGate {
   /** True when the user may add new bookmarks. */

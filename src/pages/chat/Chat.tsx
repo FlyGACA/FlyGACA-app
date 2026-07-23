@@ -11,8 +11,8 @@ import {
 import { getIdToken } from '@/lib/auth';
 import { getAppCheckToken } from '@/lib/firebase';
 import { sessionId } from '@/lib/session';
-import { usePageMeta } from '@/lib/usePageMeta';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import { useAccount } from '@/lib/account';
 import { hasFeature } from '@/lib/features';
 import type { GacarIndex } from '@/lib/content';

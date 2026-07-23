@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import type { CorpusIndex, GroundSchoolData, PathsIndex, PdfsIndex, QuizData } from '@/lib/content';
 import { useStudyProgress } from '@/lib/studyProgress';
 import { useAccount, refreshAccount } from '@/lib/account';
 import { hasPackAccess, ownsPack } from '@/lib/packEntitlements';
 import { canCheckout, startPackCheckout } from '@/lib/billing';
 import { captureRefFromUrl, getStoredRef } from '@/lib/referral';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/jsonld';
 import { adelLink } from '@/lib/adel';
 import { Disclaimer } from '@/components/Disclaimer';

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
-import { useDebouncedValue } from '@/lib/useDebouncedValue';
-import { sanitizeHtml, tocFromHtml, useFetchText } from '@/lib/useFetchText';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { sanitizeHtml, tocFromHtml, useFetchText } from '@/hooks/useFetchText';
 import { CORPUS } from '@/lib/content';
 import type { CorpusIndex, LibraryKind } from '@/lib/content';
 import { docNeighbors, relatedDocs } from '@/calc/corpusNav';
@@ -11,7 +11,7 @@ import { adelLink } from '@/lib/adel';
 import { loadSaved, offlineSupported, removeDoc, saveDoc } from '@/lib/offlineCache';
 import { shareCurrent } from '@/lib/share';
 import { useOnline } from '@/lib/pwa';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   useLibraryPrefs,
   recordView,
@@ -21,7 +21,7 @@ import {
   docKey,
   type LibNote,
 } from '@/lib/libraryPrefs';
-import { useBookmarkGate } from '@/lib/useBookmarkGate';
+import { useBookmarkGate } from '@/hooks/useBookmarkGate';
 import { useFeature } from '@/lib/features';
 import { SelectionPopover, type SelectionRect } from '@/components/library/SelectionPopover';
 import { breadcrumbLd, techArticleLd, type Crumb } from '@/lib/jsonld';

@@ -20,7 +20,7 @@ import {
   signInWithGoogle,
 } from '@/lib/auth';
 import { authErrorInfo } from '@/calc/authError';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useForm } from '@/hooks/useForm';
 import { PasswordStrength } from '@/components/account/PasswordStrength';
 import styles from './account.module.css';

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import { airportLd } from '@/lib/jsonld';
 import { regionBadge } from '@/lib/aerodromes';
 import { fetchJson, type Airport, type AirportsIndex } from '@/lib/content';

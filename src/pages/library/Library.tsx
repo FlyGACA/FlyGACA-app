@@ -2,9 +2,9 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactElement } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
-import { useDebouncedValue } from '@/lib/useDebouncedValue';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { itemListLd } from '@/lib/jsonld';
 import { CORPUS, fetchJson, searchEntryLink, searchHref, toSearchRef } from '@/lib/content';
 import type { CorpusDoc, CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '@/lib/content';
@@ -16,7 +16,7 @@ import {
   searchKey,
   bookmarkKey,
 } from '@/lib/libraryPrefs';
-import { useBookmarkGate } from '@/lib/useBookmarkGate';
+import { useBookmarkGate } from '@/hooks/useBookmarkGate';
 import { Disclaimer } from '@/components/Disclaimer';
 import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
@@ -26,7 +26,7 @@ import { SearchHero } from '@/components/SearchHero';
 import type { HeroStat } from '@/components/SearchHero';
 import { ViewToggle } from '@/components/hub/ViewToggle';
 import { SortSelect } from '@/components/hub/SortSelect';
-import { useViewMode } from '@/lib/useViewMode';
+import { useViewMode } from '@/hooks/useViewMode';
 import styles from './Library.module.css';
 import hub from '@/components/hub/hubList.module.css';
 import { Tab, Tabs } from '@/components/ui/Tabs';

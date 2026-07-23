@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import type { GroundSchoolData, QuizData } from '@/lib/content';
 import { useStudyProgress } from '@/lib/studyProgress';
 import { masteredCount, dueCount } from '@/calc/srs';

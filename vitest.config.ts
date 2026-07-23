@@ -28,7 +28,7 @@ export default defineConfig({
       // Focus on the unit-testable layers. Pages, app chrome (src/app) and the
       // i18n bundles are exercised by the Playwright E2E suite / the parity
       // test, not measured here.
-      include: ['src/calc/**', 'src/lib/**', 'src/components/**'],
+      include: ['src/calc/**', 'src/hooks/**', 'src/lib/**', 'src/components/**'],
       // PwaPrompts imports the build-only `virtual:pwa-register/react` module,
       // which the Vitest config (no vite-plugin-pwa) can't resolve, so v8 fails
       // to instrument it as an uncovered file. It's app chrome covered by E2E.

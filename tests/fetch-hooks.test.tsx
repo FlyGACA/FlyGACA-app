@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useFetchJson } from '@/lib/useFetchJson';
-import { useFetchText } from '@/lib/useFetchText';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useFetchText } from '@/hooks/useFetchText';
 
 // The runtime content loaders. They share a loading→data / loading→error shape
 // and abort on unmount; we drive them against a stubbed global fetch.

@@ -1,4 +1,4 @@
-import type { ViewMode } from '@/lib/useViewMode';
+import type { ViewMode } from '@/hooks/useViewMode';
 import styles from './ViewToggle.module.css';
 
 interface ViewToggleProps {

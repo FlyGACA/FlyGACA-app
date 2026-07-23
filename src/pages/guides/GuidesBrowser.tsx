@@ -5,7 +5,7 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { EmptyState } from '@/components/EmptyState';
 import { ViewToggle } from '@/components/hub/ViewToggle';
 import { SortSelect } from '@/components/hub/SortSelect';
-import { useViewMode } from '@/lib/useViewMode';
+import { useViewMode } from '@/hooks/useViewMode';
 import { readingMinutes } from '@/lib/readingTime';
 import { useGuidePrefs, toggleBookmark } from '@/lib/guidePrefs';
 import {

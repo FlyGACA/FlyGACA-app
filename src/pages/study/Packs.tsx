@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { itemListLd } from '@/lib/jsonld';
 import { useAccount } from '@/lib/account';
 import { hasPackAccess, ownsPack } from '@/lib/packEntitlements';

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { ResultStat } from '@/components/calc/ResultStat';
-import { useNumericInputs } from '@/lib/useNumericInputs';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { densityAltitude } from '@/calc/isa';
 import { NumberField } from '@/components/calc/NumberField';
 

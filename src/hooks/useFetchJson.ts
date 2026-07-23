@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { loadJson } from './content';
+import { loadJson } from '@/lib/content';
 
 interface FetchState<T> {
   data: T | null;

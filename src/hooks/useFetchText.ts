@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { dataUrl } from './content';
+import { dataUrl } from '@/lib/content';
 
 interface FetchState {
   text: string | null;

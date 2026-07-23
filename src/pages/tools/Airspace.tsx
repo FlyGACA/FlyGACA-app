@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import type { AirspacesIndex, AtsAirspace } from '@/lib/content';
 import table from './WindTable.module.css';
 import dir from './Aerodromes.module.css';

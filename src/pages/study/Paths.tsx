@@ -1,9 +1,9 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchJson } from '@/hooks/useFetchJson';
 import { linkHref, type PathsIndex } from '@/lib/content';
 import { useStudyProgress, togglePathStep } from '@/lib/studyProgress';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Disclaimer } from '@/components/Disclaimer';

@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '@/components/Disclaimer';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { articleLd, breadcrumbLd } from '@/lib/jsonld';
 import { sectionId } from '@/calc/anchor';
-import { useScrollToHash } from '@/lib/useScrollToHash';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 import styles from './Prose.module.css';
 
 interface Section {

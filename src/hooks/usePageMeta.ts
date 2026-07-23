@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import i18n from '@/i18n';
-import { canonicalUrl, hreflangAlternates, ogImageFor, ogLocale } from './seo';
-import type { JsonLd } from './jsonld';
+import { canonicalUrl, hreflangAlternates, ogImageFor, ogLocale } from '@/lib/seo';
+import type { JsonLd } from '@/lib/jsonld';
 
 const LD_ATTR = 'data-managed-ld';
 

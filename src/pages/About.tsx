@@ -9,7 +9,7 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { Stepper } from '@/components/Stepper';
 import { BentoGrid } from '@/components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '@/components/bento/BentoCard';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { articleLd, breadcrumbLd, faqLd, organizationLd } from '@/lib/jsonld';
 import styles from './About.module.css';
 

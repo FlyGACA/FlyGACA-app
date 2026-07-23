@@ -6,7 +6,7 @@ import { MagnifyingGlass, Star, ClockCounterClockwise } from '@phosphor-icons/re
 import { TOOLS, TOOL_CATEGORIES, type ToolCategoryId, type ToolMeta } from '@/lib/tools';
 import { useToolPrefs, toggleFavorite, pushRecent } from '@/lib/toolPrefs';
 import { CategoryIcon, TOOL_ICON_WEIGHT } from '@/lib/toolIcons';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { itemListLd } from '@/lib/jsonld';
 import { Disclaimer } from '@/components/Disclaimer';
 import { EmptyState } from '@/components/EmptyState';
@@ -15,7 +15,7 @@ import { SearchHero } from '@/components/SearchHero';
 import type { HeroStat } from '@/components/SearchHero';
 import { ViewToggle } from '@/components/hub/ViewToggle';
 import { SortSelect } from '@/components/hub/SortSelect';
-import { useViewMode, type ViewMode } from '@/lib/useViewMode';
+import { useViewMode, type ViewMode } from '@/hooks/useViewMode';
 import styles from './ToolsIndex.module.css';
 import hub from '@/components/hub/hubList.module.css';
 

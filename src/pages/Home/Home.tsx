@@ -16,7 +16,7 @@ import { ButtonLink } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useAccount } from '@/lib/account';
 import { uiIsPro } from '@/lib/entitlements';
-import { usePageMeta } from '@/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { faqLd } from '@/lib/jsonld';
 import { GUIDE_SLUGS } from '@/pages/guides/guides';
 import { liveTools } from '@/lib/tools';
