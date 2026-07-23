@@ -14,7 +14,7 @@ import { adelLink } from '@/lib/adel';
 import { Disclaimer } from '@/components/Disclaimer';
 import { ProgressBar } from '@/components/ProgressBar';
 import { findPack, packItemCount, PREP_PACK_PRICE } from '@/lib/prepCatalog';
-import { NotFound } from '@/pages/NotFound';
+import { NotFound } from '@/pages/not-found/NotFound';
 import styles from './Study.module.css';
 
 export function PackDetail() {

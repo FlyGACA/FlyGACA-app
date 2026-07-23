@@ -21,7 +21,7 @@ import {
   sectionId,
   type GuideSlug,
 } from './guides';
-import { NotFound } from '@/pages/NotFound';
+import { NotFound } from '@/pages/not-found/NotFound';
 import prose from '@/pages/legal/Prose.module.css';
 import styles from './Guides.module.css';
 
