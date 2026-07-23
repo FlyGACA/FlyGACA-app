@@ -3,7 +3,7 @@
  * it is unit-testable. Hour/landing columns are free-text in the store, so reads
  * coerce through `num`. The UI renders these as earned/locked badges.
  */
-import type { Flight } from '../lib/account';
+import type { Flight } from '@/lib/services/account';
 
 const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
 const sum = (flights: Flight[], key: keyof Flight): number =>

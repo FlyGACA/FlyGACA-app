@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { saveProfile, USER_ROLES, type UserRole } from '../../lib/account';
-import { dismissRolePrompt } from '../../lib/dashboardPrefs';
+import { saveProfile, USER_ROLES, type UserRole } from '@/lib/services/account';
+import { dismissRolePrompt } from '@/lib/prefs/dashboardPrefs';
 import styles from './dashboard-widgets.module.css';
 
 /**

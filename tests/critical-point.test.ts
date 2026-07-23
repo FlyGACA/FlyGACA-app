@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { equalTimePoint, pointOfNoReturn } from '../src/calc/criticalPoint';
+import { equalTimePoint, pointOfNoReturn } from '@/calc/criticalPoint';
 
 describe('equalTimePoint', () => {
   it('sits at the midpoint when the groundspeeds are equal', () => {

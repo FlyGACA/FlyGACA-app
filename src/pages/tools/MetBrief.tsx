@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { TextField } from '../../components/calc/TextField';
-import { FieldGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { AirportsIndex } from '../../lib/content';
+import { CalcShell } from '@/components/CalcShell';
+import { TextField } from '@/components/calc/TextField';
+import { FieldGrid } from '@/components/calc/Grids';
+import { useUrlState } from '@/hooks/useUrlState';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { AirportsIndex } from '@/lib/content';
 import styles from './MetBrief.module.css';
 
 /**

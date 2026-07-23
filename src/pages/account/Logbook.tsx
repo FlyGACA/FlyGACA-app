@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { OutputGrid } from '../../components/calc/Grids';
-import { FlightForm } from '../../components/account/FlightForm';
-import { BLANK_FLIGHT, type FlightDraft } from '../../components/account/flight';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { OutputGrid } from '@/components/calc/Grids';
+import { FlightForm } from '@/components/account/FlightForm';
+import { BLANK_FLIGHT, type FlightDraft } from '@/components/account/flight';
 import {
   addFlight,
   updateFlight,
@@ -13,8 +13,8 @@ import {
   exportAll,
   sumHours,
   useAccount,
-} from '../../lib/account';
-import { uiIsPro } from '../../lib/entitlements';
+} from '@/lib/services/account';
+import { uiIsPro } from '@/lib/services/entitlements';
 import {
   summarizeLogbook,
   flightsToCsv,
@@ -24,10 +24,10 @@ import {
   aircraftTotals,
   monthTotals,
   type SortDir,
-} from '../../calc/logbook';
-import type { Flight } from '../../lib/account';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { Alert } from '../../components/Alert';
+} from '@/calc/logbook';
+import type { Flight } from '@/lib/services/account';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { Alert } from '@/components/Alert';
 import styles from './account.module.css';
 
 function download(name: string, data: string, mime: string) {

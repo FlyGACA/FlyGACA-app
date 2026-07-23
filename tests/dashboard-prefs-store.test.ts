@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Fresh module per test so each store hydrates from the current localStorage.
-type PrefsModule = typeof import('../src/lib/dashboardPrefs');
+type PrefsModule = typeof import('@/lib/prefs/dashboardPrefs');
 
 async function freshStore(): Promise<PrefsModule> {
   vi.resetModules();
-  return import('../src/lib/dashboardPrefs');
+  return import('@/lib/prefs/dashboardPrefs');
 }
 
 beforeEach(() => localStorage.clear());

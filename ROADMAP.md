@@ -100,7 +100,7 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
   axe a11y checks to cover more critical flows.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
-  the sitemap, and tool↔library cross-links. See `docs/SEO-STRATEGY.md`.
+  the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
 
 ## Later — exploratory / post-launch
 

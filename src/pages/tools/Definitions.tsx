@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { TextField } from '../../components/calc/TextField';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { DefinitionsIndex } from '../../lib/content';
+import { CalcShell } from '@/components/CalcShell';
+import { TextField } from '@/components/calc/TextField';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { DefinitionsIndex } from '@/lib/content';
 import styles from './Definitions.module.css';
 
 const LIMIT = 80;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import en from '../src/i18n/en.json';
-import { describeClouds, describeVisibility, describeWeather, describeWind } from '../src/lib/wxText';
-import type { Cloud, Wind } from '../src/calc/metar';
+import en from '@/i18n/en.json';
+import { describeClouds, describeVisibility, describeWeather, describeWind } from '@/lib/wxText';
+import type { Cloud, Wind } from '@/calc/metar';
 
 // wxText renders parsed METAR/TAF fields bilingually via an injected translate
 // function. We feed it a stub that resolves against the real en.json bundle and
@@ -9,10 +9,13 @@ import type { Cloud, Wind } from '../src/calc/metar';
 // returning the key itself for a miss, which decodeToken relies on for unknown
 // weather codes.
 const t = (key: string, options?: Record<string, unknown>): string => {
-  const val = key.split('.').reduce<unknown>(
-    (o, k) => (o != null && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined),
-    en,
-  );
+  const val = key
+    .split('.')
+    .reduce<unknown>(
+      (o, k) =>
+        o != null && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined,
+      en,
+    );
   if (typeof val !== 'string') return key;
   return options ? val.replace(/\{\{(\w+)\}\}/g, (_, k: string) => String(options[k] ?? '')) : val;
 };

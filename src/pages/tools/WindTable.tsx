@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { TextField } from '../../components/calc/TextField';
-import { FieldGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { parseRunways, windTable } from '../../calc/windTable';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { TextField } from '@/components/calc/TextField';
+import { FieldGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { parseRunways, windTable } from '@/calc/windTable';
 import styles from './WindTable.module.css';
 
 export function WindTable() {

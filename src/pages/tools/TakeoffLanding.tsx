@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { factoredRunway } from '../../calc/runwayPerf';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { factoredRunway } from '@/calc/runwayPerf';
 
 const fmt = (n: number) => Math.round(n).toLocaleString();
 

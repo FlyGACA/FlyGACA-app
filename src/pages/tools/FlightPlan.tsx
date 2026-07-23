@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { TextField } from '../../components/calc/TextField';
-import { FieldGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
+import { CalcShell } from '@/components/CalcShell';
+import { TextField } from '@/components/calc/TextField';
+import { FieldGrid } from '@/components/calc/Grids';
+import { useUrlState } from '@/hooks/useUrlState';
 import loa from './Loa.module.css';
 
 export function FlightPlan() {

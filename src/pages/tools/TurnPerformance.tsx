@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { turnPerformance } from '../../calc/turn';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { turnPerformance } from '@/calc/turn';
 
 export function TurnPerformance() {
   const { t } = useTranslation();

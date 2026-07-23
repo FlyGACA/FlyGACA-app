@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { hydroplaningSpeed } from '../../calc/hydroplaning';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { hydroplaningSpeed } from '@/calc/hydroplaning';
 
 export function Hydroplaning() {
   const { t } = useTranslation();

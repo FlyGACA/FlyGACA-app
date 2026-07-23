@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CommandPalette } from '../src/components/CommandPalette/CommandPalette';
-import { OPEN_CMDK_EVENT } from '../src/components/CommandPalette/openCommandPalette';
+import { CommandPalette } from '@/components/CommandPalette/CommandPalette';
+import { OPEN_CMDK_EVENT } from '@/components/CommandPalette/openCommandPalette';
 import { renderWithRouter } from './helpers/render';
 
 // The palette is closed by default and opens on ⌘K or the OPEN_CMDK event. Tools

@@ -3,7 +3,7 @@
  * list (the `documents` array of a {@link CorpusIndex}) and the current slug,
  * compute the previous/next document and a few related ones. No DOM — unit-tested.
  */
-import type { CorpusDoc } from '../lib/content';
+import type { CorpusDoc } from '@/lib/content';
 
 export interface Neighbours {
   prev: CorpusDoc | null;

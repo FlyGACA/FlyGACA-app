@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { TextField } from '../../components/calc/TextField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { parseISO, recencyByDays } from '../../calc/recency';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { TextField } from '@/components/calc/TextField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { parseISO, recencyByDays } from '@/calc/recency';
 
 const fmtDate = (d: Date) =>
   d.toLocaleDateString('en-GB', {

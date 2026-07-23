@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Renders the social share card → public/img/og-card.png (1200×630), the image
- * behind `og:image` / `twitter:image` (see src/lib/seo.ts). Composes the brand
+ * behind `og:image` / `twitter:image` (see src/lib/seo/seo.ts). Composes the brand
  * lockup (Falcon palette + Readex Pro) with Captain Adel's portrait, so link
  * previews lead with the mascot.
  *

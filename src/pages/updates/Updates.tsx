@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { useFeature } from '../../lib/features';
-import { useUpdatesPrefs, markAllSeen, toggleWatch, hasBaseline } from '../../lib/updatesPrefs';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { useFeature } from '@/lib/services/features';
+import { useUpdatesPrefs, markAllSeen, toggleWatch, hasBaseline } from '@/lib/prefs/updatesPrefs';
 import {
   airacStatus,
   changedSources,
@@ -13,11 +13,11 @@ import {
   type Airac,
   type SourceEntry,
   type SourceStatus,
-} from '../../calc/changeTracking';
-import { Disclaimer } from '../../components/Disclaimer';
-import { EmptyState } from '../../components/EmptyState';
-import { UpsellCard } from '../../components/UpsellCard';
-import { Alert } from '../../components/Alert';
+} from '@/calc/changeTracking';
+import { Disclaimer } from '@/components/Disclaimer';
+import { EmptyState } from '@/components/EmptyState';
+import { UpsellCard } from '@/components/UpsellCard';
+import { Alert } from '@/components/Alert';
 import styles from './Updates.module.css';
 
 interface SourcesFile {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
+import { CalcShell } from '@/components/CalcShell';
 import styles from './VfrBrief.module.css';
 
 export function VfrBrief() {

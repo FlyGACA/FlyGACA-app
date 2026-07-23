@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { TextField } from '../../components/calc/TextField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
-import { airacCycle } from '../../calc/airac';
+import { CalcShell } from '@/components/CalcShell';
+import { TextField } from '@/components/calc/TextField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useUrlState } from '@/hooks/useUrlState';
+import { airacCycle } from '@/calc/airac';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const fmtDate = (d: Date) => d.toISOString().slice(0, 10);

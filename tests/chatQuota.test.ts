@@ -6,7 +6,7 @@ import {
   dayKey,
   isExhausted,
   remaining,
-} from '../src/calc/chatQuota';
+} from '@/calc/chatQuota';
 
 const now = new Date('2026-06-20T09:00:00Z');
 

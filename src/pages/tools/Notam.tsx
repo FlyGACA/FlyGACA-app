@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { TextField } from '../../components/calc/TextField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { OutputGrid } from '../../components/calc/Grids';
-import { useUrlState } from '../../lib/useUrlState';
-import { formatNotamTime, parseNotam } from '../../calc/notam';
+import { CalcShell } from '@/components/CalcShell';
+import { TextField } from '@/components/calc/TextField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { OutputGrid } from '@/components/calc/Grids';
+import { useUrlState } from '@/hooks/useUrlState';
+import { formatNotamTime, parseNotam } from '@/calc/notam';
 
 const EXAMPLE =
   'A1234/24 NOTAMN Q) OERR/QMRLC/IV/NBO/A/000/999/2446N04643E005 A) OERK B) 2406010600 C) 2406011800 E) RWY 15L/33R CLSD DUE WIP';

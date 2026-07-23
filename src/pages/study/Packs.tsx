@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { itemListLd } from '../../lib/jsonld';
-import { useAccount } from '../../lib/account';
-import { hasPackAccess, ownsPack } from '../../lib/packEntitlements';
-import { notifyWaitlist } from '../../lib/waitlist';
-import { Disclaimer } from '../../components/Disclaimer';
-import { HubBackLink } from '../../components/HubBackLink';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { itemListLd } from '@/lib/seo/jsonld';
+import { useAccount } from '@/lib/services/account';
+import { hasPackAccess, ownsPack } from '@/lib/services/packEntitlements';
+import { notifyWaitlist } from '@/lib/services/waitlist';
+import { Disclaimer } from '@/components/Disclaimer';
+import { HubBackLink } from '@/components/HubBackLink';
 import {
   LIVE_PACKS,
   PACKS,
@@ -15,7 +15,7 @@ import {
   packItemCount,
   type Pack,
   type PackKind,
-} from '../../lib/prepCatalog';
+} from '@/lib/prepCatalog';
 import styles from './Study.module.css';
 
 /** The two storefront sections, in display order. */

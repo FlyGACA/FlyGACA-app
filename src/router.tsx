@@ -2,7 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
-import { AR_PREFIX, isArabicPath } from './lib/seo';
+import { AR_PREFIX, isArabicPath } from '@/lib/seo/seo';
 
 /**
  * Lazy a named export into a route component. Every page except Home is
@@ -116,16 +116,16 @@ const Records = lazyNamed(() => import('./pages/account/Records'), 'Records');
 const Settings = lazyNamed(() => import('./pages/account/Settings'), 'Settings');
 
 // Marketing / legal
-const Pricing = lazyNamed(() => import('./pages/Pricing'), 'Pricing');
-const Schools = lazyNamed(() => import('./pages/Schools'), 'Schools');
+const Pricing = lazyNamed(() => import('./pages/pricing/Pricing'), 'Pricing');
+const Schools = lazyNamed(() => import('./pages/schools/Schools'), 'Schools');
 const BusinessAdmin = lazyNamed(() => import('./pages/business/Admin'), 'BusinessAdmin');
-const About = lazyNamed(() => import('./pages/About'), 'About');
+const About = lazyNamed(() => import('./pages/about/About'), 'About');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
 const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPage');
-const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
-const Offline = lazyNamed(() => import('./pages/Offline'), 'Offline');
+const NotFound = lazyNamed(() => import('./pages/not-found/NotFound'), 'NotFound');
+const Offline = lazyNamed(() => import('./pages/offline/Offline'), 'Offline');
 
 /**
  * The Arabic variant of every content route lives under `/ar`. When the current

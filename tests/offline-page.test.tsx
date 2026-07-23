@@ -1,7 +1,7 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { cleanup, screen, act } from '@testing-library/react';
-import i18n from '../src/i18n';
-import { Offline } from '../src/pages/Offline';
+import i18n from '@/i18n';
+import { Offline } from '@/pages/offline/Offline';
 import { renderWithRouter } from './helpers/render';
 
 afterEach(() => {

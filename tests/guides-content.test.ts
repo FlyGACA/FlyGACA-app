@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import en from '../src/i18n/en.json';
-import ar from '../src/i18n/ar.json';
-import { GUIDE_SLUGS, GUIDE_META, GUIDE_STATUS } from '../src/pages/guides/guides';
+import en from '@/i18n/en.json';
+import ar from '@/i18n/ar.json';
+import { GUIDE_SLUGS, GUIDE_META, GUIDE_STATUS } from '@/pages/guides/guides';
 
 /**
  * Content-completeness guard for guides. The i18n-parity test only checks that
@@ -50,15 +50,19 @@ function checkItem(item: GuideItem | undefined): void {
   for (const key of ['name', 'blurb', 'intro', 'adel'] as const) {
     expect(nonEmptyStr(item[key]), `"${key}" must be a non-empty string`).toBe(true);
   }
-  expect(Array.isArray(item.sections) && item.sections.length > 0, 'sections must be non-empty').toBe(
-    true,
-  );
+  expect(
+    Array.isArray(item.sections) && item.sections.length > 0,
+    'sections must be non-empty',
+  ).toBe(true);
   for (const s of item.sections as { h: unknown; p: unknown }[]) {
     expect(nonEmptyStr(s.h) && nonEmptyStr(s.p), 'each section needs an "h" and "p"').toBe(true);
   }
   const takeaways = item.takeaways as unknown[];
-  expect(Array.isArray(takeaways) && takeaways.length > 0, 'takeaways must be non-empty').toBe(true);
-  for (const tk of takeaways) expect(nonEmptyStr(tk), 'each takeaway must be a non-empty string').toBe(true);
+  expect(Array.isArray(takeaways) && takeaways.length > 0, 'takeaways must be non-empty').toBe(
+    true,
+  );
+  for (const tk of takeaways)
+    expect(nonEmptyStr(tk), 'each takeaway must be a non-empty string').toBe(true);
 }
 
 describe('guide content completeness (EN + AR)', () => {
@@ -86,9 +90,10 @@ describe('guide content completeness (EN + AR)', () => {
         ['AR', arItems],
       ] as const) {
         const leftover = contentStrings(items[slug]).filter((s) => s.includes('TODO ('));
-        expect(leftover, `${lang} ${slug} still has scaffold placeholders: ${leftover.join(' | ')}`).toEqual(
-          [],
-        );
+        expect(
+          leftover,
+          `${lang} ${slug} still has scaffold placeholders: ${leftover.join(' | ')}`,
+        ).toEqual([]);
       }
     });
   }

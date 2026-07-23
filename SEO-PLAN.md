@@ -6,6 +6,11 @@ follow-ups). Seeded 2026-07-04 from the `flygaca-seo` skill template (`reference
 reconciled against the actual repo + a live production audit — several template items were already
 built, and the audit surfaced a live P0 incident (see below).
 
+**Doc map.** This file is the SEO source of truth (backlog + status). `docs/RUNBOOK-openseo.md` is
+the recurring audit runbook; its working files — where run results are written — are
+`docs/seo/technical-audit.md`, `docs/seo/keyword-research.md` and `docs/seo/strategy.md`. The
+superseded 2026-06 strategy blueprint is archived at `docs/seo/archive/SEO-STRATEGY-2026-06.md`.
+
 **The 2026 target:** AI answers (Google AI Overviews/AI Mode, ChatGPT, Perplexity, Gemini) absorb a
 large share of clicks; visibility = being the *cited source*. That requires, in priority order:
 crawlable HTML (most AI bots don't run JS), answer-first structure, verifiable dated facts with named

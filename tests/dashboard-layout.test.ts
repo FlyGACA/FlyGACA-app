@@ -5,7 +5,7 @@ import {
   orderedWidgets,
   quickActionsFor,
   visibleWidgets,
-} from '../src/calc/dashboardLayout';
+} from '@/calc/dashboardLayout';
 
 describe('dashboardOrder', () => {
   it('covers every widget exactly once for every role', () => {

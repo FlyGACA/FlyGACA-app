@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { TextField } from '../../components/calc/TextField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { sunTimes } from '../../calc/sun';
-import { formatHm, shiftTime, KSA_OFFSET_MIN } from '../../calc/zulu';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { TextField } from '@/components/calc/TextField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { sunTimes } from '@/calc/sun';
+import { formatHm, shiftTime, KSA_OFFSET_MIN } from '@/calc/zulu';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const todayIso = () => new Date().toISOString().slice(0, 10);

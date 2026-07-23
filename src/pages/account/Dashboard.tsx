@@ -2,41 +2,41 @@ import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { BrandMark } from '../../components/BrandMark';
-import { CurrencyBoard } from '../../components/CurrencyBoard';
-import { SetupChecklist } from '../../components/SetupChecklist';
-import { UpsellCard } from '../../components/UpsellCard';
-import { ReferralCard } from '../../components/ReferralCard';
-import { BarSparkline } from '../../components/BarSparkline';
-import { BentoGrid } from '../../components/bento/BentoGrid';
-import { BentoCard } from '../../components/bento/BentoCard';
-import { StatValue } from '../../components/bento/widgets/StatValue';
-import { StatusPill } from '../../components/StatusPill';
-import { RolePickerCard } from '../../components/dashboard/RolePickerCard';
-import { StudyWidget } from '../../components/dashboard/StudyWidget';
-import { ToolShortcutsWidget } from '../../components/dashboard/ToolShortcutsWidget';
-import { BookmarksWidget } from '../../components/dashboard/BookmarksWidget';
-import { AdelThreadsWidget } from '../../components/dashboard/AdelThreadsWidget';
-import { UpdatesWatchWidget } from '../../components/dashboard/UpdatesWatchWidget';
-import { OfflineWidget } from '../../components/dashboard/OfflineWidget';
-import { isUserRole, useAccount } from '../../lib/account';
-import { uiPlan } from '../../lib/entitlements';
-import { useFeature } from '../../lib/features';
-import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '../../lib/dashboardPrefs';
-import { moveId } from '../../lib/toolPrefs';
-import { usePageMeta } from '../../lib/usePageMeta';
+import { BrandMark } from '@/components/BrandMark';
+import { CurrencyBoard } from '@/components/CurrencyBoard';
+import { SetupChecklist } from './SetupChecklist';
+import { UpsellCard } from '@/components/UpsellCard';
+import { ReferralCard } from './ReferralCard';
+import { BarSparkline } from '@/components/dashboard/BarSparkline';
+import { BentoGrid } from '@/components/bento/BentoGrid';
+import { BentoCard } from '@/components/bento/BentoCard';
+import { StatValue } from '@/components/bento/widgets/StatValue';
+import { StatusPill } from '@/components/StatusPill';
+import { RolePickerCard } from '@/components/dashboard/RolePickerCard';
+import { StudyWidget } from '@/components/dashboard/StudyWidget';
+import { ToolShortcutsWidget } from '@/components/dashboard/ToolShortcutsWidget';
+import { BookmarksWidget } from '@/components/dashboard/BookmarksWidget';
+import { AdelThreadsWidget } from '@/components/dashboard/AdelThreadsWidget';
+import { UpdatesWatchWidget } from '@/components/dashboard/UpdatesWatchWidget';
+import { OfflineWidget } from '@/components/dashboard/OfflineWidget';
+import { isUserRole, useAccount } from '@/lib/services/account';
+import { uiPlan } from '@/lib/services/entitlements';
+import { useFeature } from '@/lib/services/features';
+import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '@/lib/prefs/dashboardPrefs';
+import { moveId } from '@/lib/prefs/toolPrefs';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   dashboardOrder,
   orderedWidgets,
   quickActionsFor,
   visibleWidgets,
   type WidgetId,
-} from '../../calc/dashboardLayout';
-import { computeCurrency, recordCurrency, actionNeeded } from '../../calc/currency';
-import { summarizeLogbook, monthlyHours } from '../../calc/logbook';
-import { achievements, earnedCount } from '../../calc/achievements';
-import { profileCompleteness } from '../../calc/onboarding';
-import { buildIcs } from '../../calc/ics';
+} from '@/calc/dashboardLayout';
+import { computeCurrency, recordCurrency, actionNeeded } from '@/calc/currency';
+import { summarizeLogbook, monthlyHours } from '@/calc/logbook';
+import { achievements, earnedCount } from '@/calc/achievements';
+import { profileCompleteness } from '@/calc/onboarding';
+import { buildIcs } from '@/calc/ics';
 import styles from './dashboard.module.css';
 
 export function Dashboard() {

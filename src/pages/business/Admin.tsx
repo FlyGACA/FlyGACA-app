@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RequireSession } from '../account/RequireSession';
-import { Disclaimer } from '../../components/Disclaimer';
-import { usePageMeta } from '../../lib/usePageMeta';
+import { RequireSession } from '@/pages/account/RequireSession';
+import { Disclaimer } from '@/components/Disclaimer';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   getMyOrgs,
   getCohortReadiness,
@@ -10,7 +10,7 @@ import {
   type OrgSummary,
   type CohortReadiness,
   type CohortRow,
-} from '../../lib/org';
+} from '@/lib/services/org';
 import styles from './admin.module.css';
 
 /** Cohort admin dashboard — an org owner sees their seats + study readiness. */

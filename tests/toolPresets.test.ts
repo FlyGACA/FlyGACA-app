@@ -5,7 +5,7 @@ import {
   presetsFor,
   normalizePresets,
   type Preset,
-} from '../src/calc/toolPresets';
+} from '@/calc/toolPresets';
 
 const p = (path: string, name: string, query = ''): Preset => ({ path, name, query });
 

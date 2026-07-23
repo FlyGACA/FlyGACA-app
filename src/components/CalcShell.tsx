@@ -4,18 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { Copy, Check, ShareNetwork, GraduationCap } from '@phosphor-icons/react';
 import { Disclaimer } from './Disclaimer';
 import { Breadcrumbs } from './Breadcrumbs';
-import { adelLink } from '../lib/adel';
-import { usePageMeta } from '../lib/usePageMeta';
-import { breadcrumbLd, softwareAppLd, type Crumb, type JsonLd } from '../lib/jsonld';
-import { shareCurrent } from '../lib/share';
-import { useFeature } from '../lib/features';
+import { adelLink } from '@/lib/adel';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { breadcrumbLd, softwareAppLd, type Crumb, type JsonLd } from '@/lib/seo/jsonld';
+import { shareCurrent } from '@/lib/share';
+import { useFeature } from '@/lib/services/features';
 import {
   addPreset,
   removePreset,
   presetsFor,
   normalizePresets,
   type Preset,
-} from '../calc/toolPresets';
+} from '@/calc/toolPresets';
 import styles from './CalcShell.module.css';
 
 const PRESETS_KEY = 'flygaca:tool-presets';

@@ -433,7 +433,9 @@ describe('chatCredits — owner-readable, server-only writes', () => {
 });
 
 describe('packEntitlements — owner-readable, server-only writes', () => {
-  const owned = { packs: { medical: { purchasedAt: '2026-07-19T00:00:00.000Z', source: 'stripe' } } };
+  const owned = {
+    packs: { medical: { purchasedAt: '2026-07-19T00:00:00.000Z', source: 'stripe' } },
+  };
 
   it('lets an owner read their own purchased packs', async () => {
     await seed(`packEntitlements/${ALICE}`, owned);

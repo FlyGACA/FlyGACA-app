@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { screen, cleanup, within } from '@testing-library/react';
-import i18n from '../src/i18n';
+import i18n from '@/i18n';
 import { renderWithRouter } from './helpers/render';
-import { Packs } from '../src/pages/study/Packs';
+import { Packs } from '@/pages/study/Packs';
 
 // The storefront renders purely from the prepCatalog + the account store (default
 // signed-out: no plan, no owned packs), so no network stub is needed. It exercises

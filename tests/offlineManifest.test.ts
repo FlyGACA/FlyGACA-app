@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addSaved, formatBytes, listSaved, removeSaved } from '../src/calc/offlineManifest';
+import { addSaved, formatBytes, listSaved, removeSaved } from '@/calc/offlineManifest';
 
 describe('saved-slug list', () => {
   it('adds without duplicating and preserves order', () => {

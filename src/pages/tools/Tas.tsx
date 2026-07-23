@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { trueAirspeed } from '../../calc/tas';
-import { NumberField } from '../../components/calc/NumberField';
+import { CalcShell } from '@/components/CalcShell';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
+import { trueAirspeed } from '@/calc/tas';
+import { NumberField } from '@/components/calc/NumberField';
 
 const EXAMPLE = { cas: '110', pa: '8000', oat: '10' };
 

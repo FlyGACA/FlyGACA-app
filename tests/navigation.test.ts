@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { greatCircle, oneInSixty, pivotalAltitude, windTriangle } from '../src/calc/navigation';
-import { topOfDescent, visualDescentPoint } from '../src/calc/descent';
-import { solveTsd } from '../src/calc/tsd';
+import { greatCircle, oneInSixty, pivotalAltitude, windTriangle } from '@/calc/navigation';
+import { topOfDescent, visualDescentPoint } from '@/calc/descent';
+import { solveTsd } from '@/calc/tsd';
 
 describe('pivotalAltitude', () => {
   it('100 kt GS → ~885 ft', () => {
