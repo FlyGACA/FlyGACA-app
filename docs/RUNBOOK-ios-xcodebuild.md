@@ -13,7 +13,12 @@ This runbook documents how to build, test, and manage the FlyGACA native iOS app
    xcode-select --install
    ```
 
-2. **Verify prerequisites**:
+2. **Install XcodeGen** (generates the gitignored Xcode project from `apple/project.yml`):
+   ```bash
+   brew install xcodegen
+   ```
+
+3. **Verify prerequisites**:
    ```bash
    npm run ios:info
    ```
@@ -68,6 +73,7 @@ package.json (npm ios:* scripts)
     ↓
 scripts/native/xcodebuild-wrapper.sh
     ├─→ Check prerequisites (Xcode, Swift, Node.js)
+    ├─→ Generate Xcode project (xcodegen ← apple/project.yml)
     ├─→ Generate content (build-ios-content.mjs)
     └─→ Invoke xcodebuild with correct scheme/configuration
 ```
@@ -77,9 +83,10 @@ scripts/native/xcodebuild-wrapper.sh
 `scripts/native/xcodebuild-wrapper.sh` is the core orchestration tool. It:
 
 1. **Validates prerequisites** — Checks for Xcode, Swift, and Node.js
-2. **Generates content** — Runs `scripts/build-ios-content.mjs` to filter the regulatory corpus by module
-3. **Builds the app** — Invokes `xcodebuild` with the correct scheme and configuration
-4. **Reports status** — Provides clear success/error messages with timing
+2. **Generates the project** — Runs `xcodegen generate` against `apple/project.yml` (the project itself is gitignored)
+3. **Generates content** — Runs `scripts/build-ios-content.mjs` to filter the regulatory corpus by module
+4. **Builds the app** — Invokes `xcodebuild` with the correct scheme and configuration
+5. **Reports status** — Provides clear success/error messages with timing
 
 **Arguments:**
 ```bash
@@ -90,6 +97,18 @@ xcodebuild-wrapper.sh <app|all|info> [debug|release] [scheme-override]
 - `config`: `debug` (default) or `release`
 - `scheme-override`: Optional Xcode scheme name (advanced)
 
+**Release environment flags** (used by CI; all optional):
+
+| Env var | Effect |
+|---|---|
+| `FG_BUILD_NUMBER` | Overrides `CURRENT_PROJECT_VERSION` (CI passes `github.run_number`) |
+| `FG_SIGNED_RELEASE=1` | Signed archive + `.ipa` export (requires `APPLE_TEAM_ID`; cert/profile must be installed) |
+| `FG_PROVISIONING_PROFILE` | Overrides the profile name (default `FlyGACA <SCHEME> AppStore`) |
+| `FG_UPLOAD_TESTFLIGHT=1` | Uploads the exported `.ipa` via `xcrun altool` (requires ASC API key env — see `RUNBOOK-ios-signing.md`) |
+
+Debug builds and default (unsigned) release archives run with code signing
+disabled — no Apple account needed locally or in CI.
+
 ### Content Generation
 
 Before each build, the wrapper calls `scripts/build-ios-content.mjs --app <module>`:
@@ -98,23 +117,29 @@ Before each build, the wrapper calls `scripts/build-ios-content.mjs --app <modul
 - Validates all quiz banks (no empty questions, valid answer indexes)
 - **Exits with error if validation fails** — this prevents invalid builds
 
-### Xcode Project Structure
+### Xcode Project Structure (XcodeGen)
 
-The Xcode project is **generated locally per `apple/README.md`** and is not in git. Projects have:
+The Xcode project is **generated from `apple/project.yml`** (XcodeGen) and is
+gitignored — `npm run ios:generate` recreates it any time. The generated project has:
 
 - **Shared build settings** in `apple/Apps/Shared/App-Shared.xcconfig`
-  - iOS 17+ deployment target
-  - Swift 5.9+
-  - Common capabilities (iCloud, App Groups)
+  - iOS 17+ deployment target, Swift 5 language mode
+  - Version (`MARKETING_VERSION`) + build number (`CURRENT_PROJECT_VERSION`)
+  - App Group entitlement (`Apps/Shared/App.entitlements`), app icon set name
 
 - **Per-app configuration** in `apple/Apps/<Module>/<Module>.xcconfig`
   - Bundle ID (e.g., `com.flygaca.ppl`)
-  - Module ID (e.g., `ppl-exam`) — injected at build time
-  - Display name per language (en/ar)
+  - Module ID (`FG_MODULE_ID`, the pack id from `src/lib/prepCatalog.ts` —
+    `ppl-exam`, `elp`, `aip`) — injected at build time
+  - Display name
 
 - **Shared code** in `apple/Apps/Shared/FlyGACAApp.swift`
   - Root SwiftUI entrypoint
   - All three apps reuse this shell; only module ID differs
+
+- **Per-app resources**: `Apps/<Module>/Content/` ships as a blue folder
+  reference (the app reads it as a `Content/` directory in the bundle) and
+  `Apps/<Module>/Assets.xcassets` holds the app icon.
 
 ## Common Tasks
 
@@ -123,22 +148,26 @@ The Xcode project is **generated locally per `apple/README.md`** and is not in g
 1. **Create module structure**:
    ```bash
    mkdir -p apple/Apps/IFR
-   cp apple/Apps/PPL/IFR.xcconfig apple/Apps/IFR/IFR.xcconfig
+   cp apple/Apps/PPL/PPL.xcconfig apple/Apps/IFR/IFR.xcconfig
    # Edit IFR.xcconfig:
-   #   FG_MODULE_ID = ifr-exam
+   #   FG_MODULE_ID = <the pack id from src/lib/prepCatalog.ts>
    #   PRODUCT_BUNDLE_IDENTIFIER = com.flygaca.ifr
    ```
+   Add an `Assets.xcassets` with an `AppIcon` set (copy one of the existing apps').
 
-2. **Add to Xcode project**:
-   - File → New → Target
-   - Select "App"
-   - Name: "IFR"
-   - Link `FeatureUI` product from FlyGACAKit
-
-3. **Generate content**:
-   ```bash
-   npm run ios:build:ifr
+2. **Register the target** in `apple/project.yml` (three lines):
+   ```yaml
+   IFR:
+     templates: [FlyGACAApp]
    ```
+
+3. **Generate content + project, then build**:
+   ```bash
+   node scripts/build-ios-content.mjs --app ifr
+   npm run ios:generate
+   ```
+   (Also register the app in `scripts/build-ios-content.mjs` and add matching
+   npm scripts / CI matrix entries.)
 
 ### Debugging a Failed Build
 
@@ -210,17 +239,23 @@ npm run ios:build:release:ppl
 
 This creates:
 - XCArchive: `apple/.build/PPL-Release.xcarchive`
-- dSYM symbols: `apple/.build/dSYMs/FlyGACAApp.app.dSYM`
+- dSYM symbols: `apple/.build/dSYMs/PPL.app.dSYM`
+
+Local release archives are **unsigned** by default. Signed archives + `.ipa`
+export + TestFlight upload are CI-only, driven by the `FG_SIGNED_RELEASE` /
+`FG_UPLOAD_TESTFLIGHT` env flags — see `docs/RUNBOOK-ios-signing.md`.
 
 **In CI (GitHub Actions):**
 - Release builds run as a separate matrix job (only on main branch)
 - XCArchives uploaded with 14-day retention
 - dSYM files extracted and stored separately (30-day retention)
 - All artifacts tagged with commit SHA for traceability
+- When signing secrets are configured, the `ios-testflight` job additionally
+  produces signed `.ipa`s (30-day retention) and uploads them to TestFlight
 
-**Using dSYM for Crash Analysis (Phase 4 preparation):**
+**Using dSYM for Crash Analysis:**
 
-Once crash reporting is integrated (Phase 4), dSYM files enable:
+Once crash reporting is integrated (Sentry/Crashlytics), dSYM files enable:
 - Stack trace symbolication (convert addresses → source lines)
 - Crash reporting tool integration (Sentry, Crashlytics, etc.)
 - Performance profiling with meaningful function names
@@ -242,11 +277,16 @@ See [`.github/workflows/ios.yml`](#) for the GitHub Actions workflow that:
 - **Phase 3:** Creates XCArchives for release builds on `main` branch pushes
 - **Phase 3:** Extracts and stores dSYM symbols (30-day retention) for crash reporting
 - **Phase 3:** Tags all release artifacts with git commit SHA for traceability
+- **Phase 4:** Generates the Xcode project in CI (XcodeGen) so builds are real
+- **Phase 4:** Signs, exports, and uploads all three apps to TestFlight on `main`
+  pushes — once the signing secrets exist (`ios-testflight` job, gated by
+  `check-signing`; see `docs/RUNBOOK-ios-signing.md`)
 
 **Artifact Retention:**
 - Debug builds: 7 days (PR + main)
 - Release XCArchives: 14 days (main only)
-- dSYM symbols: 30 days (main only) — prepared for Phase 4 crash reporting integration
+- dSYM symbols: 30 days (main only)
+- Signed `.ipa`s: 30 days (main only, signing secrets required)
 
 The workflow is triggered by:
 - Push to `main` branch (all jobs, including release builds)
@@ -263,9 +303,10 @@ xcode-select --install
 
 ### "xcodebuild: error: Unable to find a matching provisioning profile"
 
-This is expected for local dev builds (unsigned). Phase 4 adds code signing. For now:
-- Builds target the generic `iOS` platform (not tied to provisioning)
-- No actual device deployment (simulator/archive only)
+Local builds run with code signing disabled, so this shouldn't appear locally.
+In the `ios-testflight` CI job it means the provisioning profile secret doesn't
+match the bundle ID or certificate — see the troubleshooting section of
+`docs/RUNBOOK-ios-signing.md`.
 
 ### "Content generation failed for ppl"
 
@@ -287,8 +328,9 @@ cd apple/FlyGACAKit && swift build && cd ../..
 
 ### "No matching schemes found" error
 
-Verify the Xcode project was created correctly:
+Regenerate the project and list the schemes:
 ```bash
+npm run ios:generate
 xcodebuild -project apple/FlyGACA.xcodeproj -list
 ```
 
@@ -301,7 +343,7 @@ Information about project "FlyGACA":
         AIP
 ```
 
-If missing, follow `apple/README.md` to recreate the project.
+If a scheme is missing, check its target entry in `apple/project.yml`.
 
 ## Phase Roadmap
 
@@ -322,10 +364,15 @@ If missing, follow `apple/README.md` to recreate the project.
 - dSYM extraction and 30-day retention
 - Tagged artifacts with git commit SHA
 
-### Phase 4 (Deferred: Month 2-3)
-- Code signing via Xcode Cloud
-- TestFlight automation
-- App Store Connect integration
+### Phase 4 ✅ (Signing & TestFlight slice complete)
+- XcodeGen project generation (`apple/project.yml`) — CI builds are real
+- Self-managed code signing on **GitHub Actions** (not Xcode Cloud): temp
+  keychain + manual signing, activated by repo secrets
+  (`docs/RUNBOOK-ios-signing.md`)
+- `.ipa` export + TestFlight upload via the App Store Connect API
+- Still to come (the platform half of Phase 4, see `apple/ARCHITECTURE.md` §5):
+  `PlatformLive` target (Firebase Auth + App Check), Keychain Sharing, Sign in
+  with Apple, crash reporting integration
 
 ## Support
 

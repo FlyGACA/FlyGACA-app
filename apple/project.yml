@@ -1,0 +1,47 @@
+# XcodeGen spec — the source of truth for apple/FlyGACA.xcodeproj.
+# The project is generated (never committed): `brew install xcodegen && npm run ios:generate`.
+# All build settings live in the committed xcconfigs (Apps/Shared/App-Shared.xcconfig +
+# per-app includes); CI-only settings (signing, build number) are passed on the
+# xcodebuild command line, which outranks everything written into the project.
+name: FlyGACA
+options:
+  createIntermediateGroups: true
+  groupSortPosition: top
+  # Current XcodeGen emits the Xcode 16 project format (objectVersion 77), which
+  # Xcode 15 refuses with "future Xcode project file format" — open the generated
+  # project with Xcode 16+ (CI uses macos-15 runners for this reason).
+  xcodeVersion: "16.0"
+
+packages:
+  FlyGACAKit:
+    path: FlyGACAKit
+
+targetTemplates:
+  FlyGACAApp:
+    type: application
+    platform: iOS
+    configFiles:
+      Debug: Apps/${target_name}/${target_name}.xcconfig
+      Release: Apps/${target_name}/${target_name}.xcconfig
+    sources:
+      - path: Apps/Shared/FlyGACAApp.swift
+      - path: Apps/${target_name}/Assets.xcassets
+      # Blue folder reference: ContentLoader.bundledContentDirectory expects a real
+      # Content/ directory in the bundle root (bundle.url(forResource: "Content")).
+      - path: Apps/${target_name}/Content
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: FlyGACAKit
+        product: FeatureUI
+    scheme:
+      testTargets: []
+      gatherCoverageData: false
+
+targets:
+  PPL:
+    templates: [FlyGACAApp]
+  ELPT:
+    templates: [FlyGACAApp]
+  AIP:
+    templates: [FlyGACAApp]
