@@ -14,7 +14,7 @@ concurrency:
 jobs:
   swift-test:
     name: Swift Package Tests
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 20
     permissions:
       contents: read
@@ -51,9 +51,32 @@ jobs:
       - name: Validate AIP content
         run: node scripts/build-ios-content.mjs --app aip
 
+  # Signing secrets can't be read in a job-level `if:` — this tiny job turns their
+  # presence into an output the ios-testflight job can gate on.
+  check-signing:
+    name: Check Signing Secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - id: check
+        env:
+          CERT: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          ASC: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+        run: |
+          if [ -n "$CERT" ] && [ -n "$ASC" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Signing secrets present — TestFlight job will run on main pushes."
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Signing secrets absent — TestFlight job will be skipped (see docs/RUNBOOK-ios-signing.md)."
+          fi
+
   ios-build:
     name: Build iOS App (${{ matrix.app }})
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [swift-test, content-validation]
     timeout-minutes: 30
     permissions:
@@ -71,30 +94,27 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: 5.9
+      - name: Install XcodeGen
+        run: brew install xcodegen
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build ${{ matrix.app }} (Debug)
         run: npm run ios:build:${{ matrix.app }}
-        continue-on-error: true
 
       - name: Upload build artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ios-build-${{ matrix.app }}-debug
-          path: apple/.build/
+          path: apple/.build/Build/Products/
           retention-days: 7
           if-no-files-found: ignore
 
   ios-build-release:
     name: Build iOS App Release (${{ matrix.app }})
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [swift-test, content-validation]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     timeout-minutes: 40
@@ -113,17 +133,16 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: 5.9
+      - name: Install XcodeGen
+        run: brew install xcodegen
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build ${{ matrix.app }} (Release)
+      - name: Build ${{ matrix.app }} (Release, unsigned)
         run: npm run ios:build:release:${{ matrix.app }}
-        continue-on-error: true
+        env:
+          FG_BUILD_NUMBER: ${{ github.run_number }}
 
       - name: Upload Release artifacts
         if: always()
@@ -145,6 +164,115 @@ jobs:
           retention-days: 30
           if-no-files-found: ignore
 
+  ios-testflight:
+    name: TestFlight (${{ matrix.app }})
+    runs-on: macos-15
+    needs: [swift-test, content-validation, check-signing]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.check-signing.outputs.enabled == 'true'
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: ppl
+            scheme: PPL
+          - app: elpt
+            scheme: ELPT
+          - app: aip
+            scheme: AIP
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Standard Apple/GitHub temp-keychain signing pattern:
+      # https://docs.github.com/en/actions/deployment/deploying-xcode-applications
+      - name: Import signing assets
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          # Explicit references only — dynamic secrets[...] indexing would expose
+          # the whole secrets context to the runner (CodeQL: Excessive Secrets Exposure)
+          PROFILE_PPL_B64: ${{ secrets.PROVISIONING_PROFILE_PPL_BASE64 }}
+          PROFILE_ELPT_B64: ${{ secrets.PROVISIONING_PROFILE_ELPT_BASE64 }}
+          PROFILE_AIP_B64: ${{ secrets.PROVISIONING_PROFILE_AIP_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_KEY_B64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+        run: |
+          set -euo pipefail
+          CERT_PATH="$RUNNER_TEMP/build_certificate.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+
+          case "${{ matrix.scheme }}" in
+            PPL)  PROFILE_B64="$PROFILE_PPL_B64" ;;
+            ELPT) PROFILE_B64="$PROFILE_ELPT_B64" ;;
+            AIP)  PROFILE_B64="$PROFILE_AIP_B64" ;;
+            *) echo "Unknown scheme ${{ matrix.scheme }}" >&2; exit 1 ;;
+          esac
+
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          echo -n "$PROFILE_B64" | base64 --decode -o "$HOME/Library/MobileDevice/Provisioning Profiles/${{ matrix.scheme }}.mobileprovision"
+
+          mkdir -p "$HOME/private_keys"
+          echo -n "$ASC_KEY_B64" | base64 --decode -o "$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+
+      - name: Build, export, and upload ${{ matrix.app }}
+        run: npm run ios:build:release:${{ matrix.app }}
+        env:
+          FG_SIGNED_RELEASE: '1'
+          FG_UPLOAD_TESTFLIGHT: '1'
+          FG_BUILD_NUMBER: ${{ github.run_number }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+
+      - name: Upload signed .ipa
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-${{ matrix.app }}-${{ github.sha }}
+          path: apple/.build/export/${{ matrix.scheme }}/*.ipa
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Upload dSYM symbols (signed build)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-dsyms-signed-${{ matrix.app }}-${{ github.sha }}
+          path: apple/.build/dSYMs/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Clean up signing assets
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db" || true
+          rm -f "$HOME/Library/MobileDevice/Provisioning Profiles/${{ matrix.scheme }}.mobileprovision"
+          rm -f "$HOME"/private_keys/*.p8
+
   build-summary:
     name: Build Summary
     runs-on: ubuntu-latest
@@ -163,10 +291,10 @@ jobs:
             exit 1
           fi
           if [[ "${{ needs.ios-build.result }}" == "failure" ]]; then
-            echo "⚠️ One or more iOS builds failed (expected on non-Mac runners in PRs)"
-          else
-            echo "✅ All iOS builds passed"
+            echo "❌ One or more iOS builds failed"
+            exit 1
           fi
+          echo "✅ All iOS builds passed"
 
       - name: Report results
         run: |
@@ -176,4 +304,4 @@ jobs:
           echo "- Content Validation: ${{ needs.content-validation.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- iOS Builds: ${{ needs.ios-build.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifacts:** Debug builds retained 7 days, Release builds 14 days" >> $GITHUB_STEP_SUMMARY
+          echo "**Artifacts:** Debug builds retained 7 days, Release builds 14 days, IPAs/dSYMs 30 days" >> $GITHUB_STEP_SUMMARY

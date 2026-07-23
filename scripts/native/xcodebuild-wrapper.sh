@@ -83,14 +83,18 @@ print_info() {
   echo "  FlyGACA Apps: ppl, elpt, aip"
   echo ""
   echo "Available commands:"
+  echo "  npm run ios:generate               # Generate Xcode project (needs xcodegen)"
   echo "  npm run ios:build:ppl              # Debug build PPL app"
   echo "  npm run ios:build:elpt             # Debug build ELPT app"
   echo "  npm run ios:build:aip              # Debug build AIP app"
   echo "  npm run ios:build:all              # Debug builds all apps"
-  echo "  npm run ios:build:release:ppl      # Release build PPL"
+  echo "  npm run ios:build:release:ppl      # Release build PPL (unsigned archive)"
   echo "  npm run ios:test                   # Run Swift Package tests"
   echo "  npm run ios:test:watch             # Watch mode for tests"
   echo "  npm run ios:clean                  # Clean build artifacts"
+  echo ""
+  echo "Release env flags (CI): FG_BUILD_NUMBER, FG_SIGNED_RELEASE=1 (+APPLE_TEAM_ID),"
+  echo "  FG_PROVISIONING_PROFILE, FG_UPLOAD_TESTFLIGHT=1 (+ASC API key env)"
 }
 
 # Generate content for an app
@@ -111,6 +115,108 @@ generate_content() {
   log_success "Content generated for $app"
 }
 
+# Generate the Xcode project from apple/project.yml via XcodeGen.
+# The project is deliberately not in git — project.yml is the source of truth.
+generate_project() {
+  local project_yml="$PROJECT_ROOT/apple/project.yml"
+  local xcode_project="$PROJECT_ROOT/apple/FlyGACA.xcodeproj"
+
+  if [ -f "$project_yml" ] && command -v xcodegen &> /dev/null; then
+    log_info "Generating Xcode project from project.yml..."
+    if ! (cd "$PROJECT_ROOT/apple" && xcodegen generate); then
+      log_error "xcodegen generate failed"
+      exit 1
+    fi
+    log_success "Xcode project generated"
+  elif [ -d "$xcode_project" ]; then
+    log_warn "xcodegen not installed — using existing FlyGACA.xcodeproj as-is"
+  else
+    log_error "Xcode project not found and xcodegen is not installed"
+    echo ""
+    echo "To generate the project:"
+    echo "  brew install xcodegen"
+    echo "  npm run ios:generate"
+    exit 1
+  fi
+}
+
+# Export a signed .ipa from an xcarchive and optionally upload it to TestFlight.
+# Requires FG_SIGNED_RELEASE=1 context: APPLE_TEAM_ID set, cert + profile installed.
+export_ipa() {
+  local app=$1
+  local archive_path=$2
+  local profile_name="${FG_PROVISIONING_PROFILE:-FlyGACA ${SCHEME} AppStore}"
+  local export_dir="$PROJECT_ROOT/apple/.build/export/$SCHEME"
+  local export_options="$PROJECT_ROOT/apple/.build/ExportOptions-${SCHEME}.plist"
+
+  log_info "Exporting .ipa for $app..."
+
+  cat > "$export_options" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>app-store-connect</string>
+	<key>destination</key>
+	<string>export</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>teamID</key>
+	<string>${APPLE_TEAM_ID}</string>
+	<key>uploadSymbols</key>
+	<true/>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>${BUNDLE_ID}</key>
+		<string>${profile_name}</string>
+	</dict>
+</dict>
+</plist>
+PLIST
+
+  if ! xcodebuild \
+    -exportArchive \
+    -archivePath "$archive_path" \
+    -exportOptionsPlist "$export_options" \
+    -exportPath "$export_dir"; then
+    log_error "Export failed for $app"
+    return 1
+  fi
+
+  local ipa_path
+  ipa_path=$(find "$export_dir" -name '*.ipa' -print -quit)
+  if [ -z "$ipa_path" ]; then
+    log_error "Export succeeded but no .ipa found in $export_dir"
+    return 1
+  fi
+
+  # Log the shipped build number for CI verification
+  local app_plist="$archive_path/Products/Applications/${SCHEME}.app/Info.plist"
+  if [ -f "$app_plist" ]; then
+    echo "  CFBundleVersion: $(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$app_plist" 2>/dev/null || echo '?')"
+  fi
+
+  log_success "Exported $ipa_path"
+
+  if [ "${FG_UPLOAD_TESTFLIGHT:-}" = "1" ]; then
+    if [ -z "${APP_STORE_CONNECT_API_KEY_ID:-}" ] || [ -z "${APP_STORE_CONNECT_API_ISSUER_ID:-}" ]; then
+      log_error "FG_UPLOAD_TESTFLIGHT=1 requires APP_STORE_CONNECT_API_KEY_ID and APP_STORE_CONNECT_API_ISSUER_ID"
+      return 1
+    fi
+    # altool looks for the .p8 at ~/private_keys/AuthKey_<KEY_ID>.p8
+    log_info "Uploading $app to TestFlight..."
+    if ! xcrun altool --upload-app --type ios \
+      -f "$ipa_path" \
+      --apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
+      --apiIssuer "$APP_STORE_CONNECT_API_ISSUER_ID"; then
+      log_error "TestFlight upload failed for $app (the .ipa is kept at $ipa_path)"
+      return 1
+    fi
+    log_success "Uploaded $app to TestFlight"
+  fi
+}
+
 # Build an app via xcodebuild
 build_app() {
   local app=$1
@@ -126,12 +232,12 @@ build_app() {
     elpt)
       SCHEME="ELPT"
       BUNDLE_ID="com.flygaca.elpt"
-      MODULE_ID="elpt-exam"
+      MODULE_ID="elp"
       ;;
     aip)
       SCHEME="AIP"
       BUNDLE_ID="com.flygaca.aip"
-      MODULE_ID="aip-exam"
+      MODULE_ID="aip"
       ;;
     *)
       log_error "Unknown app: $app"
@@ -155,37 +261,74 @@ build_app() {
   echo "  Scheme: $SCHEME"
   echo "  Config: $CONFIG_NAME"
   echo "  Bundle ID: $BUNDLE_ID"
+  echo "  Module ID: $MODULE_ID"
 
-  # Check if Xcode project exists
+  # Check if Xcode project exists (generate_project has already run)
   XCODE_PROJECT="$PROJECT_ROOT/apple/FlyGACA.xcodeproj"
   if [ ! -d "$XCODE_PROJECT" ]; then
     log_error "Xcode project not found at $XCODE_PROJECT"
     echo ""
-    echo "To create the project locally:"
-    echo "  1. cd apple/"
-    echo "  2. Follow setup steps in apple/README.md"
-    echo "  3. Create Xcode project: File → New → Project"
-    echo "  4. Configure build settings per docs"
+    echo "To generate the project:"
+    echo "  brew install xcodegen"
+    echo "  npm run ios:generate"
     exit 1
+  fi
+
+  # Optional CI build number (TestFlight needs a monotonically increasing CFBundleVersion)
+  local version_args=()
+  if [ -n "${FG_BUILD_NUMBER:-}" ]; then
+    version_args=(CURRENT_PROJECT_VERSION="$FG_BUILD_NUMBER")
+    echo "  Build #: $FG_BUILD_NUMBER"
   fi
 
   # Run xcodebuild
   local build_start=$(date +%s)
 
   if [ "$CONFIG_NAME" = "Release" ]; then
-    # Archive for Release builds (enables dSYM extraction)
     local archive_path="$PROJECT_ROOT/apple/.build/${SCHEME}-${CONFIG_NAME}.xcarchive"
 
-    if ! xcodebuild \
-      -project "$XCODE_PROJECT" \
-      -scheme "$SCHEME" \
-      -configuration "$CONFIG_NAME" \
-      -archivePath "$archive_path" \
-      -arch arm64 \
-      -sdk iphoneos \
-      archive; then
-      log_error "Archive failed for $app"
-      return 1
+    if [ "${FG_SIGNED_RELEASE:-}" = "1" ]; then
+      # Signed archive for App Store / TestFlight distribution (manual signing).
+      if [ -z "${APPLE_TEAM_ID:-}" ]; then
+        log_error "FG_SIGNED_RELEASE=1 requires APPLE_TEAM_ID to be set"
+        return 1
+      fi
+      local profile_name="${FG_PROVISIONING_PROFILE:-FlyGACA ${SCHEME} AppStore}"
+      echo "  Signing: Apple Distribution / $profile_name (team $APPLE_TEAM_ID)"
+
+      if ! xcodebuild \
+        -project "$XCODE_PROJECT" \
+        -scheme "$SCHEME" \
+        -configuration "$CONFIG_NAME" \
+        -archivePath "$archive_path" \
+        -arch arm64 \
+        -sdk iphoneos \
+        CODE_SIGN_STYLE=Manual \
+        DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+        CODE_SIGN_IDENTITY="Apple Distribution" \
+        PROVISIONING_PROFILE_SPECIFIER="$profile_name" \
+        "${version_args[@]}" \
+        archive; then
+        log_error "Signed archive failed for $app"
+        return 1
+      fi
+    else
+      # Unsigned archive — dSYM/artifact pipeline works with zero Apple credentials.
+      if ! xcodebuild \
+        -project "$XCODE_PROJECT" \
+        -scheme "$SCHEME" \
+        -configuration "$CONFIG_NAME" \
+        -archivePath "$archive_path" \
+        -arch arm64 \
+        -sdk iphoneos \
+        CODE_SIGNING_ALLOWED=NO \
+        CODE_SIGNING_REQUIRED=NO \
+        CODE_SIGN_IDENTITY="" \
+        "${version_args[@]}" \
+        archive; then
+        log_error "Archive failed for $app"
+        return 1
+      fi
     fi
 
     # Extract dSYMs from archive for crash reporting
@@ -196,8 +339,12 @@ build_app() {
       cp -r "$archive_path/dSYMs"/* "$dsyms_dir/" 2>/dev/null || true
       log_success "dSYMs extracted to $dsyms_dir"
     fi
+
+    if [ "${FG_SIGNED_RELEASE:-}" = "1" ]; then
+      export_ipa "$app" "$archive_path" || return 1
+    fi
   else
-    # Build for Debug configuration
+    # Debug builds run unsigned so no Apple account is needed locally or in CI.
     if ! xcodebuild \
       -project "$XCODE_PROJECT" \
       -scheme "$SCHEME" \
@@ -205,6 +352,9 @@ build_app() {
       -derivedDataPath "$PROJECT_ROOT/apple/.build" \
       -arch arm64 \
       -sdk iphoneos \
+      CODE_SIGNING_ALLOWED=NO \
+      CODE_SIGNING_REQUIRED=NO \
+      CODE_SIGN_IDENTITY="" \
       build; then
       log_error "Build failed for $app"
       return 1
@@ -225,6 +375,7 @@ main() {
       ;;
     all)
       check_prerequisites
+      generate_project
       for app in "${APPS[@]}"; do
         generate_content "$app"
         build_app "$app" "$CONFIGURATION" || exit 1
@@ -233,6 +384,7 @@ main() {
       ;;
     ppl|elpt|aip)
       check_prerequisites
+      generate_project
       generate_content "$APP"
       build_app "$APP" "$CONFIGURATION" || exit 1
       ;;
