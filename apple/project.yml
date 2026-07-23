@@ -7,6 +7,10 @@ name: FlyGACA
 options:
   createIntermediateGroups: true
   groupSortPosition: top
+  # Pin the generated project format to one Xcode 15.4 (the CI runner default)
+  # can open — current XcodeGen otherwise emits the Xcode 16 format (objectVersion
+  # 77), which older Xcodes refuse with "future Xcode project file format".
+  xcodeVersion: "15.4"
 
 packages:
   FlyGACAKit:
