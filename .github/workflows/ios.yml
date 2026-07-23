@@ -14,19 +14,13 @@ concurrency:
 jobs:
   swift-test:
     name: Swift Package Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    runs-on: macos-14
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: 5.9
-
       - name: Run Swift tests
-        run: npm run ios:test
-        working-directory: ${{ github.workspace }}
+        run: cd apple/FlyGACAKit && swift test
 
   content-validation:
     name: iOS Content Generation
