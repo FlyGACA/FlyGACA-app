@@ -73,9 +73,12 @@ server core.
 
 ## Phase 3 — Widget / peripheral-chat render smoke  *(lower risk)*
 
-- [ ] 0% bento widgets on Home/Dashboard (`LearnWidget`, `ToolsWidget`, `StatValue`, hub
-      `ViewToggle`/`SortSelect`, library `SectionPopover`) via the seed-then-import pattern.
-- [ ] Peripheral chat UI: `SpeakButton` (24%), `SourcesDigest`, `CrossRefChips`, `AlertActions`.
+- [x] Hub controls `ViewToggle` / `SortSelect` (both 0%) — `tests/hub-controls.test.tsx`.
+- [x] Peripheral chat UI `SourcesDigest`, `CrossRefChips`, `ExportActions` (all 0%) —
+      `tests/chat-digest.test.tsx`. Ratchet raised again to 76/73/79/77.
+- [ ] Remaining bento widgets on Home/Dashboard (`LearnWidget`, `ToolsWidget`, `StatValue`,
+      library `SectionPopover`) via the seed-then-import pattern.
+- [ ] `SpeakButton` (24%) — needs a `speechSynthesis` stub.
 
 ## Phase 4 — Structural decision  *(team call, no code yet)*
 
