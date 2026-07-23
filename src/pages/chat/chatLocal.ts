@@ -6,8 +6,8 @@
  * (private mode and quota errors must never break the chat).
  */
 import type { ChatSource, GroundingKind } from '@/lib/api';
-import { currentUsage, type Usage } from '@/calc/chatQuota';
-import { normalizeFeedback, type FeedbackMap } from '@/calc/chatFeedback';
+import { currentUsage, type Usage } from '@/calc/chat/chatQuota';
+import { normalizeFeedback, type FeedbackMap } from '@/calc/chat/chatFeedback';
 
 export interface Message {
   role: 'user' | 'assistant';

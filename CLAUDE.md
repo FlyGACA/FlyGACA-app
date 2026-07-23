@@ -53,14 +53,16 @@ firebase.json's rewrite regions must match).
   `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
-- **Calculators:** pure, DOM-free logic in `src/calc/*` (aviation math plus chat/study/speech/text
-  helpers — no DOM/i18n) so it is unit-testable. The flat directory self-clusters: aviation tool
-  math (`isa`, `tas`, `crosswind`, `holding`, `runway*`, … — one module per catalog tool) plus
-  helper clusters — chat/voice (`chat*`, `conversations`, `transcript`, `markdown`, `speech`,
-  `textToSpeech`, `voiceSelection`), pilot records (`currency`, `logbook`, `recency`,
-  `achievements`, `onboarding`, `ics`), library (`anchor`, `corpusNav`, `changeTracking`,
-  `offlineManifest`, `libraryFilter`), study (`srs`), and app shell (`authError`,
-  `dashboardLayout`, `toolPresets`). The
+- **Calculators:** pure, DOM-free logic in `src/calc/*` (no DOM/i18n) so it is unit-testable.
+  Aviation tool math stays **flat** at the `src/calc/` root (`isa`, `tas`, `crosswind`, `holding`,
+  `runway*`, … — one module per catalog tool, plus the shared date math `recency`); the non-tool
+  helpers live in subfolders by domain — `calc/chat/` (Captain Adel answer/thread/voice:
+  `chat*`, `conversations`, `transcript`, `markdown`, `speech`, `textToSpeech`, `voiceSelection`),
+  `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`), `calc/library/`
+  (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`), `calc/study/`
+  (`srs` — the cross-platform contract the apple/ Swift port mirrors), and `calc/app/`
+  (`authError`, `dashboardLayout`, `toolPresets`). Subfolders may import the flat core
+  (`@/calc/recency`), never each other sideways. The
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
   disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
   `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
@@ -100,7 +102,7 @@ firebase.json's rewrite regions must match).
   `billing-core`, `chat-quota-core`, `rate-limit-core`, `staff-core`, `school-core`, `student-core`,
   `referral-core`, `feedback-core`, `api-key-core`) so policy is unit-testable in isolation; the
   Express/Firestore wrappers (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `org.ts`) stay
-  thin. Client-side mirrors (`src/calc/chatQuota.ts`, `src/lib/entitlements.ts`,
+  thin. Client-side mirrors (`src/calc/chat/chatQuota.ts`, `src/lib/entitlements.ts`,
   `src/lib/features.ts`) must match their server core.
 - **Entitlement is server-owned.** `users/{uid}.entitlement` is written **only** by Cloud Functions
   through the Admin SDK (which bypasses `firestore.rules`): `stripeWebhook` (Stripe tiers),

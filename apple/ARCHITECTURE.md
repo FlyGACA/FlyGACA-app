@@ -134,7 +134,7 @@ escape the actor, which sidesteps their non-Sendability.
 
 These semantics are shared with the web app; users move between the two:
 
-- **SRS** = literal port of `src/calc/srs.ts`: boxes 0–5, intervals
+- **SRS** = literal port of `src/calc/study/srs.ts`: boxes 0–5, intervals
   `[0, 1, 3, 7, 14, 30]` days, correct promotes (capped), wrong resets to 0,
   unseen always due, mastered = box ≥ 3.
 - **Due dates are UTC day-strings** (`yyyy-mm-dd`, string compare). The web

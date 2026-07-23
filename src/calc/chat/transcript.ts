@@ -1,7 +1,7 @@
 /**
  * Pure Markdown serialization of a Captain Adel conversation, so a whole thread
  * can be copied or downloaded. No DOM imports → unit-testable. Mirrors the
- * logbook CSV-export approach (`src/calc/logbook.ts`): the page owns the
+ * logbook CSV-export approach (`src/calc/pilot/logbook.ts`): the page owns the
  * clipboard/Blob, this owns the text.
  */
 

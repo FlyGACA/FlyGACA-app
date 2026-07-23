@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
-import { dueKeys, masteredCount } from '@/calc/srs';
+import { dueKeys, masteredCount } from '@/calc/study/srs';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';

@@ -31,12 +31,12 @@ import {
   quickActionsFor,
   visibleWidgets,
   type WidgetId,
-} from '@/calc/dashboardLayout';
-import { computeCurrency, recordCurrency, actionNeeded } from '@/calc/currency';
-import { summarizeLogbook, monthlyHours } from '@/calc/logbook';
-import { achievements, earnedCount } from '@/calc/achievements';
-import { profileCompleteness } from '@/calc/onboarding';
-import { buildIcs } from '@/calc/ics';
+} from '@/calc/app/dashboardLayout';
+import { computeCurrency, recordCurrency, actionNeeded } from '@/calc/pilot/currency';
+import { summarizeLogbook, monthlyHours } from '@/calc/pilot/logbook';
+import { achievements, earnedCount } from '@/calc/pilot/achievements';
+import { profileCompleteness } from '@/calc/pilot/onboarding';
+import { buildIcs } from '@/calc/pilot/ics';
 import styles from './dashboard.module.css';
 
 export function Dashboard() {

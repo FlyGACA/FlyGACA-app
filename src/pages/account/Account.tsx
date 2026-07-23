@@ -19,7 +19,7 @@ import {
   signInWithEmail,
   signInWithGoogle,
 } from '@/lib/services/auth';
-import { authErrorInfo } from '@/calc/authError';
+import { authErrorInfo } from '@/calc/app/authError';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useForm } from '@/hooks/useForm';
 import { PasswordStrength } from '@/components/account/PasswordStrength';

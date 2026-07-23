@@ -7,8 +7,8 @@ import { Disclaimer } from '@/components/Disclaimer';
 import { useAccount } from '@/lib/services/account';
 import { uiIsPro } from '@/lib/services/entitlements';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { computeCurrency, recordCurrency } from '@/calc/currency';
-import { buildIcs } from '@/calc/ics';
+import { computeCurrency, recordCurrency } from '@/calc/pilot/currency';
+import { buildIcs } from '@/calc/pilot/ics';
 import { adelLink } from '@/lib/adel';
 import styles from './account.module.css';
 

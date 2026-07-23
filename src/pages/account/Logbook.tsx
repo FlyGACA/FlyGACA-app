@@ -24,7 +24,7 @@ import {
   aircraftTotals,
   monthTotals,
   type SortDir,
-} from '@/calc/logbook';
+} from '@/calc/pilot/logbook';
 import type { Flight } from '@/lib/services/account';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';

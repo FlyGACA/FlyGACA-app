@@ -5,8 +5,8 @@ import { RichText } from '@/components/chat/RichText';
 import { MessageActions } from '@/components/chat/MessageActions';
 import { SourceList } from '@/components/chat/SourceList';
 import { CrossRefChips } from '@/components/chat/CrossRefChips';
-import { crossRefParts } from '@/calc/chatCrossRefs';
-import type { Rating } from '@/calc/chatFeedback';
+import { crossRefParts } from '@/calc/chat/chatCrossRefs';
+import type { Rating } from '@/calc/chat/chatFeedback';
 import type { Message } from './chatLocal';
 import styles from './Chat.module.css';
 
