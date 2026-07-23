@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '../lib/usePageMeta';
-import { useOnline } from '../lib/pwa';
-import { CaptainAvatar } from '../components/CaptainAvatar';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { useOnline } from '@/lib/pwa';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
 import styles from './Offline.module.css';
 
 // Areas that keep working without a connection: the calculators run fully

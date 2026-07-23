@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { holdTiming, holdingEntry } from '../src/calc/holding';
-import { longitudinalSeparation } from '../src/calc/separation';
+import { holdTiming, holdingEntry } from '@/calc/holding';
+import { longitudinalSeparation } from '@/calc/separation';
 
 describe('holdingEntry (right turns, inbound 270)', () => {
   it('direct when heading matches the inbound course', () => {

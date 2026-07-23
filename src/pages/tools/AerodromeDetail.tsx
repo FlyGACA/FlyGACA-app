@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { airportLd } from '../../lib/jsonld';
-import { regionBadge } from '../../lib/aerodromes';
-import { fetchJson, type Airport, type AirportsIndex } from '../../lib/content';
-import { AirportTypeIcon } from '../../components/aerodrome/AirportTypeIcon';
-import { RunwayDiagram } from '../../components/aerodrome/RunwayDiagram';
-import { PositionMarker } from '../../components/aerodrome/PositionMarker';
+import { CalcShell } from '@/components/CalcShell';
+import { useFetchJson } from '@/lib/useFetchJson';
+import { airportLd } from '@/lib/jsonld';
+import { regionBadge } from '@/lib/aerodromes';
+import { fetchJson, type Airport, type AirportsIndex } from '@/lib/content';
+import { AirportTypeIcon } from '@/components/aerodrome/AirportTypeIcon';
+import { RunwayDiagram } from '@/components/aerodrome/RunwayDiagram';
+import { PositionMarker } from '@/components/aerodrome/PositionMarker';
 import styles from './Aerodromes.module.css';
 
 export function AerodromeDetail() {

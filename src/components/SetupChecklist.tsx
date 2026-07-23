@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CaptainAvatar } from './CaptainAvatar';
 import { ProgressBar } from './ProgressBar';
-import type { Completeness } from '../calc/onboarding';
+import type { Completeness } from '@/calc/onboarding';
 import styles from './SetupChecklist.module.css';
 
 /**

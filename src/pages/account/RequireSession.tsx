@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../../lib/account';
+import { useAccount } from '@/lib/account';
 
 /** Gates the account surfaces: shows a sign-in prompt when there is no session. */
 export function RequireSession({ children }: { children: ReactNode }) {

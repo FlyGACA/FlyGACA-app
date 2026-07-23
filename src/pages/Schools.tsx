@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Disclaimer } from '../components/Disclaimer';
-import { CaptainAvatar } from '../components/CaptainAvatar';
-import { PageHero } from '../components/PageHero';
-import { StatStrip } from '../components/StatStrip';
-import { SectionHeader } from '../components/SectionHeader';
-import { Stepper } from '../components/Stepper';
-import { BentoGrid } from '../components/bento/BentoGrid';
-import { BentoCard, type BentoTone } from '../components/bento/BentoCard';
-import { usePageMeta } from '../lib/usePageMeta';
-import { faqLd, breadcrumbLd } from '../lib/jsonld';
+import { Disclaimer } from '@/components/Disclaimer';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
+import { PageHero } from '@/components/PageHero';
+import { StatStrip } from '@/components/StatStrip';
+import { SectionHeader } from '@/components/SectionHeader';
+import { Stepper } from '@/components/Stepper';
+import { BentoGrid } from '@/components/bento/BentoGrid';
+import { BentoCard, type BentoTone } from '@/components/bento/BentoCard';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { faqLd, breadcrumbLd } from '@/lib/jsonld';
 import styles from './Schools.module.css';
 
 interface Section {

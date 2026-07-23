@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useOnboardingSeen, markOnboardingSeen, openTour } from '../../lib/onboardingPrefs';
+import { useOnboardingSeen, markOnboardingSeen, openTour } from '@/lib/onboardingPrefs';
 import styles from './OnboardingHint.module.css';
 
 /** Client-only flag (false in the prerender snapshot) via the store idiom — so the

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { TextField } from '../../components/calc/TextField';
-import { PHONETIC } from '../../data/phonetic';
+import { CalcShell } from '@/components/CalcShell';
+import { TextField } from '@/components/calc/TextField';
+import { PHONETIC } from '@/data/phonetic';
 import styles from './Phonetic.module.css';
 
 export function Phonetic() {

@@ -64,20 +64,29 @@ describe('corpus data shape', () => {
       paths: Array<{ steps: Array<{ url?: string; kind?: string; route?: string }> }>;
     };
     const steps = paths.paths.flatMap((p) => p.steps);
-    expect(steps.some((s) => 'url' in s), 'paths-index has legacy step.url').toBe(false);
+    expect(
+      steps.some((s) => 'url' in s),
+      'paths-index has legacy step.url',
+    ).toBe(false);
     expect(steps.every((s) => s.kind != null || s.route != null)).toBe(true);
 
     const gs = JSON.parse(read('groundschool.json')) as {
       modules: Array<{ lessons: Array<{ read?: { url?: string } }> }>;
     };
     const reads = gs.modules.flatMap((m) => m.lessons.map((l) => l.read).filter(Boolean));
-    expect(reads.some((r) => r && 'url' in r), 'groundschool has legacy read.url').toBe(false);
+    expect(
+      reads.some((r) => r && 'url' in r),
+      'groundschool has legacy read.url',
+    ).toBe(false);
 
     const quiz = JSON.parse(read('quiz.json')) as {
       banks: Array<{ questions: Array<{ citeUrl?: string; cite?: unknown; citeRef?: unknown }> }>;
     };
     const qs = quiz.banks.flatMap((b) => b.questions);
-    expect(qs.some((q) => 'citeUrl' in q), 'quiz has legacy citeUrl').toBe(false);
+    expect(
+      qs.some((q) => 'citeUrl' in q),
+      'quiz has legacy citeUrl',
+    ).toBe(false);
     // `cite` is the human-readable label; the semantic link lives in `citeRef`.
     // Guards against a migration clobbering the label with a ref object.
     expect(qs.every((q) => q.cite === undefined || typeof q.cite === 'string')).toBe(true);

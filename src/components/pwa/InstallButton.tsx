@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isNative } from '../../lib/native-bridge';
-import { isIosSafari, useInstallPrompt } from '../../lib/pwa';
+import { isNative } from '@/lib/native-bridge';
+import { isIosSafari, useInstallPrompt } from '@/lib/pwa';
 import styles from './InstallButton.module.css';
 
 /**

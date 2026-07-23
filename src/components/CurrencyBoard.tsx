@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { StatusPill, type StatusTone } from './StatusPill';
 import { ProgressBar } from './ProgressBar';
-import type { CurrencyItem, CurrencyStatus } from '../calc/currency';
+import type { CurrencyItem, CurrencyStatus } from '@/calc/currency';
 import styles from './CurrencyBoard.module.css';
 
 const tone: Record<CurrencyStatus, StatusTone> = {

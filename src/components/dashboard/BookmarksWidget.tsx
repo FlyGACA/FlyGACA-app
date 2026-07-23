@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useLibraryPrefs, type LibBookmark, type LibraryKind } from '../../lib/libraryPrefs';
-import { useGuidePrefs } from '../../lib/guidePrefs';
-import { LIVE_GUIDE_SLUGS } from '../../pages/guides/guides';
+import { useLibraryPrefs, type LibBookmark, type LibraryKind } from '@/lib/libraryPrefs';
+import { useGuidePrefs } from '@/lib/guidePrefs';
+import { LIVE_GUIDE_SLUGS } from '@/pages/guides/guides';
 import styles from './dashboard-widgets.module.css';
 
 const MAX_ROWS = 5;

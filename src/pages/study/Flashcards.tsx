@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
-import { useStudyProgress, gradeCard } from '../../lib/studyProgress';
-import { dueKeys, masteredCount } from '../../calc/srs';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { ProgressBar } from '../../components/ProgressBar';
-import { Disclaimer } from '../../components/Disclaimer';
-import { HubBackLink } from '../../components/HubBackLink';
+import { useFetchJson } from '@/lib/useFetchJson';
+import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
+import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
+import { dueKeys, masteredCount } from '@/calc/srs';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { courseLd } from '@/lib/jsonld';
+import { ProgressBar } from '@/components/ProgressBar';
+import { Disclaimer } from '@/components/Disclaimer';
+import { HubBackLink } from '@/components/HubBackLink';
 import styles from './Study.module.css';
 
 function shuffle<T>(arr: T[]): T[] {

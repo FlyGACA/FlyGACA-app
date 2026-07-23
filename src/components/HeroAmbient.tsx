@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { usePrefersReducedMotion } from '../lib/usePrefersReducedMotion';
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
 import styles from './HeroAmbient.module.css';
 
 /**

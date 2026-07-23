@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { usePrefersReducedMotion } from '../lib/usePrefersReducedMotion';
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
 
 interface CountUpProps {
   /** The final value to count to. */

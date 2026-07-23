@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
@@ -5,6 +6,10 @@ import react from '@vitejs/plugin-react';
 // Vitest toolchain.
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    // Mirrors the `@` → src alias from vite.config.ts / tsconfig.app.json.
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   test: {
     // Unit tests live in tests/; the Playwright E2E specs in e2e/ run under a
     // separate runner, so keep Vitest from trying to execute them.

@@ -4,8 +4,8 @@ import {
   conversationParts,
   linkifyCitations,
   type SourcedMessage,
-} from '../src/calc/chatSources';
-import type { Inline } from '../src/calc/markdown';
+} from '@/calc/chatSources';
+import type { Inline } from '@/calc/markdown';
 
 const valid = new Set(['part-61', 'part-91', 'part-121']);
 

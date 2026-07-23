@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import { useUrlState } from '../src/lib/useUrlState';
-import { useNumericInputs } from '../src/lib/useNumericInputs';
+import { useUrlState } from '@/lib/useUrlState';
+import { useNumericInputs } from '@/lib/useNumericInputs';
 
 // useUrlState keeps calculator inputs in the query string so a setup is
 // shareable/bookmarkable — the contract every tool page leans on. We drive the

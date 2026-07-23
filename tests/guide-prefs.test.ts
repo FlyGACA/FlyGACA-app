@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { addId } from '../src/lib/guidePrefs';
-import { toggleId } from '../src/lib/toolPrefs';
+import { addId } from '@/lib/guidePrefs';
+import { toggleId } from '@/lib/toolPrefs';
 
 describe('addId', () => {
   it('appends when absent and is idempotent when present', () => {

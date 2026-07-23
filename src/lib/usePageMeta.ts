@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
-import i18n from '../i18n';
+import i18n from '@/i18n';
 import { canonicalUrl, hreflangAlternates, ogImageFor, ogLocale } from './seo';
 import type { JsonLd } from './jsonld';
 

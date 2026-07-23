@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useFetchJson } from '../src/lib/useFetchJson';
-import { useFetchText } from '../src/lib/useFetchText';
+import { useFetchJson } from '@/lib/useFetchJson';
+import { useFetchText } from '@/lib/useFetchText';
 
 // The runtime content loaders. They share a loading→data / loading→error shape
 // and abort on unmount; we drive them against a stubbed global fetch.
@@ -15,8 +15,7 @@ const okJson = (body: unknown) =>
   ({ ok: true, status: 200, json: () => Promise.resolve(body) }) as unknown as Response;
 const okText = (body: string) =>
   ({ ok: true, status: 200, text: () => Promise.resolve(body) }) as unknown as Response;
-const notFound = () =>
-  ({ ok: false, status: 404, statusText: 'Not Found' }) as unknown as Response;
+const notFound = () => ({ ok: false, status: 404, statusText: 'Not Found' }) as unknown as Response;
 
 describe('useFetchJson', () => {
   it('resolves to data and clears loading', async () => {
@@ -68,9 +67,12 @@ describe('useFetchJson', () => {
       .mockResolvedValueOnce(okJson({ v: 1 }))
       .mockResolvedValueOnce(okJson({ v: 2 }));
     vi.stubGlobal('fetch', fetchMock);
-    const { result, rerender } = renderHook(({ tok }) => useFetchJson<{ v: number }>('/data/x.json', tok), {
-      initialProps: { tok: 0 },
-    });
+    const { result, rerender } = renderHook(
+      ({ tok }) => useFetchJson<{ v: number }>('/data/x.json', tok),
+      {
+        initialProps: { tok: 0 },
+      },
+    );
     await waitFor(() => expect(result.current.data).toEqual({ v: 1 }));
     rerender({ tok: 1 });
     await waitFor(() => expect(result.current.data).toEqual({ v: 2 }));

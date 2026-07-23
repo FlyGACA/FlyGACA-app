@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '../lib/usePageMeta';
-import { CaptainAvatar } from '../components/CaptainAvatar';
-import { openCommandPalette } from '../components/CommandPalette/openCommandPalette';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
+import { openCommandPalette } from '@/components/CommandPalette/openCommandPalette';
 import styles from './NotFound.module.css';
 
 const LINKS = [

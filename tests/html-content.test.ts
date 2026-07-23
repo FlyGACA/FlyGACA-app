@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeHtml, tocFromHtml } from '../src/lib/useFetchText';
+import { sanitizeHtml, tocFromHtml } from '@/lib/useFetchText';
 
 // sanitizeHtml is defense-in-depth over the trusted-but-machine-made GACAR HTML
 // corpus; tocFromHtml drives the reader's in-page navigation. Both are pure.
@@ -16,9 +16,9 @@ describe('sanitizeHtml', () => {
   });
 
   it('removes self-closing/void embed, link and meta tags', () => {
-    expect(sanitizeHtml('<link rel="stylesheet" href="x.css"><meta charset="utf-8"><p>ok</p>')).toBe(
-      '<p>ok</p>',
-    );
+    expect(
+      sanitizeHtml('<link rel="stylesheet" href="x.css"><meta charset="utf-8"><p>ok</p>'),
+    ).toBe('<p>ok</p>');
   });
 
   it('removes inline event-handler attributes (both quote styles)', () => {
@@ -40,8 +40,7 @@ describe('sanitizeHtml', () => {
 
 describe('tocFromHtml', () => {
   it('extracts id/title pairs from h2 and h3 headings', () => {
-    const html =
-      '<h2 id="intro">Introduction</h2><p>x</p><h3 id="scope">Scope &amp; limits</h3>';
+    const html = '<h2 id="intro">Introduction</h2><p>x</p><h3 id="scope">Scope &amp; limits</h3>';
     expect(tocFromHtml(html)).toEqual([
       { id: 'intro', title: 'Introduction' },
       { id: 'scope', title: 'Scope &amp; limits' },

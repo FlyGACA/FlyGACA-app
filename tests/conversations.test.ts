@@ -8,7 +8,7 @@ import {
   filterConversations,
   normalizeConversations,
   type Conversation,
-} from '../src/calc/conversations';
+} from '@/calc/conversations';
 
 const conv = (id: string, updatedAt: number, title = id): Conversation => ({
   id,
@@ -84,8 +84,18 @@ describe('togglePin', () => {
 
 describe('filterConversations', () => {
   const list = [
-    { id: 'a', title: 'Weather minima', messages: [{ role: 'user' as const, text: 'VFR' }], updatedAt: 2 },
-    { id: 'b', title: 'Licensing', messages: [{ role: 'user' as const, text: 'CPL hours' }], updatedAt: 1 },
+    {
+      id: 'a',
+      title: 'Weather minima',
+      messages: [{ role: 'user' as const, text: 'VFR' }],
+      updatedAt: 2,
+    },
+    {
+      id: 'b',
+      title: 'Licensing',
+      messages: [{ role: 'user' as const, text: 'CPL hours' }],
+      updatedAt: 1,
+    },
   ];
 
   it('matches on title, case-insensitively', () => {
@@ -134,7 +144,14 @@ describe('normalizeConversations', () => {
   it('preserves pinned/renamed flags and sorts pinned first', () => {
     const raw = [
       { id: 'a', title: 'A', messages: [{ role: 'user', text: 'hi' }], updatedAt: 100 },
-      { id: 'b', title: 'B', messages: [{ role: 'user', text: 'yo' }], updatedAt: 1, pinned: true, renamed: true },
+      {
+        id: 'b',
+        title: 'B',
+        messages: [{ role: 'user', text: 'yo' }],
+        updatedAt: 1,
+        pinned: true,
+        renamed: true,
+      },
     ];
     const out = normalizeConversations(raw);
     expect(out.map((c) => c.id)).toEqual(['b', 'a']); // pinned floats up despite older

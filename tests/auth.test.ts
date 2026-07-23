@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
-import { isFirebaseConfigured } from '../src/lib/firebase';
+import { isFirebaseConfigured } from '@/lib/firebase';
 import {
   authChannel,
   isAuthAvailable,
   getIdToken,
   onAuthChange,
   signInWithGoogle,
-} from '../src/lib/auth';
+} from '@/lib/auth';
 
 // With no VITE_FIREBASE_* env (the test/CI/preview case), Firebase is off and
 // every accessor degrades gracefully — the app stays local-first.

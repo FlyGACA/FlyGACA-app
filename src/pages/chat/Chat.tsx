@@ -7,15 +7,15 @@ import {
   type ChatSource,
   type ChatTurn,
   type GroundingKind,
-} from '../../lib/api';
-import { getIdToken } from '../../lib/auth';
-import { getAppCheckToken } from '../../lib/firebase';
-import { sessionId } from '../../lib/session';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { useAccount } from '../../lib/account';
-import { hasFeature } from '../../lib/features';
-import type { GacarIndex } from '../../lib/content';
+} from '@/lib/api';
+import { getIdToken } from '@/lib/auth';
+import { getAppCheckToken } from '@/lib/firebase';
+import { sessionId } from '@/lib/session';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { useFetchJson } from '@/lib/useFetchJson';
+import { useAccount } from '@/lib/account';
+import { hasFeature } from '@/lib/features';
+import type { GacarIndex } from '@/lib/content';
 import {
   consume,
   currentUsage,
@@ -23,10 +23,10 @@ import {
   remaining,
   FREE_DAILY_LIMIT,
   type Usage,
-} from '../../calc/chatQuota';
-import { partSlug, conversationParts } from '../../calc/chatSources';
-import { followupSuggestions } from '../../calc/chatFollowups';
-import { crossRefParts } from '../../calc/chatCrossRefs';
+} from '@/calc/chatQuota';
+import { partSlug, conversationParts } from '@/calc/chatSources';
+import { followupSuggestions } from '@/calc/chatFollowups';
+import { crossRefParts } from '@/calc/chatCrossRefs';
 import {
   feedbackKey,
   getFeedback,
@@ -34,8 +34,8 @@ import {
   normalizeFeedback,
   type FeedbackMap,
   type Rating,
-} from '../../calc/chatFeedback';
-import { transcriptToMarkdown } from '../../calc/transcript';
+} from '@/calc/chatFeedback';
+import { transcriptToMarkdown } from '@/calc/transcript';
 import {
   conversationTitle,
   upsertConversation,
@@ -43,25 +43,25 @@ import {
   renameConversation,
   togglePin,
   type Conversation,
-} from '../../calc/conversations';
+} from '@/calc/conversations';
 import {
   loadConversations,
   persistConversations,
   newConversationId as newId,
-} from '../../lib/adelConversations';
-import { Disclaimer } from '../../components/Disclaimer';
-import { CaptainAvatar } from '../../components/CaptainAvatar';
-import { StatusPill } from '../../components/StatusPill';
-import { UpsellCard } from '../../components/UpsellCard';
-import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '../../lib/billing';
-import { GroundingBadge } from '../../components/chat/GroundingBadge';
-import { RichText } from '../../components/chat/RichText';
-import { MessageActions } from '../../components/chat/MessageActions';
-import { ConversationMenu } from '../../components/chat/ConversationMenu';
-import { ExportActions } from '../../components/chat/ExportActions';
-import { SourcesDigest } from '../../components/chat/SourcesDigest';
-import { CrossRefChips } from '../../components/chat/CrossRefChips';
-import { VoiceButton } from '../../components/chat/VoiceButton';
+} from '@/lib/adelConversations';
+import { Disclaimer } from '@/components/Disclaimer';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
+import { StatusPill } from '@/components/StatusPill';
+import { UpsellCard } from '@/components/UpsellCard';
+import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '@/lib/billing';
+import { GroundingBadge } from '@/components/chat/GroundingBadge';
+import { RichText } from '@/components/chat/RichText';
+import { MessageActions } from '@/components/chat/MessageActions';
+import { ConversationMenu } from '@/components/chat/ConversationMenu';
+import { ExportActions } from '@/components/chat/ExportActions';
+import { SourcesDigest } from '@/components/chat/SourcesDigest';
+import { CrossRefChips } from '@/components/chat/CrossRefChips';
+import { VoiceButton } from '@/components/chat/VoiceButton';
 import styles from './Chat.module.css';
 
 interface Message {

@@ -1,16 +1,16 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Disclaimer } from '../components/Disclaimer';
-import { PageHero } from '../components/PageHero';
-import { SectionHeader } from '../components/SectionHeader';
-import { usePageMeta } from '../lib/usePageMeta';
-import { faqLd } from '../lib/jsonld';
-import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from '../lib/billing';
-import { useAccount } from '../lib/account';
-import { effectivePlan } from '../lib/entitlements';
-import { annualSavingsPct, monthlyEquivalent } from '../lib/pricing';
-import { captureRefFromUrl, getStoredRef } from '../lib/referral';
+import { Disclaimer } from '@/components/Disclaimer';
+import { PageHero } from '@/components/PageHero';
+import { SectionHeader } from '@/components/SectionHeader';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { faqLd } from '@/lib/jsonld';
+import { canCheckout, startBillingPortal, startProCheckout, type ProPlan } from '@/lib/billing';
+import { useAccount } from '@/lib/account';
+import { effectivePlan } from '@/lib/entitlements';
+import { annualSavingsPct, monthlyEquivalent } from '@/lib/pricing';
+import { captureRefFromUrl, getStoredRef } from '@/lib/referral';
 import styles from './Pricing.module.css';
 
 /**

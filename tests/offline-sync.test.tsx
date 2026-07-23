@@ -16,21 +16,21 @@ const h = vi.hoisted(() => ({
   saveDocs: vi.fn((_: unknown) => Promise.resolve()),
 }));
 
-vi.mock('../src/lib/pwa', () => ({ useOnline: () => h.online }));
-vi.mock('../src/lib/libraryPrefs', () => ({ useLibraryPrefs: () => ({ bookmarks: h.bookmarks }) }));
-vi.mock('../src/lib/offlineCache', () => ({
+vi.mock('@/lib/pwa', () => ({ useOnline: () => h.online }));
+vi.mock('@/lib/libraryPrefs', () => ({ useLibraryPrefs: () => ({ bookmarks: h.bookmarks }) }));
+vi.mock('@/lib/offlineCache', () => ({
   offlineSupported: () => h.supported,
   loadSaved: () => h.saved,
   saveDocs: h.saveDocs,
 }));
-vi.mock('../src/lib/content', () => ({
+vi.mock('@/lib/content', () => ({
   CORPUS: {
     regulations: { dir: '/data/parts', index: '/data/gacar-index.json' },
     reference: { dir: '/data/library', index: '/data/reference-index.json' },
   },
 }));
 
-import { useOfflineBookmarkSync } from '../src/lib/useOfflineSync';
+import { useOfflineBookmarkSync } from '@/lib/useOfflineSync';
 
 beforeEach(() => {
   vi.useFakeTimers();

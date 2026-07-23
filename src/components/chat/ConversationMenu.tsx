@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { filterConversations, type Conversation } from '../../calc/conversations';
+import { filterConversations, type Conversation } from '@/calc/conversations';
 import styles from './ConversationMenu.module.css';
 
 /**

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { ksaToUtc, utcToKsa } from '../src/calc/zulu';
-import { airacCycle } from '../src/calc/airac';
-import { sunTimes } from '../src/calc/sun';
+import { ksaToUtc, utcToKsa } from '@/calc/zulu';
+import { airacCycle } from '@/calc/airac';
+import { sunTimes } from '@/calc/sun';
 
 describe('zulu clock', () => {
   it('UTC → KSA adds 3 hours', () => {

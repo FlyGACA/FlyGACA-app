@@ -8,7 +8,7 @@ import {
   type LibBookmark,
   type LibDoc,
   type SavedSearch,
-} from '../src/lib/libraryPrefs';
+} from '@/lib/libraryPrefs';
 
 const doc = (slug: string): LibDoc => ({ kind: 'regulations', slug, title: slug });
 

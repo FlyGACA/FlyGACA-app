@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { StatusPill, type StatusTone } from '../../components/StatusPill';
-import { RecordForm, type RecordDraft } from '../../components/account/RecordForm';
+import { StatusPill, type StatusTone } from '@/components/StatusPill';
+import { RecordForm, type RecordDraft } from '@/components/account/RecordForm';
 import {
   addRecord,
   updateRecord,
   deleteRecord,
   useAccount,
   type RecordCategory,
-} from '../../lib/account';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { parseISO } from '../../calc/recency';
+} from '@/lib/account';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { parseISO } from '@/calc/recency';
 import account from './account.module.css';
 import styles from './records.module.css';
-import { Tab, Tabs } from '../../components/ui/Tabs';
+import { Tab, Tabs } from '@/components/ui/Tabs';
 
 const CATS: RecordCategory[] = ['rating', 'aircraft', 'document', 'endorsement'];
 const DAY = 86400000;

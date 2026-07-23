@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { useDebouncedValue } from '../../lib/useDebouncedValue';
-import { sanitizeHtml, tocFromHtml, useFetchText } from '../../lib/useFetchText';
-import { CORPUS } from '../../lib/content';
-import type { CorpusIndex, LibraryKind } from '../../lib/content';
-import { docNeighbors, relatedDocs } from '../../calc/corpusNav';
-import { adelLink } from '../../lib/adel';
-import { loadSaved, offlineSupported, removeDoc, saveDoc } from '../../lib/offlineCache';
-import { shareCurrent } from '../../lib/share';
-import { useOnline } from '../../lib/pwa';
-import { usePageMeta } from '../../lib/usePageMeta';
+import { useFetchJson } from '@/lib/useFetchJson';
+import { useDebouncedValue } from '@/lib/useDebouncedValue';
+import { sanitizeHtml, tocFromHtml, useFetchText } from '@/lib/useFetchText';
+import { CORPUS } from '@/lib/content';
+import type { CorpusIndex, LibraryKind } from '@/lib/content';
+import { docNeighbors, relatedDocs } from '@/calc/corpusNav';
+import { adelLink } from '@/lib/adel';
+import { loadSaved, offlineSupported, removeDoc, saveDoc } from '@/lib/offlineCache';
+import { shareCurrent } from '@/lib/share';
+import { useOnline } from '@/lib/pwa';
+import { usePageMeta } from '@/lib/usePageMeta';
 import {
   useLibraryPrefs,
   recordView,
@@ -20,13 +20,13 @@ import {
   isBookmarked,
   docKey,
   type LibNote,
-} from '../../lib/libraryPrefs';
-import { useBookmarkGate } from '../../lib/useBookmarkGate';
-import { useFeature } from '../../lib/features';
-import { SelectionPopover, type SelectionRect } from '../../components/library/SelectionPopover';
-import { breadcrumbLd, techArticleLd, type Crumb } from '../../lib/jsonld';
-import { Disclaimer } from '../../components/Disclaimer';
-import { Breadcrumbs } from '../../components/Breadcrumbs';
+} from '@/lib/libraryPrefs';
+import { useBookmarkGate } from '@/lib/useBookmarkGate';
+import { useFeature } from '@/lib/features';
+import { SelectionPopover, type SelectionRect } from '@/components/library/SelectionPopover';
+import { breadcrumbLd, techArticleLd, type Crumb } from '@/lib/jsonld';
+import { Disclaimer } from '@/components/Disclaimer';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import styles from './Document.module.css';
 
 interface DocumentProps {

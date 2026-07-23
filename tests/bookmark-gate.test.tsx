@@ -6,7 +6,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import type { LibBookmark } from '../src/lib/libraryPrefs';
+import type { LibBookmark } from '@/lib/libraryPrefs';
 
 const h = vi.hoisted(() => ({
   canBookmark: false,
@@ -15,10 +15,10 @@ const h = vi.hoisted(() => ({
 }));
 
 vi.mock('react-router', () => ({ useNavigate: () => h.navigate }));
-vi.mock('../src/lib/features', () => ({ useFeature: () => h.canBookmark }));
-vi.mock('../src/lib/libraryPrefs', () => ({ toggleBookmark: h.toggleBookmark }));
+vi.mock('@/lib/features', () => ({ useFeature: () => h.canBookmark }));
+vi.mock('@/lib/libraryPrefs', () => ({ toggleBookmark: h.toggleBookmark }));
 
-import { useBookmarkGate } from '../src/lib/useBookmarkGate';
+import { useBookmarkGate } from '@/lib/useBookmarkGate';
 
 const bookmark = {
   kind: 'regulations',

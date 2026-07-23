@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { QuizBank, QuizData, QuizQuestion } from '../../lib/content';
-import { useStudyProgress, setQuizBest, setLastBank, toggleFlag } from '../../lib/studyProgress';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { ProgressBar } from '../../components/ProgressBar';
-import { Disclaimer } from '../../components/Disclaimer';
-import { HubBackLink } from '../../components/HubBackLink';
+import { useFetchJson } from '@/lib/useFetchJson';
+import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
+import { useStudyProgress, setQuizBest, setLastBank, toggleFlag } from '@/lib/studyProgress';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { courseLd } from '@/lib/jsonld';
+import { ProgressBar } from '@/components/ProgressBar';
+import { Disclaimer } from '@/components/Disclaimer';
+import { HubBackLink } from '@/components/HubBackLink';
 import { buildSession, isSynthetic } from './session';
-import { findPack } from '../../lib/prepCatalog';
-import { hasPackAccess } from '../../lib/packEntitlements';
-import { useAccount } from '../../lib/account';
+import { findPack } from '@/lib/prepCatalog';
+import { hasPackAccess } from '@/lib/packEntitlements';
+import { useAccount } from '@/lib/account';
 import styles from './Study.module.css';
 
 /** Fisher–Yates shuffle (returns a new array). */

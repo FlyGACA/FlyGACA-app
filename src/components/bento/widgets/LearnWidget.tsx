@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { BentoCard } from '../BentoCard';
-import { useFetchJson } from '../../../lib/useFetchJson';
-import { type QuizData } from '../../../lib/content';
-import { GUIDE_SLUGS } from '../../../pages/guides/guides';
+import { BentoCard } from '@/components/bento/BentoCard';
+import { useFetchJson } from '@/lib/useFetchJson';
+import { type QuizData } from '@/lib/content';
+import { GUIDE_SLUGS } from '@/pages/guides/guides';
 import shared from './widgets.module.css';
 
 const FEATURED = ['saudi-ppl-requirements', 'airspace-explained', 'reading-metar-taf'];

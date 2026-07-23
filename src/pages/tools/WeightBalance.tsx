@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { percentMac, weightBalance } from '../../calc/weightBalance';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/lib/useNumericInputs';
+import { percentMac, weightBalance } from '@/calc/weightBalance';
 import styles from './WeightBalance.module.css';
 
 const STATIONS = ['empty', 'front', 'rear', 'baggage', 'fuelStation'] as const;

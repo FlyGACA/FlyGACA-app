@@ -1,9 +1,9 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import i18n from '../src/i18n';
-import { MessageActions } from '../src/components/chat/MessageActions';
-import * as nativeBridge from '../src/lib/native-bridge';
+import i18n from '@/i18n';
+import { MessageActions } from '@/components/chat/MessageActions';
+import * as nativeBridge from '@/lib/native-bridge';
 
 afterEach(() => {
   cleanup();
@@ -54,9 +54,7 @@ describe('<MessageActions />', () => {
   });
 
   it('lights the chosen thumb via aria-pressed', () => {
-    render(
-      <MessageActions text="x" rating="down" onRegenerate={() => {}} onFeedback={() => {}} />,
-    );
+    render(<MessageActions text="x" rating="down" onRegenerate={() => {}} onFeedback={() => {}} />);
     expect(screen.getByRole('button', { name: 'Not helpful' })).toHaveAttribute(
       'aria-pressed',
       'true',

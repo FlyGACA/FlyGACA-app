@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { trueAirspeed } from '../../calc/tas';
-import { windTriangle } from '../../calc/navigation';
-import { solveTsd } from '../../calc/tsd';
-import seg from '../../components/calc/calc.module.css';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { trueAirspeed } from '@/calc/tas';
+import { windTriangle } from '@/calc/navigation';
+import { solveTsd } from '@/calc/tsd';
+import seg from '@/components/calc/calc.module.css';
 
 type Tab = 'tas' | 'wind' | 'tsd';
 

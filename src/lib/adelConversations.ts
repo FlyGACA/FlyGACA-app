@@ -9,7 +9,7 @@ import {
   normalizeConversations,
   type ArchivedMessage,
   type Conversation,
-} from '../calc/conversations';
+} from '@/calc/conversations';
 
 const TRANSCRIPT_KEY = 'flygaca:adel-transcript';
 export const CONV_KEY = 'flygaca:adel-conversations';

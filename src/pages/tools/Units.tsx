@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { convertAll, UNIT_TABLES, type UnitCategory } from '../../calc/units';
-import seg from '../../components/calc/calc.module.css';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/lib/useNumericInputs';
+import { convertAll, UNIT_TABLES, type UnitCategory } from '@/calc/units';
+import seg from '@/components/calc/calc.module.css';
 
 const CATEGORIES = Object.keys(UNIT_TABLES) as UnitCategory[];
 

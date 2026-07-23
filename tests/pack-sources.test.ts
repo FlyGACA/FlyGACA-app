@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { PACKS, type Pack } from '../src/lib/prepCatalog';
+import { PACKS, type Pack } from '@/lib/prepCatalog';
 
 /**
  * Source-provenance guard for the exam-prep product line (the ASA-Prepware-style
@@ -71,14 +71,17 @@ describe('pack source provenance (GACA / SANS / Fly GACA only)', () => {
       for (const m of pack.moduleIds ?? []) if (!moduleIds.has(m)) missing.push(`module:${m}`);
       for (const p of pack.pathIds ?? []) if (!pathIds.has(p)) missing.push(`path:${p}`);
       for (const s of pack.sheetSlugs ?? []) if (!sheetSlugs.has(s)) missing.push(`sheet:${s}`);
-      expect(missing, `pack '${pack.id}' references missing material: ${missing.join(', ')}`).toEqual(
-        [],
-      );
+      expect(
+        missing,
+        `pack '${pack.id}' references missing material: ${missing.join(', ')}`,
+      ).toEqual([]);
     },
   );
 
   it('every LIVE certificate/subject pack has at least one question bank', () => {
-    const empty = PACKS.filter((p) => p.status === 'live' && p.bankIds.length === 0).map((p) => p.id);
+    const empty = PACKS.filter((p) => p.status === 'live' && p.bankIds.length === 0).map(
+      (p) => p.id,
+    );
     expect(empty, `live packs with no banks: ${empty.join(', ')}`).toEqual([]);
   });
 });

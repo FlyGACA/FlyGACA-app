@@ -1,6 +1,6 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useOnline, useInstallPrompt } from '../src/lib/pwa';
+import { useOnline, useInstallPrompt } from '@/lib/pwa';
 
 afterEach(() => {
   vi.restoreAllMocks();

@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalcShell } from '../../components/CalcShell';
-import { NumberField } from '../../components/calc/NumberField';
-import { TextField } from '../../components/calc/TextField';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../../components/calc/Grids';
-import { useNumericInputs } from '../../lib/useNumericInputs';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { AirportsIndex } from '../../lib/content';
-import { greatCircle } from '../../calc/navigation';
-import { formatHours } from '../../calc/fuel';
+import { CalcShell } from '@/components/CalcShell';
+import { NumberField } from '@/components/calc/NumberField';
+import { TextField } from '@/components/calc/TextField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/lib/useNumericInputs';
+import { useFetchJson } from '@/lib/useFetchJson';
+import type { AirportsIndex } from '@/lib/content';
+import { greatCircle } from '@/calc/navigation';
+import { formatHours } from '@/calc/fuel';
 import table from './WindTable.module.css';
 
 export function RoutePlanner() {

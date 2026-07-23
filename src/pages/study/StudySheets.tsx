@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { useUrlState } from '../../lib/useUrlState';
-import { usePageMeta } from '../../lib/usePageMeta';
-import type { PdfsIndex, PdfDoc } from '../../lib/content';
-import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
-import { Disclaimer } from '../../components/Disclaimer';
-import { ExternalLink } from '../../components/ExternalLink';
-import { EmptyState } from '../../components/EmptyState';
-import { Alert } from '../../components/Alert';
+import { useFetchJson } from '@/lib/useFetchJson';
+import { useUrlState } from '@/lib/useUrlState';
+import { usePageMeta } from '@/lib/usePageMeta';
+import type { PdfsIndex, PdfDoc } from '@/lib/content';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
+import { Disclaimer } from '@/components/Disclaimer';
+import { ExternalLink } from '@/components/ExternalLink';
+import { EmptyState } from '@/components/EmptyState';
+import { Alert } from '@/components/Alert';
 import styles from './StudySheets.module.css';
 
 /** Deployed PDF path (the index stores the legacy `assets/…` path). */

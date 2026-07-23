@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { THEMES, useTheme, type Theme } from '../lib/theme';
+import { THEMES, useTheme, type Theme } from '@/lib/theme';
 
 /** Cycles the three themes: Falcon (default dark) → Cockpit / Night-Ops (amber
  *  dark) → Day (ivory reading) → back. A single button that shows the current

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { TextField } from '../../components/calc/TextField';
-import { PasswordField } from '../../components/calc/PasswordField';
-import { Alert } from '../../components/Alert';
-import { Disclaimer } from '../../components/Disclaimer';
-import { BrandMark } from '../../components/BrandMark';
-import { CaptainAvatar } from '../../components/CaptainAvatar';
-import { StatusPill } from '../../components/StatusPill';
-import { SubscriptionPanel } from '../../components/account/SubscriptionPanel';
-import { refreshAccount, signIn, signOut, useAccount } from '../../lib/account';
-import { uiPlan } from '../../lib/entitlements';
+import { TextField } from '@/components/calc/TextField';
+import { PasswordField } from '@/components/calc/PasswordField';
+import { Alert } from '@/components/Alert';
+import { Disclaimer } from '@/components/Disclaimer';
+import { BrandMark } from '@/components/BrandMark';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
+import { StatusPill } from '@/components/StatusPill';
+import { SubscriptionPanel } from '@/components/account/SubscriptionPanel';
+import { refreshAccount, signIn, signOut, useAccount } from '@/lib/account';
+import { uiPlan } from '@/lib/entitlements';
 import {
   isAuthAvailable,
   registerWithEmail,
@@ -18,11 +18,11 @@ import {
   sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
-} from '../../lib/auth';
-import { authErrorInfo } from '../../calc/authError';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { useForm } from '../../hooks/useForm';
-import { PasswordStrength } from '../../components/account/PasswordStrength';
+} from '@/lib/auth';
+import { authErrorInfo } from '@/calc/authError';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { useForm } from '@/hooks/useForm';
+import { PasswordStrength } from '@/components/account/PasswordStrength';
 import styles from './account.module.css';
 
 interface FieldErrors {

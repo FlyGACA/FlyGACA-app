@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { authErrorInfo } from '../src/calc/authError';
+import { authErrorInfo } from '@/calc/authError';
 
 describe('authErrorInfo', () => {
   it('routes credential errors to the password field', () => {

@@ -4,7 +4,7 @@
  * served from cache when the network is gone. The pure list/format helpers live
  * in src/calc/offlineManifest.ts; this module owns the DOM/Cache + persistence.
  */
-import { addSaved, listSaved, removeSaved } from '../calc/offlineManifest';
+import { addSaved, listSaved, removeSaved } from '@/calc/offlineManifest';
 import { dataUrl } from './content';
 
 /** Must match the workbox runtimeCaching cacheName in vite.config.ts. */

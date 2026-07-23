@@ -5,11 +5,11 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 
-type Mod = typeof import('../src/lib/toolPrefs');
+type Mod = typeof import('@/lib/toolPrefs');
 
 async function fresh(): Promise<Mod> {
   vi.resetModules();
-  return import('../src/lib/toolPrefs');
+  return import('@/lib/toolPrefs');
 }
 
 beforeEach(() => localStorage.clear());

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { canCheckout, startProCheckout } from '../src/lib/billing';
-import { FUNCTIONS_REGION } from '../src/lib/firebase';
+import { canCheckout, startProCheckout } from '@/lib/billing';
+import { FUNCTIONS_REGION } from '@/lib/firebase';
 
 // The billing callables (createCheckoutSession / createBillingPortalSession)
 // deploy to me-central1 (functions/src/region.ts is the source of truth). The

@@ -4,7 +4,7 @@
  * percentage so a new pilot is guided to the data the currency board needs
  * (medical, last flight review, home base, a first logged flight).
  */
-import type { Flight, Profile } from '../lib/account';
+import type { Flight, Profile } from '@/lib/account';
 
 export type SetupStepId = 'medical' | 'review' | 'homeBase' | 'firstFlight';
 

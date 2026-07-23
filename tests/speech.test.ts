@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickSpeechLang } from '../src/calc/speech';
+import { pickSpeechLang } from '@/calc/speech';
 
 describe('pickSpeechLang', () => {
   it('maps Arabic to ar-SA', () => {

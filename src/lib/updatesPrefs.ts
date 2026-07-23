@@ -6,7 +6,7 @@
  * Mirrors src/lib/libraryPrefs.ts.
  */
 import { useSyncExternalStore } from 'react';
-import type { SeenMap } from '../calc/changeTracking';
+import type { SeenMap } from '@/calc/changeTracking';
 
 const SEEN_KEY = 'flygaca:updates-seen';
 const WATCH_KEY = 'flygaca:updates-watch';

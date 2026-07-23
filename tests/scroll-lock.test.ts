@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { lockBodyScroll, unlockBodyScroll } from '../src/lib/scroll-lock';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scroll-lock';
 
 // The counter lives at module scope, so every spec must release what it locks.
 afterEach(() => {

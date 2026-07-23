@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { isNative, openExternal } from '../lib/native-bridge';
+import { isNative, openExternal } from '@/lib/native-bridge';
 
 /**
  * An external link that opens in the native in-app browser inside the Capacitor

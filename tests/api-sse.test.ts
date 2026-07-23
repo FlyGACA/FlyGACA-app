@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { drainSse, type StreamEvent } from '../src/lib/api';
+import { drainSse, type StreamEvent } from '@/lib/api';
 
 describe('drainSse — SSE line protocol', () => {
   it('parses complete data: frames and reports no leftover', () => {
@@ -32,8 +32,7 @@ describe('drainSse — SSE line protocol', () => {
   });
 
   it('ignores keep-alive comments, blank lines, and malformed frames', () => {
-    const buf =
-      ': ping\n' + '\n' + 'data: not-json\n' + 'data: {"type":"reset"}\n';
+    const buf = ': ping\n' + '\n' + 'data: not-json\n' + 'data: {"type":"reset"}\n';
     const { events } = drainSse(buf);
     expect(events).toEqual([{ type: 'reset' }]);
   });

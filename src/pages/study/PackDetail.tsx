@@ -1,26 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type {
-  CorpusIndex,
-  GroundSchoolData,
-  PathsIndex,
-  PdfsIndex,
-  QuizData,
-} from '../../lib/content';
-import { useStudyProgress } from '../../lib/studyProgress';
-import { useAccount, refreshAccount } from '../../lib/account';
-import { hasPackAccess, ownsPack } from '../../lib/packEntitlements';
-import { canCheckout, startPackCheckout } from '../../lib/billing';
-import { captureRefFromUrl, getStoredRef } from '../../lib/referral';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { adelLink } from '../../lib/adel';
-import { Disclaimer } from '../../components/Disclaimer';
-import { ProgressBar } from '../../components/ProgressBar';
-import { findPack, packItemCount, PREP_PACK_PRICE } from '../../lib/prepCatalog';
-import { NotFound } from '../NotFound';
+import { useFetchJson } from '@/lib/useFetchJson';
+import type { CorpusIndex, GroundSchoolData, PathsIndex, PdfsIndex, QuizData } from '@/lib/content';
+import { useStudyProgress } from '@/lib/studyProgress';
+import { useAccount, refreshAccount } from '@/lib/account';
+import { hasPackAccess, ownsPack } from '@/lib/packEntitlements';
+import { canCheckout, startPackCheckout } from '@/lib/billing';
+import { captureRefFromUrl, getStoredRef } from '@/lib/referral';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { courseLd } from '@/lib/jsonld';
+import { adelLink } from '@/lib/adel';
+import { Disclaimer } from '@/components/Disclaimer';
+import { ProgressBar } from '@/components/ProgressBar';
+import { findPack, packItemCount, PREP_PACK_PRICE } from '@/lib/prepCatalog';
+import { NotFound } from '@/pages/NotFound';
 import styles from './Study.module.css';
 
 export function PackDetail() {

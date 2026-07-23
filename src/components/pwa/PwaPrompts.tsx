@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { isNative } from '../../lib/native-bridge';
-import { useOnline } from '../../lib/pwa';
+import { isNative } from '@/lib/native-bridge';
+import { useOnline } from '@/lib/pwa';
 import styles from './PwaPrompts.module.css';
 
 /**

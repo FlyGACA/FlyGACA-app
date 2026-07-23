@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Disclaimer } from '../../components/Disclaimer';
-import { Breadcrumbs } from '../../components/Breadcrumbs';
-import { adelLink } from '../../lib/adel';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { articleLd, breadcrumbLd, type Crumb } from '../../lib/jsonld';
-import { readingMinutes } from '../../lib/readingTime';
-import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '../../lib/guidePrefs';
-import { useScrollToHash } from '../../lib/useScrollToHash';
+import { Disclaimer } from '@/components/Disclaimer';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { adelLink } from '@/lib/adel';
+import { usePageMeta } from '@/lib/usePageMeta';
+import { articleLd, breadcrumbLd, type Crumb } from '@/lib/jsonld';
+import { readingMinutes } from '@/lib/readingTime';
+import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '@/lib/guidePrefs';
+import { useScrollToHash } from '@/lib/useScrollToHash';
 import {
   GUIDE_SLUGS,
   GUIDE_TOOLS,
@@ -21,8 +21,8 @@ import {
   sectionId,
   type GuideSlug,
 } from './guides';
-import { NotFound } from '../NotFound';
-import prose from '../legal/Prose.module.css';
+import { NotFound } from '@/pages/NotFound';
+import prose from '@/pages/legal/Prose.module.css';
 import styles from './Guides.module.css';
 
 interface Section {

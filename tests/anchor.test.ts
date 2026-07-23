@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sectionId } from '../src/calc/anchor';
+import { sectionId } from '@/calc/anchor';
 
 describe('sectionId', () => {
   it('slugs the heading and prefixes the index', () => {

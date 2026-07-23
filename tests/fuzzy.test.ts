@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fuzzyScore, rankItems, scoreItem } from '../src/calc/fuzzy';
+import { fuzzyScore, rankItems, scoreItem } from '@/calc/fuzzy';
 
 describe('fuzzyScore', () => {
   it('returns 0 for an empty query', () => {
