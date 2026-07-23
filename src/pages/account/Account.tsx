@@ -19,7 +19,8 @@ import {
   signInWithEmail,
   signInWithGoogle,
 } from '@/lib/services/auth';
-import { authErrorInfo } from '@/calc/authError';
+import { authErrorInfo, isDomainAuthError } from '@/calc/authError';
+import { SITE_ORIGIN, isMirrorHost } from '@/lib/seo/seo';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useForm } from '@/hooks/useForm';
 import { PasswordStrength } from '@/components/account/PasswordStrength';
@@ -44,6 +45,10 @@ function FirebaseSignIn() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  // Set when a sign-in fails because *this* host isn't an authorized Firebase
+  // origin (a preview/mirror deploy). The remedy is to sign in on the canonical
+  // site, so we surface a real click-through link on the error alert.
+  const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
   const toggleMode = () => {
     setAnimating(true);
@@ -66,6 +71,7 @@ function FirebaseSignIn() {
     setBusy(true);
     setErrors({});
     setNotice('');
+    setMainSiteHref(null);
     try {
       await fn();
     } catch (e) {
@@ -81,6 +87,17 @@ function FirebaseSignIn() {
       // "still broken but which error?" guessing loop.
       if (field === 'general' && code) {
         errorMessage = `${errorMessage} ${t('account.errors.technicalDetail', { code })}`;
+      }
+
+      // A domain-authorization failure on a preview/mirror host is a dead end here
+      // ("use the main site" with nowhere to go). Turn it into a click-through to
+      // the same page on the canonical origin, which *is* an authorized domain.
+      if (
+        isDomainAuthError(code) &&
+        typeof window !== 'undefined' &&
+        isMirrorHost(window.location.hostname)
+      ) {
+        setMainSiteHref(`${SITE_ORIGIN}${window.location.pathname}`);
       }
 
       if (setFormErrors && (field === 'email' || field === 'password')) {
@@ -167,6 +184,23 @@ function FirebaseSignIn() {
 
   const containerClass = `${styles.fadeTransition} ${animating ? styles.animating : ''}`;
 
+  // The general-error band, shared by the sign-in and sign-up forms. On a
+  // domain-authorization failure it also carries the click-through to the
+  // authorized main site.
+  const errorAlert = errors.general ? (
+    <Alert tone="error" role="alert" icon="⚠">
+      {errors.general}
+      {mainSiteHref && (
+        <>
+          {' '}
+          <a className={styles.alertLink} href={mainSiteHref}>
+            {t('account.errors.useMainSite')}
+          </a>
+        </>
+      )}
+    </Alert>
+  ) : null;
+
   return (
     <>
       <button
@@ -200,11 +234,7 @@ function FirebaseSignIn() {
               autoComplete="current-password"
               error={loginForm.touched.password ? loginForm.errors.password : undefined}
             />
-            {errors.general && (
-              <Alert tone="error" role="alert" icon="⚠">
-                {errors.general}
-              </Alert>
-            )}
+            {errorAlert}
             {notice && (
               <Alert tone="success" role="status" icon="✓">
                 {notice}
@@ -257,11 +287,7 @@ function FirebaseSignIn() {
                 signupForm.touched.confirmPassword ? signupForm.errors.confirmPassword : undefined
               }
             />
-            {errors.general && (
-              <Alert tone="error" role="alert" icon="⚠">
-                {errors.general}
-              </Alert>
-            )}
+            {errorAlert}
             {notice && (
               <Alert tone="success" role="status" icon="✓">
                 {notice}

@@ -150,6 +150,15 @@
   opacity: 0.5;
   cursor: default;
 }
+.alertLink {
+  color: var(--link);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.alertLink:hover {
+  color: var(--brand-hover);
+}
 .signInLinks {
   display: flex;
   flex-wrap: wrap;
