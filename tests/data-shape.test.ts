@@ -24,7 +24,9 @@ const DATA_DIR = join(process.cwd(), 'public/data');
 const read = (name: string) => readFileSync(join(DATA_DIR, name), 'utf8');
 const jsonFiles = readdirSync(DATA_DIR).filter((f) => f.endsWith('.json'));
 
-describe('corpus data shape', () => {
+// These checks synchronously scan the full corpus (~130 MB of JSON), which can
+// exceed the default 5 s per-test timeout under parallel-worker I/O contention.
+describe('corpus data shape', { timeout: 30_000 }, () => {
   it('has JSON data files to check', () => {
     expect(jsonFiles.length).toBeGreaterThan(0);
   });
