@@ -8,7 +8,7 @@ import { CORPUS } from '@/lib/content';
 import type { CorpusIndex, LibraryKind } from '@/lib/content';
 import { docNeighbors, relatedDocs } from '@/calc/corpusNav';
 import { adelLink } from '@/lib/adel';
-import { loadSaved, offlineSupported, removeDoc, saveDoc } from '@/lib/native/offlineCache';
+import { loadSaved, removeDoc, saveDoc } from '@/lib/native/offlineCache';
 import { shareCurrent } from '@/lib/share';
 import { useOnline } from '@/lib/native/pwa';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -32,6 +32,9 @@ import { useBookmarkGate } from '@/hooks/useBookmarkGate';
 import { useFeature } from '@/lib/services/features';
 import { SelectionPopover, type SelectionRect } from '@/components/library/SelectionPopover';
 import { breadcrumbLd, techArticleLd, type Crumb } from '@/lib/seo/jsonld';
+import { ReaderToolbar } from './ReaderToolbar';
+import { ReaderToc } from './ReaderToc';
+import { ReaderNotes } from './ReaderNotes';
 import { Disclaimer } from '@/components/Disclaimer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import styles from './Document.module.css';
@@ -378,111 +381,27 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             <p className={styles.verify}>{t('document.verifyLine')}</p>
           </header>
 
-          {/* Reader toolbar: find-in-page · font size · ask Adel */}
-          <div className={styles.toolbar}>
-            <div className={styles.find} role="search">
-              <input
-                className={styles.findInput}
-                type="search"
-                value={find}
-                onChange={(e) => setFind(e.target.value)}
-                placeholder={t('document.findPlaceholder')}
-                aria-label={t('document.findPlaceholder')}
-              />
-              {find.trim() && (
-                <>
-                  <span className={styles.findCount} aria-live="polite">
-                    {matchCount
-                      ? t('document.findCount', { n: activeMatch + 1, total: matchCount })
-                      : '0'}
-                  </span>
-                  <button
-                    type="button"
-                    className={styles.iconBtn}
-                    onClick={() => cycle(-1)}
-                    disabled={matchCount === 0}
-                    aria-label={t('document.findPrev')}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.iconBtn}
-                    onClick={() => cycle(1)}
-                    disabled={matchCount === 0}
-                    aria-label={t('document.findNext')}
-                  >
-                    ↓
-                  </button>
-                </>
-              )}
-            </div>
-
-            <div className={styles.toolGroup}>
-              <div className={styles.fontControls} role="group" aria-label={t('document.fontSize')}>
-                <button
-                  type="button"
-                  className={styles.iconBtn}
-                  onClick={() => step(-SCALE_STEP)}
-                  disabled={scale <= SCALE_MIN}
-                  aria-label={t('document.fontSmaller')}
-                >
-                  A−
-                </button>
-                <button
-                  type="button"
-                  className={styles.iconBtn}
-                  onClick={() => step(SCALE_STEP)}
-                  disabled={scale >= SCALE_MAX}
-                  aria-label={t('document.fontLarger')}
-                >
-                  A+
-                </button>
-              </div>
-              {doc && (
-                <button
-                  type="button"
-                  className={`${styles.toolPill} ${docBookmarked ? styles.toolPillOn : ''}`}
-                  aria-pressed={docBookmarked}
-                  title={
-                    !docBookmarked && !bookmark.canBookmark
-                      ? t('library.bookmarkProLock')
-                      : undefined
-                  }
-                  onClick={() =>
-                    bookmark.toggle({ kind, slug: slug as string, title: doc.title }, docBookmarked)
-                  }
-                >
-                  {docBookmarked ? `★ ${t('library.bookmarked')}` : `☆ ${t('library.bookmark')}`}
-                  {!docBookmarked && !bookmark.canBookmark && (
-                    <span className={styles.proTag}>{t('upsell.proOnly')}</span>
-                  )}
-                </button>
-              )}
-              {offlineSupported() && (
-                <button
-                  type="button"
-                  className={`${styles.toolPill} ${saved ? styles.toolPillOn : ''}`}
-                  aria-pressed={saved}
-                  title={!saved && !canOffline ? t('offline.proLock') : undefined}
-                  onClick={() => void toggleSave()}
-                >
-                  {saved ? `✓ ${t('offline.saved')}` : `⬇ ${t('offline.save')}`}
-                  {!saved && !canOffline && (
-                    <span className={styles.proTag}>{t('upsell.proOnly')}</span>
-                  )}
-                </button>
-              )}
-              <button type="button" className={styles.toolPill} onClick={shareDoc}>
-                ↗ {t('common.share')}
-              </button>
-              {adel && (
-                <Link to={adel} className={styles.askAdel}>
-                  {t('document.askAdel')}
-                </Link>
-              )}
-            </div>
-          </div>
+          <ReaderToolbar
+            find={find}
+            onFindChange={setFind}
+            matchCount={matchCount}
+            activeMatch={activeMatch}
+            onCycle={cycle}
+            onSmaller={() => step(-SCALE_STEP)}
+            onLarger={() => step(SCALE_STEP)}
+            canSmaller={scale > SCALE_MIN}
+            canLarger={scale < SCALE_MAX}
+            docTitle={doc?.title}
+            kind={kind}
+            slug={slug}
+            docBookmarked={docBookmarked}
+            bookmark={bookmark}
+            saved={saved}
+            canOffline={canOffline}
+            onToggleSave={() => void toggleSave()}
+            onShare={shareDoc}
+            adel={adel}
+          />
 
           <button
             type="button"
@@ -494,74 +413,21 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
           </button>
 
           <div className={styles.layout}>
-            <nav
-              className={`${styles.toc} ${tocOpen ? styles.tocOpen : ''}`}
-              aria-label={t('document.toc')}
-            >
-              <input
-                className={styles.tocFilter}
-                type="search"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                placeholder={t('document.filterToc')}
-                aria-label={t('document.filterToc')}
-              />
-              <ul>
-                {filteredToc.map((e) => (
-                  <li key={e.id} className={styles.tocRow}>
-                    <a
-                      href={`#${e.id}`}
-                      className={activeId === e.id ? styles.tocActive : undefined}
-                      aria-current={activeId === e.id ? 'location' : undefined}
-                      onClick={() => {
-                        setTocOpen(false);
-                        setTimeout(
-                          () =>
-                            document
-                              .getElementById(e.id)
-                              ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-                          0,
-                        );
-                      }}
-                    >
-                      {e.title}
-                    </a>
-                    <button
-                      type="button"
-                      className={`${styles.tocStar} ${
-                        slug && isBookmarked(prefs, kind, slug, e.id) ? styles.tocStarOn : ''
-                      }`}
-                      aria-pressed={!!slug && isBookmarked(prefs, kind, slug, e.id)}
-                      aria-label={t('library.bookmarkSection')}
-                      title={t('library.bookmarkSection')}
-                      onClick={() =>
-                        bookmark.toggle(
-                          {
-                            kind,
-                            slug: slug as string,
-                            title: doc?.title ?? e.title,
-                            anchor: e.id,
-                            anchorText: e.title,
-                          },
-                          !!slug && isBookmarked(prefs, kind, slug, e.id),
-                        )
-                      }
-                    >
-                      {slug && isBookmarked(prefs, kind, slug, e.id) ? '★' : '☆'}
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.tocCopy}
-                      aria-label={t('document.copyLink')}
-                      title={copiedId === e.id ? t('document.copied') : t('document.copyLink')}
-                      onClick={() => copyLink(e.id)}
-                    >
-                      {copiedId === e.id ? '✓' : '⧉'}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <ReaderToc
+              open={tocOpen}
+              onNavigate={() => setTocOpen(false)}
+              filter={filter}
+              onFilterChange={setFilter}
+              entries={filteredToc}
+              activeId={activeId}
+              kind={kind}
+              slug={slug}
+              docTitle={doc?.title}
+              prefs={prefs}
+              bookmark={bookmark}
+              copiedId={copiedId}
+              onCopyLink={copyLink}
+            />
 
             <div
               ref={contentRef}
@@ -583,35 +449,15 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
           )}
 
           {notesForDoc && notesForDoc.length > 0 && (
-            <section className={styles.notes}>
-              <h2 className={styles.notesHead}>{t('document.notes', { n: notesForDoc.length })}</h2>
-              <ul className={styles.notesList}>
-                {notesForDoc.map((n) => (
-                  <li key={n.id} className={styles.noteItem}>
-                    <button
-                      type="button"
-                      className={styles.noteQuote}
-                      onClick={() =>
-                        contentRef.current
-                          ?.querySelector(`mark[data-annot="${n.id}"]`)
-                          ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
-                      }
-                    >
-                      “{n.quote}”
-                    </button>
-                    {n.note && <p className={styles.noteText}>{n.note}</p>}
-                    <button
-                      type="button"
-                      className={styles.noteRemove}
-                      aria-label={t('document.removeNote')}
-                      onClick={() => removeNote(dk, n.id)}
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <ReaderNotes
+              notes={notesForDoc}
+              onJump={(id) =>
+                contentRef.current
+                  ?.querySelector(`mark[data-annot="${id}"]`)
+                  ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+              }
+              onRemove={(id) => removeNote(dk, id)}
+            />
           )}
 
           {related.length > 0 && (
