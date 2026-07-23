@@ -25,38 +25,48 @@ node scripts/build-ios-content.mjs          # PPL, ELPT and AIP
 node scripts/build-ios-content.mjs --app ppl
 ```
 
-## 3. Create the Xcode project and the first app target
+## 3. Generate the Xcode project (XcodeGen)
 
-1. Xcode → **File → New → Project… → iOS App**. Product name `PPL`,
-   organization identifier `com.flygaca`, interface SwiftUI. Save it as
-   `apple/FlyGACA.xcodeproj` (don't create a git repo; don't add tests).
-2. Delete the template's generated `PPLApp.swift`/`ContentView.swift`, then add
-   these to the target:
-   - `Apps/Shared/FlyGACAApp.swift` (the shared shell — add by reference),
-   - `Apps/PPL/Content` as a **folder reference** (blue folder, not a group),
-     so it ships as a `Content/` directory in the bundle.
-3. **Add the package:** File → Add Package Dependencies → **Add Local…** →
-   select `apple/FlyGACAKit`; link the `FeatureUI` product to the target.
-4. **Apply the xcconfig:** project → Info → Configurations → set the PPL
-   target's Debug/Release to `Apps/PPL/PPL.xcconfig`. This pins the module
-   (`FG_MODULE_ID = ppl-exam`), bundle id, display name and the shared
-   `Apps/Shared/Info.plist` (which forwards `FGModuleID` into the app).
-5. **Capabilities** (Signing & Capabilities): add **App Groups** with
-   `group.com.flygaca.study` — the family-shared progress store. (Keychain
-   Sharing and Sign in with Apple join in Phase 4 with Firebase.)
-6. Run. You should land on the PPL module home: 13 topic banks, ground school,
-   flashcards, mock and timed exam — all offline.
+The project is **generated, never committed** — `apple/project.yml` is the source
+of truth and `apple/FlyGACA.xcodeproj` is gitignored.
 
-## 4. Add the next app (ELPT, AIP, …)
+```bash
+brew install xcodegen
+npm run ios:generate      # → apple/FlyGACA.xcodeproj
+open apple/FlyGACA.xcodeproj
+```
 
-Duplicate the target, then change exactly three things: its xcconfig
-(`Apps/ELPT/ELPT.xcconfig`), its `Content` folder reference (`Apps/ELPT/Content`),
-and its app icon. `FlyGACAApp.swift` is shared — never edit it per app.
+The spec wires up, per app target (PPL, ELPT, AIP):
+
+- `Apps/Shared/FlyGACAApp.swift` (the shared shell),
+- `Apps/<App>/Content` as a **folder reference** (blue folder), so it ships as a
+  `Content/` directory in the bundle,
+- `Apps/<App>/Assets.xcassets` (app icon),
+- the local `FlyGACAKit` package with its `FeatureUI` product linked,
+- the target's xcconfig (`Apps/<App>/<App>.xcconfig`), which pins the module id,
+  bundle id, display name, the shared `Apps/Shared/Info.plist` and the App Group
+  entitlement (`Apps/Shared/App.entitlements` → `group.com.flygaca.study`).
+
+Run any scheme. You should land on that module's home — banks, ground school,
+flashcards, mock and timed exam — all offline. (Keychain Sharing and Sign in with
+Apple join later with Firebase.)
+
+You can also build without opening Xcode: `npm run ios:build:ppl` (see
+`docs/RUNBOOK-ios-xcodebuild.md`).
+
+## 4. Add the next app (IFR, …)
+
+Add a three-line target entry to `apple/project.yml`, create
+`Apps/<App>/<App>.xcconfig` (module id + bundle id + display name), generate its
+content (`node scripts/build-ios-content.mjs --app <app>`), add an
+`Assets.xcassets`, and re-run `npm run ios:generate`. `FlyGACAApp.swift` is
+shared — never edit it per app.
 
 ## What is deliberately NOT here yet
 
-- `FlyGACA.xcodeproj` — generated on your Mac (step 3), not committed until it
-  exists; after that, commit it like any source file.
 - `GoogleService-Info.plist`, Firebase/RevenueCat SDKs, the `PlatformLive`
-  target — Phase 4 (see ARCHITECTURE.md §5). Until then the apps run fully
-  offline by design, and `AppServices` mocks stand in for the platform.
+  target — the platform half of Phase 4 (see ARCHITECTURE.md §5). Until then the
+  apps run fully offline by design, and `AppServices` mocks stand in for the
+  platform.
+- Code signing lives only in CI (`docs/RUNBOOK-ios-signing.md`); local builds run
+  unsigned and need no Apple account.

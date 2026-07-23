@@ -41,6 +41,7 @@
     "cap:sync": "npm run build && cap sync",
     "cap:localize": "node scripts/native/ios-localize.mjs",
     "cap:open": "cap open ios",
+    "ios:generate": "cd apple && xcodegen generate",
     "ios:test": "command -v swift > /dev/null 2>&1 && cd apple/FlyGACAKit && swift test || echo 'Swift not available; skipping iOS tests'",
     "ios:test:watch": "cd apple/FlyGACAKit && swift test --watch",
     "ios:build:ppl": "bash scripts/native/xcodebuild-wrapper.sh ppl debug",

@@ -1,0 +1,128 @@
+# iOS Code Signing & TestFlight Runbook
+
+One-time human setup to activate the `ios-testflight` job in `.github/workflows/ios.yml`.
+Until these secrets exist, the job is skipped and CI stays green — nothing breaks by
+deferring this.
+
+**Scope:** the three native SwiftUI apps (PPL, ELPT, AIP) under `apple/` — not the
+Capacitor shell (`com.flygaca.app`).
+
+## How the pipeline works
+
+```
+push to main
+  └─ check-signing (are BUILD_CERTIFICATE_BASE64 + APP_STORE_CONNECT_API_KEY_ID set?)
+       └─ ios-testflight (matrix: ppl, elpt, aip) — only when secrets are present
+            ├─ import cert + profile into a temp keychain (deleted after the run)
+            ├─ xcodegen generate → signed xcodebuild archive
+            ├─ xcodebuild -exportArchive → .ipa (kept as a CI artifact)
+            └─ xcrun altool --upload-app → TestFlight
+```
+
+Signing is **manual** (no Xcode-managed signing in CI): an Apple Distribution
+certificate + one App Store provisioning profile per app. The App Group
+(`group.com.flygaca.study`) rules out wildcard profiles — wildcard App IDs cannot
+carry the App Groups capability.
+
+## Step 1 — Apple Developer portal
+
+At [developer.apple.com](https://developer.apple.com/account) → Certificates, Identifiers & Profiles:
+
+1. **App Group**: Identifiers → App Groups → register `group.com.flygaca.study`.
+2. **App IDs**: register three explicit App IDs, each with the **App Groups**
+   capability enabled and `group.com.flygaca.study` assigned:
+   - `com.flygaca.ppl`
+   - `com.flygaca.elpt`
+   - `com.flygaca.aip`
+3. **Distribution certificate**: Certificates → create an **Apple Distribution**
+   certificate (generate the CSR via Keychain Access on any Mac). Then in Keychain
+   Access, export the certificate **with its private key** as a `.p12` and set a
+   password (this becomes `P12_PASSWORD`).
+4. **Provisioning profiles**: create three **App Store** distribution profiles, one
+   per App ID, using that certificate, named **exactly**:
+   - `FlyGACA PPL AppStore`
+   - `FlyGACA ELPT AppStore`
+   - `FlyGACA AIP AppStore`
+
+   The names are load-bearing — the CI passes them as `PROVISIONING_PROFILE_SPECIFIER`
+   and writes them into ExportOptions. (Override per-run with `FG_PROVISIONING_PROFILE`
+   if you must rename.) Download the three `.mobileprovision` files.
+
+## Step 2 — App Store Connect
+
+At [appstoreconnect.apple.com](https://appstoreconnect.apple.com):
+
+1. **App records**: create the three apps (paid-up-front per `apple/ARCHITECTURE.md` §4),
+   one per bundle ID above. **Uploads fail with "No suitable application records found"
+   until these exist.**
+2. **API key**: Users & Access → Integrations → App Store Connect API → Team Keys →
+   generate a key with the **App Manager** role. Note the **Key ID** and **Issuer ID**,
+   and download the `.p8` file — it can only be downloaded **once**.
+
+## Step 3 — Create the GitHub secrets
+
+Base64-encode the binary assets (on macOS; on Linux use `base64 -w0 <file>`):
+
+```bash
+base64 -i Distribution.p12 | pbcopy                     # → BUILD_CERTIFICATE_BASE64
+base64 -i FlyGACA_PPL_AppStore.mobileprovision | pbcopy # → PROVISIONING_PROFILE_PPL_BASE64
+base64 -i FlyGACA_ELPT_AppStore.mobileprovision | pbcopy # → PROVISIONING_PROFILE_ELPT_BASE64
+base64 -i FlyGACA_AIP_AppStore.mobileprovision | pbcopy # → PROVISIONING_PROFILE_AIP_BASE64
+base64 -i AuthKey_XXXXXXXXXX.p8 | pbcopy                # → APP_STORE_CONNECT_API_KEY_BASE64
+```
+
+Create every secret (repo → Settings → Secrets and variables → Actions, or `gh secret set <NAME>`):
+
+| Secret | Content |
+|---|---|
+| `APPLE_TEAM_ID` | Your 10-character Team ID (Membership page) |
+| `BUILD_CERTIFICATE_BASE64` | The Apple Distribution `.p12`, base64 |
+| `P12_PASSWORD` | Password chosen when exporting the `.p12` |
+| `KEYCHAIN_PASSWORD` | Any random string (temp CI keychain only) |
+| `PROVISIONING_PROFILE_PPL_BASE64` | App Store profile for `com.flygaca.ppl`, base64 |
+| `PROVISIONING_PROFILE_ELPT_BASE64` | App Store profile for `com.flygaca.elpt`, base64 |
+| `PROVISIONING_PROFILE_AIP_BASE64` | App Store profile for `com.flygaca.aip`, base64 |
+| `APP_STORE_CONNECT_API_KEY_ID` | The API key's Key ID |
+| `APP_STORE_CONNECT_API_ISSUER_ID` | The Issuer ID (UUID) |
+| `APP_STORE_CONNECT_API_KEY_BASE64` | The `.p8`, base64 |
+
+## Step 4 — First run
+
+Push to `main` (or trigger `workflow_dispatch` on the iOS workflow). `check-signing`
+now outputs `enabled=true`, and `ios-testflight` runs for all three apps. After Apple
+finishes processing (typically 5–15 minutes per build), the builds appear under each
+app's TestFlight tab.
+
+Build numbers (`CFBundleVersion`) come from `github.run_number`, so they increase
+monotonically and are shared across the three apps — that's fine, uniqueness is
+per-app in App Store Connect.
+
+## Troubleshooting
+
+- **"No signing certificate 'iOS Distribution' found"** — the `.p12` didn't import,
+  or the `security set-key-partition-list` step is missing/failed (that's what lets
+  `codesign` use the key non-interactively). Re-check `BUILD_CERTIFICATE_BASE64` and
+  `P12_PASSWORD`.
+- **"Provisioning profile ... doesn't include signing certificate"** — the profile was
+  generated against a different certificate. Regenerate the profile with the current
+  distribution cert and update the secret.
+- **altool error 1091 / missing icon** — the asset catalog lost its 1024 marketing
+  icon, or the PNG has an alpha channel. Regenerate a flattened icon.
+- **"The bundle version must be higher than the previously uploaded version"** — a
+  re-run of a failed workflow reuses `github.run_number`, so any app that already
+  uploaded in the first attempt rejects the duplicate. Benign for the other apps
+  (`fail-fast: false`); the next real push gets a fresh number.
+- **"No suitable application records found"** — the app record doesn't exist in App
+  Store Connect yet (Step 2.1).
+- **`DEVELOPER_DIR` path not found** — GitHub retired the pinned Xcode version on the
+  runner image. Bump `DEVELOPER_DIR: /Applications/Xcode_15.4.app` in
+  `.github/workflows/ios.yml` to a version present on the current `macos-14` image.
+- **If `altool` upload is ever removed**: switch ExportOptions `destination` from
+  `export` to `upload` — `xcodebuild -exportArchive` then uploads directly (at the
+  cost of no `.ipa` artifact).
+
+## Placeholder app icons
+
+The committed `Assets.xcassets` icons are the web icon (`public/img/icon-512.png`)
+upscaled to 1024 px and flattened. They pass App Store validation but should be
+replaced with real per-app artwork before external TestFlight distribution.
