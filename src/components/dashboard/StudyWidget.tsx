@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { BarSparkline } from '@/components/BarSparkline';
+import { BarSparkline } from './BarSparkline';
 import { dayStr, useStudyProgress } from '@/lib/studyProgress';
 import { isDue } from '@/calc/srs';
 import styles from './dashboard-widgets.module.css';
