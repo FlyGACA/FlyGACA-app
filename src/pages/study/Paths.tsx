@@ -1,7 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
-import { linkHref, type PathsIndex } from '@/lib/content';
+import type { PathsIndex } from '@/lib/content';
+import { linkHref } from '@/lib/contentLinks';
 import { useStudyProgress, togglePathStep } from '@/lib/studyProgress';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/seo/jsonld';

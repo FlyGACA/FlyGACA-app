@@ -6,7 +6,8 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { itemListLd } from '@/lib/seo/jsonld';
-import { CORPUS, fetchJson, searchEntryLink, searchHref, toSearchRef } from '@/lib/content';
+import { CORPUS, fetchJson } from '@/lib/content';
+import { searchEntryLink, searchHref, toSearchRef } from '@/lib/contentLinks';
 import type { CorpusDoc, CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '@/lib/content';
 import {
   useLibraryPrefs,

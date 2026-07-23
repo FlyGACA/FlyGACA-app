@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { searchHref, parseSearchUrl, toSearchRef, linkHref } from '@/lib/content';
+import { searchHref, parseSearchUrl, toSearchRef, linkHref } from '@/lib/contentLinks';
 
 describe('searchHref', () => {
   it('rewrites regulations URLs to the Document reader', () => {

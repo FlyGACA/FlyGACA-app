@@ -49,7 +49,8 @@ firebase.json's rewrite regions must match).
   components use CSS Modules with **logical properties** so RTL mirrors automatically. See
   `FIGMA_DESIGN_SYSTEM.md` for the design system.
 - **Data:** the regulatory JSON corpus + indexes ship under `public/data/` and are fetched at
-  runtime via `src/lib/content.ts` (`fetchJson`) + the `useFetchJson` hook — the heavy corpus never
+  runtime via `src/lib/content.ts` (`fetchJson`; corpus-link routing lives in
+  `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
 - **Calculators:** pure, DOM-free logic in `src/calc/*` (aviation math plus chat/study/speech/text

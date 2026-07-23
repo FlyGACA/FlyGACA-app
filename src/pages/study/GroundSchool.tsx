@@ -1,7 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
-import { linkHref, type GroundSchoolData, type GsLesson } from '@/lib/content';
+import type { GroundSchoolData, GsLesson } from '@/lib/content';
+import { linkHref } from '@/lib/contentLinks';
 import { adelLink } from '@/lib/adel';
 import { useStudyProgress, toggleLesson } from '@/lib/studyProgress';
 import { usePageMeta } from '@/hooks/usePageMeta';

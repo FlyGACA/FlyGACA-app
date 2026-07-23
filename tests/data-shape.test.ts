@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
- * Guards the corpus's semantic shape (see src/lib/content.ts · toSearchRef /
+ * Guards the corpus's semantic shape (see src/lib/contentLinks.ts · toSearchRef /
  * linkHref and scripts/normalize-corpus-data.mjs). Frontend links must be
  * semantic — corpus `{ kind, id, anchor }` pointers or `{ route }` app paths —
  * never a legacy `document.html?type=…&id=…#…` URL. If an upstream sync
