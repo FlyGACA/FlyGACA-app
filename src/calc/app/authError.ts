@@ -40,8 +40,6 @@ const MAP: Record<string, AuthErrorInfo> = {
   'auth/weak-password': { field: 'password', key: 'account.errors.weakPassword' },
   'auth/user-disabled': { field: 'email', key: 'account.errors.userDisabled' },
   'auth/too-many-requests': { field: 'general', key: 'account.errors.tooManyRequests' },
-  // The popup was blocked by the browser (not dismissed) — tell the user why.
-  'auth/popup-blocked': { field: 'general', key: 'account.errors.popupBlocked' },
   'auth/network-request-failed': { field: 'general', key: 'account.errors.network' },
   // Deployment/config failures — these have nothing to do with the user's
   // credentials, so they must NOT read as "check your details". They typically
