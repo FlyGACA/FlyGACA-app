@@ -4,8 +4,13 @@ One-time human setup to activate the `ios-testflight` job in `.github/workflows/
 Until these secrets exist, the job is skipped and CI stays green — nothing breaks by
 deferring this.
 
-**Scope:** the three native SwiftUI apps (PPL, ELPT, AIP) under `apple/` — not the
-Capacitor shell (`com.flygaca.app`).
+**Scope:** *signing* is wired for the three Wave-1 apps (PPL, ELPT, AIP) under
+`apple/` — not the Capacitor shell (`com.flygaca.app`). The Wave-2 apps (CPL, IR,
+ATPL) already exist and build/archive in CI (see `docs/APPS-FAMILY-ROADMAP.md` and
+`RUNBOOK-ios-xcodebuild.md`); they are simply not signed/uploaded yet. To bring one
+into TestFlight, repeat Steps 1–3 below for it (a new App ID, an
+`FlyGACA <APP> AppStore` profile, a `PROVISIONING_PROFILE_<APP>_BASE64` secret) and
+add its `{app, scheme}` entry to the `ios-testflight` matrix in `.github/workflows/ios.yml`.
 
 ## How the pipeline works
 
@@ -125,6 +130,10 @@ per-app in App Store Connect.
 
 ## Placeholder app icons
 
-The committed `Assets.xcassets` icons are the web icon (`public/img/icon-512.png`)
-upscaled to 1024 px and flattened. They pass App Store validation but should be
-replaced with real per-app artwork before external TestFlight distribution.
+The committed `Assets.xcassets` icons are generated from the Falcon brand system by
+`scripts/native/gen-app-icons.mjs` (`npm run ios:icons`) — one distinct icon per app
+(shared night background + falcon-wing chevron, per-module accent colour + the
+module code). They're flattened 1024 px PNGs with no alpha channel, so they pass App
+Store validation, but they're clean brand-system placeholders, not final bespoke
+artwork — replace the generator's template (or drop real PNGs in place) before
+external distribution.
