@@ -23,7 +23,7 @@ export function addMonths(d: Date, n: number): Date {
 }
 
 /** The date `n` days before `now`. */
-export function daysAgo(n: number, now: Date = new Date()): Date {
+function daysAgo(n: number, now: Date = new Date()): Date {
   return addDays(now, -n);
 }
 
