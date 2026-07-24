@@ -85,6 +85,29 @@ export function entitlementFromPass(
   return { plan, source: "stripe", expiresAt: expiresAt.toISOString() };
 }
 
+/**
+ * Exam-prep packs that can be bought one-time (mode: payment). MUST mirror the
+ * paid + live packs in src/lib/prepCatalog.ts (`access: 'paid'`, `status: 'live'`).
+ * The server validates the `packId` on checkout AND at fulfilment against this list
+ * so an unknown/`soon`/tampered id can never grant ownership. A pack going live is
+ * a one-line addition here + a deploy; a frontend-only catalog change never grants.
+ */
+export const SELLABLE_PACK_IDS = [
+  "ppl-exam",
+  "medical",
+  "aip",
+  "elp",
+  "conversion",
+  "cpl",
+  "ir",
+  "atpl",
+] as const;
+
+/** Narrow untrusted input to a sellable pack id, else null. */
+export function sellablePackId(v: unknown): string | null {
+  return typeof v === "string" && (SELLABLE_PACK_IDS as readonly string[]).includes(v) ? v : null;
+}
+
 /** Stripe subscription statuses that grant an active paid plan. */
 const ACTIVE_STATUSES = new Set(["active", "trialing"]);
 

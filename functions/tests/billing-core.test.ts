@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   PASS_DAYS,
+  SELLABLE_PACK_IDS,
   effectivePlan,
   entitlementFromPass,
   entitlementFromSubscription,
   isPaidActive,
   planForPrice,
+  sellablePackId,
 } from "../src/billing-core.js";
 
 const env = { proMonthly: "price_monthly", proAnnual: "price_annual" };
@@ -103,6 +105,44 @@ describe("isPaidActive", () => {
   it("is true for an active or non-expiring paid entitlement", () => {
     expect(isPaidActive({ plan: "pro", expiresAt: future, source: "stripe" }, now)).toBe(true);
     expect(isPaidActive({ plan: "school", source: "school" }, now)).toBe(true);
+  });
+});
+
+describe("sellablePackId", () => {
+  it("accepts every sellable pack id", () => {
+    for (const id of SELLABLE_PACK_IDS) expect(sellablePackId(id)).toBe(id);
+  });
+
+  it("accepts the Wave-2 certificate packs (cpl/ir/atpl now live)", () => {
+    expect(sellablePackId("cpl")).toBe("cpl");
+    expect(sellablePackId("ir")).toBe("ir");
+    expect(sellablePackId("atpl")).toBe("atpl");
+  });
+
+  it("rejects a 'soon' / free / unknown pack id", () => {
+    expect(sellablePackId("airspace-vfr")).toBeNull(); // free pack — never sold one-time
+    expect(sellablePackId("foi")).toBeNull(); // future pack — not yet live
+    expect(sellablePackId("nope")).toBeNull();
+  });
+
+  it("rejects non-string input", () => {
+    expect(sellablePackId(undefined)).toBeNull();
+    expect(sellablePackId(null)).toBeNull();
+    expect(sellablePackId(42)).toBeNull();
+    expect(sellablePackId({ id: "ppl-exam" })).toBeNull();
+  });
+
+  it("mirrors the paid+live packs (guards against catalog drift)", () => {
+    expect([...SELLABLE_PACK_IDS]).toEqual([
+      "ppl-exam",
+      "medical",
+      "aip",
+      "elp",
+      "conversion",
+      "cpl",
+      "ir",
+      "atpl",
+    ]);
   });
 });
 

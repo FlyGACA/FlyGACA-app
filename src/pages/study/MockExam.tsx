@@ -1,24 +1,38 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { QuizData, QuizQuestion } from '../../lib/content';
-import { setExamResult, useStudyProgress } from '../../lib/studyProgress';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { useFeature } from '../../lib/features';
-import { Disclaimer } from '../../components/Disclaimer';
-import { UpsellCard } from '../../components/UpsellCard';
-import { HubBackLink } from '../../components/HubBackLink';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { QuizData, QuizQuestion } from '@/lib/content';
+import { setExamResult, useStudyProgress } from '@/lib/studyProgress';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { courseLd } from '@/lib/seo/jsonld';
+import { useFeature } from '@/lib/services/features';
+import { findPack, type Pack } from '@/lib/prepCatalog';
+import { hasPackAccess } from '@/lib/services/packEntitlements';
+import { useAccount } from '@/lib/services/account';
+import { Disclaimer } from '@/components/Disclaimer';
+import { UpsellCard } from '@/components/UpsellCard';
+import { HubBackLink } from '@/components/HubBackLink';
 import styles from './Study.module.css';
 
 type ExamQuestion = QuizQuestion & { bank: string };
 
-function pickQuestions(data: QuizData): ExamQuestion[] {
-  const all: ExamQuestion[] = data.banks.flatMap((b) =>
+/** The exam config in force: quiz.json's defaults, overlaid with any per-pack override. */
+function examConfig(data: QuizData, pack?: Pack) {
+  return { ...data.exam, ...(pack?.exam ?? {}) };
+}
+
+/**
+ * The exam question pool. In pack mode it draws only from the pack's banks (a focused,
+ * per-certificate exam); otherwise from every bank (the all-topics mock).
+ */
+function pickQuestions(data: QuizData, pack?: Pack): ExamQuestion[] {
+  const banks = pack ? data.banks.filter((b) => pack.bankIds.includes(b.id)) : data.banks;
+  const all: ExamQuestion[] = banks.flatMap((b) =>
     b.questions.map((q) => ({ ...q, bank: b.title })),
   );
   const shuffled = [...all].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(data.exam.questions, all.length));
+  return shuffled.slice(0, Math.min(examConfig(data, pack).questions, all.length));
 }
 
 /** Per-bank correct/total tally for the post-exam breakdown. */
@@ -48,8 +62,17 @@ export function MockExam() {
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
   const { exam } = useStudyProgress();
-  const isPro = useFeature('mock-exam');
+  const { entitlement, ownedPacks } = useAccount();
+  const [params] = useSearchParams();
   const [started, setStarted] = useState(false);
+
+  // Pack mode (`?pack=`) draws a focused, per-certificate exam from that pack's banks
+  // and gates on OWNING the pack (or a plan). The generic all-topics exam keeps the
+  // existing `mock-exam` Pro feature gate.
+  const pack = findPack(params.get('pack') ?? undefined);
+  const packMode = !!pack && pack.status === 'live' && pack.bankIds.length > 0;
+  const featurePro = useFeature('mock-exam');
+  const canStart = packMode ? hasPackAccess(pack, entitlement, ownedPacks) : featurePro;
 
   if (loading)
     return <section className={`container-narrow ${styles.page}`}>{t('common.loading')}</section>;
@@ -65,13 +88,16 @@ export function MockExam() {
       </section>
     );
 
+  const cfg = examConfig(data, packMode ? pack : undefined);
+  const title = packMode ? t(`study.packCatalog.${pack.id}.name`) : t('study.exam');
+
   if (!started) {
     return (
       <section className={`container-narrow ${styles.page}`}>
         <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
-        <h1>{t('study.exam')}</h1>
+        <h1>{title}</h1>
         <p className={styles.subtitle}>{t('study.examDesc')}</p>
-        <p className={styles.qProgress}>{t('study.examPassMark', { n: data.exam.passMark })}</p>
+        <p className={styles.qProgress}>{t('study.examPassMark', { n: cfg.passMark })}</p>
         {exam && (
           <p className={styles.lastResult}>
             {t('study.lastResult', { pct: exam.pct })}{' '}
@@ -80,10 +106,21 @@ export function MockExam() {
             </span>
           </p>
         )}
-        {isPro ? (
+        {canStart ? (
           <button type="button" className={styles.primary} onClick={() => setStarted(true)}>
             {t('study.examStart')}
           </button>
+        ) : packMode ? (
+          <div className={styles.examGate}>
+            <p className={styles.examGateNote}>{t('study.packLockedNote')}</p>
+            <Link
+              to={`/study/packs/${pack.id}`}
+              className={styles.primary}
+              style={{ textDecoration: 'none' }}
+            >
+              {t('study.packView')}
+            </Link>
+          </div>
         ) : (
           <div className={styles.examGate}>
             <p className={styles.examGateNote}>{t('study.examProGate')}</p>
@@ -95,16 +132,17 @@ export function MockExam() {
     );
   }
 
-  return <Runner data={data} />;
+  return <Runner data={data} pack={packMode ? pack : undefined} />;
 }
 
-function Runner({ data }: { data: QuizData }) {
+function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
   const { t } = useTranslation();
-  const questions = useMemo(() => pickQuestions(data), [data]);
+  const cfg = useMemo(() => examConfig(data, pack), [data, pack]);
+  const questions = useMemo(() => pickQuestions(data, pack), [data, pack]);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(() => questions.map(() => null));
   const [flags, setFlags] = useState<boolean[]>(() => questions.map(() => false));
-  const [seconds, setSeconds] = useState(data.exam.minutes * 60);
+  const [seconds, setSeconds] = useState(cfg.minutes * 60);
   const [summary, setSummary] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -117,7 +155,7 @@ function Runner({ data }: { data: QuizData }) {
   const correct = answers.filter((a, idx) => a === questions[idx].answer).length;
   const answered = answers.filter((a) => a != null).length;
   const pct = Math.round((correct / questions.length) * 100);
-  const passed = pct >= data.exam.passMark;
+  const passed = pct >= cfg.passMark;
 
   useEffect(() => {
     if (done) setExamResult({ pct, passed, date: new Date().toISOString() });

@@ -77,6 +77,33 @@ test('account local sign-in and sign-out round-trip', async ({ page }) => {
 test('pricing Go-Pro stays disabled when billing is not configured', async ({ page }) => {
   await page.goto('/pricing');
   await expect(page.getByRole('button', { name: 'Go Pro' })).toBeDisabled();
+  // The exam-prep band routes to the storefront.
+  await expect(page.getByRole('link', { name: 'Browse exam prep' })).toBeVisible();
+});
+
+test('exam-prep storefront lists certificate & subject packs with prices', async ({ page }) => {
+  await page.goto('/study/packs');
+  await expect(page.getByRole('heading', { name: 'Exam Prep' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Certificates & ratings' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Subject packs' })).toBeVisible();
+  // A paid pack is locked (pack access ignores the FREE_FOR_EVERYONE promo) and shows its price.
+  const medical = page.getByRole('link', { name: /Aviation medical/ });
+  await expect(medical).toContainText('SAR 39');
+});
+
+test('a paid pack page offers Buy but disables it when billing is off', async ({ page }) => {
+  await page.goto('/study/packs/medical');
+  // Firebase/Stripe unconfigured in the preview → the buy button is the disabled placeholder.
+  await expect(page.getByRole('button', { name: 'Available at launch' })).toBeDisabled();
+});
+
+test('the free sampler pack opens and its timed exam runs', async ({ page }) => {
+  await page.goto('/study/packs/airspace-vfr');
+  await expect(page.getByRole('link', { name: 'Start pack quiz' })).toBeVisible();
+  // The per-pack timed exam is a free surface for this pack.
+  await page.goto('/study/exam?pack=airspace-vfr');
+  await page.getByRole('button', { name: 'Start exam' }).click();
+  await expect(page.getByRole('timer')).toBeVisible();
 });
 
 test('VFR charts render a Leaflet image overlay', async ({ page }) => {

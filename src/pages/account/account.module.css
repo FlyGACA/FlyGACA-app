@@ -12,223 +12,10 @@
   gap: var(--space-2);
 }
 
-/* ── Signed-out split panel: form beside a brand/benefit aside ── */
-.authGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-  gap: var(--space-8);
-  align-items: start;
-}
-.authPanel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  max-inline-size: 26rem;
-}
-.authAside {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-6);
-  border: var(--hairline-bright);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--elev-1), var(--edge-sheen);
-}
-.asideEyebrow {
-  margin: 0;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
-  color: var(--text-dim);
-}
-.asideTitle {
-  margin: 0;
-  font-size: var(--fs-h3);
-  background: var(--grad-title);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.benefitList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.benefitList li {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding-inline-start: var(--space-4);
-  border-inline-start: 3px solid var(--brand);
-}
-.benefitList strong {
-  font-size: var(--fs-sm);
-  color: var(--text);
-}
-.benefitList span {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-/* Vertical stack for the auth form fields (the shared .form grid is for
-   wide multi-column editors, wrong for a narrow sign-in column). */
-.authFields {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-@media (max-width: 720px) {
-  .authGrid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-  .authPanel {
-    max-inline-size: none;
-  }
-}
-
-/* ── Sign in / Create account segmented tabs ── */
-.authTabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  border: var(--hairline-bright);
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
-}
-.authTab {
-  min-block-size: 40px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  cursor: pointer;
-  transition: var(--transition-color);
-}
-.authTab:hover {
-  color: var(--text);
-}
-.authTab[aria-selected='true'] {
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--elev-1);
-}
-.authTab:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-/* ── Branded Google button (icon beside label) ── */
-.googleBtn {
-  composes: btn btn-clay from global;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-}
-.googleIcon {
-  inline-size: 18px;
-  block-size: 18px;
-  flex-shrink: 0;
-}
-
-/* Divider "or" with a hairline either side. */
-.or {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  text-align: center;
-  color: var(--text-dim);
-  font-size: var(--fs-sm);
-  margin: 0;
-}
-.or::before,
-.or::after {
-  content: '';
-  flex: 1;
-  block-size: 1px;
-  background: var(--border);
-}
-
-/* ── Password strength meter ── */
-.pwMeter {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin-block-start: calc(-1 * var(--space-2));
-}
-.pwBars {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-1);
-}
-.pwBar {
-  block-size: 4px;
-  border-radius: var(--radius-pill);
-  background: var(--border);
-  transition: background var(--dur) var(--ease);
-}
-.pwBar[data-on][data-level='weak'] {
-  background: var(--color-error);
-}
-.pwBar[data-on][data-level='fair'] {
-  background: var(--warning);
-}
-.pwBar[data-on][data-level='good'] {
-  background: var(--brand);
-}
-.pwBar[data-on][data-level='strong'] {
-  background: var(--color-success);
-}
-.pwLabel {
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-}
-.pwLabel[data-level='weak'] {
-  color: var(--color-error);
-}
-.pwLabel[data-level='fair'] {
-  color: var(--warning);
-}
-.pwLabel[data-level='good'] {
-  color: var(--brand-hover);
-}
-.pwLabel[data-level='strong'] {
-  color: var(--color-success);
-}
-
-/* Terms/Privacy acknowledgement under the sign-up form. */
-.legalNote {
-  margin: 0;
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-}
-
-/* Signed-in identity header (avatar + name + plan badge). */
-.identity {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-.identityAvatar {
-  flex-shrink: 0;
-}
-.identity h1 {
-  font-size: var(--fs-h2);
-  background: var(--grad-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin: 0;
-}
+/* The classes below are shared with the account sub-pages (Logbook, Settings,
+   Currency, Records) and their forms. The signed-out sign-in panel and the
+   signed-in identity header (used by Account.tsx) are defined at the end of
+   this file. */
 .head h1 {
   font-size: var(--fs-h2);
   background: var(--grad-brand);
@@ -246,44 +33,6 @@
   color: var(--text-dim);
   font-size: var(--fs-xs);
   margin: 0;
-}
-.linkBtn {
-  align-self: flex-start;
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--link);
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: color var(--dur) var(--ease);
-}
-.linkBtn:hover {
-  color: var(--brand-hover);
-  text-decoration: underline;
-}
-.linkBtn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.signInLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  align-items: center;
-}
-.verifyBanner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--warning);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-}
-.verifySent {
-  font-size: var(--fs-sm);
-  color: var(--color-success);
 }
 .planBadge {
   display: inline-flex;
@@ -543,4 +292,266 @@
 }
 .last {
   white-space: nowrap;
+}
+
+/* ── Signed-out sign-in redesign (PR #334) ───────────────────────────────── */
+
+/* Signed-out split panel: form beside a brand/benefit aside. */
+.authGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+.authPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-inline-size: 26rem;
+}
+.authAside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: var(--hairline-bright);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--elev-1), var(--edge-sheen);
+}
+.asideEyebrow {
+  margin: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--text-dim);
+}
+.asideTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  background: var(--grad-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.benefitList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.benefitList li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-4);
+  border-inline-start: 3px solid var(--brand);
+}
+.benefitList strong {
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.benefitList span {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+/* Vertical stack for the auth form fields (the shared .form grid is for
+   wide multi-column editors, wrong for a narrow sign-in column). */
+.authFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+@media (max-width: 720px) {
+  .authGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .authPanel {
+    max-inline-size: none;
+  }
+}
+
+/* Sign in / Create account segmented tabs. */
+.authTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: var(--hairline-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+}
+.authTab {
+  min-block-size: 40px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: var(--transition-color);
+}
+.authTab:hover {
+  color: var(--text);
+}
+.authTab[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--elev-1);
+}
+.authTab:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Branded Google button (icon beside label). */
+.googleBtn {
+  composes: btn btn-clay from global;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+.googleIcon {
+  inline-size: 18px;
+  block-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Divider "or" with a hairline either side. */
+.or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+.or::before,
+.or::after {
+  content: '';
+  flex: 1;
+  block-size: 1px;
+  background: var(--border);
+}
+
+/* Password strength meter. */
+.pwMeter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: calc(-1 * var(--space-2));
+}
+.pwBars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-1);
+}
+.pwBar {
+  block-size: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  transition: background var(--dur) var(--ease);
+}
+.pwBar[data-on][data-level='weak'] {
+  background: var(--color-error);
+}
+.pwBar[data-on][data-level='fair'] {
+  background: var(--warning);
+}
+.pwBar[data-on][data-level='good'] {
+  background: var(--brand);
+}
+.pwBar[data-on][data-level='strong'] {
+  background: var(--color-success);
+}
+.pwLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.pwLabel[data-level='weak'] {
+  color: var(--color-error);
+}
+.pwLabel[data-level='fair'] {
+  color: var(--warning);
+}
+.pwLabel[data-level='good'] {
+  color: var(--brand-hover);
+}
+.pwLabel[data-level='strong'] {
+  color: var(--color-success);
+}
+
+/* Terms/Privacy acknowledgement under the sign-up form. */
+.legalNote {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+/* Signed-in identity header (avatar + name + plan badge). */
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.identityAvatar {
+  flex-shrink: 0;
+}
+.identity h1 {
+  font-size: var(--fs-h2);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+
+/* Text link-styled button (mode switch / forgot password / resend). */
+.linkBtn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--link);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.linkBtn:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+}
+.linkBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.signInLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+/* Unverified-email banner (signed-in) + reset/verification confirmation. */
+.verifyBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+.verifySent {
+  font-size: var(--fs-sm);
+  color: var(--color-success);
 }

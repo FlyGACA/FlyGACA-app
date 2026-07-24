@@ -8,13 +8,21 @@ interface PasswordFieldProps {
   onChange: (value: string) => void;
   error?: string;
   autoComplete?: string;
+  onBlur?: () => void;
 }
 
 /**
  * Password input sharing the calculator field styling, with a show/hide
  * toggle. Kept separate from TextField so its ~30 call sites stay untouched.
  */
-export function PasswordField({ label, value, onChange, error, autoComplete }: PasswordFieldProps) {
+export function PasswordField({
+  label,
+  value,
+  onChange,
+  error,
+  autoComplete,
+  onBlur,
+}: PasswordFieldProps) {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const fieldClass = [styles.field, error ? styles.fieldInvalid : ''].filter(Boolean).join(' ');
@@ -28,6 +36,7 @@ export function PasswordField({ label, value, onChange, error, autoComplete }: P
           autoComplete={autoComplete}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
           aria-invalid={error ? 'true' : undefined}
         />
         <button

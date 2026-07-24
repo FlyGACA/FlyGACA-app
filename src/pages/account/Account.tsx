@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { TextField } from '../../components/calc/TextField';
-import { PasswordField } from '../../components/calc/PasswordField';
-import { Alert } from '../../components/Alert';
-import { Disclaimer } from '../../components/Disclaimer';
-import { BrandMark } from '../../components/BrandMark';
-import { CaptainAvatar } from '../../components/CaptainAvatar';
-import { StatusPill } from '../../components/StatusPill';
-import { SubscriptionPanel } from '../../components/account/SubscriptionPanel';
-import { refreshAccount, signIn, signOut, useAccount } from '../../lib/account';
-import { uiPlan } from '../../lib/entitlements';
+import { TextField } from '@/components/calc/TextField';
+import { PasswordField } from '@/components/calc/PasswordField';
+import { Alert } from '@/components/Alert';
+import { Disclaimer } from '@/components/Disclaimer';
+import { BrandMark } from '@/components/BrandMark';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
+import { StatusPill } from '@/components/StatusPill';
+import { SubscriptionPanel } from '@/components/account/SubscriptionPanel';
+import { refreshAccount, signIn, signOut, useAccount } from '@/lib/services/account';
+import { uiPlan } from '@/lib/services/entitlements';
 import {
   isAuthAvailable,
   registerWithEmail,
@@ -18,10 +18,10 @@ import {
   sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
-} from '../../lib/auth';
-import { authErrorInfo, isAuthDismiss } from '../../calc/authError';
-import { MIN_PASSWORD_LENGTH, passwordStrength } from '../../calc/passwordStrength';
-import { usePageMeta } from '../../lib/usePageMeta';
+} from '@/lib/services/auth';
+import { authErrorInfo, isAuthDismiss } from '@/calc/app/authError';
+import { MIN_PASSWORD_LENGTH, passwordStrength } from '@/calc/app/passwordStrength';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import styles from './account.module.css';
 
 /** Sign-in vs create-account. Lifted to `Account` so the panel heading tracks it. */

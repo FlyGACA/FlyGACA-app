@@ -1018,3 +1018,139 @@
   color: var(--text-muted);
   margin: 0;
 }
+
+/* ── Exam-prep storefront: badges, coming-soon cards, buy row, purchase notices ── */
+
+/* Card badges beside a pack name — mirror .proTag's pill shape, tinted per state. */
+.freeTag,
+.ownedTag,
+.includedTag,
+.soonTag {
+  margin-inline-start: var(--space-2);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+.freeTag {
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  color: var(--brand-hover);
+}
+.ownedTag {
+  background: color-mix(in srgb, var(--success) 22%, transparent);
+  color: var(--success);
+}
+.includedTag {
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--gold);
+}
+.soonTag {
+  background: var(--surface-sunken);
+  color: var(--text-dim);
+}
+
+/* Coming-soon pack: a card that isn't a link — no hover-lift, holds the notify form. */
+.bankSoon {
+  cursor: default;
+  opacity: 0.82;
+}
+.notifyForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}
+.notifyInput {
+  flex: 1 1 12ch;
+  min-inline-size: 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface-sunken);
+  color: var(--text);
+  font: inherit;
+}
+.notifyBtn {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-pill);
+  background: var(--brand-tint);
+  color: var(--brand-hover);
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+.notifyBtn:hover {
+  background: var(--brand-tint-strong);
+}
+.notifyBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.notifyDone {
+  margin-block-start: var(--space-2);
+  color: var(--success);
+  font-size: var(--fs-sm);
+}
+.notifyError {
+  margin-block-start: var(--space-2);
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}
+
+/* Product page: "what's inside" summary + one-time price / buy row. */
+.packInsideLine {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.packBuyRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+.packBuyPrice {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+}
+.packIncludedWith {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* Post-checkout notices on the pack page (mirror Pricing's canceled banner). */
+.purchaseOk,
+.purchaseCancel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--clay-radius);
+  font-size: var(--fs-sm);
+  margin-block-end: var(--space-4);
+}
+.purchaseOk {
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+}
+.purchaseCancel {
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+}
+.canceledDismiss {
+  padding: var(--space-1) var(--space-3);
+  border: var(--clay-border);
+  border-radius: var(--clay-radius);
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.canceledDismiss:hover {
+  box-shadow: var(--clay-shadow-hover);
+}

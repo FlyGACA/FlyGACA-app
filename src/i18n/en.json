@@ -184,12 +184,30 @@
     },
     "synced": "synced {{mins}} min ago with GACA",
     "marquee": [
-      { "code": "§61.57", "text": "recency of experience" },
-      { "code": "E6B", "text": "weight & balance · crosswind" },
-      { "code": "74", "text": "GACAR Parts indexed" },
-      { "code": "61", "text": "aerodromes mapped" },
-      { "code": "13", "text": "VFR charts" },
-      { "code": "211", "text": "reference documents" }
+      {
+        "code": "§61.57",
+        "text": "recency of experience"
+      },
+      {
+        "code": "E6B",
+        "text": "weight & balance · crosswind"
+      },
+      {
+        "code": "74",
+        "text": "GACAR Parts indexed"
+      },
+      {
+        "code": "61",
+        "text": "aerodromes mapped"
+      },
+      {
+        "code": "13",
+        "text": "VFR charts"
+      },
+      {
+        "code": "211",
+        "text": "reference documents"
+      }
     ],
     "adel": {
       "id": "Captain Adel",
@@ -1716,6 +1734,12 @@
         "school": "✓"
       },
       {
+        "feature": "Exam-prep packs",
+        "free": "1 free pack",
+        "pro": "All included",
+        "school": "All included"
+      },
+      {
         "feature": "Ground school & quizzes",
         "free": "✓",
         "pro": "✓",
@@ -1789,10 +1813,61 @@
     "passLead": "Just need it until your checkride? Full Pro access for 90 days, no subscription.",
     "passCta": "Get the pass",
     "passComingSoon": "Available at launch",
+    "prepHead": "Exam Prep packs",
+    "prepLead": "Prefer to pay once? Buy the prep pack for your certificate — question banks, a timed mock exam and study sheets. Every pack is included with Pro & School.",
+    "prepPer": "SAR {{n}} / pack · one-time",
+    "prepCta": "Browse exam prep",
     "schoolsEyebrow": "For flight schools & universities",
     "schoolsHead": "Equip a whole cohort",
     "schoolsMin": "min 10 seats",
     "schoolsCta": "Book a demo"
+  },
+  "business": {
+    "admin": {
+      "title": "Cohort dashboard",
+      "loading": "Loading your cohort…",
+      "noAccess": "This dashboard is for school administrators. Your account isn't an admin of any cohort — if you manage a school, ask us to set you up.",
+      "subtitle": "Seat status and study readiness (pass mark {{threshold}}%). Readiness is practice progress, not an exam result.",
+      "seats": "Seats",
+      "active": "Active",
+      "ready": "Ready",
+      "yes": "Yes",
+      "no": "No",
+      "exportCsv": "Export CSV",
+      "note": "Readiness = every expected quiz bank and the Mock Exam at or above the pass mark. Fly GACA is not affiliated with GACA; this reports practice progress and never replaces the official exam.",
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "invited": "Invited",
+        "none": "No seat"
+      },
+      "col": {
+        "email": "Candidate",
+        "seat": "Seat",
+        "coverage": "Coverage",
+        "exam": "Mock Exam",
+        "readyCol": "Ready",
+        "active": "Last active"
+      },
+      "addSeats": "Add seats",
+      "provisionResults": "Invitation results",
+      "done": "Done",
+      "seatUsage": "{{used}} of {{limit}} seats used ({{available}} available)",
+      "seatLimitReached": "Seat limit reached. No more seats can be added.",
+      "emailsLabel": "Email addresses",
+      "emailsPlaceholder": "pilot1@example.com\npilot2@example.com",
+      "expirationLabel": "Expiration date (optional)",
+      "cancel": "Cancel",
+      "sendInvites": "Send invites",
+      "provisioning": "Sending invites…",
+      "tabManual": "Manual entry",
+      "tabCsv": "CSV upload",
+      "csvLabel": "CSV file",
+      "csvSelected": "Selected: {{name}}",
+      "csvEmpty": "CSV file is empty or contains no valid emails.",
+      "csvParseError": "Could not parse CSV file. Ensure it's a valid CSV with emails in the first column.",
+      "csvHint": "Upload a CSV file with email addresses in the first column (one email per row)."
+    }
   },
   "schools": {
     "title": "Fly GACA for schools",
@@ -1937,10 +2012,16 @@
           "p": "Your cohort studies the library, practices, and asks Captain Adel, in English or Arabic."
         }
       ]
+    },
+    "admin": {
+      "title": "Already a school partner?",
+      "lead": "Manage your cohort seats, onboard students, and view study readiness.",
+      "cta": "Go to admin dashboard"
     }
   },
   "account": {
     "title": "Account",
+    "eyebrow": "Your account",
     "signInTitle": "Sign in",
     "signInIntro": "Sync your logbook, study progress and bookmarks across devices — your data stays on this device first, sign-in adds backup and sync.",
     "createTitle": "Create your account",
@@ -1960,6 +2041,17 @@
     "name": "Name",
     "password": "Password",
     "confirmPassword": "Confirm password",
+    "passwordRequired": "Password is required.",
+    "nameRequired": "Full name is required.",
+    "passwordStrength": "Password strength:",
+    "passwordWeak": "Too Weak",
+    "passwordFair": "Fair",
+    "passwordGood": "Good",
+    "passwordStrong": "Strong",
+    "ruleLength": "8+ characters",
+    "ruleMixed": "Uppercase & lowercase",
+    "ruleNumber": "At least one number",
+    "ruleSpecial": "One special character (!@#$ etc.)",
     "signIn": "Sign in",
     "register": "Create account",
     "continueGoogle": "Continue with Google",
@@ -2002,6 +2094,8 @@
       "invalidEmail": "Enter a valid email address.",
       "userNotFound": "No account found with that email.",
       "wrongPassword": "Incorrect email or password.",
+      "passwordsDoNotMatch": "Passwords do not match.",
+      "passwordTooWeak": "Password must meet all complexity requirements.",
       "emailInUse": "An account already exists with that email.",
       "weakPassword": "Password must be at least 6 characters.",
       "passwordMismatch": "Passwords don't match.",
@@ -2012,7 +2106,10 @@
       "network": "Network error. Check your connection and try again.",
       "providerDisabled": "This sign-in method is turned off for this app.",
       "unauthorizedDomain": "This site isn't authorized for sign-in yet. If you're on a preview link, use the main site.",
-      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site."
+      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site.",
+      "popupBlocked": "The sign-in popup was blocked or closed. Redirecting you to continue…",
+      "technicalDetail": "(code: {{code}})",
+      "useMainSite": "Go to the main site to sign in"
     },
     "subscription": {
       "title": "Subscription",
@@ -2042,6 +2139,7 @@
     "needSignIn": "Sign in to use your account.",
     "goSignIn": "Go to sign in",
     "localNote": "Saved on this device only (local-first preview).",
+    "seatProgressNote": "Your school seat: your study progress (quiz and mock-exam scores) is shared with your school for its readiness reporting. Fly GACA is not affiliated with GACA — this is practice progress, not an exam record.",
     "unavailableTitle": "Sign-in is temporarily unavailable.",
     "unavailableBody": "Accounts aren't reachable right now. You can keep using the library, tools and study material — your progress is saved on this device and will sync once sign-in is back.",
     "dashboard": "Dashboard",
@@ -2770,8 +2868,8 @@
     "pathsDesc": "Guided routes through the library, step by step.",
     "pathOpen": "Open",
     "pathProgress": "{{done}} of {{total}} steps",
-    "packs": "Prep packs",
-    "packsDesc": "Focused exam-prep bundles for Pro members.",
+    "packs": "Exam Prep",
+    "packsDesc": "Organized, per-certificate prep packs — question banks, a timed exam and study sheets for each Saudi licence and rating.",
     "sheets": "Study sheets",
     "sheetsDesc": "Printable one-page PDF summaries for each licence and check.",
     "packPro": "Included with Pro",
@@ -2823,11 +2921,44 @@
       "conversion": {
         "name": "Conversion pack",
         "desc": "Foreign-to-GACA licence conversion prep."
+      },
+      "cpl": {
+        "name": "CPL exam prep",
+        "desc": "Commercial Pilot Licence written prep — GACAR Part 61 privileges, commercial operations and performance."
+      },
+      "ir": {
+        "name": "Instrument Rating prep",
+        "desc": "IR written prep — IFR flight rules, instrument procedures and the instrument-rating requirements."
+      },
+      "atpl": {
+        "name": "ATPL exam prep",
+        "desc": "Airline Transport Pilot Licence theory prep — ATP privileges and GACAR Part 121 air transport operations."
       }
     },
     "packMixed": "Mixed topics",
     "startPackQuiz": "Start pack quiz",
     "packItemCount": "{{n}} items",
+    "packCertificates": "Certificates & ratings",
+    "packSubjects": "Subject packs",
+    "packFree": "Free",
+    "packOwned": "Owned",
+    "packIncluded": "Included in Pro",
+    "packSoon": "Coming soon",
+    "packPaid": "Exam prep",
+    "packPrice": "SAR {{n}} · one-time",
+    "packPriceOnce": "SAR {{n}} · one-time",
+    "packBuy": "Buy this pack",
+    "packIncludedWithPro": "Or get every pack with Pro →",
+    "packView": "View pack",
+    "packExamStart": "Timed exam for this pack",
+    "packLockedNote": "This is a paid exam-prep pack. Buy it once, or unlock every pack with Pro.",
+    "packPurchaseSuccess": "Purchase complete — this pack is now unlocked. Enjoy!",
+    "packCheckoutCanceled": "Checkout canceled — you weren't charged.",
+    "packCheckoutError": "Couldn't start checkout. Please try again.",
+    "packNotifyMe": "Notify me",
+    "packNotifyPlaceholder": "you@example.com",
+    "packNotifyDone": "Thanks — we'll email you when it's ready.",
+    "packNotifyError": "Couldn't save that. Please try again.",
     "reviewFlagged": "Review flagged ({{n}})",
     "reviewFlaggedTitle": "Flagged questions",
     "weakest": "Focus areas",
@@ -3017,10 +3148,22 @@
     ],
     "contactTitle": "Contact",
     "stats": [
-      { "value": "74", "label": "GACAR Parts" },
-      { "value": "55", "label": "Flight tools" },
-      { "value": "2", "label": "Languages · EN / AR" },
-      { "value": "Free", "label": "Open reference" }
+      {
+        "value": "74",
+        "label": "GACAR Parts"
+      },
+      {
+        "value": "55",
+        "label": "Flight tools"
+      },
+      {
+        "value": "2",
+        "label": "Languages · EN / AR"
+      },
+      {
+        "value": "Free",
+        "label": "Open reference"
+      }
     ],
     "cta": {
       "title": "Start with the regulation",
@@ -3178,7 +3321,7 @@
     "groundschool": "Ground School",
     "exam": "Mock Exam",
     "paths": "Reading Paths",
-    "packs": "Prep Packs",
+    "packs": "GACA Exam Prep — PPL, CPL, IR, ATPL",
     "pricing": "Pricing",
     "schools": "For Flight Schools",
     "about": "About",
@@ -3206,7 +3349,7 @@
     "groundschool": "Structured PPL ground school for Saudi pilots, air law, meteorology, navigation, performance and human factors, each lesson linked to GACAR and the tools.",
     "exam": "Sit a timed GACAR mock exam with a real pass mark and instant review, every answer cited to the regulation. Free Saudi aviation exam prep from Fly GACA.",
     "paths": "Guided reading paths through the Saudi GACAR, becoming a PPL, drone/UAS rules, the medical, licence conversion and more, Parts, handbooks and tools in order.",
-    "packs": "Focused prep packs that bundle the right GACAR reading, tools and quizzes for each Saudi licence and rating. Plan your study with Fly GACA.",
+    "packs": "Organized exam-prep packs for the Saudi GACA written exams — Private, Commercial, Instrument and ATPL. Question banks, timed mock exams and study sheets. Buy a pack once or get them all with Pro.",
     "pricing": "Fly GACA is free to study the Saudi GACAR; go Pro for offline access, exports and prep packs, or equip a whole flight school. Simple monthly or annual plans.",
     "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel, bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",

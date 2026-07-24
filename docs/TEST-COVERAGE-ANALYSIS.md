@@ -189,3 +189,37 @@ unit-testable layers; keep it that way.
 Once §1–§3 land, the backend `functions/` suite should adopt a coverage ratchet
 of its own (mirroring the frontend's `vitest.config.ts` thresholds) so the newly
 covered wiring can't silently regress.
+
+## Follow-up — July 2026 (B2B org seat provisioning)
+
+The B2B org-admin feature (`/business/admin`, self-serve seat provisioning)
+landed **after** this analysis was written, so it wasn't in the original scope —
+and it came in with the same gap the analysis flags for the rest of the backend:
+its business rules were inline in an untested callable wrapper. A fresh
+`npm run test:coverage` put `src/lib/org.ts` and `functions/src/org.ts` at ~0%,
+on code that decides **seat access and billed seat counts** — the highest-risk
+class of untested code by the analysis's own ranking (§1–§2).
+
+Addressed in this change:
+
+- **Extracted `functions/src/org-core.ts`** (pure, Firebase-free) from the
+  `provisionSeats` callable, per the repo convention that "every business rule
+  lives in a pure `*-core.ts`": request validation (`parseProvisionInput`), the
+  **seat-limit guardrail** (`checkSeatLimit` — the over/under-provisioning
+  decision), and idempotent invite-doc assembly (`buildInvite`). `functions/tests/org-core.test.ts`
+  covers them exhaustively — boundary at the limit, one-over rejection with the
+  verbatim `resource-exhausted` message, malformed-email handling, and
+  normalize/idempotency. The callable is now a thin passthrough over the core.
+  (This also removed a stale "circular dependency" dynamic import — `org.ts`
+  already imports `school-core` statically.)
+- **`tests/org-client.test.ts`** pins the client's load-bearing contract: the
+  `/business/admin` wrappers **never throw** — an unconfigured/undeployed/
+  unauthorised call resolves to a safe empty result (`[]` / `null`) so the page
+  renders a "no access" state — plus request shaping and response unwrapping.
+
+Still open from the original plan: the org/cohort **read** callables
+(`getMyOrgs`, `getCohortReadiness`) and `provisionSeats`' Firestore wiring
+(ownership gate, the seat-count read) remain emulator-test candidates, the same
+§1–§2 wrapper work outstanding for `gateway`/`billing`. The next backend step is
+still the coverage ratchet on `functions/` so these newly-pure rules can't
+regress.

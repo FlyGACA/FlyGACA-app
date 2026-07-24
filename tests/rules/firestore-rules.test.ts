@@ -326,8 +326,26 @@ describe('waitlist — write-only', () => {
     await assertSucceeds(setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com' }));
   });
 
+  it('lets a submission carry an optional topic (e.g. an announced-pack id)', async () => {
+    await assertSucceeds(
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', topic: 'foi' }),
+    );
+  });
+
   it('rejects a malformed waitlist email', async () => {
     await assertFails(setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'nope' }));
+  });
+
+  it('rejects an over-long topic', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', topic: 'x'.repeat(41) }),
+    );
+  });
+
+  it('rejects a submission carrying an unknown field (pinned key set)', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'waitlist/e1'), { email: 'lead@example.com', hacked: true }),
+    );
   });
 
   it('denies reading the waitlist', async () => {
@@ -370,6 +388,28 @@ describe('stripeCustomers & default-deny', () => {
     );
   });
 
+  it('denies a client reading an org record (cohort enumeration)', async () => {
+    await seed('orgs/riyadh-flight', { name: 'Riyadh Flight', ownerUids: [ALICE] });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'orgs/riyadh-flight')));
+  });
+
+  it('denies a client writing an org record (self-appointing as owner)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), 'orgs/riyadh-flight'), { name: 'x', ownerUids: [ALICE] }),
+    );
+  });
+
+  it('denies a client reading the org member index', async () => {
+    await seed(`orgs/riyadh-flight/members/${BOB}`, { email: 'bob@academy.edu.sa' });
+    await assertFails(getDoc(doc(dbFor(ALICE), `orgs/riyadh-flight/members/${BOB}`)));
+  });
+
+  it('denies a client writing an org member record', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `orgs/riyadh-flight/members/${ALICE}`), { email: 'a@x.com' }),
+    );
+  });
+
   it('denies access to any unlisted server-only collection', async () => {
     await seed('serverOnly/x', { count: 1 });
     await assertFails(getDoc(doc(dbFor(ALICE), 'serverOnly/x')));
@@ -389,6 +429,31 @@ describe('chatCredits — owner-readable, server-only writes', () => {
 
   it('denies a client writing its own credit balance (no self-grant)', async () => {
     await assertFails(setDoc(doc(dbFor(ALICE), `chatCredits/${ALICE}`), { balance: 999 }));
+  });
+});
+
+describe('packEntitlements — owner-readable, server-only writes', () => {
+  const owned = {
+    packs: { medical: { purchasedAt: '2026-07-19T00:00:00.000Z', source: 'stripe' } },
+  };
+
+  it('lets an owner read their own purchased packs', async () => {
+    await seed(`packEntitlements/${ALICE}`, owned);
+    await assertSucceeds(getDoc(doc(dbFor(ALICE), `packEntitlements/${ALICE}`)));
+  });
+
+  it("denies reading another user's purchased packs", async () => {
+    await seed(`packEntitlements/${ALICE}`, owned);
+    await assertFails(getDoc(doc(dbFor(BOB), `packEntitlements/${ALICE}`)));
+  });
+
+  it('denies a client writing its own pack ownership (no self-grant)', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), `packEntitlements/${ALICE}`), owned));
+  });
+
+  it('denies deleting a server-set pack ownership doc', async () => {
+    await seed(`packEntitlements/${ALICE}`, owned);
+    await assertFails(deleteDoc(doc(dbFor(ALICE), `packEntitlements/${ALICE}`)));
   });
 });
 

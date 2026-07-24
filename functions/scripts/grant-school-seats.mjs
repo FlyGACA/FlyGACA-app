@@ -14,6 +14,7 @@
  * or gcloud application-default creds):
  *   node scripts/grant-school-seats.mjs --file=roster.csv [--expires=2027-06-30] [--dry-run]
  *   node scripts/grant-school-seats.mjs --emails="a@x.com,b@y.com"
+ *   node scripts/grant-school-seats.mjs --file=roster.csv --org=riyadh-flight  # attribute to an org
  *   node scripts/grant-school-seats.mjs --file=roster.csv --revoke   # offboard → free
  *
  * roster.csv: one email per line (a leading "email" header is ignored). Emails with
@@ -51,6 +52,7 @@ const revoke = process.argv.includes("--revoke");
 const file = arg("file");
 const emailsArg = arg("emails");
 const expiresArg = arg("expires"); // YYYY-MM-DD (contract end), optional
+const orgId = arg("org"); // optional org id to attribute the seat to (see grant-org.mjs)
 
 if (!file && !emailsArg) {
   console.error("Provide --file=roster.csv or --emails=a@x.com,b@y.com");
@@ -101,8 +103,25 @@ for (const email of emails) {
 
   if (!dryRun) {
     if (user) await db.collection("users").doc(user.uid).set({ entitlement }, { merge: true });
-    if (revoke) await inviteRef.delete();
-    else await inviteRef.set(expiresAt ? { email, expiresAt } : { email }, { merge: true });
+    if (revoke) {
+      await inviteRef.delete();
+      // Offboard from the org member index too, if attributed.
+      if (orgId && user) await db.collection("orgs").doc(orgId).collection("members").doc(user.uid).delete();
+    } else {
+      const invite = { email };
+      if (expiresAt) invite.expiresAt = expiresAt;
+      if (orgId) invite.orgId = orgId; // claimSchoolSeat copies this onto the member index
+      await inviteRef.set(invite, { merge: true });
+      // Index an already-registered member now (unregistered ones are indexed on claim).
+      if (orgId && user) {
+        await db
+          .collection("orgs")
+          .doc(orgId)
+          .collection("members")
+          .doc(user.uid)
+          .set({ email, claimedAt: new Date().toISOString() }, { merge: true });
+      }
+    }
   }
 
   if (user) done += 1;

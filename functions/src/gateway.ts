@@ -39,15 +39,30 @@ const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: false })
 // separate nudge; this is the enforced value.
 const FREE_DAILY_LIMIT_PARAM = defineInt("FREE_DAILY_LIMIT", { default: FREE_DAILY_LIMIT });
 
+/** Helper to parse cookie strings without external packages */
+function parseCookies(cookieHeader: string | undefined): Record<string, string> {
+  const list: Record<string, string> = {};
+  if (!cookieHeader) return list;
+  cookieHeader.split(";").forEach((cookie) => {
+    const parts = cookie.split("=");
+    const name = parts.shift()?.trim();
+    if (name) {
+      list[name] = decodeURIComponent(parts.join("="));
+    }
+  });
+  return list;
+}
+
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 export class AuthError extends Error {}
 
 /**
- * Verify the Firebase ID token (optional → anonymous) and App Check token
- * (enforced in prod). Returns the caller's auth context — `uid` plus the
- * `email`/`emailVerified` claims — when a valid token was presented; an anonymous
- * context otherwise. The token-parsing and claim-reading are the pure `auth-core`
- * helpers; only the `verifyIdToken` / App Check calls live here.
+ * Verify the Firebase Session Cookie or ID token (optional → anonymous) and App
+ * Check token (enforced in prod). Returns the caller's auth context — `uid` plus
+ * the `email`/`emailVerified` claims — when a valid session/token was presented; an
+ * anonymous context otherwise. The token-parsing and claim-reading are the pure
+ * `auth-core` helpers; only the `verifySessionCookie` / `verifyIdToken` / App Check
+ * calls live here.
  *
  * Exported for unit testing; the route handlers below are the only callers.
  */
@@ -62,6 +77,19 @@ export async function authenticate(req: Request): Promise<AuthContext> {
     }
   }
 
+  // 1. First check HttpOnly Session Cookie (preferred for web clients)
+  const cookies = parseCookies(req.headers?.cookie);
+  const sessionCookie = cookies.session;
+  if (sessionCookie) {
+    try {
+      const decoded = await getAuth().verifySessionCookie(sessionCookie, true);
+      return toAuthContext(decoded);
+    } catch {
+      // If session cookie is expired/invalid, let it fall through to auth header check
+    }
+  }
+
+  // 2. Fall back to Authorization Header (used by native apps / client fallbacks)
   const idToken = extractBearerToken(req.header("Authorization"));
   if (idToken) {
     try {
@@ -271,7 +299,7 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
   // absent/invalid ID token (anonymous) is rejected with 401, distinct from the
   // App Check 403 above.
   let uid: string | undefined;
-  let emailVerified = false;
+  let emailVerified: boolean;
   try {
     ({ uid, emailVerified } = await authenticate(req));
   } catch (err) {
@@ -443,6 +471,53 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
     logger.error("v1/ask failed", { err });
     res.status(500).json({ error: "ask failed" });
   }
+});
+
+// Session Login Endpoint: exchanges a client-validated Firebase ID token for an HttpOnly session cookie
+app.post(["/auth/session-login", "/api/auth/session-login"], async (req: Request, res: Response): Promise<void> => {
+  const { idToken } = req.body;
+  if (!idToken || typeof idToken !== "string") {
+    res.status(400).json({ error: "idToken is required" });
+    return;
+  }
+
+  // Set session expiration: 5 days
+  const expiresIn = 5 * 24 * 60 * 60 * 1000;
+
+  try {
+    // Verify token to prove authenticity
+    const decodedIdToken = await getAuth().verifyIdToken(idToken);
+    
+    // Create the session cookie
+    const sessionCookie = await getAuth().createSessionCookie(idToken, { expiresIn });
+    
+    // Secure cookie flags
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieOptions = {
+      maxAge: expiresIn,
+      httpOnly: true,
+      secure: isProduction || req.secure || req.headers["x-forwarded-proto"] === "https",
+      sameSite: "strict" as const,
+      path: "/"
+    };
+
+    res.cookie("session", sessionCookie, cookieOptions);
+    res.status(200).json({ success: true, uid: decodedIdToken.uid });
+  } catch (err) {
+    logger.error("Failed to create Firebase session cookie", { err });
+    res.status(401).json({ error: "unauthorized" });
+  }
+});
+
+// Session Logout Endpoint: clears the HttpOnly session cookie
+app.post(["/auth/session-logout", "/api/auth/session-logout"], (req: Request, res: Response) => {
+  res.clearCookie("session", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    path: "/"
+  });
+  res.status(200).json({ success: true });
 });
 
 // 👍/👎 on an answer. We log it (structured) for offline quality review — there

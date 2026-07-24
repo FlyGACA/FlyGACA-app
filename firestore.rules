@@ -65,11 +65,16 @@ service cloud.firestore {
     }
 
     // Waitlist — anyone may submit their email; the list is never readable
-    // from the client, so addresses stay private.
+    // from the client, so addresses stay private. An optional bounded `topic`
+    // records what the person is waiting for (e.g. a `soon` exam-prep pack id).
     match /waitlist/{entry} {
       allow create: if isEmail(request.resource.data.email)
                     && request.resource.data.email.size() >= 5
-                    && request.resource.data.email.size() <= 254;
+                    && request.resource.data.email.size() <= 254
+                    && (!('topic' in request.resource.data)
+                        || (request.resource.data.topic is string
+                            && request.resource.data.topic.size() <= 40))
+                    && request.resource.data.keys().hasOnly(['email', 'topic']);
       allow read, update, delete: if false;
     }
 
@@ -170,6 +175,17 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // B2B org (school) records + their member index. Provisioned ONLY by the
+    // Admin SDK (the grant-org / grant-school-seats scripts and claimSchoolSeat);
+    // read ONLY by the owner-verified getMyOrgs / getCohortReadiness callables.
+    // Never client-readable/writable, so a cohort can't be enumerated or forged.
+    match /orgs/{orgId} {
+      allow read, write: if false;
+      match /members/{uid} {
+        allow read, write: if false;
+      }
+    }
+
     // Per-uid Captain Adel free-question counters, written ONLY by the chat
     // gateway (Admin SDK) to enforce the daily free allowance server-side. A
     // client must never read or write it — the app's own counter is a separate
@@ -183,6 +199,15 @@ service cloud.firestore {
     // so the app can show the balance and lift the daily-limit gate. Never
     // client-writable — a client can't grant itself credits.
     match /chatCredits/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    // Per-uid purchased exam-prep packs. Written ONLY by the Stripe webhook (Admin
+    // SDK), keyed off a validated `metadata.packId`; the OWNER may read it so the app
+    // can unlock owned packs. Never client-writable — a client can't grant itself a
+    // pack. Same server-written / owner-readable pattern as chatCredits above.
+    match /packEntitlements/{uid} {
       allow read: if isOwner(uid);
       allow write: if false;
     }

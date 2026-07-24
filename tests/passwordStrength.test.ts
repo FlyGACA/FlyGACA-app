@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MIN_PASSWORD_LENGTH, passwordStrength } from '../src/calc/passwordStrength';
+import { MIN_PASSWORD_LENGTH, passwordStrength } from '@/calc/app/passwordStrength';
 
 describe('passwordStrength', () => {
   it('scores an empty password as 0', () => {

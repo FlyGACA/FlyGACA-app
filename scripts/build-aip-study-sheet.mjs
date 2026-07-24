@@ -1,7 +1,7 @@
 /**
  * Generate the bilingual "Saudi AIP — From Zero to Pass" study PDFs referenced
  * by the Study Sheets library (public/data/pdfs-index.json) and the AIP prep
- * pack (src/pages/study/packCatalog.ts). One-shot, idempotent generator — run it
+ * pack (src/lib/prepCatalog.ts). One-shot, idempotent generator — run it
  * when the content or template changes (`npm run gen:aip-sheet`); the PDFs are
  * committed to public/study-sheets/ and Vite copies public/ into dist/ verbatim
  * (there is no build-time PDF step, matching scripts/build-og-images.mjs).

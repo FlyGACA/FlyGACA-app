@@ -9,6 +9,7 @@ interface TextFieldProps {
   error?: string;
   type?: 'text' | 'email' | 'password' | 'date';
   autoComplete?: string;
+  onBlur?: () => void;
 }
 
 /** Labelled free-text input sharing the calculator field styling. */
@@ -21,6 +22,7 @@ export function TextField({
   error,
   type = 'text',
   autoComplete,
+  onBlur,
 }: TextFieldProps) {
   const fieldClass = [styles.field, error ? styles.fieldInvalid : ''].filter(Boolean).join(' ');
   return (
@@ -33,6 +35,7 @@ export function TextField({
           autoComplete={autoComplete}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
           placeholder={placeholder}
           aria-invalid={error ? 'true' : undefined}
         />

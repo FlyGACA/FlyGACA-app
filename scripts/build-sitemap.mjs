@@ -104,12 +104,14 @@ const aero = readJson('public/data/aerodromes-index.json');
 const aeroDate = isDate(aero.generated) ? aero.generated.slice(0, 10) : today;
 for (const d of aero.documents) urls.set(`/tools/aerodromes/${d.icao}`, aeroDate);
 
-// Prep packs → one detail page per pack id (src/pages/study/packCatalog.ts). Each pack
-// page carries a unique localized name + description regardless of Pro gating.
-const packIds = [...read('src/pages/study/packCatalog.ts').matchAll(/\bid:\s*'([^']+)'/g)].map(
-  (m) => m[1],
-);
-for (const id of packIds) urls.set(`/study/packs/${id}`, today);
+// Prep packs → one detail page per LIVE pack id (src/lib/prepCatalog.ts). Each pack
+// literal declares `id: '<id>'` then `status: '<live|soon>'`; `soon` packs have no
+// detail route, so only live packs go in the sitemap.
+const packSrc = read('src/lib/prepCatalog.ts');
+const livePackIds = [...packSrc.matchAll(/\bid:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'/g)]
+  .filter((m) => m[2] === 'live')
+  .map((m) => m[1]);
+for (const id of livePackIds) urls.set(`/study/packs/${id}`, today);
 // Not indexed by design: chart sheets and study sheets (selected by ?param on a
 // single viewer page, no per-item URL) and the 1,736 definition terms (search-only).
 
@@ -125,7 +127,7 @@ function priority(u) {
   return '0.6';
 }
 
-// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean URL,
+// Per-URL hreflang alternates mirror src/lib/seo/seo.ts: English at the clean URL,
 // Arabic at its real `/ar` document (only where a snapshot exists), and x-default
 // at the clean URL. Head-hreflang (prerender-head.mjs) must stay byte-identical to
 // this — check-prerender.mjs enforces the Arabic side.

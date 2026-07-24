@@ -3,8 +3,8 @@
  * Quiz Runner and Flashcards Deck can be launched focused on a pack, a single
  * bank, or the user's flagged review deck — without any new runner.
  */
-import type { QuizBank, QuizData } from '../../lib/content';
-import { PACKS } from './packCatalog';
+import type { QuizBank, QuizData } from '@/lib/content';
+import { PACKS } from '@/lib/prepCatalog';
 
 export interface SessionOpts {
   pack?: string | null;

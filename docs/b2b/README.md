@@ -19,7 +19,9 @@ per-person consumer Pro.
 5. **[`DELIVERY-PLAYBOOK.md`](./DELIVERY-PLAYBOOK.md)** — how to run a cohort, incl. the manual
    path for cohort #1 before the admin dashboard ships.
 6. **[`DESIGN-study-progress-sync.md`](./DESIGN-study-progress-sync.md)** — design for the readiness
-   prerequisite (persisting per-user study scores to Firestore). *Signed off + built, ships dark.*
+   prerequisite (persisting per-user study scores to Firestore). *Signed off + built.*
+7. **[`DESIGN-admin-dashboard.md`](./DESIGN-admin-dashboard.md)** — design for the `/business/admin`
+   cohort dashboard + the `orgs/{id}` ownership model. *Awaiting sign-off.*
 
 ## The one-line version
 

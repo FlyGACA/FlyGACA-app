@@ -2,16 +2,16 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Keep the lib hermetic: stub the native share sheet and firebase analytics so
 // these tests exercise only the referral/URL logic.
-vi.mock('../src/lib/native-bridge', () => ({
+vi.mock('@/lib/native/nativeBridge', () => ({
   share: vi.fn().mockResolvedValue('shared'),
 }));
-vi.mock('../src/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   logAnalyticsEvent: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { share } from '../src/lib/native-bridge';
-import { logAnalyticsEvent } from '../src/lib/firebase';
-import { withRef, shareCurrent, captureReferral, getReferralSource } from '../src/lib/share';
+import { share } from '@/lib/native/nativeBridge';
+import { logAnalyticsEvent } from '@/lib/services/firebase';
+import { withRef, shareCurrent, captureReferral, getReferralSource } from '@/lib/share';
 
 beforeEach(() => {
   sessionStorage.clear();
