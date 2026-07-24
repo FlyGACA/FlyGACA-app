@@ -141,6 +141,15 @@ change's low-risk scope. None is a bug; all are recorded so the findings are not
 - **[platform]** **`usePageMeta` positional arguments.** Nine pages call
   `usePageMeta(title, undefined, undefined, { noindex: true })`. An options-object signature (or a
   `useNoindexMeta` wrapper) removes the filler.
+- **[platform]** **The initial-JS budget has ~0.1 kB of headroom.** `scripts/check-bundle.mjs`
+  caps preloaded JS at 186 kB gz; the measured floor is now **185.9 kB**. The July 2026 cleanup
+  moved it from 185.4: sharing the prefs `createPrefStore` factory across stores that live in
+  different chunks makes Rolldown emit it as its own preloaded chunk (~0.5 kB), because
+  `src/app/Layout.tsx` → `useOfflineSync` → `libraryPrefs` puts one of them in the eager graph.
+  Folding it into the entry via `manualChunks` was measured and is **worse** (186.1 kB). So the next
+  change of any size will trip the gate. Either shrink the app shell — the honest fix, and what the
+  budget comment's "tighten as the shell shrinks" anticipates — or re-base the ceiling deliberately,
+  as it was re-based 160 → 183 → 186 before.
 - **[platform]** **Files worth splitting.** `Chat.tsx` (572), `Document.tsx` (521 — the author has
   already marked the seams with `// ── … ──` banners), `content.ts` (455, of which ~370 lines are
   corpus type declarations that could move to `content.types.ts`), `Pricing.tsx` (441),
