@@ -5,15 +5,15 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
 import { airacCycle } from '@/calc/airac';
+import { parseISO } from '@/calc/recency';
 
-const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const fmtDate = (d: Date) => d.toISOString().slice(0, 10);
 
 export function AiracCycle() {
   const { t, i18n } = useTranslation();
   const [inputs, set] = useUrlState({ date: '' });
-  const when = ISO.test(inputs.date) ? new Date(`${inputs.date}T12:00:00Z`) : new Date();
-  const c = Number.isNaN(when.getTime()) ? airacCycle() : airacCycle(when);
+  const when = parseISO(inputs.date) ?? new Date();
+  const c = airacCycle(when);
   const locale = i18n.language === 'ar' ? 'ar' : 'en-GB';
   const longDate = (d: Date) =>
     d.toLocaleDateString(locale, {

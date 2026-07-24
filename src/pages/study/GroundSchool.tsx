@@ -11,9 +11,9 @@ import { Disclaimer } from '@/components/Disclaimer';
 import { SectionHeader } from '@/components/SectionHeader';
 import { HubBackLink } from '@/components/HubBackLink';
 import styles from './GroundSchool.module.css';
+import { catToken } from '@/components/categoryTone';
 
 /** Per-module accent — cycles the Falcon hues from the design-token map. */
-const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 export function GroundSchool() {
   const { t, i18n } = useTranslation();
@@ -48,7 +48,7 @@ export function GroundSchool() {
               <section key={m.id} className={styles.module}>
                 <SectionHeader
                   title={m.title}
-                  tone={CAT_TOKENS[i % CAT_TOKENS.length]}
+                  tone={catToken(i)}
                   count={t('study.gsProgress', { done, total: m.lessons.length })}
                 />
                 <p className={styles.summary}>{m.summary}</p>

@@ -12,6 +12,7 @@ import { loadSaved, removeDoc, saveDoc } from '@/lib/native/offlineCache';
 import { shareCurrent } from '@/lib/share';
 import { useOnline } from '@/lib/native/pwa';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { useCopyToClipboardKeyed } from '@/hooks/useCopyToClipboard';
 import {
   useLibraryPrefs,
   recordView,
@@ -73,7 +74,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const [showTop, setShowTop] = useState(false);
   const [tocOpen, setTocOpen] = useState(false);
   const [activeId, setActiveId] = useState('');
-  const [copiedId, setCopiedId] = useState('');
+  const { copiedKey, copy } = useCopyToClipboardKeyed<string>();
   const contentRef = useRef<HTMLDivElement>(null);
   const docDesc = doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined;
   // The corpus carries a real freshness signal (effectiveDate, or a date-shaped
@@ -165,19 +166,10 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
 
   const copyLink = useCallback(
     (id: string) => {
-      const url = `${window.location.origin}${pathname}#${id}`;
-      navigator.clipboard
-        ?.writeText(url)
-        .then(() => {
-          setCopiedId(id);
-          window.setTimeout(() => setCopiedId(''), 1500);
-        })
-        .catch(() => {
-          /* clipboard blocked — ignore */
-        });
+      void copy(id, `${window.location.origin}${pathname}#${id}`);
       window.history.replaceState(null, '', `#${id}`);
     },
-    [pathname],
+    [copy, pathname],
   );
 
   // Re-highlight the content whenever the (debounced) find query changes.
@@ -425,7 +417,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
               docTitle={doc?.title}
               prefs={prefs}
               bookmark={bookmark}
-              copiedId={copiedId}
+              copiedId={copiedKey ?? ''}
               onCopyLink={copyLink}
             />
 

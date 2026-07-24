@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { percentMac, weightBalance } from '@/calc/weightBalance';
@@ -98,7 +99,7 @@ export function WeightBalance() {
       <OutputGrid>
         <ResultStat
           label={t('weightBalance.totalWeight')}
-          value={r != null ? Math.round(r.weight).toLocaleString() : '—'}
+          value={r != null ? fmtInt(r.weight) : '—'}
           tone="headline"
         />
         <ResultStat label={t('weightBalance.cg')} value={r != null ? r.cg.toFixed(2) : '—'} />

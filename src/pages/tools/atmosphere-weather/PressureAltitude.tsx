@@ -2,12 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { pressureAltitude } from '@/calc/isa';
 import { flightLevel } from '@/calc/altimetry';
-
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function PressureAltitude() {
   const { t } = useTranslation();
@@ -27,7 +26,7 @@ export function PressureAltitude() {
       }}
       adelPrompt={() =>
         pa != null
-          ? `Explain pressure altitude and flight level for field elevation ${inputs.elev} ft at QNH ${inputs.qnh} hPa (pressure altitude ${fmt(pa)} ft). When do I set 1013 and fly flight levels?`
+          ? `Explain pressure altitude and flight level for field elevation ${inputs.elev} ft at QNH ${inputs.qnh} hPa (pressure altitude ${fmtInt(pa)} ft). When do I set 1013 and fly flight levels?`
           : null
       }
       related={[
@@ -54,7 +53,7 @@ export function PressureAltitude() {
       <OutputGrid>
         <ResultStat
           label={t('pressureAltitude.pa')}
-          value={pa != null ? `${fmt(pa)} ft` : '—'}
+          value={pa != null ? `${fmtInt(pa)} ft` : '—'}
           tone="headline"
         />
         <ResultStat

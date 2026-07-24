@@ -3,10 +3,9 @@
  * last-seen fingerprint snapshot (so we can show "what changed since you last
  * looked") and the set of source ids they're watching. Persisted to localStorage
  * and exposed via useSyncExternalStore so the Updates page re-renders on change.
- * Mirrors src/lib/libraryPrefs.ts.
  */
-import { useSyncExternalStore } from 'react';
 import type { SeenMap } from '@/calc/library/changeTracking';
+import { createPrefStore, readJson, readStringList, save } from './createPrefStore';
 
 const SEEN_KEY = 'flygaca:updates-seen';
 const WATCH_KEY = 'flygaca:updates-watch';
@@ -18,59 +17,25 @@ export interface UpdatesPrefs {
   watch: string[];
 }
 
-function readJson<T>(key: string, fallback: T): T {
-  try {
-    const v = localStorage.getItem(key);
-    return v ? (JSON.parse(v) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-function save(key: string, val: unknown): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(val));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-}
-
-let state: UpdatesPrefs = {
+const store = createPrefStore<UpdatesPrefs>({
   seen: readJson<SeenMap>(SEEN_KEY, {}),
-  watch: readJson<string[]>(WATCH_KEY, []),
-};
+  watch: readStringList(WATCH_KEY),
+});
 
-const listeners = new Set<() => void>();
-function emit() {
-  for (const l of listeners) l();
-}
-
-export function useUpdatesPrefs(): UpdatesPrefs {
-  return useSyncExternalStore(
-    (l) => {
-      listeners.add(l);
-      return () => listeners.delete(l);
-    },
-    () => state,
-    () => state,
-  );
-}
+export const useUpdatesPrefs = store.use;
 
 /** Record the current fingerprints as seen (the "mark all read" action / baseline). */
 export function markAllSeen(seen: SeenMap): void {
-  state = { ...state, seen };
-  save(SEEN_KEY, state.seen);
-  emit();
+  save(SEEN_KEY, seen);
+  store.set({ ...store.get(), seen });
 }
 
 /** Add or remove a source id from the watchlist. */
 export function toggleWatch(id: string): void {
-  const watching = state.watch.includes(id);
-  state = {
-    ...state,
-    watch: watching ? state.watch.filter((x) => x !== id) : [...state.watch, id],
-  };
-  save(WATCH_KEY, state.watch);
-  emit();
+  const current = store.get().watch;
+  const watch = current.includes(id) ? current.filter((x) => x !== id) : [...current, id];
+  save(WATCH_KEY, watch);
+  store.set({ ...store.get(), watch });
 }
 
 /** True when the user has never set a baseline (first-ever visit). */
