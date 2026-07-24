@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crossRefParts } from '@/calc/chatCrossRefs';
+import { crossRefParts } from '@/calc/chat/chatCrossRefs';
 
 const valid = new Set(['part-61', 'part-91', 'part-121']);
 

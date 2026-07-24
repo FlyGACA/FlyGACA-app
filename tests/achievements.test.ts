@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { achievements, earnedCount } from '@/calc/achievements';
+import { achievements, earnedCount } from '@/calc/pilot/achievements';
 import type { Flight } from '@/lib/services/account';
 
 const flight = (over: Partial<Flight> = {}): Flight => ({

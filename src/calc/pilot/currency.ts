@@ -10,7 +10,7 @@
  * than asserting a pass: the tool never overstates currency.
  */
 import type { Flight, PilotRecord, Profile } from '@/lib/services/account';
-import { addDays, parseISO, validityByMonths, type Validity } from './recency';
+import { addDays, parseISO, validityByMonths, type Validity } from '@/calc/recency';
 
 const DAY = 86400000;
 

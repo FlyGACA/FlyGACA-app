@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import type { DigestPart } from '@/calc/chatSources';
+import type { DigestPart } from '@/calc/chat/chatSources';
 import styles from './SourcesDigest.module.css';
 
 /**

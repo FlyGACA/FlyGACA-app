@@ -6,7 +6,7 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { sanitizeHtml, tocFromHtml, useFetchText } from '@/hooks/useFetchText';
 import { CORPUS } from '@/lib/content';
 import type { CorpusIndex, LibraryKind } from '@/lib/content';
-import { docNeighbors, relatedDocs } from '@/calc/corpusNav';
+import { docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
 import { adelLink } from '@/lib/adel';
 import { loadSaved, removeDoc, saveDoc } from '@/lib/native/offlineCache';
 import { shareCurrent } from '@/lib/share';

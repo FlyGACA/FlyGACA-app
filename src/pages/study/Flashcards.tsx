@@ -4,22 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
-import { dueKeys, masteredCount } from '@/calc/srs';
+import { dueKeys, masteredCount } from '@/calc/study/srs';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Disclaimer } from '@/components/Disclaimer';
 import { HubBackLink } from '@/components/HubBackLink';
 import styles from './Study.module.css';
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+import { shuffle } from '@/calc/study/shuffle';
 
 export function Flashcards() {
   const { t, i18n } = useTranslation();

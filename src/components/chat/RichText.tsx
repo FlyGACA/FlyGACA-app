@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router';
-import { parseMarkdown, type Inline } from '@/calc/markdown';
-import { linkifyCitations } from '@/calc/chatSources';
+import { parseMarkdown, type Inline } from '@/calc/chat/markdown';
+import { linkifyCitations } from '@/calc/chat/chatSources';
 
 /**
  * Renders a Captain Adel answer as React elements from the {@link parseMarkdown}

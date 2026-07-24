@@ -5,13 +5,12 @@ import { RequireSession } from './RequireSession';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { OutputGrid } from '@/components/calc/Grids';
 import { FlightForm } from '@/components/account/FlightForm';
-import { BLANK_FLIGHT, type FlightDraft } from '@/components/account/flight';
+import { BLANK_FLIGHT } from '@/components/account/flight';
 import {
   addFlight,
   updateFlight,
   deleteFlight,
   exportAll,
-  sumHours,
   useAccount,
 } from '@/lib/services/account';
 import { uiIsPro } from '@/lib/services/entitlements';
@@ -21,39 +20,15 @@ import {
   csvToFlights,
   filterFlights,
   sortFlights,
-  aircraftTotals,
-  monthTotals,
   type SortDir,
-} from '@/calc/logbook';
+} from '@/calc/pilot/logbook';
+import { LogbookTable } from './LogbookTable';
+import { LogbookBreakdown } from './LogbookBreakdown';
 import type { Flight } from '@/lib/services/account';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';
 import styles from './account.module.css';
-
-function download(name: string, data: string, mime: string) {
-  const blob = new Blob([data], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-const COLS: (keyof FlightDraft)[] = [
-  'date',
-  'type',
-  'reg',
-  'from',
-  'to',
-  'total',
-  'pic',
-  'night',
-  'ifr',
-  'ldg',
-  'nightLdg',
-  'appr',
-];
+import { triggerDownload } from '@/lib/download';
 
 export function Logbook() {
   const { t } = useTranslation();
@@ -112,11 +87,9 @@ function Inner() {
 
   const toggleSort = (key: keyof Flight) =>
     setSort((s) => ({ key, dir: s.key === key && s.dir === 'desc' ? 'asc' : 'desc' }));
-  const sortMark = (key: keyof Flight) =>
-    sort.key === key ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : '';
 
   function exportJson() {
-    download('flygaca-logbook.json', exportAll(), 'application/json');
+    triggerDownload('flygaca-logbook.json', exportAll(), 'application/json');
   }
 
   function exportCsv() {
@@ -125,7 +98,7 @@ function Inner() {
       navigate('/pricing');
       return;
     }
-    download('flygaca-logbook.csv', flightsToCsv(flights), 'text/csv');
+    triggerDownload('flygaca-logbook.csv', flightsToCsv(flights), 'text/csv');
   }
 
   async function importCsv(file: File) {
@@ -137,9 +110,6 @@ function Inner() {
     );
     window.setTimeout(() => setImportNote(''), 4000);
   }
-
-  const aircraft = useMemo(() => aircraftTotals(flights), [flights]);
-  const months = useMemo(() => monthTotals(flights, 6), [flights]);
 
   return (
     <section className={`container ${styles.page}`}>
@@ -293,129 +263,18 @@ function Inner() {
             )}
           </div>
 
-          <div className={styles.tableWrap}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  {COLS.map((c) => (
-                    <th key={c}>
-                      <button
-                        type="button"
-                        className={styles.sortBtn}
-                        onClick={() => toggleSort(c as keyof Flight)}
-                        aria-label={t('account.sortBy', { col: t(`account.${c}`) })}
-                      >
-                        {t(`account.${c}`)}
-                        {sortMark(c as keyof Flight)}
-                      </button>
-                    </th>
-                  ))}
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {view.map((f) => (
-                  <tr key={f.id}>
-                    {COLS.map((c) => (
-                      <td key={c}>{f[c] || '—'}</td>
-                    ))}
-                    <td className={styles.rowActions}>
-                      <button
-                        type="button"
-                        className={styles.rowBtn}
-                        onClick={() => {
-                          setAdding(false);
-                          setEditingId(f.id);
-                        }}
-                        aria-label={t('account.edit')}
-                      >
-                        ✎
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.del}
-                        onClick={() => deleteFlight(f.id)}
-                        aria-label={t('account.delete')}
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                <tr className={styles.totals}>
-                  <td colSpan={5}>{t('account.totals')}</td>
-                  <td>{sumHours(view, 'total').toFixed(1)}</td>
-                  <td>{sumHours(view, 'pic').toFixed(1)}</td>
-                  <td>{sumHours(view, 'night').toFixed(1)}</td>
-                  <td>{sumHours(view, 'ifr').toFixed(1)}</td>
-                  <td>{sumHours(view, 'ldg').toFixed(0)}</td>
-                  <td>{sumHours(view, 'nightLdg').toFixed(0)}</td>
-                  <td>{sumHours(view, 'appr').toFixed(0)}</td>
-                  <td />
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <LogbookTable
+            view={view}
+            sort={sort}
+            onToggleSort={toggleSort}
+            onEdit={(id) => {
+              setAdding(false);
+              setEditingId(id);
+            }}
+            onDelete={deleteFlight}
+          />
 
-          <details className={styles.breakdown}>
-            <summary>{t('account.breakdown')}</summary>
-            <div className={styles.breakdownGrids}>
-              <div>
-                <h2 className={styles.breakdownHead}>{t('account.byAircraft')}</h2>
-                <div className={styles.tableWrap}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        <th>{t('account.reg')}</th>
-                        <th>{t('account.type')}</th>
-                        <th>{t('account.flightsCol')}</th>
-                        <th>{t('account.totalHours')}</th>
-                        <th>{t('account.ldg')}</th>
-                        <th>{t('account.last')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {aircraft.map((a) => (
-                        <tr key={a.reg}>
-                          <td>{a.reg}</td>
-                          <td>{a.type || '—'}</td>
-                          <td>{a.flights}</td>
-                          <td>{a.hours.toFixed(1)}</td>
-                          <td>{a.landings}</td>
-                          <td>{a.last || '—'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div>
-                <h2 className={styles.breakdownHead}>{t('account.byMonth')}</h2>
-                <div className={styles.tableWrap}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        <th>{t('account.month')}</th>
-                        <th>{t('account.totalHours')}</th>
-                        <th>{t('account.ldg')}</th>
-                        <th>{t('account.flightsCol')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {months.map((m) => (
-                        <tr key={m.key}>
-                          <td>{m.label}</td>
-                          <td>{m.hours.toFixed(1)}</td>
-                          <td>{m.landings}</td>
-                          <td>{m.flights}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </details>
+          <LogbookBreakdown flights={flights} />
         </>
       )}
     </section>

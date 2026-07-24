@@ -1,6 +1,6 @@
 /**
  * Tests for the "save for offline" Cache API wrapper. The pure list/format
- * helpers live in src/calc/offlineManifest.ts (covered by offlineManifest.test.ts);
+ * helpers live in src/calc/library/offlineManifest.ts (covered by offlineManifest.test.ts);
  * this exercises feature-detection, corrupt-storage fallback and the cache
  * mutators with a stubbed Cache API.
  */
