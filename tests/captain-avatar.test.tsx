@@ -1,6 +1,6 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, cleanup, fireEvent } from '@testing-library/react';
-import '../src/i18n';
+import '@/i18n';
 
 // Captain Adel's portrait swaps to an animated idle loop (`avatar-live.webp`)
 // only when he is presented as live, the caller opts into `animated`, and the
@@ -9,7 +9,7 @@ import '../src/i18n';
 const motion = vi.hoisted(() => ({ reduce: false }));
 vi.mock('framer-motion', () => ({ useReducedMotion: () => motion.reduce }));
 
-import { CaptainAvatar } from '../src/components/CaptainAvatar';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
 
 const imgOf = (c: HTMLElement) => c.querySelector('img') as HTMLImageElement;
 

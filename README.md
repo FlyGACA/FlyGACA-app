@@ -12,6 +12,7 @@
 
 **_find it · study it · always verify against GACA_**
 
+<!-- Status badges -->
 <p align="center">
   <a href="https://github.com/FlyGACA/FlyGACA-app/actions/workflows/ci.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/FlyGACA/FlyGACA-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=2d6e8a" alt="Build Status" />
@@ -27,6 +28,7 @@
   </a>
 </p>
 
+<!-- Tech stack pills -->
 <p align="center">
   <img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0a0e12" alt="Vite" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white&labelColor=0a0e12" alt="React" />
@@ -36,14 +38,15 @@
   <img src="https://img.shields.io/badge/Firebase-me--central1-FFCA28?style=flat-square&logo=firebase&logoColor=white&labelColor=0a0e12" alt="Firebase" />
 </p>
 
-<p align="center">
-  <a href="https://flygaca.com"><b>🌐 Live app</b></a>
+<!-- Quick links -->
+<p align="center" style="margin-top: 1.5rem;">
+  <a href="https://flygaca.com" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🌐 Live app</b></a>
   &nbsp;·&nbsp;
-  <a href="#-get-started-in-60-seconds"><b>⚡ Quick start</b></a>
+  <a href="#-get-started-in-60-seconds" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>⚡ Quick start</b></a>
   &nbsp;·&nbsp;
-  <a href="#-architecture--tech-stack"><b>🏗️ Architecture</b></a>
+  <a href="#-architecture--tech-stack" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🏗️ Architecture</b></a>
   &nbsp;·&nbsp;
-  <a href="#-contribute"><b>🤝 Contribute</b></a>
+  <a href="#-contribute" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🤝 Contribute</b></a>
 </p>
 
 <br />
@@ -57,17 +60,13 @@
 
 ---
 
+<div align="center">
+
 ## 📑 Table of Contents
 
-- [About the Project](#-about-the-project)
-- [Key Features](#-key-features)
-- [A Look Inside](#-a-look-inside)
-- [Get Started in 60 Seconds](#-get-started-in-60-seconds)
-- [Architecture & Tech Stack](#-architecture--tech-stack)
-- [Deploy](#-deploy)
-- [Contribute](#-contribute)
-- [License](#-license)
-- [Contact](#-contact)
+[About](#-about-the-project) · [Features](#-key-features) · [Overview](#-a-look-inside) · [App Family](#-exam-prep-app-family) · [Quick Start](#-get-started-in-60-seconds) · [Architecture](#-architecture--tech-stack) · [Deploy](#-deploy) · [Contribute](#-contribute) · [License](#-license) · [Contact](#-contact)
+
+</div>
 
 ---
 
@@ -93,7 +92,7 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 | 🧮 **55+ Flight Tools** | Crosswind, density altitude, weight & balance, and more — shareable, URL-stateful, unit-tested math. |
 | 🌦️ **Weather & Ops** | Decode METARs/TAFs, parse NOTAMs, and track the current AIRAC cycle at a glance. |
 | 🗺️ **Charts & Airspace** | Interactive Leaflet maps loaded with Saudi aerodrome and approach-chart data. |
-| 🎓 **Ground School** | Spaced-repetition flashcards, mock exams, and structured learning paths. |
+| 🎓 **Ground School & Exam Prep** | Spaced-repetition flashcards, timed mock exams, learning paths — and per-certificate [exam-prep apps](#-exam-prep-app-family) (PPL · CPL · IR · ATPL · …). |
 | 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching; CSS logical properties mirror the whole UI automatically. |
 | 📲 **PWA & Native** | Install offline via Workbox, or ship first-class iOS/Android shells with Capacitor. |
 
@@ -101,38 +100,62 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 
 ## 📸 A Look Inside
 
-<table>
+<table style="border-collapse: collapse;">
   <tr>
-    <td width="50%" align="center">
-      <a href="https://flygaca.com/chat">
-        <img src="docs/screenshots/review-2026-07/chat-signed-out.png" alt="Captain Adel — citation-first AI flight instructor" width="100%" />
+    <td width="50%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/chat" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/chat-signed-out.png" alt="Captain Adel — citation-first AI flight instructor" width="100%" style="border-radius: 8px; border: 1px solid #2d6e8a20;" />
       </a>
-      <br /><sub><b>🤖 Captain Adel</b> · citation-first AI instructor</sub>
+      <br /><sub><b style="color: #2d6e8a;">🤖 Captain Adel</b><br />citation-first AI instructor</sub>
     </td>
-    <td width="50%" align="center">
-      <a href="https://flygaca.com/tools/crosswind">
-        <img src="docs/screenshots/review-2026-07/tool-crosswind.png" alt="Crosswind & headwind calculator with shareable URL state" width="100%" />
+    <td width="50%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/tools/crosswind" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/tool-crosswind.png" alt="Crosswind & headwind calculator with shareable URL state" width="100%" style="border-radius: 8px; border: 1px solid #2d6e8a20;" />
       </a>
-      <br /><sub><b>🧮 Flight tools</b> · shareable, URL-stateful math</sub>
+      <br /><sub><b style="color: #2d6e8a;">🧮 Flight tools</b><br />shareable, URL-stateful math</sub>
     </td>
   </tr>
   <tr>
-    <td width="50%" align="center">
-      <a href="https://flygaca.com/ar">
-        <img src="docs/screenshots/review-2026-07/home-arabic-rtl.png" alt="Fully mirrored Arabic (RTL) layout" width="100%" />
+    <td width="50%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/ar" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/home-arabic-rtl.png" alt="Fully mirrored Arabic (RTL) layout" width="100%" style="border-radius: 8px; border: 1px solid #8fc9a820;" />
       </a>
-      <br /><sub><b>🌍 Bilingual & RTL</b> · fully mirrored Arabic</sub>
+      <br /><sub><b style="color: #8fc9a8;">🌍 Bilingual & RTL</b><br />fully mirrored Arabic</sub>
     </td>
-    <td width="50%" align="center">
-      <a href="https://flygaca.com/pricing">
-        <img src="docs/screenshots/review-2026-07/pricing.png" alt="Pricing — free core library with Pro upgrade" width="100%" />
+    <td width="50%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/pricing" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/pricing.png" alt="Pricing — free core library with Pro upgrade" width="100%" style="border-radius: 8px; border: 1px solid #8fc9a820;" />
       </a>
-      <br /><sub><b>💳 Pricing</b> · free core library, Pro upgrade</sub>
+      <br /><sub><b style="color: #8fc9a8;">💳 Pricing</b><br />free core library, Pro upgrade</sub>
     </td>
   </tr>
 </table>
 
-<div align="center"><sub>Screenshots from the live app — explore it at <a href="https://flygaca.com">flygaca.com</a>.</sub></div>
+<div align="center"><sub style="color: #666;">Screenshots from the live app — explore it at <a href="https://flygaca.com" style="color: #2d6e8a;">flygaca.com</a>.</sub></div>
+
+---
+
+## 🎓 Exam-Prep App Family
+
+Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused study apps** — *one GACA certificate = one app*. Each is a slice of the same shared corpus (quiz banks, flashcards, timed mock exam, mastery tracking) delivered two ways from **this one monorepo**:
+
+- 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`.
+- 📱 **Native iOS** — a SwiftUI target in [`apple/`](apple/ARCHITECTURE.md) (`com.flygaca.<id>`), paid one-time and sold together as an App Store bundle.
+
+| App | Certificate / rating | Primary GACAR source | Status |
+| :--- | :--- | :--- | :--- |
+| **PPL** | Private Pilot Licence | Parts 61 · 91 · 71 · 67 + Saudi AIP | ✅ Live |
+| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR (Fly GACA authored) | ✅ Live |
+| **AIP** | Aeronautical Information | SANS Saudi AIP (GEN/ENR) | ✅ Live |
+| **CPL** | Commercial Pilot Licence | Parts 61 · 91 · 119 · 135 | 🆕 New — draft content |
+| **IR** | Instrument Rating | Parts 61 · 91 · 97 + AIP ENR | 🆕 New — draft content |
+| **ATPL** | Airline Transport Pilot Licence | Parts 61 · 121 | 🆕 New — draft content |
+| **Wave 3** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap |
+
+> [!IMPORTANT]
+> **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/pack-sources.test.ts`](tests/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`docs/STUDY-CONTENT-REVIEW.md`](docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
+
+<div align="center"><sub style="color: #666;">The full lineup, waves, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
 
 ---
 
@@ -199,8 +222,9 @@ flowchart LR
     BILL --> FS
 ```
 
-<table>
-<tr><td>
+<table style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background: linear-gradient(90deg, rgba(45, 110, 138, 0.05), rgba(143, 201, 168, 0.05));">
+  <td width="50%" style="padding: 1.5rem; border-left: 4px solid #2d6e8a;">
 
 **Frontend**
 - ⚛️ React 19 · Vite 8 · TypeScript (strict)
@@ -209,7 +233,7 @@ flowchart LR
 - 🌐 i18next — bilingual EN/AR with RTL mirroring
 - 📦 `vite-plugin-pwa` (Workbox) service worker
 
-</td><td>
+  </td><td width="50%" style="padding: 1.5rem; border-right: 4px solid #8fc9a8;">
 
 **Backend & Native**
 - 🔥 Firebase Cloud Functions (Express) · `me-central1`
@@ -218,7 +242,8 @@ flowchart LR
 - 📱 Capacitor iOS / Android shells
 - 🗄️ Static JSON corpus streamed from `public/data/`
 
-</td></tr>
+  </td>
+</tr>
 </table>
 
 ### Core Commands
@@ -256,10 +281,15 @@ Firebase Hosting is **canonical**; Vercel, Cloudflare, and Netlify run as mirror
 
 <div align="center">
 
-[![Firebase](https://img.shields.io/badge/Firebase-canonical-c8a04a?style=for-the-badge&logo=firebase&logoColor=white&labelColor=0a0e12)](firebase.json)
-[![Vercel](https://img.shields.io/badge/Vercel-mirror-2d6e8a?style=for-the-badge&logo=vercel&logoColor=white&labelColor=0a0e12)](vercel.json)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-mirror-2d6e8a?style=for-the-badge&logo=cloudflarepages&logoColor=white&labelColor=0a0e12)](wrangler.toml)
-[![Netlify](https://img.shields.io/badge/Netlify-mirror-2d6e8a?style=for-the-badge&logo=netlify&logoColor=white&labelColor=0a0e12)](netlify.toml)
+**Deployment Platforms**
+
+[![Firebase](https://img.shields.io/badge/🔥_Firebase-canonical-c8a04a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](firebase.json)
+&nbsp;
+[![Vercel](https://img.shields.io/badge/▲_Vercel-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](vercel.json)
+&nbsp;
+[![Cloudflare](https://img.shields.io/badge/⚡_Cloudflare-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](wrangler.toml)
+&nbsp;
+[![Netlify](https://img.shields.io/badge/◆_Netlify-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](netlify.toml)
 
 </div>
 
@@ -314,10 +344,14 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 <div align="center">
 
-<sub>Built for the Saudi GA community · <b>find it · study it · always verify against GACA</b></sub>
+<br />
+
+**Built for the Saudi GA community**
+
+<sub style="color: #2d6e8a;">**find it · study it · always verify against GACA**</sub>
 
 <br /><br />
 
-<b>صُنع في السعودية 🇸🇦 · Made in Saudi Arabia</b>
+<b style="color: #8fc9a8; font-size: 1.1em;">صُنع في السعودية 🇸🇦 · Made in Saudi Arabia</b>
 
 </div>

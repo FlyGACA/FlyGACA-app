@@ -33,6 +33,8 @@ const h = vi.hoisted(() => {
         };
       }),
       signInWithPopup: vi.fn(() => Promise.resolve({ user: h.user })),
+      signInWithRedirect: vi.fn(() => Promise.resolve()),
+      getRedirectResult: vi.fn(() => Promise.resolve(null as { user: unknown } | null)),
       signInWithEmailAndPassword: vi.fn(() => Promise.resolve({ user: h.user })),
       createUserWithEmailAndPassword: vi.fn(() => Promise.resolve({ user: h.user })),
       updateProfile: vi.fn(() => Promise.resolve()),
@@ -43,19 +45,19 @@ const h = vi.hoisted(() => {
   };
 });
 
-vi.mock('../src/lib/native-bridge', () => ({ isNative: () => h.native }));
+vi.mock('@/lib/native/nativeBridge', () => ({ isNative: () => h.native }));
 
-vi.mock('../src/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   isFirebaseConfigured: () => true,
   getFirebaseAuth: () => Promise.resolve(h.auth),
 }));
 
 vi.mock('firebase/auth', () => h.fa);
 
-type AuthModule = typeof import('../src/lib/auth');
+type AuthModule = typeof import('@/lib/services/auth');
 async function load(): Promise<AuthModule> {
   vi.resetModules();
-  return import('../src/lib/auth');
+  return import('@/lib/services/auth');
 }
 
 beforeEach(() => {
@@ -118,8 +120,42 @@ describe('sign-in flows', () => {
   it('signInWithGoogle returns the mapped user via popup', async () => {
     const out = await (await load()).signInWithGoogle();
     expect(h.fa.signInWithPopup).toHaveBeenCalled();
-    expect(out.uid).toBe('u1');
-    expect(out.email).toBe('cap@example.com');
+    expect(h.fa.signInWithRedirect).not.toHaveBeenCalled();
+    expect(out?.uid).toBe('u1');
+    expect(out?.email).toBe('cap@example.com');
+  });
+
+  it('signInWithGoogle goes straight to redirect in the native shell', async () => {
+    h.native = true;
+    const out = await (await load()).signInWithGoogle();
+    expect(h.fa.signInWithRedirect).toHaveBeenCalled();
+    expect(h.fa.signInWithPopup).not.toHaveBeenCalled();
+    // The page navigates away, so no user is mapped synchronously.
+    expect(out).toBeNull();
+  });
+
+  it('signInWithGoogle falls back to redirect when the popup is blocked', async () => {
+    h.fa.signInWithPopup.mockRejectedValueOnce({ code: 'auth/popup-blocked' });
+    const out = await (await load()).signInWithGoogle();
+    expect(h.fa.signInWithPopup).toHaveBeenCalled();
+    expect(h.fa.signInWithRedirect).toHaveBeenCalled();
+    expect(out).toBeNull();
+  });
+
+  it('signInWithGoogle rethrows a non-popup error (e.g. unauthorized domain)', async () => {
+    h.fa.signInWithPopup.mockRejectedValueOnce({ code: 'auth/unauthorized-domain' });
+    await expect((await load()).signInWithGoogle()).rejects.toMatchObject({
+      code: 'auth/unauthorized-domain',
+    });
+    expect(h.fa.signInWithRedirect).not.toHaveBeenCalled();
+  });
+
+  it('onAuthChange completes a pending Google redirect on bootstrap', async () => {
+    h.fa.getRedirectResult.mockResolvedValueOnce({ user: h.user });
+    await (await load()).onAuthChange(vi.fn());
+    // getRedirectResult is polled once when the listener is attached (fire-and-forget,
+    // so wait for the dynamic import + microtasks to settle).
+    await vi.waitFor(() => expect(h.fa.getRedirectResult).toHaveBeenCalledWith(h.auth));
   });
 
   it('signInWithEmail passes credentials through', async () => {

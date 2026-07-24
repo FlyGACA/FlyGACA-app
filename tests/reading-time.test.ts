@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readingMinutes } from '../src/lib/readingTime';
+import { readingMinutes } from '@/lib/readingTime';
 
 describe('readingMinutes', () => {
   it('rounds words/wpm to the nearest minute', () => {

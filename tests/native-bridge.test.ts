@@ -5,7 +5,7 @@ import {
   billingChannel,
   toAppPath,
   nativeStore,
-} from '../src/lib/native-bridge';
+} from '@/lib/native/nativeBridge';
 
 describe('native-bridge on the web', () => {
   it('reports web platform and is not native', () => {

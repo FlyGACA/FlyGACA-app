@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { profileCompleteness } from '../src/calc/onboarding';
-import type { Flight, Profile } from '../src/lib/account';
+import { profileCompleteness } from '@/calc/pilot/onboarding';
+import type { Flight, Profile } from '@/lib/services/account';
 
-const profile = (over: Partial<Profile> = {}): Pick<
-  Profile,
-  'medicalExpiry' | 'lastFlightReview' | 'homeBase'
-> => ({
+const profile = (
+  over: Partial<Profile> = {},
+): Pick<Profile, 'medicalExpiry' | 'lastFlightReview' | 'homeBase'> => ({
   medicalExpiry: '',
   lastFlightReview: '',
   homeBase: '',

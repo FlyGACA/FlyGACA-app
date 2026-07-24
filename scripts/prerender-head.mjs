@@ -32,7 +32,7 @@ if (!existsSync(shellPath)) {
 }
 const shell = readFileSync(shellPath, 'utf8');
 
-// --- Pure URL/meta helpers (mirror src/lib/seo.ts) -----------------------------
+// --- Pure URL/meta helpers (mirror src/lib/seo/seo.ts) -----------------------------
 const SUFFIX = 'Fly GACA';
 const DEFAULT_TITLE = 'Fly GACA — Saudi Aviation Library';
 const DEFAULT_DESC =
@@ -40,14 +40,14 @@ const DEFAULT_DESC =
 const OG_SECTIONS = new Set(['tools', 'guides', 'library', 'study', 'pricing']);
 
 // English lives at clean paths; the Arabic variant lives under /ar. Mirrors
-// src/lib/seo.ts so the no-JS head layer matches the runtime head.
+// src/lib/seo/seo.ts so the no-JS head layer matches the runtime head.
 const AR_PREFIX = '/ar';
 const normalizePath = (p) => {
   const clean = (p || '/').split(/[?#]/)[0];
   const lead = clean.startsWith('/') ? clean : `/${clean}`;
   return lead.length > 1 ? lead.replace(/\/+$/, '') : '/';
 };
-// The Arabic document's real path mirrors src/lib/seo.ts localePath/canonicalUrl:
+// The Arabic document's real path mirrors src/lib/seo/seo.ts localePath/canonicalUrl:
 // `/` → `/ar`, `/library` → `/ar/library`; English/x-default stay on the clean path.
 const stripArPrefix = (p) => {
   const n = normalizePath(p);
@@ -68,7 +68,7 @@ const ogImageFor = (p) => {
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-// --- JSON-LD builders (mirror src/lib/jsonld.ts) -------------------------------
+// --- JSON-LD builders (mirror src/lib/seo/jsonld.ts) -------------------------------
 const ORG_ID = `${SITE}/#organization`;
 const SITE_ID = `${SITE}/#website`;
 const CTX = 'https://schema.org';
@@ -327,7 +327,7 @@ function render(path, d, lang = 'en') {
   );
   html = setTag(html, /<link\s+rel="canonical"[^>]*>/, `<link rel="canonical" href="${canonical}" />`);
   // The same hreflang cluster on every language variant: en (clean), ar (/ar),
-  // x-default (clean). Mirrors src/lib/seo.ts hreflangAlternates.
+  // x-default (clean). Mirrors src/lib/seo/seo.ts hreflangAlternates.
   for (const [hreflang, href] of [
     ['en', canonicalUrl(path, 'en')],
     ['ar', canonicalUrl(path, 'ar')],

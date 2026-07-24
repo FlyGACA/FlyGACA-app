@@ -1,13 +1,14 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { linkHref, type PathsIndex } from '../../lib/content';
-import { useStudyProgress, togglePathStep } from '../../lib/studyProgress';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { ProgressBar } from '../../components/ProgressBar';
-import { Disclaimer } from '../../components/Disclaimer';
-import { HubBackLink } from '../../components/HubBackLink';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { PathsIndex } from '@/lib/content';
+import { linkHref } from '@/lib/contentLinks';
+import { useStudyProgress, togglePathStep } from '@/lib/studyProgress';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { courseLd } from '@/lib/seo/jsonld';
+import { ProgressBar } from '@/components/ProgressBar';
+import { Disclaimer } from '@/components/Disclaimer';
+import { HubBackLink } from '@/components/HubBackLink';
 import styles from './Paths.module.css';
 
 export function Paths() {

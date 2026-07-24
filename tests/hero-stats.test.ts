@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { TOOLS, liveTools } from '../src/lib/tools';
-import { LIVE_GUIDE_SLUGS } from '../src/pages/guides/guides';
-import en from '../src/i18n/en.json';
+import { TOOLS, liveTools } from '@/lib/tools';
+import { LIVE_GUIDE_SLUGS } from '@/pages/guides/guides';
+import en from '@/i18n/en.json';
 
 /**
  * Marketing-number guard. The hero "stat cards" and the pricing/about copy quote
