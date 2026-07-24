@@ -3,6 +3,7 @@
   "scripts": {
     "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "build": "tsc",
     "build:watch": "tsc --watch",
@@ -32,6 +33,9 @@
     "@types/express": "^5.0.6",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
+    "@typescript-eslint/eslint-plugin": "^8.64.0",
+    "@typescript-eslint/parser": "^8.64.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.6.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.25.4",

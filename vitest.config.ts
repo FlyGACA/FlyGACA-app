@@ -22,7 +22,8 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     css: false,
     coverage: {
-      // Opt-in via `npm run test:coverage`.
+      // `npm run test:coverage` — the CI unit-tests job runs this, so the ratchet
+      // below gates merges.
       provider: 'v8',
       reporter: ['text', 'html'],
       // Focus on the unit-testable layers. Pages, app chrome (src/app) and the
@@ -37,10 +38,10 @@ export default defineConfig({
       // can't silently regress, while today's run still passes. Raise as cover
       // grows. (`npm run test:coverage` prints the live figures.)
       thresholds: {
-        statements: 72,
-        branches: 70,
-        functions: 73,
-        lines: 72,
+        statements: 76,
+        branches: 73,
+        functions: 79,
+        lines: 77,
       },
     },
   },
