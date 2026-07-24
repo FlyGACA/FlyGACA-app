@@ -4,22 +4,23 @@
  *
  * Each app in the family is its own App Store product, so each needs its OWN
  * recognizable icon — before this script every app shipped the same placeholder.
- * The icons share one system (the Falcon night background + a subtle falcon-wing
- * chevron) so the family reads as a set, and differ by a per-module accent colour
- * + the module's short code, so a user with several installed can tell them apart
- * on the home screen at a glance.
+ * The icons are the real Fly GACA falcon mark on the shared Falcon night
+ * background, RECOLOURED per app: the mark's two-tone (teal→green) gradient is
+ * hue-rotated by a per-module amount, so every app reads as the same brand mark in
+ * a distinct colour and a user with several installed can tell them apart at a
+ * glance.
  *
  *   node scripts/native/gen-app-icons.mjs           # all six apps
  *   node scripts/native/gen-app-icons.mjs --app cpl # one app
  *
- * Colours come from the Falcon design tokens (src/styles/tokens.css). Output is a
- * FLATTENED (no alpha channel) 1024×1024 PNG — the App Store rejects marketing
- * icons with an alpha channel (see docs/RUNBOOK-ios-signing.md, "altool error
- * 1091"). Rendered with `sharp` (already a devDependency) from an inline SVG, so
- * there's no browser, network or Xcode dependency — it runs anywhere `npm ci` ran.
+ * Background colour comes from the Falcon design tokens (src/styles/tokens.css).
+ * Output is a FLATTENED (no alpha channel) 1024×1024 PNG — the App Store rejects
+ * marketing icons with an alpha channel (see docs/RUNBOOK-ios-signing.md, "altool
+ * error 1091"). Rendered with `sharp` (already a devDependency), so there's no
+ * browser, network or Xcode dependency — it runs anywhere `npm ci` ran.
  *
- * These are clean, legible placeholders built from the brand system, not final
- * bespoke artwork — re-run after dropping real per-app art into the template.
+ * These are brand-system placeholders (the real mark, recoloured), not final
+ * bespoke per-app artwork — swap in real art before external distribution.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -28,29 +29,31 @@ import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-// Falcon palette (src/styles/tokens.css). `night`/`deep` are the shared canvas;
-// `accent` is the per-app differentiator.
+// Falcon palette (src/styles/tokens.css). The night gradient is the shared canvas.
 const NIGHT = '#0a0e12';
 const DEEP = '#101a24';
 
-// App Store product → { Xcode target dir, on-icon label, Falcon accent }.
+// The real brand mark (transparent, 1024px) — the falcon whose hue we rotate.
+const MARK = join(root, 'public', 'brand', 'flygaca-mark.png');
+
+// App Store product → { Xcode target dir, per-app hue rotation in degrees }.
 // Mirrors the APPS registry in scripts/build-ios-content.mjs (same six apps).
+// PPL keeps the canonical brand colours (hue 0); the rest are spread around the
+// wheel so all six are clearly distinct.
 const APPS = {
-  ppl: { dir: 'PPL', label: 'PPL', accent: '#2d6e8a' }, // falcon-teal
-  elpt: { dir: 'ELPT', label: 'ELPT', accent: '#8fc9a8' }, // falcon-sage
-  aip: { dir: 'AIP', label: 'AIP', accent: '#c8a04a' }, // falcon-gold
-  cpl: { dir: 'CPL', label: 'CPL', accent: '#3f9d8a' }, // teal→green shift
-  ir: { dir: 'IR', label: 'IR', accent: '#cf6b52' }, // falcon-clay
-  atpl: { dir: 'ATPL', label: 'ATPL', accent: '#7a8fd0' }, // cool indigo
+  ppl: { dir: 'PPL', hue: 0 }, // canonical teal→green
+  elpt: { dir: 'ELPT', hue: 55 },
+  aip: { dir: 'AIP', hue: 110 },
+  cpl: { dir: 'CPL', hue: 165 },
+  ir: { dir: 'IR', hue: 215 },
+  atpl: { dir: 'ATPL', hue: 275 },
 };
 
 const SIZE = 1024;
+const MARK_SIZE = Math.round(SIZE * 0.82); // logo footprint within the canvas
 
-/** Build the 1024×1024 icon SVG for one app. */
-function iconSvg({ label, accent }) {
-  // Longer codes (ELPT/ATPL) need a smaller type size to breathe inside the grid.
-  const fontSize = label.length >= 4 ? 300 : label.length === 3 ? 360 : 440;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
+// The shared night-gradient background (no chevron/label — the mark is the hero).
+const backgroundSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${DEEP}"/>
@@ -58,15 +61,7 @@ function iconSvg({ label, accent }) {
     </linearGradient>
   </defs>
   <rect width="${SIZE}" height="${SIZE}" fill="url(#bg)"/>
-  <!-- Falcon-wing chevron watermark, echoing the brand mark. -->
-  <path d="M167 300 L512 130 L857 300 L512 470 Z" fill="${accent}" opacity="0.16"/>
-  <!-- Accent baseline rule. -->
-  <rect x="167" y="792" width="690" height="20" rx="10" fill="${accent}"/>
-  <text x="512" y="560" text-anchor="middle" dominant-baseline="central"
-        font-family="Helvetica, Arial, sans-serif" font-weight="700"
-        font-size="${fontSize}" letter-spacing="8" fill="#f5f2ed">${label}</text>
 </svg>`;
-}
 
 const contentsJson = JSON.stringify(
   {
@@ -97,13 +92,24 @@ async function generate(appId) {
   writeFileSync(join(assetsDir, 'Contents.json'), `${catalogContentsJson}\n`);
   writeFileSync(join(iconSetDir, 'Contents.json'), `${contentsJson}\n`);
 
-  const png = await sharp(Buffer.from(iconSvg(app)))
-    .resize(SIZE, SIZE)
-    .flatten({ background: NIGHT }) // strip alpha — App Store marketing-icon requirement
+  // Recolour the mark by rotating its hue, preserving its shape/shading + alpha.
+  const mark = await sharp(MARK)
+    .resize(MARK_SIZE, MARK_SIZE, { fit: 'inside' })
+    .modulate({ hue: app.hue })
+    .toBuffer();
+
+  const composited = await sharp(Buffer.from(backgroundSvg))
+    .composite([{ input: mark, gravity: 'center' }])
     .png()
     .toBuffer();
+
+  // Flatten in a SECOND pass: sharp applies flatten before composite within a
+  // single pipeline, so the composite would otherwise re-introduce an alpha
+  // channel. A fresh pipeline flattens the finished image onto the night
+  // background, guaranteeing a no-alpha PNG (App Store marketing-icon requirement).
+  const png = await sharp(composited).flatten({ background: NIGHT }).png().toBuffer();
   writeFileSync(join(iconSetDir, 'AppIcon-1024.png'), png);
-  console.log(`✓ ${app.dir}: ${app.label} icon (${png.length.toLocaleString()} bytes)`);
+  console.log(`✓ ${app.dir}: falcon +${app.hue}° hue (${png.length.toLocaleString()} bytes)`);
 }
 
 const argApp = (() => {
