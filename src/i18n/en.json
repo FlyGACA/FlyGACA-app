@@ -2089,6 +2089,8 @@
       "passwordTooWeak": "Password must meet all complexity requirements.",
       "emailInUse": "An account already exists with that email.",
       "weakPassword": "Password must be at least 6 characters.",
+      "missingPassword": "Enter your password.",
+      "userDisabled": "This account has been disabled. Contact support if you think this is a mistake.",
       "tooManyRequests": "Too many attempts. Try again in a little while.",
       "network": "Network error. Check your connection and try again.",
       "providerDisabled": "This sign-in method is turned off for this app.",
