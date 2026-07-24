@@ -41,7 +41,7 @@
     "cap:sync": "npm run build && cap sync",
     "cap:localize": "node scripts/native/ios-localize.mjs",
     "cap:open": "cap open ios",
-    "ios:generate": "cd apple && xcodegen generate",
+    "ios:generate": "bash scripts/native/ios-generate.sh",
     "ios:test": "command -v swift > /dev/null 2>&1 && cd apple/FlyGACAKit && swift test || echo 'Swift not available; skipping iOS tests'",
     "ios:test:watch": "cd apple/FlyGACAKit && swift test --watch",
     "ios:icons": "node scripts/native/gen-app-icons.mjs",
