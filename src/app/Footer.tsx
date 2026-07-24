@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { LangToggle } from '../components/LangToggle';
-import { ThemeToggle } from '../components/ThemeToggle';
-import { Disclaimer } from '../components/Disclaimer';
-import { ExternalLink } from '../components/ExternalLink';
+import { LangToggle } from '@/components/LangToggle';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { Disclaimer } from '@/components/Disclaimer';
+import { ExternalLink } from '@/components/ExternalLink';
 import styles from './Footer.module.css';
 
 /** Scrolls to the top, honouring the user's reduced-motion preference. */

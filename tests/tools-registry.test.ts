@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { TOOLS, TOOL_CATEGORIES } from '../src/lib/tools';
-import en from '../src/i18n/en.json';
-import ar from '../src/i18n/ar.json';
+import { TOOLS, TOOL_CATEGORIES } from '@/lib/tools';
+import en from '@/i18n/en.json';
+import ar from '@/i18n/ar.json';
 
 describe('tools registry', () => {
   it('has unique ids and /tools/ routes', () => {
@@ -19,7 +19,8 @@ describe('tools registry', () => {
   });
 
   it('every tool has a bilingual name + blurb', () => {
-    const items = (lang: typeof en) => lang.tools.items as Record<string, { name: string; blurb: string }>;
+    const items = (lang: typeof en) =>
+      lang.tools.items as Record<string, { name: string; blurb: string }>;
     for (const tool of TOOLS) {
       expect(items(en)[tool.id]?.name, `en name ${tool.id}`).toBeTruthy();
       expect(items(en)[tool.id]?.blurb, `en blurb ${tool.id}`).toBeTruthy();

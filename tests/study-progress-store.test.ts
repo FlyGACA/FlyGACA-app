@@ -6,12 +6,12 @@
  */
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import type { ExamResult } from '../src/lib/studyProgress';
+import type { ExamResult } from '@/lib/studyProgress';
 
-type Mod = typeof import('../src/lib/studyProgress');
+type Mod = typeof import('@/lib/studyProgress');
 async function fresh(): Promise<Mod> {
   vi.resetModules();
-  return import('../src/lib/studyProgress');
+  return import('@/lib/studyProgress');
 }
 
 const DAY1 = new Date('2026-06-20T10:00:00Z');

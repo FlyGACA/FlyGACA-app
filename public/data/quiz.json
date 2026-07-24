@@ -749,22 +749,6 @@
           }
         },
         {
-          "q": "How long is one AIRAC cycle?",
-          "options": [
-            "7 days",
-            "14 days",
-            "28 days",
-            "30 days"
-          ],
-          "answer": 2,
-          "explain": "AIRAC information is published on a fixed 28-day cycle, per ICAO Annex 15.",
-          "cite": "Aeronautical Information Manual",
-          "citeRef": {
-            "kind": "reference",
-            "id": "aeronautical-information-manual-aim"
-          }
-        },
-        {
           "q": "Where would you find runway and aerodrome frequency data in the AIP?",
           "options": [
             "GEN section",
@@ -3835,6 +3819,3284 @@
           "citeRef": {
             "kind": "reference",
             "id": "pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cpl-licensing",
+      "title": "Commercial Pilot Licensing",
+      "desc": "CPL eligibility, aeronautical experience, privileges and limitations under GACAR Part 61.",
+      "source": "GACAR Part 61, Subpart F · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Under GACAR Part 61, the minimum age to be eligible for a commercial pilot certificate is —",
+          "options": [
+            "16",
+            "17",
+            "18",
+            "21"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.153(a) requires a commercial pilot certificate applicant to be at least 18 years of age.",
+          "cite": "GACAR Part 61, §61.153",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-153"
+          }
+        },
+        {
+          "q": "Before being issued a commercial pilot certificate, an applicant must already hold at least —",
+          "options": [
+            "A student pilot certificate",
+            "A sport pilot certificate",
+            "A private pilot certificate",
+            "An airline transport pilot certificate"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.153(e) requires the applicant to hold at least a private pilot certificate issued under Part 61 (or meet the requirements of §61.93).",
+          "cite": "GACAR Part 61, §61.153",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-153"
+          }
+        },
+        {
+          "q": "Which class of medical certificate must a commercial pilot certificate applicant hold (for airplane operations)?",
+          "options": [
+            "Class 3",
+            "Class 2",
+            "Class 1",
+            "No medical certificate is required"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.153(g) requires a Class 1 medical certificate for a commercial pilot certificate; only glider or balloon applicants may hold a Class 2.",
+          "cite": "GACAR Part 61, §61.153",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-153"
+          }
+        },
+        {
+          "q": "A commercial pilot certificate applicant needs only a Class 2 medical certificate when testing for or exercising the privileges in a —",
+          "options": [
+            "Multi-engine airplane",
+            "Helicopter",
+            "Glider or balloon",
+            "Seaplane"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.153(g) makes an exception to the Class 1 requirement: persons undergoing the practical test for or exercising commercial privileges in a glider or balloon need only a Class 2 medical certificate.",
+          "cite": "GACAR Part 61, §61.153",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-153"
+          }
+        },
+        {
+          "q": "Which pilot certificate is the minimum required to act as pilot in command of an aircraft carrying persons or property for compensation or hire?",
+          "options": [
+            "Student pilot certificate",
+            "Private pilot certificate",
+            "Commercial pilot certificate",
+            "Sport pilot certificate"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.155(a)(2) grants the commercial pilot certificate holder the privilege to act as PIC carrying persons or property for compensation or hire, making it the minimum certificate for paid operations.",
+          "cite": "GACAR Part 61, §61.155",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-155"
+          }
+        },
+        {
+          "q": "Under GACAR §61.155, a commercial pilot certificate holder may exercise the same privileges as a person holding a —",
+          "options": [
+            "Sport pilot certificate",
+            "Student pilot certificate",
+            "Private pilot certificate",
+            "Airline transport pilot certificate"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.155(a)(1) provides that a commercial pilot may exercise the same privileges as a private pilot, in addition to the compensation-or-hire privileges.",
+          "cite": "GACAR Part 61, §61.155",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-155"
+          }
+        },
+        {
+          "q": "A commercial pilot who applies with an airplane category rating and does not hold an instrument rating in the same category and class is limited from carrying passengers for hire on cross-country flights in excess of —",
+          "options": [
+            "25 NM",
+            "50 NM",
+            "75 NM",
+            "100 NM"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.155(b)(1) imposes the limitation that carriage of passengers for hire on cross-country flights in excess of 50 NM (or at night) is prohibited without the corresponding instrument rating.",
+          "cite": "GACAR Part 61, §61.155",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-155"
+          }
+        },
+        {
+          "q": "Besides cross-country flights over 50 NM, the no-instrument-rating commercial limitation also prohibits carrying passengers for hire —",
+          "options": [
+            "Over water",
+            "At night",
+            "Above 10,000 ft",
+            "In controlled airspace"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.155(b)(1) prohibits carriage of passengers for hire on cross-country flights over 50 NM or at night until an instrument rating is obtained.",
+          "cite": "GACAR Part 61, §61.155",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-155"
+          }
+        },
+        {
+          "q": "How is the commercial pilot's 50 NM / night carriage-for-hire limitation removed?",
+          "options": [
+            "By logging 100 additional hours",
+            "By obtaining an instrument rating in the same category and class",
+            "By passing a separate night checkride",
+            "By reaching 21 years of age"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.155(b)(1) states the limitation may be removed once the person satisfactorily accomplishes the §61.89 requirements for an instrument rating in the same category and class listed on the certificate.",
+          "cite": "GACAR Part 61, §61.155",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-155"
+          }
+        },
+        {
+          "q": "GACAR §61.151 states that this subpart prescribes the requirements for the issuance of which certificates?",
+          "options": [
+            "Private pilot certificates",
+            "Commercial pilot certificates",
+            "Airline transport pilot certificates",
+            "Flight instructor certificates"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.151 (Applicability) provides that the subpart prescribes the requirements, conditions, privileges, and limitations for commercial pilot certificates and ratings.",
+          "cite": "GACAR Part 61, §61.151",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-151"
+          }
+        },
+        {
+          "q": "Under GACAR §61.3, a person may not exercise the privileges of a certificate issued under Part 61 if that certificate is —",
+          "options": [
+            "Endorsed with a new rating",
+            "Surrendered, suspended, revoked, or expired",
+            "Issued by a foreign State",
+            "Held for less than 24 months"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.3(a) prohibits exercising the privileges of a certificate, rating, endorsement, or authorization that has been surrendered, suspended, revoked, or expired.",
+          "cite": "GACAR Part 61, §61.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-3"
+          }
+        },
+        {
+          "q": "Under GACAR §61.3, a commercial or airline transport pilot may not serve as a pilot in international operations under Part 121 or 135 after attaining their 60th birthday, or, in operations with more than one pilot, their —",
+          "options": [
+            "62nd birthday",
+            "63rd birthday",
+            "65th birthday",
+            "70th birthday"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.3(c) bars a CPL or ATP holder from serving as a pilot in such international operations after the 60th birthday, extended to the 65th birthday in multi-pilot operations.",
+          "cite": "GACAR Part 61, §61.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-3"
+          }
+        },
+        {
+          "q": "Under GACAR §61.5, to exercise the privileges of a certificate a person must have in their physical possession or readily accessible in the aircraft —",
+          "options": [
+            "A photocopy of their logbook",
+            "A current and valid airman certificate",
+            "Their pilot-school enrollment record",
+            "The aircraft's maintenance release"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.5(a) requires a current and valid airman certificate (or §61.37(c) document / Temporary Flight Authorization) endorsed with the necessary ratings, in possession or readily accessible in the aircraft.",
+          "cite": "GACAR Part 61, §61.5",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-5"
+          }
+        },
+        {
+          "q": "Under GACAR §61.9, the medical certificate that a required flight crew member must hold is issued under GACAR Part —",
+          "options": [
+            "Part 61",
+            "Part 65",
+            "Part 67",
+            "Part 121"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.9(a) requires a required flight crew member to hold the appropriate medical certificate issued under GACAR Part 67.",
+          "cite": "GACAR Part 61, §61.9",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-9"
+          }
+        },
+        {
+          "q": "Which of the following is NOT a pilot certificate issued under GACAR §61.7?",
+          "options": [
+            "Student pilot",
+            "Commercial pilot",
+            "Airline transport pilot",
+            "Aircraft dispatcher"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.7(a) lists the pilot certificates as student, sport, private, commercial, and ATP; aircraft dispatcher is not a pilot certificate under this part.",
+          "cite": "GACAR Part 61, §61.7",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-7"
+          }
+        },
+        {
+          "q": "Under GACAR §61.7, instrument ratings are placed on which pilot certificates?",
+          "options": [
+            "Student and private only",
+            "Private and commercial only",
+            "Commercial and ATP only",
+            "All pilot certificates"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.7(b)(8) specifies that instrument ratings are placed on private and commercial pilot certificates only.",
+          "cite": "GACAR Part 61, §61.7",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-7"
+          }
+        },
+        {
+          "q": "Under GACAR §61.153, the commercial pilot knowledge test is based on the aeronautical knowledge areas listed in an appendix to GACAR Part —",
+          "options": [
+            "Part 61",
+            "Part 67",
+            "Part 121",
+            "Part 141"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.153(b) requires passing the knowledge test on the aeronautical knowledge areas listed in Appendix C to GACAR Part 141.",
+          "cite": "GACAR Part 61, §61.153",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-153"
+          }
+        },
+        {
+          "q": "For an applicant taking the logged ground-and-flight-training route to a commercial pilot certificate, the required aeronautical experience is prescribed in which appendix to GACAR Part 61?",
+          "options": [
+            "Appendix B",
+            "Appendix C",
+            "Appendix D",
+            "Appendix E"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.153(c)(4) requires that such applicants meet the aeronautical experience requirements of Appendix D to Part 61.",
+          "cite": "GACAR Part 61, §61.153",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-153"
+          }
+        }
+      ]
+    },
+    {
+      "id": "commercial-ops",
+      "title": "Commercial Air Operations",
+      "desc": "Air operator certification and the operating rules for commercial flights (GACAR Parts 119, 135, 91).",
+      "source": "GACAR Parts 119 · 135 · 91 · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Under GACAR Part 119, a person authorized to conduct operations as a commercial operator is issued which certificate?",
+          "options": [
+            "An Air Operator Certificate (AOC)",
+            "An Operator Certificate (OC)",
+            "A Letter of Authorization",
+            "A Part 129 foreign carrier permit"
+          ],
+          "answer": 0,
+          "explain": "GACAR §119.1 states that a person authorized to conduct operations as a commercial operator under Part 121 or 135 is issued an Air Operator Certificate (AOC); noncommercial operators under Part 125 receive an Operator Certificate (OC).",
+          "cite": "GACAR Part 119, §119.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-1"
+          }
+        },
+        {
+          "q": "Under GACAR Part 119, a person authorized to conduct noncommercial operations under GACAR Part 125 is issued —",
+          "options": [
+            "An Air Operator Certificate (AOC)",
+            "An Operator Certificate (OC)",
+            "A commercial operating certificate",
+            "An aerial-work authorization"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.1 provides that a person authorized to conduct noncommercial operations under Part 125 will be issued an Operator Certificate (OC), as distinct from the AOC issued to commercial operators.",
+          "cite": "GACAR Part 119, §119.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-1"
+          }
+        },
+        {
+          "q": "GACAR Part 119 prescribes the certification requirements for operations conducted under which Parts?",
+          "options": [
+            "Parts 61, 91, and 141",
+            "Parts 121, 125, and 135",
+            "Parts 101, 103, and 107",
+            "Parts 129 and 133 only"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.1 states that Part 119 prescribes the certification requirements an operator must meet to obtain and hold a certificate authorizing operations under Part 121, 125, or 135.",
+          "cite": "GACAR Part 119, §119.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-1"
+          }
+        },
+        {
+          "q": "According to GACAR §119.1, Part 119 does NOT apply to which of the following?",
+          "options": [
+            "Commercial operations under Part 135",
+            "Noncommercial operations under Part 125",
+            "Foreign air carriers operating under GACAR Part 129",
+            "Operators leasing aircraft"
+          ],
+          "answer": 2,
+          "explain": "GACAR §119.1 expressly states that Part 119 does not apply to activities conducted by foreign air carriers under Part 129, nor to aerial work operations under Part 133.",
+          "cite": "GACAR Part 119, §119.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-1"
+          }
+        },
+        {
+          "q": "Under GACAR §119.1, no person may operate as a commercial operator under Part 119 without also holding —",
+          "options": [
+            "A medical certificate",
+            "Appropriate economic authority from the GACA",
+            "A Part 125 Operator Certificate",
+            "An aerial-work exemption"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.1 provides that no person may operate as a commercial operator under this part without holding appropriate economic authority from the GACA, in addition to the AOC and operations specifications.",
+          "cite": "GACAR Part 119, §119.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-1"
+          }
+        },
+        {
+          "q": "Under GACAR §119.5, a certificate holder's operations specifications must contain —",
+          "options": [
+            "The pilots' personal logbook entries",
+            "The authorizations, limitations, and certain procedures under which each kind of operation is conducted",
+            "A list of passenger fares by route",
+            "The maintenance records of every engine"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.5 requires that operations specifications contain the authorizations, limitations, and certain procedures under which each kind of operation is to be conducted, plus procedures for how each class of aircraft is to be operated.",
+          "cite": "GACAR Part 119, §119.5",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-5"
+          }
+        },
+        {
+          "q": "Under GACAR §119.9, a certificate holder must not operate an aircraft under Part 121 or 135 using a business name other than —",
+          "options": [
+            "The name of its principal pilot",
+            "A business name appearing in its operations specifications",
+            "The manufacturer's brand name",
+            "Any name approved by the aircraft lessor"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.9 prohibits a certificate holder from operating under a business name other than one appearing in its operations specifications.",
+          "cite": "GACAR Part 119, §119.9",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-9"
+          }
+        },
+        {
+          "q": "Under GACAR §119.9, how must the certificate holder's business name relate to the aircraft it operates under Part 121 or 135?",
+          "options": [
+            "It need not appear anywhere on the aircraft",
+            "It must be legibly displayed and clearly visible from outside the aircraft to a person on the ground",
+            "It must be shown only on the flight plan",
+            "It must be painted on the interior cabin only"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.9 requires the operating certificate holder's business name to be legibly displayed on the aircraft and clearly visible and readable from outside to a person standing on the ground (except during flight time).",
+          "cite": "GACAR Part 119, §119.9",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-9"
+          }
+        },
+        {
+          "q": "Under GACAR §119.9, when a certificate holder operates a wet-leased aircraft under Part 121 or 135, whose business name must be legibly displayed on the aircraft?",
+          "options": [
+            "The lessor's business name",
+            "The GACA's name",
+            "The aircraft manufacturer's name",
+            "No name is required for wet leases"
+          ],
+          "answer": 0,
+          "explain": "GACAR §119.9 requires that for a wet-leased aircraft, the business name of the lessor be legibly displayed and clearly visible from outside the aircraft to a person standing on the ground.",
+          "cite": "GACAR Part 119, §119.9",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-9"
+          }
+        },
+        {
+          "q": "Under GACAR §119.43, an application for an AOC may be denied if the President finds that —",
+          "options": [
+            "The applicant has fewer than five aircraft",
+            "The applicant previously held an AOC or OC that was revoked",
+            "The applicant operates only within the Kingdom of Saudi Arabia",
+            "The applicant intends to conduct only cargo operations"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.43 lists grounds for denying a certificate, including that the applicant previously held an AOC or OC that was revoked, or is not properly and adequately equipped to conduct safe operations.",
+          "cite": "GACAR Part 119, §119.43",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-43"
+          }
+        },
+        {
+          "q": "Under GACAR §119.43, before issuing an AOC the President must find that the applicant is properly and adequately equipped in accordance with the requirements of —",
+          "options": [
+            "GACAR Part 129",
+            "GACAR Part 121 or 135, as applicable",
+            "GACAR Part 101",
+            "GACAR Part 61 only"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.43 requires the President to find that the applicant is properly and adequately equipped in accordance with GACAR Part 121 or 135, as applicable, and able to conduct a safe operation, before issuing an AOC.",
+          "cite": "GACAR Part 119, §119.43",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-43"
+          }
+        },
+        {
+          "q": "Under GACAR §119.49, the operations specifications of a certificate holder conducting commercial operations must include —",
+          "options": [
+            "The résumés of all pilots",
+            "The specific location of the certificate holder's principal base of operations",
+            "A copy of every passenger's ticket",
+            "The daily fuel prices at each aerodrome"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.49 requires operations specifications to contain, among other items, the specific location of the certificate holder's principal base of operations, other business names, reference to the economic authority, and the aircraft authorized for use.",
+          "cite": "GACAR Part 119, §119.49",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-49"
+          }
+        },
+        {
+          "q": "Under GACAR §119.37, to operate as a commercial operator a person must, among other things —",
+          "options": [
+            "Hold a private pilot certificate",
+            "Be a citizen of the Kingdom of Saudi Arabia and maintain a principal base of operations in the Kingdom",
+            "Own at least one transport-category aircraft",
+            "Be based outside the Kingdom for tax purposes"
+          ],
+          "answer": 1,
+          "explain": "GACAR §119.37 provides that a person may not operate as a commercial operator unless they are a citizen of the Kingdom of Saudi Arabia, maintain a principal base of operations in the Kingdom, and obtain an AOC.",
+          "cite": "GACAR Part 119, §119.37",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-37"
+          }
+        },
+        {
+          "q": "Under GACAR §119.39, an applicant for an AOC must submit the application to the President at least —",
+          "options": [
+            "30 working days before the date of intended operation",
+            "60 working days before the date of intended operation",
+            "90 working days before the date of intended operation",
+            "15 working days before the date of intended operation"
+          ],
+          "answer": 2,
+          "explain": "GACAR §119.39 requires each applicant to submit the AOC application at least 90 working days before the date of intended operation.",
+          "cite": "GACAR Part 119, §119.39",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-39"
+          }
+        },
+        {
+          "q": "Under GACAR §119.21, a person conducting commercial operations using aircraft other than transport-category or commuter-category airplanes must comply with the certification requirements of Part 119 and —",
+          "options": [
+            "GACAR Part 121",
+            "GACAR Part 125",
+            "GACAR Part 135",
+            "GACAR Part 129"
+          ],
+          "answer": 2,
+          "explain": "GACAR §119.21 provides that commercial operators using transport-category aircraft or commuter-category airplanes follow Part 121, while those using aircraft not so addressed must comply with Part 119 and Part 135.",
+          "cite": "GACAR Part 119, §119.21",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119",
+            "anchor": "sec-119-21"
+          }
+        },
+        {
+          "q": "GACAR §135.1 prescribes rules governing the commercial operations of —",
+          "options": [
+            "Transport-category aircraft and commuter-category airplanes",
+            "Aircraft other than transport-category aircraft and commuter-category airplanes, by holders of an AOC under Part 119",
+            "Foreign air carriers under Part 129",
+            "Ultralight vehicles under Part 103"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.1 states that Part 135 governs the scheduled and unscheduled commercial operations of aircraft OTHER than transport-category aircraft and commuter-category airplanes, conducted by persons holding or required to hold an AOC under Part 119.",
+          "cite": "GACAR Part 135, §135.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-1"
+          }
+        },
+        {
+          "q": "Under GACAR §135.7, in addition to the documents required by Part 91, the pilot in command must ensure which document is carried on board?",
+          "options": [
+            "A certified true copy of the AOC and a copy of the operations specifications summary",
+            "The original design drawings of the aircraft",
+            "A copy of every crew member's pilot logbook",
+            "The certificate holder's tax registration"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.7 requires the PIC to ensure that a certified true copy of the AOC and a copy of the operations specifications summary (and, when applicable, a copy of the Article 83 bis agreement) are carried on board.",
+          "cite": "GACAR Part 135, §135.7",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-7"
+          }
+        },
+        {
+          "q": "Under GACAR §135.9, for how long must the flight logbook records be maintained?",
+          "options": [
+            "30 days",
+            "90 days",
+            "6 months",
+            "12 months"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.9 requires that flight logbook records be maintained for 30 days, and makes the PIC responsible for ensuring the entries are completed per the certificate holder's procedures.",
+          "cite": "GACAR Part 135, §135.9",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-9"
+          }
+        },
+        {
+          "q": "Under GACAR §135.15, a single-engine airplane may be operated in instrument meteorological conditions (IMC) or at night only if, among other conditions —",
+          "options": [
+            "The flight remains within 25 NM of the departure aerodrome",
+            "The certificate holder is authorized by the President to conduct such operations",
+            "At least two pilots are on board regardless of type",
+            "The airplane carries a parachute for each occupant"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.15 permits single-engine airplane operations in IMC or at night only when several conditions are met, including that the certificate holder is specifically authorized by the President to conduct such operations.",
+          "cite": "GACAR Part 135, §135.15",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-15"
+          }
+        },
+        {
+          "q": "GACAR §91.1 establishes that Part 91 prescribes rules governing the operation of aircraft —",
+          "options": [
+            "Only outside the Kingdom of Saudi Arabia",
+            "Within the sovereign area and territorial waters of the Kingdom of Saudi Arabia",
+            "Only for foreign air carriers",
+            "Only for small unmanned aircraft"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.1 states that Part 91 prescribes the general operating and flight rules for aircraft operated within the sovereign area and territorial waters of the Kingdom of Saudi Arabia, with certain exceptions.",
+          "cite": "GACAR Part 91, §91.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-1"
+          }
+        },
+        {
+          "q": "Under GACAR §91.3, the pilot in command of an aircraft is —",
+          "options": [
+            "Subordinate to the flight dispatcher in all decisions",
+            "Directly responsible for, and the final authority as to, the operation, safety, and security of that aircraft",
+            "Responsible only for navigation, not safety",
+            "Relieved of responsibility once airborne"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.3 makes the PIC directly responsible for, and the final authority as to, the operation, safety, and security of the aircraft and the safety of all crew members, passengers, and cargo on board, and permits deviation from the rules to the extent required in an in-flight emergency.",
+          "cite": "GACAR Part 91, §91.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-3"
+          }
+        },
+        {
+          "q": "Under GACAR §91.9, which of the following must the PIC ensure is carried on board a Saudi Arabian registered aircraft?",
+          "options": [
+            "The pilot's personal tax records",
+            "An original or true copy of the aircraft certificate of registration and the airworthiness certificate",
+            "A printed weather forecast for the next seven days",
+            "A signed copy of the certificate holder's business plan"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.9 requires the PIC to ensure documents such as the aircraft certificate of registration, the airworthiness certificate, the radio station license, a passenger list, a cargo manifest, and the flight logbook are carried on board at all times.",
+          "cite": "GACAR Part 91, §91.9",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-9"
+          }
+        }
+      ]
+    },
+    {
+      "id": "commercial-performance",
+      "title": "Commercial Performance & Loading",
+      "desc": "Weight, balance, performance and fuel requirements for commercial operations (GACAR Part 91 · 135).",
+      "source": "GACAR Part 91 · Part 135 (Subpart F) · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Under GACAR Part 91, an airplane may not begin a flight under VFR during the day unless it has enough fuel to reach the first point of intended landing and then fly at normal cruising speed for at least —",
+          "options": [
+            "20 minutes",
+            "30 minutes",
+            "45 minutes",
+            "60 minutes"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.161(a) requires, for a daytime VFR airplane flight, fuel to reach the first point of intended landing plus at least 30 minutes at normal cruising speed.",
+          "cite": "GACAR Part 91, §91.161",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-161"
+          }
+        },
+        {
+          "q": "For a night VFR flight in an airplane, GACAR §91.161 requires fuel to reach the first point of intended landing and then fly at normal cruising speed for at least —",
+          "options": [
+            "30 minutes",
+            "45 minutes",
+            "60 minutes",
+            "20 minutes"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.161(a) sets the night VFR airplane reserve at 45 minutes at normal cruising speed beyond the first point of intended landing (versus 30 minutes by day).",
+          "cite": "GACAR Part 91, §91.161",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-161"
+          }
+        },
+        {
+          "q": "Under GACAR §91.161, a rotorcraft may not begin a VFR flight unless it can reach the first point of intended landing and then fly at normal cruising speed for at least —",
+          "options": [
+            "20 minutes",
+            "30 minutes",
+            "45 minutes",
+            "10 minutes"
+          ],
+          "answer": 0,
+          "explain": "GACAR §91.161(b) sets a single 20-minute reserve for rotorcraft under VFR, regardless of day or night.",
+          "cite": "GACAR Part 91, §91.161",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-161"
+          }
+        },
+        {
+          "q": "Under GACAR Part 91, an airplane operating under IFR must carry enough fuel to fly to and make an approach at the destination, fly to the alternate, and then fly at normal cruising speed for at least —",
+          "options": [
+            "30 minutes",
+            "45 minutes",
+            "60 minutes",
+            "90 minutes"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.181(a) requires an IFR airplane to carry fuel for the destination approach/missed approach, the flight to the alternate, and then 45 minutes at normal cruising speed.",
+          "cite": "GACAR Part 91, §91.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-181"
+          }
+        },
+        {
+          "q": "Under GACAR §91.181, after reaching the alternate aerodrome an IFR rotorcraft must carry fuel to fly at normal cruising speed for a further —",
+          "options": [
+            "45 minutes",
+            "30 minutes",
+            "20 minutes",
+            "60 minutes"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.181(a)(3) gives rotorcraft a 30-minute final reserve at normal cruising speed under IFR, compared with 45 minutes for other aircraft.",
+          "cite": "GACAR Part 91, §91.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-181"
+          }
+        },
+        {
+          "q": "GACAR §91.43 (Preflight Action) requires the PIC, before a flight not in the vicinity of an aerodrome or under IFR, to become familiar with — among other things —",
+          "options": [
+            "only the weather at the departure aerodrome",
+            "runway lengths at aerodromes of intended use and the applicable takeoff and landing distance data",
+            "only the passenger manifest",
+            "nothing additional if the flight is conducted under VFR"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.43(a) lists required preflight information including weather, fuel, alternatives, and runway lengths plus takeoff/landing distance data at aerodromes of intended use.",
+          "cite": "GACAR Part 91, §91.43",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-43"
+          }
+        },
+        {
+          "q": "Before a flight may commence under GACAR §91.43, the PIC must be satisfied that —",
+          "options": [
+            "the aircraft mass and centre of gravity allow the flight to be conducted safely and any load is properly distributed and secured",
+            "the aircraft has flown within the preceding 30 days",
+            "all passengers hold valid insurance",
+            "the aircraft has been repainted within 12 months"
+          ],
+          "answer": 0,
+          "explain": "GACAR §91.43(b) requires the PIC to confirm, before flight, that the aircraft's mass and CG permit safe flight, that any load is properly distributed and secured, and that operating limitations will not be exceeded.",
+          "cite": "GACAR Part 91, §91.43",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-43"
+          }
+        },
+        {
+          "q": "Under GACAR §91.11, a Saudi-registered aircraft's current empty mass and centre of gravity must be derived from an actual weighing performed within the preceding —",
+          "options": [
+            "12 months",
+            "24 months",
+            "36 months",
+            "48 months"
+          ],
+          "answer": 2,
+          "explain": "GACAR §91.11(a) requires empty mass and CG to be calculated from an actual weighing within the preceding 36 months (unless an approved mass-and-balance control system or another exception applies).",
+          "cite": "GACAR Part 91, §91.11",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-11"
+          }
+        },
+        {
+          "q": "Under GACAR §91.267 (In-Flight Fuel Management), the PIC must declare a fuel emergency by broadcasting \"MAYDAY MAYDAY MAYDAY FUEL\" when —",
+          "options": [
+            "the aircraft has burned half of its planned trip fuel",
+            "the calculated usable fuel on landing at the nearest suitable aerodrome would be less than the planned final reserve fuel",
+            "the destination alternate is more than one hour away",
+            "any fuel gauge becomes unreliable"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.267 requires a MAYDAY FUEL emergency declaration when the calculated usable fuel predicted on landing at the nearest safe aerodrome is less than the planned final reserve fuel; a MINIMUM FUEL advisory precedes that state.",
+          "cite": "GACAR Part 91, §91.267",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-267"
+          }
+        },
+        {
+          "q": "Under GACAR §91.263, when an aircraft operating within controlled airspace needs to dump fuel, the PIC must —",
+          "options": [
+            "descend below 1,000 ft before dumping",
+            "advise ATC before commencing the fuel-dump operation",
+            "dump only over water",
+            "obtain written approval from the operator"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.263 requires the PIC to advise ATC prior to commencing a fuel-dump operation when operating within controlled airspace.",
+          "cite": "GACAR Part 91, §91.263",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-263"
+          }
+        },
+        {
+          "q": "In GACAR Part 135, airplane performance operating limitations (takeoff, en-route, and landing limits) for commercial operators are prescribed in —",
+          "options": [
+            "Subpart D",
+            "Subpart E",
+            "Subpart F",
+            "Subpart G"
+          ],
+          "answer": 2,
+          "explain": "GACAR Part 135 Subpart F is titled \"Airplane Performance Operating Limitations\"; Subpart G covers the equivalent rotorcraft limitations.",
+          "cite": "GACAR Part 135, Subpart F, §135.133",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-133"
+          }
+        },
+        {
+          "q": "Under GACAR §135.135, when ensuring an airplane's takeoff mass does not exceed the mass allowed for the runway length, the operator must consider at least aerodrome pressure altitude, wind, ambient temperature, runway slope, and —",
+          "options": [
+            "runway contaminants such as standing water, snow, or ice",
+            "the airline's on-time performance record",
+            "the passengers' checked-baggage count",
+            "the time since the last engine overhaul"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.135(f) lists the required factors — pressure altitude, wind, ambient temperature, runway slope, and runway contaminants (standing water, snow, or ice).",
+          "cite": "GACAR Part 135, §135.135",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-135"
+          }
+        },
+        {
+          "q": "Under GACAR §135.137 (Airplane: Takeoff Limitations), the accelerate-stop distance must not exceed —",
+          "options": [
+            "the length of the runway plus any stopway",
+            "70 percent of the runway length",
+            "the runway length plus any clearway",
+            "115 percent of the runway length"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.137(b)(1) requires the accelerate-stop distance to be no greater than the length of the runway plus the length of any stopway.",
+          "cite": "GACAR Part 135, §135.137",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-137"
+          }
+        },
+        {
+          "q": "Under GACAR §135.137, the takeoff distance must not exceed the runway length plus any clearway, but the clearway credited must not be greater than —",
+          "options": [
+            "one-quarter of the runway length",
+            "one-half of the runway length",
+            "the full runway length",
+            "one-third of the runway length"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.137(b)(2) allows the takeoff distance to include clearway, but the clearway credited may not exceed one-half of the runway length.",
+          "cite": "GACAR Part 135, §135.137",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-137"
+          }
+        },
+        {
+          "q": "For the takeoff limitations of GACAR §135.137, it is assumed the airplane is not banked before reaching a height of 50 ft (15 m), and thereafter the maximum bank does not exceed —",
+          "options": [
+            "10 degrees",
+            "15 degrees",
+            "25 degrees",
+            "30 degrees"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.137(d) assumes no bank before 50 ft (15 m) and a maximum bank of 15 degrees thereafter along the takeoff/net takeoff flight path.",
+          "cite": "GACAR Part 135, §135.137",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-137"
+          }
+        },
+        {
+          "q": "Under GACAR §135.139 (Landing Limitations: Destination Aerodromes), takeoff mass must be limited so that, allowing for fuel and oil burn, the airplane can make a full-stop landing —",
+          "options": [
+            "within the landing distance available of the most suitable runway at the destination",
+            "within 70 percent of any runway at the destination",
+            "using no more than half the runway in still air",
+            "regardless of wind direction on the longest runway only"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.139(a) limits mass so the airplane can make a full-stop landing within the landing distance available of the most suitable runway at the destination aerodrome.",
+          "cite": "GACAR Part 135, §135.139",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-139"
+          }
+        },
+        {
+          "q": "Under GACAR §135.139, if forecasts indicate the destination runways may be wet or slippery and no wet-runway AFM data is used, a turbojet-powered airplane requires an effective runway length of at least —",
+          "options": [
+            "100 percent of the dry-runway required length",
+            "115 percent of the dry-runway required length",
+            "70 percent of the dry-runway required length",
+            "150 percent of the dry-runway required length"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.139(c) requires, for a turbojet landing on possibly wet/slippery runways without applicable AFM wet data, an effective runway length of at least 115 percent of that required by paragraph (a).",
+          "cite": "GACAR Part 135, §135.139",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-139"
+          }
+        },
+        {
+          "q": "Under GACAR §135.141, an aerodrome may not be listed as an alternate unless the airplane can land and stop within — of the effective runway length from a point 50 ft above the obstruction-clearance-plane/runway intersection.",
+          "options": [
+            "60 percent",
+            "70 percent",
+            "80 percent",
+            "115 percent"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.141 requires an alternate to permit a full-stop landing within 70 percent of the effective runway length, using the §135.139 assumptions.",
+          "cite": "GACAR Part 135, §135.141",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-141"
+          }
+        },
+        {
+          "q": "Under GACAR §135.143, a multi-engine land airplane carrying passengers over water (beyond gliding distance of land) must be operated at a mass allowing it to climb, with the critical engine inoperative, at least —",
+          "options": [
+            "50 ft/min at 1,000 ft AGL",
+            "100 ft/min at 1,500 ft AGL",
+            "300 ft/min at 5,000 ft MSL",
+            "50 ft/min at sea level"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.143(c) requires a multi-engine land airplane over water to be able to climb at least 50 ft/min (0.25 m/s) with the critical engine inoperative at 1,000 ft (300 m) AGL.",
+          "cite": "GACAR Part 135, §135.143",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-143"
+          }
+        },
+        {
+          "q": "Under GACAR §135.145, a multi-engine airplane carrying passengers over the top or in IMC must be able to climb, with the critical engine inoperative, at least 50 ft/min when operating at —",
+          "options": [
+            "sea level only",
+            "the route MEA or 5,000 ft MSL, whichever is higher",
+            "10,000 ft MSL",
+            "the route MEA or 1,500 ft MSL, whichever is lower"
+          ],
+          "answer": 1,
+          "explain": "GACAR §135.145(a) requires a 50 ft/min single-engine-inoperative climb capability at the minimum en-route IFR altitude (MEA) or 5,000 ft MSL, whichever is higher.",
+          "cite": "GACAR Part 135, §135.145",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-145"
+          }
+        },
+        {
+          "q": "Under GACAR §135.658 (Fuel and Oil Supply), the contingency fuel carried to compensate for unforeseen factors must be no less than —",
+          "options": [
+            "5 percent of the planned trip fuel (subject to a minimum holding allowance)",
+            "10 percent of the planned trip fuel",
+            "15 percent of the final reserve fuel",
+            "a fixed 45 minutes at cruise"
+          ],
+          "answer": 0,
+          "explain": "GACAR §135.658 sets contingency fuel at no less than 5 percent of the planned trip fuel (or from the point of in-flight re-planning), never below the fuel to fly 5 minutes at holding speed 1,500 ft above the destination.",
+          "cite": "GACAR Part 135, §135.658",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135",
+            "anchor": "sec-135-658"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ifr-rules",
+      "title": "IFR Flight Rules",
+      "desc": "Instrument flight rules: clearances, minima, fuel and alternate requirements under GACAR Part 91.",
+      "source": "GACAR Part 91, Subpart B/E · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Under GACAR §91.181, after flying to the first aerodrome of intended landing and then to the alternate, an aeroplane operating under IFR must carry enough fuel to fly for a further —",
+          "options": [
+            "20 minutes at normal cruising speed",
+            "45 minutes at normal cruising speed",
+            "30 minutes at normal cruising speed",
+            "60 minutes at normal cruising speed"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.181(a)(3) requires an aeroplane under IFR to carry fuel to reach the destination and alternate and then fly a further 45 minutes at normal cruising speed.",
+          "cite": "GACAR Part 91, §91.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-181"
+          }
+        },
+        {
+          "q": "For a rotorcraft operating under IFR, the final reserve fuel required by GACAR §91.181 (after destination and alternate) is enough to fly for —",
+          "options": [
+            "45 minutes at normal cruising speed",
+            "30 minutes at normal cruising speed",
+            "20 minutes at normal cruising speed",
+            "15 minutes at normal cruising speed"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.181(a)(3) sets the rotorcraft final reserve at 30 minutes at normal cruising speed, versus 45 minutes for other aircraft.",
+          "cite": "GACAR Part 91, §91.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-181"
+          }
+        },
+        {
+          "q": "Under GACAR §91.183, no person may operate an aircraft in controlled airspace under IFR unless the PIC has —",
+          "options": [
+            "Filed a VFR flight plan and obtained a weather briefing",
+            "An instrument rating and a working transponder only",
+            "Filed an IFR flight plan and received an appropriate ATC clearance",
+            "Received an ATC clearance only"
+          ],
+          "answer": 2,
+          "explain": "GACAR §91.183 requires both a filed IFR flight plan and receipt of an appropriate ATC clearance before operating IFR in controlled airspace.",
+          "cite": "GACAR Part 91, §91.183",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-183"
+          }
+        },
+        {
+          "q": "Under GACAR §91.135, each person operating an aircraft in Class A airspace must —",
+          "options": [
+            "Operate under either VFR or IFR",
+            "Operate under special VFR",
+            "Operate under VFR with an ATC clearance",
+            "Operate under IFR"
+          ],
+          "answer": 3,
+          "explain": "GACAR §91.135 requires all operations in Class A airspace to be conducted under IFR, under an ATC clearance received before entering the airspace.",
+          "cite": "GACAR Part 91, §91.135",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-135"
+          }
+        },
+        {
+          "q": "Under GACAR §91.135, operations in Class A airspace may be conducted only under an ATC clearance received —",
+          "options": [
+            "At any time during the flight",
+            "Prior to entering the airspace",
+            "Within five minutes of entry",
+            "After establishing two-way radio contact"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.135(a) states that Class A operations may be conducted only under an ATC clearance received prior to entering the airspace.",
+          "cite": "GACAR Part 91, §91.135",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-135"
+          }
+        },
+        {
+          "q": "Under GACAR §91.77, an aircraft must be operated under IFR whenever it is at or above —",
+          "options": [
+            "FL 100",
+            "FL 150",
+            "FL 180",
+            "FL 290"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.77 makes IFR mandatory for any aircraft operating at flight level 150 or above.",
+          "cite": "GACAR Part 91, §91.77",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-77"
+          }
+        },
+        {
+          "q": "Under GACAR §91.181, an alternate aerodrome need not be included in the IFR fuel calculation for an aeroplane if a Part 97 approach is published at the destination and, for at least 1 hour before and after ETA, the ceiling and visibility will be at least —",
+          "options": [
+            "1,000 ft and 3 km",
+            "2,000 ft above the aerodrome elevation and 5 km",
+            "1,500 ft and 8 km",
+            "3,000 ft and 5 km"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.181(b) waives the alternate-fuel requirement for aeroplanes when a Part 97 approach exists and forecasts show a ceiling at least 2,000 ft above aerodrome elevation and visibility at least 5 km for the hour before and after ETA.",
+          "cite": "GACAR Part 91, §91.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-181"
+          }
+        },
+        {
+          "q": "Under GACAR §91.185, an alternate aerodrome must be listed in an IFR flight plan unless —",
+          "options": [
+            "The flight is shorter than 100 NM",
+            "A Part 97 instrument approach is available at the destination and forecast weather meets the specified ceiling/visibility minima",
+            "The pilot holds an airline transport pilot licence",
+            "The aircraft is turbine-powered"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.185(b) allows omission of an alternate only when an approved Part 97 approach is published for the destination and the forecast ceiling and visibility meet the stated minimums around ETA.",
+          "cite": "GACAR Part 91, §91.185",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-185"
+          }
+        },
+        {
+          "q": "Under GACAR §91.185(c), the standard alternate-aerodrome minimums for a precision approach are —",
+          "options": [
+            "Ceiling 400 ft and visibility 1,600 m",
+            "Ceiling 600 ft and visibility 3,200 m",
+            "Ceiling 800 ft and visibility 3,200 m",
+            "Ceiling 200 ft and visibility 800 m"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.185(c) sets the standard precision-approach alternate minimums (for aircraft other than rotorcraft) at a 600 ft ceiling and 3,200 m visibility.",
+          "cite": "GACAR Part 91, §91.185",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-185"
+          }
+        },
+        {
+          "q": "Under GACAR §91.185(c), the standard alternate-aerodrome minimums for a nonprecision approach or APV are —",
+          "options": [
+            "Ceiling 600 ft and visibility 3,200 m",
+            "Ceiling 800 ft and visibility 3,200 m",
+            "Ceiling 1,000 ft and visibility 5,000 m",
+            "Ceiling 400 ft and visibility 1,600 m"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.185(c) sets the standard nonprecision/APV alternate minimums (for aircraft other than rotorcraft) at an 800 ft ceiling and 3,200 m visibility.",
+          "cite": "GACAR Part 91, §91.185",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-185"
+          }
+        },
+        {
+          "q": "Under GACAR §91.187, a VOR used for IFR navigation must have been operationally checked within the preceding —",
+          "options": [
+            "30 days",
+            "24 months",
+            "12 months",
+            "90 days"
+          ],
+          "answer": 0,
+          "explain": "GACAR §91.187(a)(2) permits IFR use of a VOR only if it was operationally checked within the preceding 30 days and found within tolerance.",
+          "cite": "GACAR Part 91, §91.187",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-187"
+          }
+        },
+        {
+          "q": "Under GACAR §91.187, the maximum permissible indicated bearing error when checking VOR equipment against a ground test signal or a designated surface checkpoint is —",
+          "options": [
+            "±2°",
+            "±4°",
+            "±6°",
+            "±10°"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.187(b) sets the maximum permissible bearing error at ±4° when using a ground test signal or a designated VOR surface checkpoint.",
+          "cite": "GACAR Part 91, §91.187",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-187"
+          }
+        },
+        {
+          "q": "Under GACAR §91.187, when a VOR is checked against a designated airborne checkpoint, the maximum permissible bearing error is —",
+          "options": [
+            "±4°",
+            "±6°",
+            "±8°",
+            "±10°"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.187(b)(3) allows a wider ±6° tolerance when using an airborne VOR checkpoint, compared with ±4° for ground checks.",
+          "cite": "GACAR Part 91, §91.187",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-187"
+          }
+        },
+        {
+          "q": "Under GACAR §91.187, when checking one VOR system against another (dual VOR), the maximum permissible variation between the two indicated bearings is —",
+          "options": [
+            "2°",
+            "4°",
+            "6°",
+            "10°"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.187(c) permits checking one VOR against the other tuned to the same station, with a maximum permissible variation of 4° between the two indicated bearings.",
+          "cite": "GACAR Part 91, §91.187",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-187"
+          }
+        },
+        {
+          "q": "Under GACAR §91.199, over a designated mountainous zone where no minimum altitude is prescribed, the minimum IFR altitude is —",
+          "options": [
+            "1,000 ft above the highest obstacle within 4 NM of course",
+            "2,000 ft above the highest obstacle within 4 NM of course",
+            "1,500 ft above the highest obstacle within 5 NM of course",
+            "2,000 ft above the highest obstacle within 5 NM of course"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.199(a)(2)(i) requires, over mountainous terrain with no prescribed minimum, an altitude of 2,000 ft above the highest obstacle within 4 NM of the course flown.",
+          "cite": "GACAR Part 91, §91.199",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-199"
+          }
+        },
+        {
+          "q": "Under GACAR §91.199, over non-mountainous terrain where no minimum altitude is prescribed, the minimum IFR altitude is —",
+          "options": [
+            "500 ft above the highest obstacle within 4 NM of course",
+            "1,000 ft above the highest obstacle within 4 NM of course",
+            "1,000 ft above the highest obstacle within 5 NM of course",
+            "2,000 ft above the highest obstacle within 4 NM of course"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.199(a)(2)(ii) requires, in non-mountainous areas with no prescribed minimum, an altitude of 1,000 ft above the highest obstacle within 4 NM of the course flown.",
+          "cite": "GACAR Part 91, §91.199",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-199"
+          }
+        },
+        {
+          "q": "Under GACAR §91.201, a PIC in level cruising flight under IFR in controlled airspace must maintain —",
+          "options": [
+            "The semicircular cruising altitude for the magnetic course",
+            "The altitude or flight level assigned by ATC",
+            "Any VFR cruising altitude",
+            "The minimum en route altitude"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.201(a) requires a PIC operating IFR in controlled airspace to maintain the altitude or flight level assigned by ATC.",
+          "cite": "GACAR Part 91, §91.201",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-201"
+          }
+        },
+        {
+          "q": "Under GACAR §91.201, under IFR in uncontrolled airspace below 13,000 ft MSL on a magnetic course of 0° through 179°, the PIC must fly —",
+          "options": [
+            "Any even thousand-foot MSL altitude",
+            "Any odd thousand-foot MSL altitude",
+            "Any odd flight level",
+            "The altitude last assigned by ATC"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.201(b) requires, in uncontrolled airspace below 13,000 ft MSL, any odd thousand-foot MSL altitude on magnetic courses of 0° through 179°.",
+          "cite": "GACAR Part 91, §91.201",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-201"
+          }
+        },
+        {
+          "q": "Under GACAR §91.205, when making an initial approach to a radio navigation facility under IFR, the PIC may not descend below the pertinent minimum altitude for initial approach until —",
+          "options": [
+            "Cleared for the visual approach",
+            "Arrival over that facility has been definitely established",
+            "Reaching the final approach fix",
+            "Establishing two-way radio contact"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.205 prohibits descent below the minimum initial-approach altitude until arrival over the facility has been definitely established.",
+          "cite": "GACAR Part 91, §91.205",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-205"
+          }
+        },
+        {
+          "q": "Under GACAR §91.209, if two-way radio communications fail under IFR and VMC are encountered, the PIC should —",
+          "options": [
+            "Continue to the destination on the flight plan regardless of conditions",
+            "Continue the flight under VFR and land at the nearest suitable aerodrome",
+            "Climb to FL 150 and enter a holding pattern",
+            "Squawk 7500 and land immediately"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.209(b) directs a PIC who loses radio in, or encounters, VMC to continue under VFR and land at the nearest suitable aerodrome, reporting arrival to ATS.",
+          "cite": "GACAR Part 91, §91.209",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-209"
+          }
+        },
+        {
+          "q": "Under GACAR §91.211, a change from IFR to VFR flight —",
+          "options": [
+            "May be initiated by ATC on the pilot's behalf",
+            "May be initiated only by the PIC, by stating 'CANCELING MY IFR FLIGHT'",
+            "Is prohibited once the aircraft is airborne",
+            "Requires filing a new flight plan on the ground first"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.211(b) provides that only the PIC may initiate a change from IFR to VFR, by stating 'CANCELING MY IFR FLIGHT' along with any flight-plan changes.",
+          "cite": "GACAR Part 91, §91.211",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-211"
+          }
+        },
+        {
+          "q": "Under GACAR §91.193, if the PIC has not served 100 hours as PIC in the type being flown, the landing minimums (MDA/DA and visibility) are increased by —",
+          "options": [
+            "50 ft and 400 m",
+            "100 ft and 800 m",
+            "200 ft and 1,600 m",
+            "100 ft and 1,500 m"
+          ],
+          "answer": 1,
+          "explain": "GACAR §91.193(a) increases the MDA or DA/DH by 100 ft and the visibility minimum by 800 m for a PIC with fewer than 100 hours as PIC in that aircraft type.",
+          "cite": "GACAR Part 91, §91.193",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91",
+            "anchor": "sec-91-193"
+          }
+        }
+      ]
+    },
+    {
+      "id": "instrument-procedures",
+      "title": "Instrument Procedures",
+      "desc": "Approaches, holding and instrument procedures (GACAR Part 97 and the Saudi AIP ENR).",
+      "source": "GACAR Part 97 · Saudi AIP (ENR) · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "GACAR Part 97 exists primarily to —",
+          "options": [
+            "Certify air navigation service providers",
+            "Identify the approved instrument flight procedures (IFPs) authorized for use in the Kingdom of Saudi Arabia",
+            "Set airman medical standards",
+            "Prescribe aircraft airworthiness standards"
+          ],
+          "answer": 1,
+          "explain": "§97.1 states that Part 97 identifies the approved instrument flight procedures (including instrument approach procedures) authorized for use within the territorial limits of the KSA.",
+          "cite": "GACAR Part 97, §97.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-1"
+          }
+        },
+        {
+          "q": "Under GACAR §97.1, the rules governing the development, validation and approval of instrument flight procedures are addressed under —",
+          "options": [
+            "GACAR Part 91",
+            "GACAR Part 172",
+            "GACAR Part 97 itself",
+            "GACAR Part 61"
+          ],
+          "answer": 1,
+          "explain": "§97.1(d) provides that development, validation, approval, promulgation and maintenance of IFPs are addressed under GACAR Part 172, not within Part 97.",
+          "cite": "GACAR Part 97, §97.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-1"
+          }
+        },
+        {
+          "q": "Per GACAR §97.1, the publication of instrument flight procedures in the KSA AIP and their depiction on aeronautical charts are governed by —",
+          "options": [
+            "GACAR Part 170",
+            "GACAR Part 175",
+            "GACAR Part 121",
+            "GACAR Part 97"
+          ],
+          "answer": 1,
+          "explain": "§97.1(e) states the rules for publishing IFPs in the KSA AIP and depicting them on charts are addressed under GACAR Part 175.",
+          "cite": "GACAR Part 97, §97.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-1"
+          }
+        },
+        {
+          "q": "Under GACAR §97.3, an aircraft approach category is a grouping based on a speed of —",
+          "options": [
+            "Vref (or 1.3 Vso if Vref is not specified) at the maximum certificated landing mass",
+            "Vso at the maximum takeoff mass",
+            "1.5 Vs1 at cruise mass",
+            "V2 at the maximum landing mass"
+          ],
+          "answer": 0,
+          "explain": "§97.3(a) defines the aircraft approach category by a speed of Vref, or, if Vref is not specified, 1.3 Vso at the maximum certificated landing mass.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "Under the aircraft approach categories in GACAR §97.3, Category A applies to a speed of —",
+          "options": [
+            "Less than 91 knots IAS",
+            "91 to less than 121 knots IAS",
+            "121 to less than 141 knots IAS",
+            "141 to less than 166 knots IAS"
+          ],
+          "answer": 0,
+          "explain": "§97.3(a)(1) assigns Category A to aircraft with an approach speed of less than 91 knots indicated airspeed.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "Under GACAR §97.3, aircraft approach Category C covers a speed of —",
+          "options": [
+            "Less than 91 knots IAS",
+            "91 to less than 121 knots IAS",
+            "121 to less than 141 knots IAS",
+            "166 knots IAS or more but less than 211 knots IAS"
+          ],
+          "answer": 2,
+          "explain": "§97.3(a)(3) defines Category C as 121 knots or more but less than 141 knots IAS.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "Per the approach segment definitions in GACAR §97.3, the initial approach segment lies between the initial approach fix and —",
+          "options": [
+            "The missed approach point",
+            "The intermediate fix (or the point where the aircraft is established on the intermediate course/final approach course)",
+            "The runway threshold",
+            "The final approach fix only"
+          ],
+          "answer": 1,
+          "explain": "§97.3(c)(1) defines the initial approach segment as running from the initial approach fix to the intermediate fix, or to where the aircraft is established on the intermediate or final approach course.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "In GACAR §97.3, the final approach segment of an instrument approach procedure is the segment in which —",
+          "options": [
+            "The aircraft climbs after a missed approach",
+            "Alignment and descent for landing are accomplished",
+            "The aircraft is vectored to the initial approach fix",
+            "The procedure turn is flown"
+          ],
+          "answer": 1,
+          "explain": "§97.3(c)(4) describes the final approach segment as the segment in which alignment and descent for landing are accomplished.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "According to GACAR §97.3, the missed approach segment of an instrument approach procedure starts at the —",
+          "options": [
+            "Final approach fix",
+            "Missed approach point",
+            "Initial approach fix",
+            "Runway threshold"
+          ],
+          "answer": 1,
+          "explain": "§97.3(c)(5) states the missed approach segment starts at the missed approach point and comprises an initial, intermediate and final phase.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "Under GACAR §97.3, the intermediate phase of the missed approach extends from the start of climb to the point where obstacle clearance of at least — is first obtained and can be maintained.",
+          "options": [
+            "30 m (98 ft)",
+            "50 m (164 ft)",
+            "75 m (246 ft)",
+            "100 m (328 ft)"
+          ],
+          "answer": 1,
+          "explain": "§97.3(c)(5)(ii) defines the intermediate phase as extending from the start of climb to where 50 m (164 ft) of obstacle clearance is first obtained and can be maintained.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "Per GACAR §97.3, a procedure turn is a maneuver in which a turn is made away from a designated track followed by a turn in the opposite direction to —",
+          "options": [
+            "Enter a holding pattern at the fix",
+            "Permit the aircraft to intercept and proceed along the reciprocal of the designated track",
+            "Increase speed for landing",
+            "Establish the aircraft on the missed approach"
+          ],
+          "answer": 1,
+          "explain": "§97.3(d) defines a procedure turn as a turn away from a designated track and then a turn in the opposite direction so the aircraft can intercept and proceed along the reciprocal of that track.",
+          "cite": "GACAR Part 97, §97.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-3"
+          }
+        },
+        {
+          "q": "Under GACAR §97.5, all bearings, courses, tracks, headings and radials in the instrument procedures of Part 97 are expressed in —",
+          "options": [
+            "Degrees true",
+            "Degrees magnetic, unless otherwise designated",
+            "Grid bearings",
+            "Relative bearings"
+          ],
+          "answer": 1,
+          "explain": "§97.5(a) provides that all bearings, courses, tracks, headings and radials in Part 97 are in degrees magnetic unless otherwise designated.",
+          "cite": "GACAR Part 97, §97.5",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-5"
+          }
+        },
+        {
+          "q": "In the instrument procedures of GACAR Part 97, runway visual range (RVR) values are stated in —",
+          "options": [
+            "Statute miles",
+            "Feet",
+            "Meters",
+            "Nautical miles"
+          ],
+          "answer": 2,
+          "explain": "§97.5(b) states RVR values are stated in meters, while other mileages are stated in nautical miles or applicable SI units.",
+          "cite": "GACAR Part 97, §97.5",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-5"
+          }
+        },
+        {
+          "q": "Under GACAR §97.11, approved IFPs (including instrument approach and departure procedures) in the KSA are developed and maintained by —",
+          "options": [
+            "The individual pilot in command",
+            "Air navigation service providers certificated under GACAR Part 170 providing IFP services under Part 172",
+            "Aircraft manufacturers under Part 21",
+            "Each aerodrome operator independently"
+          ],
+          "answer": 1,
+          "explain": "§97.11(a) provides that approved IFPs are developed and maintained by air navigation service providers certificated under GACAR Part 170 and providing instrument flight procedure services under GACAR Part 172.",
+          "cite": "GACAR Part 97, §97.11",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97",
+            "anchor": "sec-97-11"
+          }
+        },
+        {
+          "q": "According to the Saudi AIP, the transition level (TL) for the whole JEDDAH FIR has been fixed by GACA at —",
+          "options": [
+            "FL 100",
+            "FL 120",
+            "FL 150",
+            "FL 180"
+          ],
+          "answer": 2,
+          "explain": "Saudi AIP ENR 1.1 (Transition level) states the TL has been determined by GACA as fixed at FL 150 for the whole of JEDDAH FIR.",
+          "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "Per the Saudi AIP, the fixed transition level of FL 150 in JEDDAH FIR is also described as the —",
+          "options": [
+            "Highest usable flight level",
+            "Lowest usable flight level",
+            "Standard cruising level for all IFR flights",
+            "Minimum sector altitude"
+          ],
+          "answer": 1,
+          "explain": "Saudi AIP ENR 1.1 notes that the transition level, fixed at FL 150, is therefore also the lowest usable flight level for the JEDDAH FIR.",
+          "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "Under the Saudi AIP cruising-level rules, en-route cruising levels are expressed in flight levels at and above —",
+          "options": [
+            "FL 100",
+            "FL 130",
+            "FL 150",
+            "FL 200"
+          ],
+          "answer": 2,
+          "explain": "Saudi AIP ENR 1.1 (Cruising levels) states levels are expressed as altitude at and below 13,000 FT AMSL, or as flight level at and above FL 150.",
+          "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "Per the Saudi AIP, the appropriate flight information service (FIS) frequency for an aerodrome is published —",
+          "options": [
+            "Only in the GEN section of the AIP",
+            "At the top of all instrument approach charts",
+            "Solely by ATIS broadcast",
+            "On the en-route chart margins only"
+          ],
+          "answer": 1,
+          "explain": "Saudi AIP ENR 1.1 notes that the appropriate FIS frequency is published at the top of all instrument approach charts.",
+          "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "Per the Saudi AIP, a pilot who has not received a landing clearance approaching short final shall —",
+          "options": [
+            "Continue and land, then advise the tower",
+            "Request a landing clearance, and if not in receipt of one commence a missed approach not later than the runway landing threshold",
+            "Enter a holding pattern over the threshold",
+            "Reduce to minimum speed and orbit on final"
+          ],
+          "answer": 1,
+          "explain": "Saudi AIP ENR 1.1 states a landing clearance shall be requested approaching short final, and pilots not in receipt of one shall commence a missed approach not later than the runway landing threshold.",
+          "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "Under the Saudi AIP general speed limits, aircraft operated below ALT 10,000 FT anywhere in JEDDAH FIR must not exceed an indicated airspeed of —",
+          "options": [
+            "200 KT",
+            "230 KT",
+            "250 KT",
+            "280 KT"
+          ],
+          "answer": 2,
+          "explain": "Saudi AIP ENR 1.1 (Speed limits) sets a maximum of 250 KT IAS below 10,000 FT elsewhere in the FIR (with a lower limit inside the aerodrome traffic circuit).",
+          "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "Per the Saudi AIP, the highest altitude at which a VFR flight may operate within JEDDAH FIR is —",
+          "options": [
+            "10,000 FT",
+            "12,500 FT",
+            "13,000 FT",
+            "FL 150"
+          ],
+          "answer": 1,
+          "explain": "Saudi AIP ENR 1.2 (Maximum level for VFR) states the highest altitude at which a VFR flight may operate within JEDDAH FIR is 12,500 FT.",
+          "cite": "Saudi AIP, ENR 1.2"
+        },
+        {
+          "q": "Per the Saudi AIP, an aircraft joining the aerodrome traffic circuit from the same side as the traffic pattern shall normally —",
+          "options": [
+            "Join straight in on the base leg",
+            "Arrange flight to join straight in on the downwind leg",
+            "Overfly the aerodrome at circuit height then join crosswind",
+            "Join directly on final approach"
+          ],
+          "answer": 1,
+          "explain": "Saudi AIP ENR 1.1 states aircraft approaching from the same side as the traffic pattern shall arrange flight to join straight in on the downwind leg (those from the opposite side cross over the aerodrome at midfield first).",
+          "cite": "Saudi AIP, ENR 1.1"
+        }
+      ]
+    },
+    {
+      "id": "ir-rating",
+      "title": "Instrument Rating Requirements",
+      "desc": "Eligibility, experience and currency for the instrument rating under GACAR Part 61.",
+      "source": "GACAR Part 61 (Instrument Rating) · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Under GACAR Part 61, to apply for an instrument rating a person must, at minimum —",
+          "options": [
+            "Hold a commercial pilot certificate",
+            "Hold an ATP certificate",
+            "Hold at least a current private pilot certificate (or be concurrently applying for one) with an appropriate aircraft rating",
+            "Hold only a student pilot certificate"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.89(a)(1) requires an instrument-rating applicant to hold at least a current private pilot certificate — or be concurrently applying for one — with an airplane, helicopter, or powered-lift rating appropriate to the instrument rating sought.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Under §61.89, an instrument-rating applicant who does not already hold one must pass a knowledge test on the aeronautical knowledge areas of —",
+          "options": [
+            "Appendix A to GACAR Part 61",
+            "Appendix B to GACAR Part 141",
+            "The Part 91 general operating rules",
+            "Appendix E to GACAR Part 61"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.89(a)(2) requires the applicant (unless already instrument-rated) to pass the knowledge test on the aeronautical knowledge areas of Appendix B to GACAR Part 141.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Under §61.89, no person may act as PIC of a civil aircraft under IFR, or in weather less than the minimums for VFR flight, unless that person holds —",
+          "options": [
+            "A current medical certificate only",
+            "A night rating",
+            "A multi-engine rating",
+            "An appropriate category/class/type rating and an instrument rating (or equivalent ATP privileges)"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.89(b) bars acting as PIC under IFR or in below-VFR weather unless the pilot holds the appropriate category, class, and type rating plus an instrument rating for the aircraft (or the equivalent ATP privileges).",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "To act as PIC under IFR, §61.17 requires that within the preceding period the pilot have performed and logged, among other tasks, at least —",
+          "options": [
+            "One instrument approach",
+            "Three instrument approaches",
+            "Six instrument approaches",
+            "Twelve instrument approaches"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.17(a)(3) requires, for instrument recent experience, at least six instrument approaches (plus holding procedures and course tracking) performed solely by reference to instruments.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.17, the instrument approaches, holding, and course-tracking tasks required to act as PIC under IFR (in an aircraft) must have been performed within the preceding —",
+          "options": [
+            "6 months",
+            "90 days",
+            "12 months",
+            "24 months"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.17(a)(3)(i) sets the instrument recent-experience window at the 6 months preceding the month of the flight.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Which task is part of the instrument recent experience §61.17 requires to act as PIC under IFR?",
+          "options": [
+            "Three full-stop night landings",
+            "Intercepting and tracking courses using electronic navigation systems",
+            "A high-altitude endorsement",
+            "A biennial flight review in a glider"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.17(a)(3) lists intercepting and tracking courses using electronic navigation systems (along with six instrument approaches and holding procedures) as an instrument recent-experience task.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.17, a pilot who has not met the instrument experience requirements for more than six calendar months may regain instrument currency only by —",
+          "options": [
+            "Logging one additional instrument approach",
+            "Passing a written knowledge test",
+            "Renewing the medical certificate",
+            "Completing an instrument proficiency check"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.17(a)(4) provides that once the instrument experience lapse exceeds six calendar months, currency can be reestablished only by completing an instrument proficiency check.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.17, an instrument proficiency check must consist of —",
+          "options": [
+            "The areas of operation and instrument tasks required in the instrument rating practical test standards",
+            "Only three instrument approaches",
+            "A short oral quiz on weather theory",
+            "The night takeoff and landing recency tasks"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.17(a)(4) states the instrument proficiency check must consist of the areas of operation and instrument tasks required in the instrument rating practical test standards.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.17, an instrument proficiency check may be given by all of the following EXCEPT —",
+          "options": [
+            "An examiner",
+            "An authorized instructor",
+            "Any private pilot who happens to hold an instrument rating",
+            "An authorized company check pilot under GACAR Part 121, 125, or 135"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.17(a)(4)(ii) lists who may give the check — an examiner, an authorized instructor, an authorized company check pilot, or a person approved by the President — but not simply any instrument-rated private pilot.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.89, if instrument-rating privileges are to be exercised in multi-engine aircraft, the flight training must include operating the aircraft solely by reference to instruments —",
+          "options": [
+            "At night only",
+            "With one engine inoperative",
+            "Above 10,000 ft",
+            "In actual icing conditions"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.89(c) requires that multi-engine instrument training include operating the aircraft of the appropriate category solely by reference to instruments with one engine inoperative.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Under §61.89, a person holding or applying for an instrument rating on a private pilot certificate must hold a Class 1 medical certificate or —",
+          "options": [
+            "Hold a Class 3 medical certificate",
+            "Obtain a waiver from the President",
+            "Complete a night flight test",
+            "Have established hearing acuity meeting the Class 1 medical hearing requirements"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.89(d) requires either a Class 1 medical certificate or established hearing acuity based on compliance with the hearing requirements for issue of a Class 1 medical certificate.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Under §61.89, to act as PIC of a glider under IFR a person must hold a pilot certificate with a glider category rating and —",
+          "options": [
+            "An airplane instrument rating",
+            "A commercial pilot certificate",
+            "A multi-engine class rating",
+            "A powered-lift rating"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.89(b)(3) allows a glider to be flown under IFR by a person holding a pilot certificate with a glider category rating and an airplane instrument rating.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Under §61.19, a person may serve as SIC of an aircraft under IFR only if, among other requirements, that person holds —",
+          "options": [
+            "An ATP certificate",
+            "A flight instructor certificate",
+            "An instrument rating or privilege applicable to the aircraft being flown",
+            "A type rating in every aircraft in the fleet"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.19(a)(2) requires an SIC to hold an instrument rating, or privilege applicable to the aircraft being flown, when the flight is conducted under IFR.",
+          "cite": "GACAR Part 61, §61.19",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-19"
+          }
+        },
+        {
+          "q": "Under §61.89, an instrument-rating applicant must pass a practical test on the areas of operation prescribed in —",
+          "options": [
+            "Appendix D to GACAR Part 61",
+            "Appendix B to GACAR Part 141",
+            "A Part 121 training program",
+            "Appendix A to GACAR Part 141"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.89(a)(4) requires the applicant to pass the practical test on the areas of operation set out in Appendix B to GACAR Part 141.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Under §61.17, when instrument recent experience is accomplished in an aviation training device (ATD), the required tasks must have been performed within the preceding —",
+          "options": [
+            "2 months",
+            "6 months",
+            "90 days",
+            "12 months"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.17(a)(3) provides a shorter window for ATD-based instrument recency: the required tasks (including 3 hours and six approaches) must be within the 2 months preceding the month of the flight.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.89, which is an acceptable way to meet the instrument-rating training requirement?",
+          "options": [
+            "Self-study with no logged instruction",
+            "A single solo cross-country flight",
+            "Simply holding a valid medical certificate",
+            "Graduating from an approved instrument rating course under Appendix B to GACAR Part 141"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.89(a)(3) lists acceptable training routes, including a certificate of graduation from an approved instrument rating certification course under Appendix B to GACAR Part 141.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "The instrument recent-experience tasks in §61.17 must be performed —",
+          "options": [
+            "Solely by reference to instruments, in actual or simulated instrument flight conditions",
+            "Only in actual IMC with a safety pilot",
+            "Only at night",
+            "Only in a full flight simulator"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.17(a)(3) requires the recent-experience tasks to be performed solely by reference to instruments, in actual or simulated instrument flight conditions.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under GACAR Part 61, an instrument rating is required in order to —",
+          "options": [
+            "Carry passengers for hire in day VFR",
+            "Act as PIC under IFR or in weather below the minimums for VFR flight",
+            "Act as a flight instructor",
+            "Fly a single-engine airplane in day VFR"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.89(b) makes an instrument rating a prerequisite to acting as PIC under IFR or in weather conditions less than the minimums prescribed for VFR flight.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "Which of the following is one of the recent-experience tasks §61.17 requires to act as PIC under IFR?",
+          "options": [
+            "Holding procedures and tasks",
+            "A power-off stall series in VMC",
+            "Three touch-and-go landings",
+            "A short-field takeoff"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.17(a)(3) lists holding procedures and tasks, along with six instrument approaches and course tracking, as instrument recent-experience requirements.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.17, an instrument proficiency check (for other than a glider) may be conducted in an aircraft appropriate to the category or in —",
+          "options": [
+            "Any airplane regardless of category",
+            "A classroom ground trainer only",
+            "An FSTD representative of the aircraft category",
+            "A glider"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.17(a)(4)(i) allows the instrument proficiency check to be conducted in an aircraft appropriate to the category or, for other than a glider, in an FSTD that is representative of the aircraft category.",
+          "cite": "GACAR Part 61, §61.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-17"
+          }
+        },
+        {
+          "q": "Under §61.89, an applicant for an instrument rating who does not yet hold a private pilot certificate may —",
+          "options": [
+            "Apply for the instrument rating concurrently with the private pilot certificate",
+            "Never be issued an instrument rating",
+            "Skip the private pilot requirement entirely",
+            "Obtain it only after logging 1,500 hours"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.89(a)(1) permits an applicant to be concurrently applying for the private pilot certificate (with the appropriate aircraft rating) while seeking the instrument rating.",
+          "cite": "GACAR Part 61, §61.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-89"
+          }
+        }
+      ]
+    },
+    {
+      "id": "atpl-licensing",
+      "title": "Airline Transport Pilot Licensing",
+      "desc": "ATP certificate eligibility, aeronautical experience, privileges and limitations (GACAR Part 61, Subpart G).",
+      "source": "GACAR Part 61, Subpart G · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Which pilot certificate is governed by GACAR Part 61, Subpart G?",
+          "options": [
+            "Airline transport pilot certificate",
+            "Sport pilot certificate",
+            "Recreational pilot certificate",
+            "Flight instructor certificate"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.171 states that Subpart G prescribes the requirements for the issuance of airline transport pilot (ATP) certificates and ratings, the conditions under which they are necessary, and their privileges and limitations.",
+          "cite": "GACAR Part 61, §61.171",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-171"
+          }
+        },
+        {
+          "q": "Under GACAR Part 61, the minimum age to be eligible for an airline transport pilot (ATP) certificate is —",
+          "options": [
+            "18 years",
+            "21 years",
+            "23 years",
+            "25 years"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.173(a) requires an ATP certificate applicant to be at least 23 years of age.",
+          "cite": "GACAR Part 61, §61.173",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-173"
+          }
+        },
+        {
+          "q": "Which class of medical certificate must an applicant generally hold to exercise the privileges of an ATP certificate?",
+          "options": [
+            "Class 1 medical certificate",
+            "Class 2 medical certificate",
+            "Class 3 medical certificate",
+            "No medical certificate is required"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.173(i) requires an ATP applicant to hold a Class 1 medical certificate (with a limited glider/balloon exception permitting a Class 2).",
+          "cite": "GACAR Part 61, §61.173",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-173"
+          }
+        },
+        {
+          "q": "For an ATP certificate with an airplane category and class rating, what is the minimum total time as a pilot required?",
+          "options": [
+            "1,000 hours",
+            "1,200 hours",
+            "1,500 hours",
+            "2,000 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.181(a) requires at least 1,500 hours of total time as a pilot for an ATP certificate with an airplane category and class rating.",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "The aeronautical experience for an ATP airplane rating must include at least how many hours of cross-country flight time?",
+          "options": [
+            "100 hours",
+            "250 hours",
+            "500 hours",
+            "1,000 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.181(a)(1) requires at least 500 hours of cross-country flight time within the 1,500-hour total for an ATP airplane rating.",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "How many hours of night flight time are required for an ATP certificate with an airplane category and class rating?",
+          "options": [
+            "25 hours",
+            "50 hours",
+            "75 hours",
+            "100 hours"
+          ],
+          "answer": 3,
+          "explain": "GACAR §61.181(a)(2) requires at least 100 hours of night flight time for an ATP airplane rating.",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "The ATP airplane aeronautical experience requirement includes at least how many hours of instrument flight time in actual or simulated instrument conditions?",
+          "options": [
+            "40 hours",
+            "50 hours",
+            "75 hours",
+            "100 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.181(a)(4) requires at least 75 hours of instrument flight time in actual or simulated instrument conditions for an ATP airplane rating.",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "For an ATP airplane rating, at least how many hours of flight time must be as pilot in command (or as SIC performing PIC duties under supervision)?",
+          "options": [
+            "100 hours",
+            "250 hours",
+            "500 hours",
+            "1,500 hours"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.181(a)(5) requires at least 250 hours of flight time in an airplane as PIC, or as SIC performing the duties of a PIC under supervision, for an ATP airplane rating.",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "For an ATP certificate with a rotorcraft category and helicopter class rating, what is the minimum total time as a pilot required?",
+          "options": [
+            "1,000 hours",
+            "1,200 hours",
+            "1,500 hours",
+            "2,000 hours"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.183(a) requires at least 1,200 hours of total time as a pilot for an ATP certificate with a rotorcraft category and helicopter class rating.",
+          "cite": "GACAR Part 61, §61.183",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-183"
+          }
+        },
+        {
+          "q": "For an ATP certificate with a powered-lift category rating, what is the minimum total time as a pilot required?",
+          "options": [
+            "1,200 hours",
+            "1,500 hours",
+            "1,800 hours",
+            "2,000 hours"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.185(a) requires at least 1,500 hours of total time as a pilot for an ATP certificate with a powered-lift category rating.",
+          "cite": "GACAR Part 61, §61.185",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-185"
+          }
+        },
+        {
+          "q": "In multi-pilot international operations under GACAR Part 121 or 135, a pilot holding an ATP certificate may not serve as a pilot after attaining which birthday?",
+          "options": [
+            "60th birthday",
+            "63rd birthday",
+            "65th birthday",
+            "67th birthday"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.3(c) bars a commercial or ATP certificate holder from serving as a pilot in international Part 121/135 operations after the 60th birthday, or the 65th birthday in the case of operations with more than one pilot.",
+          "cite": "GACAR Part 61, §61.3",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-3"
+          }
+        },
+        {
+          "q": "Under GACAR §61.175, when is an applicant NOT required to pass a knowledge test to add an aircraft type rating to an ATP certificate?",
+          "options": [
+            "When the ATP certificate already lists the aircraft category and class rating appropriate to the type rating sought",
+            "Never — a knowledge test is always required",
+            "When the applicant is over 40 years of age",
+            "When the applicant holds a foreign private pilot licence"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.175(b) waives the knowledge test for an additional aircraft type rating when the applicant's ATP certificate already lists the aircraft category and class rating appropriate to the type rating sought.",
+          "cite": "GACAR Part 61, §61.175",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-175"
+          }
+        },
+        {
+          "q": "The ATP certification training program for an airplane multiengine class rating requires at least how many hours of academic (classroom) instruction?",
+          "options": [
+            "10 hours",
+            "20 hours",
+            "30 hours",
+            "40 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.177(a) requires at least 30 hours of classroom instruction in the ATP certification training program for an airplane multiengine class rating.",
+          "cite": "GACAR Part 61, §61.177",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-177"
+          }
+        },
+        {
+          "q": "Within the ATP certification training program (airplane multiengine), how many hours of flight-simulation training device (FSTD) training are required?",
+          "options": [
+            "6 hours",
+            "10 hours",
+            "14 hours",
+            "20 hours"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.177(b) requires at least 10 hours of training in an FSTD representing a multiengine turbine airplane as part of the ATP certification training program.",
+          "cite": "GACAR Part 61, §61.177",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-177"
+          }
+        },
+        {
+          "q": "For an ATP airplane rating, at least how many hours must be flown in the specific class of airplane for the rating sought?",
+          "options": [
+            "25 hours",
+            "50 hours",
+            "75 hours",
+            "100 hours"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.181(a)(3) requires at least 50 hours of flight time in the class of airplane for the rating sought (with limited FFS credit).",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "For an ATP rotorcraft/helicopter rating, the 100 hours of required night flight time must include at least how many hours in helicopters?",
+          "options": [
+            "10 hours",
+            "15 hours",
+            "25 hours",
+            "50 hours"
+          ],
+          "answer": 1,
+          "explain": "GACAR §61.183(a)(2) requires 100 hours of night flight time, of which at least 15 hours are in helicopters, for an ATP rotorcraft/helicopter rating.",
+          "cite": "GACAR Part 61, §61.183",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-183"
+          }
+        },
+        {
+          "q": "Which of the following is a valid eligibility path to an ATP certificate under GACAR §61.173?",
+          "options": [
+            "Holding a commercial pilot certificate with an instrument rating",
+            "Holding a private pilot certificate only",
+            "Holding a sport pilot certificate",
+            "Holding a recreational pilot certificate"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.173(c) requires the applicant to hold a commercial pilot certificate with an instrument rating (or a qualifying foreign ATP licence with instrument privileges).",
+          "cite": "GACAR Part 61, §61.173",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-173"
+          }
+        },
+        {
+          "q": "For an ATP rotorcraft/helicopter rating, at least how many hours of cross-country flight time are required?",
+          "options": [
+            "200 hours",
+            "250 hours",
+            "500 hours",
+            "1,000 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.183(a)(1) requires at least 500 hours of cross-country flight time for an ATP certificate with a rotorcraft category and helicopter class rating.",
+          "cite": "GACAR Part 61, §61.183",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-183"
+          }
+        },
+        {
+          "q": "For an ATP powered-lift rating, at least how many hours must be flown in a powered-lift as PIC (or as SIC performing PIC duties under supervision)?",
+          "options": [
+            "100 hours",
+            "200 hours",
+            "250 hours",
+            "500 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.185(a)(3) requires at least 250 hours in a powered-lift as PIC, or as SIC performing the duties of a PIC under supervision, for an ATP powered-lift rating.",
+          "cite": "GACAR Part 61, §61.185",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-185"
+          }
+        },
+        {
+          "q": "For the ATP airplane rating, not more than how many hours of the total aeronautical experience may be obtained in a full flight simulator or flight training device (in an approved course)?",
+          "options": [
+            "25 hours",
+            "50 hours",
+            "100 hours",
+            "There is no limit"
+          ],
+          "answer": 2,
+          "explain": "GACAR §61.181(a)(6) allows not more than 100 hours of the total aeronautical experience to be obtained in a full flight simulator or flight training device representing an airplane, when accomplished in an approved Part 121/135/141/142 course.",
+          "cite": "GACAR Part 61, §61.181",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-181"
+          }
+        },
+        {
+          "q": "Besides the minimum age, which is an eligibility requirement for an ATP certificate under GACAR §61.173?",
+          "options": [
+            "Be of good moral character",
+            "Hold a university degree",
+            "Be currently employed by an airline",
+            "Be under 40 years of age"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.173(b) requires an ATP certificate applicant to be of good moral character, in addition to the age and other requirements.",
+          "cite": "GACAR Part 61, §61.173",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-173"
+          }
+        },
+        {
+          "q": "To be eligible for an ATP certificate with an airplane multiengine class rating, GACAR §61.173(d) requires the applicant to present —",
+          "options": [
+            "A graduation certificate for the ATP certification training program (§61.177)",
+            "A university degree in aeronautical engineering",
+            "Five years of airline employment",
+            "A type rating in a widebody aircraft"
+          ],
+          "answer": 0,
+          "explain": "GACAR §61.173(d) requires, for an airplane multiengine class ATP rating, a graduation certificate from an authorized training provider certifying completion of the ATP certification training program specified in §61.177 before taking the knowledge test.",
+          "cite": "GACAR Part 61, §61.173",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61",
+            "anchor": "sec-61-173"
+          }
+        }
+      ]
+    },
+    {
+      "id": "air-transport-ops",
+      "title": "Air Transport Operations",
+      "desc": "Operating rules for transport-category commercial air operators under GACAR Part 121.",
+      "source": "GACAR Part 121 · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "GACAR Part 121 prescribes rules governing the scheduled and unscheduled operations of a commercial air operator operating which category of aircraft?",
+          "options": [
+            "Small piston single-engine aircraft only",
+            "Transport category airplanes/rotorcraft or commuter category airplanes",
+            "Balloons and gliders",
+            "Experimental amateur-built aircraft"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.1 applies Part 121 to commercial air operators operating transport category airplanes, transport category rotorcraft, or commuter category airplanes that hold or must hold an Air Operator Certificate.",
+          "cite": "GACAR Part 121, §121.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1"
+          }
+        },
+        {
+          "q": "Under GACAR Part 121, a certificate holder must hold or be required to hold an Air Operator Certificate (AOC) issued under which GACAR Part?",
+          "options": [
+            "GACAR Part 91",
+            "GACAR Part 61",
+            "GACAR Part 119",
+            "GACAR Part 135"
+          ],
+          "answer": 2,
+          "explain": "GACAR §121.1 ties Part 121 operations to holding an Air Operator Certificate under GACAR Part 119; a certificate holder is defined as a Part 119 AOC holder operating under this part.",
+          "cite": "GACAR Part 121, §121.1",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1"
+          }
+        },
+        {
+          "q": "For the purposes of GACAR Part 121, the term 'special unscheduled' distinguishes requirements applicable to aircraft with a type-certificated passenger seating capacity of —",
+          "options": [
+            "9 seats or less",
+            "19 seats or less",
+            "56 seats or less",
+            "100 seats or less"
+          ],
+          "answer": 2,
+          "explain": "GACAR §121.5 uses 'special unscheduled' for unscheduled operations applicable only to aircraft with a type-certificated passenger seating capacity of 56 seats or less, excluding required crew members.",
+          "cite": "GACAR Part 121, §121.5",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-5"
+          }
+        },
+        {
+          "q": "For scheduled and unscheduled operations, which of the following is NOT one of the full-time management positions a Part 121 certificate holder must staff?",
+          "options": [
+            "Director of safety",
+            "Chief pilot",
+            "Director of training",
+            "Chief inspector"
+          ],
+          "answer": 2,
+          "explain": "GACAR §121.45(a) requires a director of safety, director of operations, chief pilot, director of maintenance, and chief inspector; a director of training is not among the listed required positions.",
+          "cite": "GACAR Part 121, §121.45",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-45"
+          }
+        },
+        {
+          "q": "Under GACAR §121.45, a certificate holder must notify the President of any change in required management personnel or any vacancy within how many working days?",
+          "options": [
+            "5 working days",
+            "10 working days",
+            "30 working days",
+            "60 working days"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.45(f)(3) requires the certificate holder to notify the President within 10 working days of any change in personnel or any vacancy in a listed position.",
+          "cite": "GACAR Part 121, §121.45",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-45"
+          }
+        },
+        {
+          "q": "A certificate holder conducting only special unscheduled operations must staff which management positions under GACAR §121.45?",
+          "options": [
+            "Director of operations, chief pilot, and director of maintenance",
+            "Director of safety and chief inspector only",
+            "Chief pilot and chief inspector only",
+            "All five positions required for scheduled operations"
+          ],
+          "answer": 0,
+          "explain": "GACAR §121.45(b) requires special unscheduled operators to have a director of operations, a chief pilot, and a director of maintenance — a reduced set compared with scheduled operations.",
+          "cite": "GACAR Part 121, §121.45",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-45"
+          }
+        },
+        {
+          "q": "To serve as director of operations for a Part 121 certificate holder, a person must hold at minimum which pilot certificate?",
+          "options": [
+            "Private pilot certificate",
+            "Commercial pilot certificate",
+            "Airline transport pilot (ATP) certificate",
+            "Flight instructor certificate"
+          ],
+          "answer": 2,
+          "explain": "GACAR §121.49(a) requires the director of operations to hold an airline transport pilot (ATP) certificate, plus specified supervisory and PIC experience.",
+          "cite": "GACAR Part 121, §121.49",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-49"
+          }
+        },
+        {
+          "q": "Under GACAR §121.49, to serve as chief inspector a person must hold a mechanic certificate with both airframe and powerplant ratings and have held those ratings for at least —",
+          "options": [
+            "1 year",
+            "2 years",
+            "3 years",
+            "5 years"
+          ],
+          "answer": 2,
+          "explain": "GACAR §121.49(d) requires the chief inspector to hold a mechanic certificate with airframe and powerplant ratings and to have held those ratings for at least 3 years.",
+          "cite": "GACAR Part 121, §121.49",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-49"
+          }
+        },
+        {
+          "q": "Under GACAR §121.13, if a certificate holder knowingly permits an owned or leased aircraft to be engaged in an operation violating the psychoactive-substances rule, that operation is a basis for —",
+          "options": [
+            "A written warning only",
+            "Suspending or revoking the certificate",
+            "A mandatory retraining program",
+            "An increased insurance premium"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.13 provides that permitting an aircraft to be used in violation of GACAR §91.23 (carriage of psychoactive substances) is a basis for suspending or revoking the certificate.",
+          "cite": "GACAR Part 121, §121.13",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-13"
+          }
+        },
+        {
+          "q": "Beyond the general Part 91 documents, GACAR §121.17 requires a Part 121 certificate holder to carry on board —",
+          "options": [
+            "A true copy of the AOC and a copy of the operations specifications",
+            "The pilots' personal logbooks",
+            "A copy of the certificate holder's financial statements",
+            "The original AOC and original operations specifications only"
+          ],
+          "answer": 0,
+          "explain": "GACAR §121.17 requires carrying a true copy of the AOC and a copy of the operations specifications (and, when applicable, a true copy of the Article 83bis agreement).",
+          "cite": "GACAR Part 121, §121.17",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-17"
+          }
+        },
+        {
+          "q": "Under GACAR §121.139, each Part 121 certificate holder must prepare and keep current which manuals?",
+          "options": [
+            "An operations manual and a maintenance manual",
+            "A single flight-crew checklist only",
+            "A marketing manual and a safety manual",
+            "Only a maintenance manual"
+          ],
+          "answer": 0,
+          "explain": "GACAR §121.139(a) requires the certificate holder to prepare and keep current both an operations manual and a maintenance manual for the use and guidance of appropriate personnel.",
+          "cite": "GACAR Part 121, §121.139",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-139"
+          }
+        },
+        {
+          "q": "Among the requirements of GACAR §121.139, each required manual must —",
+          "options": [
+            "Be written only in Arabic",
+            "Be available in the English language",
+            "Be revised no more than once per year",
+            "Omit references to the GACAR"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.139(c) requires each manual to be available in the English language, be easy to revise, reference applicable GACAR, and include human factors principles.",
+          "cite": "GACAR Part 121, §121.139",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-139"
+          }
+        },
+        {
+          "q": "GACAR §121.143 lists the content areas that the operations manual must contain. Which of the following is NOT one of them?",
+          "options": [
+            "General",
+            "Aircraft operating information",
+            "Areas, routes, and aerodromes",
+            "Passenger revenue accounting"
+          ],
+          "answer": 3,
+          "explain": "GACAR §121.143(a) organizes operations-manual contents under General; Aircraft operating information; Areas, routes, and aerodromes; and Training — revenue accounting is not a required content area.",
+          "cite": "GACAR Part 121, §121.143",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-143"
+          }
+        },
+        {
+          "q": "Under GACAR §121.147, a certificate holder must keep a current approved Aircraft Flight Manual (AFM), or approved equivalent, for each type of aircraft —",
+          "options": [
+            "Only at GACA headquarters",
+            "At its principal base of operations and in each aircraft of that type",
+            "Only in the certificate holder's legal department",
+            "Only aboard the aircraft during international flights"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.147(a) requires a current approved AFM or approved equivalent at the principal base of operations and in each aircraft of that type that the holder operates.",
+          "cite": "GACAR Part 121, §121.147",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-147"
+          }
+        },
+        {
+          "q": "Under GACAR §121.151, copies of the required manual (or appropriate parts) must be furnished to all of the following EXCEPT —",
+          "options": [
+            "Appropriate ground operations and maintenance personnel",
+            "Its crew members",
+            "The GACA representatives assigned to it",
+            "Every passenger on request"
+          ],
+          "answer": 3,
+          "explain": "GACAR §121.151(a) requires furnishing manuals to ground operations and maintenance personnel, crew members, and assigned GACA representatives; passengers are not on that list.",
+          "cite": "GACAR Part 121, §121.151",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-151"
+          }
+        },
+        {
+          "q": "Under GACAR §121.517, no person may take off an aircraft with inoperable instruments or equipment installed unless —",
+          "options": [
+            "The PIC gives verbal approval before departure",
+            "An approved minimum equipment list (MEL) exists and the operations specifications authorize operations under it",
+            "The item is scheduled for repair within 10 days",
+            "A passenger briefing on the defect is given"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.517(a) permits takeoff with inoperable items only when an approved MEL exists and the operations specifications authorize operation under that MEL, with the aircraft operated under its conditions and limitations.",
+          "cite": "GACAR Part 121, §121.517",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-517"
+          }
+        },
+        {
+          "q": "Which of the following may NOT be included in a certificate holder's approved MEL under GACAR §121.517?",
+          "options": [
+            "Instruments or equipment required by an airworthiness directive to be operable",
+            "A spare cabin reading light",
+            "A single non-essential galley appliance",
+            "A redundant passenger-address speaker"
+          ],
+          "answer": 0,
+          "explain": "GACAR §121.517(b) bars the MEL from including instruments/equipment required by an airworthiness directive to be operable, items required by the type-certification airworthiness requirements, and items required for specific operations by Part 121 and Part 91.",
+          "cite": "GACAR Part 121, §121.517",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-517"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1301, a certificate holder conducting scheduled operations must have which operational-control system?",
+          "options": [
+            "A flight-following system only",
+            "A dispatch release system",
+            "No formal system is required",
+            "A voluntary self-briefing system"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.1301 requires scheduled operators to have a dispatch release system; unscheduled operators may use either a flight release system or a dispatch release system.",
+          "cite": "GACAR Part 121, §121.1301",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1301"
+          }
+        },
+        {
+          "q": "Under the dispatch release system of GACAR §121.1309, no person may continue a flight from an intermediate aerodrome without re-dispatch if the aircraft has been on the ground more than —",
+          "options": [
+            "1 hour",
+            "3 hours",
+            "6 hours",
+            "12 hours"
+          ],
+          "answer": 2,
+          "explain": "GACAR §121.1309(a) prohibits continuing a flight from an intermediate aerodrome without re-dispatch once the aircraft has been on the ground more than 6 hours.",
+          "cite": "GACAR Part 121, §121.1309",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1309"
+          }
+        },
+        {
+          "q": "Under the dispatch release system of GACAR §121.1309, who are jointly responsible for the preflight planning, delay, and dispatch release of a flight?",
+          "options": [
+            "The PIC and the aircraft dispatcher",
+            "The chief pilot and the director of safety",
+            "The GACA and the certificate holder",
+            "The first officer and the cabin crew"
+          ],
+          "answer": 0,
+          "explain": "GACAR §121.1309(a)(4) makes the PIC and the aircraft dispatcher jointly responsible for the preflight planning, delay, and dispatch release, in compliance with Part 121, the operations specifications, and the manual.",
+          "cite": "GACAR Part 121, §121.1309",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1309"
+          }
+        },
+        {
+          "q": "Under the flight release system of GACAR §121.1325, operational control for each flight must be shared between the PIC and —",
+          "options": [
+            "The chief inspector",
+            "The director of operations",
+            "The director of safety",
+            "An air traffic controller"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.1325(a) requires operational control for each flight to be shared between the PIC and the director of operations, who may delegate that authority as specified in the manual.",
+          "cite": "GACAR Part 121, §121.1325",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1325"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1001, a Part 121 certificate holder may satisfy flight-crew flight-time and duty limitations either by complying with GACAR Part 117 or by implementing —",
+          "options": [
+            "An informal crew-scheduling spreadsheet",
+            "A fatigue risk management system (FRMS) providing an equivalent level of safety",
+            "A doubled minimum rest period only",
+            "No alternative — Part 117 is the sole option"
+          ],
+          "answer": 1,
+          "explain": "GACAR §121.1001 lets a certificate holder either comply with the Part 117 flight-time and duty limitations or implement a comprehensive FRMS, approved by the President, that provides an equivalent level of safety.",
+          "cite": "GACAR Part 121, §121.1001",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1001"
+          }
+        }
+      ]
+    },
+    {
+      "id": "advanced-weather-performance",
+      "title": "Transport Performance & Dispatch",
+      "desc": "Performance, weather minima and dispatch requirements for transport-category operations (GACAR Part 121).",
+      "source": "GACAR Part 121 (performance & dispatch) · DRAFT — pending review",
+      "questions": [
+        {
+          "q": "Which subpart of GACAR Part 121 prescribes airplane performance operating limitations for all certificate holders?",
+          "options": [
+            "Subpart F",
+            "Subpart G",
+            "Subpart M",
+            "Subpart Q"
+          ],
+          "answer": 0,
+          "explain": "Subpart F prescribes airplane performance operating limitations; Subpart G covers rotorcraft performance, Subpart M covers dispatcher qualifications, and Subpart Q covers records and reports.",
+          "cite": "GACAR Part 121, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "Under GACAR §121.263, in computing takeoff distance the length of any clearway that may be included must not be greater than —",
+          "options": [
+            "One-quarter the length of the runway",
+            "One-half the length of the runway",
+            "The full length of the runway",
+            "One-and-a-half times the length of the runway"
+          ],
+          "answer": 1,
+          "explain": "§121.263 provides that the takeoff distance must not exceed the runway plus any clearway, but the clearway credited must not be greater than one-half the length of the runway.",
+          "cite": "GACAR Part 121, §121.263",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-263"
+          }
+        },
+        {
+          "q": "Under the destination landing limitations of GACAR §121.275, a turbojet-powered airplane's mass at takeoff must allow a full-stop landing within what portion of the effective runway length at the destination?",
+          "options": [
+            "50 percent",
+            "60 percent",
+            "70 percent",
+            "80 percent"
+          ],
+          "answer": 1,
+          "explain": "§121.275 requires that the anticipated landing mass allow a full-stop landing within 60 percent of the effective length of the runway (measured from 50 ft above the runway) for turbojet airplanes at the destination.",
+          "cite": "GACAR Part 121, §121.275",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-275"
+          }
+        },
+        {
+          "q": "Under GACAR §121.275, if weather reports indicate the destination runways may be wet or slippery, a turbojet airplane may take off only if the effective runway length is at least what percentage of the dry-runway length otherwise required?",
+          "options": [
+            "100 percent",
+            "105 percent",
+            "115 percent",
+            "130 percent"
+          ],
+          "answer": 2,
+          "explain": "§121.275 requires that, for wet or slippery destination runways, the effective runway length be at least 115 percent of the length required for dry conditions, unless a shorter approved wet distance is in the AFM.",
+          "cite": "GACAR Part 121, §121.275",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-275"
+          }
+        },
+        {
+          "q": "Under GACAR §121.279, an aerodrome may be listed as an alternate for a turbopropeller-powered airplane only if the aircraft can be brought to a full stop within what portion of the effective runway length?",
+          "options": [
+            "60 percent",
+            "70 percent",
+            "80 percent",
+            "115 percent"
+          ],
+          "answer": 1,
+          "explain": "§121.279 permits listing an alternate for a turbopropeller airplane only if a full-stop landing can be made within 70 percent of the effective runway length (60 percent for turbojet airplanes).",
+          "cite": "GACAR Part 121, §121.279",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-279"
+          }
+        },
+        {
+          "q": "GACAR §121.271 (en-route limitations, two engines inoperative) allows compliance by ensuring no point along the intended track is more than how long — with all engines operating at cruising power — from an adequate aerodrome?",
+          "options": [
+            "60 minutes",
+            "90 minutes",
+            "120 minutes",
+            "180 minutes"
+          ],
+          "answer": 1,
+          "explain": "One compliance option in §121.271 is that no place along the intended track is more than 90 minutes (all engines at cruising power) from an aerodrome meeting §121.279.",
+          "cite": "GACAR Part 121, §121.271",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-271"
+          }
+        },
+        {
+          "q": "Under the en-route limitation for one engine inoperative (GACAR §121.267), the airplane's mass must permit a net flight path clearing terrain and obstructions within the specified corridor by at least —",
+          "options": [
+            "1,000 ft vertically",
+            "1,500 ft vertically",
+            "2,000 ft vertically",
+            "3,000 ft vertically"
+          ],
+          "answer": 2,
+          "explain": "§121.267 requires (for the option reaching a landing aerodrome) that the one-engine-inoperative net flight path clear all terrain and obstructions within 4.4 NM of track by at least 2,000 ft vertically.",
+          "cite": "GACAR Part 121, §121.267",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-267"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1309, no flight under the dispatch release system may start unless —",
+          "options": [
+            "The pilot-in-command alone signs the load manifest",
+            "An aircraft dispatcher specifically authorizes that flight",
+            "The airplane has departed within the previous hour",
+            "A check airman is aboard"
+          ],
+          "answer": 1,
+          "explain": "§121.1309 provides that no person may start a flight unless an aircraft dispatcher specifically authorizes it, and the PIC and dispatcher are jointly responsible for preflight planning and dispatch release.",
+          "cite": "GACAR Part 121, §121.1309",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1309"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1309, a flight may not continue from an intermediate aerodrome without a re-dispatch if the aircraft has been on the ground more than —",
+          "options": [
+            "1 hour",
+            "3 hours",
+            "6 hours",
+            "12 hours"
+          ],
+          "answer": 2,
+          "explain": "§121.1309 requires re-dispatch to continue a flight from an intermediate aerodrome when the aircraft has been on the ground more than 6 hours.",
+          "cite": "GACAR Part 121, §121.1309",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1309"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1369, an aircraft may be dispatched or released for operations under IFR or over-the-top only when appropriate weather reports or forecasts indicate that the weather at the destination will be —",
+          "options": [
+            "At or above the authorized minimums at the estimated time of arrival",
+            "VFR at all times en route",
+            "Below alternate minimums but improving",
+            "Clear of any forecast precipitation"
+          ],
+          "answer": 0,
+          "explain": "§121.1369 permits IFR/over-the-top dispatch or release only when weather reports or forecasts indicate conditions will be at or above the authorized minimums at the estimated time of arrival at the destination.",
+          "cite": "GACAR Part 121, §121.1369",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1369"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1393, a flight conducted under IFR or over-the-top must generally have how many destination alternate aerodromes specified in the dispatch or flight release?",
+          "options": [
+            "None if the flight is under 3 hours",
+            "At least one destination alternate",
+            "Exactly three destination alternates",
+            "One alternate only for extended over-water flights"
+          ],
+          "answer": 1,
+          "explain": "§121.1393 requires at least one destination alternate aerodrome be selected and specified for IFR or over-the-top flights, subject to limited exceptions (e.g., favorable forecast ceiling/visibility windows or isolated aerodromes).",
+          "cite": "GACAR Part 121, §121.1393",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1393"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1397, no aerodrome may be listed as an alternate in a dispatch or flight release unless the appropriate weather reports or forecasts indicate the weather will be —",
+          "options": [
+            "VFR when the flight departs",
+            "At or above the alternate weather minimums in the operations specifications when the flight arrives",
+            "Below landing minimums but with an ILS available",
+            "Identical to the destination forecast"
+          ],
+          "answer": 1,
+          "explain": "§121.1397 permits listing an alternate only when the weather is forecast to be at or above the alternate weather minimums in the certificate holder's operations specifications at the time the flight arrives.",
+          "cite": "GACAR Part 121, §121.1397",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1397"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1389, when a takeoff alternate is required, for an airplane having two engines the takeoff alternate must be located no more than —",
+          "options": [
+            "1 hour from the departure aerodrome at one-engine-inoperative cruise speed",
+            "2 hours from the departure aerodrome at all-engine cruise speed",
+            "30 minutes at normal cruise speed",
+            "90 minutes at one-engine-inoperative cruise speed"
+          ],
+          "answer": 0,
+          "explain": "§121.1389 requires a two-engine airplane's takeoff alternate to be within 1 hour of the departure aerodrome at the normal one-engine-inoperative cruising speed (ISA, still air, actual takeoff mass); three-or-more-engine airplanes get 2 hours at all-engine cruise.",
+          "cite": "GACAR Part 121, §121.1389",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1389"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1365, an aircraft may be dispatched or released for VFR operation only if the ceiling and visibility en route —",
+          "options": [
+            "Are forecast to improve after departure",
+            "Are and will remain at or above applicable VFR minimums until arrival at the specified aerodrome(s)",
+            "Meet IFR alternate minimums",
+            "Are reported at the departure aerodrome only"
+          ],
+          "answer": 1,
+          "explain": "§121.1365 permits VFR dispatch or release only when weather reports or forecasts show the ceiling and visibility en route are and will remain at or above applicable VFR minimums until the aircraft reaches the aerodrome(s) specified.",
+          "cite": "GACAR Part 121, §121.1365",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1365"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1349, before releasing (or beginning) a flight, the aircraft dispatcher or PIC must —",
+          "options": [
+            "Personally inspect the aircraft's engines",
+            "Be thoroughly familiar with reported and forecast weather conditions on the route to be flown",
+            "Obtain a new medical certificate",
+            "File a written risk assessment with the President"
+          ],
+          "answer": 1,
+          "explain": "§121.1349 requires the aircraft dispatcher (dispatch release system) or the PIC (flight release system) to be thoroughly familiar with reported and forecast weather conditions on the route to be flown before releasing/beginning the flight.",
+          "cite": "GACAR Part 121, §121.1349",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1349"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1341, a flight may not be allowed to continue to the aerodrome to which it was released unless the weather at a specified alternate is forecast to be —",
+          "options": [
+            "Below alternate minimums but VFR",
+            "At or above the alternate minimums in the operations specifications at the time the aircraft would arrive there",
+            "Clear of clouds regardless of visibility",
+            "The same as the departure aerodrome"
+          ],
+          "answer": 1,
+          "explain": "§121.1341 prohibits continuing a flight unless the weather at a specified alternate is forecast to be at or above the alternate minimums in the operations specifications when the aircraft would arrive; the release may be amended en route to add an alternate within fuel range.",
+          "cite": "GACAR Part 121, §121.1341",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1341"
+          }
+        },
+        {
+          "q": "GACAR §121.89 addresses ETOPS communications facilities. What does it primarily require of the certificate holder?",
+          "options": [
+            "Provide voice communications for ETOPS where such facilities are available, considering diversion routes and altitudes",
+            "Install a second HF radio in every airplane",
+            "Restrict ETOPS to daylight hours only",
+            "Carry a satellite phone for each passenger"
+          ],
+          "answer": 0,
+          "explain": "§121.89 requires the certificate holder to provide voice communications for ETOPS where facilities are available, considering potential routes and altitudes needed for diversion to ETOPS alternate aerodromes, substituting an approved system where voice is not possible.",
+          "cite": "GACAR Part 121, §121.89",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-89"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1401, an aircraft may be dispatched or released for an ETOPS flight only if —",
+          "options": [
+            "The destination weather is forecast VFR",
+            "Enough ETOPS alternate aerodromes are listed so the aircraft remains within the authorized ETOPS maximum diversion time",
+            "A third pilot is carried",
+            "Every alternate has a precision approach"
+          ],
+          "answer": 1,
+          "explain": "§121.1401 requires that enough ETOPS alternate aerodromes be listed in the dispatch or flight release so the aircraft remains within the authorized ETOPS maximum diversion time, selecting from adequate aerodromes meeting the standards of the part.",
+          "cite": "GACAR Part 121, §121.1401",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1401"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1409, for ETOPS up to and including 180 minutes, an aerodrome may not be listed as an ETOPS alternate if the time needed to reach it exceeds the aircraft's most limiting ETOPS significant system time minus —",
+          "options": [
+            "5 minutes",
+            "10 minutes",
+            "15 minutes",
+            "30 minutes"
+          ],
+          "answer": 2,
+          "explain": "§121.1409 provides that, for ETOPS up to 180 minutes, an aerodrome cannot be an ETOPS alternate if the flight time to it (one-engine-inoperative cruise, standard conditions) exceeds the most limiting ETOPS significant system time minus 15 minutes.",
+          "cite": "GACAR Part 121, §121.1409",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1409"
+          }
+        },
+        {
+          "q": "Under the ETOPS fuel-supply rule (GACAR §121.1417), the aircraft must carry fuel to hold at 1,500 ft above field elevation upon reaching an ETOPS alternate for how long, then conduct an approach and land?",
+          "options": [
+            "5 minutes",
+            "10 minutes",
+            "15 minutes",
+            "45 minutes"
+          ],
+          "answer": 2,
+          "explain": "§121.1417 requires ETOPS fuel sufficient to hold at 1,500 ft above field elevation for 15 minutes upon reaching an ETOPS alternate aerodrome and then conduct an instrument approach and land, in addition to diversion, wind, icing, and deterioration allowances.",
+          "cite": "GACAR Part 121, §121.1417",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1417"
+          }
+        },
+        {
+          "q": "Under GACAR §121.1417, when calculating ETOPS diversion fuel the certificate holder must increase the forecast wind speed by what margin to account for wind-forecasting errors?",
+          "options": [
+            "5 percent",
+            "10 percent",
+            "15 percent",
+            "20 percent"
+          ],
+          "answer": 0,
+          "explain": "§121.1417 requires the actual forecast wind speed to be increased by 5 percent (increasing headwind or decreasing tailwind) — or additional reserve fuel equal to 5 percent of the diversion fuel — to account for potential wind-forecasting errors.",
+          "cite": "GACAR Part 121, §121.1417",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121",
+            "anchor": "sec-121-1417"
           }
         }
       ]

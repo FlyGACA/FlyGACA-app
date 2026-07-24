@@ -13,7 +13,7 @@ import {
   ogImageFor,
   canonicalRedirect,
   isMirrorHost,
-} from '../src/lib/seo';
+} from '@/lib/seo/seo';
 
 describe('normalizePath', () => {
   it('strips query/hash and trailing slashes, keeps root', () => {
