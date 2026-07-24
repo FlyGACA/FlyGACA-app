@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { cleanup, screen, within, act } from '@testing-library/react';
 import i18n from '@/i18n';
 import { CurrencyBoard } from '@/components/CurrencyBoard';
-import type { CurrencyItem } from '@/calc/currency';
+import type { CurrencyItem } from '@/calc/pilot/currency';
 import { renderWithRouter } from './helpers/render';
 
 const landingItem = (have: number): CurrencyItem => ({

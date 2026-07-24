@@ -16,8 +16,8 @@ APP="${1:-info}"
 CONFIGURATION="${2:-debug}"
 SCHEME_OVERRIDE="${3:-}"
 
-# Supported apps
-APPS=("ppl" "elpt" "aip")
+# Supported apps (Wave 1: ppl/elpt/aip · Wave 2: cpl/ir/atpl)
+APPS=("ppl" "elpt" "aip" "cpl" "ir" "atpl")
 
 # Color output
 RED='\033[0;31m'
@@ -80,14 +80,13 @@ print_info() {
   echo "  Xcode: $(xcodebuild -version | head -n 1)"
   echo "  Swift: $(swift --version | head -n 1)"
   echo "  iOS Support: $(xcode-select -p)/Platforms/iPhoneOS.platform/Developer/SDKs"
-  echo "  FlyGACA Apps: ppl, elpt, aip"
+  echo "  FlyGACA Apps: ppl, elpt, aip, cpl, ir, atpl"
   echo ""
   echo "Available commands:"
   echo "  npm run ios:generate               # Generate Xcode project (needs xcodegen)"
-  echo "  npm run ios:build:ppl              # Debug build PPL app"
-  echo "  npm run ios:build:elpt             # Debug build ELPT app"
-  echo "  npm run ios:build:aip              # Debug build AIP app"
-  echo "  npm run ios:build:all              # Debug builds all apps"
+  echo "  npm run ios:icons                  # Regenerate the per-app App Store icons"
+  echo "  npm run ios:build:ppl              # Debug build PPL app (also: elpt aip cpl ir atpl)"
+  echo "  npm run ios:build:all              # Debug builds all six apps"
   echo "  npm run ios:build:release:ppl      # Release build PPL (unsigned archive)"
   echo "  npm run ios:test                   # Run Swift Package tests"
   echo "  npm run ios:test:watch             # Watch mode for tests"
@@ -239,6 +238,21 @@ build_app() {
       BUNDLE_ID="com.flygaca.aip"
       MODULE_ID="aip"
       ;;
+    cpl)
+      SCHEME="CPL"
+      BUNDLE_ID="com.flygaca.cpl"
+      MODULE_ID="cpl"
+      ;;
+    ir)
+      SCHEME="IR"
+      BUNDLE_ID="com.flygaca.ir"
+      MODULE_ID="ir"
+      ;;
+    atpl)
+      SCHEME="ATPL"
+      BUNDLE_ID="com.flygaca.atpl"
+      MODULE_ID="atpl"
+      ;;
     *)
       log_error "Unknown app: $app"
       return 1
@@ -382,7 +396,7 @@ main() {
       done
       log_success "All builds completed successfully"
       ;;
-    ppl|elpt|aip)
+    ppl|elpt|aip|cpl|ir|atpl)
       check_prerequisites
       generate_project
       generate_content "$APP"
@@ -393,7 +407,7 @@ main() {
       echo ""
       echo "Usage: $0 <app|all|info> [debug|release]"
       echo ""
-      echo "Apps: ppl, elpt, aip, all"
+      echo "Apps: ppl, elpt, aip, cpl, ir, atpl, all"
       echo "Config: debug (default), release"
       exit 1
       ;;

@@ -1,5 +1,6 @@
 import ContentKit
 import CoreModels
+import PersistenceKit
 import StudyEngines
 import SwiftUI
 
@@ -9,10 +10,15 @@ import SwiftUI
 /// the white-label surface.
 struct ModuleHomeView: View {
     let content: ModuleContent
+    /// Durable study store (nil ⇒ persistence disabled; the UI still works, it
+    /// just doesn't save). Threaded to every screen that records progress.
+    let store: StudyStore?
 
     private var bankTitles: [String: String] {
         Dictionary(uniqueKeysWithValues: content.quiz.banks.map { ($0.id, $0.title) })
     }
+
+    private var moduleID: String { content.manifest.id }
 
     var body: some View {
         List {
@@ -20,7 +26,7 @@ struct ModuleHomeView: View {
                 Section("Study") {
                     ForEach(groundSchool.modules) { module in
                         NavigationLink(module.title) {
-                            LessonListScreen(module: module)
+                            LessonListScreen(module: module, store: store, moduleID: moduleID)
                         }
                     }
                 }
@@ -31,7 +37,10 @@ struct ModuleHomeView: View {
                         QuizScreen(
                             title: bank.title,
                             session: StudySession(questions: bank.questions, config: .practice),
-                            bankTitles: bankTitles
+                            bankTitles: bankTitles,
+                            moduleID: moduleID,
+                            store: store,
+                            bankID: bank.id
                         )
                     } label: {
                         VStack(alignment: .leading, spacing: 2) {
@@ -46,7 +55,7 @@ struct ModuleHomeView: View {
             Section("Flashcards") {
                 ForEach(content.quiz.banks) { bank in
                     NavigationLink(bank.title) {
-                        FlashcardsScreen(bank: bank)
+                        FlashcardsScreen(bank: bank, store: store)
                     }
                 }
             }
@@ -58,11 +67,14 @@ struct ModuleHomeView: View {
                             questions: QuestionSampler.draw(
                                 from: content.quiz.banks, count: content.exam.questionCount),
                             config: .mock(content.exam)),
-                        bankTitles: bankTitles
+                        bankTitles: bankTitles,
+                        moduleID: moduleID,
+                        store: store,
+                        bankID: nil
                     )
                 }
                 NavigationLink("Timed exam — \(content.exam.minutes) min, pass \(content.exam.passMark)%") {
-                    ExamScreen(content: content, bankTitles: bankTitles)
+                    ExamScreen(content: content, bankTitles: bankTitles, moduleID: moduleID, store: store)
                 }
             }
             Section {
@@ -72,9 +84,15 @@ struct ModuleHomeView: View {
     }
 }
 
-/// Read-only lesson list (full lesson bodies + Captain Adel hooks come in P2).
+/// Read-only lesson list with a per-lesson "mark complete" toggle. Full lesson
+/// bodies + Captain Adel hooks come in a later phase; completion state is durable
+/// today (persisted via StudyStore, family-wide).
 struct LessonListScreen: View {
     let module: GSModule
+    let store: StudyStore?
+    let moduleID: String
+
+    @State private var doneIDs: Set<String> = []
 
     var body: some View {
         List {
@@ -84,16 +102,45 @@ struct LessonListScreen: View {
                     .foregroundStyle(.secondary)
             }
             ForEach(module.lessons) { lesson in
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(lesson.title).font(.headline)
-                    Text(lesson.objective)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(lesson.title).font(.headline)
+                        Text(lesson.objective)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button {
+                        markDone(lesson)
+                    } label: {
+                        Image(systemName: doneIDs.contains(lesson.id) ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(doneIDs.contains(lesson.id) ? FGTheme.sage : Color.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(doneIDs.contains(lesson.id) ? "Completed" : "Mark complete")
                 }
                 .padding(.vertical, 2)
             }
         }
         .navigationTitle(module.title)
+        .task { await loadDone() }
+    }
+
+    private func loadDone() async {
+        guard let store else { return }
+        if let done = try? await store.lessonsDone(moduleID: moduleID) {
+            doneIDs = Set(done)
+        }
+    }
+
+    private func markDone(_ lesson: GSLesson) {
+        guard !doneIDs.contains(lesson.id) else { return }
+        doneIDs.insert(lesson.id)
+        guard let store else { return }
+        Task {
+            try? await store.markLessonDone(moduleID: moduleID, lessonID: lesson.id)
+            try? await store.touchStreak()
+        }
     }
 }
 
@@ -101,21 +148,43 @@ struct QuizScreen: View {
     let title: String
     @State var session: StudySession
     let bankTitles: [String: String]
+    let moduleID: String
+    let store: StudyStore?
+    /// Non-nil for a single-topic quiz (the bank's id → best-per-bank score);
+    /// nil for the multi-bank mock exam (recorded as an exam attempt).
+    let bankID: String?
 
     var body: some View {
-        QuizView(session: session, bankTitles: bankTitles)
+        QuizView(session: session, bankTitles: bankTitles, onFinished: persist)
             .navigationTitle(title)
+    }
+
+    private func persist(_ result: SessionResult) {
+        guard let store else { return }
+        Task {
+            if let bankID {
+                try? await store.recordQuizScore(
+                    moduleID: moduleID, bankID: bankID, percent: result.percent)
+            } else {
+                try? await store.recordExam(moduleID: moduleID, result: result)
+            }
+            try? await store.touchStreak()
+        }
     }
 }
 
 struct ExamScreen: View {
     let content: ModuleContent
     let bankTitles: [String: String]
+    let moduleID: String
+    let store: StudyStore?
     @State private var session: StudySession
 
-    init(content: ModuleContent, bankTitles: [String: String]) {
+    init(content: ModuleContent, bankTitles: [String: String], moduleID: String, store: StudyStore?) {
         self.content = content
         self.bankTitles = bankTitles
+        self.moduleID = moduleID
+        self.store = store
         _session = State(
             initialValue: StudySession(
                 questions: QuestionSampler.draw(
@@ -125,7 +194,7 @@ struct ExamScreen: View {
     }
 
     var body: some View {
-        QuizView(session: session, bankTitles: bankTitles)
+        QuizView(session: session, bankTitles: bankTitles, onFinished: persist)
             .navigationTitle(content.exam.title ?? "Timed exam")
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -133,12 +202,22 @@ struct ExamScreen: View {
                 }
             }
     }
+
+    private func persist(_ result: SessionResult) {
+        guard let store else { return }
+        Task {
+            try? await store.recordExam(moduleID: moduleID, result: result)
+            try? await store.touchStreak()
+        }
+    }
 }
 
-/// Flip-card runner over one bank. Grading is kept in view state here; the
-/// PersistenceKit StudyStore wiring (durable SRS + streaks) is the P2 exit.
+/// Flip-card runner over one bank. Grading updates a local snapshot for the
+/// instant "Deck complete" mastery count AND persists the durable Leitner
+/// schedule + streak through StudyStore (family-wide, survives relaunch).
 struct FlashcardsScreen: View {
     let bank: Bank
+    let store: StudyStore?
     @State private var index = 0
     @State private var srs: [String: SrsEntry] = [:]
 
@@ -152,9 +231,7 @@ struct FlashcardsScreen: View {
                     front: question.prompt,
                     back: "\(question.correctChoice)\n\n\(question.explanation)"
                 ) { correct in
-                    srs[question.legacyKey] = Leitner.schedule(
-                        srs[question.legacyKey], correct: correct, now: Date())
-                    index += 1
+                    grade(question: question, correct: correct)
                 }
             } else {
                 ContentUnavailableView(
@@ -165,9 +242,29 @@ struct FlashcardsScreen: View {
             }
         }
         .navigationTitle(bank.title)
+        .task { await loadInitialSRS() }
     }
 
     private var card: Question? {
         bank.questions.indices.contains(index) ? bank.questions[index] : nil
+    }
+
+    private func loadInitialSRS() async {
+        guard let store else { return }
+        if let entries = try? await store.srsEntries(bankID: bank.id) {
+            srs = entries
+        }
+    }
+
+    private func grade(question: Question, correct: Bool) {
+        // Instant local feedback for the mastery count, even if persistence is off.
+        srs[question.legacyKey] = Leitner.schedule(
+            srs[question.legacyKey], correct: correct, now: Date())
+        index += 1
+        guard let store else { return }
+        Task {
+            _ = try? await store.grade(question: question, correct: correct)
+            try? await store.touchStreak()
+        }
     }
 }

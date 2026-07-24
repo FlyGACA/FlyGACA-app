@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { cleanup, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '@/i18n';
-import { Crosswind } from '@/pages/tools/Crosswind';
+import { Crosswind } from '@/pages/tools/performance/Crosswind';
 import { renderWithRouter } from './helpers/render';
 
 // useUrlState mirrors inputs onto window.location via history.replaceState, which

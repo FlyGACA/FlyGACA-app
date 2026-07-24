@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
-import table from './WindTable.module.css';
+import table from '@/pages/tools/performance/WindTable.module.css';
 import styles from './RegLookup.module.css';
 
 interface Column {

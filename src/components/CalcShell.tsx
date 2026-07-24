@@ -15,7 +15,7 @@ import {
   presetsFor,
   normalizePresets,
   type Preset,
-} from '@/calc/toolPresets';
+} from '@/calc/app/toolPresets';
 import styles from './CalcShell.module.css';
 
 const PRESETS_KEY = 'flygaca:tool-presets';

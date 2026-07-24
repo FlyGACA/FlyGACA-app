@@ -5,7 +5,7 @@
  * read is coerced through `num`.
  */
 import type { Flight } from '@/lib/services/account';
-import { addDays, addMonths, parseISO } from './recency';
+import { addDays, addMonths, parseISO } from '@/calc/recency';
 
 const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
 const sum = (flights: Flight[], key: keyof Flight): number =>

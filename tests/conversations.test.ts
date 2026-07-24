@@ -8,7 +8,7 @@ import {
   filterConversations,
   normalizeConversations,
   type Conversation,
-} from '@/calc/conversations';
+} from '@/calc/chat/conversations';
 
 const conv = (id: string, updatedAt: number, title = id): Conversation => ({
   id,

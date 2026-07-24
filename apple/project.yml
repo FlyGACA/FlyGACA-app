@@ -34,14 +34,28 @@ targetTemplates:
     dependencies:
       - package: FlyGACAKit
         product: FeatureUI
+      # The app shell (FlyGACAApp.swift) opens the SwiftData store and constructs
+      # StudyStore directly, so it imports PersistenceKit explicitly rather than
+      # relying on it being a transitive dependency of FeatureUI.
+      - package: FlyGACAKit
+        product: PersistenceKit
     scheme:
       testTargets: []
       gatherCoverageData: false
 
 targets:
+  # Wave 1 — live on the App Store roadmap first (content shipped longest).
   PPL:
     templates: [FlyGACAApp]
   ELPT:
     templates: [FlyGACAApp]
   AIP:
+    templates: [FlyGACAApp]
+  # Wave 2 — GACAR-cited draft banks live in prepCatalog.ts; debug-buildable now,
+  # TestFlight signing still pending Apple App IDs/profiles (RUNBOOK-ios-signing.md).
+  CPL:
+    templates: [FlyGACAApp]
+  IR:
+    templates: [FlyGACAApp]
+  ATPL:
     templates: [FlyGACAApp]

@@ -2,9 +2,9 @@
  * "Save for offline" via the Cache API. Warms the SAME `flygaca-data` cache the
  * workbox NetworkFirst runtime rule uses (see vite.config.ts), so a saved doc is
  * served from cache when the network is gone. The pure list/format helpers live
- * in src/calc/offlineManifest.ts; this module owns the DOM/Cache + persistence.
+ * in src/calc/library/offlineManifest.ts; this module owns the DOM/Cache + persistence.
  */
-import { addSaved, listSaved, removeSaved } from '@/calc/offlineManifest';
+import { addSaved, listSaved, removeSaved } from '@/calc/library/offlineManifest';
 import { dataUrl } from '@/lib/content';
 
 /** Must match the workbox runtimeCaching cacheName in vite.config.ts. */

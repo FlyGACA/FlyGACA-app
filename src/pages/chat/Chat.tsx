@@ -17,17 +17,17 @@ import {
   remaining,
   FREE_DAILY_LIMIT,
   type Usage,
-} from '@/calc/chatQuota';
-import { partSlug, conversationParts } from '@/calc/chatSources';
-import { followupSuggestions } from '@/calc/chatFollowups';
+} from '@/calc/chat/chatQuota';
+import { partSlug, conversationParts } from '@/calc/chat/chatSources';
+import { followupSuggestions } from '@/calc/chat/chatFollowups';
 import {
   feedbackKey,
   getFeedback,
   recordFeedback,
   type FeedbackMap,
   type Rating,
-} from '@/calc/chatFeedback';
-import { transcriptToMarkdown } from '@/calc/transcript';
+} from '@/calc/chat/chatFeedback';
+import { transcriptToMarkdown } from '@/calc/chat/transcript';
 import {
   conversationTitle,
   upsertConversation,
@@ -35,7 +35,7 @@ import {
   renameConversation,
   togglePin,
   type Conversation,
-} from '@/calc/conversations';
+} from '@/calc/chat/conversations';
 import {
   loadConversations,
   persistConversations,

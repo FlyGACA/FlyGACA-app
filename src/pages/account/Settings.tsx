@@ -17,6 +17,7 @@ import { replayOnboarding, openTour } from '@/lib/prefs/onboardingPrefs';
 import { uiPlan } from '@/lib/services/entitlements';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import styles from './account.module.css';
+import { triggerDownload } from '@/lib/download';
 
 /** GACAR pilot licence types, in progression order. */
 const LICENCE_TYPES = ['SPL', 'PPL', 'CPL', 'ATPL'] as const;
@@ -64,13 +65,7 @@ function Inner() {
   }
 
   function exportJson() {
-    const blob = new Blob([exportAll()], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'flygaca-account.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    triggerDownload('flygaca-account.json', exportAll(), 'application/json');
   }
 
   return (

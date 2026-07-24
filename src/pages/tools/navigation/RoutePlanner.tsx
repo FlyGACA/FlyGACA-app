@@ -10,7 +10,7 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import type { AirportsIndex } from '@/lib/content';
 import { greatCircle } from '@/calc/navigation';
 import { formatHours } from '@/calc/fuel';
-import table from './WindTable.module.css';
+import table from '@/pages/tools/performance/WindTable.module.css';
 
 export function RoutePlanner() {
   const { t } = useTranslation();

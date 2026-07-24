@@ -8,7 +8,7 @@ import {
   storageEstimate,
 } from '@/lib/native/offlineCache';
 import { CORPUS, loadJson, type CorpusIndex } from '@/lib/content';
-import { formatBytes } from '@/calc/offlineManifest';
+import { formatBytes } from '@/calc/library/offlineManifest';
 import styles from './OfflineDownloads.module.css';
 
 /**
