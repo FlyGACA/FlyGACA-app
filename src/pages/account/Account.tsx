@@ -12,8 +12,6 @@ import { refreshAccount, signOut, useAccount } from '@/lib/services/account';
 import { uiPlan } from '@/lib/services/entitlements';
 import { isAuthAvailable, resendEmailVerification } from '@/lib/services/auth';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { AccountSignedOut } from './AccountSignIn';
-import styles from './account.module.css';
 import { AccountSignedOut } from './AccountSignedOut';
 import account from './account.module.css';
 import styles from './AccountPage.module.css';
