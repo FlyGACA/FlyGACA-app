@@ -38,13 +38,13 @@ import { useViewMode } from '@/hooks/useViewMode';
 import styles from './Library.module.css';
 import hub from '@/components/hub/hubList.module.css';
 import { Tab, Tabs } from '@/components/ui/Tabs';
+import { catToken } from '@/components/categoryTone';
 
 const MIN_QUERY = 3;
 /** Max full-text matches collected before we ask the user to refine. */
 const HIT_CAP = 400;
 const KINDS: LibraryKind[] = ['regulations', 'reference', 'handbook'];
 /** Per-category accent — cycles the Falcon hues from the design-token map. */
-const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 const VIEW_KEY = 'flygaca:library-view';
 
@@ -176,8 +176,8 @@ export function Library() {
   // Deterministic category → accent colour, by the category's order in the index.
   const catColor = useMemo(() => {
     const map = new Map<string, string>();
-    data?.categories.forEach((c, i) => map.set(c.id, CAT_TOKENS[i % CAT_TOKENS.length]));
-    return (id: string) => map.get(id) ?? CAT_TOKENS[0];
+    data?.categories.forEach((c, i) => map.set(c.id, catToken(i)));
+    return (id: string) => map.get(id) ?? catToken(0);
   }, [data]);
 
   // When not searching by text, group the cards under category section headers.

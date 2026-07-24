@@ -1,26 +1,42 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
+import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { trueAirspeed } from '@/calc/tas';
 import { windTriangle } from '@/calc/navigation';
 import { solveTsd } from '@/calc/tsd';
 import seg from '@/components/calc/calc.module.css';
 
-type Tab = 'tas' | 'wind' | 'tsd';
+const TABS = ['tas', 'wind', 'tsd'] as const;
+type Tab = (typeof TABS)[number];
+
+const isTab = (v: string): v is Tab => (TABS as readonly string[]).includes(v);
 
 export function E6b() {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<Tab>('tas');
-  const [f, setF] = useState<Record<string, string>>({});
-  const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
-  const n = (k: string) => parseFloat(f[k] ?? '');
+  // Inputs live in the URL like every other tool, so CalcShell's copy-link hands
+  // out a working setup. `tab` rides along as a plain string (nums.tab is NaN and
+  // unused) and is validated on read, so ?tab=nonsense falls back to the first tab.
+  const { inputs, set, nums } = useNumericInputs({
+    tab: 'tas',
+    cas: '',
+    pa: '',
+    oat: '',
+    crs: '',
+    wtas: '',
+    wdir: '',
+    wspd: '',
+    gs: '',
+    dist: '',
+    time: '',
+  });
+  const tab: Tab = isTab(inputs.tab) ? inputs.tab : 'tas';
 
-  const tas = trueAirspeed({ cas: n('cas'), pa: n('pa'), oat: n('oat') });
-  const wind = windTriangle(n('crs'), n('wtas'), n('wdir'), n('wspd'));
-  const tsd = solveTsd(n('gs'), n('dist'), n('time'));
+  const tas = trueAirspeed({ cas: nums.cas, pa: nums.pa, oat: nums.oat });
+  const wind = windTriangle(nums.crs, nums.wtas, nums.wdir, nums.wspd);
+  const tsd = solveTsd(nums.gs, nums.dist, nums.time);
 
   return (
     <CalcShell
@@ -35,14 +51,14 @@ export function E6b() {
       ]}
     >
       <div className={seg.seg} role="tablist" aria-label="E6B">
-        {(['tas', 'wind', 'tsd'] as Tab[]).map((id) => (
+        {TABS.map((id) => (
           <button
             key={id}
             type="button"
             role="tab"
             aria-selected={tab === id}
             className={`${seg.segBtn} ${tab === id ? seg.segActive : ''}`}
-            onClick={() => setTab(id)}
+            onClick={() => set('tab', id)}
           >
             {t(id === 'tas' ? 'e6b.tabsTas' : id === 'wind' ? 'e6b.tabsWind' : 'e6b.tabsTsd')}
           </button>
@@ -54,21 +70,21 @@ export function E6b() {
           <FieldGrid>
             <NumberField
               label={t('tas.cas')}
-              value={f.cas ?? ''}
+              value={inputs.cas}
               onChange={(v) => set('cas', v)}
               unit="kt"
               placeholder="110"
             />
             <NumberField
               label={t('tas.pa')}
-              value={f.pa ?? ''}
+              value={inputs.pa}
               onChange={(v) => set('pa', v)}
               unit="ft"
               placeholder="8000"
             />
             <NumberField
               label={t('tas.oat')}
-              value={f.oat ?? ''}
+              value={inputs.oat}
               onChange={(v) => set('oat', v)}
               unit="°C"
               placeholder="10"
@@ -90,28 +106,28 @@ export function E6b() {
           <FieldGrid>
             <NumberField
               label={t('windTriangle.course')}
-              value={f.crs ?? ''}
+              value={inputs.crs}
               onChange={(v) => set('crs', v)}
               unit="°"
               placeholder="270"
             />
             <NumberField
               label={t('windTriangle.tas')}
-              value={f.wtas ?? ''}
+              value={inputs.wtas}
               onChange={(v) => set('wtas', v)}
               unit="kt"
               placeholder="110"
             />
             <NumberField
               label={t('windTriangle.windDir')}
-              value={f.wdir ?? ''}
+              value={inputs.wdir}
               onChange={(v) => set('wdir', v)}
               unit="°"
               placeholder="320"
             />
             <NumberField
               label={t('windTriangle.windSpeed')}
-              value={f.wspd ?? ''}
+              value={inputs.wspd}
               onChange={(v) => set('wspd', v)}
               unit="kt"
               placeholder="25"
@@ -140,21 +156,21 @@ export function E6b() {
           <FieldGrid>
             <NumberField
               label={t('tsd.gs')}
-              value={f.gs ?? ''}
+              value={inputs.gs}
               onChange={(v) => set('gs', v)}
               unit="kt"
               placeholder="120"
             />
             <NumberField
               label={t('tsd.distance')}
-              value={f.dist ?? ''}
+              value={inputs.dist}
               onChange={(v) => set('dist', v)}
               unit="NM"
               placeholder="30"
             />
             <NumberField
               label={t('tsd.time')}
-              value={f.time ?? ''}
+              value={inputs.time}
               onChange={(v) => set('time', v)}
               unit="min"
               placeholder="—"

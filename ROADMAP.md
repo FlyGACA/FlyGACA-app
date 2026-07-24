@@ -52,12 +52,13 @@ The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/
 mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
-  price IDs — and deploy `firestore.rules`. See `docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+  price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
   now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
-  needs Google Fonts (`fonts.gstatic.com`) network access: `node scripts/build-og-card.mjs`.
+  needs Google Fonts (`fonts.gstatic.com`) network access:
+  `node archive/scripts/scripts/build-og-card.mjs`.
 - **[platform]** **Re-enable and enforce CI.** The GitHub Actions **CI workflow is currently
   disabled** (`disabled_manually`), so no build/e2e/functions job runs on pushes or PRs — re-enable
   it under **Actions → CI → Enable workflow**. Then make the `build` (the `verify` chain), `e2e`,
@@ -101,6 +102,58 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   axe a11y checks to cover more critical flows.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
   the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
+
+## Tech debt — found during the July 2026 cleanup, deliberately deferred
+
+Each item below was verified during the repo cleanup and left alone because it fell outside that
+change's low-risk scope. None is a bug; all are recorded so the findings are not re-derived.
+
+- **[platform]** **`loadRegulationsLookup` has no callers.** `src/lib/content.ts` exposes it, and it
+  is the only consumer of `public/data/regulations-lookup.json` — which
+  `scripts/parse-regulations.mjs` generates and the `docs-parser` workflow regenerates and commits on
+  every regulatory-markdown change. So a whole pipeline runs to produce a file nothing reads. Decide:
+  wire the cross-reference lookup into the library reader, or retire the loader, the JSON, and the
+  workflow step together.
+- **[platform]** **64 dead i18n keys.** Verified unreferenced across all 431 source files. The
+  cleanest cluster is the entire `command.*` namespace (12 keys), fully superseded by `cmdk.*` —
+  `src/components/CommandPalette/CommandPalette.tsx` reads only the latter. Next is 18 `home.*`
+  leftovers from the bento redesign (`home.dashboard.study.*`, `home.dashboard.guides.*`,
+  `home.stats.*`, whose live equivalents are `learn.stats.*` and `tools.stats.*`). The rest are
+  singletons across `guides`, `footer`, `nav`, `wx`, `dashboard`, `meta`/`metaDesc`.
+  **A future sweep must not be automated naively:** ~422 further keys resolve only through template
+  literals (`guides.items.**`, `wx.code.*`, `notam.abbr.*` via `returnObjects`, `tools.items.*`,
+  `study.packCatalog.*`, `airspace.type${type}` with no dot separator, and the bare `account.${key}`
+  in `LogbookTable.tsx:50`) and a literal-match pass will call all of them dead.
+- **[platform]** **`gateway.ts` is 578 lines and holds pure logic that belongs in a `*-core`.**
+  `parseCookies`, `parseRequest` + the message/history caps, and the `isAllowedOrigin` CORS policy
+  (security-sensitive — it carries the `.`/`-` anti-look-alike suffix rule) have no Firebase
+  dependencies. The cost is visible in `functions/tests/gateway.test.ts:12-19`, which has to
+  `vi.hoisted` a `firebase-admin` + genkit mock just to unit-test `parseRequest`. Extracting a
+  `gateway-core.ts` would let those be tested with a bare import, like every other core.
+- **[platform]** **Shared `httpsCallable` test scaffolding.** `tests/{school,staff,org-client,
+  referral,billing-flows}.test.ts` repeat ~130 lines of identical `vi.hoisted` + `vi.mock` setup.
+  Extraction is awkward because Vitest hoists `vi.mock` above imports; it needs a deliberate
+  approach, not a copy-paste lift.
+- **[product]** **`useReadingProgress`.** `src/pages/guides/Guide.tsx:44-52` and
+  `src/pages/library/Document.tsx:147-158` compute scroll progress near-identically, while
+  `<ScrollProgress />` already does the same maths globally from `src/app/Layout.tsx` with rAF
+  throttling. One hook should serve all three.
+- **[platform]** **`usePageMeta` positional arguments.** Nine pages call
+  `usePageMeta(title, undefined, undefined, { noindex: true })`. An options-object signature (or a
+  `useNoindexMeta` wrapper) removes the filler.
+- **[platform]** **The initial-JS budget has ~0.1 kB of headroom.** `scripts/check-bundle.mjs`
+  caps preloaded JS at 186 kB gz; the measured floor is now **185.9 kB**. The July 2026 cleanup
+  moved it from 185.4: sharing the prefs `createPrefStore` factory across stores that live in
+  different chunks makes Rolldown emit it as its own preloaded chunk (~0.5 kB), because
+  `src/app/Layout.tsx` → `useOfflineSync` → `libraryPrefs` puts one of them in the eager graph.
+  Folding it into the entry via `manualChunks` was measured and is **worse** (186.1 kB). So the next
+  change of any size will trip the gate. Either shrink the app shell — the honest fix, and what the
+  budget comment's "tighten as the shell shrinks" anticipates — or re-base the ceiling deliberately,
+  as it was re-based 160 → 183 → 186 before.
+- **[platform]** **Files worth splitting.** `Chat.tsx` (572), `Document.tsx` (521 — the author has
+  already marked the seams with `// ── … ──` banners), `content.ts` (455, of which ~370 lines are
+  corpus type declarations that could move to `content.types.ts`), `Pricing.tsx` (441),
+  `SignInForms.tsx` (413), `functions/src/billing.ts` (412).
 
 ## Later — exploratory / post-launch
 

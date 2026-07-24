@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { factoredRunway } from '@/calc/runwayPerf';
-
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function TakeoffLanding() {
   const { t } = useTranslation();
@@ -40,7 +39,7 @@ export function TakeoffLanding() {
       }}
       adelPrompt={() =>
         r != null
-          ? `A book distance of ${inputs.book} m factored for ${inputs.da || 0} ft DA, ${inputs.slope || 0}% slope and a ${inputs.safety || 0}% safety factor needs ${fmt(r.required)} m. How should I apply factored runway distances and what regulatory factor applies under GACAR?`
+          ? `A book distance of ${inputs.book} m factored for ${inputs.da || 0} ft DA, ${inputs.slope || 0}% slope and a ${inputs.safety || 0}% safety factor needs ${fmtInt(r.required)} m. How should I apply factored runway distances and what regulatory factor applies under GACAR?`
           : null
       }
       related={[
@@ -88,7 +87,7 @@ export function TakeoffLanding() {
       <OutputGrid>
         <ResultStat
           label={t('runwayPerf.required')}
-          value={r != null ? `${fmt(r.required)} m` : '—'}
+          value={r != null ? `${fmtInt(r.required)} m` : '—'}
           tone="headline"
         />
         <ResultStat
@@ -97,7 +96,7 @@ export function TakeoffLanding() {
         />
         <ResultStat
           label={t('runwayPerf.margin')}
-          value={r?.margin != null ? `${fmt(r.margin)} m` : '—'}
+          value={r?.margin != null ? `${fmtInt(r.margin)} m` : '—'}
           sub={
             r?.margin != null
               ? r.ok

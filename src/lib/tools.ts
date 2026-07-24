@@ -166,4 +166,3 @@ export const TOOLS: ToolMeta[] = [
 ];
 
 export const liveTools = () => TOOLS.filter((x) => x.status === 'live');
-export const toolsByCategory = (c: ToolCategoryId) => TOOLS.filter((x) => x.category === c);

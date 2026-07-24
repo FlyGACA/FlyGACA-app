@@ -120,7 +120,7 @@ export interface LoadedAccount {
  * map. Kept catalog-agnostic (no prepCatalog import) so this stays out of the
  * initial bundle; the storefront validates ids against the catalog when it renders.
  */
-export function ownedPacksFromDoc(data: Record<string, unknown> | undefined): string[] {
+function ownedPacksFromDoc(data: Record<string, unknown> | undefined): string[] {
   const packs = (data?.packs ?? {}) as Record<string, unknown>;
   return packs && typeof packs === 'object' ? Object.keys(packs) : [];
 }

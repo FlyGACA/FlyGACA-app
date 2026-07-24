@@ -7,14 +7,14 @@ import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { sunTimes } from '@/calc/sun';
 import { formatHm, shiftTime, KSA_OFFSET_MIN } from '@/calc/zulu';
+import { parseISO } from '@/calc/recency';
 
-const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 export function SunTimes() {
   const { t } = useTranslation();
   const { inputs, set, nums } = useNumericInputs({ lat: '', lon: '', date: '' });
-  const dateStr = ISO.test(inputs.date) ? inputs.date : todayIso();
+  const dateStr = parseISO(inputs.date) ? inputs.date : todayIso();
   const when = new Date(`${dateStr}T12:00:00Z`);
   const r = sunTimes(when, nums.lat, nums.lon);
 

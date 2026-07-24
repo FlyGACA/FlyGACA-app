@@ -55,31 +55,38 @@ firebase.json's rewrite regions must match).
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
 - **Calculators:** pure, DOM-free logic in `src/calc/*` (no DOM/i18n) so it is unit-testable.
   Aviation tool math stays **flat** at the `src/calc/` root (`isa`, `tas`, `crosswind`, `holding`,
-  `runway*`, … — one module per catalog tool, plus the shared date math `recency`); the non-tool
+  `runway*`, … — one module per catalog tool, plus the shared date math `recency` and the shared
+  numeric guards `guards` (`fin` · `ok` · `norm360` — use these, never a local copy)); the non-tool
   helpers live in subfolders by domain — `calc/chat/` (Captain Adel answer/thread/voice:
   `chat*`, `conversations`, `transcript`, `markdown`, `speech`, `textToSpeech`, `voiceSelection`),
-  `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`), `calc/library/`
+  `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`, plus the shared
+  `flightFields` readers for the free-text `Flight` columns), `calc/library/`
   (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`), `calc/study/`
-  (`srs` — the cross-platform contract the apple/ Swift port mirrors), and `calc/app/`
-  (`authError`, `dashboardLayout`, `toolPresets`). Subfolders may import the flat core
+  (`srs` — the cross-platform contract the apple/ Swift port mirrors — and `shuffle`), and
+  `calc/app/` (`authError`, `dashboardLayout`, `toolPresets`). Subfolders may import the flat core
   (`@/calc/recency`), never each other sideways. The
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
   disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
   `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
-  string-only pages (decoders, directories) use raw `useUrlState`. Shared field/output layout
-  comes from `FieldGrid`/`OutputGrid` + `ResultStat` (`src/components/calc/`). This replaces the
+  string-only pages (decoders, directories) use raw `useUrlState`. Because `CalcShell` renders a
+  copy-link button unconditionally, a page that keeps inputs in `useState` silently hands out
+  blank links — that is what the hook prevents, not a style preference. Shared field/output layout
+  comes from `FieldGrid`/`OutputGrid` + `ResultStat` (`src/components/calc/`), and whole-number
+  output goes through `fmtInt` (`src/components/calc/format.ts`). This replaces the
   legacy `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every
   other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
   `FieldGrid`).
 - **Services:** `src/lib/` holds the typed frontend services, grouped by concern:
   `src/lib/services/` (Firebase/account: `firebase`, `auth`, `account`, `sync`, `org`, `staff`,
   `school`, `entitlements`, `packEntitlements`, `features`, `billing`, `pricing`, `referral`,
-  `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference stores),
+  `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference stores — all built
+  on the `createPrefStore` factory, which owns the listener/snapshot plumbing and the best-effort
+  storage helpers; never hand-roll another `useSyncExternalStore` store here),
   `src/lib/seo/` (`seo`, `jsonld`), `src/lib/native/` (`nativeBridge`, `pwa`, `offlineCache`),
   with cross-cutting modules (`api`, `content`, `analytics`, `theme`, …) at the `src/lib/` root.
   `tools.ts` and `prepCatalog.ts` stay pinned at the `src/lib/` root — pipeline scripts under
   `scripts/` parse them by that literal path. The shared React hooks live in `src/hooks/`
-  (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta`, …). `entitlements.isActive` is a pure
+  (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta`, `useCopyToClipboard`, …). `entitlements.isActive` is a pure
   predicate mirroring `functions/src/billing-core.ts`, and `features.ts` (`FEATURE_PLAN` /
   `useFeature`) is the single source of truth for which plan unlocks which premium feature — but the
   `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant, and true
@@ -180,3 +187,9 @@ assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory co
 `SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility), and `docs/` (design, billing,
 `RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `b2b/` designs, audits). The legacy source (the original
 vanilla Fly GACA site) remains the reference for anything still ported from the old site.
+
+`archive/` is parked non-app material — vendored third-party reference collections, the per-tool
+agent-config folders, scripts nothing calls, finished-work docs (completed audits, the legacy-PWA
+cutover runbook), and the investor material. Nothing there is imported, built, or linted; see
+`archive/README.md` before assuming something is missing. `docs/` is now live engineering
+documentation only.

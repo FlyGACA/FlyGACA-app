@@ -5,15 +5,7 @@ import { TextField } from '@/components/calc/TextField';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
-import { parseISO, validityByMonths } from '@/calc/recency';
-
-const fmtDate = (d: Date) =>
-  d.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+import { formatDate, parseISO, validityByMonths } from '@/calc/recency';
 
 export function MedicalValidity() {
   const { t } = useTranslation();
@@ -50,7 +42,7 @@ export function MedicalValidity() {
       <OutputGrid>
         <ResultStat
           label={t('medicalValidity.expiry')}
-          value={v != null ? fmtDate(v.expiry) : '—'}
+          value={v != null ? formatDate(v.expiry) : '—'}
           tone="headline"
         />
         <ResultStat

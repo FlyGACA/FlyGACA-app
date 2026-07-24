@@ -24,7 +24,7 @@ export interface Conversation<M extends ArchivedMessage = ArchivedMessage> {
 }
 
 /** Default cap on how many conversations the archive keeps. */
-export const MAX_CONVERSATIONS = 20;
+const MAX_CONVERSATIONS = 20;
 
 /** Pinned first, then most-recently-updated; ties broken by id for stability. */
 function byPinnedThenRecent<M extends ArchivedMessage>(

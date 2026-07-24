@@ -9,7 +9,20 @@ export default tseslint.config(
   // `functions/` is a separate package with its own toolchain and eslint config
   // (linted by its own CI job); the root lint must not reach into it or its
   // compiled `lib/` output — doing so flags TS rules the root config lacks.
-  { ignores: ['dist', 'dev-dist', 'coverage', 'ios', 'android', 'public', 'functions'] },
+  // `archive/` is parked non-app material (see archive/README.md) and is never
+  // built, so it stays out of the CI gate too.
+  {
+    ignores: [
+      'dist',
+      'dev-dist',
+      'coverage',
+      'ios',
+      'android',
+      'public',
+      'functions',
+      'archive',
+    ],
+  },
   {
     // react-hooks v6+ ships flat presets that register the plugin themselves;
     // `recommended-latest` also enables the compiler-derived rules added in v6/v7.

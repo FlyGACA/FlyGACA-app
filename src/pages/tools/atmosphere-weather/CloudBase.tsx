@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { cloudBase } from '@/calc/cloud';
-
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function CloudBase() {
   const { t } = useTranslation();
@@ -25,7 +24,7 @@ export function CloudBase() {
       }}
       adelPrompt={() =>
         r != null
-          ? `With temperature ${inputs.temp}°C and dew point ${inputs.dew}°C the convective cloud base is about ${fmt(r.baseAglFt)} ft AGL. How reliable is this estimate and what raises or lowers it?`
+          ? `With temperature ${inputs.temp}°C and dew point ${inputs.dew}°C the convective cloud base is about ${fmtInt(r.baseAglFt)} ft AGL. How reliable is this estimate and what raises or lowers it?`
           : null
       }
       related={[
@@ -52,7 +51,7 @@ export function CloudBase() {
       <OutputGrid>
         <ResultStat
           label={t('cloudBase.base')}
-          value={r != null ? `${fmt(r.baseAglFt)} ft` : '—'}
+          value={r != null ? `${fmtInt(r.baseAglFt)} ft` : '—'}
           sub={r != null ? t('cloudBase.spread', { spread: r.spread.toFixed(0) }) : undefined}
           tone="headline"
         />

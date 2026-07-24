@@ -18,12 +18,11 @@ import { useViewMode } from '@/hooks/useViewMode';
 import { ToolCard } from './ToolCard';
 import styles from './ToolsIndex.module.css';
 import hub from '@/components/hub/hubList.module.css';
+import { catToken } from '@/components/categoryTone';
 
 /** Per-category accent — cycles the Falcon hues from the design-token map. */
-const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 /** Deterministic category → accent, by the category's order in the master list. */
-const catTone = (cat: ToolCategoryId) =>
-  CAT_TOKENS[Math.max(0, TOOL_CATEGORIES.indexOf(cat)) % CAT_TOKENS.length];
+const catTone = (cat: ToolCategoryId) => catToken(TOOL_CATEGORIES.indexOf(cat));
 
 /** Section heading content: an accent-toned glyph beside the label. */
 function TitleWithIcon({ icon, children }: { icon: ReactNode; children: ReactNode }) {

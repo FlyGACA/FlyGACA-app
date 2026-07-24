@@ -1,7 +1,8 @@
 /**
  * Pure billing logic shared by the Stripe functions — no Stripe/Admin imports so
  * it is unit-testable. Maps a Stripe price to a plan and a Stripe subscription
- * state to the `entitlement` record the app reads (mirrors src/lib/entitlements.ts).
+ * state to the `entitlement` record the app reads (mirrored by
+ * src/lib/services/entitlements.ts).
  */
 
 export type Plan = "free" | "pro" | "school";
@@ -39,7 +40,7 @@ export function planForPrice(priceId: string | undefined, env: PriceEnv): Plan |
 /**
  * The plan actually in force for an entitlement `now`: a paid plan whose `expiresAt`
  * has passed collapses to `free`, and a non-expiring grant (school/staff) stands.
- * Mirrors `effectivePlan` in src/lib/entitlements.ts so the gateway gates on exactly
+ * Mirrored by `isActive` in src/lib/services/entitlements.ts so the gateway gates on exactly
  * the rule the app uses to show UI. Read-only: never grants — only interprets what
  * the Stripe webhook (the sole writer) persisted.
  */

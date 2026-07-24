@@ -14,7 +14,7 @@ export interface WbResult {
   cg: number;
 }
 
-const fin = (n: number) => Number.isFinite(n);
+import { fin } from './guards';
 
 /** CG from the stations that carry weight. Returns null if none do. */
 export function weightBalance(stations: Station[]): WbResult | null {

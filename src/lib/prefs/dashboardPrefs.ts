@@ -1,10 +1,10 @@
 /**
- * Local-first dashboard preferences: hidden-widget ids and the one-shot
- * dismissal of the role-picker card, persisted to localStorage and exposed via
- * useSyncExternalStore so the dashboard re-renders on change. List transforms
- * reuse the pure helpers from toolPrefs.
+ * Local-first dashboard preferences: hidden-widget ids, a custom widget order,
+ * and the one-shot dismissal of the role-picker card. Persisted to localStorage
+ * and exposed via useSyncExternalStore so the dashboard re-renders on change.
+ * List transforms reuse the pure helpers from toolPrefs.
  */
-import { useSyncExternalStore } from 'react';
+import { createPrefStore, readRaw, readStringList, save, saveRaw } from './createPrefStore';
 import { toggleId } from '@/lib/prefs/toolPrefs';
 
 const HIDDEN_KEY = 'flygaca:dashboard-hidden';
@@ -24,74 +24,27 @@ export interface DashboardPrefs {
   roleDismissed: boolean;
 }
 
-function readList(key: string): string[] {
-  try {
-    const v = localStorage.getItem(key);
-    const parsed = v ? (JSON.parse(v) as unknown) : [];
-    return Array.isArray(parsed) ? (parsed.filter((x) => typeof x === 'string') as string[]) : [];
-  } catch {
-    return [];
-  }
-}
+const store = createPrefStore<DashboardPrefs>({
+  hidden: readStringList(HIDDEN_KEY),
+  order: readStringList(ORDER_KEY),
+  roleDismissed: readRaw(ROLE_DISMISS_KEY) === '1',
+});
 
-function readDismissed(): boolean {
-  try {
-    return localStorage.getItem(ROLE_DISMISS_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-let state: DashboardPrefs = {
-  hidden: readList(HIDDEN_KEY),
-  order: readList(ORDER_KEY),
-  roleDismissed: readDismissed(),
-};
-
-const listeners = new Set<() => void>();
-function emit() {
-  for (const l of listeners) l();
-}
-function subscribe(l: () => void) {
-  listeners.add(l);
-  return () => listeners.delete(l);
-}
-
-export function useDashboardPrefs(): DashboardPrefs {
-  return useSyncExternalStore(
-    subscribe,
-    () => state,
-    () => state,
-  );
-}
+export const useDashboardPrefs = store.use;
 
 export function toggleWidget(id: string): void {
-  state = { ...state, hidden: toggleId(state.hidden, id) };
-  try {
-    localStorage.setItem(HIDDEN_KEY, JSON.stringify(state.hidden));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-  emit();
+  const hidden = toggleId(store.get().hidden, id);
+  save(HIDDEN_KEY, hidden);
+  store.set({ ...store.get(), hidden });
 }
 
 /** Persist a fully-resolved widget order from the Customize reorder controls. */
 export function setWidgetOrder(order: string[]): void {
-  state = { ...state, order };
-  try {
-    localStorage.setItem(ORDER_KEY, JSON.stringify(order));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-  emit();
+  save(ORDER_KEY, order);
+  store.set({ ...store.get(), order });
 }
 
 export function dismissRolePrompt(): void {
-  state = { ...state, roleDismissed: true };
-  try {
-    localStorage.setItem(ROLE_DISMISS_KEY, '1');
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-  emit();
+  saveRaw(ROLE_DISMISS_KEY, '1');
+  store.set({ ...store.get(), roleDismissed: true });
 }

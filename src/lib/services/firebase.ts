@@ -30,7 +30,7 @@ const env = import.meta.env;
  */
 export const FUNCTIONS_REGION = 'me-central1';
 
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY as string | undefined,
   authDomain: env.VITE_FIREBASE_AUTH_DOMAIN as string | undefined,
   databaseURL: env.VITE_FIREBASE_DATABASE_URL as string | undefined,
@@ -173,7 +173,7 @@ let analyticsPromise: Promise<Analytics | null> | null = null;
  * present, we're in a real browser, and the SDK reports analytics is supported
  * (so SSR, tests, the emulator, and unsupported native webviews all no-op).
  */
-export function getAnalyticsClient(): Promise<Analytics | null> {
+function getAnalyticsClient(): Promise<Analytics | null> {
   if (!isFirebaseConfigured() || !firebaseConfig.measurementId) return Promise.resolve(null);
   if (typeof window === 'undefined') return Promise.resolve(null);
   analyticsPromise ??= (async () => {

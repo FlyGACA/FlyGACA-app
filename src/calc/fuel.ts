@@ -1,7 +1,7 @@
 /** Fuel planning — endurance, range and specific range. Fuel is in generic
  *  units (L, kg or gal — be consistent). Pure planning aids. */
 
-const ok = (n: number) => Number.isFinite(n) && n > 0;
+import { ok } from './guards';
 
 export interface FuelPlan {
   /** Endurance in hours. */

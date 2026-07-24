@@ -26,9 +26,7 @@ beforeEach(() => {
 
 describe('useForm — field state', () => {
   it('seeds from initialValues', () => {
-    const { result } = renderHook(() =>
-      useForm<LoginValues>({ initialValues, onSubmit: vi.fn() }),
-    );
+    const { result } = renderHook(() => useForm<LoginValues>({ initialValues, onSubmit: vi.fn() }));
     expect(result.current.values).toEqual({ email: '', password: '' });
     expect(result.current.errors).toEqual({});
     expect(result.current.isSubmitting).toBe(false);
@@ -74,7 +72,9 @@ describe('useForm — submission', () => {
     emailInput.setAttribute('name', 'email');
     document.body.appendChild(emailInput);
 
-    const { result } = renderHook(() => useForm<LoginValues>({ initialValues, validate, onSubmit }));
+    const { result } = renderHook(() =>
+      useForm<LoginValues>({ initialValues, validate, onSubmit }),
+    );
     await act(async () => {
       await result.current.handleSubmit();
     });
@@ -110,9 +110,7 @@ describe('useForm — submission', () => {
   it('preventDefault is called when a form event is passed', async () => {
     const onSubmit = vi.fn();
     const valid: LoginValues = { email: 'a@b.com', password: 'longenough' };
-    const { result } = renderHook(() =>
-      useForm<LoginValues>({ initialValues: valid, onSubmit }),
-    );
+    const { result } = renderHook(() => useForm<LoginValues>({ initialValues: valid, onSubmit }));
     const preventDefault = vi.fn();
     await act(async () => {
       await result.current.handleSubmit({ preventDefault } as unknown as React.FormEvent);

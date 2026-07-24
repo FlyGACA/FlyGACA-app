@@ -1,10 +1,10 @@
 /**
  * Local-first guide preferences: bookmarked guides and a read/completed list,
  * persisted to localStorage and exposed via useSyncExternalStore so the guides
- * hub and reader re-render on change. Mirrors src/lib/toolPrefs.ts (and reuses
- * its pure `toggleId` transform) so the two stores stay consistent.
+ * hub and reader re-render on change. Reuses toolPrefs' pure `toggleId`
+ * transform so the two stores stay consistent.
  */
-import { useSyncExternalStore } from 'react';
+import { createPrefStore, readStringList, save } from './createPrefStore';
 import { toggleId } from '@/lib/prefs/toolPrefs';
 
 const BOOKMARK_KEY = 'flygaca:guide-bookmarks';
@@ -20,60 +20,29 @@ export interface GuidePrefs {
   read: string[];
 }
 
-function read(key: string): string[] {
-  try {
-    const v = localStorage.getItem(key);
-    const parsed = v ? (JSON.parse(v) as unknown) : [];
-    return Array.isArray(parsed) ? (parsed.filter((x) => typeof x === 'string') as string[]) : [];
-  } catch {
-    return [];
-  }
-}
+const store = createPrefStore<GuidePrefs>({
+  bookmarks: readStringList(BOOKMARK_KEY),
+  read: readStringList(READ_KEY),
+});
 
-let state: GuidePrefs = { bookmarks: read(BOOKMARK_KEY), read: read(READ_KEY) };
-
-const listeners = new Set<() => void>();
-function emit() {
-  for (const l of listeners) l();
-}
-function subscribe(l: () => void) {
-  listeners.add(l);
-  return () => listeners.delete(l);
-}
-
-function persist(key: string, value: string[]) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-}
-
-export function useGuidePrefs(): GuidePrefs {
-  return useSyncExternalStore(
-    subscribe,
-    () => state,
-    () => state,
-  );
-}
+export const useGuidePrefs = store.use;
 
 export function toggleBookmark(slug: string): void {
-  state = { ...state, bookmarks: toggleId(state.bookmarks, slug) };
-  persist(BOOKMARK_KEY, state.bookmarks);
-  emit();
+  const bookmarks = toggleId(store.get().bookmarks, slug);
+  save(BOOKMARK_KEY, bookmarks);
+  store.set({ ...store.get(), bookmarks });
 }
 
 export function toggleRead(slug: string): void {
-  state = { ...state, read: toggleId(state.read, slug) };
-  persist(READ_KEY, state.read);
-  emit();
+  const read = toggleId(store.get().read, slug);
+  save(READ_KEY, read);
+  store.set({ ...store.get(), read });
 }
 
 /** Idempotent — used to auto-mark a guide read when the reader reaches the end. */
 export function markRead(slug: string): void {
-  const next = addId(state.read, slug);
-  if (next === state.read) return;
-  state = { ...state, read: next };
-  persist(READ_KEY, state.read);
-  emit();
+  const read = addId(store.get().read, slug);
+  if (read === store.get().read) return;
+  save(READ_KEY, read);
+  store.set({ ...store.get(), read });
 }

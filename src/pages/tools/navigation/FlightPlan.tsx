@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
 import { FieldGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
 import loa from '@/pages/tools/procedures/Loa.module.css';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 export function FlightPlan() {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ export function FlightPlan() {
     altn: '',
     rmk: '',
   });
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard();
   const v = (s: string) => s.trim() || '—';
 
   const fpl =
@@ -33,16 +33,6 @@ export function FlightPlan() {
     `-N${i.spd || '----'}${i.lvl || 'F---'} ${v(i.route)}\n` +
     `-${v(i.dest)}${i.eet || '----'} ${i.altn.trim()}\n` +
     `-RMK/${i.rmk.trim() || 'NIL'})`;
-
-  async function copyText() {
-    try {
-      await navigator.clipboard.writeText(fpl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* ignore */
-    }
-  }
 
   return (
     <CalcShell
@@ -149,7 +139,7 @@ export function FlightPlan() {
 
       <div className={loa.outputHead}>
         <span>{t('flightPlan.output')}</span>
-        <button type="button" className={loa.copy} onClick={copyText}>
+        <button type="button" className={loa.copy} onClick={() => void copy(fpl)}>
           {copied ? t('flightPlan.copied') : t('flightPlan.copy')}
         </button>
       </div>
