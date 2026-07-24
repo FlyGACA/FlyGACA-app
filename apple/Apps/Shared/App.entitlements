@@ -6,5 +6,13 @@
 	<array>
 		<string>group.com.flygaca.study</string>
 	</array>
+	<!-- Sign in with Apple. The matching capability must be enabled on all six
+	     App IDs in the Apple Developer portal before the next *signed* build, or
+	     provisioning fails — see docs/RUNBOOK-ios-firebase.md §4. Unsigned local
+	     builds and the skipped-by-default TestFlight job are unaffected. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>
