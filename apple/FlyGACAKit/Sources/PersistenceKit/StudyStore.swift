@@ -141,6 +141,30 @@ public actor StudyStore {
         decode([String].self, try fetchProgress(moduleID: moduleID).lessonsDoneData) ?? []
     }
 
+    // ── Flags ──
+
+    /// Toggle a question's flagged state within its bank (web parity: flagged
+    /// question indices, per module).
+    public func setFlag(moduleID: String, bankID: String, index: Int, flagged: Bool) throws {
+        let record = try fetchProgress(moduleID: moduleID)
+        var byBank = decode([String: [Int]].self, record.flaggedData) ?? [:]
+        var indices = byBank[bankID] ?? []
+        if flagged {
+            if !indices.contains(index) { indices.append(index) }
+        } else {
+            indices.removeAll { $0 == index }
+        }
+        byBank[bankID] = indices
+        record.flaggedData = encode(byBank)
+        try modelContext.save()
+    }
+
+    /// Flagged question indices for one bank within a module.
+    public func flaggedIndices(moduleID: String, bankID: String) throws -> [Int] {
+        let byBank = decode([String: [Int]].self, try fetchProgress(moduleID: moduleID).flaggedData) ?? [:]
+        return byBank[bankID] ?? []
+    }
+
     private func fetchProgress(moduleID: String) throws -> ModuleProgressRecord {
         var descriptor = FetchDescriptor<ModuleProgressRecord>(
             predicate: #Predicate { $0.moduleID == moduleID })

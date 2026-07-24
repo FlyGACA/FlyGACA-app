@@ -10,15 +10,22 @@ public struct QuizView: View {
     /// Bank id → display title, for the results breakdown.
     public let bankTitles: [String: String]
     public let onFinished: ((SessionResult) -> Void)?
+    /// Called when the current question's flagged state is toggled — QuizView
+    /// stays decoupled from StudyStore (same pattern as `onFinished`); the
+    /// caller is responsible for persisting it.
+    public let onFlag: ((Question, Bool) -> Void)?
+    @State private var flaggedIDs: Set<String> = []
 
     public init(
         session: StudySession,
         bankTitles: [String: String] = [:],
-        onFinished: ((SessionResult) -> Void)? = nil
+        onFinished: ((SessionResult) -> Void)? = nil,
+        onFlag: ((Question, Bool) -> Void)? = nil
     ) {
         self.session = session
         self.bankTitles = bankTitles
         self.onFinished = onFinished
+        self.onFlag = onFlag
     }
 
     public var body: some View {
@@ -47,9 +54,21 @@ public struct QuizView: View {
         if let question = session.current {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Question \(session.currentIndex + 1) of \(session.questions.count)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack {
+                        Text("Question \(session.currentIndex + 1) of \(session.questions.count)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button {
+                            toggleFlag(question)
+                        } label: {
+                            Image(systemName: flaggedIDs.contains(question.id) ? "flag.fill" : "flag")
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(flaggedIDs.contains(question.id) ? FGTheme.clay : Color.secondary)
+                        .accessibilityLabel(
+                            flaggedIDs.contains(question.id) ? "Unflag question" : "Flag question")
+                    }
                     Text(question.prompt)
                         .font(.headline)
                     ForEach(question.choices.indices, id: \.self) { index in
@@ -73,6 +92,16 @@ public struct QuizView: View {
                 .padding()
             }
         }
+    }
+
+    private func toggleFlag(_ question: Question) {
+        let flagged = !flaggedIDs.contains(question.id)
+        if flagged {
+            flaggedIDs.insert(question.id)
+        } else {
+            flaggedIDs.remove(question.id)
+        }
+        onFlag?(question, flagged)
     }
 
     private func mark(for index: Int, in question: Question) -> ChoiceRow.Mark {

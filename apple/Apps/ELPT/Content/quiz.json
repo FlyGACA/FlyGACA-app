@@ -1,5 +1,5 @@
 {
- "generated": "2026-05-24",
+ "generated": "2026-07-24",
  "note": "Practice questions authored by Fly GACA from the GACAR library for study. Not actual GACA exam questions. Every answer cites its source — verify against the official GACAR.",
  "exam": {
   "title": "GACAR Knowledge — Mock Exam",
@@ -229,6 +229,78 @@
      "answer": 2,
      "explain": "\"WILCO\" means \"will comply\" — message understood and will be acted on.",
      "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+    },
+    {
+     "q": "In radiotelephony, the word \"AFFIRM\" means —",
+     "options": [
+      "Yes / that is correct",
+      "No",
+      "Please confirm",
+      "Standby"
+     ],
+     "answer": 0,
+     "explain": "AFFIRM is the standard ICAO procedure word for \"yes\" or \"permission granted / that is correct.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "In radiotelephony, the word \"NEGATIVE\" means —",
+     "options": [
+      "No / permission not granted / that is not correct",
+      "Wait",
+      "Say again",
+      "Received"
+     ],
+     "answer": 0,
+     "explain": "NEGATIVE means \"no\", \"permission not granted\", or \"that is not correct.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The procedure word \"STANDBY\" means —",
+     "options": [
+      "Wait and I will call you",
+      "I have finished my message",
+      "Repeat your message",
+      "I acknowledge"
+     ],
+     "answer": 0,
+     "explain": "STANDBY tells the receiving station to wait; the calling station will call again.",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "To avoid confusion with similar-sounding words, the number \"3\" is pronounced in radiotelephony as —",
+     "options": [
+      "TREE",
+      "THREE",
+      "THUREE",
+      "TRI"
+     ],
+     "answer": 0,
+     "explain": "ICAO radiotelephony spelling pronounces \"3\" as \"TREE\" to reduce ambiguity for non-native speakers.",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The number \"5\" is pronounced in radiotelephony as —",
+     "options": [
+      "FIFE",
+      "FIVE",
+      "FYVE",
+      "CINCO"
+     ],
+     "answer": 0,
+     "explain": "ICAO radiotelephony pronounces \"5\" as \"FIFE.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The ICAO document that expands on the Annex 1 language proficiency requirements, including the rating scale descriptors, is —",
+     "options": [
+      "Doc 9835",
+      "Doc 4444",
+      "Doc 8168",
+      "Doc 7030"
+     ],
+     "answer": 0,
+     "explain": "ICAO Doc 9835, the Manual on the Implementation of ICAO Language Proficiency Requirements, expands on Annex 1's rating scale.",
+     "cite": "ICAO Annex 1 / Doc 9835"
     }
    ]
   }

@@ -1,5 +1,5 @@
 {
- "generated": "2026-05-24",
+ "generated": "2026-07-24",
  "note": "Practice questions authored by Fly GACA from the GACAR library for study. Not actual GACA exam questions. Every answer cites its source — verify against the official GACAR.",
  "exam": {
   "title": "GACAR Knowledge — Mock Exam",
@@ -1352,6 +1352,78 @@
       "id": "part-91",
       "anchor": "sec-mathbf-91-135-operations-in-class-a-airspace"
      }
+    },
+    {
+     "q": "A Special VFR (SVFR) clearance permits —",
+     "options": [
+      "VFR flight within a control zone when weather is below normal VMC minima, subject to an ATC clearance",
+      "IFR flight without a clearance",
+      "VFR flight above FL200",
+      "Flight without a flight plan"
+     ],
+     "answer": 0,
+     "explain": "Special VFR lets a flight operate within a control zone in weather below the normal VMC minima, only with an ATC clearance.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A Flight Information Region (FIR) is airspace within which —",
+     "options": [
+      "Flight information service and alerting service are provided",
+      "Only military flights operate",
+      "Radar coverage is guaranteed",
+      "All flights must be IFR"
+     ],
+     "answer": 0,
+     "explain": "An FIR is airspace of defined dimensions within which flight information service and alerting service are provided.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "ICAO airspace classes are lettered from Class A through —",
+     "options": [
+      "Class G",
+      "Class F",
+      "Class E",
+      "Class H"
+     ],
+     "answer": 0,
+     "explain": "ICAO defines seven airspace classes, A through G, each with its own rules and services.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "In Class E airspace, a VFR flight receives —",
+     "options": [
+      "Traffic information as far as practicable, but no separation service",
+      "Full separation from all other traffic",
+      "No ATC service of any kind",
+      "Mandatory radar vectoring"
+     ],
+     "answer": 0,
+     "explain": "In Class E airspace, VFR flights are given traffic information when practicable, but ATC does not separate them from other traffic.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "How does a Danger Area differ from a Restricted Area?",
+     "options": [
+      "A Danger Area warns of activities hazardous to flight without legally restricting entry, while a Restricted Area imposes flight restrictions",
+      "A Danger Area always prohibits all flight",
+      "They mean the same thing",
+      "A Danger Area only exists over water"
+     ],
+     "answer": 0,
+     "explain": "A Danger Area indicates airspace where activities dangerous to flight may exist, whereas a Restricted Area actually restricts flight under specified conditions.",
+     "cite": "GACAR Part 73 · AIP-KSA ENR 5"
+    },
+    {
+     "q": "Uncontrolled airspace, where ATC provides no separation service, is designated —",
+     "options": [
+      "Class G",
+      "Class A",
+      "Class C",
+      "Class E"
+     ],
+     "answer": 0,
+     "explain": "Class G is uncontrolled airspace; ATC provides no separation service, though flight information may be available on request.",
+     "cite": "GACAR Part 71 · ICAO Annex 11"
     }
    ]
   },
@@ -2009,6 +2081,54 @@
       "kind": "regulations",
       "id": "part-43"
      }
+    },
+    {
+     "q": "Which of the following is generally required for IFR flight but NOT required for day VFR flight?",
+     "options": [
+      "A gyroscopic attitude/heading system and navigation/radio equipment appropriate to the route",
+      "A magnetic compass",
+      "An airspeed indicator",
+      "An altimeter"
+     ],
+     "answer": 0,
+     "explain": "IFR flight requires additional gyroscopic and radio/navigation equipment beyond the basic VFR instrument set.",
+     "cite": "GACAR Part 91"
+    },
+    {
+     "q": "An Airworthiness Directive (AD) is issued when —",
+     "options": [
+      "An unsafe condition exists in a product and is likely to exist in other products of the same design",
+      "A new paint scheme is approved",
+      "An owner requests a modification",
+      "A pilot reports minor turbulence"
+     ],
+     "answer": 0,
+     "explain": "ADs are mandatory corrective actions issued when an unsafe condition is found that likely affects other aircraft/products of the same type design.",
+     "cite": "GACAR Part 39"
+    },
+    {
+     "q": "Preventive maintenance may generally be performed by —",
+     "options": [
+      "The aircraft owner/operator (for permitted items) or an appropriately certificated person",
+      "Only the original manufacturer",
+      "Only a designated airworthiness representative",
+      "Nobody without a repair station certificate"
+     ],
+     "answer": 0,
+     "explain": "GACAR Part 43 allows certain simple preventive maintenance tasks to be performed by the owner/operator (if a pilot certificate holder) or other authorized persons, within limits.",
+     "cite": "GACAR Part 43"
+    },
+    {
+     "q": "Maintenance records must be retained to show —",
+     "options": [
+      "The total time in service and the current status of applicable airworthiness directives",
+      "Only the purchase price",
+      "The pilot's logbook hours",
+      "The color of the aircraft"
+     ],
+     "answer": 0,
+     "explain": "Maintenance records must document total time in service and AD compliance status, among other things, so continued airworthiness can be verified.",
+     "cite": "GACAR Part 43"
     }
    ]
   },
@@ -2305,6 +2425,54 @@
       "kind": "reference",
       "id": "pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
      }
+    },
+    {
+     "q": "A great circle route between two points represents —",
+     "options": [
+      "The shortest distance between them along the Earth's surface",
+      "A constant-heading rhumb line",
+      "A line of constant latitude",
+      "The equator only"
+     ],
+     "answer": 0,
+     "explain": "A great circle is the shortest path between two points on a sphere; a rhumb line (constant heading) is usually longer.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "DME (Distance Measuring Equipment) provides the pilot with —",
+     "options": [
+      "Slant-range distance to the station",
+      "Bearing information only",
+      "Weather along the route",
+      "Fuel remaining"
+     ],
+     "answer": 0,
+     "explain": "DME gives slant-range distance from the aircraft to the ground station, often paired with a VOR for bearing.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "An ADF (Automatic Direction Finder) needle points toward —",
+     "options": [
+      "The tuned NDB station, regardless of aircraft heading",
+      "Magnetic north, always",
+      "The nearest airport automatically",
+      "True north, always"
+     ],
+     "answer": 0,
+     "explain": "An ADF needle points at the tuned NDB station's relative bearing, independent of the aircraft's heading reference.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "The variation in compass reading caused by an aircraft's own magnetic and electrical equipment is corrected for using a —",
+     "options": [
+      "Compass deviation card",
+      "Sectional chart",
+      "Wind correction angle",
+      "E6B flight computer"
+     ],
+     "answer": 0,
+     "explain": "A compass deviation card, mounted near the compass, lists correction values for the aircraft's own magnetic interference at various headings.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
   },
@@ -2601,6 +2769,54 @@
       "kind": "reference",
       "id": "aviation-weather-handbook-faa-h-8083-28b"
      }
+    },
+    {
+     "q": "A TAF (Terminal Aerodrome Forecast) is —",
+     "options": [
+      "A scheduled forecast of expected weather conditions at an aerodrome for a specified period",
+      "A record of past observed weather",
+      "A NOTAM about runway closures",
+      "A type of METAR remark"
+     ],
+     "answer": 0,
+     "explain": "A TAF is a forecast (not an observation) of expected aerodrome weather over a defined valid period.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Convective SIGMETs are issued for hazards including —",
+     "options": [
+      "Severe or embedded thunderstorms and tornadoes",
+      "Light rain showers",
+      "Calm winds",
+      "Clear skies"
+     ],
+     "answer": 0,
+     "explain": "Convective SIGMETs warn of severe convective weather hazards such as severe/embedded thunderstorms, tornadoes, hail and severe turbulence.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Katabatic (drainage) winds occur when —",
+     "options": [
+      "Cold, dense air flows downhill under gravity, typically at night",
+      "Warm air rises rapidly during the day",
+      "The jet stream shifts south",
+      "A sea breeze reverses"
+     ],
+     "answer": 0,
+     "explain": "Katabatic winds form as cold, denser air drains downslope under gravity, most commonly overnight.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Clear-air turbulence (CAT) is most commonly associated with —",
+     "options": [
+      "Strong wind shear near the jet stream",
+      "Cumulonimbus clouds",
+      "Low-level fog",
+      "Calm high-pressure systems"
+     ],
+     "answer": 0,
+     "explain": "CAT typically occurs in strong wind-shear zones around the jet stream, often without visible cloud to warn pilots.",
+     "cite": "FAA Aviation Weather Handbook"
     }
    ]
   },
@@ -2897,6 +3113,54 @@
       "kind": "reference",
       "id": "pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
      }
+    },
+    {
+     "q": "The E6B flight computer (mechanical or electronic) is primarily used to calculate —",
+     "options": [
+      "Time, speed, distance, fuel and wind-related values for flight planning",
+      "Weight and balance only",
+      "Radio frequencies",
+      "Airspace classifications"
+     ],
+     "answer": 0,
+     "explain": "The E6B is a flight-planning calculator for time/speed/distance, fuel, and wind-triangle problems.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Weight and balance calculations before flight ensure the aircraft is operated —",
+     "options": [
+      "Within its certificated weight and center-of-gravity limits",
+      "At maximum possible weight always",
+      "With full fuel tanks only",
+      "Below its stall speed"
+     ],
+     "answer": 0,
+     "explain": "Pre-flight weight and balance planning keeps the aircraft within its certificated weight and CG envelope for safe handling.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "A NOTAM should be checked during flight planning because it may report —",
+     "options": [
+      "Temporary hazards or changes such as runway closures or navaid outages",
+      "Only long-term chart amendments",
+      "Airline ticket prices",
+      "Aircraft maintenance history"
+     ],
+     "answer": 0,
+     "explain": "Preflight action requires familiarity with all available information, and NOTAMs carry time-critical changes (closures, outages, hazards) not yet reflected on charts.",
+     "cite": "GACAR Part 91"
+    },
+    {
+     "q": "\"Top of descent\" in flight planning is the point calculated so the aircraft —",
+     "options": [
+      "Reaches the desired altitude/position at the planned descent rate",
+      "Immediately begins a steep dive",
+      "Ignores ATC descent clearances",
+      "Always occurs directly over the destination airport"
+     ],
+     "answer": 0,
+     "explain": "Top-of-descent planning uses a target descent rate/gradient so the aircraft reaches the desired point and altitude at the right time.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
   },
@@ -3121,6 +3385,78 @@
      "answer": 2,
      "explain": "\"WILCO\" means \"will comply\" — message understood and will be acted on.",
      "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+    },
+    {
+     "q": "In radiotelephony, the word \"AFFIRM\" means —",
+     "options": [
+      "Yes / that is correct",
+      "No",
+      "Please confirm",
+      "Standby"
+     ],
+     "answer": 0,
+     "explain": "AFFIRM is the standard ICAO procedure word for \"yes\" or \"permission granted / that is correct.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "In radiotelephony, the word \"NEGATIVE\" means —",
+     "options": [
+      "No / permission not granted / that is not correct",
+      "Wait",
+      "Say again",
+      "Received"
+     ],
+     "answer": 0,
+     "explain": "NEGATIVE means \"no\", \"permission not granted\", or \"that is not correct.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The procedure word \"STANDBY\" means —",
+     "options": [
+      "Wait and I will call you",
+      "I have finished my message",
+      "Repeat your message",
+      "I acknowledge"
+     ],
+     "answer": 0,
+     "explain": "STANDBY tells the receiving station to wait; the calling station will call again.",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "To avoid confusion with similar-sounding words, the number \"3\" is pronounced in radiotelephony as —",
+     "options": [
+      "TREE",
+      "THREE",
+      "THUREE",
+      "TRI"
+     ],
+     "answer": 0,
+     "explain": "ICAO radiotelephony spelling pronounces \"3\" as \"TREE\" to reduce ambiguity for non-native speakers.",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The number \"5\" is pronounced in radiotelephony as —",
+     "options": [
+      "FIFE",
+      "FIVE",
+      "FYVE",
+      "CINCO"
+     ],
+     "answer": 0,
+     "explain": "ICAO radiotelephony pronounces \"5\" as \"FIFE.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The ICAO document that expands on the Annex 1 language proficiency requirements, including the rating scale descriptors, is —",
+     "options": [
+      "Doc 9835",
+      "Doc 4444",
+      "Doc 8168",
+      "Doc 7030"
+     ],
+     "answer": 0,
+     "explain": "ICAO Doc 9835, the Manual on the Implementation of ICAO Language Proficiency Requirements, expands on Annex 1's rating scale.",
+     "cite": "ICAO Annex 1 / Doc 9835"
     }
    ]
   }
