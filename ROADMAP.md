@@ -57,7 +57,8 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
   now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
-  needs Google Fonts (`fonts.gstatic.com`) network access: `node scripts/build-og-card.mjs`.
+  needs Google Fonts (`fonts.gstatic.com`) network access:
+  `node archive/scripts/scripts/build-og-card.mjs`.
 - **[platform]** **Re-enable and enforce CI.** The GitHub Actions **CI workflow is currently
   disabled** (`disabled_manually`), so no build/e2e/functions job runs on pushes or PRs — re-enable
   it under **Actions → CI → Enable workflow**. Then make the `build` (the `verify` chain), `e2e`,
