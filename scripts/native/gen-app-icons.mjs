@@ -5,10 +5,11 @@
  * Each app in the family is its own App Store product, so each needs its OWN
  * recognizable icon — before this script every app shipped the same placeholder.
  * The icons are the real Fly GACA falcon mark on the shared Falcon night
- * background, RECOLOURED per app: the mark's two-tone (teal→green) gradient is
- * hue-rotated by a per-module amount, so every app reads as the same brand mark in
- * a distinct colour and a user with several installed can tell them apart at a
- * glance.
+ * background, RECOLOURED per app: the mark's silhouette is used as a stencil and
+ * filled with a per-module DUOTONE (a top→bottom highlight→shadow gradient) drawn
+ * from a single "Desert & sky" heritage palette, so every app reads as the same
+ * brand mark in its own colourway and a user with several installed can tell them
+ * apart at a glance.
  *
  *   node scripts/native/gen-app-icons.mjs           # all six apps
  *   node scripts/native/gen-app-icons.mjs --app cpl # one app
@@ -33,20 +34,19 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const NIGHT = '#0a0e12';
 const DEEP = '#101a24';
 
-// The real brand mark (transparent, 1024px) — the falcon whose hue we rotate.
+// The real brand mark (transparent, 1024px) — its silhouette is our stencil.
 const MARK = join(root, 'public', 'brand', 'flygaca-mark.png');
 
-// App Store product → { Xcode target dir, per-app hue rotation in degrees }.
+// App Store product → { Xcode target dir, duotone highlight (top) + shadow (bottom) }.
 // Mirrors the APPS registry in scripts/build-ios-content.mjs (same six apps).
-// PPL keeps the canonical brand colours (hue 0); the rest are spread around the
-// wheel so all six are clearly distinct.
+// "Desert & sky" heritage palette — one coherent family, one colourway per app.
 const APPS = {
-  ppl: { dir: 'PPL', hue: 0 }, // canonical teal→green
-  elpt: { dir: 'ELPT', hue: 55 },
-  aip: { dir: 'AIP', hue: 110 },
-  cpl: { dir: 'CPL', hue: 165 },
-  ir: { dir: 'IR', hue: 215 },
-  atpl: { dir: 'ATPL', hue: 275 },
+  ppl: { dir: 'PPL', hi: '#5fb585', sh: '#1f5537' }, // palm green
+  elpt: { dir: 'ELPT', hi: '#6fb8e6', sh: '#245f86' }, // sky blue
+  aip: { dir: 'AIP', hi: '#e6c98a', sh: '#8f6f34' }, // sand gold
+  cpl: { dir: 'CPL', hi: '#e0946f', sh: '#8a4529' }, // terracotta
+  ir: { dir: 'IR', hi: '#4fa2a6', sh: '#124447' }, // deep teal
+  atpl: { dir: 'ATPL', hi: '#e08c66', sh: '#8a3a25' }, // sunset clay
 };
 
 const SIZE = 1024;
@@ -62,6 +62,19 @@ const backgroundSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" h
   </defs>
   <rect width="${SIZE}" height="${SIZE}" fill="url(#bg)"/>
 </svg>`;
+
+/** A MARK_SIZE² highlight→shadow vertical gradient to fill the falcon with. */
+function duotoneSvg({ hi, sh }) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${MARK_SIZE}" height="${MARK_SIZE}" viewBox="0 0 ${MARK_SIZE} ${MARK_SIZE}">
+  <defs>
+    <linearGradient id="d" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${hi}"/>
+      <stop offset="1" stop-color="${sh}"/>
+    </linearGradient>
+  </defs>
+  <rect width="${MARK_SIZE}" height="${MARK_SIZE}" fill="url(#d)"/>
+</svg>`;
+}
 
 const contentsJson = JSON.stringify(
   {
@@ -92,14 +105,20 @@ async function generate(appId) {
   writeFileSync(join(assetsDir, 'Contents.json'), `${catalogContentsJson}\n`);
   writeFileSync(join(iconSetDir, 'Contents.json'), `${contentsJson}\n`);
 
-  // Recolour the mark by rotating its hue, preserving its shape/shading + alpha.
-  const mark = await sharp(MARK)
-    .resize(MARK_SIZE, MARK_SIZE, { fit: 'inside' })
-    .modulate({ hue: app.hue })
+  // The falcon's own alpha channel is the stencil — preserves its shape, the gap
+  // between the wings, and the soft antialiased edges.
+  const mark = await sharp(MARK).resize(MARK_SIZE, MARK_SIZE, { fit: 'inside' }).png().toBuffer();
+
+  // Fill that silhouette with the per-app duotone: render the gradient, then keep
+  // it only where the mark is opaque (`dest-in` = destination ∩ source-alpha).
+  const shapedMark = await sharp(Buffer.from(duotoneSvg(app)))
+    .resize(MARK_SIZE, MARK_SIZE)
+    .composite([{ input: mark, blend: 'dest-in' }])
+    .png()
     .toBuffer();
 
   const composited = await sharp(Buffer.from(backgroundSvg))
-    .composite([{ input: mark, gravity: 'center' }])
+    .composite([{ input: shapedMark, gravity: 'center' }])
     .png()
     .toBuffer();
 
@@ -109,7 +128,9 @@ async function generate(appId) {
   // background, guaranteeing a no-alpha PNG (App Store marketing-icon requirement).
   const png = await sharp(composited).flatten({ background: NIGHT }).png().toBuffer();
   writeFileSync(join(iconSetDir, 'AppIcon-1024.png'), png);
-  console.log(`✓ ${app.dir}: falcon +${app.hue}° hue (${png.length.toLocaleString()} bytes)`);
+  console.log(
+    `✓ ${app.dir}: falcon duotone ${app.hi}→${app.sh} (${png.length.toLocaleString()} bytes)`,
+  );
 }
 
 const argApp = (() => {
