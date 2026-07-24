@@ -102,6 +102,95 @@ Verify by launching on a simulator set to Arabic (**Settings → General → Lan
 العربية**): the home-screen label should read **فلاي جاكا**. `npm run cap:sync` does not touch these
 files, so the localization survives day-to-day syncs.
 
+## iOS best practices — apply to every generated project
+
+Because `ios/` is regenerated rather than committed, these settings must be re-applied after
+every `npx cap add ios`. The per-flavor pipeline scripts them (see "Per-flavor app pipeline"
+below); this section is the reference for what they do and why.
+
+- **`WKAppBoundDomains` (required).** `capacitor.config.ts` sets
+  `limitsNavigationsToAppBoundDomains: true`, which only takes effect — and, if left unpaired,
+  can break in-app navigation — when Info.plist carries a matching `WKAppBoundDomains` array.
+  Entries: `localhost` (the Capacitor server origin) and `flygaca.com` (universal-link
+  continuity). Keep the list ≤ 10 (WebKit's hard cap).
+- **Privacy manifest (required for submission).** Apple requires a `PrivacyInfo.xcprivacy`
+  declaring data collection and required-reason API usage. The checked-in template lives at
+  `native/ios/PrivacyInfo.xcprivacy`: no tracking, no collected data, UserDefaults reason
+  `CA92.1` (from `@capacitor/preferences`). If the Capacitor template already ships a manifest,
+  merge declarations rather than duplicating the file. Revisit the declarations before adding
+  any data-collecting SDK (Firebase, RevenueCat, analytics).
+- **App Transport Security.** Leave ATS at its secure defaults — every endpoint the app talks
+  to is HTTPS. Do **not** add `NSAllowsArbitraryLoads` or per-domain exceptions; App Review
+  asks for justification and nothing here needs one.
+- **Signing.** Use automatic signing with the team account; no manual provisioning profiles.
+  Set `ITSAppUsesNonExemptEncryption` to `NO` in Info.plist (the app uses only standard HTTPS)
+  so every TestFlight upload skips the export-compliance questionnaire.
+- **Deployment target.** Keep the Capacitor default for the installed major (verify with
+  `npx cap doctor` after `cap add ios`); do not lower it — plugins are only tested against the
+  default floor.
+- **Versioning.** `MARKETING_VERSION` tracks `package.json` `version`; bump
+  `CURRENT_PROJECT_VERSION` on every TestFlight upload (the pipeline stamps both).
+
+## App icons & splash
+
+Source art lives outside the generated project so it survives regeneration:
+
+- Put a 1024×1024 `icon.png` (no alpha for the App Store icon) plus `splash.png` /
+  `splash-dark.png` (2732×2732, artwork centred) under `native/assets/<flavor>/`.
+- Generate the sets with `npx @capacitor/assets generate --ios --assetPath native/assets/<flavor>`
+  after `cap add ios`. Never hand-edit `Assets.xcassets`.
+
+## TestFlight / App Store checklist
+
+1. `npm run cap:sync` (or the per-flavor pipeline) → open Xcode → select *Any iOS Device* →
+   Product ▸ Archive → Distribute App ▸ App Store Connect.
+2. App Store Connect → App Privacy: the prep-pack flavor apps truthfully declare
+   **"Data Not Collected"** (no accounts, no analytics, no third-party SDKs). The main app's
+   answers must instead reflect Firebase Auth/Firestore usage.
+3. Screenshots: 6.9" and 6.5" iPhone sets minimum; show the app's actual study content
+   (each flavor's own pack — this is also the 4.3 spam-review defense, see
+   `docs/STORE-SUITE.md`).
+4. Review notes: state that the app is an independent educational tool **not affiliated with
+   GACA** (mirroring the in-app disclaimer) and that all content works offline with no login.
+5. After approval: keep phased release on; verify the installed app cold-launches offline
+   (airplane mode) before releasing to 100%.
+
+## Per-flavor app pipeline (the standalone prep-app suite)
+
+Each live paid prep pack ships as its own **paid-upfront** App Store app (the
+ASA/Gleim model — see `docs/STORE-SUITE.md` for the store strategy). The flavor
+registry (`src/flavors/registry.ts`) is the source of truth: pack ↔ bundle id ↔
+names ↔ manifest. Owning the app IS owning the pack (`FLAVOR_GRANTED_PACK_IDS`
+→ `hasPackAccess`), so the apps have no sign-in, no IAP SDK, no Firebase, and
+work fully offline from first launch.
+
+```bash
+npm run build:flavor -- elp    # sliced, branded web bundle in dist/ (any OS)
+npm run preview                # click through it at localhost, incl. offline
+npm run flavor:ios -- elp      # macOS: fresh ios/ + best-practice config + art + Xcode
+```
+
+- `build:flavor` stages the pack's data slice under `.flavor/<id>/public/`
+  (only that pack's quiz banks, ground-school modules, paths, sheets, and every
+  corpus doc its content cites — `scripts/lib/flavor-slice.mjs`), then builds
+  with `VITE_APP_FLAVOR` set. The service worker precaches the whole slice.
+  Needs Node ≥ 22.18 (imports the TS registry directly).
+- `flavor:ios` regenerates `ios/` from scratch for the chosen flavor (so
+  `ios/`/`android/` stay generated-never-committed — they are fully gitignored),
+  then applies the best-practice plist config above via PlistBuddy and runs
+  `@capacitor/assets` with `native/assets/<id>/` art.
+- **One flavor at a time**: `dist/` and `ios/` always hold the last flavor
+  built. Rebuild when switching; nothing is shared between flavor archives.
+- The main web app is untouched: with `VITE_APP_FLAVOR` unset every build is
+  the full Fly GACA app, byte-for-byte (`npm run verify` + the flavor tests pin
+  this).
+
+Known gaps, acceptable for v1: reading-path steps that deep-link into surfaces
+a flavor app doesn't mount (e.g. `/tools/*`) land on the in-app NotFound page,
+and the flavor bundle still carries the main app's never-fetched lazy route
+chunks (~2 MB of dead weight in the shipped binary). Both are follow-ups, not
+blockers.
+
 ## Things the native shell still needs (later stages)
 
 - **Auth / IAP:** native Apple/Google sign-in and RevenueCat IAP are part of Stage 3 (real

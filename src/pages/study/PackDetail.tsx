@@ -18,9 +18,17 @@ import { PackContents } from './PackContents';
 import { NotFound } from '@/pages/not-found/NotFound';
 import styles from './Study.module.css';
 
-export function PackDetail() {
+interface PackDetailProps {
+  /** Standalone flavor apps pin their pack id instead of reading the URL param. */
+  fixedId?: string;
+  /** Hide the storefront chrome (back-link, checkout banners) in flavor builds. */
+  standalone?: boolean;
+}
+
+export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
   const { t, i18n } = useTranslation();
-  const { id } = useParams<{ id: string }>();
+  const { id: paramId } = useParams<{ id: string }>();
+  const id = fixedId ?? paramId;
   const pack = findPack(id);
   // `soon` packs are announced but have no content/detail page — treat as not found
   // so the storefront card (with its waitlist form) is the only surface for them.
@@ -114,11 +122,13 @@ export function PackDetail() {
 
   return (
     <section className={`container ${styles.page}`}>
-      <p className={styles.back}>
-        <Link to="/study/packs">← {t('study.packs')}</Link>
-      </p>
+      {!standalone && (
+        <p className={styles.back}>
+          <Link to="/study/packs">← {t('study.packs')}</Link>
+        </p>
+      )}
 
-      {justPurchased && (
+      {!standalone && justPurchased && (
         <p role="status" className={styles.purchaseOk}>
           <span>{t('study.packPurchaseSuccess')}</span>
           <button type="button" className={styles.canceledDismiss} onClick={dismissCheckoutParam}>
@@ -126,7 +136,7 @@ export function PackDetail() {
           </button>
         </p>
       )}
-      {checkout === 'cancel' && (
+      {!standalone && checkout === 'cancel' && (
         <p role="status" className={styles.purchaseCancel}>
           <span>{t('study.packCheckoutCanceled')}</span>
           <button type="button" className={styles.canceledDismiss} onClick={dismissCheckoutParam}>

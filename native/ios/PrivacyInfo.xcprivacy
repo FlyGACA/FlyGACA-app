@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  App privacy manifest for the Fly GACA native shells (main app + prep-pack flavor apps).
+
+  The flavor apps ship no Firebase, no analytics and no network accounts, so the truthful
+  declaration is: no tracking, no collected data. The one required-reason API in use is
+  UserDefaults, via the @capacitor/preferences plugin (reason CA92.1 — the app accesses
+  only its own data).
+
+  scripts/flavor-ios.mjs installs this file into the generated Xcode project; if the
+  Capacitor template already ships a PrivacyInfo.xcprivacy, the script merges these
+  declarations into it instead of overwriting. Revisit before adding any SDK that
+  collects data (RevenueCat, Firebase, analytics) — see docs/RUNBOOK-native.md.
+-->
+<plist version="1.0">
+<dict>
+  <key>NSPrivacyTracking</key>
+  <false/>
+  <key>NSPrivacyTrackingDomains</key>
+  <array/>
+  <key>NSPrivacyCollectedDataTypes</key>
+  <array/>
+  <key>NSPrivacyAccessedAPITypes</key>
+  <array>
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>CA92.1</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>

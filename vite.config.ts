@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { FLAVORS, toFlavorId } from './src/flavors/registry';
 
 /**
  * Inject search-engine ownership-verification <meta> tags into the initial HTML,
@@ -27,7 +28,16 @@ function verificationMeta(env: Record<string, string>): Plugin {
 // https://vite.dev/config/  (test config lives in vitest.config.ts)
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
+  // Standalone prep-app (flavor) builds — set by scripts/build-flavor.mjs. The
+  // default web build resolves to `main`, whose registry entry mirrors the
+  // manifest literals this file used to inline (tests/flavors.test.ts pins
+  // that), so the shipped main manifest is unchanged.
+  const flavor = FLAVORS[toFlavorId(env.VITE_APP_FLAVOR) ?? 'main'];
+  const isFlavorApp = flavor.id !== 'main';
   return {
+    // Flavor builds swap the public payload for the staged per-pack slice so
+    // the service-worker precache manifest sees only that pack's data.
+    publicDir: isFlavorApp ? `.flavor/${flavor.id}/public` : 'public',
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -75,15 +85,14 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['img/favicon.ico', 'img/flygaca-mark.png'],
         manifest: {
           id: '/',
-          name: 'Fly GACA — Saudi Aviation Library',
-          short_name: 'Fly GACA',
-          description:
-            "A fast, free reference library of Saudi civil-aviation regulations (GACAR) for the Kingdom's pilots, instructors and cadets.",
+          name: flavor.manifest.name,
+          short_name: flavor.manifest.shortName,
+          description: flavor.manifest.description,
           start_url: '/',
           scope: '/',
           display: 'standalone',
-          background_color: '#0A0E12',
-          theme_color: '#0A0E12',
+          background_color: flavor.manifest.themeColor,
+          theme_color: flavor.manifest.themeColor,
           lang: 'en',
           dir: 'ltr',
           categories: ['education', 'reference', 'travel'],
@@ -101,31 +110,46 @@ export default defineConfig(({ mode }) => {
               purpose: 'any maskable',
             },
           ],
-          shortcuts: [
-            {
-              name: 'Library',
-              url: '/library',
-              icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
-            },
-            {
-              name: 'Captain Adel',
-              url: '/chat',
-              icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
-            },
-            {
-              name: 'Flight tools',
-              url: '/tools',
-              icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
-            },
-          ],
+          // A flavor app IS one study surface — the main app's Library/Chat/
+          // Tools shortcuts point at routes that don't exist there.
+          shortcuts: isFlavorApp
+            ? undefined
+            : [
+                {
+                  name: 'Library',
+                  url: '/library',
+                  icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
+                },
+                {
+                  name: 'Captain Adel',
+                  url: '/chat',
+                  icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
+                },
+                {
+                  name: 'Flight tools',
+                  url: '/tools',
+                  icons: [{ src: 'img/icon-192.png', sizes: '192x192' }],
+                },
+              ],
         },
         workbox: {
-          // The regulatory JSON corpus is large; precache the app shell only and
-          // serve data with a network-first runtime strategy so it stays fresh
-          // but remains available offline (mirrors the old freshness-aware sw.js).
-          globPatterns: ['**/*.{js,css,woff2,png,svg,ico,webp}', 'index.html'],
-          globIgnores: ['**/data/**'],
-          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+          // Main build: the regulatory JSON corpus is large; precache the app
+          // shell only and serve data with a network-first runtime strategy so
+          // it stays fresh but remains available offline (mirrors the old
+          // freshness-aware sw.js). Flavor build: the staged slice is a few MB,
+          // so precache EVERYTHING — the prep app must work fully offline from
+          // first launch (and the native shell carries the files in-bundle).
+          globPatterns: isFlavorApp
+            ? [
+                '**/*.{js,css,woff2,png,svg,ico,webp}',
+                'index.html',
+                'data/**/*.{json,html}',
+                'study-sheets/*.pdf',
+                'manifest-ar.webmanifest',
+              ]
+            : ['**/*.{js,css,woff2,png,svg,ico,webp}', 'index.html'],
+          globIgnores: isFlavorApp ? [] : ['**/data/**'],
+          maximumFileSizeToCacheInBytes: (isFlavorApp ? 16 : 4) * 1024 * 1024,
           // Offline navigations to deep client routes (e.g. /library/...) resolve
           // to the precached SPA shell; /api and /data are excluded so the proxy
           // and the network-first data rules below keep handling them.
