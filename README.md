@@ -263,9 +263,14 @@ npm run preview     # Serve the production build locally
 
 ### Native Mobile Shells
 
+The **iOS project is committed** (`ios/`) — clone, then open it in Xcode. Capacitor 8 uses Swift
+Package Manager, so no CocoaPods. See [`docs/RUNBOOK-native.md`](docs/RUNBOOK-native.md) for details.
+
 ```bash
-npm run cap:sync    # Sync the web payload into the iOS/Android shells
-npm run cap:open    # Open the iOS project in Xcode
+npm install         # SPM references node_modules/@capacitor/* — install first
+npm run build       # produce dist/ (cap copies it into the shell)
+npx cap sync ios    # copy web assets + regenerate the SPM manifest
+npm run cap:open    # open ios/App in Xcode → set signing team → run
 ```
 
 ---

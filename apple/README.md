@@ -31,10 +31,13 @@ The project is **generated, never committed** — `apple/project.yml` is the sou
 of truth and `apple/FlyGACA.xcodeproj` is gitignored.
 
 ```bash
-brew install xcodegen
-npm run ios:generate      # → apple/FlyGACA.xcodeproj
+npm run ios:generate      # → apple/FlyGACA.xcodeproj (installs XcodeGen if missing)
 open apple/FlyGACA.xcodeproj
 ```
+
+`ios:generate` installs XcodeGen for you when it's missing (Homebrew, falling back
+to Mint). If neither is available it prints how to install it — the one-liner is
+`brew install xcodegen`.
 
 The spec wires up, per app target (PPL, ELPT, AIP):
 

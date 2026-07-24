@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Alert } from '@/components/Alert';
 import { Disclaimer } from '@/components/Disclaimer';
 import { CaptainAvatar } from '@/components/CaptainAvatar';
 import { StatusPill } from '@/components/StatusPill';
+import { Card } from '@/components/ui/Card';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { SubscriptionPanel } from '@/components/account/SubscriptionPanel';
 import { refreshAccount, signOut, useAccount } from '@/lib/services/account';
 import { uiPlan } from '@/lib/services/entitlements';
@@ -12,6 +14,9 @@ import { isAuthAvailable, resendEmailVerification } from '@/lib/services/auth';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { AccountSignedOut } from './AccountSignIn';
 import styles from './account.module.css';
+import { AccountSignedOut } from './AccountSignedOut';
+import account from './account.module.css';
+import styles from './AccountPage.module.css';
 
 /** Banner prompting an unverified Firebase user to resend their verification email. */
 function VerifyBanner() {
@@ -75,21 +80,24 @@ export function Account() {
   }, [checkout]);
 
   if (!session) return <AccountSignedOut />;
+  if (!session) {
+    return <AccountSignedOut />;
+  }
 
   return (
-    <section className={`container-narrow ${styles.page}`}>
-      <header className={styles.identity}>
+    <section className={`container-narrow ${account.page}`}>
+      <Card variant="raised" className={styles.identityCard}>
         <CaptainAvatar size="md" pose="smile" decorative className={styles.identityAvatar} />
         <div>
           <h1>{t('account.title')}</h1>
-          <p className={styles.sub}>
+          <p className={account.sub}>
             {t('account.signedInAs', { name: profile.displayName || profile.email })}
-            <span className={styles.planBadge} data-plan={plan}>
+            <span className={account.planBadge} data-plan={plan}>
               {t(`account.plan.${plan}`)}
             </span>
           </p>
         </div>
-      </header>
+      </Card>
 
       {checkout === 'success' && (
         <div className={styles.verifyBanner} role="status">
@@ -104,7 +112,7 @@ export function Account() {
         </div>
       )}
       {checkout === 'cancel' && (
-        <p className={styles.note} role="status">
+        <p className={account.note} role="status">
           {t('account.subscription.checkoutCanceled')}
         </p>
       )}
@@ -122,20 +130,20 @@ export function Account() {
       {/* The signed-in home is /dashboard; the daily surfaces (currency, logbook,
           records) live there and in the account nav menu, so this hub stays
           focused on identity, billing and settings. */}
-      <div className={styles.linkRow}>
-        <Link to="/dashboard" className={`${styles.btn} ${styles.btnPrimary}`}>
+      <div className={account.linkRow}>
+        <ButtonLink to="/dashboard" variant="clayPrimary">
           {t('account.dashboard')}
-        </Link>
-        <Link to="/settings" className={styles.btn}>
+        </ButtonLink>
+        <ButtonLink to="/settings" variant="clay">
           {t('account.settings')}
-        </Link>
+        </ButtonLink>
       </div>
-      <div className={styles.actions}>
-        <button type="button" className={styles.btn} onClick={() => signOut()}>
+      <div className={account.actions}>
+        <Button type="button" variant="clay" onClick={() => signOut()}>
           {t('account.signOut')}
-        </button>
+        </Button>
       </div>
-      <p className={styles.note}>{t('account.localNote')}</p>
+      <p className={account.note}>{t('account.localNote')}</p>
       <Disclaimer compact />
     </section>
   );

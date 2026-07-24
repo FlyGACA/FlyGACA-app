@@ -2025,6 +2025,7 @@
   },
   "account": {
     "title": "Account",
+    "eyebrow": "Your account",
     "signInTitle": "Sign in",
     "signInIntro": "Sync your logbook, study progress and bookmarks across devices — your data stays on this device first, sign-in adds backup and sync.",
     "showPassword": "Show",
