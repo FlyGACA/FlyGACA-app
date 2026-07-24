@@ -51,7 +51,7 @@ rest of the plan: **fix host + indexability first, or every downstream SEO item 
       same day: an accidental `firebase init` commit (`c1897f0`, 2026-07-05) had set `firebase.json`
       `hosting.public` to `"y"`, so Firebase was serving a stock welcome page — restored to `dist`
       with the full headers block. *Remaining (owner, not code):* DNS cutover of `flygaca.com` +
-      `www` from Vercel to Firebase per `docs/RUNBOOK-cutover.md`, adding `www.flygaca.com` as a
+      `www` from Vercel to Firebase per `archive/docs/RUNBOOK-cutover.md`, adding `www.flygaca.com` as a
       redirect-to-apex domain in the Firebase console; until then Vercel still serves the apex.
 - [ ] **P0.b — Ensure the served host body-prerenders (P0, M).** Whichever host wins P0.a must serve
       `scripts/prerender.mjs` output. If Vercel: add the prerender step to its build (needs Chromium in

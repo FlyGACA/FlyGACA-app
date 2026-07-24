@@ -188,6 +188,8 @@ assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory co
 `RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `b2b/` designs, audits). The legacy source (the original
 vanilla Fly GACA site) remains the reference for anything still ported from the old site.
 
-`archive/` is parked non-app material — vendored third-party reference collections, the
-per-tool agent-config folders, and scripts nothing calls. Nothing there is imported, built, or
-linted; see `archive/README.md` before assuming something is missing.
+`archive/` is parked non-app material — vendored third-party reference collections, the per-tool
+agent-config folders, scripts nothing calls, finished-work docs (completed audits, the legacy-PWA
+cutover runbook), and the investor material. Nothing there is imported, built, or linted; see
+`archive/README.md` before assuming something is missing. `docs/` is now live engineering
+documentation only.

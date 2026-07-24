@@ -137,7 +137,7 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
   generated at build.)
 - **E2E + a11y (9c):** new flows for account sign-in, pricing, charts, study sheets, met-brief; axe
   WCAG2 A/AA extended to `/pricing`, `/account`, `/library/charts`, `/study/sheets`.
-- **Cutover (9d):** `docs/RUNBOOK-cutover.md` — parity checklist, the production secret flip, preview
+- **Cutover (9d):** `archive/docs/RUNBOOK-cutover.md` — parity checklist, the production secret flip, preview
   channel → prod smoke, DNS switch, rollback (legacy host retained). Content-QA: Disclaimer is
   site-wide (Footer + CalcShell + explicit) and no fabricated GACAR figures ship.
 

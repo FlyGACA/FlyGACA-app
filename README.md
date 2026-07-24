@@ -153,7 +153,7 @@ Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused st
 | **Wave 3** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap |
 
 > [!IMPORTANT]
-> **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/pack-sources.test.ts`](tests/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`docs/STUDY-CONTENT-REVIEW.md`](docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
+> **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/pack-sources.test.ts`](tests/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`archive/docs/STUDY-CONTENT-REVIEW.md`](archive/docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
 
 <div align="center"><sub style="color: #666;">The full lineup, waves, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
 
@@ -305,7 +305,7 @@ npm run deploy:all    # Deploy Hosting, Functions, and Firestore rules
 ```
 
 > [!NOTE]
-> For CI logic, multi-platform deploy commands, and cutover steps, see the runbooks in `docs/` — `RUNBOOK-deploy.md`, `RUNBOOK-firebase.md`, `RUNBOOK-native.md`, and `RUNBOOK-cutover.md`.
+> For CI logic, multi-platform deploy commands, and cutover steps, see the runbooks in `docs/` — `RUNBOOK-deploy.md`, `RUNBOOK-firebase.md`, `RUNBOOK-native.md` (the completed cutover is archived at `archive/docs/RUNBOOK-cutover.md`).
 
 ---
 
