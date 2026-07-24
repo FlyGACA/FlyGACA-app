@@ -64,7 +64,7 @@
 
 ## 📑 Table of Contents
 
-[About](#-about-the-project) · [Features](#-key-features) · [Overview](#-a-look-inside) · [Quick Start](#-get-started-in-60-seconds) · [Architecture](#-architecture--tech-stack) · [Deploy](#-deploy) · [Contribute](#-contribute) · [License](#-license) · [Contact](#-contact)
+[About](#-about-the-project) · [Features](#-key-features) · [Overview](#-a-look-inside) · [App Family](#-exam-prep-app-family) · [Quick Start](#-get-started-in-60-seconds) · [Architecture](#-architecture--tech-stack) · [Deploy](#-deploy) · [Contribute](#-contribute) · [License](#-license) · [Contact](#-contact)
 
 </div>
 
@@ -92,7 +92,7 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 | 🧮 **55+ Flight Tools** | Crosswind, density altitude, weight & balance, and more — shareable, URL-stateful, unit-tested math. |
 | 🌦️ **Weather & Ops** | Decode METARs/TAFs, parse NOTAMs, and track the current AIRAC cycle at a glance. |
 | 🗺️ **Charts & Airspace** | Interactive Leaflet maps loaded with Saudi aerodrome and approach-chart data. |
-| 🎓 **Ground School** | Spaced-repetition flashcards, mock exams, and structured learning paths. |
+| 🎓 **Ground School & Exam Prep** | Spaced-repetition flashcards, timed mock exams, learning paths — and per-certificate [exam-prep apps](#-exam-prep-app-family) (PPL · CPL · IR · ATPL · …). |
 | 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching; CSS logical properties mirror the whole UI automatically. |
 | 📲 **PWA & Native** | Install offline via Workbox, or ship first-class iOS/Android shells with Capacitor. |
 
@@ -132,6 +132,30 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 </table>
 
 <div align="center"><sub style="color: #666;">Screenshots from the live app — explore it at <a href="https://flygaca.com" style="color: #2d6e8a;">flygaca.com</a>.</sub></div>
+
+---
+
+## 🎓 Exam-Prep App Family
+
+Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused study apps** — *one GACA certificate = one app*. Each is a slice of the same shared corpus (quiz banks, flashcards, timed mock exam, mastery tracking) delivered two ways from **this one monorepo**:
+
+- 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`.
+- 📱 **Native iOS** — a SwiftUI target in [`apple/`](apple/ARCHITECTURE.md) (`com.flygaca.<id>`), paid one-time and sold together as an App Store bundle.
+
+| App | Certificate / rating | Primary GACAR source | Status |
+| :--- | :--- | :--- | :--- |
+| **PPL** | Private Pilot Licence | Parts 61 · 91 · 71 · 67 + Saudi AIP | ✅ Live |
+| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR (Fly GACA authored) | ✅ Live |
+| **AIP** | Aeronautical Information | SANS Saudi AIP (GEN/ENR) | ✅ Live |
+| **CPL** | Commercial Pilot Licence | Parts 61 · 91 · 119 · 135 | 🆕 New — draft content |
+| **IR** | Instrument Rating | Parts 61 · 91 · 97 + AIP ENR | 🆕 New — draft content |
+| **ATPL** | Airline Transport Pilot Licence | Parts 61 · 121 | 🆕 New — draft content |
+| **Wave 3** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap |
+
+> [!IMPORTANT]
+> **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/pack-sources.test.ts`](tests/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`docs/STUDY-CONTENT-REVIEW.md`](docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
+
+<div align="center"><sub style="color: #666;">The full lineup, waves, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
 
 ---
 
@@ -239,9 +263,14 @@ npm run preview     # Serve the production build locally
 
 ### Native Mobile Shells
 
+The **iOS project is committed** (`ios/`) — clone, then open it in Xcode. Capacitor 8 uses Swift
+Package Manager, so no CocoaPods. See [`docs/RUNBOOK-native.md`](docs/RUNBOOK-native.md) for details.
+
 ```bash
-npm run cap:sync    # Sync the web payload into the iOS/Android shells
-npm run cap:open    # Open the iOS project in Xcode
+npm install         # SPM references node_modules/@capacitor/* — install first
+npm run build       # produce dist/ (cap copies it into the shell)
+npx cap sync ios    # copy web assets + regenerate the SPM manifest
+npm run cap:open    # open ios/App in Xcode → set signing team → run
 ```
 
 ---

@@ -92,7 +92,16 @@ export function entitlementFromPass(
  * so an unknown/`soon`/tampered id can never grant ownership. A pack going live is
  * a one-line addition here + a deploy; a frontend-only catalog change never grants.
  */
-export const SELLABLE_PACK_IDS = ["ppl-exam", "medical", "aip", "elp", "conversion"] as const;
+export const SELLABLE_PACK_IDS = [
+  "ppl-exam",
+  "medical",
+  "aip",
+  "elp",
+  "conversion",
+  "cpl",
+  "ir",
+  "atpl",
+] as const;
 
 /** Narrow untrusted input to a sellable pack id, else null. */
 export function sellablePackId(v: unknown): string | null {

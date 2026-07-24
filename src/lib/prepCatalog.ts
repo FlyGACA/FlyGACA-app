@@ -108,10 +108,70 @@ export const PACKS: Pack[] = [
     pathIds: ['foreign-licence'],
     sheetSlugs: ['conversion-study-sheet'],
   },
-  // Announced, content pending — sold once live (see SELLABLE_PACK_IDS).
-  { id: 'cpl', kind: 'certificate', status: 'soon', access: 'paid', bankIds: [] },
-  { id: 'ir', kind: 'certificate', status: 'soon', access: 'paid', bankIds: [] },
-  { id: 'atpl', kind: 'certificate', status: 'soon', access: 'paid', bankIds: [] },
+  {
+    // CPL: GACAR Part 61 commercial licensing + commercial ops + performance, plus the
+    // shared subject banks. New banks are GACAR-cited; universal-knowledge banks reuse
+    // the shared corpus (see docs/APPS-FAMILY-ROADMAP.md). DRAFT content pending review.
+    id: 'cpl',
+    kind: 'certificate',
+    status: 'live',
+    access: 'paid',
+    bankIds: [
+      'cpl-licensing',
+      'commercial-ops',
+      'commercial-performance',
+      'air-law',
+      'pilot-licensing',
+      'medical',
+      'aircraft-equipment',
+      'weather',
+      'aerodynamics',
+      'human-factors',
+      'navigation',
+      'flight-planning',
+    ],
+    sheetSlugs: ['saudi-cpl-study-sheet'],
+  },
+  {
+    // IR: instrument rating requirements, IFR flight rules and instrument procedures
+    // (GACAR Part 61/91/97 + Saudi AIP ENR), plus the instrument-relevant subject banks.
+    id: 'ir',
+    kind: 'certificate',
+    status: 'live',
+    access: 'paid',
+    bankIds: [
+      'ir-rating',
+      'ifr-rules',
+      'instrument-procedures',
+      'airspace',
+      'aip-ais',
+      'aircraft-equipment',
+      'navigation',
+      'weather',
+      'flight-planning',
+      'radio-elpt',
+    ],
+    sheetSlugs: ['saudi-ir-study-sheet'],
+  },
+  {
+    // ATPL: airline transport pilot licensing + GACAR Part 121 air transport operations
+    // and transport performance/dispatch, plus the shared advanced-knowledge banks.
+    id: 'atpl',
+    kind: 'certificate',
+    status: 'live',
+    access: 'paid',
+    bankIds: [
+      'atpl-licensing',
+      'air-transport-ops',
+      'advanced-weather-performance',
+      'air-law',
+      'aircraft-equipment',
+      'weather',
+      'navigation',
+      'flight-planning',
+      'human-factors',
+    ],
+  },
 
   // ── Subject packs ──────────────────────────────────────────────────────────
   {

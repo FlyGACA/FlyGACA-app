@@ -622,3 +622,236 @@ Confirm each lesson's "Read more" link points at a sensible reference. **N** = a
 - [ ] (N) com-1 _The radio and the phonetic alphabet_ → Aeronautical Information Manual `/library/aeronautical-information-manual-aim`
 - [ ] (N) com-2 _Standard phraseology and the flight call_ → Aeronautical Information Manual `/library/aeronautical-information-manual-aim`
 
+
+---
+
+## CPL / IR / ATPL draft banks (Wave 2) — verify answer key + citation
+
+These **191 questions across 9 new banks** were authored from the in-repo GACAR corpus and adversarially fact-checked against the cited sections, but remain **DRAFT pending human review**. For each: confirm the ✓ answer is correct and the citation points to the right GACAR Part/section before production sale. Tick when verified, or note the correction.
+
+### Commercial Pilot Licensing `cpl-licensing` (CPL) — 18 questions
+<sub>Source: GACAR Part 61, Subpart F</sub>
+
+- [ ] **Under GACAR Part 61, the minimum age to be eligible for a commercial pilot certificate is —** — ✓ 18 · _GACAR Part 61, §61.153_
+- [ ] **Before being issued a commercial pilot certificate, an applicant must already hold at least —** — ✓ A private pilot certificate · _GACAR Part 61, §61.153_
+- [ ] **Which class of medical certificate must a commercial pilot certificate applicant hold (for airplane operations)?** — ✓ Class 1 · _GACAR Part 61, §61.153_
+- [ ] **A commercial pilot certificate applicant needs only a Class 2 medical certificate when testing for or exercising the privileges in a —** — ✓ Glider or balloon · _GACAR Part 61, §61.153_
+- [ ] **Which pilot certificate is the minimum required to act as pilot in command of an aircraft carrying persons or property for compensation or hire?** — ✓ Commercial pilot certificate · _GACAR Part 61, §61.155_
+- [ ] **Under GACAR §61.155, a commercial pilot certificate holder may exercise the same privileges as a person holding a —** — ✓ Private pilot certificate · _GACAR Part 61, §61.155_
+- [ ] **A commercial pilot who applies with an airplane category rating and does not hold an instrument rating in the same category and class is limited from carrying passengers for hire on cross-country flights in excess of —** — ✓ 50 NM · _GACAR Part 61, §61.155_
+- [ ] **Besides cross-country flights over 50 NM, the no-instrument-rating commercial limitation also prohibits carrying passengers for hire —** — ✓ At night · _GACAR Part 61, §61.155_
+- [ ] **How is the commercial pilot's 50 NM / night carriage-for-hire limitation removed?** — ✓ By obtaining an instrument rating in the same category and class · _GACAR Part 61, §61.155_
+- [ ] **GACAR §61.151 states that this subpart prescribes the requirements for the issuance of which certificates?** — ✓ Commercial pilot certificates · _GACAR Part 61, §61.151_
+- [ ] **Under GACAR §61.3, a person may not exercise the privileges of a certificate issued under Part 61 if that certificate is —** — ✓ Surrendered, suspended, revoked, or expired · _GACAR Part 61, §61.3_
+- [ ] **Under GACAR §61.3, a commercial or airline transport pilot may not serve as a pilot in international operations under Part 121 or 135 after attaining their 60th birthday, or, in operations with more than one pilot, their —** — ✓ 65th birthday · _GACAR Part 61, §61.3_
+- [ ] **Under GACAR §61.5, to exercise the privileges of a certificate a person must have in their physical possession or readily accessible in the aircraft —** — ✓ A current and valid airman certificate · _GACAR Part 61, §61.5_
+- [ ] **Under GACAR §61.9, the medical certificate that a required flight crew member must hold is issued under GACAR Part —** — ✓ Part 67 · _GACAR Part 61, §61.9_
+- [ ] **Which of the following is NOT a pilot certificate issued under GACAR §61.7?** — ✓ Aircraft dispatcher · _GACAR Part 61, §61.7_
+- [ ] **Under GACAR §61.7, instrument ratings are placed on which pilot certificates?** — ✓ Private and commercial only · _GACAR Part 61, §61.7_
+- [ ] **Under GACAR §61.153, the commercial pilot knowledge test is based on the aeronautical knowledge areas listed in an appendix to GACAR Part —** — ✓ Part 141 · _GACAR Part 61, §61.153_
+- [ ] **For an applicant taking the logged ground-and-flight-training route to a commercial pilot certificate, the required aeronautical experience is prescribed in which appendix to GACAR Part 61?** — ✓ Appendix D · _GACAR Part 61, §61.153_
+
+### Commercial Air Operations `commercial-ops` (CPL) — 22 questions
+<sub>Source: GACAR Parts 119 · 135 · 91</sub>
+
+- [ ] **Under GACAR Part 119, a person authorized to conduct operations as a commercial operator is issued which certificate?** — ✓ An Air Operator Certificate (AOC) · _GACAR Part 119, §119.1_
+- [ ] **Under GACAR Part 119, a person authorized to conduct noncommercial operations under GACAR Part 125 is issued —** — ✓ An Operator Certificate (OC) · _GACAR Part 119, §119.1_
+- [ ] **GACAR Part 119 prescribes the certification requirements for operations conducted under which Parts?** — ✓ Parts 121, 125, and 135 · _GACAR Part 119, §119.1_
+- [ ] **According to GACAR §119.1, Part 119 does NOT apply to which of the following?** — ✓ Foreign air carriers operating under GACAR Part 129 · _GACAR Part 119, §119.1_
+- [ ] **Under GACAR §119.1, no person may operate as a commercial operator under Part 119 without also holding —** — ✓ Appropriate economic authority from the GACA · _GACAR Part 119, §119.1_
+- [ ] **Under GACAR §119.5, a certificate holder's operations specifications must contain —** — ✓ The authorizations, limitations, and certain procedures under which each kind of operation is conducted · _GACAR Part 119, §119.5_
+- [ ] **Under GACAR §119.9, a certificate holder must not operate an aircraft under Part 121 or 135 using a business name other than —** — ✓ A business name appearing in its operations specifications · _GACAR Part 119, §119.9_
+- [ ] **Under GACAR §119.9, how must the certificate holder's business name relate to the aircraft it operates under Part 121 or 135?** — ✓ It must be legibly displayed and clearly visible from outside the aircraft to a person on the ground · _GACAR Part 119, §119.9_
+- [ ] **Under GACAR §119.9, when a certificate holder operates a wet-leased aircraft under Part 121 or 135, whose business name must be legibly displayed on the aircraft?** — ✓ The lessor's business name · _GACAR Part 119, §119.9_
+- [ ] **Under GACAR §119.43, an application for an AOC may be denied if the President finds that —** — ✓ The applicant previously held an AOC or OC that was revoked · _GACAR Part 119, §119.43_
+- [ ] **Under GACAR §119.43, before issuing an AOC the President must find that the applicant is properly and adequately equipped in accordance with the requirements of —** — ✓ GACAR Part 121 or 135, as applicable · _GACAR Part 119, §119.43_
+- [ ] **Under GACAR §119.49, the operations specifications of a certificate holder conducting commercial operations must include —** — ✓ The specific location of the certificate holder's principal base of operations · _GACAR Part 119, §119.49_
+- [ ] **Under GACAR §119.37, to operate as a commercial operator a person must, among other things —** — ✓ Be a citizen of the Kingdom of Saudi Arabia and maintain a principal base of operations in the Kingdom · _GACAR Part 119, §119.37_
+- [ ] **Under GACAR §119.39, an applicant for an AOC must submit the application to the President at least —** — ✓ 90 working days before the date of intended operation · _GACAR Part 119, §119.39_
+- [ ] **Under GACAR §119.21, a person conducting commercial operations using aircraft other than transport-category or commuter-category airplanes must comply with the certification requirements of Part 119 and —** — ✓ GACAR Part 135 · _GACAR Part 119, §119.21_
+- [ ] **GACAR §135.1 prescribes rules governing the commercial operations of —** — ✓ Aircraft other than transport-category aircraft and commuter-category airplanes, by holders of an AOC under Part 119 · _GACAR Part 135, §135.1_
+- [ ] **Under GACAR §135.7, in addition to the documents required by Part 91, the pilot in command must ensure which document is carried on board?** — ✓ A certified true copy of the AOC and a copy of the operations specifications summary · _GACAR Part 135, §135.7_
+- [ ] **Under GACAR §135.9, for how long must the flight logbook records be maintained?** — ✓ 30 days · _GACAR Part 135, §135.9_
+- [ ] **Under GACAR §135.15, a single-engine airplane may be operated in instrument meteorological conditions (IMC) or at night only if, among other conditions —** — ✓ The certificate holder is authorized by the President to conduct such operations · _GACAR Part 135, §135.15_
+- [ ] **GACAR §91.1 establishes that Part 91 prescribes rules governing the operation of aircraft —** — ✓ Within the sovereign area and territorial waters of the Kingdom of Saudi Arabia · _GACAR Part 91, §91.1_
+- [ ] **Under GACAR §91.3, the pilot in command of an aircraft is —** — ✓ Directly responsible for, and the final authority as to, the operation, safety, and security of that aircraft · _GACAR Part 91, §91.3_
+- [ ] **Under GACAR §91.9, which of the following must the PIC ensure is carried on board a Saudi Arabian registered aircraft?** — ✓ An original or true copy of the aircraft certificate of registration and the airworthiness certificate · _GACAR Part 91, §91.9_
+
+### Commercial Performance & Loading `commercial-performance` (CPL) — 21 questions
+<sub>Source: GACAR Part 91 · Part 135 (Subpart F)</sub>
+
+- [ ] **Under GACAR Part 91, an airplane may not begin a flight under VFR during the day unless it has enough fuel to reach the first point of intended landing and then fly at normal cruising speed for at least —** — ✓ 30 minutes · _GACAR Part 91, §91.161_
+- [ ] **For a night VFR flight in an airplane, GACAR §91.161 requires fuel to reach the first point of intended landing and then fly at normal cruising speed for at least —** — ✓ 45 minutes · _GACAR Part 91, §91.161_
+- [ ] **Under GACAR §91.161, a rotorcraft may not begin a VFR flight unless it can reach the first point of intended landing and then fly at normal cruising speed for at least —** — ✓ 20 minutes · _GACAR Part 91, §91.161_
+- [ ] **Under GACAR Part 91, an airplane operating under IFR must carry enough fuel to fly to and make an approach at the destination, fly to the alternate, and then fly at normal cruising speed for at least —** — ✓ 45 minutes · _GACAR Part 91, §91.181_
+- [ ] **Under GACAR §91.181, after reaching the alternate aerodrome an IFR rotorcraft must carry fuel to fly at normal cruising speed for a further —** — ✓ 30 minutes · _GACAR Part 91, §91.181_
+- [ ] **GACAR §91.43 (Preflight Action) requires the PIC, before a flight not in the vicinity of an aerodrome or under IFR, to become familiar with — among other things —** — ✓ runway lengths at aerodromes of intended use and the applicable takeoff and landing distance data · _GACAR Part 91, §91.43_
+- [ ] **Before a flight may commence under GACAR §91.43, the PIC must be satisfied that —** — ✓ the aircraft mass and centre of gravity allow the flight to be conducted safely and any load is properly distributed and secured · _GACAR Part 91, §91.43_
+- [ ] **Under GACAR §91.11, a Saudi-registered aircraft's current empty mass and centre of gravity must be derived from an actual weighing performed within the preceding —** — ✓ 36 months · _GACAR Part 91, §91.11_
+- [ ] **Under GACAR §91.267 (In-Flight Fuel Management), the PIC must declare a fuel emergency by broadcasting "MAYDAY MAYDAY MAYDAY FUEL" when —** — ✓ the calculated usable fuel on landing at the nearest suitable aerodrome would be less than the planned final reserve fuel · _GACAR Part 91, §91.267_
+- [ ] **Under GACAR §91.263, when an aircraft operating within controlled airspace needs to dump fuel, the PIC must —** — ✓ advise ATC before commencing the fuel-dump operation · _GACAR Part 91, §91.263_
+- [ ] **In GACAR Part 135, airplane performance operating limitations (takeoff, en-route, and landing limits) for commercial operators are prescribed in —** — ✓ Subpart F · _GACAR Part 135, Subpart F, §135.133_
+- [ ] **Under GACAR §135.135, when ensuring an airplane's takeoff mass does not exceed the mass allowed for the runway length, the operator must consider at least aerodrome pressure altitude, wind, ambient temperature, runway slope, and —** — ✓ runway contaminants such as standing water, snow, or ice · _GACAR Part 135, §135.135_
+- [ ] **Under GACAR §135.137 (Airplane: Takeoff Limitations), the accelerate-stop distance must not exceed —** — ✓ the length of the runway plus any stopway · _GACAR Part 135, §135.137_
+- [ ] **Under GACAR §135.137, the takeoff distance must not exceed the runway length plus any clearway, but the clearway credited must not be greater than —** — ✓ one-half of the runway length · _GACAR Part 135, §135.137_
+- [ ] **For the takeoff limitations of GACAR §135.137, it is assumed the airplane is not banked before reaching a height of 50 ft (15 m), and thereafter the maximum bank does not exceed —** — ✓ 15 degrees · _GACAR Part 135, §135.137_
+- [ ] **Under GACAR §135.139 (Landing Limitations: Destination Aerodromes), takeoff mass must be limited so that, allowing for fuel and oil burn, the airplane can make a full-stop landing —** — ✓ within the landing distance available of the most suitable runway at the destination · _GACAR Part 135, §135.139_
+- [ ] **Under GACAR §135.139, if forecasts indicate the destination runways may be wet or slippery and no wet-runway AFM data is used, a turbojet-powered airplane requires an effective runway length of at least —** — ✓ 115 percent of the dry-runway required length · _GACAR Part 135, §135.139_
+- [ ] **Under GACAR §135.141, an aerodrome may not be listed as an alternate unless the airplane can land and stop within — of the effective runway length from a point 50 ft above the obstruction-clearance-plane/runway intersection.** — ✓ 70 percent · _GACAR Part 135, §135.141_
+- [ ] **Under GACAR §135.143, a multi-engine land airplane carrying passengers over water (beyond gliding distance of land) must be operated at a mass allowing it to climb, with the critical engine inoperative, at least —** — ✓ 50 ft/min at 1,000 ft AGL · _GACAR Part 135, §135.143_
+- [ ] **Under GACAR §135.145, a multi-engine airplane carrying passengers over the top or in IMC must be able to climb, with the critical engine inoperative, at least 50 ft/min when operating at —** — ✓ the route MEA or 5,000 ft MSL, whichever is higher · _GACAR Part 135, §135.145_
+- [ ] **Under GACAR §135.658 (Fuel and Oil Supply), the contingency fuel carried to compensate for unforeseen factors must be no less than —** — ✓ 5 percent of the planned trip fuel (subject to a minimum holding allowance) · _GACAR Part 135, §135.658_
+
+### IFR Flight Rules `ifr-rules` (IR) — 22 questions
+<sub>Source: GACAR Part 91, Subpart B/E</sub>
+
+- [ ] **Under GACAR §91.181, after flying to the first aerodrome of intended landing and then to the alternate, an aeroplane operating under IFR must carry enough fuel to fly for a further —** — ✓ 45 minutes at normal cruising speed · _GACAR Part 91, §91.181_
+- [ ] **For a rotorcraft operating under IFR, the final reserve fuel required by GACAR §91.181 (after destination and alternate) is enough to fly for —** — ✓ 30 minutes at normal cruising speed · _GACAR Part 91, §91.181_
+- [ ] **Under GACAR §91.183, no person may operate an aircraft in controlled airspace under IFR unless the PIC has —** — ✓ Filed an IFR flight plan and received an appropriate ATC clearance · _GACAR Part 91, §91.183_
+- [ ] **Under GACAR §91.135, each person operating an aircraft in Class A airspace must —** — ✓ Operate under IFR · _GACAR Part 91, §91.135_
+- [ ] **Under GACAR §91.135, operations in Class A airspace may be conducted only under an ATC clearance received —** — ✓ Prior to entering the airspace · _GACAR Part 91, §91.135_
+- [ ] **Under GACAR §91.77, an aircraft must be operated under IFR whenever it is at or above —** — ✓ FL 150 · _GACAR Part 91, §91.77_
+- [ ] **Under GACAR §91.181, an alternate aerodrome need not be included in the IFR fuel calculation for an aeroplane if a Part 97 approach is published at the destination and, for at least 1 hour before and after ETA, the ceiling and visibility will be at least —** — ✓ 2,000 ft above the aerodrome elevation and 5 km · _GACAR Part 91, §91.181_
+- [ ] **Under GACAR §91.185, an alternate aerodrome must be listed in an IFR flight plan unless —** — ✓ A Part 97 instrument approach is available at the destination and forecast weather meets the specified ceiling/visibility minima · _GACAR Part 91, §91.185_
+- [ ] **Under GACAR §91.185(c), the standard alternate-aerodrome minimums for a precision approach are —** — ✓ Ceiling 600 ft and visibility 3,200 m · _GACAR Part 91, §91.185_
+- [ ] **Under GACAR §91.185(c), the standard alternate-aerodrome minimums for a nonprecision approach or APV are —** — ✓ Ceiling 800 ft and visibility 3,200 m · _GACAR Part 91, §91.185_
+- [ ] **Under GACAR §91.187, a VOR used for IFR navigation must have been operationally checked within the preceding —** — ✓ 30 days · _GACAR Part 91, §91.187_
+- [ ] **Under GACAR §91.187, the maximum permissible indicated bearing error when checking VOR equipment against a ground test signal or a designated surface checkpoint is —** — ✓ ±4° · _GACAR Part 91, §91.187_
+- [ ] **Under GACAR §91.187, when a VOR is checked against a designated airborne checkpoint, the maximum permissible bearing error is —** — ✓ ±6° · _GACAR Part 91, §91.187_
+- [ ] **Under GACAR §91.187, when checking one VOR system against another (dual VOR), the maximum permissible variation between the two indicated bearings is —** — ✓ 4° · _GACAR Part 91, §91.187_
+- [ ] **Under GACAR §91.199, over a designated mountainous zone where no minimum altitude is prescribed, the minimum IFR altitude is —** — ✓ 2,000 ft above the highest obstacle within 4 NM of course · _GACAR Part 91, §91.199_
+- [ ] **Under GACAR §91.199, over non-mountainous terrain where no minimum altitude is prescribed, the minimum IFR altitude is —** — ✓ 1,000 ft above the highest obstacle within 4 NM of course · _GACAR Part 91, §91.199_
+- [ ] **Under GACAR §91.201, a PIC in level cruising flight under IFR in controlled airspace must maintain —** — ✓ The altitude or flight level assigned by ATC · _GACAR Part 91, §91.201_
+- [ ] **Under GACAR §91.201, under IFR in uncontrolled airspace below 13,000 ft MSL on a magnetic course of 0° through 179°, the PIC must fly —** — ✓ Any odd thousand-foot MSL altitude · _GACAR Part 91, §91.201_
+- [ ] **Under GACAR §91.205, when making an initial approach to a radio navigation facility under IFR, the PIC may not descend below the pertinent minimum altitude for initial approach until —** — ✓ Arrival over that facility has been definitely established · _GACAR Part 91, §91.205_
+- [ ] **Under GACAR §91.209, if two-way radio communications fail under IFR and VMC are encountered, the PIC should —** — ✓ Continue the flight under VFR and land at the nearest suitable aerodrome · _GACAR Part 91, §91.209_
+- [ ] **Under GACAR §91.211, a change from IFR to VFR flight —** — ✓ May be initiated only by the PIC, by stating 'CANCELING MY IFR FLIGHT' · _GACAR Part 91, §91.211_
+- [ ] **Under GACAR §91.193, if the PIC has not served 100 hours as PIC in the type being flown, the landing minimums (MDA/DA and visibility) are increased by —** — ✓ 100 ft and 800 m · _GACAR Part 91, §91.193_
+
+### Instrument Procedures `instrument-procedures` (IR) — 22 questions
+<sub>Source: GACAR Part 97 · Saudi AIP (ENR)</sub>
+
+- [ ] **GACAR Part 97 exists primarily to —** — ✓ Identify the approved instrument flight procedures (IFPs) authorized for use in the Kingdom of Saudi Arabia · _GACAR Part 97, §97.1_
+- [ ] **Under GACAR §97.1, the rules governing the development, validation and approval of instrument flight procedures are addressed under —** — ✓ GACAR Part 172 · _GACAR Part 97, §97.1_
+- [ ] **Per GACAR §97.1, the publication of instrument flight procedures in the KSA AIP and their depiction on aeronautical charts are governed by —** — ✓ GACAR Part 175 · _GACAR Part 97, §97.1_
+- [ ] **Under GACAR §97.3, an aircraft approach category is a grouping based on a speed of —** — ✓ Vref (or 1.3 Vso if Vref is not specified) at the maximum certificated landing mass · _GACAR Part 97, §97.3_
+- [ ] **Under the aircraft approach categories in GACAR §97.3, Category A applies to a speed of —** — ✓ Less than 91 knots IAS · _GACAR Part 97, §97.3_
+- [ ] **Under GACAR §97.3, aircraft approach Category C covers a speed of —** — ✓ 121 to less than 141 knots IAS · _GACAR Part 97, §97.3_
+- [ ] **Per the approach segment definitions in GACAR §97.3, the initial approach segment lies between the initial approach fix and —** — ✓ The intermediate fix (or the point where the aircraft is established on the intermediate course/final approach course) · _GACAR Part 97, §97.3_
+- [ ] **In GACAR §97.3, the final approach segment of an instrument approach procedure is the segment in which —** — ✓ Alignment and descent for landing are accomplished · _GACAR Part 97, §97.3_
+- [ ] **According to GACAR §97.3, the missed approach segment of an instrument approach procedure starts at the —** — ✓ Missed approach point · _GACAR Part 97, §97.3_
+- [ ] **Under GACAR §97.3, the intermediate phase of the missed approach extends from the start of climb to the point where obstacle clearance of at least — is first obtained and can be maintained.** — ✓ 50 m (164 ft) · _GACAR Part 97, §97.3_
+- [ ] **Per GACAR §97.3, a procedure turn is a maneuver in which a turn is made away from a designated track followed by a turn in the opposite direction to —** — ✓ Permit the aircraft to intercept and proceed along the reciprocal of the designated track · _GACAR Part 97, §97.3_
+- [ ] **Under GACAR §97.5, all bearings, courses, tracks, headings and radials in the instrument procedures of Part 97 are expressed in —** — ✓ Degrees magnetic, unless otherwise designated · _GACAR Part 97, §97.5_
+- [ ] **In the instrument procedures of GACAR Part 97, runway visual range (RVR) values are stated in —** — ✓ Meters · _GACAR Part 97, §97.5_
+- [ ] **Under GACAR §97.11, approved IFPs (including instrument approach and departure procedures) in the KSA are developed and maintained by —** — ✓ Air navigation service providers certificated under GACAR Part 170 providing IFP services under Part 172 · _GACAR Part 97, §97.11_
+- [ ] **According to the Saudi AIP, the transition level (TL) for the whole JEDDAH FIR has been fixed by GACA at —** — ✓ FL 150 · _Saudi AIP, ENR 1.1_
+- [ ] **Per the Saudi AIP, the fixed transition level of FL 150 in JEDDAH FIR is also described as the —** — ✓ Lowest usable flight level · _Saudi AIP, ENR 1.1_
+- [ ] **Under the Saudi AIP cruising-level rules, en-route cruising levels are expressed in flight levels at and above —** — ✓ FL 150 · _Saudi AIP, ENR 1.1_
+- [ ] **Per the Saudi AIP, the appropriate flight information service (FIS) frequency for an aerodrome is published —** — ✓ At the top of all instrument approach charts · _Saudi AIP, ENR 1.1_
+- [ ] **Per the Saudi AIP, a pilot who has not received a landing clearance approaching short final shall —** — ✓ Request a landing clearance, and if not in receipt of one commence a missed approach not later than the runway landing threshold · _Saudi AIP, ENR 1.1_
+- [ ] **Under the Saudi AIP general speed limits, aircraft operated below ALT 10,000 FT anywhere in JEDDAH FIR must not exceed an indicated airspeed of —** — ✓ 250 KT · _Saudi AIP, ENR 1.1_
+- [ ] **Per the Saudi AIP, the highest altitude at which a VFR flight may operate within JEDDAH FIR is —** — ✓ 12,500 FT · _Saudi AIP, ENR 1.2_
+- [ ] **Per the Saudi AIP, an aircraft joining the aerodrome traffic circuit from the same side as the traffic pattern shall normally —** — ✓ Arrange flight to join straight in on the downwind leg · _Saudi AIP, ENR 1.1_
+
+### Instrument Rating Requirements `ir-rating` (IR) — 21 questions
+<sub>Source: GACAR Part 61 (Instrument Rating)</sub>
+
+- [ ] **Under GACAR Part 61, to apply for an instrument rating a person must, at minimum —** — ✓ Hold at least a current private pilot certificate (or be concurrently applying for one) with an appropriate aircraft rating · _GACAR Part 61, §61.89_
+- [ ] **Under §61.89, an instrument-rating applicant who does not already hold one must pass a knowledge test on the aeronautical knowledge areas of —** — ✓ Appendix B to GACAR Part 141 · _GACAR Part 61, §61.89_
+- [ ] **Under §61.89, no person may act as PIC of a civil aircraft under IFR, or in weather less than the minimums for VFR flight, unless that person holds —** — ✓ An appropriate category/class/type rating and an instrument rating (or equivalent ATP privileges) · _GACAR Part 61, §61.89_
+- [ ] **To act as PIC under IFR, §61.17 requires that within the preceding period the pilot have performed and logged, among other tasks, at least —** — ✓ Six instrument approaches · _GACAR Part 61, §61.17_
+- [ ] **Under §61.17, the instrument approaches, holding, and course-tracking tasks required to act as PIC under IFR (in an aircraft) must have been performed within the preceding —** — ✓ 6 months · _GACAR Part 61, §61.17_
+- [ ] **Which task is part of the instrument recent experience §61.17 requires to act as PIC under IFR?** — ✓ Intercepting and tracking courses using electronic navigation systems · _GACAR Part 61, §61.17_
+- [ ] **Under §61.17, a pilot who has not met the instrument experience requirements for more than six calendar months may regain instrument currency only by —** — ✓ Completing an instrument proficiency check · _GACAR Part 61, §61.17_
+- [ ] **Under §61.17, an instrument proficiency check must consist of —** — ✓ The areas of operation and instrument tasks required in the instrument rating practical test standards · _GACAR Part 61, §61.17_
+- [ ] **Under §61.17, an instrument proficiency check may be given by all of the following EXCEPT —** — ✓ Any private pilot who happens to hold an instrument rating · _GACAR Part 61, §61.17_
+- [ ] **Under §61.89, if instrument-rating privileges are to be exercised in multi-engine aircraft, the flight training must include operating the aircraft solely by reference to instruments —** — ✓ With one engine inoperative · _GACAR Part 61, §61.89_
+- [ ] **Under §61.89, a person holding or applying for an instrument rating on a private pilot certificate must hold a Class 1 medical certificate or —** — ✓ Have established hearing acuity meeting the Class 1 medical hearing requirements · _GACAR Part 61, §61.89_
+- [ ] **Under §61.89, to act as PIC of a glider under IFR a person must hold a pilot certificate with a glider category rating and —** — ✓ An airplane instrument rating · _GACAR Part 61, §61.89_
+- [ ] **Under §61.19, a person may serve as SIC of an aircraft under IFR only if, among other requirements, that person holds —** — ✓ An instrument rating or privilege applicable to the aircraft being flown · _GACAR Part 61, §61.19_
+- [ ] **Under §61.89, an instrument-rating applicant must pass a practical test on the areas of operation prescribed in —** — ✓ Appendix B to GACAR Part 141 · _GACAR Part 61, §61.89_
+- [ ] **Under §61.17, when instrument recent experience is accomplished in an aviation training device (ATD), the required tasks must have been performed within the preceding —** — ✓ 2 months · _GACAR Part 61, §61.17_
+- [ ] **Under §61.89, which is an acceptable way to meet the instrument-rating training requirement?** — ✓ Graduating from an approved instrument rating course under Appendix B to GACAR Part 141 · _GACAR Part 61, §61.89_
+- [ ] **The instrument recent-experience tasks in §61.17 must be performed —** — ✓ Solely by reference to instruments, in actual or simulated instrument flight conditions · _GACAR Part 61, §61.17_
+- [ ] **Under GACAR Part 61, an instrument rating is required in order to —** — ✓ Act as PIC under IFR or in weather below the minimums for VFR flight · _GACAR Part 61, §61.89_
+- [ ] **Which of the following is one of the recent-experience tasks §61.17 requires to act as PIC under IFR?** — ✓ Holding procedures and tasks · _GACAR Part 61, §61.17_
+- [ ] **Under §61.17, an instrument proficiency check (for other than a glider) may be conducted in an aircraft appropriate to the category or in —** — ✓ An FSTD representative of the aircraft category · _GACAR Part 61, §61.17_
+- [ ] **Under §61.89, an applicant for an instrument rating who does not yet hold a private pilot certificate may —** — ✓ Apply for the instrument rating concurrently with the private pilot certificate · _GACAR Part 61, §61.89_
+
+### Airline Transport Pilot Licensing `atpl-licensing` (ATPL) — 22 questions
+<sub>Source: GACAR Part 61, Subpart G</sub>
+
+- [ ] **Which pilot certificate is governed by GACAR Part 61, Subpart G?** — ✓ Airline transport pilot certificate · _GACAR Part 61, §61.171_
+- [ ] **Under GACAR Part 61, the minimum age to be eligible for an airline transport pilot (ATP) certificate is —** — ✓ 23 years · _GACAR Part 61, §61.173_
+- [ ] **Which class of medical certificate must an applicant generally hold to exercise the privileges of an ATP certificate?** — ✓ Class 1 medical certificate · _GACAR Part 61, §61.173_
+- [ ] **For an ATP certificate with an airplane category and class rating, what is the minimum total time as a pilot required?** — ✓ 1,500 hours · _GACAR Part 61, §61.181_
+- [ ] **The aeronautical experience for an ATP airplane rating must include at least how many hours of cross-country flight time?** — ✓ 500 hours · _GACAR Part 61, §61.181_
+- [ ] **How many hours of night flight time are required for an ATP certificate with an airplane category and class rating?** — ✓ 100 hours · _GACAR Part 61, §61.181_
+- [ ] **The ATP airplane aeronautical experience requirement includes at least how many hours of instrument flight time in actual or simulated instrument conditions?** — ✓ 75 hours · _GACAR Part 61, §61.181_
+- [ ] **For an ATP airplane rating, at least how many hours of flight time must be as pilot in command (or as SIC performing PIC duties under supervision)?** — ✓ 250 hours · _GACAR Part 61, §61.181_
+- [ ] **For an ATP certificate with a rotorcraft category and helicopter class rating, what is the minimum total time as a pilot required?** — ✓ 1,200 hours · _GACAR Part 61, §61.183_
+- [ ] **For an ATP certificate with a powered-lift category rating, what is the minimum total time as a pilot required?** — ✓ 1,500 hours · _GACAR Part 61, §61.185_
+- [ ] **In multi-pilot international operations under GACAR Part 121 or 135, a pilot holding an ATP certificate may not serve as a pilot after attaining which birthday?** — ✓ 65th birthday · _GACAR Part 61, §61.3_
+- [ ] **Under GACAR §61.175, when is an applicant NOT required to pass a knowledge test to add an aircraft type rating to an ATP certificate?** — ✓ When the ATP certificate already lists the aircraft category and class rating appropriate to the type rating sought · _GACAR Part 61, §61.175_
+- [ ] **The ATP certification training program for an airplane multiengine class rating requires at least how many hours of academic (classroom) instruction?** — ✓ 30 hours · _GACAR Part 61, §61.177_
+- [ ] **Within the ATP certification training program (airplane multiengine), how many hours of flight-simulation training device (FSTD) training are required?** — ✓ 10 hours · _GACAR Part 61, §61.177_
+- [ ] **For an ATP airplane rating, at least how many hours must be flown in the specific class of airplane for the rating sought?** — ✓ 50 hours · _GACAR Part 61, §61.181_
+- [ ] **For an ATP rotorcraft/helicopter rating, the 100 hours of required night flight time must include at least how many hours in helicopters?** — ✓ 15 hours · _GACAR Part 61, §61.183_
+- [ ] **Which of the following is a valid eligibility path to an ATP certificate under GACAR §61.173?** — ✓ Holding a commercial pilot certificate with an instrument rating · _GACAR Part 61, §61.173_
+- [ ] **For an ATP rotorcraft/helicopter rating, at least how many hours of cross-country flight time are required?** — ✓ 500 hours · _GACAR Part 61, §61.183_
+- [ ] **For an ATP powered-lift rating, at least how many hours must be flown in a powered-lift as PIC (or as SIC performing PIC duties under supervision)?** — ✓ 250 hours · _GACAR Part 61, §61.185_
+- [ ] **For the ATP airplane rating, not more than how many hours of the total aeronautical experience may be obtained in a full flight simulator or flight training device (in an approved course)?** — ✓ 100 hours · _GACAR Part 61, §61.181_
+- [ ] **Besides the minimum age, which is an eligibility requirement for an ATP certificate under GACAR §61.173?** — ✓ Be of good moral character · _GACAR Part 61, §61.173_
+- [ ] **To be eligible for an ATP certificate with an airplane multiengine class rating, GACAR §61.173(d) requires the applicant to present —** — ✓ A graduation certificate for the ATP certification training program (§61.177) · _GACAR Part 61, §61.173_
+
+### Air Transport Operations `air-transport-ops` (ATPL) — 22 questions
+<sub>Source: GACAR Part 121</sub>
+
+- [ ] **GACAR Part 121 prescribes rules governing the scheduled and unscheduled operations of a commercial air operator operating which category of aircraft?** — ✓ Transport category airplanes/rotorcraft or commuter category airplanes · _GACAR Part 121, §121.1_
+- [ ] **Under GACAR Part 121, a certificate holder must hold or be required to hold an Air Operator Certificate (AOC) issued under which GACAR Part?** — ✓ GACAR Part 119 · _GACAR Part 121, §121.1_
+- [ ] **For the purposes of GACAR Part 121, the term 'special unscheduled' distinguishes requirements applicable to aircraft with a type-certificated passenger seating capacity of —** — ✓ 56 seats or less · _GACAR Part 121, §121.5_
+- [ ] **For scheduled and unscheduled operations, which of the following is NOT one of the full-time management positions a Part 121 certificate holder must staff?** — ✓ Director of training · _GACAR Part 121, §121.45_
+- [ ] **Under GACAR §121.45, a certificate holder must notify the President of any change in required management personnel or any vacancy within how many working days?** — ✓ 10 working days · _GACAR Part 121, §121.45_
+- [ ] **A certificate holder conducting only special unscheduled operations must staff which management positions under GACAR §121.45?** — ✓ Director of operations, chief pilot, and director of maintenance · _GACAR Part 121, §121.45_
+- [ ] **To serve as director of operations for a Part 121 certificate holder, a person must hold at minimum which pilot certificate?** — ✓ Airline transport pilot (ATP) certificate · _GACAR Part 121, §121.49_
+- [ ] **Under GACAR §121.49, to serve as chief inspector a person must hold a mechanic certificate with both airframe and powerplant ratings and have held those ratings for at least —** — ✓ 3 years · _GACAR Part 121, §121.49_
+- [ ] **Under GACAR §121.13, if a certificate holder knowingly permits an owned or leased aircraft to be engaged in an operation violating the psychoactive-substances rule, that operation is a basis for —** — ✓ Suspending or revoking the certificate · _GACAR Part 121, §121.13_
+- [ ] **Beyond the general Part 91 documents, GACAR §121.17 requires a Part 121 certificate holder to carry on board —** — ✓ A true copy of the AOC and a copy of the operations specifications · _GACAR Part 121, §121.17_
+- [ ] **Under GACAR §121.139, each Part 121 certificate holder must prepare and keep current which manuals?** — ✓ An operations manual and a maintenance manual · _GACAR Part 121, §121.139_
+- [ ] **Among the requirements of GACAR §121.139, each required manual must —** — ✓ Be available in the English language · _GACAR Part 121, §121.139_
+- [ ] **GACAR §121.143 lists the content areas that the operations manual must contain. Which of the following is NOT one of them?** — ✓ Passenger revenue accounting · _GACAR Part 121, §121.143_
+- [ ] **Under GACAR §121.147, a certificate holder must keep a current approved Aircraft Flight Manual (AFM), or approved equivalent, for each type of aircraft —** — ✓ At its principal base of operations and in each aircraft of that type · _GACAR Part 121, §121.147_
+- [ ] **Under GACAR §121.151, copies of the required manual (or appropriate parts) must be furnished to all of the following EXCEPT —** — ✓ Every passenger on request · _GACAR Part 121, §121.151_
+- [ ] **Under GACAR §121.517, no person may take off an aircraft with inoperable instruments or equipment installed unless —** — ✓ An approved minimum equipment list (MEL) exists and the operations specifications authorize operations under it · _GACAR Part 121, §121.517_
+- [ ] **Which of the following may NOT be included in a certificate holder's approved MEL under GACAR §121.517?** — ✓ Instruments or equipment required by an airworthiness directive to be operable · _GACAR Part 121, §121.517_
+- [ ] **Under GACAR §121.1301, a certificate holder conducting scheduled operations must have which operational-control system?** — ✓ A dispatch release system · _GACAR Part 121, §121.1301_
+- [ ] **Under the dispatch release system of GACAR §121.1309, no person may continue a flight from an intermediate aerodrome without re-dispatch if the aircraft has been on the ground more than —** — ✓ 6 hours · _GACAR Part 121, §121.1309_
+- [ ] **Under the dispatch release system of GACAR §121.1309, who are jointly responsible for the preflight planning, delay, and dispatch release of a flight?** — ✓ The PIC and the aircraft dispatcher · _GACAR Part 121, §121.1309_
+- [ ] **Under the flight release system of GACAR §121.1325, operational control for each flight must be shared between the PIC and —** — ✓ The director of operations · _GACAR Part 121, §121.1325_
+- [ ] **Under GACAR §121.1001, a Part 121 certificate holder may satisfy flight-crew flight-time and duty limitations either by complying with GACAR Part 117 or by implementing —** — ✓ A fatigue risk management system (FRMS) providing an equivalent level of safety · _GACAR Part 121, §121.1001_
+
+### Transport Performance & Dispatch `advanced-weather-performance` (ATPL) — 21 questions
+<sub>Source: GACAR Part 121 (performance & dispatch)</sub>
+
+- [ ] **Which subpart of GACAR Part 121 prescribes airplane performance operating limitations for all certificate holders?** — ✓ Subpart F · _GACAR Part 121, Subpart F_
+- [ ] **Under GACAR §121.263, in computing takeoff distance the length of any clearway that may be included must not be greater than —** — ✓ One-half the length of the runway · _GACAR Part 121, §121.263_
+- [ ] **Under the destination landing limitations of GACAR §121.275, a turbojet-powered airplane's mass at takeoff must allow a full-stop landing within what portion of the effective runway length at the destination?** — ✓ 60 percent · _GACAR Part 121, §121.275_
+- [ ] **Under GACAR §121.275, if weather reports indicate the destination runways may be wet or slippery, a turbojet airplane may take off only if the effective runway length is at least what percentage of the dry-runway length otherwise required?** — ✓ 115 percent · _GACAR Part 121, §121.275_
+- [ ] **Under GACAR §121.279, an aerodrome may be listed as an alternate for a turbopropeller-powered airplane only if the aircraft can be brought to a full stop within what portion of the effective runway length?** — ✓ 70 percent · _GACAR Part 121, §121.279_
+- [ ] **GACAR §121.271 (en-route limitations, two engines inoperative) allows compliance by ensuring no point along the intended track is more than how long — with all engines operating at cruising power — from an adequate aerodrome?** — ✓ 90 minutes · _GACAR Part 121, §121.271_
+- [ ] **Under the en-route limitation for one engine inoperative (GACAR §121.267), the airplane's mass must permit a net flight path clearing terrain and obstructions within the specified corridor by at least —** — ✓ 2,000 ft vertically · _GACAR Part 121, §121.267_
+- [ ] **Under GACAR §121.1309, no flight under the dispatch release system may start unless —** — ✓ An aircraft dispatcher specifically authorizes that flight · _GACAR Part 121, §121.1309_
+- [ ] **Under GACAR §121.1309, a flight may not continue from an intermediate aerodrome without a re-dispatch if the aircraft has been on the ground more than —** — ✓ 6 hours · _GACAR Part 121, §121.1309_
+- [ ] **Under GACAR §121.1369, an aircraft may be dispatched or released for operations under IFR or over-the-top only when appropriate weather reports or forecasts indicate that the weather at the destination will be —** — ✓ At or above the authorized minimums at the estimated time of arrival · _GACAR Part 121, §121.1369_
+- [ ] **Under GACAR §121.1393, a flight conducted under IFR or over-the-top must generally have how many destination alternate aerodromes specified in the dispatch or flight release?** — ✓ At least one destination alternate · _GACAR Part 121, §121.1393_
+- [ ] **Under GACAR §121.1397, no aerodrome may be listed as an alternate in a dispatch or flight release unless the appropriate weather reports or forecasts indicate the weather will be —** — ✓ At or above the alternate weather minimums in the operations specifications when the flight arrives · _GACAR Part 121, §121.1397_
+- [ ] **Under GACAR §121.1389, when a takeoff alternate is required, for an airplane having two engines the takeoff alternate must be located no more than —** — ✓ 1 hour from the departure aerodrome at one-engine-inoperative cruise speed · _GACAR Part 121, §121.1389_
+- [ ] **Under GACAR §121.1365, an aircraft may be dispatched or released for VFR operation only if the ceiling and visibility en route —** — ✓ Are and will remain at or above applicable VFR minimums until arrival at the specified aerodrome(s) · _GACAR Part 121, §121.1365_
+- [ ] **Under GACAR §121.1349, before releasing (or beginning) a flight, the aircraft dispatcher or PIC must —** — ✓ Be thoroughly familiar with reported and forecast weather conditions on the route to be flown · _GACAR Part 121, §121.1349_
+- [ ] **Under GACAR §121.1341, a flight may not be allowed to continue to the aerodrome to which it was released unless the weather at a specified alternate is forecast to be —** — ✓ At or above the alternate minimums in the operations specifications at the time the aircraft would arrive there · _GACAR Part 121, §121.1341_
+- [ ] **GACAR §121.89 addresses ETOPS communications facilities. What does it primarily require of the certificate holder?** — ✓ Provide voice communications for ETOPS where such facilities are available, considering diversion routes and altitudes · _GACAR Part 121, §121.89_
+- [ ] **Under GACAR §121.1401, an aircraft may be dispatched or released for an ETOPS flight only if —** — ✓ Enough ETOPS alternate aerodromes are listed so the aircraft remains within the authorized ETOPS maximum diversion time · _GACAR Part 121, §121.1401_
+- [ ] **Under GACAR §121.1409, for ETOPS up to and including 180 minutes, an aerodrome may not be listed as an ETOPS alternate if the time needed to reach it exceeds the aircraft's most limiting ETOPS significant system time minus —** — ✓ 15 minutes · _GACAR Part 121, §121.1409_
+- [ ] **Under the ETOPS fuel-supply rule (GACAR §121.1417), the aircraft must carry fuel to hold at 1,500 ft above field elevation upon reaching an ETOPS alternate for how long, then conduct an approach and land?** — ✓ 15 minutes · _GACAR Part 121, §121.1417_
+- [ ] **Under GACAR §121.1417, when calculating ETOPS diversion fuel the certificate holder must increase the forecast wind speed by what margin to account for wind-forecasting errors?** — ✓ 5 percent · _GACAR Part 121, §121.1417_

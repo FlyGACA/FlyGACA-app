@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { searchHref, parseSearchUrl, toSearchRef, linkHref } from '../src/lib/content';
+import { searchHref, parseSearchUrl, toSearchRef, linkHref } from '@/lib/contentLinks';
 
 describe('searchHref', () => {
   it('rewrites regulations URLs to the Document reader', () => {
@@ -102,7 +102,9 @@ describe('linkHref', () => {
   });
 
   it('rewrites legacy internal .html links to app routes', () => {
-    expect(linkHref('../guides/saudi-ppl-requirements.html')).toBe('/guides/saudi-ppl-requirements');
+    expect(linkHref('../guides/saudi-ppl-requirements.html')).toBe(
+      '/guides/saudi-ppl-requirements',
+    );
     expect(linkHref('tools/e6b.html')).toBe('/tools/e6b');
     expect(linkHref('../library.html')).toBe('/library');
     expect(linkHref('study/groundschool.html')).toBe('/study/groundschool');
@@ -110,7 +112,9 @@ describe('linkHref', () => {
   });
 
   it('still resolves legacy corpus URL strings (back-compat)', () => {
-    expect(linkHref('../document.html?type=handbooks&id=foreword')).toBe('/library/handbook/foreword');
+    expect(linkHref('../document.html?type=handbooks&id=foreword')).toBe(
+      '/library/handbook/foreword',
+    );
   });
 
   it('resolves the deprecated url field on a link object', () => {

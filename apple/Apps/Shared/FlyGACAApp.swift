@@ -1,4 +1,5 @@
 import FeatureUI
+import PersistenceKit
 import SwiftUI
 
 // The ENTIRE app shell, shared source-for-source by every target in the family
@@ -10,9 +11,21 @@ import SwiftUI
 struct FlyGACAApp: App {
     private let moduleID = Bundle.main.object(forInfoDictionaryKey: "FGModuleID") as? String
 
+    /// The single write path for user study state, backed by the shared App Group
+    /// SwiftData container. If the container can't be opened (corrupt store, disk
+    /// full, missing entitlement in a dev build), `store` is nil and the app stays
+    /// fully usable — persistence is best-effort, never a hard dependency, matching
+    /// the app's local-first "degrade to a no-op" philosophy.
+    private let store: StudyStore?
+
+    init() {
+        store = (try? Persistence.container(appGroup: Persistence.appGroupID))
+            .map { StudyStore(container: $0) }
+    }
+
     var body: some Scene {
         WindowGroup {
-            SingleModuleRootView(moduleID: moduleID)
+            SingleModuleRootView(moduleID: moduleID, store: store)
         }
     }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './ExportActions.module.css';
+import { triggerDownload } from '@/lib/download';
 
 /**
  * Header actions to take the whole conversation with you: copy it to the
@@ -23,13 +24,7 @@ export function ExportActions({ markdown, filename }: { markdown: string; filena
   }
 
   function download() {
-    const blob = new Blob([markdown], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
+    triggerDownload(filename, markdown, 'text/markdown');
   }
 
   return (

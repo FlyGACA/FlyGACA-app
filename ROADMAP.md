@@ -26,7 +26,7 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   ([#254](https://github.com/FlyGACA/FlyGACA-app/pull/254)): an operational role
   (pilot / student / instructor) on the profile — synced via `PROFILE_FIELDS` and accepted by the
   deployed Firestore rules unchanged — drives per-role widget ordering through the pure layout
-  engine `src/calc/dashboardLayout.ts`. Five new widgets surface existing local-first data (study
+  engine `src/calc/app/dashboardLayout.ts`. Five new widgets surface existing local-first data (study
   progress, tool favourites, library/guide bookmarks, Captain Adel threads, regulatory watch), and
   show/hide widget customization persists via `src/lib/dashboardPrefs.ts`. Signed-out `/account`
   became a split-panel sign-in with per-audience value props and a password show/hide toggle.
@@ -34,7 +34,7 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   routing fix, region drift resolved to `me-central1`, per-uid + per-IP rate limiting, input size
   caps, JSON error handling, and a new `functions` CI job.
 - **Captain Adel archive search.** The saved-conversation archive now searches titles and message
-  bodies: the pure `filterConversations` helper (`src/calc/conversations.ts`) is wired into the
+  bodies: the pure `filterConversations` helper (`src/calc/chat/conversations.ts`) is wired into the
   history menu in `src/components/chat/ConversationMenu.tsx`, alongside the existing pin/rename,
   with empty- and no-match states.
 - **Global ⌘K search / command palette.** The header ⌘K pill opens a real app-wide palette
@@ -100,7 +100,7 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
   axe a11y checks to cover more critical flows.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
-  the sitemap, and tool↔library cross-links. See `docs/SEO-STRATEGY.md`.
+  the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
 
 ## Later — exploratory / post-launch
 

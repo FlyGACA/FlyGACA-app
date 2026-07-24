@@ -1,12 +1,13 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { screen, cleanup, within } from '@testing-library/react';
-import i18n from '../src/i18n';
+import i18n from '@/i18n';
 import { renderWithRouter } from './helpers/render';
-import { Packs } from '../src/pages/study/Packs';
+import { Packs } from '@/pages/study/Packs';
 
 // The storefront renders purely from the prepCatalog + the account store (default
 // signed-out: no plan, no owned packs), so no network stub is needed. It exercises
-// the card states: free / paid-locked / coming-soon.
+// the card states: free / paid-locked. (No pack is `status: 'soon'` today — CPL/IR/ATPL
+// went live; the coming-soon / notify-me path returns when a future pack is announced.)
 
 afterEach(() => {
   cleanup();
@@ -34,12 +35,13 @@ describe('<Packs /> storefront', () => {
     expect(within(link).getByText('Free')).toBeInTheDocument();
   });
 
-  it('renders a coming-soon pack as a non-link card with a notify form', () => {
+  it('renders a newly-live certificate pack (CPL) as a locked link to its detail page', () => {
     renderWithRouter(<Packs />);
-    // "Coming soon" appears, but the CPL pack is NOT a link (no detail route yet).
-    expect(screen.getAllByText('Coming soon').length).toBeGreaterThan(0);
-    expect(screen.queryByRole('link', { name: /CPL exam prep/ })).not.toBeInTheDocument();
-    // Its notify-me email capture is present.
-    expect(screen.getAllByPlaceholderText('you@example.com').length).toBeGreaterThan(0);
+    // CPL/IR/ATPL are now live: linked cards with the one-time price, not coming-soon.
+    const link = screen.getByRole('link', { name: /CPL exam prep/ });
+    expect(link).toHaveAttribute('href', '/study/packs/cpl');
+    expect(within(link).getByText(/SAR 39 · one-time/)).toBeInTheDocument();
+    // No coming-soon cards remain, so no notify-me capture is rendered.
+    expect(screen.queryAllByPlaceholderText('you@example.com')).toHaveLength(0);
   });
 });

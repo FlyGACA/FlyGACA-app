@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { useFeature } from '../../lib/features';
-import { useUpdatesPrefs } from '../../lib/updatesPrefs';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useFeature } from '@/lib/services/features';
+import { useUpdatesPrefs } from '@/lib/prefs/updatesPrefs';
 import {
   airacStatus,
   mergeSources,
@@ -11,7 +11,7 @@ import {
   type Airac,
   type SourceEntry,
   type SourceStatus,
-} from '../../calc/changeTracking';
+} from '@/calc/library/changeTracking';
 import styles from './dashboard-widgets.module.css';
 
 interface SourcesFile {

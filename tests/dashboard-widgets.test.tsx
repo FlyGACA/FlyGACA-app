@@ -48,12 +48,12 @@ localStorage.setItem('flygaca:guide-bookmarks', JSON.stringify(['gacar-explained
 localStorage.setItem('flygaca:updates-watch', JSON.stringify(['gacar-91', 'aip']));
 localStorage.setItem('flygaca:offline:saved', JSON.stringify(['gacar-part-91', 'gacar-part-61']));
 
-const { StudyWidget } = await import('../src/components/dashboard/StudyWidget');
-const { ToolShortcutsWidget } = await import('../src/components/dashboard/ToolShortcutsWidget');
-const { BookmarksWidget } = await import('../src/components/dashboard/BookmarksWidget');
-const { AdelThreadsWidget } = await import('../src/components/dashboard/AdelThreadsWidget');
-const { OfflineWidget } = await import('../src/components/dashboard/OfflineWidget');
-const { RolePickerCard } = await import('../src/components/dashboard/RolePickerCard');
+const { StudyWidget } = await import('@/components/dashboard/StudyWidget');
+const { ToolShortcutsWidget } = await import('@/components/dashboard/ToolShortcutsWidget');
+const { BookmarksWidget } = await import('@/components/dashboard/BookmarksWidget');
+const { AdelThreadsWidget } = await import('@/components/dashboard/AdelThreadsWidget');
+const { OfflineWidget } = await import('@/components/dashboard/OfflineWidget');
+const { RolePickerCard } = await import('@/components/dashboard/RolePickerCard');
 
 describe('StudyWidget', () => {
   it('shows streak, due-card count and last exam score from storage', () => {
@@ -131,7 +131,7 @@ describe('OfflineWidget', () => {
   it('prompts to save when nothing is cached offline', async () => {
     vi.resetModules();
     localStorage.setItem('flygaca:offline:saved', JSON.stringify([]));
-    const { OfflineWidget: Empty } = await import('../src/components/dashboard/OfflineWidget');
+    const { OfflineWidget: Empty } = await import('@/components/dashboard/OfflineWidget');
     renderWithRouter(<Empty />);
     expect(screen.getByText(/lose signal/i)).toBeInTheDocument();
   });
@@ -165,7 +165,7 @@ describe('adelConversations loader', () => {
         { role: 'assistant', text: 'It covers general operating rules…' },
       ]),
     );
-    const { loadConversations } = await import('../src/lib/adelConversations');
+    const { loadConversations } = await import('@/lib/adelConversations');
     const list = loadConversations();
     expect(list).toHaveLength(1);
     expect(list[0].title).toBe('What is GACAR Part 91?');
@@ -176,7 +176,7 @@ describe('adelConversations loader', () => {
     vi.resetModules();
     localStorage.setItem('flygaca:adel-conversations', '{nope');
     localStorage.removeItem('flygaca:adel-transcript');
-    const { loadConversations } = await import('../src/lib/adelConversations');
+    const { loadConversations } = await import('@/lib/adelConversations');
     expect(loadConversations()).toEqual([]);
   });
 });

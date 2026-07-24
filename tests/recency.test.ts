@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseISO, recencyByDays, validityByMonths } from '../src/calc/recency';
+import { parseISO, recencyByDays, validityByMonths } from '@/calc/recency';
 
 const now = new Date('2024-02-01T12:00:00Z');
 

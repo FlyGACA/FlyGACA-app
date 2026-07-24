@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { docNeighbors, relatedDocs } from '../src/calc/corpusNav';
-import type { CorpusDoc } from '../src/lib/content';
+import { docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
+import type { CorpusDoc } from '@/lib/content';
 
 const doc = (slug: string, category: string): CorpusDoc => ({ slug, title: slug, category });
 
@@ -33,13 +33,7 @@ describe('relatedDocs', () => {
   });
 
   it('respects the limit', () => {
-    const many = [
-      doc('a', 'x'),
-      doc('b', 'x'),
-      doc('c', 'x'),
-      doc('d', 'x'),
-      doc('e', 'x'),
-    ];
+    const many = [doc('a', 'x'), doc('b', 'x'), doc('c', 'x'), doc('d', 'x'), doc('e', 'x')];
     expect(relatedDocs(many, 'a', 2)).toHaveLength(2);
   });
 
