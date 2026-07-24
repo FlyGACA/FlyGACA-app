@@ -4,13 +4,13 @@
  * wraps this with a Firestore read/write; this decides, given the stored usage and
  * `now`, whether one more free question is allowed and when the allowance resets.
  *
- * FREE_DAILY_LIMIT MUST match `src/calc/chatQuota.ts` (the client-side nudge) so the
+ * FREE_DAILY_LIMIT MUST match `src/calc/chat/chatQuota.ts` (the client-side nudge) so the
  * server enforces exactly the limit the UI advertises. The localStorage counter in
  * the app is only a hint that can be cleared/bypassed; this is the source of truth
  * (DESIGN §8 — the server owns entitlement and cost control).
  */
 
-/** Free questions a signed-in free user may ask per UTC day. Must match src/calc/chatQuota.ts. */
+/** Free questions a signed-in free user may ask per UTC day. Must match src/calc/chat/chatQuota.ts. */
 export const FREE_DAILY_LIMIT = 5;
 
 /**

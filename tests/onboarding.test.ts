@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { profileCompleteness } from '@/calc/onboarding';
+import { profileCompleteness } from '@/calc/pilot/onboarding';
 import type { Flight, Profile } from '@/lib/services/account';
 
 const profile = (

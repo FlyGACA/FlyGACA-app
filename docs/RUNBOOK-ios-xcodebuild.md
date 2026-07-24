@@ -2,7 +2,7 @@
 
 ## Overview
 
-This runbook documents how to build, test, and manage the FlyGACA native iOS apps (PPL, ELPT, AIP) using automated npm scripts and the xcodebuild wrapper.
+This runbook documents how to build, test, and manage the FlyGACA native iOS app family using automated npm scripts and the xcodebuild wrapper. The family is six apps: **Wave 1** (PPL, ELPT, AIP) and **Wave 2** (CPL, IR, ATPL). All six generate, build, and archive from the same shared shell; Wave 2's only remaining gap is TestFlight *signing* (see `RUNBOOK-ios-signing.md`).
 
 ## Quick Start
 
@@ -37,23 +37,25 @@ npm run ios:test:watch
 
 #### Debug Builds (default)
 ```bash
-# Build individual apps
+# Build individual apps (Wave 1)
 npm run ios:build:ppl
 npm run ios:build:elpt
 npm run ios:build:aip
+# Wave 2
+npm run ios:build:cpl
+npm run ios:build:ir
+npm run ios:build:atpl
 
-# Build all three apps in parallel
+# Build all six apps
 npm run ios:build:all
 ```
 
 #### Release Builds
 ```bash
 # Build individual apps in Release configuration
-npm run ios:build:release:ppl
-npm run ios:build:release:elpt
-npm run ios:build:release:aip
+npm run ios:build:release:ppl   # …:elpt …:aip …:cpl …:ir …:atpl
 
-# Build all three apps in Release
+# Build all six apps in Release
 npm run ios:build:release:all
 ```
 
@@ -135,7 +137,7 @@ gitignored — `npm run ios:generate` recreates it any time. The generated proje
 
 - **Shared code** in `apple/Apps/Shared/FlyGACAApp.swift`
   - Root SwiftUI entrypoint
-  - All three apps reuse this shell; only module ID differs
+  - Every app in the family reuses this shell; only module ID differs
 
 - **Per-app resources**: `Apps/<Module>/Content/` ships as a blue folder
   reference (the app reads it as a `Content/` directory in the bundle) and
@@ -145,6 +147,9 @@ gitignored — `npm run ios:generate` recreates it any time. The generated proje
 
 ### Adding a New iOS App (PPL → IFR, etc.)
 
+CPL, IR, and ATPL were added exactly this way — use them as the worked example
+(they already have their xcconfig, `Content/`, icon, and `project.yml` target).
+
 1. **Create module structure**:
    ```bash
    mkdir -p apple/Apps/IFR
@@ -153,21 +158,33 @@ gitignored — `npm run ios:generate` recreates it any time. The generated proje
    #   FG_MODULE_ID = <the pack id from src/lib/prepCatalog.ts>
    #   PRODUCT_BUNDLE_IDENTIFIER = com.flygaca.ifr
    ```
-   Add an `Assets.xcassets` with an `AppIcon` set (copy one of the existing apps').
 
-2. **Register the target** in `apple/project.yml` (three lines):
+2. **Register the app** in `scripts/build-ios-content.mjs`'s `APPS` map and in
+   `scripts/native/gen-app-icons.mjs`'s `APPS` map (Xcode target dir, on-icon
+   label, a Falcon accent colour), then generate its content + icon:
+   ```bash
+   node scripts/build-ios-content.mjs --app ifr   # → apple/Apps/IFR/Content/
+   node scripts/native/gen-app-icons.mjs --app ifr # → Assets.xcassets + AppIcon
+   ```
+   (The icon step also creates the `Assets.xcassets` scaffolding — no manual copy.)
+
+3. **Register the target** in `apple/project.yml` (three lines) — must come after
+   step 2, since the target template references `Apps/IFR/Assets.xcassets`:
    ```yaml
    IFR:
      templates: [FlyGACAApp]
    ```
 
-3. **Generate content + project, then build**:
+4. **Add matching `ios:build:ifr` / `ios:build:release:ifr` npm scripts**, extend
+   `scripts/native/xcodebuild-wrapper.sh` (`APPS` array + `build_app()` case +
+   `main()` case), and add the app to the `content-validation` / `ios-build`
+   matrices in `.github/workflows/ios.yml`. Then generate + build:
    ```bash
-   node scripts/build-ios-content.mjs --app ifr
    npm run ios:generate
+   npm run ios:build:ifr
    ```
-   (Also register the app in `scripts/build-ios-content.mjs` and add matching
-   npm scripts / CI matrix entries.)
+   (TestFlight signing needs an extra `ios-testflight` matrix entry + Apple
+   provisioning secret — see `docs/RUNBOOK-ios-signing.md`.)
 
 ### Debugging a Failed Build
 
@@ -273,14 +290,15 @@ target symbols add <path-to-dSYM>/Contents/Resources/DWARF/<binary-name>
 See [`.github/workflows/ios.yml`](#) for the GitHub Actions workflow that:
 
 - **Phase 2:** Runs `npm run ios:test` on every push (Swift tests, no simulator)
-- **Phase 2:** Builds all three apps in parallel matrix (debug builds, 7-day retention)
+- **Phase 2:** Builds all six apps in parallel matrix (debug builds, 7-day retention)
 - **Phase 3:** Creates XCArchives for release builds on `main` branch pushes
 - **Phase 3:** Extracts and stores dSYM symbols (30-day retention) for crash reporting
 - **Phase 3:** Tags all release artifacts with git commit SHA for traceability
 - **Phase 4:** Generates the Xcode project in CI (XcodeGen) so builds are real
-- **Phase 4:** Signs, exports, and uploads all three apps to TestFlight on `main`
-  pushes — once the signing secrets exist (`ios-testflight` job, gated by
-  `check-signing`; see `docs/RUNBOOK-ios-signing.md`)
+- **Phase 4:** Signs, exports, and uploads the Wave-1 apps (PPL/ELPT/AIP) to
+  TestFlight on `main` pushes — once the signing secrets exist (`ios-testflight`
+  job, gated by `check-signing`; see `docs/RUNBOOK-ios-signing.md`). Wave-2
+  (CPL/IR/ATPL) build & archive in CI but aren't signed yet.
 
 **Artifact Retention:**
 - Debug builds: 7 days (PR + main)
@@ -341,6 +359,9 @@ Information about project "FlyGACA":
         PPL
         ELPT
         AIP
+        CPL
+        IR
+        ATPL
 ```
 
 If a scheme is missing, check its target entry in `apple/project.yml`.
@@ -354,7 +375,7 @@ If a scheme is missing, check its target entry in `apple/project.yml`.
 
 ### Phase 2 ✅ (Complete)
 - GitHub Actions CI/CD matrix workflow
-- Parallel builds of all three apps (PPL, ELPT, AIP)
+- Parallel builds of the whole app family (PPL, ELPT, AIP, CPL, IR, ATPL)
 - Swift test integration in CI
 - Security compliance (explicit permissions blocks)
 

@@ -7,7 +7,7 @@
  * `flygaca:gs:*`) so existing data carries over. Date/streak logic is pure.
  */
 import { useSyncExternalStore } from 'react';
-import { scheduleCard, type SrsEntry } from '@/calc/srs';
+import { scheduleCard, type SrsEntry } from '@/calc/study/srs';
 
 const Q_PREFIX = 'flygaca:quiz:';
 const GS_PREFIX = 'flygaca:gs:';

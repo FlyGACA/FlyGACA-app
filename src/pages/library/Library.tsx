@@ -7,7 +7,12 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { itemListLd } from '@/lib/seo/jsonld';
 import { CORPUS, fetchJson } from '@/lib/content';
 import { searchEntryLink, toSearchRef } from '@/lib/contentLinks';
-import { filterDocs, filterSearchHits, groupByCategory, type SortKey } from '@/calc/libraryFilter';
+import {
+  filterDocs,
+  filterSearchHits,
+  groupByCategory,
+  type SortKey,
+} from '@/calc/library/libraryFilter';
 import type { CorpusDoc, CorpusIndex, LibraryKind, SearchEntry, SearchIndex } from '@/lib/content';
 import {
   useLibraryPrefs,

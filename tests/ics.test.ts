@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildIcs } from '@/calc/ics';
+import { buildIcs } from '@/calc/pilot/ics';
 
 const now = new Date('2024-06-01T08:30:00Z');
 

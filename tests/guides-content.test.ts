@@ -24,6 +24,12 @@ const arItems = (ar as unknown as Bundle).guides.items;
 
 const nonEmptyStr = (v: unknown): boolean => typeof v === 'string' && v.trim().length > 0;
 
+/** Author-facing markers a *published* guide must never carry. `new-guide.mjs`
+ *  seeds the exact scaffold form `TODO (...)`, but a stray hand-written `TODO`
+ *  or `FIXME` note is just as much a "forgot to finish" signal, so catch both.
+ *  Case-sensitive and word-bounded so ordinary prose can't false-positive. */
+const LEFTOVER_MARKER = /\b(?:TODO|FIXME)\b/;
+
 /** Every author-facing string in a guide item, flattened — used to scan for
  *  unreplaced scaffold placeholders. */
 function contentStrings(item: GuideItem | undefined): string[] {
@@ -81,18 +87,19 @@ describe('guide content completeness (EN + AR)', () => {
   // guide as a draft; the author replaces them before flipping it to 'live'
   // (GUIDE_AUTHORING.md §8). Nothing else catches a publish that skipped that
   // step — placeholders are non-empty strings, so the completeness check above
-  // passes — so a 'live' guide must carry no leftover scaffold placeholder.
+  // passes — so a 'live' guide must carry no leftover scaffold placeholder or
+  // stray TODO/FIXME note left behind while authoring.
   for (const slug of GUIDE_SLUGS) {
     if (GUIDE_STATUS[slug] !== 'live') continue;
-    it(`${slug} (live) has no leftover TODO placeholders`, () => {
+    it(`${slug} (live) has no leftover TODO/FIXME markers`, () => {
       for (const [lang, items] of [
         ['EN', enItems],
         ['AR', arItems],
       ] as const) {
-        const leftover = contentStrings(items[slug]).filter((s) => s.includes('TODO ('));
+        const leftover = contentStrings(items[slug]).filter((s) => LEFTOVER_MARKER.test(s));
         expect(
           leftover,
-          `${lang} ${slug} still has scaffold placeholders: ${leftover.join(' | ')}`,
+          `${lang} ${slug} still has an unresolved TODO/FIXME marker: ${leftover.join(' | ')}`,
         ).toEqual([]);
       }
     });

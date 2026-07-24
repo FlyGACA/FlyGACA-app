@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { docNeighbors, relatedDocs } from '@/calc/corpusNav';
+import { docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
 import type { CorpusDoc } from '@/lib/content';
 
 const doc = (slug: string, category: string): CorpusDoc => ({ slug, title: slug, category });

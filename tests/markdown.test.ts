@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseInline, parseMarkdown, safeHref, toSpeechText } from '@/calc/markdown';
+import { parseInline, parseMarkdown, safeHref, toSpeechText } from '@/calc/chat/markdown';
 
 describe('parseInline', () => {
   it('splits bold and code out of surrounding text', () => {

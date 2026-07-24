@@ -9,7 +9,7 @@ import {
   nextBox,
   scheduleCard,
   srsDay,
-} from '@/calc/srs';
+} from '@/calc/study/srs';
 
 const now = new Date('2026-06-20T09:00:00Z');
 
