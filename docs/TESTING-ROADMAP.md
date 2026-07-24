@@ -76,13 +76,30 @@ server core.
 - [x] Hub controls `ViewToggle` / `SortSelect` (both 0%) — `tests/hub-controls.test.tsx`.
 - [x] Peripheral chat UI `SourcesDigest`, `CrossRefChips`, `ExportActions` (all 0%) —
       `tests/chat-digest.test.tsx`. Ratchet raised again to 76/73/79/77.
-- [ ] Remaining bento widgets on Home/Dashboard (`LearnWidget`, `ToolsWidget`, `StatValue`,
-      library `SectionPopover`) via the seed-then-import pattern.
-- [ ] `SpeakButton` (24%) — needs a `speechSynthesis` stub.
+- [x] Bento widgets `StatValue` / `ToolsWidget` / `LearnWidget` (all 0%) —
+      `tests/bento-widgets.test.tsx`.
+- [x] Library `SelectionPopover` (0%) — `tests/selection-popover.test.tsx`.
+- [x] `SpeakButton` (24%) — `tests/speak-button.test.tsx` with a `speechSynthesis` stub.
 
-## Phase 4 — Structural decision  *(team call, no code yet)*
+Final app coverage after Phases 1–3: **78.9 / 74.5 / 81.6 / 79.9** (from 72.2 / 70.6 / 74.2 / 72.8).
+The ratchet sits at 76/73/79/77 with headroom.
 
-`src/pages/` (99 modules) is entirely outside coverage measurement. Decide between:
+## Phase 4 — Pages coverage
 
-- Widening the `tests/tool-pages-smoke.test.tsx` parameterized loop to more self-contained pages, or
-- Formally declaring pages E2E-owned and expanding the Playwright `e2e/flows.spec.ts` set.
+`src/pages/` (99 modules) is deliberately **outside** the coverage `include` in
+`vitest.config.ts`; pages are exercised by the Playwright E2E suite (`e2e/`) plus a few targeted
+page unit tests. Two complementary tracks:
+
+**Done — widen the cheap render-smoke net** (guards against render-time crashes, no architectural
+change):
+
+- [x] `tests/tool-pages-smoke.test.tsx` — the ~45 self-contained CalcShell tool pages (pre-existing).
+- [x] `tests/static-pages-smoke.test.tsx` — the static i18n-driven pages (`About`, `NotFound`,
+      `Offline`, and the four legal docs). Same parameterized-loop pattern.
+
+**Open — the structural decision (team call):** whether to fold `src/pages/**` into the coverage
+`include`. Doing so would drop the headline number sharply (pages are ~40% of `src`, mostly E2E- not
+unit-covered) and would pressure unit-testing of data/auth/router-param pages that E2E serves better.
+Recommendation: **keep pages E2E-owned**, keep growing the smoke nets above for crash-safety, and
+expand `e2e/flows.spec.ts` for the data/auth flows — rather than folding pages into the unit-coverage
+ratchet.
