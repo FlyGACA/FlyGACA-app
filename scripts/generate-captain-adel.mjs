@@ -81,7 +81,8 @@ const JOBS = [
   { slug: 'fullbody-welcome', category: 'scenes', refs: ['head', 'fullbody'], aspect: '16:9',
     prompt: 'Captain Adel standing full-body with an open-handed welcoming gesture and a warm smile, on a clean dark teal gradient background (cockpit-dark brand backdrop), in the same clean cartoon style.' },
 
-  // App-slot art (generated; favicons/social crops are produced by captain-derivatives.mjs)
+  // App-slot art (generated; favicons/social crops are produced by
+  // archive/scripts/scripts/captain-derivatives.mjs — run it by hand after this)
   { slug: 'og-card', category: 'appslot', refs: ['head'], aspect: '16:9',
     prompt: 'Wide 16:9 social share banner, landscape orientation: Captain Adel bust on the right third, facing left, on a deep cockpit-dark navy-to-teal gradient background with empty negative space on the left for a headline. Clean cartoon style.' },
   { slug: 'loading-hero', category: 'appslot', refs: ['head'], aspect: '1:1',
