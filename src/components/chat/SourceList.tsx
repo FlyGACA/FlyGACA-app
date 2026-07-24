@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import type { ChatSource } from '@/lib/api';
-import { partSlug } from '@/calc/chatSources';
+import { partSlug } from '@/calc/chat/chatSources';
 import styles from './SourceList.module.css';
 
 /** Citation chips; rows with a verbatim passage expand via a native <details>. */

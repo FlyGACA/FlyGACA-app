@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
-import styles from './WindTable.module.css';
+import styles from '@/pages/tools/performance/WindTable.module.css';
 
 interface Item {
   symbol: string;

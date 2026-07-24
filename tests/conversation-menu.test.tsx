@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, within, cleanup } from '@testing-library/react';
 import { ConversationMenu } from '@/components/chat/ConversationMenu';
-import type { Conversation } from '@/calc/conversations';
+import type { Conversation } from '@/calc/chat/conversations';
 
 const convo = (over: Partial<Conversation>): Conversation => ({
   id: 'c1',

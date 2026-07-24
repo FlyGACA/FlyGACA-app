@@ -3,11 +3,11 @@ import type { ComponentType } from 'react';
 import { cleanup, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '@/i18n';
-import { Isa } from '@/pages/tools/Isa';
-import { StandardRateTurn } from '@/pages/tools/StandardRateTurn';
-import { PressureAltitude } from '@/pages/tools/PressureAltitude';
-import { DensityAltitude } from '@/pages/tools/DensityAltitude';
-import { Mach } from '@/pages/tools/Mach';
+import { Isa } from '@/pages/tools/atmosphere-weather/Isa';
+import { StandardRateTurn } from '@/pages/tools/performance/StandardRateTurn';
+import { PressureAltitude } from '@/pages/tools/atmosphere-weather/PressureAltitude';
+import { DensityAltitude } from '@/pages/tools/atmosphere-weather/DensityAltitude';
+import { Mach } from '@/pages/tools/performance/Mach';
 import { renderWithRouter } from './helpers/render';
 
 // Each tool wires its inputs (via useUrlState) through a pure calc into the

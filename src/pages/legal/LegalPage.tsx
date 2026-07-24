@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '@/components/Disclaimer';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { articleLd, breadcrumbLd } from '@/lib/seo/jsonld';
-import { sectionId } from '@/calc/anchor';
+import { sectionId } from '@/calc/library/anchor';
 import { useScrollToHash } from '@/hooks/useScrollToHash';
 import styles from './Prose.module.css';
 

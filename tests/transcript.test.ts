@@ -3,7 +3,7 @@ import {
   transcriptToMarkdown,
   type TranscriptMessage,
   type TranscriptLabels,
-} from '@/calc/transcript';
+} from '@/calc/chat/transcript';
 
 const labels: TranscriptLabels = {
   title: 'Captain Adel — conversation',

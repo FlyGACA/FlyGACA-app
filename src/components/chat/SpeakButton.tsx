@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ttsSupported, pickTtsLang, toSpeechText } from '@/calc/textToSpeech';
-import { pickVoice } from '@/calc/voiceSelection';
+import { ttsSupported, pickTtsLang, toSpeechText } from '@/calc/chat/textToSpeech';
+import { pickVoice } from '@/calc/chat/voiceSelection';
 import styles from './SpeakButton.module.css';
 
 /**

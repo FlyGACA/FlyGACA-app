@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { feedbackKey, getFeedback, recordFeedback, normalizeFeedback } from '@/calc/chatFeedback';
+import {
+  feedbackKey,
+  getFeedback,
+  recordFeedback,
+  normalizeFeedback,
+} from '@/calc/chat/chatFeedback';
 
 describe('feedbackKey', () => {
   it('is stable for the same text and differs across answers', () => {

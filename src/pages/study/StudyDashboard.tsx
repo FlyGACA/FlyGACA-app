@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { GroundSchoolData, QuizData } from '@/lib/content';
 import { useStudyProgress } from '@/lib/studyProgress';
-import { masteredCount, dueCount } from '@/calc/srs';
+import { masteredCount, dueCount } from '@/calc/study/srs';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { OutputGrid } from '@/components/calc/Grids';
 import { ProgressBar } from '@/components/ProgressBar';

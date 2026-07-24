@@ -5,7 +5,7 @@ import {
   rollingLandingExpiry,
   statusFromValidity,
   EXPIRING_SOON_DAYS,
-} from '@/calc/currency';
+} from '@/calc/pilot/currency';
 import { recencyByDays, validityByMonths, parseISO } from '@/calc/recency';
 import type { Flight, Profile } from '@/lib/services/account';
 

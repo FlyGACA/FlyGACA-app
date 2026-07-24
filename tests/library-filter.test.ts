@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { compareDocs, filterDocs, filterSearchHits, groupByCategory } from '@/calc/libraryFilter';
+import {
+  compareDocs,
+  filterDocs,
+  filterSearchHits,
+  groupByCategory,
+} from '@/calc/library/libraryFilter';
 import type { CorpusDoc, SearchEntry, SearchRef } from '@/lib/content';
 
 // The Library hub's browse/search behavior: category + needle filtering with
