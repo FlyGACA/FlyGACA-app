@@ -12,102 +12,10 @@
   gap: var(--space-2);
 }
 
-/* ── Signed-out split panel: form beside a brand/benefit aside ── */
-.authGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-  gap: var(--space-8);
-  align-items: start;
-}
-.authPanel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  max-inline-size: 26rem;
-}
-.authAside {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-6);
-  border: var(--hairline-bright);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--elev-1), var(--edge-sheen);
-}
-.asideEyebrow {
-  margin: 0;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
-  color: var(--text-dim);
-}
-.asideTitle {
-  margin: 0;
-  font-size: var(--fs-h3);
-  background: var(--grad-title);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.benefitList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.benefitList li {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding-inline-start: var(--space-4);
-  border-inline-start: 3px solid var(--brand);
-}
-.benefitList strong {
-  font-size: var(--fs-sm);
-  color: var(--text);
-}
-.benefitList span {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-/* Vertical stack for the auth form fields (the shared .form grid is for
-   wide multi-column editors, wrong for a narrow sign-in column). */
-.authFields {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-@media (max-width: 720px) {
-  .authGrid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-  .authPanel {
-    max-inline-size: none;
-  }
-}
-
-/* Signed-in identity header (avatar + name + plan badge). */
-.identity {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-.identityAvatar {
-  flex-shrink: 0;
-}
-.identity h1 {
-  font-size: var(--fs-h2);
-  background: var(--grad-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin: 0;
-}
+/* The signed-out split panel and the signed-in identity header moved to the
+   page-local AccountPage.module.css (Account.tsx / AccountSignedOut.tsx). The
+   classes below are shared with the account sub-pages (Logbook, Settings,
+   Currency, Records) and their forms, so they stay here. */
 .head h1 {
   font-size: var(--fs-h2);
   background: var(--grad-brand);
@@ -125,59 +33,6 @@
   color: var(--text-dim);
   font-size: var(--fs-xs);
   margin: 0;
-}
-.or {
-  text-align: center;
-  color: var(--text-dim);
-  font-size: var(--fs-sm);
-  margin: 0;
-}
-.linkBtn {
-  align-self: flex-start;
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--link);
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: color var(--dur) var(--ease);
-}
-.linkBtn:hover {
-  color: var(--brand-hover);
-  text-decoration: underline;
-}
-.linkBtn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.alertLink {
-  color: var(--link);
-  font-weight: var(--fw-semibold);
-  text-decoration: underline;
-  white-space: nowrap;
-}
-.alertLink:hover {
-  color: var(--brand-hover);
-}
-.signInLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  align-items: center;
-}
-.verifyBanner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--warning);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-}
-.verifySent {
-  font-size: var(--fs-sm);
-  color: var(--color-success);
 }
 .planBadge {
   display: inline-flex;
@@ -437,17 +292,4 @@
 }
 .last {
   white-space: nowrap;
-}
-
-/* ── Transitions for form switching ── */
-.fadeTransition {
-  opacity: 1;
-  transition:
-    opacity 0.2s ease-in-out,
-    transform 0.2s ease-in-out;
-  transform: translateY(0);
-}
-.animating {
-  opacity: 0;
-  transform: translateY(4px);
 }
