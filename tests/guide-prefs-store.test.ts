@@ -2,15 +2,9 @@
  * Store-layer tests for guide prefs (the pure `addId`/`toggleId` helpers are
  * covered in guide-prefs.test.ts). Exercises hydration + the persisting mutators.
  */
-import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { describe, expect, it, beforeEach } from 'vitest';
+import { freshModule } from './helpers/freshModule';
 import { renderHook, act } from '@testing-library/react';
-
-type Mod = typeof import('@/lib/prefs/guidePrefs');
-
-async function fresh(): Promise<Mod> {
-  vi.resetModules();
-  return import('@/lib/prefs/guidePrefs');
-}
 
 beforeEach(() => localStorage.clear());
 
@@ -18,7 +12,9 @@ describe('hydration', () => {
   it('reads bookmarks and read-list, ignoring non-string entries', async () => {
     localStorage.setItem('flygaca:guide-bookmarks', JSON.stringify(['g1', 2, 'g2']));
     localStorage.setItem('flygaca:guide-read', JSON.stringify(['g9']));
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/guidePrefs')>(
+      () => import('@/lib/prefs/guidePrefs'),
+    );
     const { result } = renderHook(() => mod.useGuidePrefs());
     expect(result.current.bookmarks).toEqual(['g1', 'g2']);
     expect(result.current.read).toEqual(['g9']);
@@ -26,7 +22,9 @@ describe('hydration', () => {
 
   it('falls back to empty arrays on corrupt JSON', async () => {
     localStorage.setItem('flygaca:guide-read', 'nope{');
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/guidePrefs')>(
+      () => import('@/lib/prefs/guidePrefs'),
+    );
     const { result } = renderHook(() => mod.useGuidePrefs());
     expect(result.current.read).toEqual([]);
   });
@@ -34,7 +32,9 @@ describe('hydration', () => {
 
 describe('toggleBookmark / toggleRead', () => {
   it('toggles and persists each list independently', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/guidePrefs')>(
+      () => import('@/lib/prefs/guidePrefs'),
+    );
     const { result } = renderHook(() => mod.useGuidePrefs());
 
     act(() => mod.toggleBookmark('g1'));
@@ -51,7 +51,9 @@ describe('toggleBookmark / toggleRead', () => {
 
 describe('markRead', () => {
   it('is idempotent — a second mark does not duplicate or re-persist', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/guidePrefs')>(
+      () => import('@/lib/prefs/guidePrefs'),
+    );
     const { result } = renderHook(() => mod.useGuidePrefs());
 
     act(() => mod.markRead('g1'));
