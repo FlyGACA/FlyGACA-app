@@ -225,8 +225,6 @@ export const PACKS: Pack[] = [
  */
 export const PACKS_GATED = true;
 
-export const PACK_IDS = PACKS.map((p) => p.id);
-
 /** Live packs only — everything with a detail page / that appears in the sitemap. */
 export const LIVE_PACKS = PACKS.filter((p) => p.status === 'live');
 
