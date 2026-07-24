@@ -11,7 +11,7 @@ import {
   signInWithEmail,
   signInWithGoogle,
 } from '@/lib/services/auth';
-import { authErrorInfo, isDomainAuthError } from '@/calc/authError';
+import { authErrorInfo, isDomainAuthError } from '@/calc/app/authError';
 import { SITE_ORIGIN, isMirrorHost } from '@/lib/seo/seo';
 import { useForm } from '@/hooks/useForm';
 import { PasswordStrength } from '@/components/account/PasswordStrength';
