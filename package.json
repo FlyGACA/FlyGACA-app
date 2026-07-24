@@ -41,7 +41,7 @@
     "cap:sync": "npm run build && cap sync",
     "cap:localize": "node scripts/native/ios-localize.mjs",
     "cap:open": "cap open ios",
-    "ios:generate": "cd apple && xcodegen generate",
+    "ios:generate": "bash scripts/native/ios-generate.sh",
     "ios:test": "command -v swift > /dev/null 2>&1 && cd apple/FlyGACAKit && swift test || echo 'Swift not available; skipping iOS tests'",
     "ios:test:watch": "cd apple/FlyGACAKit && swift test --watch",
     "ios:icons": "node scripts/native/gen-app-icons.mjs",
@@ -71,14 +71,14 @@
     "deploy:all": "npm run build && npm run prerender && npm run check:prerender:coverage && firebase deploy --only hosting,functions,firestore:rules"
   },
   "dependencies": {
-    "@capacitor/android": "^6.2.1",
+    "@capacitor/android": "^8.4.2",
     "@capacitor/app": "^8.1.1",
     "@capacitor/browser": "^8.0.4",
     "@capacitor/ios": "^8.4.2",
     "@capacitor/keyboard": "^8.0.5",
     "@capacitor/preferences": "^8.0.1",
-    "@capacitor/share": "^6.0.4",
-    "@capacitor/splash-screen": "^6.0.4",
+    "@capacitor/share": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.2",
     "@capacitor/status-bar": "^8.0.3",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/readex-pro": "^5.2.11",
@@ -93,7 +93,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-i18next": "^17.0.10",
-    "react-router": "^8.2.0"
+    "react-router": "^8.3.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
