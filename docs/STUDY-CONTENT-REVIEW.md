@@ -855,3 +855,116 @@ These **191 questions across 9 new banks** were authored from the in-repo GACAR 
 - [ ] **Under GACAR §121.1409, for ETOPS up to and including 180 minutes, an aerodrome may not be listed as an ETOPS alternate if the time needed to reach it exceeds the aircraft's most limiting ETOPS significant system time minus —** — ✓ 15 minutes · _GACAR Part 121, §121.1409_
 - [ ] **Under the ETOPS fuel-supply rule (GACAR §121.1417), the aircraft must carry fuel to hold at 1,500 ft above field elevation upon reaching an ETOPS alternate for how long, then conduct an approach and land?** — ✓ 15 minutes · _GACAR Part 121, §121.1417_
 - [ ] **Under GACAR §121.1417, when calculating ETOPS diversion fuel the certificate holder must increase the forecast wind speed by what margin to account for wind-forecasting errors?** — ✓ 5 percent · _GACAR Part 121, §121.1417_
+
+---
+
+## Native app family — bank depth pass (iOS `/apple` folder)
+
+**52 new questions across 12 banks**, added to grow the thinnest apps in the native iOS family
+(ELPT had 1 bank/18 questions, AIP had 2 banks/45 questions) and bring the shared subject banks
+from the 18-question floor toward the house ~18–24 range. Every citation below **reuses an exact
+citation string already present elsewhere in that bank** in `public/data/quiz.json` (no new
+regulation claims); a handful cite a specific GACAR section (e.g. `§91.61`) that was already an
+existing citation in the same bank for the same right-of-way rule. Regenerated into
+`apple/Apps/{ELPT,AIP,PPL,CPL,IR,ATPL}/Content/quiz.json` via `node scripts/build-ios-content.mjs`.
+Please verify each answer key against the cited source before treating it as authoritative.
+
+### Radiotelephony & English Proficiency `radio-elpt` (ELPT) — 6 new (18 → 24)
+<sub>Source: ICAO Annex 10 · Annex 1</sub>
+
+- [ ] **In radiotelephony, the word "AFFIRM" means —** — ✓ Yes / that is correct · _ICAO Annex 10_
+- [ ] **In radiotelephony, the word "NEGATIVE" means —** — ✓ No / permission not granted / that is not correct · _ICAO Annex 10_
+- [ ] **The procedure word "STANDBY" means —** — ✓ Wait and I will call you · _ICAO Annex 10_
+- [ ] **To avoid confusion with similar-sounding words, the number "3" is pronounced in radiotelephony as —** — ✓ TREE · _ICAO Annex 10_
+- [ ] **The number "5" is pronounced in radiotelephony as —** — ✓ FIFE · _ICAO Annex 10_
+- [ ] **The ICAO document that expands on the Annex 1 language proficiency requirements, including the rating scale descriptors, is —** — ✓ Doc 9835 · _ICAO Annex 1 / Doc 9835_
+
+### Airspace `airspace` (AIP + PPL) — 6 new (18 → 24)
+<sub>Source: GACAR Part 71 · ICAO Annex 11</sub>
+
+- [ ] **A Special VFR (SVFR) clearance permits —** — ✓ VFR flight within a control zone when weather is below normal VMC minima, subject to an ATC clearance · _ICAO Annex 11_
+- [ ] **A Flight Information Region (FIR) is airspace within which —** — ✓ Flight information service and alerting service are provided · _ICAO Annex 11_
+- [ ] **ICAO airspace classes are lettered from Class A through —** — ✓ Class G · _ICAO Annex 11_
+- [ ] **In Class E airspace, a VFR flight receives —** — ✓ Traffic information as far as practicable, but no separation service · _ICAO Annex 11_
+- [ ] **How does a Danger Area differ from a Restricted Area?** — ✓ A Danger Area warns of activities hazardous to flight without legally restricting entry, while a Restricted Area imposes flight restrictions · _GACAR Part 73 · AIP-KSA ENR 5_
+- [ ] **Uncontrolled airspace, where ATC provides no separation service, is designated —** — ✓ Class G · _GACAR Part 71 · ICAO Annex 11_
+
+### VFR Flight Rules `vfr-flight-rules` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: GACAR Part 91</sub>
+
+- [ ] **The principle that VFR pilots are responsible for visually detecting and avoiding other traffic and obstacles, regardless of ATC services, is known as —** — ✓ See-and-avoid · _GACAR Part 91_
+- [ ] **An aircraft in distress has the right of way over —** — ✓ All other air traffic · _GACAR Part 91, §91.61_
+- [ ] **In the right-of-way hierarchy for converging aircraft, which category generally has priority over powered aircraft?** — ✓ Balloons and gliders · _GACAR Part 91, §91.61_
+- [ ] **An aircraft that is overtaking another aircraft must alter its course to the —** — ✓ Right, and keep clear of the aircraft being overtaken · _GACAR Part 91, §91.61_
+
+### Air Law `air-law` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: GACAR · Civil Aviation Law</sub>
+
+- [ ] **"GACA" stands for —** — ✓ General Authority of Civil Aviation · _Civil Aviation Law of KSA_
+- [ ] **A GACAR "Part" is generally organized internally into —** — ✓ Subparts, further divided into numbered sections · _GACAR_
+- [ ] **Under the Chicago Convention framework that GACAR implements, ICAO Annexes contain —** — ✓ International Standards and Recommended Practices (SARPs) · _GACAR Foreword_
+- [ ] **A GACAR requirement that differs from the corresponding ICAO Standard must be —** — ✓ Filed as a difference with ICAO · _GACAR Foreword_
+
+### Pilot Licensing & Ratings `pilot-licensing` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: GACAR Part 61</sub>
+
+- [ ] **A type rating is required to act as PIC of —** — ✓ Large aircraft, turbojet-powered aircraft, and other aircraft GACA specifies · _GACAR Part 61_
+- [ ] **A GACAR pilot certificate itself does not expire, but exercising its privileges requires —** — ✓ A current medical certificate and satisfying recency-of-experience requirements · _GACAR Part 61_
+- [ ] **Under GACAR Part 61, ratings that may be added to a pilot certificate include —** — ✓ Category, class, type and instrument ratings · _GACAR Part 61_
+- [ ] **Before acting as PIC of an aircraft, GACAR Part 61 requires a pilot to hold —** — ✓ The category and class rating appropriate to that aircraft · _GACAR Part 61_
+
+### Medical Fitness `medical` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: GACAR Part 67</sub>
+
+- [ ] **A medical certificate issued under GACAR Part 67 is normally valid counting from the date of —** — ✓ The medical examination · _GACAR Part 67_
+- [ ] **Which of the following is specifically identified as a disqualifying medical condition under Part-67-style medical standards?** — ✓ Epilepsy · _GACAR Part 67_
+- [ ] **If an AME is uncertain whether an applicant meets the medical standards, the AME should —** — ✓ Defer the case to GACA for a decision rather than issue the certificate · _GACAR Part 67_
+- [ ] **The three classes of medical certificate under GACAR Part 67 broadly correspond to —** — ✓ Airline transport / commercial / private pilot privileges · _GACAR Part 67_
+
+### Aircraft, Equipment & Airworthiness `aircraft-equipment` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: GACAR Part 91 · 39 · 43</sub>
+
+- [ ] **Which of the following is generally required for IFR flight but NOT required for day VFR flight?** — ✓ A gyroscopic attitude/heading system and navigation/radio equipment appropriate to the route · _GACAR Part 91_
+- [ ] **An Airworthiness Directive (AD) is issued when —** — ✓ An unsafe condition exists in a product and is likely to exist in other products of the same design · _GACAR Part 39_
+- [ ] **Preventive maintenance may generally be performed by —** — ✓ The aircraft owner/operator (for permitted items) or an appropriately certificated person · _GACAR Part 43_
+- [ ] **Maintenance records must be retained to show —** — ✓ The total time in service and the current status of applicable airworthiness directives · _GACAR Part 43_
+
+### Aviation Weather `weather` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: FAA Aviation Weather Handbook</sub>
+
+- [ ] **A TAF (Terminal Aerodrome Forecast) is —** — ✓ A scheduled forecast of expected weather conditions at an aerodrome for a specified period · _FAA Aviation Weather Handbook_
+- [ ] **Convective SIGMETs are issued for hazards including —** — ✓ Severe or embedded thunderstorms and tornadoes · _FAA Aviation Weather Handbook_
+- [ ] **Katabatic (drainage) winds occur when —** — ✓ Cold, dense air flows downhill under gravity, typically at night · _FAA Aviation Weather Handbook_
+- [ ] **Clear-air turbulence (CAT) is most commonly associated with —** — ✓ Strong wind shear near the jet stream · _FAA Aviation Weather Handbook_
+
+### Aerodynamics & Aircraft Systems `aerodynamics` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: FAA Pilot's & Airplane Flying Handbooks</sub>
+
+- [ ] **An aircraft's center of gravity (CG) location primarily affects —** — ✓ Longitudinal stability and controllability · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **Adverse yaw during a turn entry is best countered by —** — ✓ Coordinated use of aileron and rudder · _FAA Airplane Flying Handbook_
+- [ ] **P-factor (asymmetric propeller loading) is most pronounced —** — ✓ At high angles of attack and high power settings · _FAA Airplane Flying Handbook_
+- [ ] **Torque effect from engine and propeller rotation tends to roll the aircraft —** — ✓ Opposite to the direction of propeller rotation · _FAA Airplane Flying Handbook_
+
+### Human Factors & Aeromedical `human-factors` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: FAA aeromedical & risk-management references</sub>
+
+- [ ] **Fatigue impairs pilot performance primarily by —** — ✓ Slowing reaction time and degrading judgment and decision-making · _FAA Risk Management Handbook_
+- [ ] **The FAA's "DECIDE" model for in-flight decision making includes the steps —** — ✓ Detect, Estimate, Choose, Identify, Do, Evaluate · _FAA Aeronautical Decision-Making (AC 60-22)_
+- [ ] **"Get-there-itis" describes a hazardous mindset in which a pilot —** — ✓ Fixates on completing the flight as planned despite worsening conditions · _FAA Risk Management Handbook_
+- [ ] **Situational awareness in flight refers to a pilot's —** — ✓ Accurate perception of the aircraft, environment and their interaction, now and in the near future · _FAA Pilot's Handbook of Aeronautical Knowledge_
+
+### Navigation & Flight Planning `navigation` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: FAA Pilot's Handbook & Instrument references</sub>
+
+- [ ] **A great circle route between two points represents —** — ✓ The shortest distance between them along the Earth's surface · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **DME (Distance Measuring Equipment) provides the pilot with —** — ✓ Slant-range distance to the station · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **An ADF (Automatic Direction Finder) needle points toward —** — ✓ The tuned NDB station, regardless of aircraft heading · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **The variation in compass reading caused by an aircraft's own magnetic and electrical equipment is corrected for using a —** — ✓ Compass deviation card · _FAA Pilot's Handbook of Aeronautical Knowledge_
+
+### Flight Planning & Fuel `flight-planning` (PPL/CPL/IR/ATPL) — 4 new (18 → 22)
+<sub>Source: GACAR Part 91 · FAA Pilot's Handbook of Aeronautical Knowledge</sub>
+
+- [ ] **The E6B flight computer (mechanical or electronic) is primarily used to calculate —** — ✓ Time, speed, distance, fuel and wind-related values for flight planning · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **Weight and balance calculations before flight ensure the aircraft is operated —** — ✓ Within its certificated weight and center-of-gravity limits · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **A NOTAM should be checked during flight planning because it may report —** — ✓ Temporary hazards or changes such as runway closures or navaid outages · _GACAR Part 91_
+- [ ] **"Top of descent" in flight planning is the point calculated so the aircraft —** — ✓ Reaches the desired altitude/position at the planned descent rate · _FAA Pilot's Handbook of Aeronautical Knowledge_

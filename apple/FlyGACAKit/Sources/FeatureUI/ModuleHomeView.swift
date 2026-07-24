@@ -155,7 +155,7 @@ struct QuizScreen: View {
     let bankID: String?
 
     var body: some View {
-        QuizView(session: session, bankTitles: bankTitles, onFinished: persist)
+        QuizView(session: session, bankTitles: bankTitles, onFinished: persist, onFlag: flag)
             .navigationTitle(title)
     }
 
@@ -169,6 +169,14 @@ struct QuizScreen: View {
                 try? await store.recordExam(moduleID: moduleID, result: result)
             }
             try? await store.touchStreak()
+        }
+    }
+
+    private func flag(_ question: Question, flagged: Bool) {
+        guard let store else { return }
+        Task {
+            try? await store.setFlag(
+                moduleID: moduleID, bankID: question.bankID, index: question.index, flagged: flagged)
         }
     }
 }
@@ -194,7 +202,7 @@ struct ExamScreen: View {
     }
 
     var body: some View {
-        QuizView(session: session, bankTitles: bankTitles, onFinished: persist)
+        QuizView(session: session, bankTitles: bankTitles, onFinished: persist, onFlag: flag)
             .navigationTitle(content.exam.title ?? "Timed exam")
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -210,6 +218,14 @@ struct ExamScreen: View {
             try? await store.touchStreak()
         }
     }
+
+    private func flag(_ question: Question, flagged: Bool) {
+        guard let store else { return }
+        Task {
+            try? await store.setFlag(
+                moduleID: moduleID, bankID: question.bankID, index: question.index, flagged: flagged)
+        }
+    }
 }
 
 /// Flip-card runner over one bank. Grading updates a local snapshot for the
@@ -220,11 +236,14 @@ struct FlashcardsScreen: View {
     let store: StudyStore?
     @State private var index = 0
     @State private var srs: [String: SrsEntry] = [:]
+    /// The cards due for review, in bank order — snapshotted once per session so
+    /// grading a card mid-deck doesn't reshuffle the remaining queue.
+    @State private var deck: [Question] = []
 
     var body: some View {
         VStack {
             if let question = card {
-                Text("\(index + 1) of \(bank.questions.count)")
+                Text("\(index + 1) of \(deck.count)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 FlashcardView(
@@ -246,14 +265,19 @@ struct FlashcardsScreen: View {
     }
 
     private var card: Question? {
-        bank.questions.indices.contains(index) ? bank.questions[index] : nil
+        deck.indices.contains(index) ? deck[index] : nil
     }
 
     private func loadInitialSRS() async {
-        guard let store else { return }
-        if let entries = try? await store.srsEntries(bankID: bank.id) {
+        if let store, let entries = try? await store.srsEntries(bankID: bank.id) {
             srs = entries
         }
+        // Unseen cards are always due, so a fresh deck (no store, or no history
+        // yet) still surfaces every card — this only narrows the deck once SRS
+        // history exists.
+        let due = Set(
+            Leitner.dueKeys(in: srs, allKeys: bank.questions.map(\.legacyKey), now: Date()))
+        deck = bank.questions.filter { due.contains($0.legacyKey) }
     }
 
     private func grade(question: Question, correct: Bool) {

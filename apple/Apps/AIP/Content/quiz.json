@@ -1,5 +1,5 @@
 {
- "generated": "2026-05-24",
+ "generated": "2026-07-24",
  "note": "Practice questions authored by Fly GACA from the GACAR library for study. Not actual GACA exam questions. Every answer cites its source — verify against the official GACAR.",
  "exam": {
   "title": "GACAR Knowledge — Mock Exam",
@@ -615,6 +615,78 @@
       "id": "part-91",
       "anchor": "sec-mathbf-91-135-operations-in-class-a-airspace"
      }
+    },
+    {
+     "q": "A Special VFR (SVFR) clearance permits —",
+     "options": [
+      "VFR flight within a control zone when weather is below normal VMC minima, subject to an ATC clearance",
+      "IFR flight without a clearance",
+      "VFR flight above FL200",
+      "Flight without a flight plan"
+     ],
+     "answer": 0,
+     "explain": "Special VFR lets a flight operate within a control zone in weather below the normal VMC minima, only with an ATC clearance.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A Flight Information Region (FIR) is airspace within which —",
+     "options": [
+      "Flight information service and alerting service are provided",
+      "Only military flights operate",
+      "Radar coverage is guaranteed",
+      "All flights must be IFR"
+     ],
+     "answer": 0,
+     "explain": "An FIR is airspace of defined dimensions within which flight information service and alerting service are provided.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "ICAO airspace classes are lettered from Class A through —",
+     "options": [
+      "Class G",
+      "Class F",
+      "Class E",
+      "Class H"
+     ],
+     "answer": 0,
+     "explain": "ICAO defines seven airspace classes, A through G, each with its own rules and services.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "In Class E airspace, a VFR flight receives —",
+     "options": [
+      "Traffic information as far as practicable, but no separation service",
+      "Full separation from all other traffic",
+      "No ATC service of any kind",
+      "Mandatory radar vectoring"
+     ],
+     "answer": 0,
+     "explain": "In Class E airspace, VFR flights are given traffic information when practicable, but ATC does not separate them from other traffic.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "How does a Danger Area differ from a Restricted Area?",
+     "options": [
+      "A Danger Area warns of activities hazardous to flight without legally restricting entry, while a Restricted Area imposes flight restrictions",
+      "A Danger Area always prohibits all flight",
+      "They mean the same thing",
+      "A Danger Area only exists over water"
+     ],
+     "answer": 0,
+     "explain": "A Danger Area indicates airspace where activities dangerous to flight may exist, whereas a Restricted Area actually restricts flight under specified conditions.",
+     "cite": "GACAR Part 73 · AIP-KSA ENR 5"
+    },
+    {
+     "q": "Uncontrolled airspace, where ATC provides no separation service, is designated —",
+     "options": [
+      "Class G",
+      "Class A",
+      "Class C",
+      "Class E"
+     ],
+     "answer": 0,
+     "explain": "Class G is uncontrolled airspace; ATC provides no separation service, though flight information may be available on request.",
+     "cite": "GACAR Part 71 · ICAO Annex 11"
     }
    ]
   }
