@@ -98,7 +98,8 @@ firebase.json's rewrite regions must match).
 
 - **Pattern:** every business rule lives in a pure, Firebase-free `*-core.ts` module (e.g.
   `billing-core`, `chat-quota-core`, `rate-limit-core`, `staff-core`, `school-core`, `student-core`,
-  `referral-core`, `feedback-core`, `api-key-core`) so policy is unit-testable in isolation; the
+  `org-core`, `referral-core`, `feedback-core`, `api-key-core`) so policy is unit-testable in
+  isolation; the
   Express/Firestore wrappers (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `org.ts`) stay
   thin. Client-side mirrors (`src/calc/chatQuota.ts`, `src/lib/entitlements.ts`,
   `src/lib/features.ts`) must match their server core.
