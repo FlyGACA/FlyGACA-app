@@ -68,7 +68,7 @@ recognise — most commonly an ephemeral **Vercel/preview** domain
 (`…-flygaca-app.vercel.app`). The symptom is a sign-in that fails with a Firebase error code the app
 now surfaces on the Account page (`auth/unauthorized-domain`,
 `auth/requests-from-referer-…-are-blocked`, `auth/operation-not-allowed`, or an App Check rejection —
-see the `MAP` in `src/calc/authError.ts`). It is **not** a bad-credentials problem; the fix is to add
+see the `MAP` in `src/calc/app/authError.ts`). It is **not** a bad-credentials problem; the fix is to add
 the domain to every allowlist below:
 
 1. **Firebase Console → Authentication → Settings → Authorized domains** — add the exact host.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { altimeter, flightLevel, qfeToQnh, qnhToQfe, trueAltitude } from '../src/calc/altimetry';
+import { altimeter, flightLevel, qfeToQnh, qnhToQfe, trueAltitude } from '@/calc/altimetry';
 
 describe('trueAltitude', () => {
   it('warm air → true altitude above indicated', () => {

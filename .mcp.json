@@ -15,7 +15,7 @@
         "firebase-tools@latest",
         "experimental:mcp",
         "--dir",
-        "/Users/ad/Documents/GitHub/FlyGACA-app"
+        "."
       ],
       "env": {}
     }

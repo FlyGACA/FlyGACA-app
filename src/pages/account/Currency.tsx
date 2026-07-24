@@ -1,16 +1,17 @@
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { CurrencyBoard } from '../../components/CurrencyBoard';
-import { UpsellCard } from '../../components/UpsellCard';
-import { Disclaimer } from '../../components/Disclaimer';
-import { useAccount } from '../../lib/account';
-import { uiIsPro } from '../../lib/entitlements';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { computeCurrency, recordCurrency } from '../../calc/currency';
-import { buildIcs } from '../../calc/ics';
-import { adelLink } from '../../lib/adel';
+import { CurrencyBoard } from '@/components/CurrencyBoard';
+import { UpsellCard } from '@/components/UpsellCard';
+import { Disclaimer } from '@/components/Disclaimer';
+import { useAccount } from '@/lib/services/account';
+import { uiIsPro } from '@/lib/services/entitlements';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { computeCurrency, recordCurrency } from '@/calc/pilot/currency';
+import { buildIcs } from '@/calc/pilot/ics';
+import { adelLink } from '@/lib/adel';
 import styles from './account.module.css';
+import { triggerDownload } from '@/lib/download';
 
 export function Currency() {
   const { t } = useTranslation();
@@ -40,13 +41,7 @@ function Inner() {
       navigate('/pricing');
       return;
     }
-    const blob = new Blob([buildIcs(icsEvents)], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'flygaca-currency.ics';
-    a.click();
-    URL.revokeObjectURL(url);
+    triggerDownload('flygaca-currency.ics', buildIcs(icsEvents), 'text/calendar');
   }
 
   return (

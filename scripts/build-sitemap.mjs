@@ -127,7 +127,7 @@ function priority(u) {
   return '0.6';
 }
 
-// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean URL,
+// Per-URL hreflang alternates mirror src/lib/seo/seo.ts: English at the clean URL,
 // Arabic at its real `/ar` document (only where a snapshot exists), and x-default
 // at the clean URL. Head-hreflang (prerender-head.mjs) must stay byte-identical to
 // this — check-prerender.mjs enforces the Arabic side.

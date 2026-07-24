@@ -1,6 +1,6 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
-import { EmptyState } from '../src/components/EmptyState';
+import { EmptyState } from '@/components/EmptyState';
 
 afterEach(cleanup);
 

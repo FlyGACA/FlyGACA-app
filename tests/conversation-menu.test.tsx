@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, within, cleanup } from '@testing-library/react';
-import { ConversationMenu } from '../src/components/chat/ConversationMenu';
-import type { Conversation } from '../src/calc/conversations';
+import { ConversationMenu } from '@/components/chat/ConversationMenu';
+import type { Conversation } from '@/calc/chat/conversations';
 
 const convo = (over: Partial<Conversation>): Conversation => ({
   id: 'c1',
@@ -43,9 +43,7 @@ describe('ConversationMenu', () => {
 
   it('selects a conversation and reports its id', () => {
     const h = handlers();
-    render(
-      <ConversationMenu conversations={[convo({})]} activeId="" {...h} />,
-    );
+    render(<ConversationMenu conversations={[convo({})]} activeId="" {...h} />);
     openHistory();
     fireEvent.click(screen.getByText('Crosswind limits'));
     expect(h.onSelect).toHaveBeenCalledWith('c1');

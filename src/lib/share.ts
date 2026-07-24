@@ -8,7 +8,7 @@
  * clipboard). Decoupled from any specific analytics vendor via firebase's
  * best-effort `logAnalyticsEvent`.
  */
-import { share, type ShareResult } from './native-bridge';
+import { share, type ShareResult } from '@/lib/native/nativeBridge';
 
 /** Which surface a link was shared from. */
 export type ShareSource = 'tool' | 'library' | 'chat';
@@ -75,7 +75,7 @@ export function captureReferral(): void {
   }
 
   // Best-effort, lazily-loaded so firebase never enters the boot chunk.
-  void import('./firebase')
+  void import('@/lib/services/firebase')
     .then((m) => m.logAnalyticsEvent('referral_landing', { ref }))
     .catch(() => {});
 }
