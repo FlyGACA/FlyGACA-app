@@ -8,8 +8,8 @@ import {
   updateFlightDoc,
   recordToDoc,
   recordFromDoc,
-} from '../src/lib/sync';
-import type { Profile, Flight, PilotRecord } from '../src/lib/account';
+} from '@/lib/services/sync';
+import type { Profile, Flight, PilotRecord } from '@/lib/services/account';
 
 const profile: Profile = {
   email: 'pilot@example.com',
@@ -114,7 +114,9 @@ describe('record mappers', () => {
 describe('entitlementFromDoc', () => {
   it('reads a valid server entitlement', () => {
     expect(
-      entitlementFromDoc({ entitlement: { plan: 'pro', expiresAt: '2027-01-01', source: 'stripe' } }),
+      entitlementFromDoc({
+        entitlement: { plan: 'pro', expiresAt: '2027-01-01', source: 'stripe' },
+      }),
     ).toEqual({ plan: 'pro', expiresAt: '2027-01-01', source: 'stripe' });
   });
 

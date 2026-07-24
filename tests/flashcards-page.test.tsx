@@ -1,9 +1,9 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import i18n from '../src/i18n';
+import i18n from '@/i18n';
 import { renderWithRouter } from './helpers/render';
-import { Flashcards } from '../src/pages/study/Flashcards';
+import { Flashcards } from '@/pages/study/Flashcards';
 
 const fixture = {
   exam: { title: 'Exam', questions: 1, minutes: 5, passMark: 70 },
@@ -13,7 +13,9 @@ const fixture = {
       title: 'Card Bank',
       desc: 'A flashcard bank',
       source: 'GACAR Part 91',
-      questions: [{ q: 'What is 2+2?', options: ['2', '3', '4', '5'], answer: 2, explain: 'Arithmetic.' }],
+      questions: [
+        { q: 'What is 2+2?', options: ['2', '3', '4', '5'], answer: 2, explain: 'Arithmetic.' },
+      ],
     },
   ],
 };

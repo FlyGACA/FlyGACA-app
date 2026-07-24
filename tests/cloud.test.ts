@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cloudBase } from '../src/calc/cloud';
+import { cloudBase } from '@/calc/cloud';
 
 describe('cloudBase', () => {
   it('estimates ~400 ft of base per °C of spread', () => {

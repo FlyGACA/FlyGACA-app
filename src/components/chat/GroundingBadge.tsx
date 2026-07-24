@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import type { GroundingKind } from '../../lib/api';
-import { StatusPill, type StatusTone } from '../StatusPill';
+import type { GroundingKind } from '@/lib/api';
+import { StatusPill, type StatusTone } from '@/components/StatusPill';
 
 const LABEL_KEY: Record<'grounded' | 'partial' | 'refusal', string> = {
   grounded: 'chat.grounding.grounded',

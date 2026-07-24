@@ -1,21 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import {
-  sendChatStream,
-  sendFeedback,
-  type ChatSource,
-  type ChatTurn,
-  type GroundingKind,
-} from '../../lib/api';
-import { getIdToken } from '../../lib/auth';
-import { getAppCheckToken } from '../../lib/firebase';
-import { sessionId } from '../../lib/session';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { useAccount } from '../../lib/account';
-import { hasFeature } from '../../lib/features';
-import type { GacarIndex } from '../../lib/content';
+import { sendChatStream, sendFeedback, type ChatTurn } from '@/lib/api';
+import { getIdToken } from '@/lib/services/auth';
+import { getAppCheckToken } from '@/lib/services/firebase';
+import { sessionId } from '@/lib/session';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useAccount } from '@/lib/services/account';
+import { hasFeature } from '@/lib/services/features';
+import type { GacarIndex } from '@/lib/content';
 import {
   consume,
   currentUsage,
@@ -23,19 +17,17 @@ import {
   remaining,
   FREE_DAILY_LIMIT,
   type Usage,
-} from '../../calc/chatQuota';
-import { partSlug, conversationParts } from '../../calc/chatSources';
-import { followupSuggestions } from '../../calc/chatFollowups';
-import { crossRefParts } from '../../calc/chatCrossRefs';
+} from '@/calc/chat/chatQuota';
+import { partSlug, conversationParts } from '@/calc/chat/chatSources';
+import { followupSuggestions } from '@/calc/chat/chatFollowups';
 import {
   feedbackKey,
   getFeedback,
   recordFeedback,
-  normalizeFeedback,
   type FeedbackMap,
   type Rating,
-} from '../../calc/chatFeedback';
-import { transcriptToMarkdown } from '../../calc/transcript';
+} from '@/calc/chat/chatFeedback';
+import { transcriptToMarkdown } from '@/calc/chat/transcript';
 import {
   conversationTitle,
   upsertConversation,
@@ -43,78 +35,31 @@ import {
   renameConversation,
   togglePin,
   type Conversation,
-} from '../../calc/conversations';
+} from '@/calc/chat/conversations';
 import {
   loadConversations,
   persistConversations,
   newConversationId as newId,
-} from '../../lib/adelConversations';
-import { Disclaimer } from '../../components/Disclaimer';
-import { CaptainAvatar } from '../../components/CaptainAvatar';
-import { StatusPill } from '../../components/StatusPill';
-import { UpsellCard } from '../../components/UpsellCard';
-import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '../../lib/billing';
-import { GroundingBadge } from '../../components/chat/GroundingBadge';
-import { RichText } from '../../components/chat/RichText';
-import { MessageActions } from '../../components/chat/MessageActions';
-import { ConversationMenu } from '../../components/chat/ConversationMenu';
-import { ExportActions } from '../../components/chat/ExportActions';
-import { SourcesDigest } from '../../components/chat/SourcesDigest';
-import { CrossRefChips } from '../../components/chat/CrossRefChips';
-import { VoiceButton } from '../../components/chat/VoiceButton';
+} from '@/lib/adelConversations';
+import { Disclaimer } from '@/components/Disclaimer';
+import { UpsellCard } from '@/components/UpsellCard';
+import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '@/lib/services/billing';
+import { ConversationMenu } from '@/components/chat/ConversationMenu';
+import { ExportActions } from '@/components/chat/ExportActions';
+import { SourcesDigest } from '@/components/chat/SourcesDigest';
+import { VoiceButton } from '@/components/chat/VoiceButton';
+import { ChatWelcome } from './ChatWelcome';
+import { ChatMessage } from './ChatMessage';
+import {
+  loadFeedback,
+  loadProPref,
+  loadUsage,
+  persistFeedback,
+  persistProPref,
+  persistUsage,
+  type Message,
+} from './chatLocal';
 import styles from './Chat.module.css';
-
-interface Message {
-  role: 'user' | 'assistant';
-  text: string;
-  sources?: ChatSource[];
-  kind?: GroundingKind;
-  refusalClass?: string;
-  pending?: boolean;
-  streaming?: boolean;
-  error?: boolean;
-}
-
-/** Topic-grouped starter prompts shown on the empty-state welcome. */
-const GROUPS: { id: string; items: string[] }[] = [
-  { id: 'airspace', items: ['s1', 's5'] },
-  { id: 'licensing', items: ['s2', 's6'] },
-  { id: 'operations', items: ['s3', 's4'] },
-];
-const SUGGESTION_KEYS = ['s1', 's2', 's3', 's4', 's5', 's6'];
-/** Capability chips on the welcome screen (label key → StatusPill tone). */
-const CAPABILITIES = [
-  { id: 'cites', tone: 'success' as const },
-  { id: 'bilingual', tone: 'data' as const },
-  { id: 'verify', tone: 'warning' as const },
-];
-const QUOTA_KEY = 'flygaca:adel-quota';
-const FEEDBACK_KEY = 'flygaca:adel-feedback';
-const PRO_KEY = 'flygaca:adel-pro';
-
-function loadUsage(): Usage {
-  try {
-    return currentUsage(JSON.parse(localStorage.getItem(QUOTA_KEY) ?? 'null'));
-  } catch {
-    return currentUsage(null);
-  }
-}
-
-function loadFeedback(): FeedbackMap {
-  try {
-    return normalizeFeedback(JSON.parse(localStorage.getItem(FEEDBACK_KEY) ?? 'null'));
-  } catch {
-    return {};
-  }
-}
-
-function loadProPref(): boolean {
-  try {
-    return localStorage.getItem(PRO_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
 
 export function Chat() {
   const { t } = useTranslation();
@@ -176,11 +121,7 @@ export function Chat() {
     const cleared = getFeedback(feedback, key) === rating;
     setFeedback((prev) => {
       const next = recordFeedback(prev, key, rating);
-      try {
-        localStorage.setItem(FEEDBACK_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore quota / private-mode errors */
-      }
+      persistFeedback(next);
       return next;
     });
     if (cleared) return;
@@ -205,11 +146,7 @@ export function Chat() {
   function togglePro() {
     setUsePro((prev) => {
       const next = !prev;
-      try {
-        localStorage.setItem(PRO_KEY, next ? '1' : '0');
-      } catch {
-        /* ignore quota / private-mode errors */
-      }
+      persistProPref(next);
       return next;
     });
   }
@@ -233,11 +170,7 @@ export function Chat() {
       if (isExhausted(u)) return;
       const next = consume(u);
       setUsage(next);
-      try {
-        localStorage.setItem(QUOTA_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore quota / private-mode errors */
-      }
+      persistUsage(next);
     }
 
     setBusy(true);
@@ -513,138 +446,20 @@ export function Chat() {
             setAtBottom(near);
           }}
         >
-          {messages.length === 0 && (
-            <div className={styles.welcome}>
-              <CaptainAvatar
-                size="xl"
-                glow
-                live
-                animated
-                pose="wave"
-                className={styles.welcomeAvatar}
-              />
-              <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
-              {!session && (
-                <div className={styles.gate}>
-                  <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
-                  <Link className="btn btn-primary" to="/account">
-                    {t('account.goSignIn')}
-                  </Link>
-                </div>
-              )}
-              <div className={styles.capabilities}>
-                {CAPABILITIES.map((c) => (
-                  <StatusPill key={c.id} tone={c.tone}>
-                    {t(`chat.capabilities.${c.id}`)}
-                  </StatusPill>
-                ))}
-              </div>
-              <div className={styles.groups}>
-                {GROUPS.map((g) => (
-                  <div key={g.id} className={styles.group}>
-                    <span className={styles.groupLabel}>{t(`chat.groups.${g.id}`)}</span>
-                    <div className={styles.suggestions}>
-                      {g.items.map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          className={styles.suggestion}
-                          onClick={() => void ask(t(`chat.suggestions.${s}`))}
-                        >
-                          {t(`chat.suggestions.${s}`)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className={styles.welcomeActions}>
-                <button
-                  type="button"
-                  className={styles.surprise}
-                  onClick={() => {
-                    const k = SUGGESTION_KEYS[Math.floor(Math.random() * SUGGESTION_KEYS.length)];
-                    void ask(t(`chat.suggestions.${k}`));
-                  }}
-                >
-                  {t('chat.surprise')}
-                </button>
-                <Link to="/library" className={styles.welcomeLink}>
-                  {t('chat.exploreLibrary')}
-                </Link>
-                <Link to="/tools" className={styles.welcomeLink}>
-                  {t('chat.exploreTools')}
-                </Link>
-              </div>
-            </div>
-          )}
+          {messages.length === 0 && <ChatWelcome signedIn={!!session} onAsk={(q) => void ask(q)} />}
 
-          {messages.map((m, i) => {
-            const isAdel = m.role === 'assistant';
-            // His expression tracks the reply's state: thinking while pending,
-            // a calm "hold" when the answer isn't grounded, neutral otherwise.
-            const pose = m.pending ? 'thinking' : m.kind === 'refusal' ? 'hold' : 'default';
-            return (
-              <div
-                key={i}
-                className={`${styles.msg} ${isAdel ? styles.adel : styles.user} ${
-                  m.pending ? styles.pending : ''
-                }`}
-              >
-                {isAdel && (
-                  <CaptainAvatar
-                    size="sm"
-                    pose={pose}
-                    live
-                    animated={i === lastAssistantIndex && pose === 'default'}
-                    decorative
-                    className={styles.msgAvatar}
-                  />
-                )}
-                <div className={styles.msgBody}>
-                  {isAdel && !m.pending && (
-                    <GroundingBadge kind={m.kind} refusalClass={m.refusalClass} />
-                  )}
-                  <div className={styles.bubble}>
-                    {m.pending ? (
-                      <span
-                        className={styles.thinkingDots}
-                        aria-label={t('chat.thinking')}
-                        role="status"
-                      >
-                        <span aria-hidden="true" />
-                        <span aria-hidden="true" />
-                        <span aria-hidden="true" />
-                      </span>
-                    ) : isAdel && !m.streaming && !m.error ? (
-                      <RichText text={m.text} resolveCitation={resolveCitation} />
-                    ) : (
-                      <>
-                        {m.text}
-                        {m.streaming && <span className={styles.caret} aria-hidden="true" />}
-                      </>
-                    )}
-                  </div>
-                  {m.sources && m.sources.length > 0 && (
-                    <SourceList sources={m.sources} valid={validSlugs.current} />
-                  )}
-                  {isAdel && !m.pending && !m.streaming && !m.error && (
-                    <CrossRefChips refs={crossRefParts(m.text, m.sources, validSlugs.current)} />
-                  )}
-                  {isAdel && !m.pending && !m.streaming && (
-                    <MessageActions
-                      text={m.text}
-                      isError={m.error}
-                      onRegenerate={() => regenerate(i)}
-                      shareTitle={t('chat.title')}
-                      rating={m.error ? undefined : getFeedback(feedback, feedbackKey(m.text))}
-                      onFeedback={m.error ? undefined : (r) => rateAnswer(i, r)}
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {messages.map((m, i) => (
+            <ChatMessage
+              key={i}
+              m={m}
+              animate={i === lastAssistantIndex}
+              resolveCitation={resolveCitation}
+              validSlugs={validSlugs.current}
+              rating={m.error ? undefined : getFeedback(feedback, feedbackKey(m.text))}
+              onFeedback={m.error ? undefined : (r) => rateAnswer(i, r)}
+              onRegenerate={() => regenerate(i)}
+            />
+          ))}
 
           {showFollowups && (
             <div className={styles.followups}>
@@ -753,60 +568,5 @@ export function Chat() {
       <p className={styles.note}>{t('chat.disclaimer')}</p>
       <Disclaimer compact />
     </section>
-  );
-}
-
-/** Citation chips; rows with a verbatim passage expand via a native <details>. */
-function SourceList({ sources, valid }: { sources: ChatSource[]; valid: Set<string> }) {
-  const { t } = useTranslation();
-  // Surface the most-relevant rule text up front: open the first verbatim passage.
-  const firstVerbatim = sources.findIndex((s) => s.verbatim);
-  return (
-    <div className={styles.sourcesWrap}>
-      <span className={styles.sourcesLabel}>{t('chat.sourcesLabel')}</span>
-      <ul className={styles.sources}>
-        {sources.map((s, j) => {
-          const slug = partSlug(valid, s.part, s.section, s.citation);
-          return (
-            <li key={j} className={`${styles.srcRow} ${s.verbatim ? styles.srcRowFull : ''}`}>
-              {s.verbatim ? (
-                <details className={styles.srcDetails} open={j === firstVerbatim}>
-                  <summary className={styles.srcCite}>
-                    <bdi dir="ltr" lang="en">
-                      {s.citation || s.url}
-                    </bdi>
-                    <span className={styles.srcExact}>{t('chat.exactText')}</span>
-                  </summary>
-                  <p className={styles.srcVerbatim}>{s.verbatim}</p>
-                  {s.corpusVersion && (
-                    <span className={styles.srcVer}>
-                      <bdi dir="ltr" lang="en">
-                        {s.corpusVersion}
-                      </bdi>
-                    </span>
-                  )}
-                </details>
-              ) : (
-                <span className={styles.srcCite}>
-                  <bdi dir="ltr" lang="en">
-                    {s.citation || s.url}
-                  </bdi>
-                </span>
-              )}
-              {slug && (
-                <Link className={styles.srcOpen} to={`/library/${slug}`}>
-                  {t('chat.openInLibrary')}
-                </Link>
-              )}
-              {s.url && (
-                <a className={styles.srcOpen} href={s.url} target="_blank" rel="noopener">
-                  {t('chat.open')}
-                </a>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
   );
 }

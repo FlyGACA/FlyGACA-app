@@ -45,19 +45,19 @@ const h = vi.hoisted(() => {
   };
 });
 
-vi.mock('../src/lib/native-bridge', () => ({ isNative: () => h.native }));
+vi.mock('@/lib/native/nativeBridge', () => ({ isNative: () => h.native }));
 
-vi.mock('../src/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   isFirebaseConfigured: () => true,
   getFirebaseAuth: () => Promise.resolve(h.auth),
 }));
 
 vi.mock('firebase/auth', () => h.fa);
 
-type AuthModule = typeof import('../src/lib/auth');
+type AuthModule = typeof import('@/lib/services/auth');
 async function load(): Promise<AuthModule> {
   vi.resetModules();
-  return import('../src/lib/auth');
+  return import('@/lib/services/auth');
 }
 
 beforeEach(() => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatNotamTime, parseNotam } from '../src/calc/notam';
+import { formatNotamTime, parseNotam } from '@/calc/notam';
 
 describe('parseNotam', () => {
   it('extracts the id, Q-code and fields', () => {

@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, screen, cleanup, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import i18n from '../src/i18n';
-import { LangToggle } from '../src/components/LangToggle';
+import i18n from '@/i18n';
+import { LangToggle } from '@/components/LangToggle';
 
 // LangToggle is a crawlable <a> to the *other* language's URL of the current page.
 // Clicking it is a full navigation (the router remounts under the matching

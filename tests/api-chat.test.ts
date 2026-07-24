@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { sendChat, sendChatStream, type ChatRequest, type StreamEvent } from '../src/lib/api';
+import { sendChat, sendChatStream, type ChatRequest, type StreamEvent } from '@/lib/api';
 
 // The pure SSE line-parser (drainSse) is covered in api-sse.test.ts. These tests
 // exercise the fetch wrappers around it: header injection, the non-OK throw, the
@@ -125,12 +125,14 @@ describe('sendChatStream — streamed turn', () => {
     // hands the trailing partial frame to the next decode.
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue(
-        streamRes([
-          'data: {"type":"token","delta":"Hel',
-          'lo"}\ndata: {"type":"final","answer":"Hello","sources":[]}\ndata: [DONE]\ndata: dropped\n',
-        ]),
-      ),
+      vi
+        .fn()
+        .mockResolvedValue(
+          streamRes([
+            'data: {"type":"token","delta":"Hel',
+            'lo"}\ndata: {"type":"final","answer":"Hello","sources":[]}\ndata: [DONE]\ndata: dropped\n',
+          ]),
+        ),
     );
 
     const events = await collect(sendChatStream(REQ));

@@ -8,8 +8,8 @@ import {
   sortFlights,
   aircraftTotals,
   monthTotals,
-} from '../src/calc/logbook';
-import type { Flight } from '../src/lib/account';
+} from '@/calc/pilot/logbook';
+import type { Flight } from '@/lib/services/account';
 
 const now = new Date('2024-06-01T12:00:00Z');
 
@@ -161,7 +161,11 @@ describe('sortFlights', () => {
     flight('2024-01-01', { total: '3.0' }),
   ];
   it('sorts numeric columns numerically', () => {
-    expect(sortFlights(flights, 'total', 'desc').map((f) => f.total)).toEqual(['3.0', '2.0', '1.5']);
+    expect(sortFlights(flights, 'total', 'desc').map((f) => f.total)).toEqual([
+      '3.0',
+      '2.0',
+      '1.5',
+    ]);
   });
   it('sorts dates ascending', () => {
     expect(sortFlights(flights, 'date', 'asc').map((f) => f.date)).toEqual([
@@ -180,7 +184,13 @@ describe('aircraftTotals', () => {
       flight('2024-03-10', { reg: 'HZ-AAA', total: '1.0', ldg: '1' }),
     ];
     const rows = aircraftTotals(flights);
-    expect(rows[0]).toMatchObject({ reg: 'HZ-AAA', flights: 2, hours: 3, landings: 3, last: '2024-05-20' });
+    expect(rows[0]).toMatchObject({
+      reg: 'HZ-AAA',
+      flights: 2,
+      hours: 3,
+      landings: 3,
+      last: '2024-05-20',
+    });
     expect(rows[1].reg).toBe('HZ-BBB');
   });
 });

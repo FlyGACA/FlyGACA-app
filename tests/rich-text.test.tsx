@@ -1,7 +1,7 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { RichText } from '../src/components/chat/RichText';
+import { RichText } from '@/components/chat/RichText';
 
 afterEach(cleanup);
 

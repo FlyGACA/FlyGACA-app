@@ -2,7 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './app/Layout';
 import { Home } from './pages/Home/Home';
-import { AR_PREFIX, isArabicPath } from './lib/seo';
+import { AR_PREFIX, isArabicPath } from '@/lib/seo/seo';
 
 /**
  * Lazy a named export into a route component. Every page except Home is
@@ -25,71 +25,134 @@ const Chat = lazyNamed(() => import('./pages/chat/Chat'), 'Chat');
 
 // Tools
 const ToolsIndex = lazyNamed(() => import('./pages/tools/ToolsIndex'), 'ToolsIndex');
-const Crosswind = lazyNamed(() => import('./pages/tools/Crosswind'), 'Crosswind');
-const DensityAltitude = lazyNamed(() => import('./pages/tools/DensityAltitude'), 'DensityAltitude');
-const Tas = lazyNamed(() => import('./pages/tools/Tas'), 'Tas');
+const Crosswind = lazyNamed(() => import('./pages/tools/performance/Crosswind'), 'Crosswind');
+const DensityAltitude = lazyNamed(
+  () => import('./pages/tools/atmosphere-weather/DensityAltitude'),
+  'DensityAltitude',
+);
+const Tas = lazyNamed(() => import('./pages/tools/performance/Tas'), 'Tas');
 const PressureAltitude = lazyNamed(
-  () => import('./pages/tools/PressureAltitude'),
+  () => import('./pages/tools/atmosphere-weather/PressureAltitude'),
   'PressureAltitude',
 );
-const Isa = lazyNamed(() => import('./pages/tools/Isa'), 'Isa');
-const Altimeter = lazyNamed(() => import('./pages/tools/Altimeter'), 'Altimeter');
-const CloudBase = lazyNamed(() => import('./pages/tools/CloudBase'), 'CloudBase');
-const Mach = lazyNamed(() => import('./pages/tools/Mach'), 'Mach');
-const ClimbGradient = lazyNamed(() => import('./pages/tools/ClimbGradient'), 'ClimbGradient');
+const Isa = lazyNamed(() => import('./pages/tools/atmosphere-weather/Isa'), 'Isa');
+const Altimeter = lazyNamed(
+  () => import('./pages/tools/atmosphere-weather/Altimeter'),
+  'Altimeter',
+);
+const CloudBase = lazyNamed(
+  () => import('./pages/tools/atmosphere-weather/CloudBase'),
+  'CloudBase',
+);
+const Mach = lazyNamed(() => import('./pages/tools/performance/Mach'), 'Mach');
+const ClimbGradient = lazyNamed(
+  () => import('./pages/tools/performance/ClimbGradient'),
+  'ClimbGradient',
+);
 const StandardRateTurn = lazyNamed(
-  () => import('./pages/tools/StandardRateTurn'),
+  () => import('./pages/tools/performance/StandardRateTurn'),
   'StandardRateTurn',
 );
-const WindTable = lazyNamed(() => import('./pages/tools/WindTable'), 'WindTable');
-const Hydroplaning = lazyNamed(() => import('./pages/tools/Hydroplaning'), 'Hydroplaning');
-const TakeoffLanding = lazyNamed(() => import('./pages/tools/TakeoffLanding'), 'TakeoffLanding');
-const WindTriangle = lazyNamed(() => import('./pages/tools/WindTriangle'), 'WindTriangle');
-const GreatCircle = lazyNamed(() => import('./pages/tools/GreatCircle'), 'GreatCircle');
-const OneInSixty = lazyNamed(() => import('./pages/tools/OneInSixty'), 'OneInSixty');
-const Tsd = lazyNamed(() => import('./pages/tools/Tsd'), 'Tsd');
-const E6b = lazyNamed(() => import('./pages/tools/E6b'), 'E6b');
-const TopOfDescent = lazyNamed(() => import('./pages/tools/TopOfDescent'), 'TopOfDescent');
-const DescentVdp = lazyNamed(() => import('./pages/tools/DescentVdp'), 'DescentVdp');
-const Fuel = lazyNamed(() => import('./pages/tools/Fuel'), 'Fuel');
-const SpecificRange = lazyNamed(() => import('./pages/tools/SpecificRange'), 'SpecificRange');
-const WeightBalance = lazyNamed(() => import('./pages/tools/WeightBalance'), 'WeightBalance');
-const ZuluClock = lazyNamed(() => import('./pages/tools/ZuluClock'), 'ZuluClock');
-const AiracCycle = lazyNamed(() => import('./pages/tools/AiracCycle'), 'AiracCycle');
-const SunTimes = lazyNamed(() => import('./pages/tools/SunTimes'), 'SunTimes');
-const Part61Currency = lazyNamed(() => import('./pages/tools/Part61Currency'), 'Part61Currency');
-const MedicalValidity = lazyNamed(() => import('./pages/tools/MedicalValidity'), 'MedicalValidity');
-const FlightReview = lazyNamed(() => import('./pages/tools/FlightReview'), 'FlightReview');
-const Holding = lazyNamed(() => import('./pages/tools/Holding'), 'Holding');
+const WindTable = lazyNamed(() => import('./pages/tools/performance/WindTable'), 'WindTable');
+const Hydroplaning = lazyNamed(
+  () => import('./pages/tools/performance/Hydroplaning'),
+  'Hydroplaning',
+);
+const TakeoffLanding = lazyNamed(
+  () => import('./pages/tools/performance/TakeoffLanding'),
+  'TakeoffLanding',
+);
+const WindTriangle = lazyNamed(
+  () => import('./pages/tools/navigation/WindTriangle'),
+  'WindTriangle',
+);
+const GreatCircle = lazyNamed(() => import('./pages/tools/navigation/GreatCircle'), 'GreatCircle');
+const OneInSixty = lazyNamed(() => import('./pages/tools/navigation/OneInSixty'), 'OneInSixty');
+const Tsd = lazyNamed(() => import('./pages/tools/navigation/Tsd'), 'Tsd');
+const E6b = lazyNamed(() => import('./pages/tools/navigation/E6b'), 'E6b');
+const TopOfDescent = lazyNamed(
+  () => import('./pages/tools/performance/TopOfDescent'),
+  'TopOfDescent',
+);
+const DescentVdp = lazyNamed(() => import('./pages/tools/performance/DescentVdp'), 'DescentVdp');
+const Fuel = lazyNamed(() => import('./pages/tools/weight-fuel/Fuel'), 'Fuel');
+const SpecificRange = lazyNamed(
+  () => import('./pages/tools/weight-fuel/SpecificRange'),
+  'SpecificRange',
+);
+const WeightBalance = lazyNamed(
+  () => import('./pages/tools/weight-fuel/WeightBalance'),
+  'WeightBalance',
+);
+const ZuluClock = lazyNamed(() => import('./pages/tools/navigation/ZuluClock'), 'ZuluClock');
+const AiracCycle = lazyNamed(() => import('./pages/tools/navigation/AiracCycle'), 'AiracCycle');
+const SunTimes = lazyNamed(() => import('./pages/tools/navigation/SunTimes'), 'SunTimes');
+const Part61Currency = lazyNamed(
+  () => import('./pages/tools/regulations/Part61Currency'),
+  'Part61Currency',
+);
+const MedicalValidity = lazyNamed(
+  () => import('./pages/tools/regulations/MedicalValidity'),
+  'MedicalValidity',
+);
+const FlightReview = lazyNamed(
+  () => import('./pages/tools/regulations/FlightReview'),
+  'FlightReview',
+);
+const Holding = lazyNamed(() => import('./pages/tools/procedures/Holding'), 'Holding');
 const ProceduralSeparation = lazyNamed(
-  () => import('./pages/tools/ProceduralSeparation'),
+  () => import('./pages/tools/procedures/ProceduralSeparation'),
   'ProceduralSeparation',
 );
-const VfrBrief = lazyNamed(() => import('./pages/tools/VfrBrief'), 'VfrBrief');
-const Loa = lazyNamed(() => import('./pages/tools/Loa'), 'Loa');
-const Units = lazyNamed(() => import('./pages/tools/Units'), 'Units');
-const Transponder = lazyNamed(() => import('./pages/tools/Transponder'), 'Transponder');
-const Phonetic = lazyNamed(() => import('./pages/tools/Phonetic'), 'Phonetic');
-const Metar = lazyNamed(() => import('./pages/tools/Metar'), 'Metar');
-const Taf = lazyNamed(() => import('./pages/tools/Taf'), 'Taf');
-const Notam = lazyNamed(() => import('./pages/tools/Notam'), 'Notam');
-const MetBrief = lazyNamed(() => import('./pages/tools/MetBrief'), 'MetBrief');
-const ChartSymbols = lazyNamed(() => import('./pages/tools/ChartSymbols'), 'ChartSymbols');
-const VfrMinima = lazyNamed(() => import('./pages/tools/RegLookup'), 'VfrMinima');
-const Oxygen = lazyNamed(() => import('./pages/tools/RegLookup'), 'Oxygen');
-const FuelReserves = lazyNamed(() => import('./pages/tools/RegLookup'), 'FuelReserves');
-const ConversionChecker = lazyNamed(() => import('./pages/tools/RegLookup'), 'ConversionChecker');
-const Aerodromes = lazyNamed(() => import('./pages/tools/Aerodromes'), 'Aerodromes');
-const AerodromeDetail = lazyNamed(() => import('./pages/tools/AerodromeDetail'), 'AerodromeDetail');
-const Airspace = lazyNamed(() => import('./pages/tools/Airspace'), 'Airspace');
-const Definitions = lazyNamed(() => import('./pages/tools/Definitions'), 'Definitions');
-const RoutePlanner = lazyNamed(() => import('./pages/tools/RoutePlanner'), 'RoutePlanner');
-const FlightPlan = lazyNamed(() => import('./pages/tools/FlightPlan'), 'FlightPlan');
-const CriticalPoint = lazyNamed(() => import('./pages/tools/CriticalPoint'), 'CriticalPoint');
-const TopOfClimb = lazyNamed(() => import('./pages/tools/TopOfClimb'), 'TopOfClimb');
-const TurnPerformance = lazyNamed(() => import('./pages/tools/TurnPerformance'), 'TurnPerformance');
-const PivotalAltitude = lazyNamed(() => import('./pages/tools/PivotalAltitude'), 'PivotalAltitude');
-const TrueAltitude = lazyNamed(() => import('./pages/tools/TrueAltitude'), 'TrueAltitude');
+const VfrBrief = lazyNamed(() => import('./pages/tools/procedures/VfrBrief'), 'VfrBrief');
+const Loa = lazyNamed(() => import('./pages/tools/procedures/Loa'), 'Loa');
+const Units = lazyNamed(() => import('./pages/tools/reference/Units'), 'Units');
+const Transponder = lazyNamed(() => import('./pages/tools/reference/Transponder'), 'Transponder');
+const Phonetic = lazyNamed(() => import('./pages/tools/reference/Phonetic'), 'Phonetic');
+const Metar = lazyNamed(() => import('./pages/tools/atmosphere-weather/Metar'), 'Metar');
+const Taf = lazyNamed(() => import('./pages/tools/atmosphere-weather/Taf'), 'Taf');
+const Notam = lazyNamed(() => import('./pages/tools/atmosphere-weather/Notam'), 'Notam');
+const MetBrief = lazyNamed(() => import('./pages/tools/atmosphere-weather/MetBrief'), 'MetBrief');
+const ChartSymbols = lazyNamed(
+  () => import('./pages/tools/reference/ChartSymbols'),
+  'ChartSymbols',
+);
+const VfrMinima = lazyNamed(() => import('./pages/tools/regulations/RegLookup'), 'VfrMinima');
+const Oxygen = lazyNamed(() => import('./pages/tools/regulations/RegLookup'), 'Oxygen');
+const FuelReserves = lazyNamed(() => import('./pages/tools/regulations/RegLookup'), 'FuelReserves');
+const ConversionChecker = lazyNamed(
+  () => import('./pages/tools/regulations/RegLookup'),
+  'ConversionChecker',
+);
+const Aerodromes = lazyNamed(() => import('./pages/tools/procedures/Aerodromes'), 'Aerodromes');
+const AerodromeDetail = lazyNamed(
+  () => import('./pages/tools/procedures/AerodromeDetail'),
+  'AerodromeDetail',
+);
+const Airspace = lazyNamed(() => import('./pages/tools/procedures/Airspace'), 'Airspace');
+const Definitions = lazyNamed(() => import('./pages/tools/procedures/Definitions'), 'Definitions');
+const RoutePlanner = lazyNamed(
+  () => import('./pages/tools/navigation/RoutePlanner'),
+  'RoutePlanner',
+);
+const FlightPlan = lazyNamed(() => import('./pages/tools/navigation/FlightPlan'), 'FlightPlan');
+const CriticalPoint = lazyNamed(
+  () => import('./pages/tools/navigation/CriticalPoint'),
+  'CriticalPoint',
+);
+const TopOfClimb = lazyNamed(() => import('./pages/tools/performance/TopOfClimb'), 'TopOfClimb');
+const TurnPerformance = lazyNamed(
+  () => import('./pages/tools/performance/TurnPerformance'),
+  'TurnPerformance',
+);
+const PivotalAltitude = lazyNamed(
+  () => import('./pages/tools/navigation/PivotalAltitude'),
+  'PivotalAltitude',
+);
+const TrueAltitude = lazyNamed(
+  () => import('./pages/tools/atmosphere-weather/TrueAltitude'),
+  'TrueAltitude',
+);
 
 // Learn (unified Guides + Study hub)
 const LearnHub = lazyNamed(() => import('./pages/learn/LearnHub'), 'LearnHub');
@@ -116,16 +179,16 @@ const Records = lazyNamed(() => import('./pages/account/Records'), 'Records');
 const Settings = lazyNamed(() => import('./pages/account/Settings'), 'Settings');
 
 // Marketing / legal
-const Pricing = lazyNamed(() => import('./pages/Pricing'), 'Pricing');
-const Schools = lazyNamed(() => import('./pages/Schools'), 'Schools');
+const Pricing = lazyNamed(() => import('./pages/pricing/Pricing'), 'Pricing');
+const Schools = lazyNamed(() => import('./pages/schools/Schools'), 'Schools');
 const BusinessAdmin = lazyNamed(() => import('./pages/business/Admin'), 'BusinessAdmin');
-const About = lazyNamed(() => import('./pages/About'), 'About');
+const About = lazyNamed(() => import('./pages/about/About'), 'About');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
 const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPage');
-const NotFound = lazyNamed(() => import('./pages/NotFound'), 'NotFound');
-const Offline = lazyNamed(() => import('./pages/Offline'), 'Offline');
+const NotFound = lazyNamed(() => import('./pages/not-found/NotFound'), 'NotFound');
+const Offline = lazyNamed(() => import('./pages/offline/Offline'), 'Offline');
 
 /**
  * The Arabic variant of every content route lives under `/ar`. When the current
