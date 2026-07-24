@@ -1,30 +1,30 @@
 import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Disclaimer } from '../../components/Disclaimer';
-import { CountUp } from '../../components/CountUp';
-import { SyncedStamp } from '../../components/SyncedStamp';
-import { FlightDivider } from '../../components/FlightDivider';
-import { Marquee } from '../../components/Marquee';
-import { HeroAmbient } from '../../components/HeroAmbient';
-import { AdelHeroWidget } from '../../components/AdelHeroWidget';
-import { OnboardingHint } from '../../components/onboarding/OnboardingHint';
-import { SectionHeader } from '../../components/SectionHeader';
-import { Stepper } from '../../components/Stepper';
-import { BentoGrid } from '../../components/bento/BentoGrid';
-import { BentoCard, type BentoSpan, type BentoTone } from '../../components/bento/BentoCard';
-import { ButtonLink } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { useAccount } from '../../lib/account';
-import { uiIsPro } from '../../lib/entitlements';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { faqLd } from '../../lib/jsonld';
-import { GUIDE_SLUGS } from '../guides/guides';
-import { liveTools } from '../../lib/tools';
+import { Disclaimer } from '@/components/Disclaimer';
+import { CountUp } from '@/components/CountUp';
+import { SyncedStamp } from './SyncedStamp';
+import { FlightDivider } from './FlightDivider';
+import { Marquee } from './Marquee';
+import { HeroAmbient } from './HeroAmbient';
+import { AdelHeroWidget } from './AdelHeroWidget';
+import { OnboardingHint } from '@/components/onboarding/OnboardingHint';
+import { SectionHeader } from '@/components/SectionHeader';
+import { Stepper } from '@/components/Stepper';
+import { BentoGrid } from '@/components/bento/BentoGrid';
+import { BentoCard, type BentoSpan, type BentoTone } from '@/components/bento/BentoCard';
+import { ButtonLink } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { useAccount } from '@/lib/services/account';
+import { uiIsPro } from '@/lib/services/entitlements';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { faqLd } from '@/lib/seo/jsonld';
+import { GUIDE_SLUGS } from '@/pages/guides/guides';
+import { liveTools } from '@/lib/tools';
 import styles from './Home.module.css';
 
 // The bento dashboard (and its framer-motion runtime) is split off the home
 // hero's critical path; it streams in under the Suspense boundary below.
-const HomeDashboard = lazy(() => import('../../components/bento/HomeDashboard'));
+const HomeDashboard = lazy(() => import('@/components/bento/HomeDashboard'));
 
 // The single "at a glance" proof strip. Numbers stay truthful: Parts mirrors the
 // gacar-index, tools matches the migration catalogue, and guides is the live

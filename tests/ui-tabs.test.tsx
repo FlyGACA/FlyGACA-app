@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { Tab, Tabs } from '../src/components/ui/Tabs';
+import { Tab, Tabs } from '@/components/ui/Tabs';
 
 afterEach(cleanup);
 

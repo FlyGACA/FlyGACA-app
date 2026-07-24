@@ -5,9 +5,9 @@ import {
   rollingLandingExpiry,
   statusFromValidity,
   EXPIRING_SOON_DAYS,
-} from '../src/calc/currency';
-import { recencyByDays, validityByMonths, parseISO } from '../src/calc/recency';
-import type { Flight, Profile } from '../src/lib/account';
+} from '@/calc/pilot/currency';
+import { recencyByDays, validityByMonths, parseISO } from '@/calc/recency';
+import type { Flight, Profile } from '@/lib/services/account';
 
 const now = new Date('2024-06-01T12:00:00Z');
 
@@ -32,7 +32,8 @@ const flight = (date: string, over: Partial<Flight> = {}): Flight => ({
   ...over,
 });
 
-const item = (items: ReturnType<typeof computeCurrency>, id: string) => items.find((i) => i.id === id)!;
+const item = (items: ReturnType<typeof computeCurrency>, id: string) =>
+  items.find((i) => i.id === id)!;
 
 describe('statusFromValidity', () => {
   it('maps null / expired / expiring / current', () => {
@@ -59,15 +60,20 @@ describe('computeCurrency — medical & flight review', () => {
 
   it('flags an expired medical and a current one', () => {
     expect(
-      item(computeCurrency({ ...blankProfile, medicalExpiry: '2024-05-01' }, [], now), 'medical').status,
+      item(computeCurrency({ ...blankProfile, medicalExpiry: '2024-05-01' }, [], now), 'medical')
+        .status,
     ).toBe('expired');
     expect(
-      item(computeCurrency({ ...blankProfile, medicalExpiry: '2025-05-01' }, [], now), 'medical').status,
+      item(computeCurrency({ ...blankProfile, medicalExpiry: '2025-05-01' }, [], now), 'medical')
+        .status,
     ).toBe('current');
   });
 
   it('derives the flight-review renewal 24 months on', () => {
-    const it1 = item(computeCurrency({ ...blankProfile, lastFlightReview: '2023-01-15' }, [], now), 'flightReview');
+    const it1 = item(
+      computeCurrency({ ...blankProfile, lastFlightReview: '2023-01-15' }, [], now),
+      'flightReview',
+    );
     expect(it1.status).toBe('current');
     expect(it1.expiry?.toISOString().slice(0, 10)).toBe('2025-01-15');
   });
@@ -90,14 +96,26 @@ describe('rollingLandingExpiry', () => {
   });
 
   it('is not current with only 2 landings in window', () => {
-    const r = rollingLandingExpiry([flight('2024-05-20'), flight('2024-05-10')], 90, 3, pickLdg, now);
+    const r = rollingLandingExpiry(
+      [flight('2024-05-20'), flight('2024-05-10')],
+      90,
+      3,
+      pickLdg,
+      now,
+    );
     expect(r.count).toBe(2);
     expect(r.current).toBe(false);
     expect(r.expiry).toBeNull();
   });
 
   it('does not depend on input order', () => {
-    const a = rollingLandingExpiry([flight('2024-04-15'), flight('2024-05-20'), flight('2024-05-10')], 90, 3, pickLdg, now);
+    const a = rollingLandingExpiry(
+      [flight('2024-04-15'), flight('2024-05-20'), flight('2024-05-10')],
+      90,
+      3,
+      pickLdg,
+      now,
+    );
     expect(a.current).toBe(true);
     expect(a.expiry?.toISOString().slice(0, 10)).toBe('2024-07-14');
   });
@@ -113,11 +131,15 @@ describe('computeCurrency — passenger & night & ifr', () => {
 
   it('passes night currency when night landings are logged', () => {
     const flights = [flight('2024-05-20', { ldg: '3', nightLdg: '3' })];
-    expect(item(computeCurrency(blankProfile, flights, now), 'nightPassenger').status).not.toBe('expired');
+    expect(item(computeCurrency(blankProfile, flights, now), 'nightPassenger').status).not.toBe(
+      'expired',
+    );
   });
 
   it('reports IFR as unknown until approaches are logged', () => {
-    expect(item(computeCurrency(blankProfile, [flight('2024-05-20')], now), 'ifr').status).toBe('unknown');
+    expect(item(computeCurrency(blankProfile, [flight('2024-05-20')], now), 'ifr').status).toBe(
+      'unknown',
+    );
     const withAppr = computeCurrency(blankProfile, [flight('2024-05-20', { appr: '6' })], now);
     expect(item(withAppr, 'ifr').status).not.toBe('unknown');
   });
@@ -132,7 +154,7 @@ describe('computeCurrency — passenger & night & ifr', () => {
 });
 
 describe('recordCurrency', () => {
-  const rec = (over: Partial<import('../src/lib/account').PilotRecord> = {}) => ({
+  const rec = (over: Partial<import('@/lib/services/account').PilotRecord> = {}) => ({
     id: 'r1',
     category: 'rating' as const,
     title: 'Instrument Rating',

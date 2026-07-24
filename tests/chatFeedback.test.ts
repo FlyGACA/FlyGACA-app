@@ -4,7 +4,7 @@ import {
   getFeedback,
   recordFeedback,
   normalizeFeedback,
-} from '../src/calc/chatFeedback';
+} from '@/calc/chat/chatFeedback';
 
 describe('feedbackKey', () => {
   it('is stable for the same text and differs across answers', () => {

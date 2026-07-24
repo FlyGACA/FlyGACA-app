@@ -24,7 +24,7 @@ describe('toolPrefs store', () => {
   it('hydrates favourites and recents from localStorage on import', async () => {
     localStorage.setItem(FAV, JSON.stringify(['crosswind']));
     localStorage.setItem(RECENT, JSON.stringify(['isa', 'mach']));
-    const m = await import('../src/lib/toolPrefs');
+    const m = await import('@/lib/prefs/toolPrefs');
     // useToolPrefs reads the same module-level snapshot the mutators update.
     expect(m.toggleFavorite).toBeTypeOf('function');
     m.pushRecent('isa'); // moves isa to front, deduped
@@ -32,7 +32,7 @@ describe('toolPrefs store', () => {
   });
 
   it('toggleFavorite adds then removes, persisting each time', async () => {
-    const m = await import('../src/lib/toolPrefs');
+    const m = await import('@/lib/prefs/toolPrefs');
     m.toggleFavorite('crosswind');
     expect(read(FAV)).toEqual(['crosswind']);
     m.toggleFavorite('crosswind');
@@ -40,7 +40,7 @@ describe('toolPrefs store', () => {
   });
 
   it('pushRecent is most-recent-first, deduped and capped at 6', async () => {
-    const m = await import('../src/lib/toolPrefs');
+    const m = await import('@/lib/prefs/toolPrefs');
     for (const id of ['a', 'b', 'c', 'd', 'e', 'f', 'g']) m.pushRecent(id);
     expect(read(RECENT)).toEqual(['g', 'f', 'e', 'd', 'c', 'b']);
     m.pushRecent('d'); // existing id jumps to the front
@@ -50,7 +50,7 @@ describe('toolPrefs store', () => {
   it('ignores corrupt stored values and falls back to empty lists', async () => {
     localStorage.setItem(FAV, '{not json');
     localStorage.setItem(RECENT, JSON.stringify({ not: 'an array' }));
-    const m = await import('../src/lib/toolPrefs');
+    const m = await import('@/lib/prefs/toolPrefs');
     m.toggleFavorite('x');
     expect(read(FAV)).toEqual(['x']); // started from [], not a crash
   });
@@ -61,7 +61,7 @@ describe('guidePrefs store', () => {
   const READ = 'flygaca:guide-read';
 
   it('toggleBookmark and toggleRead round-trip through localStorage', async () => {
-    const m = await import('../src/lib/guidePrefs');
+    const m = await import('@/lib/prefs/guidePrefs');
     m.toggleBookmark('wake-turbulence');
     m.toggleRead('wake-turbulence');
     expect(read(BM)).toEqual(['wake-turbulence']);
@@ -71,7 +71,7 @@ describe('guidePrefs store', () => {
   });
 
   it('markRead is idempotent — a second call does not re-persist a duplicate', async () => {
-    const m = await import('../src/lib/guidePrefs');
+    const m = await import('@/lib/prefs/guidePrefs');
     m.markRead('vfr-minima');
     m.markRead('vfr-minima');
     expect(read(READ)).toEqual(['vfr-minima']);
@@ -79,7 +79,7 @@ describe('guidePrefs store', () => {
 
   it('hydrates bookmarks from storage and filters non-string entries', async () => {
     localStorage.setItem(BM, JSON.stringify(['a', 5, 'b', null]));
-    const m = await import('../src/lib/guidePrefs');
+    const m = await import('@/lib/prefs/guidePrefs');
     m.toggleBookmark('c');
     expect(read(BM)).toEqual(['a', 'b', 'c']);
   });
@@ -94,7 +94,7 @@ describe('libraryPrefs store', () => {
   const bm = { kind: 'regulations' as const, slug: 'part-91', title: 'Part 91' };
 
   it('toggleBookmark persists and isBookmarked reflects the live state', async () => {
-    const m = await import('../src/lib/libraryPrefs');
+    const m = await import('@/lib/prefs/libraryPrefs');
     m.toggleBookmark(bm);
     expect(read(BM)).toEqual([bm]);
     // isBookmarked is a pure read over a snapshot.
@@ -118,7 +118,7 @@ describe('libraryPrefs store', () => {
   });
 
   it('recordView keeps a deduped, most-recent-first, capped recents list', async () => {
-    const m = await import('../src/lib/libraryPrefs');
+    const m = await import('@/lib/prefs/libraryPrefs');
     const doc = (slug: string) => ({ kind: 'reference' as const, slug, title: slug });
     for (let i = 0; i < 13; i++) m.recordView(doc(`d${i}`));
     const recents = read(RECENT) as { slug: string }[];
@@ -131,7 +131,7 @@ describe('libraryPrefs store', () => {
   });
 
   it('saveSearch and removeSearch round-trip by normalised key', async () => {
-    const m = await import('../src/lib/libraryPrefs');
+    const m = await import('@/lib/prefs/libraryPrefs');
     const s = { kind: 'reference' as const, category: 'all', query: '  Fuel ' };
     m.saveSearch(s);
     expect(read(SEARCH)).toEqual([s]);
@@ -140,7 +140,7 @@ describe('libraryPrefs store', () => {
   });
 
   it('addNote and removeNote manage a per-document note list, pruning empties', async () => {
-    const m = await import('../src/lib/libraryPrefs');
+    const m = await import('@/lib/prefs/libraryPrefs');
     const note = (id: string) => ({
       id,
       sectionId: 'h1',

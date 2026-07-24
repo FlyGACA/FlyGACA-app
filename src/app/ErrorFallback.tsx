@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { CaptainAvatar } from '../components/CaptainAvatar';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
 import styles from './ErrorBoundary.module.css';
 
 /** The calm, bilingual fallback shown by ErrorBoundary. A functional component

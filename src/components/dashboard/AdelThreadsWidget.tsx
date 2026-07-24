@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { CaptainAvatar } from '../CaptainAvatar';
-import { loadConversations } from '../../lib/adelConversations';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
+import { loadConversations } from '@/lib/adelConversations';
 import styles from './dashboard-widgets.module.css';
 
 const MAX_THREADS = 3;

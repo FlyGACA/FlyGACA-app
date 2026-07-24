@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { BentoCard } from '../BentoCard';
+import { BentoCard } from '@/components/bento/BentoCard';
 import shared from './widgets.module.css';
 
 /**
