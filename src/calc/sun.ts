@@ -4,7 +4,7 @@
  * sun stays above/below the horizon all day. A planning aid for night limits.
  */
 const rad = Math.PI / 180;
-const DAY_MS = 86400000;
+import { DAY_MS } from './recency';
 const J1970 = 2440588;
 const J2000 = 2451545;
 const e = rad * 23.4397; // obliquity of the Earth

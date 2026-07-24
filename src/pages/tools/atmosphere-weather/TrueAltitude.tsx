@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { trueAltitude } from '@/calc/altimetry';
-
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function TrueAltitude() {
   const { t } = useTranslation();
@@ -61,12 +60,12 @@ export function TrueAltitude() {
       <OutputGrid>
         <ResultStat
           label={t('trueAlt.trueAlt')}
-          value={r != null ? `${fmt(r.trueAltFt)} ft` : '—'}
+          value={r != null ? `${fmtInt(r.trueAltFt)} ft` : '—'}
           tone="headline"
         />
         <ResultStat
           label={t('trueAlt.correction')}
-          value={r != null ? `${r.correctionFt >= 0 ? '+' : ''}${fmt(r.correctionFt)} ft` : '—'}
+          value={r != null ? `${r.correctionFt >= 0 ? '+' : ''}${fmtInt(r.correctionFt)} ft` : '—'}
         />
         <ResultStat
           label={t('trueAlt.isaDev')}

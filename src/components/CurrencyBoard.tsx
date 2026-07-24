@@ -1,31 +1,11 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { StatusPill, type StatusTone } from './StatusPill';
+import { StatusPill } from './StatusPill';
 import { ProgressBar } from './ProgressBar';
-import type { CurrencyItem, CurrencyStatus } from '@/calc/pilot/currency';
+import type { CurrencyItem } from '@/calc/pilot/currency';
+import { formatDate } from '@/calc/recency';
+import { VALIDITY_LABEL, VALIDITY_TONE } from './validityStatus';
 import styles from './CurrencyBoard.module.css';
-
-const tone: Record<CurrencyStatus, StatusTone> = {
-  current: 'success',
-  expiring: 'warning',
-  expired: 'danger',
-  unknown: 'data',
-};
-
-const statusLabel: Record<CurrencyStatus, string> = {
-  current: 'validity.current',
-  expiring: 'validity.expiring',
-  expired: 'validity.expired',
-  unknown: 'validity.unknown',
-};
-
-const fmtDate = (d: Date) =>
-  d.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
 
 interface Props {
   items: CurrencyItem[];
@@ -59,7 +39,9 @@ export function CurrencyBoard({ items, showFix = true }: Props) {
             )}
           </div>
           <div className={styles.meta}>
-            <StatusPill tone={tone[item.status]}>{t(statusLabel[item.status])}</StatusPill>
+            <StatusPill tone={VALIDITY_TONE[item.status]}>
+              {t(VALIDITY_LABEL[item.status])}
+            </StatusPill>
             {item.daysLeft != null && (
               <span className={styles.days}>
                 <bdi dir="ltr">
@@ -71,7 +53,7 @@ export function CurrencyBoard({ items, showFix = true }: Props) {
             )}
             {item.expiry && (
               <span className={styles.date}>
-                <bdi dir="ltr">{fmtDate(item.expiry)}</bdi>
+                <bdi dir="ltr">{formatDate(item.expiry)}</bdi>
               </span>
             )}
           </div>

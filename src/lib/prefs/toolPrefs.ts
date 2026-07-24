@@ -4,7 +4,7 @@
  * hub re-renders on change. The list transforms are pure (and unit-tested);
  * the store is a thin wrapper over them.
  */
-import { useSyncExternalStore } from 'react';
+import { createPrefStore, readStringList, save } from './createPrefStore';
 
 const FAV_KEY = 'flygaca:tool-favorites';
 const RECENT_KEY = 'flygaca:tool-recents';
@@ -41,51 +41,21 @@ export interface ToolPrefs {
   recents: string[];
 }
 
-function read(key: string): string[] {
-  try {
-    const v = localStorage.getItem(key);
-    const parsed = v ? (JSON.parse(v) as unknown) : [];
-    return Array.isArray(parsed) ? (parsed.filter((x) => typeof x === 'string') as string[]) : [];
-  } catch {
-    return [];
-  }
-}
+const store = createPrefStore<ToolPrefs>({
+  favorites: readStringList(FAV_KEY),
+  recents: readStringList(RECENT_KEY),
+});
 
-let state: ToolPrefs = { favorites: read(FAV_KEY), recents: read(RECENT_KEY) };
-
-const listeners = new Set<() => void>();
-function emit() {
-  for (const l of listeners) l();
-}
-function subscribe(l: () => void) {
-  listeners.add(l);
-  return () => listeners.delete(l);
-}
-
-export function useToolPrefs(): ToolPrefs {
-  return useSyncExternalStore(
-    subscribe,
-    () => state,
-    () => state,
-  );
-}
+export const useToolPrefs = store.use;
 
 export function toggleFavorite(id: string): void {
-  state = { ...state, favorites: toggleId(state.favorites, id) };
-  try {
-    localStorage.setItem(FAV_KEY, JSON.stringify(state.favorites));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-  emit();
+  const favorites = toggleId(store.get().favorites, id);
+  save(FAV_KEY, favorites);
+  store.set({ ...store.get(), favorites });
 }
 
 export function pushRecent(id: string): void {
-  state = { ...state, recents: addRecent(state.recents, id) };
-  try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(state.recents));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-  emit();
+  const recents = addRecent(store.get().recents, id);
+  save(RECENT_KEY, recents);
+  store.set({ ...store.get(), recents });
 }

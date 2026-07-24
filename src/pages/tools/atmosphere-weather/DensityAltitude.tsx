@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { densityAltitude } from '@/calc/isa';
 import { NumberField } from '@/components/calc/NumberField';
 
 const EXAMPLE = { elev: '5000', qnh: '1013', oat: '30' };
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function DensityAltitude() {
   const { t } = useTranslation();
@@ -68,7 +68,7 @@ export function DensityAltitude() {
       <OutputGrid>
         <ResultStat
           label={t('densityAltitude.pressureAltitude')}
-          value={r ? `${fmt(r.pa)} ft` : '—'}
+          value={r ? `${fmtInt(r.pa)} ft` : '—'}
         />
         <ResultStat
           label={t('densityAltitude.isaDev')}
@@ -76,7 +76,7 @@ export function DensityAltitude() {
         />
         <ResultStat
           label={t('densityAltitude.densityAltitude')}
-          value={r ? `${fmt(r.da)} ft` : '—'}
+          value={r ? `${fmtInt(r.da)} ft` : '—'}
           tone="headline"
         />
       </OutputGrid>

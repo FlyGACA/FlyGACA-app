@@ -3,7 +3,7 @@
  * (PNR / radius of action). Pure planning aids — real diversion decisions use the
  * operator's fuel policy and the AFM. Distances in NM, speeds in kt, times in min.
  */
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 export interface CriticalPoint {
   /** Distance from departure, NM. */

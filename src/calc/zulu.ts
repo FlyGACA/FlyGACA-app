@@ -8,7 +8,7 @@ export interface ShiftedTime {
   dayOffset: number;
 }
 
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 /** Shift a HH:MM time by a number of minutes, wrapping across midnight. */
 export function shiftTime(hh: number, mm: number, offsetMin: number): ShiftedTime | null {
@@ -23,6 +23,9 @@ export function shiftTime(hh: number, mm: number, offsetMin: number): ShiftedTim
 export const utcToKsa = (hh: number, mm: number) => shiftTime(hh, mm, KSA_OFFSET_MIN);
 /** KSA local → UTC. */
 export const ksaToUtc = (hh: number, mm: number) => shiftTime(hh, mm, -KSA_OFFSET_MIN);
+
+/** Two-digit zero-padded number — the `07` in `07:45Z`, `0715`, `20260724`. */
+export const pad2 = (n: number): string => String(n).padStart(2, '0');
 
 export function formatHm(hh: number, mm: number): string {
   return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;

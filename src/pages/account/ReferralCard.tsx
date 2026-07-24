@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchReferralCode, referralLink } from '@/lib/services/referral';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import styles from './ReferralCard.module.css';
 
 /**
@@ -12,7 +13,7 @@ import styles from './ReferralCard.module.css';
 export function ReferralCard() {
   const { t } = useTranslation();
   const [code, setCode] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard(2000);
 
   useEffect(() => {
     let alive = true;
@@ -27,16 +28,6 @@ export function ReferralCard() {
   if (!code) return null;
   const link = referralLink(code);
 
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard blocked — the link is still visible to copy manually */
-    }
-  }
-
   return (
     <div className={styles.card}>
       <h3 className={styles.title}>{t('referral.title')}</h3>
@@ -49,7 +40,7 @@ export function ReferralCard() {
           aria-label={t('referral.title')}
           onFocus={(e) => e.currentTarget.select()}
         />
-        <button type="button" className="btn" onClick={() => void copy()}>
+        <button type="button" className="btn" onClick={() => void copy(link)}>
           {copied ? t('referral.copied') : t('referral.copy')}
         </button>
       </div>

@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shareCurrent } from '@/lib/share';
 import type { Rating } from '@/calc/chat/chatFeedback';
 import { SpeakButton } from './SpeakButton';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import styles from './MessageActions.module.css';
 
 /**
@@ -27,17 +27,7 @@ export function MessageActions({
   shareTitle?: string;
 }) {
   const { t } = useTranslation();
-  const [copied, setCopied] = useState(false);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* clipboard blocked (insecure context / permissions) — ignore */
-    }
-  }
+  const { copied, copy } = useCopyToClipboard();
 
   // Capacitor Share on native · Web Share · clipboard fallback (all in `share`),
   // with ?ref=chat appended for attribution.
@@ -55,7 +45,7 @@ export function MessageActions({
         <button
           type="button"
           className={styles.action}
-          onClick={() => void copy()}
+          onClick={() => void copy(text)}
           aria-label={t('chat.copy')}
         >
           <span aria-hidden="true">{copied ? '✓' : '⧉'}</span>

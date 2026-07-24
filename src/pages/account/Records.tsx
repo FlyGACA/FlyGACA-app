@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from './RequireSession';
-import { StatusPill, type StatusTone } from '@/components/StatusPill';
+import { StatusPill } from '@/components/StatusPill';
+import { VALIDITY_LABEL, VALIDITY_TONE } from '@/components/validityStatus';
 import { RecordForm, type RecordDraft } from '@/components/account/RecordForm';
 import {
   addRecord,
@@ -11,13 +12,13 @@ import {
   type RecordCategory,
 } from '@/lib/services/account';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { parseISO } from '@/calc/recency';
+import { DAY_MS, formatISODate, parseISO } from '@/calc/recency';
+import { EXPIRING_SOON_DAYS, type CurrencyStatus } from '@/calc/pilot/currency';
 import account from './account.module.css';
 import styles from './records.module.css';
 import { Tab, Tabs } from '@/components/ui/Tabs';
 
 const CATS: RecordCategory[] = ['rating', 'aircraft', 'document', 'endorsement'];
-const DAY = 86400000;
 
 const blank = (category: RecordCategory): RecordDraft => ({
   category,
@@ -28,25 +29,13 @@ const blank = (category: RecordCategory): RecordDraft => ({
   remarks: '',
 });
 
-const fmt = (s: string) => {
-  const d = parseISO(s);
-  return d
-    ? d.toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'UTC',
-      })
-    : '—';
-};
-
-function expiryStatus(expires: string): { tone: StatusTone; key: string } | null {
+/** null when the record carries no expiry — those rows show no chip at all. */
+function expiryStatus(expires: string): CurrencyStatus | null {
   const d = parseISO(expires);
   if (!d) return null;
-  const days = Math.ceil((d.getTime() - Date.now()) / DAY);
-  if (days < 0) return { tone: 'danger', key: 'validity.expired' };
-  if (days <= 30) return { tone: 'warning', key: 'validity.expiring' };
-  return { tone: 'success', key: 'validity.current' };
+  const days = Math.ceil((d.getTime() - Date.now()) / DAY_MS);
+  if (days < 0) return 'expired';
+  return days <= EXPIRING_SOON_DAYS ? 'expiring' : 'current';
 }
 
 export function Records() {
@@ -148,19 +137,20 @@ function Inner() {
                   <span className={styles.itemMeta}>
                     {r.issued && (
                       <span>
-                        {t('records.fields.issued')}: <bdi dir="ltr">{fmt(r.issued)}</bdi>
+                        {t('records.fields.issued')}: <bdi dir="ltr">{formatISODate(r.issued)}</bdi>
                       </span>
                     )}
                     {r.expires && (
                       <span>
-                        {t('records.fields.expires')}: <bdi dir="ltr">{fmt(r.expires)}</bdi>
+                        {t('records.fields.expires')}:{' '}
+                        <bdi dir="ltr">{formatISODate(r.expires)}</bdi>
                       </span>
                     )}
                   </span>
                   {r.remarks && <span className={styles.itemRemarks}>{r.remarks}</span>}
                 </div>
                 <div className={styles.side}>
-                  {st && <StatusPill tone={st.tone}>{t(st.key)}</StatusPill>}
+                  {st && <StatusPill tone={VALIDITY_TONE[st]}>{t(VALIDITY_LABEL[st])}</StatusPill>}
                   <div className={account.rowActions}>
                     <button
                       type="button"

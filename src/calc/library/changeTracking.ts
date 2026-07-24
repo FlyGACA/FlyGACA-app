@@ -50,7 +50,7 @@ export interface TrackedSource {
 /** Last-seen fingerprints, keyed by source id (persisted in updatesPrefs). */
 export type SeenMap = Record<string, string>;
 
-const DAY_MS = 86_400_000;
+import { DAY_MS } from '@/calc/recency';
 
 /** Only the enabled sources that actually carry a fingerprint, sorted by label. */
 export function trackableSources(sources: SourceEntry[]): SourceEntry[] {

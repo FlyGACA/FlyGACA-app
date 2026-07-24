@@ -4,8 +4,7 @@
 const D2R = Math.PI / 180;
 const R2D = 180 / Math.PI;
 const EARTH_NM = 3440.065;
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
-const norm360 = (deg: number) => ((deg % 360) + 360) % 360;
+import { fin, norm360 } from './guards';
 
 export interface WindTriangle {
   /** Wind-correction angle, degrees (+ = correct into wind to the right). */

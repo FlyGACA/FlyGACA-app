@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { pivotalAltitude } from '@/calc/navigation';
-
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function PivotalAltitude() {
   const { t } = useTranslation();
@@ -43,7 +42,7 @@ export function PivotalAltitude() {
       <OutputGrid>
         <ResultStat
           label={t('pivotalAlt.altitude')}
-          value={alt != null ? `${fmt(alt)} ft` : '—'}
+          value={alt != null ? `${fmtInt(alt)} ft` : '—'}
           tone="headline"
         />
       </OutputGrid>

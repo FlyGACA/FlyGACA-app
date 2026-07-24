@@ -5,8 +5,7 @@
  * inbound course (0–360): Direct = [−110°, +70°] (180°), Parallel = (70°, 180°]
  * (110°), Teardrop = (180°, 250°) (70°). Left-hand holds mirror the angle.
  */
-const norm360 = (d: number) => ((d % 360) + 360) % 360;
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin, norm360 } from './guards';
 
 export type HoldingEntry = 'direct' | 'parallel' | 'teardrop';
 

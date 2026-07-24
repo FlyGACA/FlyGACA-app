@@ -3,7 +3,7 @@
 
 const FT_PER_NM = 6076.12;
 const D2R = Math.PI / 180;
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 export interface TopOfDescent {
   /** Distance back from the target at which to start down, NM. */

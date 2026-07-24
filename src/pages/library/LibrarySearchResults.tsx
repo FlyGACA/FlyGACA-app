@@ -1,32 +1,15 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
-import type { ReactElement } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { searchEntryLink, searchHref } from '@/lib/contentLinks';
 import type { LibraryKind, SearchEntry } from '@/lib/content';
 import styles from './Library.module.css';
+import { highlight } from '@/components/highlight';
 
 /** Full-text results revealed per "load more" page. */
 const PAGE = 30;
 
 /** Split text on a case-insensitive needle, wrapping matches in <mark>. */
-function highlight(text: string, needle: string) {
-  if (!needle) return text;
-  const lower = text.toLowerCase();
-  const n = needle.toLowerCase();
-  const out: (string | ReactElement)[] = [];
-  let i = 0;
-  let hit = lower.indexOf(n);
-  let k = 0;
-  while (hit !== -1) {
-    if (hit > i) out.push(text.slice(i, hit));
-    out.push(<mark key={k++}>{text.slice(hit, hit + n.length)}</mark>);
-    i = hit + n.length;
-    hit = lower.indexOf(n, i);
-  }
-  if (i < text.length) out.push(text.slice(i));
-  return out;
-}
 
 /** The paginated, keyboard-navigable full-text hit list. */
 export function LibrarySearchResults({
