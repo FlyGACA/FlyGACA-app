@@ -11,7 +11,7 @@ import {
   signInWithEmail,
   signInWithGoogle,
 } from '@/lib/services/auth';
-import { authErrorInfo, isDomainAuthError } from '@/calc/app/authError';
+import { authErrorInfo, isAuthDismiss, isDomainAuthError } from '@/calc/app/authError';
 import { SITE_ORIGIN, isMirrorHost } from '@/lib/seo/seo';
 import { useForm } from '@/hooks/useForm';
 import { PasswordStrength } from '@/components/account/PasswordStrength';
@@ -93,6 +93,9 @@ export function FirebaseSignIn() {
       await fn();
     } catch (e) {
       const code = (e as { code?: string }).code;
+      // Closing the Google popup (or opening a second one) isn't a failure — the
+      // `finally` clears busy, so bail silently instead of flashing a scary error.
+      if (isAuthDismiss(code)) return;
       const { field, key } = authErrorInfo(code);
       const generic = key === 'account.authError';
       if (generic) console.error('Auth failure', code, e);
