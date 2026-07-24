@@ -49,10 +49,20 @@ firebase.json's rewrite regions must match).
   components use CSS Modules with **logical properties** so RTL mirrors automatically. See
   `FIGMA_DESIGN_SYSTEM.md` for the design system.
 - **Data:** the regulatory JSON corpus + indexes ship under `public/data/` and are fetched at
-  runtime via `src/lib/content.ts` (`fetchJson`) + the `useFetchJson` hook — the heavy corpus never
+  runtime via `src/lib/content.ts` (`fetchJson`; corpus-link routing lives in
+  `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
-- **Calculators:** pure math in `src/calc/*` (no DOM/i18n) so it is unit-testable; the
+- **Calculators:** pure, DOM-free logic in `src/calc/*` (no DOM/i18n) so it is unit-testable.
+  Aviation tool math stays **flat** at the `src/calc/` root (`isa`, `tas`, `crosswind`, `holding`,
+  `runway*`, … — one module per catalog tool, plus the shared date math `recency`); the non-tool
+  helpers live in subfolders by domain — `calc/chat/` (Captain Adel answer/thread/voice:
+  `chat*`, `conversations`, `transcript`, `markdown`, `speech`, `textToSpeech`, `voiceSelection`),
+  `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`), `calc/library/`
+  (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`), `calc/study/`
+  (`srs` — the cross-platform contract the apple/ Swift port mirrors), and `calc/app/`
+  (`authError`, `dashboardLayout`, `toolPresets`). Subfolders may import the flat core
+  (`@/calc/recency`), never each other sideways. The
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
   disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses
   `useNumericInputs` (reads floats from `nums.<key>`, everything else from `inputs.<key>`);
@@ -61,10 +71,15 @@ firebase.json's rewrite regions must match).
   legacy `FGCalc` helper (`calc-tools.js`). **Crosswind is the reference implementation** every
   other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
   `FieldGrid`).
-- **Services:** `src/lib/*.ts` are the typed frontend services (`api`, `auth`, `firebase`,
-  `entitlements`, `features`, `billing`, `pricing`, `referral`, `staff`, `org`, `packEntitlements`,
-  `prepCatalog`, `waitlist`, `native-bridge`, `offlineCache`, `sync`, `studyProgressSync`,
-  `analytics`, `seo`, `jsonld`, …) plus a family of `use*` hooks. `entitlements.isActive` is a pure
+- **Services:** `src/lib/` holds the typed frontend services, grouped by concern:
+  `src/lib/services/` (Firebase/account: `firebase`, `auth`, `account`, `sync`, `org`, `staff`,
+  `school`, `entitlements`, `packEntitlements`, `features`, `billing`, `pricing`, `referral`,
+  `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference stores),
+  `src/lib/seo/` (`seo`, `jsonld`), `src/lib/native/` (`nativeBridge`, `pwa`, `offlineCache`),
+  with cross-cutting modules (`api`, `content`, `analytics`, `theme`, …) at the `src/lib/` root.
+  `tools.ts` and `prepCatalog.ts` stay pinned at the `src/lib/` root — pipeline scripts under
+  `scripts/` parse them by that literal path. The shared React hooks live in `src/hooks/`
+  (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta`, …). `entitlements.isActive` is a pure
   predicate mirroring `functions/src/billing-core.ts`, and `features.ts` (`FEATURE_PLAN` /
   `useFeature`) is the single source of truth for which plan unlocks which premium feature — but the
   `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant, and true
@@ -78,16 +93,17 @@ firebase.json's rewrite regions must match).
   offline. Study progress lives client-side (`src/lib/studyProgress.ts` is the source of truth);
   `studyProgressSync.ts` is an upload-only backup that feeds the B2B cohort readiness report.
 - **PWA / native:** `vite-plugin-pwa` generates the service worker (app shell precached,
-  `/data/*` network-first). `native-bridge.ts` is inert on web and routes auth/IAP/offline-cache
+  `/data/*` network-first). `src/lib/native/nativeBridge.ts` is inert on web and routes auth/IAP/offline-cache
   through Capacitor plugins inside the native shell (`capacitor.config.ts`; iOS + Android).
 
 ## Backend (`functions/`)
 
 - **Pattern:** every business rule lives in a pure, Firebase-free `*-core.ts` module (e.g.
   `billing-core`, `chat-quota-core`, `rate-limit-core`, `staff-core`, `school-core`, `student-core`,
-  `referral-core`, `feedback-core`, `api-key-core`) so policy is unit-testable in isolation; the
+  `org-core`, `referral-core`, `feedback-core`, `api-key-core`) so policy is unit-testable in
+  isolation; the
   Express/Firestore wrappers (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `org.ts`) stay
-  thin. Client-side mirrors (`src/calc/chatQuota.ts`, `src/lib/entitlements.ts`,
+  thin. Client-side mirrors (`src/calc/chat/chatQuota.ts`, `src/lib/entitlements.ts`,
   `src/lib/features.ts`) must match their server core.
 - **Entitlement is server-owned.** `users/{uid}.entitlement` is written **only** by Cloud Functions
   through the Admin SDK (which bypasses `firestore.rules`): `stripeWebhook` (Stripe tiers),
@@ -126,6 +142,9 @@ RAG embeddings) hold the datastore schemas.
 - **The disclaimer never drifts.** Use `<Disclaimer />`; do not inline or reword the
   not-affiliated / verify-against-GACA text.
 - **Tokens only / logical properties only.** No hard-coded colours; no physical `left`/`right`.
+- **Never commit build output.** `public/sitemap.xml` / `public/robots.txt` are regenerated by
+  `build:sitemap` and git-ignored. Keep branches synced with `main`; see `docs/MERGE-CONFLICTS.md`
+  for prevention + how to resolve lockfile / i18n conflicts.
 - Run `npm run verify` before committing. It chains the frontend CI gate —
   `typecheck → lint → format:check → test → build → check:bundle`. CI (`.github/workflows/ci.yml`)
   runs this plus three more jobs you should be aware of when your change touches them:
@@ -139,7 +158,8 @@ RAG embeddings) hold the datastore schemas.
 The legacy→React migration is **complete** (all catalog tools are live). To add a tool: register
 it in `src/lib/tools.ts` — the typed catalog registry and single source of truth (`status:
 'soon'` until it ships, then flip to `'live'`) — lift its math into `src/calc/<tool>.ts` (pure,
-add a Vitest spec), build a page under `src/pages/tools/` using `CalcShell` + `useNumericInputs`
+add a Vitest spec), build a page under `src/pages/tools/<category>/` (the folder matching the
+registry's `category`; `ToolsIndex` alone stays at the `tools/` root) using `CalcShell` + `useNumericInputs`
 (or `useUrlState` for string-only tools), add its strings to both i18n bundles, and register the
 route in `router.tsx`. Names/blurbs/category labels resolve from i18n by id, so the registry holds
 only structure (route, category, status, keywords).

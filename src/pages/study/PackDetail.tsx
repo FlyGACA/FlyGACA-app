@@ -1,26 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
+import { useEffect } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type {
-  CorpusIndex,
-  GroundSchoolData,
-  PathsIndex,
-  PdfsIndex,
-  QuizData,
-} from '../../lib/content';
-import { useStudyProgress } from '../../lib/studyProgress';
-import { useAccount, refreshAccount } from '../../lib/account';
-import { hasPackAccess, ownsPack } from '../../lib/packEntitlements';
-import { canCheckout, startPackCheckout } from '../../lib/billing';
-import { captureRefFromUrl, getStoredRef } from '../../lib/referral';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { adelLink } from '../../lib/adel';
-import { Disclaimer } from '../../components/Disclaimer';
-import { ProgressBar } from '../../components/ProgressBar';
-import { findPack, packItemCount, PREP_PACK_PRICE } from '../../lib/prepCatalog';
-import { NotFound } from '../NotFound';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { CorpusIndex, GroundSchoolData, PathsIndex, PdfsIndex, QuizData } from '@/lib/content';
+import { useStudyProgress } from '@/lib/studyProgress';
+import { useAccount, refreshAccount } from '@/lib/services/account';
+import { hasPackAccess, ownsPack } from '@/lib/services/packEntitlements';
+import { captureRefFromUrl } from '@/lib/services/referral';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { courseLd } from '@/lib/seo/jsonld';
+import { adelLink } from '@/lib/adel';
+import { Disclaimer } from '@/components/Disclaimer';
+import { ProgressBar } from '@/components/ProgressBar';
+import { findPack } from '@/lib/prepCatalog';
+import { PackStorefront, countQuestions } from './PackStorefront';
+import { PackContents } from './PackContents';
+import { NotFound } from '@/pages/not-found/NotFound';
 import styles from './Study.module.css';
 
 interface PackDetailProps {
@@ -34,7 +29,6 @@ export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
   const { t, i18n } = useTranslation();
   const { id: paramId } = useParams<{ id: string }>();
   const id = fixedId ?? paramId;
-  const navigate = useNavigate();
   const pack = findPack(id);
   // `soon` packs are announced but have no content/detail page — treat as not found
   // so the storefront card (with its waitlist form) is the only surface for them.
@@ -66,8 +60,6 @@ export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const checkout = searchParams.get('checkout');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
 
   // Persist an inbound ?ref=CODE so it survives the sign-in / Stripe round-trip.
   useEffect(() => {
@@ -102,77 +94,10 @@ export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
     setSearchParams(next, { replace: true });
   }
 
-  async function buy() {
-    setBusy(true);
-    setError('');
-    try {
-      await startPackCheckout(pack2.id, { ref: getStoredRef() });
-    } catch (e) {
-      const code = e instanceof Error ? e.message : '';
-      if (code === 'sign-in-required') {
-        navigate('/account');
-        return;
-      }
-      setError(t('study.packCheckoutError'));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  // Locked = a paid pack the user neither owns nor has via a plan. Show a real product
-  // page: what's inside, price, Buy (or "included with Pro"). Buy is web-only.
+  // Locked = a paid pack the user neither owns nor has via a plan; the storefront
+  // sibling owns the buy flow.
   if (!access) {
-    return (
-      <section className={`container ${styles.page}`}>
-        {!standalone && (
-          <p className={styles.back}>
-            <Link to="/study/packs">← {t('study.packs')}</Link>
-          </p>
-        )}
-        <header className={styles.packHero}>
-          <div className={styles.packHeroTop}>
-            <h1>{packName}</h1>
-            <span className={styles.proTag}>{t('study.packPaid')}</span>
-          </div>
-          <p className={styles.packHeroDesc}>{packDesc}</p>
-
-          <p className={styles.packInsideLine}>
-            {t('study.packItemCount', { n: packItemCount(pack2) })} ·{' '}
-            {t('study.questions', { n: countQuestions(quiz.data, pack2.bankIds) })}
-          </p>
-
-          <div className={styles.packBuyRow}>
-            <span className={styles.packBuyPrice}>
-              <bdi dir="ltr">{t('study.packPriceOnce', { n: PREP_PACK_PRICE })}</bdi>
-            </span>
-            {canCheckout() ? (
-              <button
-                type="button"
-                className={styles.primary}
-                disabled={busy}
-                onClick={() => void buy()}
-              >
-                {busy ? t('pricing.checkoutBusy') : t('study.packBuy')}
-              </button>
-            ) : (
-              // Native shells buy through store IAP, not Stripe web checkout.
-              <button type="button" className={styles.primary} disabled aria-disabled="true">
-                {t('pricing.passComingSoon')}
-              </button>
-            )}
-          </div>
-          <p className={styles.packIncludedWith}>
-            <Link to="/pricing">{t('study.packIncludedWithPro')}</Link>
-          </p>
-          {error && (
-            <p role="alert" className={styles.notifyError}>
-              {error}
-            </p>
-          )}
-        </header>
-        <Disclaimer compact />
-      </section>
-    );
+    return <PackStorefront pack={pack2} questionCount={countQuestions(quiz.data, pack2.bankIds)} />;
   }
 
   const banks = (quiz.data?.banks ?? []).filter((b) => pack2.bankIds.includes(b.id));
@@ -304,137 +229,17 @@ export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
         </div>
       </header>
 
-      {banks.length > 0 && (
-        <section className={styles.packSection}>
-          <h2 className={styles.packSectionHead}>{t('study.packInside')}</h2>
-          <ul className={styles.packCards}>
-            {banks.map((b) => {
-              const best = quizBest[b.id];
-              const bankFlags = flagged[b.id]?.length ?? 0;
-              return (
-                <li key={b.id} className={styles.packCard}>
-                  <div className={styles.packCardHead}>
-                    <span className={styles.bankTitle}>{b.title}</span>
-                    <span className={styles.packCardMeta}>
-                      <span>{t('study.questions', { n: b.questions.length })}</span>
-                      {best != null && (
-                        <span className={styles.packCardBest}>
-                          {t('study.best', { pct: best })}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                  {best != null && (
-                    <div className={styles.packCardBar}>
-                      <ProgressBar percent={best} label={b.title} />
-                    </div>
-                  )}
-                  <span className={styles.packActions}>
-                    <Link to={`/study/quiz?bank=${b.id}`} className={styles.packChip}>
-                      {t('study.quiz')}
-                    </Link>
-                    <Link to={`/study/flashcards?bank=${b.id}`} className={styles.packChip}>
-                      {t('study.flashcards')}
-                    </Link>
-                  </span>
-                  {bankFlags > 0 && (
-                    <Link to="/study/quiz?review=flagged" className={styles.packFlagChip}>
-                      ★ {t('study.reviewFlagged', { n: bankFlags })}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
-
-      {reading.length > 0 && (
-        <section className={styles.packSection}>
-          <h2 className={styles.packSectionHead}>{t('study.packReading')}</h2>
-          <p className={styles.subtitle}>{t('study.packReadingDesc')}</p>
-          <ul className={styles.readingList}>
-            {reading.map((d) => (
-              <li key={d.slug}>
-                <Link to={`/library/reference/${d.slug}`} className={styles.readingRow}>
-                  {d.badge && <span className={styles.readingBadge}>{d.badge}</span>}
-                  <span className={styles.readingMain}>
-                    <span className={styles.readingTitle}>{d.title}</span>
-                    {d.sections != null && (
-                      <span className={styles.readingMeta}>
-                        {t('study.sections', { n: d.sections })}
-                      </span>
-                    )}
-                  </span>
-                  <span className={styles.readingArrow} aria-hidden="true">
-                    →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {modules.length > 0 && (
-        <section className={styles.packSection}>
-          <h2 className={styles.packSectionHead}>{t('study.groundschool')}</h2>
-          <ul className={styles.banks}>
-            {modules.map((m) => (
-              <li key={m.id}>
-                <Link to="/study/groundschool" className={styles.bank}>
-                  <span className={styles.bankTitle}>{m.title}</span>
-                  <span className={styles.bankDesc}>{m.summary}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {readingPaths.length > 0 && (
-        <section className={styles.packSection}>
-          <h2 className={styles.packSectionHead}>{t('study.paths')}</h2>
-          <ul className={styles.banks}>
-            {readingPaths.map((p) => (
-              <li key={p.id}>
-                <Link to="/study/paths" className={styles.bank}>
-                  <span className={styles.bankTitle}>{p.title}</span>
-                  <span className={styles.bankDesc}>{p.desc}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {sheets.length > 0 && (
-        <section className={styles.packSection}>
-          <h2 className={styles.packSectionHead}>{t('study.sheets')}</h2>
-          <ul className={styles.banks}>
-            {sheets.map((d) => (
-              <li key={d.slug}>
-                <Link to="/study/sheets" className={styles.bank}>
-                  <span className={styles.bankTitle}>{d.title}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <PackContents
+        banks={banks}
+        reading={reading}
+        modules={modules}
+        readingPaths={readingPaths}
+        sheets={sheets}
+      />
 
       <div className={styles.footnote}>
         <Disclaimer compact />
       </div>
     </section>
-  );
-}
-
-/** Total questions across a pack's banks — for the locked page's "what's inside". */
-function countQuestions(data: QuizData | null | undefined, bankIds: string[]): number {
-  if (!data) return 0;
-  return bankIds.reduce(
-    (n, id) => n + (data.banks.find((b) => b.id === id)?.questions.length ?? 0),
-    0,
   );
 }

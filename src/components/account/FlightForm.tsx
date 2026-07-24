@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextField } from '../calc/TextField';
+import { TextField } from '@/components/calc/TextField';
 import type { FlightDraft } from './flight';
-import styles from '../../pages/account/account.module.css';
+import styles from '@/pages/account/account.module.css';
 
 const FIELDS: { key: keyof FlightDraft; placeholder?: string }[] = [
   { key: 'date', placeholder: '2024-06-01' },

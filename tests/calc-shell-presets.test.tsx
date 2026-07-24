@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import '../src/i18n';
+import '@/i18n';
 
 const h = vi.hoisted(() => ({ navigate: vi.fn(), shareResult: 'shared' as 'shared' | 'copied' }));
 
@@ -16,10 +16,10 @@ vi.mock('react-router', async (orig) => ({
   ...(await orig<typeof import('react-router')>()),
   useNavigate: () => h.navigate,
 }));
-vi.mock('../src/lib/features', () => ({ useFeature: () => true })); // Pro
-vi.mock('../src/lib/share', () => ({ shareCurrent: vi.fn(() => Promise.resolve(h.shareResult)) }));
+vi.mock('@/lib/services/features', () => ({ useFeature: () => true })); // Pro
+vi.mock('@/lib/share', () => ({ shareCurrent: vi.fn(() => Promise.resolve(h.shareResult)) }));
 
-import { CalcShell } from '../src/components/CalcShell';
+import { CalcShell } from '@/components/CalcShell';
 
 function renderShell(route = '/tools/crosswind?wind=10') {
   return render(

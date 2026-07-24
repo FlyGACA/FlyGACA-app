@@ -6,8 +6,8 @@ import {
   regionRank,
   compareAirports,
   type RegionFilter,
-} from '../src/lib/aerodromes';
-import type { Airport } from '../src/lib/content';
+} from '@/lib/aerodromes';
+import type { Airport } from '@/lib/content';
 
 // Minimal Airport factory — the region helpers only read `region`, `country_en`
 // and `icao`, so the rest is filled with inert defaults.

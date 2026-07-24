@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { formatHours, fuelPlan, specificRange } from '../src/calc/fuel';
-import { percentMac, weightBalance } from '../src/calc/weightBalance';
+import { formatHours, fuelPlan, specificRange } from '@/calc/fuel';
+import { percentMac, weightBalance } from '@/calc/weightBalance';
 
 describe('fuelPlan', () => {
   it('endurance = fob ÷ burn; range scales with groundspeed', () => {

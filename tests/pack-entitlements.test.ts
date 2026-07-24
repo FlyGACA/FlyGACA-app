@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { hasPackAccess, ownsPack } from '../src/lib/packEntitlements';
-import { FREE_FOR_EVERYONE, type Entitlement } from '../src/lib/entitlements';
-import { PACKS_GATED, type Pack } from '../src/lib/prepCatalog';
+import { hasPackAccess, ownsPack } from '@/lib/services/packEntitlements';
+import { FREE_FOR_EVERYONE, type Entitlement } from '@/lib/services/entitlements';
+import { PACKS_GATED, type Pack } from '@/lib/prepCatalog';
 
 // hasPackAccess is the paywall for the exam-prep product line. Its contract:
 // free packs (and everything when the gate is off) are open; a paid pack unlocks
@@ -84,7 +84,7 @@ describe('flavor grant (standalone prep-app builds)', () => {
   it('unlocks exactly the flavor’s own pack, nothing else', async () => {
     vi.stubEnv('VITE_APP_FLAVOR', 'medical');
     vi.resetModules();
-    const fresh = await import('../src/lib/packEntitlements');
+    const fresh = await import('@/lib/services/packEntitlements');
     // Its own pack: open with no account, no entitlement, no ownership.
     expect(fresh.hasPackAccess(paidPack, null, [], NOW)).toBe(true);
     // A different paid pack stays locked — the grant is not a skeleton key.

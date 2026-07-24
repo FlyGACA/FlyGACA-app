@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { usePageMeta } from '../src/lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 const DEFAULT_TITLE = 'Fly GACA — Saudi Aviation Library';
 
@@ -29,8 +29,7 @@ function LdProbe() {
   return null;
 }
 
-const managedLd = () =>
-  document.head.querySelector('script[data-managed-ld]')?.textContent ?? null;
+const managedLd = () => document.head.querySelector('script[data-managed-ld]')?.textContent ?? null;
 
 // usePageMeta reads useLocation, so it must render inside a Router.
 const renderProbe = (ui: ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);

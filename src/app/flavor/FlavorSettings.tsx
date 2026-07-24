@@ -1,11 +1,11 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { FLAVOR } from '../../flavors/current';
-import { openExternal } from '../../lib/native-bridge';
+import { openExternal } from '@/lib/native/nativeBridge';
 import { LangToggle } from '../../components/LangToggle';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Disclaimer } from '../../components/Disclaimer';
-import { usePageMeta } from '../../lib/usePageMeta';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import styles from './flavor.module.css';
 
 /**

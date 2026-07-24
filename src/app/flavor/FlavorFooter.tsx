@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { FLAVOR } from '../../flavors/current';
-import { openExternal } from '../../lib/native-bridge';
+import { openExternal } from '@/lib/native/nativeBridge';
 import { Disclaimer } from '../../components/Disclaimer';
 import styles from './flavor.module.css';
 

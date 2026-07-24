@@ -2025,6 +2025,7 @@
   },
   "account": {
     "title": "Account",
+    "eyebrow": "Your account",
     "signInTitle": "Sign in",
     "signInIntro": "Sync your logbook, study progress and bookmarks across devices — your data stays on this device first, sign-in adds backup and sync.",
     "showPassword": "Show",
@@ -2092,7 +2093,10 @@
       "network": "Network error. Check your connection and try again.",
       "providerDisabled": "This sign-in method is turned off for this app.",
       "unauthorizedDomain": "This site isn't authorized for sign-in yet. If you're on a preview link, use the main site.",
-      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site."
+      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site.",
+      "popupBlocked": "The sign-in popup was blocked or closed. Redirecting you to continue…",
+      "technicalDetail": "(code: {{code}})",
+      "useMainSite": "Go to the main site to sign in"
     },
     "subscription": {
       "title": "Subscription",
@@ -2907,15 +2911,15 @@
       },
       "cpl": {
         "name": "CPL exam prep",
-        "desc": "Commercial Pilot Licence written prep — coming soon."
+        "desc": "Commercial Pilot Licence written prep — GACAR Part 61 privileges, commercial operations and performance."
       },
       "ir": {
         "name": "Instrument Rating prep",
-        "desc": "IR written prep — approaches, holds and IFR procedures. Coming soon."
+        "desc": "IR written prep — IFR flight rules, instrument procedures and the instrument-rating requirements."
       },
       "atpl": {
         "name": "ATPL exam prep",
-        "desc": "Airline Transport Pilot Licence theory prep — coming soon."
+        "desc": "Airline Transport Pilot Licence theory prep — ATP privileges and GACAR Part 121 air transport operations."
       }
     },
     "packMixed": "Mixed topics",
