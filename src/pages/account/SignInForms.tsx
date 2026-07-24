@@ -33,6 +33,9 @@ function looksLikeEmail(v: string): boolean {
 function GoogleMark() {
   return (
     <span className={styles.googleChip} aria-hidden="true">
+      {/* Google's brand mark. The four hexes below are fixed by Google's brand
+          guidelines and must NOT be tokenised or theme-adapted — this is the one
+          sanctioned exception to the tokens-only rule. */}
       <svg width="18" height="18" viewBox="0 0 48 48" focusable="false">
         <path
           fill="#4285F4"
