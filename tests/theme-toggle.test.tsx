@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
-import '../src/i18n';
-import { ThemeToggle } from '../src/components/ThemeToggle';
-import { setTheme } from '../src/lib/theme';
+import '@/i18n';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { setTheme } from '@/lib/theme';
 
 // ThemeToggle cycles the three themes on <html> via data-theme: Falcon (default,
 // no attribute) → Cockpit / Night-Ops → Day (light reading) → back. Its label

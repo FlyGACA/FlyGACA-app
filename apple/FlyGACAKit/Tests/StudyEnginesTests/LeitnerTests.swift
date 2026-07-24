@@ -3,7 +3,7 @@ import XCTest
 
 @testable import StudyEngines
 
-/// Parity vectors against the web engine (src/calc/srs.ts) — every expected
+/// Parity vectors against the web engine (src/calc/study/srs.ts) — every expected
 /// value here was hand-computed from the TypeScript implementation. If one of
 /// these fails after an engine change, web and iOS have diverged.
 final class LeitnerTests: XCTestCase {

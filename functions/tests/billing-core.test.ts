@@ -113,11 +113,15 @@ describe("sellablePackId", () => {
     for (const id of SELLABLE_PACK_IDS) expect(sellablePackId(id)).toBe(id);
   });
 
-  it("rejects a 'soon' / unknown pack id", () => {
-    expect(sellablePackId("cpl")).toBeNull();
-    expect(sellablePackId("ir")).toBeNull();
-    expect(sellablePackId("atpl")).toBeNull();
+  it("accepts the Wave-2 certificate packs (cpl/ir/atpl now live)", () => {
+    expect(sellablePackId("cpl")).toBe("cpl");
+    expect(sellablePackId("ir")).toBe("ir");
+    expect(sellablePackId("atpl")).toBe("atpl");
+  });
+
+  it("rejects a 'soon' / free / unknown pack id", () => {
     expect(sellablePackId("airspace-vfr")).toBeNull(); // free pack — never sold one-time
+    expect(sellablePackId("foi")).toBeNull(); // future pack — not yet live
     expect(sellablePackId("nope")).toBeNull();
   });
 
@@ -129,7 +133,16 @@ describe("sellablePackId", () => {
   });
 
   it("mirrors the paid+live packs (guards against catalog drift)", () => {
-    expect([...SELLABLE_PACK_IDS]).toEqual(["ppl-exam", "medical", "aip", "elp", "conversion"]);
+    expect([...SELLABLE_PACK_IDS]).toEqual([
+      "ppl-exam",
+      "medical",
+      "aip",
+      "elp",
+      "conversion",
+      "cpl",
+      "ir",
+      "atpl",
+    ]);
   });
 });
 

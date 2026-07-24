@@ -1,9 +1,9 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
-import { NumberField } from '../src/components/calc/NumberField';
-import { TextField } from '../src/components/calc/TextField';
-import { ResultStat } from '../src/components/calc/ResultStat';
-import { FieldGrid, OutputGrid } from '../src/components/calc/Grids';
+import { NumberField } from '@/components/calc/NumberField';
+import { TextField } from '@/components/calc/TextField';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 
 // The shared field primitives every calculator composes. Thin, but they own the
 // label/onChange/unit/hint contract the tool pages rely on.
@@ -34,7 +34,9 @@ describe('<NumberField />', () => {
 
 describe('<TextField />', () => {
   it('defaults to a text input and shows the hint', () => {
-    render(<TextField label="Email" value="a@b.co" hint="We never share it." onChange={() => {}} />);
+    render(
+      <TextField label="Email" value="a@b.co" hint="We never share it." onChange={() => {}} />,
+    );
     const input = screen.getByDisplayValue('a@b.co');
     expect(input).toHaveAttribute('type', 'text');
     expect(screen.getByText('We never share it.')).toBeInTheDocument();

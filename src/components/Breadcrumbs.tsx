@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import type { Crumb } from '../lib/jsonld';
+import type { Crumb } from '@/lib/seo/jsonld';
 import styles from './Breadcrumbs.module.css';
 
 /**

@@ -2,7 +2,7 @@ import CoreModels
 import Foundation
 
 /// Leitner spaced repetition — a literal port of the web engine
-/// (src/calc/srs.ts), which is the cross-platform contract: users move between
+/// (src/calc/study/srs.ts), which is the cross-platform contract: users move between
 /// the web app and these apps, so box/due/mastery must agree exactly. Any change
 /// here must land in srs.ts too (and vice versa); the parity vectors in
 /// StudyEnginesTests assert the shared semantics.

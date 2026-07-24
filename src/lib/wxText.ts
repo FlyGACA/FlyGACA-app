@@ -1,6 +1,6 @@
 /** Bilingual rendering of parsed METAR/TAF fields. Takes a translate function so
  *  the calc layer stays pure. Shared by the METAR and TAF pages. */
-import type { Cloud, Wind } from '../calc/metar';
+import type { Cloud, Wind } from '@/calc/metar';
 
 type T = (key: string, options?: Record<string, unknown>) => string;
 

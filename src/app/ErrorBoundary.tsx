@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import { reportError } from '../lib/analytics';
+import { reportError } from '@/lib/analytics';
 import { ErrorFallback } from './ErrorFallback';
 
 interface Props {

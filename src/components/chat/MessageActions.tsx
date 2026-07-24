@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { shareCurrent } from '../../lib/share';
-import type { Rating } from '../../calc/chatFeedback';
+import { shareCurrent } from '@/lib/share';
+import type { Rating } from '@/calc/chat/chatFeedback';
 import { SpeakButton } from './SpeakButton';
 import styles from './MessageActions.module.css';
 

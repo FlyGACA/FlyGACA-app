@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { densityAltitude, isaDeviation, pressureAltitude } from '../src/calc/isa';
+import { densityAltitude, isaDeviation, pressureAltitude } from '@/calc/isa';
 
 describe('pressureAltitude', () => {
   it('returns field elevation at standard pressure', () => {
