@@ -1,12 +1,17 @@
 import ContentKit
+import PersistenceKit
 import SwiftUI
 
 /// The entire root of every white-label app. The ~20-line app shell passes the
-/// module id its xcconfig pinned (FGModuleID) and this view does the rest:
-/// load the bundled content, verify it belongs to this app, mount the shared
-/// module home. Adding a new App Store app never adds view code.
+/// module id its xcconfig pinned (FGModuleID) plus the shared study store, and
+/// this view does the rest: load the bundled content, verify it belongs to this
+/// app, mount the shared module home. Adding a new App Store app never adds view
+/// code.
 public struct SingleModuleRootView: View {
     public let moduleID: String?
+    /// The durable study store (nil when persistence is unavailable — see
+    /// FlyGACAApp). Threaded to every screen that reads/writes progress.
+    public let store: StudyStore?
 
     @State private var state = LoadState.loading
 
@@ -16,8 +21,9 @@ public struct SingleModuleRootView: View {
         case loaded(ModuleContent)
     }
 
-    public init(moduleID: String? = nil) {
+    public init(moduleID: String? = nil, store: StudyStore? = nil) {
         self.moduleID = moduleID
+        self.store = store
     }
 
     public var body: some View {
@@ -32,7 +38,7 @@ public struct SingleModuleRootView: View {
                     description: Text(message)
                 )
             case .loaded(let content):
-                ModuleHomeView(content: content)
+                ModuleHomeView(content: content, store: store)
                     .navigationTitle(Self.displayName(for: content.manifest.id))
             }
         }
