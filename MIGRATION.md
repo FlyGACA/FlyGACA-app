@@ -1,8 +1,10 @@
 # Migration tracker — legacy vanilla Fly GACA monorepo → `FlyGACA-app`
 
-This rebuild migrates the **frontend app only**. The Firebase Functions gateway, the Captain Adel
-RAG service, the Python `sales_agents/`, `office/`/`docs/`, and the multi-host routing generator are
-intentionally **out of scope** (the app keeps calling the same `/api` backend).
+This tracker records the **frontend** rebuild. At the time it was written the Firebase Functions
+gateway, the Captain Adel RAG service, the Python `sales_agents/`, `office/`/`docs/` and the
+multi-host routing generator were out of scope. That is no longer the shape of the repo — the
+gateway and the RAG flow now live here under `functions/` (see CLAUDE.md). The Python agents and
+the routing generator were never migrated.
 
 ## ✅ Foundation done (this PR)
 
@@ -19,7 +21,7 @@ intentionally **out of scope** (the app keeps calling the same `/api` backend).
   since replaced by the typed `src/lib/tools.ts` registry), and the **Crosswind** tool end-to-end
   (pure `calc/crosswind.ts` + unit tests + diagram).
 
-## ✅ Stage 1 — Expanded tools suite (in progress)
+## ✅ Stage 1 — Expanded tools suite
 
 **Platform (Batch 1.0):** typed tool registry (`src/lib/tools.ts`) driving a grouped, searchable
 Tools hub (13 categories, ~50 tools shown with live/soon + "new" badges); shared calc primitives
@@ -57,7 +59,7 @@ separation (`calc/separation.ts`), VFR self-brief checklist, LOA letter builder.
 the existing cores. **Stage 1 calculators complete — 33 tools live.** Remaining: Stage 2
 (data/reference).
 
-## ✅ Stage 2 — Data & reference tools (in progress)
+## ✅ Stage 2 — Data & reference tools
 
 - **Quick reference:** unit converter (`calc/units.ts`), transponder/squawk codes, ICAO phonetic
   alphabet & Morse, chart symbols.
@@ -69,8 +71,8 @@ the existing cores. **Stage 1 calculators complete — 33 tools live.** Remainin
   (`definitions-index.json`, fetched at runtime).
 - **Planning:** route planner (great-circle legs from `airports.json`), ICAO flight-plan builder.
 
-**Stage 2 essentially complete — 49 of 50 tools live.** Only `met-brief` is deferred (it needs a
-live weather API + CSP, which belong to a later wiring/hardening stage). The full tool suite is done.
+**Stage 2 complete.** `src/lib/tools.ts` now registers **55 tools, all `status: 'live'`** — the
+count to trust, since the registry is the single source of truth.
 
 ## ✅ Stage 4 — Account & commerce (local-first)
 
@@ -188,7 +190,7 @@ secret flip (Firebase config · App Check · Stripe price IDs · deploy rules) b
   web. Unit tests cover the web fallbacks + deep-link parsing. See `docs/RUNBOOK-native.md` for
   generating the `ios/`/`android/` projects on macOS.
 
-## ✅ Stage 9 — E2E, a11y & SEO (in progress)
+## ✅ Stage 9 — E2E, a11y & SEO
 
 - **Per-route titles + Open Graph** via `usePageMeta` (replacing the single static title), wired
   through `CalcShell`, the Document reader and every top-level/account/legal page.

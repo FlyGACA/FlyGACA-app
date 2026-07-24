@@ -14,10 +14,10 @@ never linted, formatted, type-checked, or bundled.
 Vendored as plain files with git history stripped. Neither collection is wired into the app build
 or into this repo's `.claude/` config.
 
-| Directory | Upstream | Pinned commit | License |
-|-----------|----------|---------------|---------|
-| `vendor/agency-roster/` | https://github.com/ziri22/agency-roster | `bc5384b2eb92ad37657e3cc395447c272737ec2a` | MIT |
-| `vendor/agency-agents/` | https://github.com/Raheel2774/agency-agents | `217a63b8b6b6ea5752fd436a05996c796ba0ec66` | MIT |
+| Directory               | Upstream                                      | Pinned commit                              | License |
+| ----------------------- | --------------------------------------------- | ------------------------------------------ | ------- |
+| `vendor/agency-roster/` | <https://github.com/ziri22/agency-roster>     | `bc5384b2eb92ad37657e3cc395447c272737ec2a` | MIT     |
+| `vendor/agency-agents/` | <https://github.com/Raheel2774/agency-agents> | `217a63b8b6b6ea5752fd436a05996c796ba0ec66` | MIT     |
 
 - **agency-roster** — 888 markdown "skills" (`skills/<division>/<agent>/SKILL.md`).
 - **agency-agents** — 258 subagent definitions (`<domain>/<agent>.md`) across 21 domains.
@@ -52,14 +52,14 @@ find .cursor -xtype l   # must print nothing
 Not referenced by any npm script, GitHub workflow, or other script. Each still runs if you invoke
 it directly with `node`.
 
-| File | Why it's here |
-|---|---|
-| `scripts/gen-avatar-live.mjs` | No references anywhere in the repo. |
-| `scripts/build-og-card.mjs` | Manual one-off; needs `fonts.gstatic.com` network access. The live OG pipeline is `npm run gen:og` → `scripts/build-og-images.mjs`. |
-| `scripts/captain-derivatives.mjs` | Produces favicons / social crops from the Captain Adel art; run by hand after `npm run gen:captain`. |
-| `scripts/build-airspaces-from-aip.mjs` | One-off AIP → airspace extraction. |
-| `functions-scripts/mint-api-key.mjs` | From `functions/scripts/`. Its siblings (`grant-org`, `grant-school-seats`, `grant-staff-access`, `school-cohort-report`) are documented in `docs/b2b/` and stayed put; this one had no references. |
-| `figma-ds/` | Manual Figma Plugin API pastes (`01-finish-foundations.js`, `02-core-components.js`) plus the handoff `README.md`, formerly `docs/design/figma-ds/`. Run inside Figma via the Scripter plugin — never from this repo. |
+| File                                   | Why it's here                                                                                                                                                                                                         |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/gen-avatar-live.mjs`          | No references anywhere in the repo.                                                                                                                                                                                   |
+| `scripts/build-og-card.mjs`            | Manual one-off; needs `fonts.gstatic.com` network access. The live OG pipeline is `npm run gen:og` → `scripts/build-og-images.mjs`.                                                                                   |
+| `scripts/captain-derivatives.mjs`      | Produces favicons / social crops from the Captain Adel art; run by hand after `npm run gen:captain`.                                                                                                                  |
+| `scripts/build-airspaces-from-aip.mjs` | One-off AIP → airspace extraction.                                                                                                                                                                                    |
+| `functions-scripts/mint-api-key.mjs`   | From `functions/scripts/`. Its siblings (`grant-org`, `grant-school-seats`, `grant-staff-access`, `school-cohort-report`) are documented in `docs/b2b/` and stayed put; this one had no references.                   |
+| `figma-ds/`                            | Manual Figma Plugin API pastes (`01-finish-foundations.js`, `02-core-components.js`) plus the handoff `README.md`, formerly `docs/design/figma-ds/`. Run inside Figma via the Scripter plugin — never from this repo. |
 
 ## Restoring something
 

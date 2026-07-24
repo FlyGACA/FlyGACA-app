@@ -1,12 +1,12 @@
 # RUNBOOK — cutover (parity-first)
 
-How the modern app (`gacafly/FlyGACA-app`) replaces the legacy PWA at flygaca.com. Cutover is
+How the modern app (`FlyGACA/FlyGACA-app`) replaces the legacy PWA at flygaca.com. Cutover is
 **parity-first**: ship only once the parity checklist passes and a preview channel has been smoke-
 tested. Firebase Hosting is the host; the legacy site stays as the rollback.
 
 ## 1. Parity checklist (must all hold)
 
-- [ ] All routes resolve (smoke spec green): tools hub + **54 live tools**, library (regulations /
+- [ ] All routes resolve (smoke spec green): tools hub + **55 live tools**, library (regulations /
       reference / handbooks) + reader + full-text search + **VFR charts**, study (quiz · flashcards ·
       groundschool · exam · paths · packs · **sheets**), guides, account/dashboard/logbook/settings,
       pricing, schools, about, legal.
