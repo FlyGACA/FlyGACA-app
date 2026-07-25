@@ -266,7 +266,7 @@
   text-align: center;
 }
 
-/* Abandoned-checkout acknowledgement (returns from Stripe cancel_url). */
+/* Abandoned/failed-checkout acknowledgement (?checkout=cancel). */
 .canceled {
   display: flex;
   flex-wrap: wrap;

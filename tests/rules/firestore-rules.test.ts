@@ -8,7 +8,7 @@
  *   2. Strict per-user isolation — no client can read another user's profile or
  *      logbook.
  * Plus the field-shape guards (email/displayName/hours/remarks bounds) and the
- * write-only `waitlist` / fully-denied `stripeCustomers` collections.
+ * write-only `waitlist` / fully-denied `moyasarCustomers` collections.
  *
  * Runs against the Firestore emulator under its own config — see
  * `vitest.rules.config.ts` and the `test:rules` script (which wraps this in
@@ -107,7 +107,7 @@ describe('users/{uid} — ownership & entitlement', () => {
     await assertFails(
       setDoc(doc(dbFor(ALICE), `users/${ALICE}`), {
         ...validProfile,
-        entitlement: { plan: 'pro', source: 'stripe' },
+        entitlement: { plan: 'pro', source: 'moyasar' },
       }),
     );
   });
@@ -133,7 +133,7 @@ describe('users/{uid} — ownership & entitlement', () => {
   });
 
   it('allows an update that leaves a server-set entitlement byte-identical', async () => {
-    const ent = { plan: 'pro', source: 'stripe' };
+    const ent = { plan: 'pro', source: 'moyasar' };
     await seed(`users/${ALICE}`, { ...validProfile, entitlement: ent });
     await assertSucceeds(
       setDoc(doc(dbFor(ALICE), `users/${ALICE}`), {
@@ -354,25 +354,42 @@ describe('waitlist — write-only', () => {
   });
 });
 
-describe('stripeCustomers & default-deny', () => {
-  it('denies a client reading the stripe-customer mapping', async () => {
-    await seed(`stripeCustomers/${ALICE}`, { customerId: 'cus_x' });
-    await assertFails(getDoc(doc(dbFor(ALICE), `stripeCustomers/${ALICE}`)));
+describe('moyasarCustomers & default-deny', () => {
+  it('denies a client reading the saved-card-token mapping', async () => {
+    await seed(`moyasarCustomers/${ALICE}`, { token: 'tok_x' });
+    await assertFails(getDoc(doc(dbFor(ALICE), `moyasarCustomers/${ALICE}`)));
   });
 
-  it('denies a client writing the stripe-customer mapping', async () => {
+  it('denies a client writing the saved-card-token mapping', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), `moyasarCustomers/${ALICE}`), { token: 'tok_x' }));
+  });
+
+  it('denies a client reading a checkout intent (the server-trusted price)', async () => {
+    await seed('checkoutIntents/co_1', { uid: ALICE, kind: 'pro', amount: 5900 });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'checkoutIntents/co_1')));
+  });
+
+  it('denies a client writing/forging a checkout intent', async () => {
     await assertFails(
-      setDoc(doc(dbFor(ALICE), `stripeCustomers/${ALICE}`), { customerId: 'cus_x' }),
+      setDoc(doc(dbFor(ALICE), 'checkoutIntents/co_1'), { uid: ALICE, kind: 'pro', amount: 1 }),
     );
   });
 
-  it('denies a client reading the stripe-events idempotency markers', async () => {
-    await seed('stripeEvents/evt_1', { type: 'checkout.session.completed' });
-    await assertFails(getDoc(doc(dbFor(ALICE), 'stripeEvents/evt_1')));
+  it('denies a client reading the Moyasar payment idempotency markers', async () => {
+    await seed('moyasarPayments/pay_1', { receivedAt: 'x' });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'moyasarPayments/pay_1')));
   });
 
-  it('denies a client writing a stripe-events marker', async () => {
-    await assertFails(setDoc(doc(dbFor(ALICE), 'stripeEvents/evt_1'), { type: 'x' }));
+  it('denies a client writing a Moyasar payment marker', async () => {
+    await assertFails(setDoc(doc(dbFor(ALICE), 'moyasarPayments/pay_1'), { receivedAt: 'x' }));
+  });
+
+  it('denies a client reading or writing their own auto-renew subscription state', async () => {
+    await seed(`subscriptions/${ALICE}`, { autoRenew: true, cadence: 'annual' });
+    await assertFails(getDoc(doc(dbFor(ALICE), `subscriptions/${ALICE}`)));
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `subscriptions/${ALICE}`), { autoRenew: false }),
+    );
   });
 
   it('denies a client reading the school-invite roster', async () => {
@@ -434,7 +451,7 @@ describe('chatCredits — owner-readable, server-only writes', () => {
 
 describe('packEntitlements — owner-readable, server-only writes', () => {
   const owned = {
-    packs: { medical: { purchasedAt: '2026-07-19T00:00:00.000Z', source: 'stripe' } },
+    packs: { medical: { purchasedAt: '2026-07-19T00:00:00.000Z', source: 'moyasar' } },
   };
 
   it('lets an owner read their own purchased packs', async () => {

@@ -184,6 +184,7 @@ const Records = lazyNamed(() => import('./pages/account/Records'), 'Records');
 const Settings = lazyNamed(() => import('./pages/account/Settings'), 'Settings');
 
 // Marketing / legal
+const Checkout = lazyNamed(() => import('./pages/checkout/Checkout'), 'Checkout');
 const Pricing = lazyNamed(() => import('./pages/pricing/Pricing'), 'Pricing');
 const Schools = lazyNamed(() => import('./pages/schools/Schools'), 'Schools');
 const BusinessAdmin = lazyNamed(() => import('./pages/business/Admin'), 'BusinessAdmin');
@@ -341,6 +342,8 @@ const mainRoutes = [
       { path: 'logbook', element: <Logbook /> },
       { path: 'records', element: <Records /> },
       { path: 'settings', element: <Settings /> },
+      { path: 'checkout', element: <Checkout /> },
+      { path: 'checkout/return', element: <Checkout /> },
       { path: 'pricing', element: <Pricing /> },
       { path: 'schools', element: <Schools /> },
       { path: 'business/admin', element: <BusinessAdmin /> },

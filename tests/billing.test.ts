@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { canCheckout, startProCheckout } from '@/lib/services/billing';
 import { FUNCTIONS_REGION } from '@/lib/services/firebase';
 
-// The billing callables (createCheckoutSession / createBillingPortalSession)
+// The billing callables (createCheckoutConfig / confirmPayment / cancelAutoRenew)
 // deploy to me-central1 (functions/src/region.ts is the source of truth). The
 // httpsCallable client region MUST match or checkout 404s in production.
 describe('callable region', () => {

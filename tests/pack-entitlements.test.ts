@@ -26,8 +26,8 @@ const freePack: Pack = {
   bankIds: ['airspace'],
 };
 
-const activePro: Entitlement = { plan: 'pro', expiresAt: '2026-12-31T00:00:00Z', source: 'stripe' };
-const lapsedPro: Entitlement = { plan: 'pro', expiresAt: '2026-01-01T00:00:00Z', source: 'stripe' };
+const activePro: Entitlement = { plan: 'pro', expiresAt: '2026-12-31T00:00:00Z', source: 'moyasar' };
+const lapsedPro: Entitlement = { plan: 'pro', expiresAt: '2026-01-01T00:00:00Z', source: 'moyasar' };
 const school: Entitlement = { plan: 'school', source: 'school' };
 
 describe('hasPackAccess', () => {

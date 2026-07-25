@@ -2,7 +2,8 @@
  * Cloud Functions entry point. Only the triggers exported here are deployed, so
  * this file is the single manifest of the backend's functions:
  *  - `chat`            — the Captain Adel gateway (Express app in ./gateway).
- *  - Stripe billing    — checkout / portal callables + the webhook (./billing).
+ *  - Moyasar billing   — checkout/confirm/cancel callables, the webhook, and the
+ *                        token-renewal engine (./billing).
  *  - `claimStaffAccess`— complimentary staff full-access grant (./staff).
  *  - `claimSchoolSeat` — self-serve school-seat grant (domain/invite, ./school).
  *
@@ -14,13 +15,15 @@ import { defineSecret } from "firebase-functions/params";
 import app from "./gateway.js";
 import { REGION } from "./region.js";
 
-// Stripe billing — checkout/portal callables, the entitlement webhook, and the
-// referral-code callable.
+// Moyasar billing — checkout/confirm/cancel callables, the webhook, the daily
+// renewal engine, and the referral-code callable.
 export {
-  createCheckoutSession,
-  createBillingPortalSession,
+  createCheckoutConfig,
+  confirmPayment,
+  cancelAutoRenew,
   getReferralCode,
-  stripeWebhook,
+  moyasarWebhook,
+  renewMoyasarSubscriptions,
 } from "./billing.js";
 
 // Staff / complimentary full-access grant (see ./staff.ts).

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '@/lib/services/account';
 import { uiPlan } from '@/lib/services/entitlements';
-import { startBillingPortal } from '@/lib/services/billing';
+import { cancelAutoRenew } from '@/lib/services/billing';
 import { isAuthAvailable } from '@/lib/services/auth';
 import { StatusPill } from '@/components/StatusPill';
 import { Alert } from '@/components/Alert';
@@ -18,28 +18,32 @@ function fmtDate(iso?: string): string | null {
 }
 
 /**
- * Subscription status + management. Shows the active plan and renewal date for
- * paid users with a Stripe-portal "Manage" button; free users get an upgrade
- * prompt. Entitlement is read-only here — the server grants it via the webhook.
+ * Subscription status + management. Shows the active plan and renewal date; a
+ * genuine Moyasar-billed plan gets a "turn off auto-renew" action (Moyasar has no
+ * hosted billing portal — the token-renewal engine just stops recharging, and the
+ * plan stays active until its already-granted expiry). Free users get an upgrade
+ * prompt. Entitlement is read-only here — the server grants it.
  */
 export function SubscriptionPanel() {
   const { t } = useTranslation();
   const { entitlement } = useAccount();
   const plan = uiPlan(entitlement);
   const isPaid = plan !== 'free';
-  // Stripe self-service only applies to a genuine Stripe subscription. Gate the
-  // "Manage" button + renewal/source rows on the real record (not the presentational
-  // `plan`) so complimentary/promo and staff/school grants don't render a portal
-  // button that has no Stripe customer behind it.
-  const hasStripeSub = entitlement?.source === 'stripe';
+  // Auto-renew only applies to a genuine Moyasar-billed plan — a complimentary/
+  // promo/staff/school grant has no card on file to stop charging. Gate on the
+  // real record (not the presentational `plan`) so those grants never render a
+  // button with nothing behind it.
+  const hasMoyasarSub = entitlement?.source === 'moyasar';
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [autoRenewOff, setAutoRenewOff] = useState(false);
 
-  async function manage() {
+  async function turnOffAutoRenew() {
     setBusy(true);
     setError('');
     try {
-      await startBillingPortal();
+      await cancelAutoRenew();
+      setAutoRenewOff(true);
     } catch (e) {
       const code = (e as Error).message;
       setError(t(`account.subscription.errors.${code}`, t('account.subscription.errors.generic')));
@@ -74,18 +78,20 @@ export function SubscriptionPanel() {
               </div>
             )}
           </dl>
-          {/* The Stripe portal is web-only; native manages via the App Store. Only a
-              real Stripe subscription has a portal to manage. */}
-          {isAuthAvailable() && hasStripeSub && (
-            <button
-              type="button"
-              className={styles.manage}
-              disabled={busy}
-              onClick={() => void manage()}
-            >
-              {t('account.subscription.manage')}
-            </button>
-          )}
+          {isAuthAvailable() &&
+            hasMoyasarSub &&
+            (autoRenewOff ? (
+              <p className={styles.free}>{t('account.subscription.autoRenewOff')}</p>
+            ) : (
+              <button
+                type="button"
+                className={styles.manage}
+                disabled={busy}
+                onClick={() => void turnOffAutoRenew()}
+              >
+                {t('account.subscription.turnOffAutoRenew')}
+              </button>
+            ))}
         </>
       ) : (
         <>

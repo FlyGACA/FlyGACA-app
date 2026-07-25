@@ -6,12 +6,7 @@ import { PageHero } from '@/components/PageHero';
 import { SectionHeader } from '@/components/SectionHeader';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { faqLd } from '@/lib/seo/jsonld';
-import {
-  canCheckout,
-  startBillingPortal,
-  startProCheckout,
-  type ProPlan,
-} from '@/lib/services/billing';
+import { canCheckout, startProCheckout, type ProPlan } from '@/lib/services/billing';
 import { useAccount } from '@/lib/services/account';
 import { effectivePlan } from '@/lib/services/entitlements';
 import { annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
@@ -45,8 +40,8 @@ export function Pricing() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  // Stripe returns abandoned checkouts to /pricing?checkout=cancel; acknowledge it
-  // so the user knows nothing was charged, and let them clear it.
+  // An abandoned/failed checkout returns to /pricing?checkout=cancel; acknowledge
+  // it so the user knows nothing was charged, and let them clear it.
   const showCanceled = searchParams.get('checkout') === 'cancel';
   function dismissCanceled() {
     const next = new URLSearchParams(searchParams);
@@ -96,7 +91,7 @@ export function Pricing() {
     ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
     : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
 
-  // Persist an inbound ?ref=CODE so it survives the sign-in / Stripe round-trip.
+  // Persist an inbound ?ref=CODE so it survives the sign-in / checkout round-trip.
   useEffect(() => {
     captureRefFromUrl();
   }, []);
@@ -122,19 +117,8 @@ export function Pricing() {
     }
   }
 
-  async function manage() {
-    setBusy(true);
-    setError('');
-    try {
-      await startBillingPortal();
-    } catch {
-      setError(t('pricing.checkoutError'));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  // A paid plan already covers Pro, so the Pro CTA manages the subscription.
+  // A paid plan already covers Pro, so the Pro CTA routes to the account page's
+  // Subscription panel (renewal date, auto-renew toggle) instead of checkout.
   const isPaid = plan !== 'free';
 
   return (
@@ -193,11 +177,10 @@ export function Pricing() {
           }
           highlight
           badge={t('pricing.popular')}
+          ctaHref={isPaid ? '/account' : undefined}
           ctaOnClick={
-            canCheckout()
-              ? isPaid
-                ? () => void manage()
-                : () => void checkout(annual ? 'annual' : 'monthly')
+            !isPaid && canCheckout()
+              ? () => void checkout(annual ? 'annual' : 'monthly')
               : undefined
           }
           ctaDisabled={busy || !canCheckout()}
@@ -280,7 +263,7 @@ export function Pricing() {
               {t('pricing.passCta')}
             </button>
           ) : (
-            // Native shells buy through store IAP, not Stripe web checkout.
+            // Native shells buy through store IAP, not Moyasar web checkout.
             <button type="button" className={styles.passCta} disabled aria-disabled="true">
               {t('pricing.passComingSoon')}
             </button>
