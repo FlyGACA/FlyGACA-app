@@ -130,6 +130,31 @@ final class StudyStoreTests: XCTestCase {
         XCTAssertEqual(done, ["lesson-1"])
     }
 
+    // MARK: - Flags
+
+    func testSetFlagTogglesIndexInAndOutOfTheBank() async throws {
+        let store = try makeStore()
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 3, flagged: true)
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 5, flagged: true)
+        var flagged = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-a")
+        XCTAssertEqual(Set(flagged), [3, 5])
+
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 3, flagged: false)
+        flagged = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-a")
+        XCTAssertEqual(flagged, [5])
+    }
+
+    func testSetFlagIsIdempotentAndScopedPerBank() async throws {
+        let store = try makeStore()
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 1, flagged: true)
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 1, flagged: true)
+        let bankA = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-a")
+        XCTAssertEqual(bankA, [1], "Flagging twice doesn't duplicate the index.")
+
+        let bankB = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-b")
+        XCTAssertEqual(bankB, [], "A different bank in the same module starts unflagged.")
+    }
+
     // MARK: - Streak
 
     func testTouchStreakAdvancesByDayGaps() async throws {
