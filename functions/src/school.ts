@@ -31,7 +31,7 @@ export const claimSchoolSeat = onCall(
     timeoutSeconds: 20,
     memory: "256MiB",
     maxInstances: 5,
-    // App Check on the grant surface, matching the Stripe/staff callables — a stolen
+    // App Check on the grant surface, matching the billing/staff callables — a stolen
     // ID token alone can't drive it from outside the app.
     enforceAppCheck: true,
   },

@@ -66,7 +66,7 @@ export function PackStorefront({ pack, questionCount }: { pack: Pack; questionCo
               {busy ? t('pricing.checkoutBusy') : t('study.packBuy')}
             </button>
           ) : (
-            // Native shells buy through store IAP, not Stripe web checkout.
+            // Native shells buy through store IAP, not Moyasar web checkout.
             <button type="button" className={styles.primary} disabled aria-disabled="true">
               {t('pricing.passComingSoon')}
             </button>

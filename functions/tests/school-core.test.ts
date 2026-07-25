@@ -140,7 +140,7 @@ describe("schoolSeatStatus", () => {
   });
 
   it("does not treat a paid (pro) plan as a school seat", () => {
-    const ent: import("../src/billing-core.js").Entitlement = { plan: "pro", source: "stripe" };
+    const ent: import("../src/billing-core.js").Entitlement = { plan: "pro", source: "moyasar" };
     expect(schoolSeatStatus({ entitlement: ent, hasInvite: false }, now)).toBe("none");
   });
 });

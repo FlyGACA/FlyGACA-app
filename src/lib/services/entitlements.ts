@@ -11,7 +11,7 @@ export interface Entitlement {
   plan: Plan;
   /** ISO timestamp; absent or in the past means lapsed. */
   expiresAt?: string;
-  source?: 'stripe' | 'revenuecat' | 'school' | 'staff';
+  source?: 'moyasar' | 'revenuecat' | 'school' | 'staff';
 }
 
 /** True when the entitlement grants an active paid plan at `now`. */

@@ -61,7 +61,7 @@ export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const checkout = searchParams.get('checkout');
 
-  // Persist an inbound ?ref=CODE so it survives the sign-in / Stripe round-trip.
+  // Persist an inbound ?ref=CODE so it survives the sign-in / checkout round-trip.
   useEffect(() => {
     captureRefFromUrl();
   }, []);

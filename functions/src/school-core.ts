@@ -18,7 +18,7 @@ export const APPROVED_SCHOOL_DOMAINS: readonly string[] = [];
 
 /**
  * A school seat entitlement: the `school` tier tagged `source: "school"` so it is
- * distinguishable from a Stripe or staff grant. `expiresAt` (ISO) sets the contract
+ * distinguishable from a Moyasar or staff grant. `expiresAt` (ISO) sets the contract
  * end; omit it for a non-expiring seat.
  */
 export function schoolEntitlement(expiresAt?: string): Entitlement {

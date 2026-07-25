@@ -1,37 +1,33 @@
 /**
- * The Stripe webhook — the ONLY writer of users/{uid}.entitlement. The pure
- * derivation lives in billing-core.ts (tested there); this covers the wiring:
- * signature verification, at-least-once idempotency (the stripeEvents marker),
- * event-type routing, and the roll-back-and-500 on a handler error. Stripe and
- * firebase-admin are mocked with a small in-memory Firestore that honours the
- * create()/delete() semantics the idempotency guard relies on.
+ * `moyasarWebhook` — the async backstop for `fulfillPayment`, the ONE path that
+ * grants entitlements/packs/credits from a Moyasar payment (shared with the
+ * `confirmPayment` callable, which is exercised manually/e2e — see docs/BILLING.md).
+ * Covers: signature verification, the moyasarPayments/{id} idempotency marker,
+ * fulfilment by checkout kind, the amount/currency cross-check against the stored
+ * checkoutIntent, and card-token capture for recurring checkouts. Moyasar's REST API
+ * and firebase-admin are mocked with a small in-memory Firestore honouring the
+ * create()/set() semantics the idempotency guard and intent lookup rely on.
  */
+import { createHmac } from "node:crypto";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { CREDIT_PACK_SIZE } from "../src/chat-quota-core.js";
 
-const FUTURE = Math.floor(Date.now() / 1000) + 30 * 86400;
-
 const h = vi.hoisted(() => ({
-  constructThrows: false,
-  event: undefined as unknown,
-  subscription: undefined as unknown,
-  customer: undefined as unknown,
-  subRetrieveThrows: false,
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
+  payment: undefined as unknown,
+  getThrows: false,
 }));
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return !!v && typeof v === "object" && !Array.isArray(v) && !("__inc" in (v as object));
 }
 
-/** Merge one level, honouring the `__inc` sentinel and Firestore's nested-map deep-merge. */
 function mergeInto(cur: Record<string, unknown>, val: Record<string, unknown>): Record<string, unknown> {
   const next: Record<string, unknown> = { ...cur };
   for (const [k, v] of Object.entries(val)) {
     if (v && typeof v === "object" && "__inc" in (v as object)) {
       next[k] = Number(cur[k] ?? 0) + (v as { __inc: number }).__inc;
     } else if (isPlainObject(v) && isPlainObject(cur[k])) {
-      // Firestore set(..., { merge: true }) deep-merges nested map fields.
       next[k] = mergeInto(cur[k] as Record<string, unknown>, v);
     } else {
       next[k] = v;
@@ -71,27 +67,6 @@ function makeDoc(coll: string, id: string) {
   };
 }
 
-vi.mock("stripe", () => ({
-  default: class {
-    webhooks = {
-      constructEvent: () => {
-        if (h.constructThrows) throw new Error("bad signature");
-        return h.event;
-      },
-    };
-    subscriptions = {
-      retrieve: () => {
-        if (h.subRetrieveThrows) return Promise.reject(new Error("stripe down"));
-        return Promise.resolve(h.subscription);
-      },
-    };
-    customers = {
-      retrieve: () => Promise.resolve(h.customer),
-      create: () => Promise.resolve({ id: "cus_new" }),
-    };
-  },
-}));
-
 vi.mock("firebase-admin/app", () => ({ initializeApp: vi.fn(), getApps: () => [{}] }));
 vi.mock("firebase-admin/firestore", () => ({
   getFirestore: () => ({ collection: (c: string) => ({ doc: (id: string) => makeDoc(c, id) }) }),
@@ -102,22 +77,24 @@ vi.mock("firebase-functions", async (importOriginal) => ({
   logger: { error: vi.fn(), info: vi.fn(), warn: vi.fn() },
 }));
 
-let stripeWebhook: (req: unknown, res: unknown) => Promise<void> | void;
+let moyasarWebhook: (req: unknown, res: unknown) => Promise<void> | void;
+
+const WEBHOOK_SECRET = "whsec_test";
 
 beforeAll(async () => {
   Object.assign(process.env, {
-    STRIPE_SECRET_KEY: "sk_test",
-    STRIPE_WEBHOOK_SECRET: "whsec_test",
-    STRIPE_PRICE_PRO_MONTHLY: "price_pro_monthly",
-    STRIPE_PRICE_PRO_ANNUAL: "price_pro_annual",
-    STRIPE_PRICE_STUDENT_MONTHLY: "price_student_monthly",
-    STRIPE_PRICE_STUDENT_ANNUAL: "price_student_annual",
-    STRIPE_PRICE_PASS: "price_pass",
-    STRIPE_PRICE_CREDITS: "price_credits",
-    STRIPE_PRICE_PREP_PACK: "price_prep_pack",
+    MOYASAR_SECRET_KEY: "sk_test",
+    MOYASAR_WEBHOOK_SECRET: WEBHOOK_SECRET,
+    MOYASAR_PRICE_PRO_MONTHLY_SAR: "59",
+    MOYASAR_PRICE_PRO_ANNUAL_SAR: "449",
+    MOYASAR_PRICE_STUDENT_MONTHLY_SAR: "39",
+    MOYASAR_PRICE_STUDENT_ANNUAL_SAR: "299",
+    MOYASAR_PRICE_PASS_SAR: "149",
+    MOYASAR_PRICE_CREDITS_SAR: "19",
+    MOYASAR_PRICE_PREP_PACK_SAR: "39",
     APP_ORIGIN: "https://flygaca.com",
   });
-  stripeWebhook = (await import("../src/billing.js")).stripeWebhook as typeof stripeWebhook;
+  moyasarWebhook = (await import("../src/billing.js")).moyasarWebhook as typeof moyasarWebhook;
 });
 
 function mockRes() {
@@ -129,212 +106,167 @@ function mockRes() {
   return res;
 }
 
-const req = { headers: { "stripe-signature": "sig" }, rawBody: Buffer.from("{}") };
+function signedReq(paymentId: string) {
+  const body = JSON.stringify({ type: "payment_paid", data: { id: paymentId } });
+  const sig = createHmac("sha256", WEBHOOK_SECRET).update(body).digest("hex");
+  return {
+    headers: { "x-moyasar-signature": sig },
+    rawBody: Buffer.from(body),
+    body: { type: "payment_paid", data: { id: paymentId } },
+  };
+}
 
-async function invoke(res: ReturnType<typeof mockRes>) {
-  await stripeWebhook(req, res);
+async function invoke(req: ReturnType<typeof signedReq>, res: ReturnType<typeof mockRes>) {
+  await moyasarWebhook(req, res);
 }
 
 beforeEach(() => {
   h.stores = {};
-  h.constructThrows = false;
-  h.subRetrieveThrows = false;
-  h.subscription = {
-    status: "active",
-    items: { data: [{ price: { id: "price_pro_monthly" } }] },
-    current_period_end: FUTURE,
-  };
-  h.customer = { deleted: false, metadata: { uid: "u1" } };
+  h.getThrows = false;
+  h.payment = { id: "pay_1", status: "paid", amount: 4900, currency: "SAR", metadata: { checkoutId: "co_1" } };
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => {
+      if (h.getThrows) throw new Error("moyasar down");
+      return { ok: true, status: 200, json: async () => h.payment };
+    }),
+  );
 });
 
-afterEach(() => vi.clearAllMocks());
+afterEach(() => vi.unstubAllGlobals());
 
-describe("stripeWebhook — signature & idempotency", () => {
-  it("400s when the signature fails to verify", async () => {
-    h.constructThrows = true;
+describe("moyasarWebhook — signature verification", () => {
+  it("400s when the signature is missing or wrong", async () => {
     const res = mockRes();
-    await invoke(res);
+    await invoke({ headers: {}, rawBody: Buffer.from("{}"), body: {} }, res);
     expect(res.status).toHaveBeenCalledWith(400);
-  });
 
-  it("acks a duplicate event without reprocessing", async () => {
-    h.event = { id: "evt_dup", type: "checkout.session.completed", data: { object: {} } };
-    h.stores.stripeEvents = { evt_dup: { type: "checkout.session.completed" } }; // already seen
-    const res = mockRes();
-    await invoke(res);
-    expect(res.json).toHaveBeenCalledWith({ received: true, duplicate: true });
-    // No entitlement written on a replay.
-    expect(h.stores.users).toBeUndefined();
+    const res2 = mockRes();
+    await invoke(
+      { headers: { "x-moyasar-signature": "deadbeef" }, rawBody: Buffer.from("{}"), body: {} },
+      res2,
+    );
+    expect(res2.status).toHaveBeenCalledWith(400);
   });
 });
 
-describe("stripeWebhook — checkout.session.completed", () => {
-  it("writes a Pro entitlement for a completed subscription checkout", async () => {
-    h.event = {
-      id: "evt_sub",
-      type: "checkout.session.completed",
-      data: {
-        object: { client_reference_id: "u1", mode: "subscription", subscription: "sub_1", metadata: {} },
-      },
+describe("moyasarWebhook — fulfilment", () => {
+  it("grants a Pro entitlement, saves the card token, and opens a subscription for a paid pro checkout", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pro", cadence: "annual", amount: 4900, currency: "SAR", status: "pending" },
+    };
+    h.payment = {
+      id: "pay_1",
+      status: "paid",
+      amount: 4900,
+      currency: "SAR",
+      metadata: { checkoutId: "co_1" },
+      source: { type: "creditcard", token: "tok_abc", company: "visa", last_four: "4242" },
     };
     const res = mockRes();
-    await invoke(res);
+    await invoke(signedReq("pay_1"), res);
     expect(res.json).toHaveBeenCalledWith({ received: true });
     expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
+    expect(h.stores.moyasarCustomers?.u1?.token).toBe("tok_abc");
+    expect(h.stores.subscriptions?.u1).toMatchObject({ cadence: "annual", autoRenew: true, status: "active" });
+    expect(h.stores.checkoutIntents?.co_1?.status).toBe("fulfilled");
   });
 
-  it("grants an Exam Season Pass for a paid one-time 'pass' checkout", async () => {
-    h.event = {
-      id: "evt_pass",
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          client_reference_id: "u1",
-          mode: "payment",
-          payment_status: "paid",
-          metadata: { kind: "pass" },
-        },
-      },
+  it("grants an Exam Season Pass for a paid 'pass' checkout", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
     };
     const res = mockRes();
-    await invoke(res);
+    await invoke(signedReq("pay_1"), res);
     expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
   });
 
   it("tops up the credit balance for a paid 'credits' checkout", async () => {
-    h.event = {
-      id: "evt_credits",
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          client_reference_id: "u1",
-          mode: "payment",
-          payment_status: "paid",
-          metadata: { kind: "credits" },
-        },
-      },
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "credits", amount: 4900, currency: "SAR", status: "pending" },
     };
     const res = mockRes();
-    await invoke(res);
+    await invoke(signedReq("pay_1"), res);
     expect(h.stores.chatCredits?.u1?.balance).toBe(CREDIT_PACK_SIZE);
   });
 
   it("records pack ownership for a paid 'pack' checkout", async () => {
-    h.event = {
-      id: "evt_pack",
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          client_reference_id: "u1",
-          mode: "payment",
-          payment_status: "paid",
-          metadata: { kind: "pack", packId: "medical" },
-        },
-      },
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pack", packId: "medical", amount: 4900, currency: "SAR", status: "pending" },
     };
     const res = mockRes();
-    await invoke(res);
-    expect(res.json).toHaveBeenCalledWith({ received: true });
+    await invoke(signedReq("pay_1"), res);
     const packs = h.stores.packEntitlements?.u1?.packs as Record<string, unknown>;
-    expect(packs?.medical).toMatchObject({ source: "stripe" });
+    expect(packs?.medical).toMatchObject({ source: "moyasar" });
   });
 
-  it("merges a second pack purchase without dropping the first", async () => {
-    h.stores.packEntitlements = {
-      u1: { packs: { aip: { purchasedAt: "2026-01-01T00:00:00.000Z", source: "stripe" } } },
-    };
-    h.event = {
-      id: "evt_pack2",
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          client_reference_id: "u1",
-          mode: "payment",
-          payment_status: "paid",
-          metadata: { kind: "pack", packId: "elp" },
-        },
-      },
+  it("acks without granting for an unknown/tampered packId", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pack", packId: "foi", amount: 4900, currency: "SAR", status: "pending" },
     };
     const res = mockRes();
-    await invoke(res);
-    const packs = h.stores.packEntitlements?.u1?.packs as Record<string, unknown>;
-    expect(Object.keys(packs).sort()).toEqual(["aip", "elp"]);
-  });
-
-  it("acks 200 without writing for an unknown/tampered packId", async () => {
-    h.event = {
-      id: "evt_pack_bad",
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          client_reference_id: "u1",
-          mode: "payment",
-          payment_status: "paid",
-          metadata: { kind: "pack", packId: "foi" }, // future/unlisted pack — not sellable
-        },
-      },
-    };
-    const res = mockRes();
-    await invoke(res);
+    await invoke(signedReq("pay_1"), res);
     expect(res.json).toHaveBeenCalledWith({ received: true });
     expect(h.stores.packEntitlements).toBeUndefined();
   });
 
   it("rewards a valid referral on both sides", async () => {
-    h.stores.referralCodes = { ABCD2345: { uid: "referrer" } };
-    h.event = {
-      id: "evt_ref",
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          client_reference_id: "u1",
-          mode: "subscription",
-          subscription: "sub_1",
-          metadata: { ref: "ABCD2345" },
-        },
-      },
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", ref: "ABCD2345", amount: 4900, currency: "SAR", status: "pending" },
     };
+    h.stores.referralCodes = { ABCD2345: { uid: "referrer" } };
     const res = mockRes();
-    await invoke(res);
+    await invoke(signedReq("pay_1"), res);
     expect(h.stores.chatCredits?.referrer?.balance).toBeGreaterThan(0);
     expect(h.stores.chatCredits?.u1?.balance).toBeGreaterThan(0);
-    expect(h.stores.referrals?.u1).toBeDefined(); // one-time marker
+    expect(h.stores.referrals?.u1).toBeDefined();
   });
 });
 
-describe("stripeWebhook — subscription lifecycle & errors", () => {
-  it("downgrades to free on customer.subscription.deleted", async () => {
-    h.subscription = undefined;
-    h.event = {
-      id: "evt_del",
-      type: "customer.subscription.deleted",
-      data: {
-        object: {
-          status: "canceled",
-          customer: "cus_1",
-          items: { data: [{ price: { id: "price_pro_monthly" } }] },
-          current_period_end: FUTURE,
-        },
-      },
+describe("moyasarWebhook — idempotency, mismatches & errors", () => {
+  it("acks a duplicate event without reprocessing", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
     };
+    h.stores.moyasarPayments = { pay_1: { receivedAt: "already-seen" } };
     const res = mockRes();
-    await invoke(res);
-    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("free");
+    await invoke(signedReq("pay_1"), res);
+    expect(res.json).toHaveBeenCalledWith({ received: true });
+    expect(h.stores.users).toBeUndefined();
   });
 
-  it("rolls back the idempotency marker and 500s when the handler throws", async () => {
-    h.subRetrieveThrows = true; // subscriptions.retrieve rejects mid-handler
-    h.event = {
-      id: "evt_err",
-      type: "checkout.session.completed",
-      data: {
-        object: { client_reference_id: "u1", mode: "subscription", subscription: "sub_1", metadata: {} },
-      },
+  it("does not grant when the paid amount doesn't match the checkout intent", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pro", cadence: "annual", amount: 44900, currency: "SAR", status: "pending" },
     };
+    h.payment = { id: "pay_1", status: "paid", amount: 100, currency: "SAR", metadata: { checkoutId: "co_1" } };
     const res = mockRes();
-    await invoke(res);
+    await invoke(signedReq("pay_1"), res);
+    expect(res.json).toHaveBeenCalledWith({ received: true });
+    expect(h.stores.users).toBeUndefined();
+  });
+
+  it("does not grant a failed payment", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
+    };
+    h.payment = { id: "pay_1", status: "failed", amount: 4900, currency: "SAR", metadata: { checkoutId: "co_1" } };
+    const res = mockRes();
+    await invoke(signedReq("pay_1"), res);
+    expect(h.stores.users).toBeUndefined();
+  });
+
+  it("acks without crashing when the checkout intent is missing", async () => {
+    const res = mockRes();
+    await invoke(signedReq("pay_1"), res);
+    expect(res.json).toHaveBeenCalledWith({ received: true });
+    expect(h.stores.users).toBeUndefined();
+  });
+
+  it("500s when the Moyasar API call fails", async () => {
+    h.getThrows = true;
+    const res = mockRes();
+    await invoke(signedReq("pay_1"), res);
     expect(res.status).toHaveBeenCalledWith(500);
-    // The marker was deleted so Stripe's retry can reprocess.
-    expect(h.stores.stripeEvents?.evt_err).toBeUndefined();
   });
 });

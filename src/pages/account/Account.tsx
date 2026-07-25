@@ -63,8 +63,8 @@ export function Account() {
   const [params, setParams] = useSearchParams();
   const checkout = params.get('checkout');
 
-  // After a Stripe checkout returns, the entitlement is granted asynchronously by
-  // the webhook — poll a few times so the new plan appears without a manual reload.
+  // After a checkout returns, the entitlement is granted asynchronously by the
+  // billing functions — poll a few times so the new plan appears without a reload.
   useEffect(() => {
     if (checkout !== 'success') return;
     void refreshAccount();
