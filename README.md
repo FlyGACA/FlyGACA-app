@@ -89,10 +89,12 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 | :--- | :--- |
 | 📚 **Open GACAR Library** | The full regulatory corpus, streamed at runtime — never bundled, always fast. |
 | 🤖 **Captain Adel AI** | Ask anything; get **citation-first** answers grounded entirely in official regulation. |
-| 🧮 **55+ Flight Tools** | Crosswind, density altitude, weight & balance, and more — shareable, URL-stateful, unit-tested math. |
+| 🧮 **55 Flight Tools** | Crosswind, density altitude, weight & balance, and more — shareable, URL-stateful, unit-tested math. |
 | 🌦️ **Weather & Ops** | Decode METARs/TAFs, parse NOTAMs, and track the current AIRAC cycle at a glance. |
 | 🗺️ **Charts & Airspace** | Interactive Leaflet maps loaded with Saudi aerodrome and approach-chart data. |
-| 🎓 **Ground School & Exam Prep** | Spaced-repetition flashcards, timed mock exams, learning paths — and per-certificate [exam-prep apps](#-exam-prep-app-family) (PPL · CPL · IR · ATPL · …). |
+| 🎓 **Learn Hub & Exam Prep** | `/learn` is the canonical study hub — guides, spaced-repetition flashcards, timed mock exams, ground school, learning paths, and per-certificate [exam-prep packs](#-exam-prep-app-family) (PPL · CPL · IR · ATPL · …). |
+| 👤 **Pilot Account Area** | Sign in for a personal dashboard, currency/recency tracking, a digital logbook, saved records, and settings — synced across devices. |
+| 🏫 **Pricing, Schools & B2B** | A free core library with a Pro upgrade, a flight-school directory, and an org-admin cohort dashboard for schools tracking student exam readiness. |
 | 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching; CSS logical properties mirror the whole UI automatically. |
 | 📲 **PWA & Native** | Install offline via Workbox, or ship first-class iOS/Android shells with Capacitor. |
 
@@ -260,6 +262,9 @@ npm run test:e2e    # Playwright — smoke & accessibility
 npm run build       # Production assets → dist/
 npm run preview     # Serve the production build locally
 ```
+
+> [!NOTE]
+> `functions/` (the Firebase Cloud Functions backend) is its **own npm package with its own CI gate** — root `verify` does not cover it. Touching it? Run `npm run lint && npm test && npm run build` inside `functions/` too.
 
 ### Native Mobile Shells
 
