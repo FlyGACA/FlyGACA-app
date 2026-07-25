@@ -1,11 +1,10 @@
 import CoreModels
 import Foundation
 
-/// Cache-then-bundle content resolution. Today only the bundled snapshot exists;
-/// in Phase 4 a ContentRefresher will fetch updated corpus JSON from
-/// https://flygaca.com/data (ETag + `generated` check) into `cacheDirectory`,
-/// and this store will start preferring it. The lookup order is already in
-/// place so the refresher plugs in without touching callers.
+/// Cache-then-bundle content resolution. `ContentRefresher` fetches updated
+/// corpus JSON from https://flygaca.com/data (ETag + `generated` check) into
+/// `cacheDirectory`; `activeDirectory` below prefers it once it exists, so
+/// callers of `load()` never need to know which snapshot answered.
 public struct ContentStore: Sendable {
     public let bundledDirectory: URL
     public let cacheDirectory: URL
