@@ -182,6 +182,46 @@ public actor StudyStore {
         return fresh
     }
 
+    // ── Content refresh reconciliation (Phase 4) ──
+
+    /// After `ContentRefresher` pulls a newer corpus slice, a bank's question
+    /// order can shift. Rewrite each row's `cardKey`/`key` to the question's new
+    /// position, matched by the stable content hash (`questionID`) — so Leitner
+    /// progress survives reordering instead of silently regrading the wrong
+    /// question. Rows whose question no longer exists in the refreshed bank are
+    /// left untouched (orphaned, not deleted — the corpus edit may be reverted).
+    public func reconcileSRS(bankID: String, quiz: QuizFile) throws {
+        guard let bank = quiz.bank(id: bankID) else { return }
+        // uniquingKeysWith rather than uniqueKeysWithValues: two questions
+        // sharing a stable id (identical prompt text) must never crash
+        // reconciliation — keep the first and let the rest resolve on their
+        // own accord next pass.
+        let byQuestionID = Dictionary(bank.questions.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+
+        let descriptor = FetchDescriptor<CardSRSRecord>(predicate: #Predicate { $0.bankID == bankID })
+        let records = try modelContext.fetch(descriptor)
+        var liveKeys = Set(records.map(\.key))
+
+        var changed = false
+        for record in records {
+            guard let question = byQuestionID[record.questionID], question.legacyKey != record.cardKey else {
+                continue
+            }
+            let newKey = "\(bankID)|\(question.legacyKey)"
+            // Guard against a (should-never-happen) collision with another
+            // record's current key rather than violate the unique constraint.
+            guard !liveKeys.contains(newKey) else { continue }
+            liveKeys.remove(record.key)
+            record.cardKey = question.legacyKey
+            record.key = newKey
+            liveKeys.insert(newKey)
+            changed = true
+        }
+        if changed {
+            try modelContext.save()
+        }
+    }
+
     // ── Streak ──
 
     /// Advance the family-wide streak for a study event now.
