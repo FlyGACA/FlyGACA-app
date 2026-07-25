@@ -8,7 +8,7 @@
  * Reward model: on a referred user's first paid conversion, BOTH the referrer and
  * the referee receive Captain Adel credits (reuses the chatCredits balance). Credits
  * are a universal, robust reward — unlike a "free month", they don't fight the
- * Stripe-driven entitlement and they still reward a free-tier referrer.
+ * Moyasar-driven entitlement and they still reward a free-tier referrer.
  */
 import { createHash } from "node:crypto";
 

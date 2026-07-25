@@ -1,27 +1,46 @@
 /**
- * Stripe billing Cloud Functions.
+ * Moyasar billing Cloud Functions.
  *
- *  - `createCheckoutSession` (callable): start a subscription Checkout for the
- *    signed-in user and return the hosted-page URL (the app redirects to it).
- *  - `createBillingPortalSession` (callable): open the Stripe customer portal so
- *    a subscriber can manage/cancel.
- *  - `stripeWebhook` (HTTP): the ONLY writer of `users/{uid}.entitlement` — on
- *    Stripe events it derives the entitlement (see ./billing-core) and persists it
- *    via the Admin SDK. Clients can never write entitlement (firestore.rules).
+ *  - `createCheckoutConfig` (callable): validate + price a checkout (Pro/student
+ *    cadence, the Exam Season Pass, a Captain Adel credit pack, or an exam-prep
+ *    pack), persist a server-trusted `checkoutIntents/{id}` record, and return the
+ *    config the client mounts Moyasar's hosted JS widget with. Card data never
+ *    touches this server — the widget talks to Moyasar directly from the browser.
+ *  - `confirmPayment` (callable): after the widget redirects back with a payment id,
+ *    fetch the payment server-to-server (trusted — the browser could have tampered
+ *    with the widget's amount/metadata before submitting) and fulfil it.
+ *  - `cancelAutoRenew` (callable): turn off the token-renewal engine for a subscriber.
+ *  - `moyasarWebhook` (HTTP): async backstop for the same fulfilment path — the
+ *    idempotency marker on `moyasarPayments/{id}` means whichever of confirmPayment/
+ *    the webhook lands first does the actual grant.
+ *  - `renewMoyasarSubscriptions` (scheduled): Moyasar has no native subscription
+ *    object, so a recurring plan is a saved card TOKEN re-charged daily near expiry,
+ *    extending `entitlement.expiresAt` on success (see ./billing-core cadence math).
  *
- * Config: secrets STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET; params
- * STRIPE_PRICE_PRO_MONTHLY / STRIPE_PRICE_PRO_ANNUAL / APP_ORIGIN. See docs/BILLING.md.
+ * `users/{uid}.entitlement` is written ONLY here (bypassing firestore.rules via the
+ * Admin SDK) — see ./billing-core for the pure derivation. Config: secrets
+ * MOYASAR_SECRET_KEY / MOYASAR_WEBHOOK_SECRET; params MOYASAR_PRICE_*_SAR /
+ * APP_ORIGIN. See docs/BILLING.md.
  */
+import { randomUUID } from "node:crypto";
 import { onCall, onRequest, HttpsError } from "firebase-functions/https";
+import { onSchedule } from "firebase-functions/scheduler";
 import { logger } from "firebase-functions";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import Stripe from "stripe";
+import { getFirestore, FieldValue, type DocumentReference } from "firebase-admin/firestore";
 import {
-  entitlementFromSubscription,
+  amountForCheckout,
+  cadenceDays,
+  entitlementFromCheckout,
   entitlementFromPass,
+  isRecurringKind,
+  nextChargeAt,
   sellablePackId,
+  verifyMoyasarSignature,
+  MAX_RENEWAL_ATTEMPTS,
+  type Cadence,
+  type CheckoutKind,
   type Entitlement,
   type PriceEnv,
 } from "./billing-core.js";
@@ -37,84 +56,126 @@ import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
 
-const stripeSecret = defineSecret("STRIPE_SECRET_KEY");
-const webhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
-const priceMonthly = defineString("STRIPE_PRICE_PRO_MONTHLY");
-const priceAnnual = defineString("STRIPE_PRICE_PRO_ANNUAL");
-// One-time Exam Season Pass price (Stripe `mode: payment`, not a subscription).
-const pricePass = defineString("STRIPE_PRICE_PASS");
-// One-time Captain Adel credit-pack price (also `mode: payment`).
-const priceCredits = defineString("STRIPE_PRICE_CREDITS");
-// One-time exam-prep pack price (`mode: payment`). ONE flat SAR-39 price shared by
-// every sellable pack; the bought pack is carried in the session's `metadata.packId`
-// so a new pack ships without a new price/env. Per-pack revenue attribution comes
-// from the Checkout Session metadata (Stripe Sigma / exports).
-const pricePrepPack = defineString("STRIPE_PRICE_PREP_PACK");
-// Discounted student subscription prices (gated on a verified academic email).
-const priceStudentMonthly = defineString("STRIPE_PRICE_STUDENT_MONTHLY");
-const priceStudentAnnual = defineString("STRIPE_PRICE_STUDENT_ANNUAL");
+const moyasarSecret = defineSecret("MOYASAR_SECRET_KEY");
+const webhookSecret = defineSecret("MOYASAR_WEBHOOK_SECRET");
 const appOrigin = defineString("APP_ORIGIN");
+// SAR list prices (major units, e.g. "59" or "449.00") — see billing-core's PriceEnv.
+const priceProMonthly = defineString("MOYASAR_PRICE_PRO_MONTHLY_SAR");
+const priceProAnnual = defineString("MOYASAR_PRICE_PRO_ANNUAL_SAR");
+const priceStudentMonthly = defineString("MOYASAR_PRICE_STUDENT_MONTHLY_SAR");
+const priceStudentAnnual = defineString("MOYASAR_PRICE_STUDENT_ANNUAL_SAR");
+const pricePass = defineString("MOYASAR_PRICE_PASS_SAR");
+const priceCredits = defineString("MOYASAR_PRICE_CREDITS_SAR");
+const pricePrepPack = defineString("MOYASAR_PRICE_PREP_PACK_SAR");
 
-function stripeClient(): Stripe {
-  // Pin the API version so a Stripe-side default bump can't silently change the
-  // webhook payload shape (and break entitlement derivation). Matches the version
-  // the installed `stripe` SDK is generated against. Cast: the pinned string may
-  // predate the SDK's apiVersion union literal.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return new Stripe(stripeSecret.value(), { apiVersion: "2025-02-24.acacia" } as any);
-}
 function priceEnv(): PriceEnv {
   return {
-    proMonthly: priceMonthly.value(),
-    proAnnual: priceAnnual.value(),
+    proMonthly: priceProMonthly.value(),
+    proAnnual: priceProAnnual.value(),
     studentMonthly: priceStudentMonthly.value(),
     studentAnnual: priceStudentAnnual.value(),
+    pass: pricePass.value(),
+    credits: priceCredits.value(),
+    prepPack: pricePrepPack.value(),
   };
 }
 
-/** The uid→Stripe-customer mapping doc (server-only; deny-all to clients). */
-function customerRef(uid: string) {
-  return getFirestore().collection("stripeCustomers").doc(uid);
+const CHECKOUT_KINDS = new Set<CheckoutKind>(["pro", "student", "pass", "credits", "pack"]);
+function checkoutKind(v: unknown): CheckoutKind | null {
+  return typeof v === "string" && CHECKOUT_KINDS.has(v as CheckoutKind) ? (v as CheckoutKind) : null;
+}
+function cadenceOf(v: unknown): Cadence {
+  return v === "monthly" ? "monthly" : "annual";
+}
+function describeCheckout(kind: CheckoutKind, packId?: string): string {
+  switch (kind) {
+  case "pro":
+    return "Fly GACA Pro";
+  case "student":
+    return "Fly GACA Pro (Student)";
+  case "pass":
+    return "Fly GACA Exam Season Pass";
+  case "credits":
+    return "Fly GACA Captain Adel credit pack";
+  case "pack":
+    return `Fly GACA Exam Prep Pack — ${packId ?? ""}`;
+  }
 }
 
-/** Find or create the Stripe customer for a uid, persisting the mapping. */
-async function ensureCustomer(stripe: Stripe, uid: string, email?: string): Promise<string> {
-  const snap = await customerRef(uid).get();
-  const existing = snap.exists ? (snap.data()?.customerId as string | undefined) : undefined;
-  if (existing) return existing;
-  const customer = await stripe.customers.create({ email, metadata: { uid } });
-  await customerRef(uid).set({ customerId: customer.id, uid }, { merge: true });
-  return customer.id;
+// ---- Minimal Moyasar REST client (Node's global fetch; no SDK dependency) --------
+
+const MOYASAR_API = "https://api.moyasar.com/v1";
+
+interface MoyasarPayment {
+  id: string;
+  status: string; // 'paid' | 'failed' | 'authorized' | 'initiated' | ...
+  amount: number; // halalas
+  currency: string;
+  metadata?: Record<string, unknown> | null;
+  source?: {
+    type?: string;
+    token?: string;
+    company?: string;
+    last_four?: string;
+  } | null;
 }
 
-/** Resolve the uid for a Stripe customer via its stored metadata. */
-async function uidForCustomer(stripe: Stripe, customerId: string): Promise<string | null> {
-  const customer = await stripe.customers.retrieve(customerId);
-  if (customer.deleted) return null;
-  return (customer.metadata?.uid as string | undefined) ?? null;
+function moyasarAuthHeader(secretKey: string): string {
+  return "Basic " + Buffer.from(`${secretKey}:`).toString("base64");
 }
 
-/** Persist the entitlement derived from a subscription onto users/{uid}. */
-async function writeEntitlement(uid: string, sub: Stripe.Subscription): Promise<void> {
-  const priceId = sub.items.data[0]?.price?.id;
-  const entitlement = entitlementFromSubscription({
-    status: sub.status,
-    priceId,
-    currentPeriodEnd:
-      (sub as unknown as { current_period_end?: number; currentPeriodEnd?: number })
-        .current_period_end ??
-      (sub as unknown as { current_period_end?: number; currentPeriodEnd?: number })
-        .currentPeriodEnd,
-    env: priceEnv(),
+async function moyasarGetPayment(secretKey: string, id: string): Promise<MoyasarPayment> {
+  const res = await fetch(`${MOYASAR_API}/payments/${encodeURIComponent(id)}`, {
+    headers: { Authorization: moyasarAuthHeader(secretKey) },
   });
+  const body = (await res.json()) as MoyasarPayment;
+  if (!res.ok) throw new Error(`moyasar-get-failed:${res.status}`);
+  return body;
+}
+
+/** Charge a previously-saved card token off-session (the renewal engine). */
+async function moyasarChargeToken(
+  secretKey: string,
+  input: {
+    amount: number;
+    currency: string;
+    description: string;
+    token: string;
+    callbackUrl: string;
+    metadata: Record<string, string>;
+  },
+): Promise<MoyasarPayment> {
+  const res = await fetch(`${MOYASAR_API}/payments`, {
+    method: "POST",
+    headers: {
+      Authorization: moyasarAuthHeader(secretKey),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      amount: input.amount,
+      currency: input.currency,
+      description: input.description,
+      callback_url: input.callbackUrl,
+      source: { type: "token", token: input.token },
+      metadata: input.metadata,
+    }),
+  });
+  const body = (await res.json()) as MoyasarPayment;
+  if (!res.ok) throw new Error(`moyasar-charge-failed:${res.status}:${JSON.stringify(body)}`);
+  return body;
+}
+
+// ---- Firestore helpers -------------------------------------------------------
+
+async function writeEntitlement(uid: string, entitlement: Entitlement): Promise<void> {
   await getFirestore().collection("users").doc(uid).set({ entitlement }, { merge: true });
 }
 
 /**
  * Grant a one-time Exam Season Pass entitlement (PASS_DAYS of Pro). Reads the
  * current entitlement so the pass never shortens a later paid expiry or downgrades
- * an active school grant (see entitlementFromPass). Idempotent under the webhook's
- * per-event marker, so a Stripe retry can't stack extra days.
+ * an active school grant (see entitlementFromPass). Idempotent under the
+ * moyasarPayments/{id} marker, so a retried confirmation can't stack extra days.
  */
 async function grantPass(uid: string): Promise<void> {
   const ref = getFirestore().collection("users").doc(uid);
@@ -125,11 +186,7 @@ async function grantPass(uid: string): Promise<void> {
   logger.info("funnel", { event: "pass_granted", uid });
 }
 
-/**
- * Top up a user's Captain Adel credit balance by one pack (`chatCredits/{uid}` —
- * server-written, owner-readable so the app can show/spend it). `FieldValue.increment`
- * is atomic; the webhook's per-event marker keeps a Stripe retry from double-counting.
- */
+/** Top up a user's Captain Adel credit balance by one pack. */
 async function grantCredits(uid: string, amount: number): Promise<void> {
   await getFirestore()
     .collection("chatCredits")
@@ -143,13 +200,8 @@ async function addCredits(uid: string): Promise<void> {
 }
 
 /**
- * Record ownership of a one-time exam-prep pack purchase (`packEntitlements/{uid}` —
- * server-written, owner-readable so the app can unlock the pack). Ownership is a
- * permanent per-pack grant, independent of the subscription plan. Re-validates the
- * `packId` against SELLABLE_PACK_IDS so a tampered/`soon`/stale id from the session
- * metadata can never grant access; an invalid id is LOGGED and skipped rather than
- * thrown — throwing would roll back the webhook's idempotency marker and make Stripe
- * retry a permanently-bad event forever. The merge-write is idempotent under retry.
+ * Record ownership of a one-time exam-prep pack purchase. Re-validates `packId`
+ * against SELLABLE_PACK_IDS so a tampered/`soon`/stale id can never grant access.
  */
 async function grantPack(uid: string, rawPackId: unknown): Promise<void> {
   const packId = sellablePackId(rawPackId);
@@ -161,25 +213,19 @@ async function grantPack(uid: string, rawPackId: unknown): Promise<void> {
     .collection("packEntitlements")
     .doc(uid)
     .set(
-      { packs: { [packId]: { purchasedAt: new Date().toISOString(), source: "stripe" } } },
+      { packs: { [packId]: { purchasedAt: new Date().toISOString(), source: "moyasar" } } },
       { merge: true },
     );
   logger.info("funnel", { event: "pack_granted", uid, packId });
 }
 
-/**
- * Reward a completed referral. `ref` is the normalized code carried on the checkout
- * session; resolve it to the referrer and, once per referee, credit BOTH sides. The
- * `referrals/{refereeUid}` marker (created transactionally via `create`) makes it
- * idempotent across a user's multiple purchases and blocks self-referral.
- */
+/** Reward a completed referral, once per referee, on both sides. */
 async function processReferral(refereeUid: string, ref: string | undefined): Promise<void> {
   if (!ref || !isValidCode(ref)) return;
   const db = getFirestore();
   const codeSnap = await db.collection("referralCodes").doc(ref).get();
   const referrerUid = codeSnap.exists ? (codeSnap.data()?.uid as string | undefined) : undefined;
-  if (!referrerUid || referrerUid === refereeUid) return; // unknown code or self-referral
-  // Claim the one reward this referee is worth; `create` fails if it already exists.
+  if (!referrerUid || referrerUid === refereeUid) return;
   const claimed = await db
     .collection("referrals")
     .doc(refereeUid)
@@ -192,113 +238,267 @@ async function processReferral(refereeUid: string, ref: string | undefined): Pro
   logger.info("funnel", { event: "referral_rewarded", referrerUid, refereeUid });
 }
 
-export const createCheckoutSession = onCall(
+/** Persist the reusable card token from a `save_card` payment for the renewal
+ * engine. STC Pay/Apple Pay never carry a `source.token`; only `pro`/`student`
+ * checkouts request `save_card` (see createCheckoutConfig), so this is a no-op
+ * for one-time purchases. */
+async function saveCardToken(uid: string, payment: MoyasarPayment): Promise<void> {
+  const token = payment.source?.token;
+  if (!token) return;
+  await getFirestore()
+    .collection("moyasarCustomers")
+    .doc(uid)
+    .set(
+      {
+        token,
+        brand: payment.source?.company ?? null,
+        last4: payment.source?.last_four ?? null,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+}
+
+async function upsertSubscription(uid: string, cadence: Cadence, expiresAtIso: string): Promise<void> {
+  await getFirestore()
+    .collection("subscriptions")
+    .doc(uid)
+    .set(
+      {
+        cadence,
+        autoRenew: true,
+        status: "active",
+        failedAttempts: 0,
+        nextChargeAt: nextChargeAt(new Date(expiresAtIso)).toISOString(),
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+}
+
+interface CheckoutIntent {
+  uid: string;
+  kind: CheckoutKind;
+  cadence?: Cadence | null;
+  packId?: string | null;
+  ref?: string | null;
+  amount: number;
+  currency: string;
+  status: "pending" | "fulfilled";
+}
+
+/**
+ * Where the confirming client should navigate next — a RELATIVE path (never built
+ * from APP_ORIGIN), so it resolves correctly on whichever host actually served the
+ * app (prod, a preview deploy, localhost) rather than forcing a redirect to the
+ * configured production origin. `callback_url` (Moyasar's own redirect target, which
+ * DOES need to be absolute) is built separately in createCheckoutConfig.
+ */
+function redirectForIntent(intent: Pick<CheckoutIntent, "kind" | "packId">, ok: boolean): string {
+  if (ok && intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=success`;
+  if (ok) return "/account?checkout=success";
+  if (intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=cancel`;
+  return "/pricing?checkout=cancel";
+}
+
+async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): Promise<void> {
+  const { uid, kind } = intent;
+  if (kind === "pro" || kind === "student") {
+    const cadence: Cadence = intent.cadence === "monthly" ? "monthly" : "annual";
+    const entitlement = entitlementFromCheckout(cadence, new Date());
+    await writeEntitlement(uid, entitlement);
+    await saveCardToken(uid, payment);
+    await upsertSubscription(uid, cadence, entitlement.expiresAt!);
+  } else if (kind === "pass") {
+    await grantPass(uid);
+  } else if (kind === "credits") {
+    await addCredits(uid);
+  } else if (kind === "pack") {
+    await grantPack(uid, intent.packId);
+  }
+  await processReferral(uid, intent.ref ?? undefined);
+}
+
+/**
+ * Idempotently fulfil a Moyasar payment by id — the ONE path both `confirmPayment`
+ * and `moyasarWebhook` funnel through. Fetches the payment server-to-server (never
+ * trusts the browser's widget config, which could have been tampered with) and
+ * cross-checks it against the `checkoutIntents/{checkoutId}` record the CALLABLE
+ * wrote server-side: `payment.metadata.checkoutId` is the only client-influenced
+ * value trusted here, and only as a lookup key — the amount/currency/uid/kind that
+ * actually decide what gets granted all come from the stored intent, never from the
+ * payment's own metadata (which the browser could have altered before submitting to
+ * Moyasar). The `moyasarPayments/{id}` create() marker makes this safe to call twice
+ * for the same payment (confirmPayment racing the webhook, or a client retry).
+ */
+async function fulfillPayment(
+  secretKey: string,
+  paymentId: string,
+): Promise<{ uid: string | null; redirectTo: string }> {
+  const db = getFirestore();
+  const marker = db.collection("moyasarPayments").doc(paymentId);
+  const claimed = await marker
+    .create({ receivedAt: FieldValue.serverTimestamp() })
+    .then(() => true)
+    .catch(() => false);
+
+  const payment = await moyasarGetPayment(secretKey, paymentId);
+  const checkoutId = payment.metadata?.checkoutId as string | undefined;
+  if (!checkoutId) {
+    logger.error("moyasar_payment_no_checkout_id", { paymentId });
+    return { uid: null, redirectTo: `${appOrigin.value()}/pricing?checkout=cancel` };
+  }
+
+  const intentRef = db.collection("checkoutIntents").doc(checkoutId);
+  const intentSnap = await intentRef.get();
+  if (!intentSnap.exists) {
+    logger.error("moyasar_checkout_intent_missing", { paymentId, checkoutId });
+    return { uid: null, redirectTo: `${appOrigin.value()}/pricing?checkout=cancel` };
+  }
+  const intent = intentSnap.data() as CheckoutIntent;
+
+  const paid = payment.status === "paid";
+  const amountOk = payment.amount === intent.amount && payment.currency === intent.currency;
+  if (!paid || !amountOk) {
+    if (!amountOk) {
+      logger.error("moyasar_amount_mismatch", {
+        paymentId,
+        checkoutId,
+        got: `${payment.amount} ${payment.currency}`,
+        want: `${intent.amount} ${intent.currency}`,
+      });
+    }
+    return { uid: intent.uid, redirectTo: redirectForIntent(intent, false) };
+  }
+
+  const redirectTo = redirectForIntent(intent, true);
+  if (!claimed) return { uid: intent.uid, redirectTo }; // already fulfilled by a prior call
+
+  await grantForIntent(intent, payment);
+  await intentRef.set({ status: "fulfilled" }, { merge: true });
+  return { uid: intent.uid, redirectTo };
+}
+
+// ---- Callables -----------------------------------------------------------------
+
+export const createCheckoutConfig = onCall(
   {
     region: REGION,
-    secrets: [stripeSecret],
     timeoutSeconds: 30,
     memory: "256MiB",
     maxInstances: 5,
-    // App Check on the payments surface. These Stripe callables are web-only (the
-    // native shell uses store IAP, not Stripe Checkout), and the web app mints
-    // reCAPTCHA-Enterprise App Check tokens, so a stolen/automated ID token alone
-    // can't drive Stripe from outside the app. Requires the App Check provider to
-    // be registered + enforced in the Firebase console and
-    // VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the deployed build.
+    // App Check on the payments surface. Moyasar checkout is web-only (the native
+    // shell uses store IAP), and the web app mints reCAPTCHA-Enterprise App Check
+    // tokens, so a stolen/automated ID token alone can't drive checkout from outside
+    // the app. Requires the App Check provider to be registered + enforced in the
+    // Firebase console and VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the build.
     enforceAppCheck: true,
   },
   async (request) => {
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
-    const stripe = stripeClient();
-    const origin = appOrigin.value();
-    const customer = await ensureCustomer(stripe, uid, request.auth?.token?.email as string | undefined);
-    const variant = request.data?.plan;
-    // Referral attribution: a valid code rides on the session metadata so the
-    // webhook can reward both sides when this checkout converts.
-    const ref = normalizeCode(request.data?.ref as string | undefined);
-    const refMeta: Record<string, string> = isValidCode(ref) ? { ref } : {};
 
-    // One-time exam-prep pack purchase (`payment`). The specific pack rides on
-    // `metadata.packId`; the webhook grants ownership by it. Validate up front so an
-    // unknown/`soon` id never opens a Checkout, and again at fulfilment (grantPack).
-    if (variant === "pack") {
-      const packId = sellablePackId(request.data?.packId);
-      if (!packId) throw new HttpsError("invalid-argument", "unknown-pack");
-      const session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        customer,
-        line_items: [{ price: pricePrepPack.value(), quantity: 1 }],
-        client_reference_id: uid,
-        metadata: { uid, kind: "pack", packId, ...refMeta },
-        allow_promotion_codes: true,
-        success_url: `${origin}/study/packs/${packId}?checkout=success`,
-        cancel_url: `${origin}/study/packs/${packId}?checkout=cancel`,
-      });
-      logger.info("funnel", { event: "checkout_started", kind: "pack", packId, uid });
-      return { url: session.url };
-    }
+    const kind = checkoutKind(request.data?.kind);
+    if (!kind) throw new HttpsError("invalid-argument", "unknown-checkout-kind");
 
-    // One-time purchases (`payment`, not `subscription`): the Exam Season Pass and
-    // Captain Adel credit packs. The webhook fulfils them by `metadata.kind`, which
-    // it needs because client_reference_id alone doesn't carry the intent.
-    if (variant === "pass" || variant === "credits") {
-      const price = variant === "pass" ? pricePass.value() : priceCredits.value();
-      const session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        customer,
-        line_items: [{ price, quantity: 1 }],
-        client_reference_id: uid,
-        metadata: { uid, kind: variant, ...refMeta },
-        allow_promotion_codes: true,
-        success_url: `${origin}/account?checkout=success`,
-        cancel_url: `${origin}/pricing?checkout=cancel`,
-      });
-      logger.info("funnel", { event: "checkout_started", kind: variant, uid });
-      return { url: session.url };
-    }
+    let packId: string | undefined;
+    let cadence: Cadence | undefined;
 
-    // Discounted student subscription — gated server-side on a VERIFIED academic
-    // email so the rate can't be self-claimed. Cadence follows the client toggle
-    // (`data.annual`). Ineligible callers get a stable code the UI explains.
-    if (variant === "student") {
+    if (kind === "pack") {
+      const valid = sellablePackId(request.data?.packId);
+      if (!valid) throw new HttpsError("invalid-argument", "unknown-pack");
+      packId = valid;
+    } else if (kind === "student") {
+      // Discounted student rate — gated server-side on a VERIFIED academic email so
+      // it can't be self-claimed.
       const email = request.auth?.token?.email as string | undefined;
       const emailVerified = request.auth?.token?.email_verified as boolean | undefined;
       if (!isStudentEmail(email, emailVerified)) {
         throw new HttpsError("failed-precondition", "student-verification-required");
       }
-      const studentPrice = request.data?.annual
-        ? priceStudentAnnual.value()
-        : priceStudentMonthly.value();
-      const session = await stripe.checkout.sessions.create({
-        mode: "subscription",
-        customer,
-        line_items: [{ price: studentPrice, quantity: 1 }],
-        client_reference_id: uid,
-        metadata: refMeta,
-        allow_promotion_codes: true,
-        success_url: `${origin}/account?checkout=success`,
-        cancel_url: `${origin}/pricing?checkout=cancel`,
-      });
-      logger.info("funnel", { event: "checkout_started", kind: "student", uid });
-      return { url: session.url };
+      cadence = cadenceOf(request.data?.cadence);
+    } else if (kind === "pro") {
+      cadence = cadenceOf(request.data?.cadence);
     }
 
-    // Recurring Pro. `monthly` uses the monthly price; anything else (annual or an
-    // unknown variant) falls back to the annual price.
-    const price = variant === "monthly" ? priceMonthly.value() : priceAnnual.value();
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      customer,
-      line_items: [{ price, quantity: 1 }],
-      client_reference_id: uid,
-      metadata: refMeta,
-      allow_promotion_codes: true,
-      success_url: `${origin}/account?checkout=success`,
-      cancel_url: `${origin}/pricing?checkout=cancel`,
-    });
-    logger.info("funnel", { event: "checkout_started", kind: variant ?? "annual", uid });
-    return { url: session.url };
+    const amount = amountForCheckout(kind, cadence, priceEnv());
+    const ref = normalizeCode(request.data?.ref as string | undefined);
+    const checkoutId = randomUUID();
+
+    await getFirestore()
+      .collection("checkoutIntents")
+      .doc(checkoutId)
+      .set({
+        uid,
+        kind,
+        cadence: cadence ?? null,
+        packId: packId ?? null,
+        ref: isValidCode(ref) ? ref : null,
+        amount,
+        currency: "SAR",
+        status: "pending",
+        createdAt: FieldValue.serverTimestamp(),
+      });
+
+    const recurring = isRecurringKind(kind);
+    logger.info("funnel", { event: "checkout_started", kind, uid });
+    return {
+      checkoutId,
+      amount,
+      currency: "SAR",
+      description: describeCheckout(kind, packId),
+      callbackUrl: `${appOrigin.value()}/checkout/return`,
+      // Only a saved card token can be re-charged off-session, so recurring plans
+      // only offer cards/mada and force save_card; one-time purchases offer every
+      // configured method.
+      methods: recurring ? ["creditcard"] : ["creditcard", "applepay", "stcpay"],
+      saveCard: recurring,
+      supportedNetworks: ["visa", "mastercard", "mada"],
+    };
+  },
+);
+
+export const confirmPayment = onCall(
+  {
+    region: REGION,
+    secrets: [moyasarSecret],
+    timeoutSeconds: 30,
+    memory: "256MiB",
+    maxInstances: 5,
+    enforceAppCheck: true,
+  },
+  async (request) => {
+    const uid = request.auth?.uid;
+    if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
+    const paymentId = request.data?.id;
+    if (typeof paymentId !== "string" || !paymentId) {
+      throw new HttpsError("invalid-argument", "missing-payment-id");
+    }
+    const result = await fulfillPayment(moyasarSecret.value(), paymentId);
+    // The confirming caller must be the same user the checkout was started for —
+    // never fulfil (or reveal anything about) a payment that isn't theirs.
+    if (result.uid !== uid) throw new HttpsError("permission-denied", "payment-not-yours");
+    return { redirectTo: result.redirectTo };
+  },
+);
+
+export const cancelAutoRenew = onCall(
+  {
+    region: REGION,
+    timeoutSeconds: 20,
+    memory: "256MiB",
+    maxInstances: 5,
+    enforceAppCheck: true,
+  },
+  async (request) => {
+    const uid = request.auth?.uid;
+    if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
+    await getFirestore()
+      .collection("subscriptions")
+      .doc(uid)
+      .set({ autoRenew: false, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    logger.info("funnel", { event: "auto_renew_canceled", uid });
+    return { ok: true };
   },
 );
 
@@ -314,99 +514,156 @@ export const getReferralCode = onCall(
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
     const code = referralCode(uid);
-    // Persist the reverse mapping (code → referrer) so the webhook can resolve a
-    // referral at the referee's checkout. Deterministic + merge = idempotent.
     await getFirestore().collection("referralCodes").doc(code).set({ uid }, { merge: true });
     return { code };
   },
 );
 
-export const createBillingPortalSession = onCall(
+// ---- Webhook (async backstop) ---------------------------------------------------
+
+export const moyasarWebhook = onRequest(
   {
     region: REGION,
-    secrets: [stripeSecret],
+    secrets: [moyasarSecret, webhookSecret],
     timeoutSeconds: 30,
     memory: "256MiB",
     maxInstances: 5,
-    // App Check on the payments surface. These Stripe callables are web-only (the
-    // native shell uses store IAP, not Stripe Checkout), and the web app mints
-    // reCAPTCHA-Enterprise App Check tokens, so a stolen/automated ID token alone
-    // can't drive Stripe from outside the app. Requires the App Check provider to
-    // be registered + enforced in the Firebase console and
-    // VITE_RECAPTCHA_ENTERPRISE_SITE_KEY set in the deployed build.
-    enforceAppCheck: true,
   },
-  async (request) => {
-    const uid = request.auth?.uid;
-    if (!uid) throw new HttpsError("unauthenticated", "sign-in-required");
-    const snap = await customerRef(uid).get();
-    const customer = snap.exists ? (snap.data()?.customerId as string | undefined) : undefined;
-    if (!customer) throw new HttpsError("failed-precondition", "no-subscription");
-    const session = await stripeClient().billingPortal.sessions.create({
-      customer,
-      return_url: `${appOrigin.value()}/account`,
-    });
-    return { url: session.url };
-  },
-);
-
-export const stripeWebhook = onRequest(
-  { region: REGION, secrets: [stripeSecret, webhookSecret], timeoutSeconds: 30, memory: "256MiB", maxInstances: 5 },
   async (req, res) => {
-    const stripe = stripeClient();
-    const sig = req.headers["stripe-signature"];
-    let event: Stripe.Event;
-    try {
-      event = stripe.webhooks.constructEvent(req.rawBody, sig as string, webhookSecret.value());
-    } catch {
+    const raw = (req as unknown as { rawBody?: Buffer }).rawBody?.toString("utf8") ?? "";
+    const sig = req.headers["x-moyasar-signature"] as string | string[] | undefined;
+    if (!verifyMoyasarSignature(raw, sig, webhookSecret.value())) {
       res.status(400).send("Webhook signature verification failed");
       return;
     }
 
-    // Idempotency: Stripe delivers at-least-once and retries on 5xx, so claim each
-    // event id exactly once. `create()` fails if the marker already exists (a
-    // duplicate/replay) — ack and skip. `stripeEvents` is server-only (firestore.rules
-    // default-deny). On a handler failure below we delete the marker so the retry
-    // can reprocess.
-    const eventRef = getFirestore().collection("stripeEvents").doc(event.id);
-    try {
-      await eventRef.create({ type: event.type, receivedAt: FieldValue.serverTimestamp() });
-    } catch {
-      res.json({ received: true, duplicate: true });
+    // Payload shape per Moyasar's payment-webhooks docs: `{ id, type, data: <payment> }`.
+    // `data.id` is the payment id; fall back to a top-level `id` defensively.
+    const body = req.body as { id?: string; data?: { id?: string } } | undefined;
+    const paymentId = body?.data?.id ?? body?.id;
+    if (!paymentId) {
+      res.status(400).send("Missing payment id");
       return;
     }
 
     try {
-      if (event.type === "checkout.session.completed") {
-        const session = event.data.object;
-        const uid = session.client_reference_id ?? (session.metadata?.uid as string | undefined);
-        const ref = session.metadata?.ref as string | undefined;
-        if (uid && session.mode === "subscription" && session.subscription) {
-          const sub = await stripe.subscriptions.retrieve(session.subscription as string);
-          await writeEntitlement(uid, sub);
-          await processReferral(uid, ref);
-        } else if (uid && session.mode === "payment" && session.payment_status === "paid") {
-          const kind = session.metadata?.kind;
-          if (kind === "pass") await grantPass(uid);
-          else if (kind === "credits") await addCredits(uid);
-          else if (kind === "pack") await grantPack(uid, session.metadata?.packId);
-          await processReferral(uid, ref);
-        }
-      } else if (
-        event.type === "customer.subscription.updated" ||
-        event.type === "customer.subscription.deleted"
-      ) {
-        const sub = event.data.object;
-        const uid = await uidForCustomer(stripe, sub.customer as string);
-        if (uid) await writeEntitlement(uid, sub);
-      }
-    } catch {
-      // Roll back the idempotency claim so Stripe's retry can reprocess, then
-      // surface a 500 to trigger that retry rather than dropping the event.
-      await eventRef.delete().catch(() => {});
+      await fulfillPayment(moyasarSecret.value(), paymentId);
+    } catch (e) {
+      logger.error("moyasar_webhook_error", { paymentId, error: String(e) });
       res.status(500).send("Webhook handler error");
       return;
     }
     res.json({ received: true });
+  },
+);
+
+// ---- Renewal engine (scheduled) --------------------------------------------------
+
+async function recordRenewalFailure(
+  subRef: DocumentReference,
+  failedAttempts: number,
+  uid: string,
+): Promise<void> {
+  const attempts = failedAttempts + 1;
+  if (attempts >= MAX_RENEWAL_ATTEMPTS) {
+    await subRef.set(
+      { status: "canceled", autoRenew: false, failedAttempts: attempts, updatedAt: FieldValue.serverTimestamp() },
+      { merge: true },
+    );
+    logger.error("moyasar_renewal_gave_up", { uid, attempts });
+  } else {
+    // Retry on tomorrow's run — RENEWAL_LEAD_DAYS gives headroom before the
+    // existing entitlement actually lapses.
+    await subRef.set(
+      { status: "past_due", failedAttempts: attempts, updatedAt: FieldValue.serverTimestamp() },
+      { merge: true },
+    );
+    logger.info("funnel", { event: "renewal_retry_scheduled", uid, attempts });
+  }
+}
+
+async function renewOne(secretKey: string, uid: string, cadence: Cadence, failedAttempts: number): Promise<void> {
+  const db = getFirestore();
+  const subRef = db.collection("subscriptions").doc(uid);
+  const customerSnap = await db.collection("moyasarCustomers").doc(uid).get();
+  const token = customerSnap.exists ? (customerSnap.data()?.token as string | undefined) : undefined;
+  if (!token) {
+    await subRef.set(
+      { status: "canceled", autoRenew: false, updatedAt: FieldValue.serverTimestamp() },
+      { merge: true },
+    );
+    logger.error("moyasar_renewal_no_token", { uid });
+    return;
+  }
+
+  let payment: MoyasarPayment;
+  try {
+    payment = await moyasarChargeToken(secretKey, {
+      amount: amountForCheckout("pro", cadence, priceEnv()),
+      currency: "SAR",
+      description: `Fly GACA Pro — ${cadenceDays(cadence)}-day renewal`,
+      token,
+      callbackUrl: `${appOrigin.value()}/checkout/return`,
+      metadata: { uid, renewal: "true" },
+    });
+  } catch (e) {
+    logger.error("moyasar_renewal_charge_failed", { uid, error: String(e) });
+    await recordRenewalFailure(subRef, failedAttempts, uid);
+    return;
+  }
+
+  if (payment.status !== "paid") {
+    logger.info("funnel", { event: "renewal_failed", uid, status: payment.status });
+    await recordRenewalFailure(subRef, failedAttempts, uid);
+    return;
+  }
+
+  const userSnap = await db.collection("users").doc(uid).get();
+  const current = userSnap.exists ? (userSnap.data()?.entitlement as Entitlement | undefined) : undefined;
+  const base = current?.expiresAt ? new Date(current.expiresAt) : new Date();
+  const entitlement = entitlementFromCheckout(cadence, base);
+  await writeEntitlement(uid, entitlement);
+  await subRef.set(
+    {
+      status: "active",
+      failedAttempts: 0,
+      nextChargeAt: nextChargeAt(new Date(entitlement.expiresAt!)).toISOString(),
+      updatedAt: FieldValue.serverTimestamp(),
+    },
+    { merge: true },
+  );
+  logger.info("funnel", { event: "renewal_charged", uid, cadence });
+}
+
+/**
+ * Daily sweep: Moyasar has no native subscription object, so this IS the renewal
+ * engine — it re-charges every due subscriber's saved card token and extends their
+ * `entitlement.expiresAt` on success (see ./billing-core RENEWAL_LEAD_DAYS /
+ * MAX_RENEWAL_ATTEMPTS for the retry/give-up cadence).
+ */
+export const renewMoyasarSubscriptions = onSchedule(
+  {
+    region: REGION,
+    schedule: "every 24 hours",
+    secrets: [moyasarSecret],
+    timeoutSeconds: 540,
+    memory: "256MiB",
+  },
+  async () => {
+    const db = getFirestore();
+    const dueSnap = await db
+      .collection("subscriptions")
+      .where("autoRenew", "==", true)
+      .where("status", "in", ["active", "past_due"])
+      .where("nextChargeAt", "<=", new Date().toISOString())
+      .get();
+
+    const secretKey = moyasarSecret.value();
+    for (const doc of dueSnap.docs) {
+      const sub = doc.data() as { cadence: Cadence; failedAttempts?: number };
+      await renewOne(secretKey, doc.id, sub.cadence, sub.failedAttempts ?? 0).catch((e) => {
+        logger.error("moyasar_renewal_unhandled_error", { uid: doc.id, error: String(e) });
+      });
+    }
   },
 );

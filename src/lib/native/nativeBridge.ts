@@ -19,9 +19,9 @@ export function platform(): string {
   return Capacitor.getPlatform();
 }
 
-/** Billing flavour: iOS uses RevenueCat IAP; web uses Stripe Checkout. */
-export function billingChannel(): 'revenuecat' | 'stripe' {
-  return platform() === 'ios' ? 'revenuecat' : 'stripe';
+/** Billing flavour: iOS uses RevenueCat IAP; web uses Moyasar checkout. */
+export function billingChannel(): 'revenuecat' | 'moyasar' {
+  return platform() === 'ios' ? 'revenuecat' : 'moyasar';
 }
 
 interface InitOptions {

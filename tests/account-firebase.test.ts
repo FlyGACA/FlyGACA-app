@@ -67,7 +67,7 @@ describe('account store — Firebase auth binding', () => {
     vi.mocked(sync.loadAccount).mockResolvedValue({
       profile: { homeBase: 'OERK' },
       flights: [{ ...FLIGHT, id: 'srv1', remarks: 'from server' }],
-      entitlement: { plan: 'pro', source: 'stripe' },
+      entitlement: { plan: 'pro', source: 'moyasar' },
       chatCredits: 0,
     });
 
@@ -91,7 +91,7 @@ describe('account store — Firebase auth binding', () => {
     vi.mocked(sync.loadAccount).mockResolvedValue({
       profile: {},
       flights: [],
-      entitlement: { plan: 'pro', source: 'stripe' },
+      entitlement: { plan: 'pro', source: 'moyasar' },
       chatCredits: 0,
     });
 

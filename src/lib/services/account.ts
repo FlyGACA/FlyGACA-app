@@ -359,8 +359,8 @@ if (isAuthAvailable()) connectAuth();
 
 /**
  * Re-hydrate the signed-in user's profile/logbook/records/entitlement from
- * Firestore. Used after a Stripe checkout returns so a freshly-granted plan
- * shows without a reload (the entitlement is written by the billing webhook).
+ * Firestore. Used after a checkout returns so a freshly-granted plan shows
+ * without a reload (the entitlement is written by the billing functions).
  * No-ops for local-only sessions.
  */
 export async function refreshAccount(): Promise<void> {

@@ -63,6 +63,8 @@ const PRIVATE = new Set([
   '/logbook',
   '/records',
   '/settings',
+  '/checkout',
+  '/checkout/return',
 ]);
 const routerPaths = [...read('src/router.tsx').matchAll(/path:\s*'([^']+)'/g)].map((m) => m[1]);
 const guideSlugs = [
