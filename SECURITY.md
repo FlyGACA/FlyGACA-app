@@ -1,21 +1,37 @@
 # Security Policy
 
+Fly GACA (flygaca.com) is operated by **BDA Company International (شركة بدع الدولية)**,
+Riyadh, Saudi Arabia — CR 7030976893.
+
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Fly GACA is a continuously deployed web application — only the **latest deployed
+version** (what is live at [flygaca.com](https://flygaca.com)) receives security
+fixes. There are no maintained release branches.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Please report vulnerabilities privately — do not open a public issue.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+- **Email:** i@flygaca.com (subject line starting with `[SECURITY]`)
+- Include: a description of the issue, steps to reproduce, the affected URL or
+  component, and any proof-of-concept you have.
+
+What to expect:
+
+1. **Acknowledgement within 5 business days.**
+2. We will investigate, keep you informed of progress, and tell you whether the
+   report is accepted or declined.
+3. Accepted issues are fixed in the live deployment as quickly as severity
+   warrants; we will credit you (with your permission) once the fix is out.
+
+Please act in good faith: no accessing other users' data, no service
+disruption, and give us reasonable time to fix before public disclosure.
+
+## Scope
+
+- The web app and its API surface (`flygaca.com`, `/api/*`).
+- The Firebase Cloud Functions backend in this repository (`functions/`).
+
+Third-party services (Firebase, Moyasar, hosting mirrors) should be reported to
+their own programs, but feel free to notify us as well.
