@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "description": "Fly GACA — independent educational platform and open regulatory library for Saudi civil aviation. Modern TypeScript rebuild of the Fly GACA frontend.",
+  "author": "BDA Company International (شركة بدع الدولية)",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build:sitemap": "node scripts/build-sitemap.mjs",

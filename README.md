@@ -340,6 +340,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 | | |
 | :--- | :--- |
 | **Author** | Fly GACA |
+| **Operator** | BDA Company International (شركة بدع الدولية) — CR 7030976893, Riyadh, Saudi Arabia |
 | **GitHub** | [@FlyGACA](https://github.com/FlyGACA) |
 | **Email** | [i@flygaca.com](mailto:i@flygaca.com) |
 | **Website** | [flygaca.com](https://flygaca.com) |

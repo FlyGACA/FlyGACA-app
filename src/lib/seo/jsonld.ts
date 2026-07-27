@@ -29,6 +29,7 @@ function orgNode(): JsonLd {
     '@type': 'Organization',
     '@id': ORG_ID,
     name: 'Fly GACA',
+    legalName: 'BDA Company International',
     url: SITE_ORIGIN,
     logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/img/icon-512.png` },
   };
@@ -40,10 +41,35 @@ export function organizationLd(): JsonLd {
     '@type': 'Organization',
     '@id': ORG_ID,
     name: 'Fly GACA',
+    legalName: 'BDA Company International',
+    alternateName: 'شركة بدع الدولية',
     url: SITE_ORIGIN,
     logo: `${SITE_ORIGIN}/img/icon-512.png`,
     description:
       'Fly GACA — an independent educational reference library of Saudi civil-aviation regulations (GACAR). Not affiliated with GACA.',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Riyadh',
+      postalCode: '12965',
+      addressCountry: 'SA',
+    },
+    // Saudi commercial-registration (unified national) number.
+    identifier: { '@type': 'PropertyValue', propertyID: 'SA-CR', value: '7030976893' },
+    vatID: '311415259500003',
+    taxID: '311415259500003',
+    sameAs: [
+      'https://x.com/flygacax',
+      'https://www.snapchat.com/@flygaca',
+      'https://www.facebook.com/flygaca',
+      'https://www.instagram.com/flygaca',
+      'https://www.linkedin.com/company/flygaca',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: 'i@flygaca.com',
+      contactType: 'customer support',
+      availableLanguage: ['en', 'ar'],
+    },
   };
 }
 

@@ -24,7 +24,7 @@ const DOCS: { base: LegalBase; path: string; label: string }[] = [
 ];
 
 /** Last revision of the legal copy (ISO) — shown to readers and fed to the Article schema. */
-const LAST_UPDATED = '2026-06-22';
+const LAST_UPDATED = '2026-07-27';
 
 /** Renders a legal/reference page from structured i18n content. */
 export function LegalPage({ base }: { base: LegalBase }) {

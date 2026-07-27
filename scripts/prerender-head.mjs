@@ -76,6 +76,7 @@ const orgNode = () => ({
   '@type': 'Organization',
   '@id': ORG_ID,
   name: 'Fly GACA',
+  legalName: 'BDA Company International',
   url: SITE,
   logo: { '@type': 'ImageObject', url: `${SITE}/img/icon-512.png` },
 });

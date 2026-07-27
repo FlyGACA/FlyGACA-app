@@ -1795,11 +1795,7 @@
       "pro": "You're on Pro, thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": [
-      "Bulk seat licences",
-      "Admin dashboard & usage",
-      "Syllabus-aligned study"
-    ],
+    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
@@ -3020,11 +3016,11 @@
     },
     "terms": {
       "title": "Terms of Use",
-      "intro": "By using Fly GACA you agree to these terms. Contact us at i@flygaca.com.",
+      "intro": "By using Fly GACA you agree to these terms. Fly GACA is operated by BDA Company International (شركة بدع الدولية). Contact us at i@flygaca.com.",
       "sections": [
         {
           "h": "What Fly GACA is",
-          "p": "An independent educational platform and reference library for Saudi civil-aviation regulation. It is not affiliated with GACA."
+          "p": "An independent educational platform and reference library for Saudi civil-aviation regulation, operated by BDA Company International (شركة بدع الدولية), CR 7030976893, VAT 311415259500003, Riyadh 12965, Saudi Arabia (\"the Company\", \"we\"). \"Fly GACA\" is a product and trade name of the Company. It is not affiliated with GACA."
         },
         {
           "h": "Educational use only",
@@ -3036,7 +3032,7 @@
         },
         {
           "h": "Intellectual property",
-          "p": "Fly GACA owns its name, brand and design. The underlying regulatory documents belong to GACA and are shown for reference."
+          "p": "BDA Company International (operating as Fly GACA) owns the Fly GACA name, brand and design. The underlying regulatory documents belong to GACA and are shown for reference."
         },
         {
           "h": "Third-party content and links",
@@ -3048,17 +3044,17 @@
         },
         {
           "h": "Changes and governing law",
-          "p": "We may change the service and these terms at any time; continued use means acceptance. These terms are governed by the laws of the Kingdom of Saudi Arabia."
+          "p": "We may change the service and these terms at any time; continued use means acceptance. These terms are governed by the laws of the Kingdom of Saudi Arabia, and the competent courts of Riyadh have jurisdiction over any dispute."
         }
       ]
     },
     "privacy": {
       "title": "Privacy Notice",
-      "intro": "How Fly GACA handles your data. Contact us at privacy@flygaca.com.",
+      "intro": "How Fly GACA handles your data. The data controller is BDA Company International (شركة بدع الدولية). Contact us at privacy@flygaca.com.",
       "sections": [
         {
           "h": "Who we are",
-          "p": "Fly GACA operates flygaca.com as an independent educational reference. Reach us at privacy@flygaca.com."
+          "p": "flygaca.com is operated by BDA Company International (شركة بدع الدولية), CR 7030976893, Riyadh, Saudi Arabia — the data controller under the Saudi Personal Data Protection Law (PDPL). Fly GACA is its independent educational reference. Reach us at privacy@flygaca.com."
         },
         {
           "h": "What we collect",
@@ -3288,6 +3284,7 @@
     "gacaSite": "GACA official site ↗",
     "gacaRules": "GACAR & AIP ↗",
     "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية",
+    "legalEntity": "Operated by BDA Company International (شركة بدع الدولية) — CR 7030976893 — VAT 311415259500003 — Riyadh, Saudi Arabia",
     "ctaTitle": "Study smarter with Captain Adel",
     "ctaText": "Go Pro for unlimited questions, deeper study tools, and full offline access to the library.",
     "browseLibrary": "Browse the library",
