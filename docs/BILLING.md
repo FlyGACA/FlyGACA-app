@@ -8,6 +8,21 @@ re-charged by a scheduled function; see [Renewal engine](#renewal-engine-no-nati
 below. The web flow and the backend functions live in this repo; the entitlement / pack ownership
 is granted server-side and read-only on the client.
 
+## Seller of record & VAT
+
+- **Seller of record (web checkout):** BDA Company International (شركة بدع الدولية) — a Saudi
+  limited-liability company, CR 7030976893, VAT 311415259500003, Riyadh 12965, Saudi Arabia.
+  Moyasar is the payment processor only, never the merchant. (On native iOS, Apple is the seller
+  of record via the App Store / RevenueCat.)
+- **Prices are VAT-inclusive** for consumer plans (the pricing page shows `incl. 15% VAT`,
+  `pricing.vatIncl`); school/seat invoices are VAT-exclusive (`pricing.vatExcl`) and VAT is added
+  on the invoice.
+- **Tax invoices (ZATCA):** the company is VAT-registered with quarterly returns. Receipts/tax
+  invoices must carry the seller's Arabic legal name, VAT number, CR number and a QR code for
+  simplified invoices — see the Fatoora/e-invoicing pack and
+  `invoicing-and-vat-returns` doc in the internal Offfice repo for the operating procedure.
+  Bank/settlement details live in internal finance docs only — never in this repo or the app.
+
 ## Pieces
 
 - **Frontend**:
