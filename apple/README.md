@@ -51,8 +51,9 @@ The spec wires up, per app target (PPL, ELPT, AIP):
   entitlement (`Apps/Shared/App.entitlements` → `group.com.flygaca.study`).
 
 Run any scheme. You should land on that module's home — banks, ground school,
-flashcards, mock and timed exam — all offline. (Keychain Sharing and Sign in with
-Apple join later with Firebase.)
+flashcards, mock and timed exam — all offline. (The Sign in with Apple entitlement
+is declared, but the sign-in flow itself joins later with Firebase — see
+`docs/RUNBOOK-ios-firebase.md` for the console setup it needs.)
 
 You can also build without opening Xcode: `npm run ios:build:ppl` (see
 `docs/RUNBOOK-ios-xcodebuild.md`).
@@ -67,9 +68,13 @@ shared — never edit it per app.
 
 ## What is deliberately NOT here yet
 
-- `GoogleService-Info.plist`, Firebase/RevenueCat SDKs, the `PlatformLive`
-  target — the platform half of Phase 4 (see ARCHITECTURE.md §5). Until then the
-  apps run fully offline by design, and `AppServices` mocks stand in for the
-  platform.
+- Firebase/RevenueCat SDKs and the `PlatformLive` target — the platform half of
+  Phase 4 (see ARCHITECTURE.md §5). Until then the apps run fully offline by
+  design, and `AppServices` mocks stand in for the platform.
+- The six `GoogleService-Info.plist` files. The *slot* exists —
+  `apple/project.yml` copies `Apps/<App>/GoogleService-Info.plist` into each
+  bundle, declared `optional` so generation and unsigned builds work without it —
+  but registering the apps and downloading the files is manual console work:
+  `docs/RUNBOOK-ios-firebase.md`. The plists are inert until the SDKs land above.
 - Code signing lives only in CI (`docs/RUNBOOK-ios-signing.md`); local builds run
   unsigned and need no Apple account.

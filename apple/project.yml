@@ -31,6 +31,15 @@ targetTemplates:
       - path: Apps/${target_name}/Content
         type: folder
         buildPhase: resources
+      # Firebase config, one per bundle id — download per app from the Firebase
+      # console and drop it here (docs/RUNBOOK-ios-firebase.md). `optional` keeps
+      # generation working before the plists land: the apps run fully offline
+      # until then, so a missing file must not break `npm run ios:generate`.
+      # Only the target's own INFOPLIST_FILE is barred from build phases, so this
+      # one is copied into the bundle root where FirebaseApp.configure() finds it.
+      - path: Apps/${target_name}/GoogleService-Info.plist
+        optional: true
+        buildPhase: resources
     dependencies:
       - package: FlyGACAKit
         product: FeatureUI
