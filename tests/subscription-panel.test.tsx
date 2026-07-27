@@ -6,8 +6,8 @@ import { FREE_FOR_EVERYONE } from '@/lib/services/entitlements';
 import { renderWithRouter } from './helpers/render';
 
 // With no Firebase configured the account store starts on the default (free)
-// entitlement. The genuine paid (Stripe) branch is server-written (no client setter),
-// so it is covered by e2e/manual, not here.
+// entitlement. The genuine paid (Moyasar) branch is server-written (no client
+// setter), so it is covered by e2e/manual, not here.
 beforeEach(() => {
   localStorage.clear();
 });
@@ -31,9 +31,9 @@ describe('<SubscriptionPanel />', () => {
     }
   });
 
-  it('offers no Manage button without a real Stripe subscription', () => {
-    // Neither a free visitor nor a promo-Pro visitor has a Stripe portal to manage.
+  it('offers no auto-renew toggle without a real Moyasar subscription', () => {
+    // Neither a free visitor nor a promo-Pro visitor has a card on file to stop.
     renderWithRouter(<SubscriptionPanel />);
-    expect(screen.queryByRole('button', { name: 'Manage subscription' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Turn off auto-renew' })).toBeNull();
   });
 });

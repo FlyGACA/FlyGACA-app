@@ -115,7 +115,8 @@ The gating constraint for every app is **authored, cited question banks**, not c
 
 - [ ] Human review of the CPL/IR/ATPL draft banks against the official GACAR (see
       `STUDY-CONTENT-REVIEW.md`) before production sale.
-- [ ] Deploy functions with CPL/IR/ATPL added to `SELLABLE_PACK_IDS`.
+- [x] CPL/IR/ATPL are already in `SELLABLE_PACK_IDS` (`functions/src/billing-core.ts`); still
+      needs a functions deploy to take effect in production.
 - [ ] Grow CPL/IR/ATPL banks toward ASA-scale depth; author Wave 3 packs (FI, dispatcher, UAS…).
 - [ ] Mac: create Xcode targets + App Store Connect listings + the "Saudi Pilot Study Pack" bundle.
 - [ ] Android wrapping strategy spike (Capacitor vs TWA) once iOS Wave 1 is on the store.

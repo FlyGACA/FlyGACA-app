@@ -106,6 +106,8 @@ const MAIN_PATHS = [
   'logbook',
   'records',
   'settings',
+  'checkout',
+  'checkout/return',
   'pricing',
   'schools',
   'business/admin',

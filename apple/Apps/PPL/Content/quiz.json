@@ -1,5 +1,5 @@
 {
- "generated": "2026-05-24",
+ "generated": "2026-07-24",
  "note": "Practice questions authored by Fly GACA from the GACAR library for study. Not actual GACA exam questions. Every answer cites its source — verify against the official GACAR.",
  "exam": {
   "title": "GACAR Knowledge — Mock Exam",
@@ -305,6 +305,54 @@
       "id": "part-91",
       "anchor": "sec-bfxi91-65-aircraft-speed"
      }
+    },
+    {
+     "q": "The principle that VFR pilots are responsible for visually detecting and avoiding other traffic and obstacles, regardless of ATC services, is known as —",
+     "options": [
+      "See-and-avoid",
+      "Positive control",
+      "Right-of-way priority",
+      "Traffic alert"
+     ],
+     "answer": 0,
+     "explain": "\"See-and-avoid\" is the fundamental VFR responsibility to visually detect and avoid other aircraft.",
+     "cite": "GACAR Part 91"
+    },
+    {
+     "q": "An aircraft in distress has the right of way over —",
+     "options": [
+      "All other air traffic",
+      "Only VFR traffic",
+      "Only IFR traffic",
+      "No other traffic"
+     ],
+     "answer": 0,
+     "explain": "Right-of-way rules give an aircraft in distress priority over all other air traffic.",
+     "cite": "GACAR Part 91, §91.61"
+    },
+    {
+     "q": "In the right-of-way hierarchy for converging aircraft, which category generally has priority over powered aircraft?",
+     "options": [
+      "Balloons and gliders",
+      "Airliners",
+      "Military jets",
+      "Helicopters"
+     ],
+     "answer": 0,
+     "explain": "The right-of-way hierarchy gives balloons and gliders priority over powered, heavier aircraft, reflecting their more limited maneuverability.",
+     "cite": "GACAR Part 91, §91.61"
+    },
+    {
+     "q": "An aircraft that is overtaking another aircraft must alter its course to the —",
+     "options": [
+      "Right, and keep clear of the aircraft being overtaken",
+      "Left, always",
+      "Either side, at the pilot's discretion",
+      "It does not need to alter course"
+     ],
+     "answer": 0,
+     "explain": "The overtaking aircraft must alter its own course to the right to pass; the aircraft being overtaken retains the right of way.",
+     "cite": "GACAR Part 91, §91.61"
     }
    ]
   },
@@ -563,6 +611,78 @@
       "id": "part-91",
       "anchor": "sec-mathbf-91-135-operations-in-class-a-airspace"
      }
+    },
+    {
+     "q": "A Special VFR (SVFR) clearance permits —",
+     "options": [
+      "VFR flight within a control zone when weather is below normal VMC minima, subject to an ATC clearance",
+      "IFR flight without a clearance",
+      "VFR flight above FL200",
+      "Flight without a flight plan"
+     ],
+     "answer": 0,
+     "explain": "Special VFR lets a flight operate within a control zone in weather below the normal VMC minima, only with an ATC clearance.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A Flight Information Region (FIR) is airspace within which —",
+     "options": [
+      "Flight information service and alerting service are provided",
+      "Only military flights operate",
+      "Radar coverage is guaranteed",
+      "All flights must be IFR"
+     ],
+     "answer": 0,
+     "explain": "An FIR is airspace of defined dimensions within which flight information service and alerting service are provided.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "ICAO airspace classes are lettered from Class A through —",
+     "options": [
+      "Class G",
+      "Class F",
+      "Class E",
+      "Class H"
+     ],
+     "answer": 0,
+     "explain": "ICAO defines seven airspace classes, A through G, each with its own rules and services.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "In Class E airspace, a VFR flight receives —",
+     "options": [
+      "Traffic information as far as practicable, but no separation service",
+      "Full separation from all other traffic",
+      "No ATC service of any kind",
+      "Mandatory radar vectoring"
+     ],
+     "answer": 0,
+     "explain": "In Class E airspace, VFR flights are given traffic information when practicable, but ATC does not separate them from other traffic.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "How does a Danger Area differ from a Restricted Area?",
+     "options": [
+      "A Danger Area warns of activities hazardous to flight without legally restricting entry, while a Restricted Area imposes flight restrictions",
+      "A Danger Area always prohibits all flight",
+      "They mean the same thing",
+      "A Danger Area only exists over water"
+     ],
+     "answer": 0,
+     "explain": "A Danger Area indicates airspace where activities dangerous to flight may exist, whereas a Restricted Area actually restricts flight under specified conditions.",
+     "cite": "GACAR Part 73 · AIP-KSA ENR 5"
+    },
+    {
+     "q": "Uncontrolled airspace, where ATC provides no separation service, is designated —",
+     "options": [
+      "Class G",
+      "Class A",
+      "Class C",
+      "Class E"
+     ],
+     "answer": 0,
+     "explain": "Class G is uncontrolled airspace; ATC provides no separation service, though flight information may be available on request.",
+     "cite": "GACAR Part 71 · ICAO Annex 11"
     }
    ]
   },
@@ -1139,6 +1259,78 @@
      "answer": 2,
      "explain": "\"WILCO\" means \"will comply\" — message understood and will be acted on.",
      "cite": "ICAO Annex 10 — Aeronautical Telecommunications"
+    },
+    {
+     "q": "In radiotelephony, the word \"AFFIRM\" means —",
+     "options": [
+      "Yes / that is correct",
+      "No",
+      "Please confirm",
+      "Standby"
+     ],
+     "answer": 0,
+     "explain": "AFFIRM is the standard ICAO procedure word for \"yes\" or \"permission granted / that is correct.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "In radiotelephony, the word \"NEGATIVE\" means —",
+     "options": [
+      "No / permission not granted / that is not correct",
+      "Wait",
+      "Say again",
+      "Received"
+     ],
+     "answer": 0,
+     "explain": "NEGATIVE means \"no\", \"permission not granted\", or \"that is not correct.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The procedure word \"STANDBY\" means —",
+     "options": [
+      "Wait and I will call you",
+      "I have finished my message",
+      "Repeat your message",
+      "I acknowledge"
+     ],
+     "answer": 0,
+     "explain": "STANDBY tells the receiving station to wait; the calling station will call again.",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "To avoid confusion with similar-sounding words, the number \"3\" is pronounced in radiotelephony as —",
+     "options": [
+      "TREE",
+      "THREE",
+      "THUREE",
+      "TRI"
+     ],
+     "answer": 0,
+     "explain": "ICAO radiotelephony spelling pronounces \"3\" as \"TREE\" to reduce ambiguity for non-native speakers.",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The number \"5\" is pronounced in radiotelephony as —",
+     "options": [
+      "FIFE",
+      "FIVE",
+      "FYVE",
+      "CINCO"
+     ],
+     "answer": 0,
+     "explain": "ICAO radiotelephony pronounces \"5\" as \"FIFE.\"",
+     "cite": "ICAO Annex 10"
+    },
+    {
+     "q": "The ICAO document that expands on the Annex 1 language proficiency requirements, including the rating scale descriptors, is —",
+     "options": [
+      "Doc 9835",
+      "Doc 4444",
+      "Doc 8168",
+      "Doc 7030"
+     ],
+     "answer": 0,
+     "explain": "ICAO Doc 9835, the Manual on the Implementation of ICAO Language Proficiency Requirements, expands on Annex 1's rating scale.",
+     "cite": "ICAO Annex 1 / Doc 9835"
     }
    ]
   },
@@ -1426,6 +1618,54 @@
       "id": "part-13",
       "anchor": "sec-13-103"
      }
+    },
+    {
+     "q": "\"GACA\" stands for —",
+     "options": [
+      "General Authority of Civil Aviation",
+      "Gulf Aviation Certification Agency",
+      "Global Aviation Compliance Authority",
+      "GACAR Aviation Council Authority"
+     ],
+     "answer": 0,
+     "explain": "GACA is the General Authority of Civil Aviation, the civil aviation regulator of Saudi Arabia.",
+     "cite": "Civil Aviation Law of KSA"
+    },
+    {
+     "q": "A GACAR \"Part\" is generally organized internally into —",
+     "options": [
+      "Subparts, further divided into numbered sections",
+      "Chapters and verses",
+      "Articles and clauses",
+      "Titles and annexes"
+     ],
+     "answer": 0,
+     "explain": "Each GACAR Part is divided into Subparts, which are further divided into numbered sections (e.g. §91.3).",
+     "cite": "GACAR"
+    },
+    {
+     "q": "Under the Chicago Convention framework that GACAR implements, ICAO Annexes contain —",
+     "options": [
+      "International Standards and Recommended Practices (SARPs)",
+      "Only historical aviation records",
+      "Airline schedules",
+      "Aircraft manufacturing blueprints"
+     ],
+     "answer": 0,
+     "explain": "ICAO Annexes set out international Standards and Recommended Practices (SARPs) that Contracting States, including Saudi Arabia, implement through national regulation such as the GACARs.",
+     "cite": "GACAR Foreword"
+    },
+    {
+     "q": "A GACAR requirement that differs from the corresponding ICAO Standard must be —",
+     "options": [
+      "Filed as a difference with ICAO",
+      "Kept confidential",
+      "Ignored",
+      "Applied only to foreign operators"
+     ],
+     "answer": 0,
+     "explain": "Contracting States must notify ICAO of any difference between their national regulations and ICAO Standards, so operators know where Saudi Arabia's rules diverge.",
+     "cite": "GACAR Foreword"
     }
    ]
   },
@@ -1731,6 +1971,54 @@
       "kind": "regulations",
       "id": "part-61"
      }
+    },
+    {
+     "q": "A type rating is required to act as PIC of —",
+     "options": [
+      "Large aircraft, turbojet-powered aircraft, and other aircraft GACA specifies",
+      "Any aircraft with retractable gear",
+      "Any aircraft with more than two seats",
+      "Every single-engine aircraft"
+     ],
+     "answer": 0,
+     "explain": "Type ratings are required for large/turbojet aircraft and other aircraft GACA specifies, in addition to the appropriate category/class rating.",
+     "cite": "GACAR Part 61"
+    },
+    {
+     "q": "A GACAR pilot certificate itself does not expire, but exercising its privileges requires —",
+     "options": [
+      "A current medical certificate and satisfying recency-of-experience requirements",
+      "Nothing further",
+      "A new certificate every year",
+      "Re-examination every 2 years"
+     ],
+     "answer": 0,
+     "explain": "Most GACAR pilot certificates don't expire, but exercising their privileges requires a valid medical certificate and meeting recency requirements.",
+     "cite": "GACAR Part 61"
+    },
+    {
+     "q": "Under GACAR Part 61, ratings that may be added to a pilot certificate include —",
+     "options": [
+      "Category, class, type and instrument ratings",
+      "Only category ratings",
+      "Only medical ratings",
+      "Airport ratings"
+     ],
+     "answer": 0,
+     "explain": "GACAR Part 61 allows category, class, type and instrument ratings to be added to an existing pilot certificate.",
+     "cite": "GACAR Part 61"
+    },
+    {
+     "q": "Before acting as PIC of an aircraft, GACAR Part 61 requires a pilot to hold —",
+     "options": [
+      "The category and class rating appropriate to that aircraft",
+      "Only a valid passport",
+      "A type rating for every aircraft regardless of size",
+      "Nothing beyond a student permit"
+     ],
+     "answer": 0,
+     "explain": "A pilot must hold the category and class rating appropriate to the aircraft being flown before acting as PIC.",
+     "cite": "GACAR Part 61"
     }
    ]
   },
@@ -2035,6 +2323,54 @@
       "kind": "regulations",
       "id": "part-67"
      }
+    },
+    {
+     "q": "A medical certificate issued under GACAR Part 67 is normally valid counting from the date of —",
+     "options": [
+      "The medical examination",
+      "Application submission",
+      "Certificate printing",
+      "The following month"
+     ],
+     "answer": 0,
+     "explain": "Medical certificate validity is normally counted from the date of the medical examination.",
+     "cite": "GACAR Part 67"
+    },
+    {
+     "q": "Which of the following is specifically identified as a disqualifying medical condition under Part-67-style medical standards?",
+     "options": [
+      "Epilepsy",
+      "Corrected visual acuity of 20/20",
+      "A healed minor fracture",
+      "Seasonal hay fever"
+     ],
+     "answer": 0,
+     "explain": "Epilepsy is specifically listed as a disqualifying medical condition, unless a specific special-issuance waiver applies.",
+     "cite": "GACAR Part 67"
+    },
+    {
+     "q": "If an AME is uncertain whether an applicant meets the medical standards, the AME should —",
+     "options": [
+      "Defer the case to GACA for a decision rather than issue the certificate",
+      "Issue the certificate anyway",
+      "Deny it permanently with no appeal",
+      "Ask the applicant to decide"
+     ],
+     "answer": 0,
+     "explain": "When in doubt, an AME defers the case to the regulator rather than making the final call themselves.",
+     "cite": "GACAR Part 67"
+    },
+    {
+     "q": "The three classes of medical certificate under GACAR Part 67 broadly correspond to —",
+     "options": [
+      "Airline transport / commercial / private pilot privileges",
+      "Fixed-wing / rotary-wing / glider pilots",
+      "Day / night / instrument flying",
+      "Domestic / international operations"
+     ],
+     "answer": 0,
+     "explain": "Class 1 supports ATP-level privileges, Class 2 commercial, and Class 3 private-pilot-level privileges — broadly tiered to certificate privileges.",
+     "cite": "GACAR Part 67"
     }
    ]
   },
@@ -2340,6 +2676,54 @@
       "kind": "regulations",
       "id": "part-43"
      }
+    },
+    {
+     "q": "Which of the following is generally required for IFR flight but NOT required for day VFR flight?",
+     "options": [
+      "A gyroscopic attitude/heading system and navigation/radio equipment appropriate to the route",
+      "A magnetic compass",
+      "An airspeed indicator",
+      "An altimeter"
+     ],
+     "answer": 0,
+     "explain": "IFR flight requires additional gyroscopic and radio/navigation equipment beyond the basic VFR instrument set.",
+     "cite": "GACAR Part 91"
+    },
+    {
+     "q": "An Airworthiness Directive (AD) is issued when —",
+     "options": [
+      "An unsafe condition exists in a product and is likely to exist in other products of the same design",
+      "A new paint scheme is approved",
+      "An owner requests a modification",
+      "A pilot reports minor turbulence"
+     ],
+     "answer": 0,
+     "explain": "ADs are mandatory corrective actions issued when an unsafe condition is found that likely affects other aircraft/products of the same type design.",
+     "cite": "GACAR Part 39"
+    },
+    {
+     "q": "Preventive maintenance may generally be performed by —",
+     "options": [
+      "The aircraft owner/operator (for permitted items) or an appropriately certificated person",
+      "Only the original manufacturer",
+      "Only a designated airworthiness representative",
+      "Nobody without a repair station certificate"
+     ],
+     "answer": 0,
+     "explain": "GACAR Part 43 allows certain simple preventive maintenance tasks to be performed by the owner/operator (if a pilot certificate holder) or other authorized persons, within limits.",
+     "cite": "GACAR Part 43"
+    },
+    {
+     "q": "Maintenance records must be retained to show —",
+     "options": [
+      "The total time in service and the current status of applicable airworthiness directives",
+      "Only the purchase price",
+      "The pilot's logbook hours",
+      "The color of the aircraft"
+     ],
+     "answer": 0,
+     "explain": "Maintenance records must document total time in service and AD compliance status, among other things, so continued airworthiness can be verified.",
+     "cite": "GACAR Part 43"
     }
    ]
   },
@@ -2636,6 +3020,54 @@
       "kind": "reference",
       "id": "aviation-weather-handbook-faa-h-8083-28b"
      }
+    },
+    {
+     "q": "A TAF (Terminal Aerodrome Forecast) is —",
+     "options": [
+      "A scheduled forecast of expected weather conditions at an aerodrome for a specified period",
+      "A record of past observed weather",
+      "A NOTAM about runway closures",
+      "A type of METAR remark"
+     ],
+     "answer": 0,
+     "explain": "A TAF is a forecast (not an observation) of expected aerodrome weather over a defined valid period.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Convective SIGMETs are issued for hazards including —",
+     "options": [
+      "Severe or embedded thunderstorms and tornadoes",
+      "Light rain showers",
+      "Calm winds",
+      "Clear skies"
+     ],
+     "answer": 0,
+     "explain": "Convective SIGMETs warn of severe convective weather hazards such as severe/embedded thunderstorms, tornadoes, hail and severe turbulence.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Katabatic (drainage) winds occur when —",
+     "options": [
+      "Cold, dense air flows downhill under gravity, typically at night",
+      "Warm air rises rapidly during the day",
+      "The jet stream shifts south",
+      "A sea breeze reverses"
+     ],
+     "answer": 0,
+     "explain": "Katabatic winds form as cold, denser air drains downslope under gravity, most commonly overnight.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Clear-air turbulence (CAT) is most commonly associated with —",
+     "options": [
+      "Strong wind shear near the jet stream",
+      "Cumulonimbus clouds",
+      "Low-level fog",
+      "Calm high-pressure systems"
+     ],
+     "answer": 0,
+     "explain": "CAT typically occurs in strong wind-shear zones around the jet stream, often without visible cloud to warn pilots.",
+     "cite": "FAA Aviation Weather Handbook"
     }
    ]
   },
@@ -2932,6 +3364,54 @@
       "kind": "reference",
       "id": "pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
      }
+    },
+    {
+     "q": "An aircraft's center of gravity (CG) location primarily affects —",
+     "options": [
+      "Longitudinal stability and controllability",
+      "Engine RPM",
+      "Fuel burn rate only",
+      "Radio range"
+     ],
+     "answer": 0,
+     "explain": "CG position strongly affects an aircraft's longitudinal (pitch) stability and how it handles/controls.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Adverse yaw during a turn entry is best countered by —",
+     "options": [
+      "Coordinated use of aileron and rudder",
+      "Aileron alone",
+      "Rudder alone, with no aileron",
+      "Elevator input only"
+     ],
+     "answer": 0,
+     "explain": "Coordinated rudder use alongside aileron input counteracts adverse yaw when entering/exiting a turn.",
+     "cite": "FAA Airplane Flying Handbook"
+    },
+    {
+     "q": "P-factor (asymmetric propeller loading) is most pronounced —",
+     "options": [
+      "At high angles of attack and high power settings",
+      "In level cruise flight",
+      "During a power-off glide",
+      "At idle power on the ground"
+     ],
+     "answer": 0,
+     "explain": "P-factor increases with high angle of attack and high power, contributing to a yawing tendency.",
+     "cite": "FAA Airplane Flying Handbook"
+    },
+    {
+     "q": "Torque effect from engine and propeller rotation tends to roll the aircraft —",
+     "options": [
+      "Opposite to the direction of propeller rotation",
+      "In the same direction as propeller rotation",
+      "Only during a climb",
+      "Only at idle"
+     ],
+     "answer": 0,
+     "explain": "By Newton's third law, engine/propeller torque rolls the airframe opposite to the direction the propeller turns.",
+     "cite": "FAA Airplane Flying Handbook"
     }
    ]
   },
@@ -3228,6 +3708,54 @@
       "kind": "reference",
       "id": "ac-60-22-aeronautical-decision-making"
      }
+    },
+    {
+     "q": "Fatigue impairs pilot performance primarily by —",
+     "options": [
+      "Slowing reaction time and degrading judgment and decision-making",
+      "Improving night vision",
+      "Increasing peak physical strength",
+      "Having no measurable effect on flying"
+     ],
+     "answer": 0,
+     "explain": "Fatigue degrades reaction time, attention, and judgment — all critical to safe flying.",
+     "cite": "FAA Risk Management Handbook"
+    },
+    {
+     "q": "The FAA's \"DECIDE\" model for in-flight decision making includes the steps —",
+     "options": [
+      "Detect, Estimate, Choose, Identify, Do, Evaluate",
+      "See, Avoid, Report, Log, Wait, Act",
+      "Radio, First, Fly, Navigate, Communicate, Land",
+      "Aviate, Navigate, Communicate, Stop, Turn, Hold"
+     ],
+     "answer": 0,
+     "explain": "The DECIDE model structures in-flight decision making as Detect, Estimate, Choose a course of action, Identify solutions, Do the necessary actions, and Evaluate the effect.",
+     "cite": "FAA Aeronautical Decision-Making (AC 60-22)"
+    },
+    {
+     "q": "\"Get-there-itis\" describes a hazardous mindset in which a pilot —",
+     "options": [
+      "Fixates on completing the flight as planned despite worsening conditions",
+      "Refuses to fly under any circumstances",
+      "Over-prepares for every contingency",
+      "Delegates all decisions to ATC"
+     ],
+     "answer": 0,
+     "explain": "\"Get-there-itis\" is the hazardous tendency to press on toward the destination despite deteriorating conditions or mounting risk.",
+     "cite": "FAA Risk Management Handbook"
+    },
+    {
+     "q": "Situational awareness in flight refers to a pilot's —",
+     "options": [
+      "Accurate perception of the aircraft, environment and their interaction, now and in the near future",
+      "Knowledge of the aircraft's paint scheme",
+      "Memorized radio frequencies only",
+      "Ability to fly without looking outside"
+     ],
+     "answer": 0,
+     "explain": "Situational awareness is the pilot's accurate, up-to-date mental picture of the aircraft, environment, and how they're likely to evolve.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
   },
@@ -3524,6 +4052,54 @@
       "kind": "reference",
       "id": "pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
      }
+    },
+    {
+     "q": "A great circle route between two points represents —",
+     "options": [
+      "The shortest distance between them along the Earth's surface",
+      "A constant-heading rhumb line",
+      "A line of constant latitude",
+      "The equator only"
+     ],
+     "answer": 0,
+     "explain": "A great circle is the shortest path between two points on a sphere; a rhumb line (constant heading) is usually longer.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "DME (Distance Measuring Equipment) provides the pilot with —",
+     "options": [
+      "Slant-range distance to the station",
+      "Bearing information only",
+      "Weather along the route",
+      "Fuel remaining"
+     ],
+     "answer": 0,
+     "explain": "DME gives slant-range distance from the aircraft to the ground station, often paired with a VOR for bearing.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "An ADF (Automatic Direction Finder) needle points toward —",
+     "options": [
+      "The tuned NDB station, regardless of aircraft heading",
+      "Magnetic north, always",
+      "The nearest airport automatically",
+      "True north, always"
+     ],
+     "answer": 0,
+     "explain": "An ADF needle points at the tuned NDB station's relative bearing, independent of the aircraft's heading reference.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "The variation in compass reading caused by an aircraft's own magnetic and electrical equipment is corrected for using a —",
+     "options": [
+      "Compass deviation card",
+      "Sectional chart",
+      "Wind correction angle",
+      "E6B flight computer"
+     ],
+     "answer": 0,
+     "explain": "A compass deviation card, mounted near the compass, lists correction values for the aircraft's own magnetic interference at various headings.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
   },
@@ -3820,6 +4396,54 @@
       "kind": "reference",
       "id": "pilots-handbook-of-aeronautical-knowledge-faa-h-8083-25c"
      }
+    },
+    {
+     "q": "The E6B flight computer (mechanical or electronic) is primarily used to calculate —",
+     "options": [
+      "Time, speed, distance, fuel and wind-related values for flight planning",
+      "Weight and balance only",
+      "Radio frequencies",
+      "Airspace classifications"
+     ],
+     "answer": 0,
+     "explain": "The E6B is a flight-planning calculator for time/speed/distance, fuel, and wind-triangle problems.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Weight and balance calculations before flight ensure the aircraft is operated —",
+     "options": [
+      "Within its certificated weight and center-of-gravity limits",
+      "At maximum possible weight always",
+      "With full fuel tanks only",
+      "Below its stall speed"
+     ],
+     "answer": 0,
+     "explain": "Pre-flight weight and balance planning keeps the aircraft within its certificated weight and CG envelope for safe handling.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "A NOTAM should be checked during flight planning because it may report —",
+     "options": [
+      "Temporary hazards or changes such as runway closures or navaid outages",
+      "Only long-term chart amendments",
+      "Airline ticket prices",
+      "Aircraft maintenance history"
+     ],
+     "answer": 0,
+     "explain": "Preflight action requires familiarity with all available information, and NOTAMs carry time-critical changes (closures, outages, hazards) not yet reflected on charts.",
+     "cite": "GACAR Part 91"
+    },
+    {
+     "q": "\"Top of descent\" in flight planning is the point calculated so the aircraft —",
+     "options": [
+      "Reaches the desired altitude/position at the planned descent rate",
+      "Immediately begins a steep dive",
+      "Ignores ATC descent clearances",
+      "Always occurs directly over the destination airport"
+     ],
+     "answer": 0,
+     "explain": "Top-of-descent planning uses a target descent rate/gradient so the aircraft reaches the desired point and altitude at the right time.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
   }

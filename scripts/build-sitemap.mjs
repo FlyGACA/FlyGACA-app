@@ -27,6 +27,8 @@ const PRIVATE = new Set([
   '/logbook',
   '/records',
   '/settings',
+  '/checkout',
+  '/checkout/return',
 ]);
 // The former Guides + Study hubs now redirect to /learn — don't index the redirects
 // (their content + leaf pages live on, and `/learn` carries the hub priority).

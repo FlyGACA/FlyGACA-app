@@ -21,6 +21,12 @@ final class StudyStoreTests: XCTestCase {
             choices: ["A", "B"], correctIndex: 0, explanation: "Because.")
     }
 
+    private func makeQuizFile(bankID: String, questions: [Question]) -> QuizFile {
+        QuizFile(
+            generated: "v2", exam: .standard,
+            banks: [Bank(id: bankID, title: bankID, blurb: "", source: nil, questions: questions)])
+    }
+
     // MARK: - Exams
 
     func testRecordExamThenExamHistoryReturnsMostRecentFirst() async throws {
@@ -106,6 +112,67 @@ final class StudyStoreTests: XCTestCase {
         XCTAssertEqual(entries.count, 1, "Re-grading updates one row, never inserts a duplicate.")
     }
 
+    // MARK: - Content refresh reconciliation
+
+    func testReconcileSRSRewritesCardKeyWhenQuestionMovesIndex() async throws {
+        let store = try makeStore()
+        let epoch = Date(timeIntervalSince1970: 0)
+        let question = makeQuestion(bankID: "bank-a", index: 2, id: "q-3")
+        _ = try await store.grade(question: question, correct: true, now: epoch)
+
+        // The refreshed corpus reorders "q-3" from index 2 to index 0.
+        let movedQuestion = makeQuestion(bankID: "bank-a", index: 0, id: "q-3")
+        let quiz = makeQuizFile(bankID: "bank-a", questions: [movedQuestion])
+
+        try await store.reconcileSRS(bankID: "bank-a", quiz: quiz)
+
+        let entries = try await store.srsEntries(bankID: "bank-a")
+        XCTAssertNil(entries["2"], "the stale index-2 key must not remain")
+        XCTAssertEqual(entries["0"]?.box, 1, "progress carries over to the question's new index")
+    }
+
+    func testReconcileSRSLeavesOrphanedRowUntouchedWhenQuestionIsRemoved() async throws {
+        let store = try makeStore()
+        let epoch = Date(timeIntervalSince1970: 0)
+        let question = makeQuestion(bankID: "bank-a", index: 2, id: "q-3")
+        _ = try await store.grade(question: question, correct: true, now: epoch)
+
+        // The refreshed corpus no longer has "q-3" at all.
+        let quiz = makeQuizFile(bankID: "bank-a", questions: [makeQuestion(bankID: "bank-a", index: 0, id: "q-other")])
+
+        try await store.reconcileSRS(bankID: "bank-a", quiz: quiz)
+
+        let entries = try await store.srsEntries(bankID: "bank-a")
+        XCTAssertEqual(entries["2"]?.box, 1, "orphaned row is left as-is, not deleted")
+    }
+
+    func testReconcileSRSIsNoOpWhenIndexAlreadyMatches() async throws {
+        let store = try makeStore()
+        let epoch = Date(timeIntervalSince1970: 0)
+        let question = makeQuestion(bankID: "bank-a", index: 2, id: "q-3")
+        _ = try await store.grade(question: question, correct: true, now: epoch)
+
+        let quiz = makeQuizFile(bankID: "bank-a", questions: [question])
+        try await store.reconcileSRS(bankID: "bank-a", quiz: quiz)
+
+        let entries = try await store.srsEntries(bankID: "bank-a")
+        XCTAssertEqual(entries.count, 1)
+        XCTAssertEqual(entries["2"]?.box, 1)
+    }
+
+    func testReconcileSRSIsNoOpWhenBankIsUnknownToTheRefreshedQuiz() async throws {
+        let store = try makeStore()
+        let epoch = Date(timeIntervalSince1970: 0)
+        let question = makeQuestion(bankID: "bank-a", index: 2, id: "q-3")
+        _ = try await store.grade(question: question, correct: true, now: epoch)
+
+        let quiz = makeQuizFile(bankID: "bank-b", questions: [makeQuestion(bankID: "bank-b", index: 0, id: "q-other")])
+        try await store.reconcileSRS(bankID: "bank-a", quiz: quiz)
+
+        let entries = try await store.srsEntries(bankID: "bank-a")
+        XCTAssertEqual(entries["2"]?.box, 1)
+    }
+
     // MARK: - Quiz bests
 
     func testRecordQuizScoreKeepsBestPerBankAndNeverDowngrades() async throws {
@@ -128,6 +195,31 @@ final class StudyStoreTests: XCTestCase {
         try await store.markLessonDone(moduleID: "ppl-exam", lessonID: "lesson-1")
         let done = try await store.lessonsDone(moduleID: "ppl-exam")
         XCTAssertEqual(done, ["lesson-1"])
+    }
+
+    // MARK: - Flags
+
+    func testSetFlagTogglesIndexInAndOutOfTheBank() async throws {
+        let store = try makeStore()
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 3, flagged: true)
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 5, flagged: true)
+        var flagged = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-a")
+        XCTAssertEqual(Set(flagged), [3, 5])
+
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 3, flagged: false)
+        flagged = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-a")
+        XCTAssertEqual(flagged, [5])
+    }
+
+    func testSetFlagIsIdempotentAndScopedPerBank() async throws {
+        let store = try makeStore()
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 1, flagged: true)
+        try await store.setFlag(moduleID: "ppl-exam", bankID: "bank-a", index: 1, flagged: true)
+        let bankA = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-a")
+        XCTAssertEqual(bankA, [1], "Flagging twice doesn't duplicate the index.")
+
+        let bankB = try await store.flaggedIndices(moduleID: "ppl-exam", bankID: "bank-b")
+        XCTAssertEqual(bankB, [], "A different bank in the same module starts unflagged.")
     }
 
     // MARK: - Streak

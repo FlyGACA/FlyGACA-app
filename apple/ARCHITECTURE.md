@@ -51,7 +51,7 @@ drop below iOS 17.
 |---|---|---|
 | **CoreModels** | `Question`, `Bank`, `QuizFile`, `ModuleManifest`, `ExamConfig`, `SrsEntry`, ground-school/paths types; CodingKeys map the terse web JSON; stable-id hashing | none |
 | **StudyEngines** | `StudySession` state machine (practice/mock/exam by config), `Leitner` SRS (srs.ts port), `Streaks`, `QuestionSampler`, `ReadinessAnalytics` | none |
-| **ContentKit** | `ContentLoader` (bundled JSON), `ContentStore` (cache-then-bundle; Phase-4 refresher plugs in here) | none |
+| **ContentKit** | `ContentLoader` (bundled JSON), `ContentStore` (cache-then-bundle), `ContentRefresher` (fetch + filter + validate the remote corpus into the cache — §2) | none |
 | **PersistenceKit** | SwiftData `@Model`s + `StudyStore` actor — the single write path for attempts/SRS/streaks | none |
 | **AppServices** | Protocol seams (`AuthProviding`, `EntitlementsProviding`, `ProgressSyncing`, `ChatClient`) + offline mocks | none |
 | **FeatureUI** | Generic `QuizView`, `FlashcardView`, `ExamTimerView`, `ResultStat`, `Disclaimer`, module home, `SingleModuleRootView`; Falcon tokens from `src/styles/tokens.css` | none |
@@ -151,10 +151,20 @@ These semantics are shared with the web app; users move between the two:
 
 ### Remote content refresh (Phase 4)
 
-`ContentStore` already resolves cache-then-bundle. The refresher fetches
+`ContentStore` resolves cache-then-bundle; `ContentRefresher` (ContentKit,
+pure Foundation — no Firebase dependency) is the fetch side: it calls
 `https://flygaca.com/data/quiz.json` with `If-None-Match`, double-checks the
-`generated` stamp, writes the cache atomically, then reconciles `CardSRSRecord`
-rows by `questionID` hash (rewriting `cardKey` when indices shifted).
+`generated` stamp against the currently-active content, filters the corpus
+down to the module's own `bankIDs`, and — only once the filtered slice
+round-trips through `QuizFile.decode` cleanly — writes `quiz.json` +
+a `contentVersion`-stamped `module.json` into `cacheDirectory` atomically.
+`StudyStore.reconcileSRS(bankID:quiz:)` is the follow-up: it rewrites each
+`CardSRSRecord` row's `cardKey` to its question's new position, matched by
+the stable `questionID` hash, so Leitner progress survives reordering instead
+of silently regrading the wrong question. Still open: the composition root
+that calls these on a schedule (app launch / background refresh) — that
+lands with PlatformLive, since it is also where the entitlement check for
+"is a refresh worth the data cost" would live.
 
 ---
 

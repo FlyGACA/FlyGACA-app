@@ -93,7 +93,7 @@ test('exam-prep storefront lists certificate & subject packs with prices', async
 
 test('a paid pack page offers Buy but disables it when billing is off', async ({ page }) => {
   await page.goto('/study/packs/medical');
-  // Firebase/Stripe unconfigured in the preview → the buy button is the disabled placeholder.
+  // Firebase/Moyasar unconfigured in the preview → the buy button is the disabled placeholder.
   await expect(page.getByRole('button', { name: 'Available at launch' })).toBeDisabled();
 });
 

@@ -90,7 +90,7 @@ export function Chat() {
   // balance lifts the gate (the server spends a credit when the free quota is out).
   const gated = !isPro && isExhausted(currentUsage(usage)) && chatCredits <= 0;
 
-  // Buy a one-time question pack (Stripe redirects on success; a signed-in chat
+  // Buy a one-time question pack (checkout redirects on success; a signed-in chat
   // user won't hit 'sign-in-required', and offline/unconfigured errors are inert).
   async function buyCredits(): Promise<void> {
     try {

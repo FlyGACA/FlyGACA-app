@@ -141,6 +141,30 @@ public actor StudyStore {
         decode([String].self, try fetchProgress(moduleID: moduleID).lessonsDoneData) ?? []
     }
 
+    // ── Flags ──
+
+    /// Toggle a question's flagged state within its bank (web parity: flagged
+    /// question indices, per module).
+    public func setFlag(moduleID: String, bankID: String, index: Int, flagged: Bool) throws {
+        let record = try fetchProgress(moduleID: moduleID)
+        var byBank = decode([String: [Int]].self, record.flaggedData) ?? [:]
+        var indices = byBank[bankID] ?? []
+        if flagged {
+            if !indices.contains(index) { indices.append(index) }
+        } else {
+            indices.removeAll { $0 == index }
+        }
+        byBank[bankID] = indices
+        record.flaggedData = encode(byBank)
+        try modelContext.save()
+    }
+
+    /// Flagged question indices for one bank within a module.
+    public func flaggedIndices(moduleID: String, bankID: String) throws -> [Int] {
+        let byBank = decode([String: [Int]].self, try fetchProgress(moduleID: moduleID).flaggedData) ?? [:]
+        return byBank[bankID] ?? []
+    }
+
     private func fetchProgress(moduleID: String) throws -> ModuleProgressRecord {
         var descriptor = FetchDescriptor<ModuleProgressRecord>(
             predicate: #Predicate { $0.moduleID == moduleID })
@@ -156,6 +180,46 @@ public actor StudyStore {
         )
         modelContext.insert(fresh)
         return fresh
+    }
+
+    // ── Content refresh reconciliation (Phase 4) ──
+
+    /// After `ContentRefresher` pulls a newer corpus slice, a bank's question
+    /// order can shift. Rewrite each row's `cardKey`/`key` to the question's new
+    /// position, matched by the stable content hash (`questionID`) — so Leitner
+    /// progress survives reordering instead of silently regrading the wrong
+    /// question. Rows whose question no longer exists in the refreshed bank are
+    /// left untouched (orphaned, not deleted — the corpus edit may be reverted).
+    public func reconcileSRS(bankID: String, quiz: QuizFile) throws {
+        guard let bank = quiz.bank(id: bankID) else { return }
+        // uniquingKeysWith rather than uniqueKeysWithValues: two questions
+        // sharing a stable id (identical prompt text) must never crash
+        // reconciliation — keep the first and let the rest resolve on their
+        // own accord next pass.
+        let byQuestionID = Dictionary(bank.questions.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+
+        let descriptor = FetchDescriptor<CardSRSRecord>(predicate: #Predicate { $0.bankID == bankID })
+        let records = try modelContext.fetch(descriptor)
+        var liveKeys = Set(records.map(\.key))
+
+        var changed = false
+        for record in records {
+            guard let question = byQuestionID[record.questionID], question.legacyKey != record.cardKey else {
+                continue
+            }
+            let newKey = "\(bankID)|\(question.legacyKey)"
+            // Guard against a (should-never-happen) collision with another
+            // record's current key rather than violate the unique constraint.
+            guard !liveKeys.contains(newKey) else { continue }
+            liveKeys.remove(record.key)
+            record.cardKey = question.legacyKey
+            record.key = newKey
+            liveKeys.insert(newKey)
+            changed = true
+        }
+        if changed {
+            try modelContext.save()
+        }
     }
 
     // ── Streak ──

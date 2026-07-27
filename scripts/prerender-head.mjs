@@ -147,7 +147,16 @@ const DEFAULT_DESC_AR = tIn(ar.metaDesc, 'home') ?? DEFAULT_DESC;
 // cap scripts/build-sitemap.mjs uses, so head-hreflang and sitemap-hreflang agree.
 const AR_CORPUS_MAX = Number(process.env.AR_CORPUS_MAX ?? 60);
 
-const PRIVATE = new Set(['/account', '/dashboard', '/currency', '/logbook', '/records', '/settings']);
+const PRIVATE = new Set([
+  '/account',
+  '/dashboard',
+  '/currency',
+  '/logbook',
+  '/records',
+  '/settings',
+  '/checkout',
+  '/checkout/return',
+]);
 const REDIRECTS = new Set(['/guides', '/study']);
 
 // Static pages: route → i18n meta key (under <bundle>.meta / .metaDesc). Routes
