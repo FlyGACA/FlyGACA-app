@@ -180,6 +180,7 @@ export function Footer() {
               {t('footer.gacaRules')}
             </a>
           </p>
+          <p className={styles.legalEntity}>{t('footer.legalEntity')}</p>
         </div>
 
         <div className={styles.bottom}>
