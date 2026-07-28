@@ -683,6 +683,78 @@
      "answer": 0,
      "explain": "Class G is uncontrolled airspace; ATC provides no separation service, though flight information may be available on request.",
      "cite": "GACAR Part 71 · ICAO Annex 11"
+    },
+    {
+     "q": "In which ICAO airspace classes is IFR flight provided with separation from all other IFR flights?",
+     "options": [
+      "Classes A, B, C, D and E",
+      "Class A only",
+      "Class G only",
+      "Classes F and G"
+     ],
+     "answer": 0,
+     "explain": "IFR flights are separated from other IFR flights in Classes A–E; in Class A all flight is IFR and separated, while VFR is not permitted.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "VFR flight is NOT permitted in which ICAO airspace class?",
+     "options": [
+      "Class A",
+      "Class C",
+      "Class E",
+      "Class G"
+     ],
+     "answer": 0,
+     "explain": "Class A airspace is available to IFR flights only; VFR operations are not permitted there.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "In Class C airspace, VFR flights are separated from —",
+     "options": [
+      "Nothing",
+      "IFR flights (and given traffic information on other VFR)",
+      "All other VFR flights",
+      "Only military traffic"
+     ],
+     "answer": 1,
+     "explain": "In Class C, VFR is separated from IFR and receives traffic information (with avoidance advice on request) regarding other VFR flights.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A flight information service and alerting service, but no separation service, is characteristic of —",
+     "options": [
+      "Class A",
+      "Class B",
+      "Class G",
+      "Class C"
+     ],
+     "answer": 2,
+     "explain": "In Class G (uncontrolled) airspace ATC provides only flight information and alerting services; no separation is provided.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "Below 10,000 ft AMSL, the standard maximum indicated airspeed for VFR/IFR flights in Classes C, D, E, F and G is —",
+     "options": [
+      "200 kt",
+      "250 kt",
+      "300 kt",
+      "No limit"
+     ],
+     "answer": 1,
+     "explain": "A 250 kt IAS speed limit applies below 10,000 ft AMSL in Classes C–G (Classes A and B have no such general limit).",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "An Air Traffic Service that provides advice and information useful for the safe and efficient conduct of flights is a —",
+     "options": [
+      "Flight information service",
+      "Area control service",
+      "Approach control service",
+      "Aerodrome control service"
+     ],
+     "answer": 0,
+     "explain": "The flight information service (FIS) provides advice and information useful for the safe and efficient conduct of flights.",
+     "cite": "ICAO Annex 11"
     }
    ]
   },
@@ -1035,6 +1107,78 @@
      "answer": 0,
      "explain": "A Trigger NOTAM draws attention to, and gives a short reference for, an AIRAC AIP Amendment or Supplement, so operators know a permanent change is about to take effect.",
      "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "The three categories of NOTAM series are commonly distinguished by their —",
+     "options": [
+      "Colour",
+      "Series letter and purpose (e.g. new, replace, cancel)",
+      "Font",
+      "Length"
+     ],
+     "answer": 1,
+     "explain": "NOTAMs are issued as NOTAMN (new), NOTAMR (replacing an earlier NOTAM) and NOTAMC (cancelling one), identified in the NOTAM's Q-line and identifier.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "An AIP Amendment differs from an AIP Supplement in that an Amendment —",
+     "options": [
+      "Is temporary",
+      "Introduces permanent changes to the AIP",
+      "Is never distributed",
+      "Applies only to VFR"
+     ],
+     "answer": 1,
+     "explain": "AIP Amendments make permanent changes to the AIP; Supplements publish temporary changes of a defined duration.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "The 'AIRAC' system exists primarily to —",
+     "options": [
+      "Reduce printing costs",
+      "Give operators advance notice of significant changes on common effective dates",
+      "Encrypt NOTAMs",
+      "Replace the AIP"
+     ],
+     "answer": 1,
+     "explain": "AIRAC provides operationally significant changes on standardised, pre-notified effective dates so operators can update charts, databases and procedures in advance.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "The Integrated Aeronautical Information Package includes the AIP, its amendments and supplements, NOTAM, AIC and —",
+     "options": [
+      "The aircraft flight manual",
+      "Checklists and pre-flight/post-flight information bulletins",
+      "The company operations manual",
+      "The load sheet"
+     ],
+     "answer": 1,
+     "explain": "The Integrated Aeronautical Information Package comprises the AIP (with amendments/supplements), NOTAM and PIB, AIC, and associated checklists and summaries.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "The primary quality objective of aeronautical information services is to ensure data is —",
+     "options": [
+      "Cheap",
+      "Accurate, resolved, timely and traceable (data quality/integrity)",
+      "Colourful",
+      "Written only in Arabic"
+     ],
+     "answer": 1,
+     "explain": "AIS quality management aims for accuracy, resolution, integrity, traceability and timeliness of aeronautical data.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "Coordinates and elevations published in the AIP are referenced to —",
+     "options": [
+      "A local datum chosen by each aerodrome",
+      "WGS-84 (horizontal) and mean sea level via EGM geoid (vertical)",
+      "Magnetic north only",
+      "The nearest VOR"
+     ],
+     "answer": 1,
+     "explain": "ICAO requires published geographic coordinates to use the WGS-84 datum, with elevations referenced to mean sea level.",
+     "cite": "ICAO Annex 15"
     }
    ]
   },
@@ -1331,6 +1475,54 @@
      "answer": 0,
      "explain": "ICAO Doc 9835, the Manual on the Implementation of ICAO Language Proficiency Requirements, expands on Annex 1's rating scale.",
      "cite": "ICAO Annex 1 / Doc 9835"
+    },
+    {
+     "q": "The readability scale used to answer 'HOW DO YOU READ' runs from —",
+     "options": [
+      "1 (unreadable) to 5 (perfectly readable)",
+      "1 (best) to 9 (worst)",
+      "A to E",
+      "0 to 10"
+     ],
+     "answer": 0,
+     "explain": "Readability is reported on a 1-to-5 scale: 1 unreadable, 2 readable now and then, 3 readable but with difficulty, 4 readable, 5 perfectly readable.",
+     "cite": "ICAO Annex 10 Vol II"
+    },
+    {
+     "q": "The word used to indicate 'yes' or 'that is correct' in radiotelephony is —",
+     "options": [
+      "ROGER",
+      "AFFIRM",
+      "WILCO",
+      "CORRECT"
+     ],
+     "answer": 1,
+     "explain": "'AFFIRM' means yes; 'ROGER' only means the transmission was received, not agreement.",
+     "cite": "ICAO Annex 10 Vol II"
+    },
+    {
+     "q": "A distress message (MAYDAY) has priority over —",
+     "options": [
+      "Only routine messages",
+      "All other transmissions",
+      "Only urgency messages",
+      "Nothing — it has no special priority"
+     ],
+     "answer": 1,
+     "explain": "A distress (MAYDAY) message has absolute priority over all other transmissions.",
+     "cite": "ICAO Annex 10 Vol II"
+    },
+    {
+     "q": "The distress and urgency signals are, respectively —",
+     "options": [
+      "SECURITE and PAN PAN",
+      "MAYDAY and PAN PAN",
+      "PAN PAN and MAYDAY",
+      "MAYDAY and SECURITE"
+     ],
+     "answer": 1,
+     "explain": "Distress is 'MAYDAY' (grave and imminent danger); urgency is 'PAN PAN' (a condition concerning safety but not requiring immediate assistance).",
+     "cite": "ICAO Annex 10 Vol II"
     }
    ]
   },
@@ -3068,6 +3260,78 @@
      "answer": 0,
      "explain": "CAT typically occurs in strong wind-shear zones around the jet stream, often without visible cloud to warn pilots.",
      "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Dew point is best defined as the temperature to which air must be cooled to become —",
+     "options": [
+      "Completely dry",
+      "Saturated (100% relative humidity)",
+      "Unstable",
+      "Supersonic"
+     ],
+     "answer": 1,
+     "explain": "Dew point is the temperature at which a given parcel of air becomes saturated; the closer the temperature/dew-point spread, the higher the humidity.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "A warm front is typically associated with —",
+     "options": [
+      "A narrow band of violent thunderstorms",
+      "Widespread stratiform cloud and steady precipitation",
+      "Clear skies and gusty winds",
+      "Sudden temperature drops"
+     ],
+     "answer": 1,
+     "explain": "Warm fronts, with their shallow slope, typically bring extensive stratiform cloud, low ceilings and steady precipitation ahead of the front.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "The three ingredients required for a thunderstorm to form are moisture, instability and —",
+     "options": [
+      "Snow",
+      "A lifting mechanism",
+      "High pressure",
+      "Calm wind"
+     ],
+     "answer": 1,
+     "explain": "Thunderstorms require sufficient moisture, an unstable lapse rate and a lifting force (front, terrain, heating or convergence) to trigger deep convection.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Mountain wave turbulence is most likely when strong winds blow —",
+     "options": [
+      "Parallel to a ridge in stable air",
+      "Roughly perpendicular to a mountain ridge with a stable layer aloft",
+      "In calm conditions",
+      "Only at night"
+     ],
+     "answer": 1,
+     "explain": "Mountain waves form when strong winds cross a ridge roughly perpendicularly with a stable layer aloft, producing wave action, rotors and turbulence downwind.",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "Freezing rain at the surface is a reliable indication of —",
+     "options": [
+      "A shallow, cold, dry airmass",
+      "Warmer air aloft above a sub-freezing surface layer (a temperature inversion)",
+      "Convective activity",
+      "Fog only"
+     ],
+     "answer": 1,
+     "explain": "Freezing rain forms when rain from a warmer layer aloft falls through a sub-freezing surface layer — direct evidence of warmer air above (an inversion).",
+     "cite": "FAA Aviation Weather Handbook"
+    },
+    {
+     "q": "The most hazardous aspect of a microburst for an aircraft on approach is —",
+     "options": [
+      "A steady tailwind",
+      "A rapid shift from a performance-increasing headwind to a performance-decreasing tailwind",
+      "Light rain",
+      "Reduced temperature"
+     ],
+     "answer": 1,
+     "explain": "Flying through a microburst, the aircraft first meets a headwind (rising performance), then a strong downdraft and finally a tailwind — a sudden loss of airspeed/performance close to the ground.",
+     "cite": "FAA Aviation Weather Handbook"
     }
    ]
   },
@@ -3412,6 +3676,78 @@
      "answer": 0,
      "explain": "By Newton's third law, engine/propeller torque rolls the airframe opposite to the direction the propeller turns.",
      "cite": "FAA Airplane Flying Handbook"
+    },
+    {
+     "q": "Increasing the wing angle of attack increases lift until —",
+     "options": [
+      "The speed of sound is reached",
+      "The critical (stalling) angle of attack is exceeded",
+      "The flaps retract",
+      "The CG moves aft"
+     ],
+     "answer": 1,
+     "explain": "Lift rises with angle of attack up to the critical angle; beyond it the airflow separates and the wing stalls, regardless of airspeed.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Wingtip vortices (and the induced drag they represent) are strongest when an aircraft is —",
+     "options": [
+      "Light, clean and fast",
+      "Heavy, clean, and slow (high angle of attack)",
+      "On the ground",
+      "In a descent"
+     ],
+     "answer": 1,
+     "explain": "Induced drag and wingtip vortices are greatest at high angle of attack — heavy, slow, and clean configuration — such as just after take-off or in slow flight.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Raising flaps generally —",
+     "options": [
+      "Increases the stalling speed and reduces lift/drag at a given speed",
+      "Reduces the stalling speed",
+      "Has no effect on stall speed",
+      "Increases the critical angle of attack"
+     ],
+     "answer": 0,
+     "explain": "Retracting flaps reduces camber and lift coefficient, raising the stalling speed and reducing drag for a given airspeed.",
+     "cite": "FAA Airplane Flying Handbook"
+    },
+    {
+     "q": "A forward centre-of-gravity position generally makes an aircraft —",
+     "options": [
+      "Less stable and harder to recover from a stall",
+      "More longitudinally stable but requiring more elevator/tail download",
+      "Impossible to fly",
+      "Faster in cruise with no penalty"
+     ],
+     "answer": 1,
+     "explain": "A forward CG increases longitudinal stability and stall resistance but requires greater tail download/elevator authority and can raise stall speed and reduce cruise performance.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Load factor in a coordinated level turn is a function of —",
+     "options": [
+      "Airspeed only",
+      "Bank angle",
+      "Weight only",
+      "Altitude only"
+     ],
+     "answer": 1,
+     "explain": "In a level, coordinated turn the load factor depends on bank angle (1/cos of the bank), independent of aircraft weight — e.g. about 1.41 g at 45° bank.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Vne (never-exceed speed) is depicted on the airspeed indicator by the —",
+     "options": [
+      "Top of the green arc",
+      "Red radial line",
+      "Bottom of the white arc",
+      "Top of the white arc"
+     ],
+     "answer": 1,
+     "explain": "Vne is marked by the red radial line; the aircraft must never be flown beyond it.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
   },
@@ -3756,6 +4092,78 @@
      "answer": 0,
      "explain": "Situational awareness is the pilot's accurate, up-to-date mental picture of the aircraft, environment, and how they're likely to evolve.",
      "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "Empty-field (or 'empty-sky') myopia causes the eyes at high altitude with nothing to focus on to —",
+     "options": [
+      "Focus sharply at infinity",
+      "Relax to a short focal distance, reducing ability to detect distant traffic",
+      "See ultraviolet light",
+      "Improve night vision"
+     ],
+     "answer": 1,
+     "explain": "With no visual cues the eyes relax to a resting focus of only a few metres, so distant traffic can go undetected — pilots should deliberately focus on distant objects.",
+     "cite": "FAA Aeronautical Information Manual / aeromedical references"
+    },
+    {
+     "q": "The greatest risk from mild hypoxia is that the affected pilot —",
+     "options": [
+      "Feels obvious pain",
+      "May feel a false sense of well-being (euphoria) and not recognise the impairment",
+      "Immediately loses consciousness",
+      "Cannot start the engine"
+     ],
+     "answer": 1,
+     "explain": "Insidious hypoxia often produces euphoria and impaired judgement without the pilot recognising the degradation — which is what makes it dangerous.",
+     "cite": "FAA aeromedical references"
+    },
+    {
+     "q": "Time of useful consciousness at a cabin altitude of 25,000 ft is on the order of —",
+     "options": [
+      "Several hours",
+      "3 to 5 minutes",
+      "Indefinite",
+      "One second"
+     ],
+     "answer": 1,
+     "explain": "At around 25,000 ft, time of useful consciousness after a loss of pressurisation is only about 3–5 minutes, decreasing sharply with altitude.",
+     "cite": "FAA aeromedical references"
+    },
+    {
+     "q": "The leans, a common form of vestibular spatial disorientation, is best countered by —",
+     "options": [
+      "Closing the eyes",
+      "Trusting and flying by the flight instruments",
+      "Making rapid head movements",
+      "Increasing power"
+     ],
+     "answer": 1,
+     "explain": "The 'leans' is a false sensation of bank; the remedy is to believe and fly the instruments rather than bodily sensations.",
+     "cite": "FAA Instrument Flying Handbook / aeromedical references"
+    },
+    {
+     "q": "The startle/surprise response is a human-factors hazard because it can —",
+     "options": [
+      "Improve reaction time",
+      "Momentarily degrade a pilot's cognitive performance and delay a correct response",
+      "Prevent hypoxia",
+      "Increase night vision"
+     ],
+     "answer": 1,
+     "explain": "A sudden, unexpected event can trigger a startle response that briefly impairs perception and decision-making, delaying an appropriate reaction.",
+     "cite": "FAA Risk Management Handbook"
+    },
+    {
+     "q": "Effective crew/single-pilot resource management primarily aims to improve —",
+     "options": [
+      "Engine efficiency",
+      "The management of all available resources — information, equipment and people — to reduce error",
+      "Fuel burn",
+      "Aircraft speed"
+     ],
+     "answer": 1,
+     "explain": "Resource management (CRM/SRM) is about using all available resources — information, automation, people and self — to improve situational awareness and decision-making.",
+     "cite": "FAA Risk Management Handbook"
     }
    ]
   },
@@ -4099,6 +4507,78 @@
      ],
      "answer": 0,
      "explain": "A compass deviation card, mounted near the compass, lists correction values for the aircraft's own magnetic interference at various headings.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "A rhumb line (loxodrome) is a track that —",
+     "options": [
+      "Crosses every meridian at the same angle and appears straight on a Mercator chart",
+      "Is the shortest distance between two points",
+      "Always follows a great circle",
+      "Points at the magnetic pole"
+     ],
+     "answer": 0,
+     "explain": "A rhumb line maintains a constant true bearing, crossing all meridians at the same angle; it plots as a straight line on a Mercator projection but is not the shortest route.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "To convert a true heading to a magnetic heading, a pilot applies —",
+     "options": [
+      "Deviation",
+      "Variation",
+      "Wind correction angle",
+      "Compass acceleration error"
+     ],
+     "answer": 1,
+     "explain": "Magnetic variation (the angle between true and magnetic north) is applied to convert true to magnetic; deviation is then applied to obtain compass heading.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "On a sectional chart the effect of 'east is least, west is best' is a memory aid for applying —",
+     "options": [
+      "Deviation to compass heading",
+      "Variation between true and magnetic (subtract easterly, add westerly to true)",
+      "Wind correction",
+      "Time-zone changes"
+     ],
+     "answer": 1,
+     "explain": "'East is least (subtract), west is best (add)' reminds pilots to subtract easterly and add westerly variation when converting a true course to a magnetic course.",
+     "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+    },
+    {
+     "q": "A VOR radial is defined as a magnetic bearing —",
+     "options": [
+      "Toward the station",
+      "Away from (outbound from) the station",
+      "Relative to the aircraft nose",
+      "From true north"
+     ],
+     "answer": 1,
+     "explain": "A radial is a magnetic course oriented FROM the VOR station; the aircraft is on a given radial regardless of which way it is heading.",
+     "cite": "FAA Instrument Flying Handbook"
+    },
+    {
+     "q": "An RNAV/GNSS system computes position primarily from —",
+     "options": [
+      "Ground-based NDB signals",
+      "Ranging signals from multiple satellites",
+      "Magnetic dip",
+      "Barometric pressure"
+     ],
+     "answer": 1,
+     "explain": "A GNSS receiver derives three-dimensional position from the ranging signals of several satellites simultaneously.",
+     "cite": "FAA Instrument Flying Handbook"
+    },
+    {
+     "q": "Given a true airspeed of 100 kt and a direct 20 kt tailwind, the groundspeed is —",
+     "options": [
+      "80 kt",
+      "100 kt",
+      "120 kt",
+      "20 kt"
+     ],
+     "answer": 2,
+     "explain": "A direct tailwind adds to true airspeed: 100 kt TAS + 20 kt tailwind = 120 kt groundspeed.",
      "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
     }
    ]
