@@ -71,10 +71,12 @@ shared — never edit it per app.
 - Firebase/RevenueCat SDKs and the `PlatformLive` target — the platform half of
   Phase 4 (see ARCHITECTURE.md §5). Until then the apps run fully offline by
   design, and `AppServices` mocks stand in for the platform.
-- The six `GoogleService-Info.plist` files. The *slot* exists —
+- The six real `GoogleService-Info.plist` files. The *slot* exists —
   `apple/project.yml` copies `Apps/<App>/GoogleService-Info.plist` into each
-  bundle, declared `optional` so generation and unsigned builds work without it —
-  but registering the apps and downloading the files is manual console work:
-  `docs/RUNBOOK-ios-firebase.md`. The plists are inert until the SDKs land above.
+  bundle — but registering the apps and downloading the configs is manual console
+  work (`docs/RUNBOOK-ios-firebase.md`). Until they land,
+  `scripts/native/ensure-firebase-plists.sh` drops a placeholder per target (run
+  automatically by `ios:generate` and `ios:build:*`) so generation and unsigned
+  builds stay green; the plists are inert until the SDKs land above.
 - Code signing lives only in CI (`docs/RUNBOOK-ios-signing.md`); local builds run
   unsigned and need no Apple account.
