@@ -64,3 +64,8 @@ else
   log_error "xcodegen generate failed"
   exit 1
 fi
+
+# Guarantee each app has a GoogleService-Info.plist (placeholder when the real one is
+# absent) so the generated project builds in Xcode without hunting down Firebase config.
+# A real, downloaded plist is never overwritten — see ensure-firebase-config.sh.
+bash "$SCRIPT_DIR/ensure-firebase-config.sh" all

@@ -114,6 +114,14 @@ generate_content() {
   log_success "Content generated for $app"
 }
 
+# Ensure the app's GoogleService-Info.plist exists so Xcode's CopyPlistFile resource
+# phase can run. Writes a non-functional placeholder only when the real plist is absent
+# (a downloaded/real plist is never overwritten) — see ensure-firebase-config.sh.
+ensure_firebase_config() {
+  local app=$1
+  bash "$SCRIPT_DIR/ensure-firebase-config.sh" "$app"
+}
+
 # Generate the Xcode project from apple/project.yml via XcodeGen.
 # The project is deliberately not in git — project.yml is the source of truth.
 generate_project() {
@@ -392,6 +400,7 @@ main() {
       generate_project
       for app in "${APPS[@]}"; do
         generate_content "$app"
+        ensure_firebase_config "$app"
         build_app "$app" "$CONFIGURATION" || exit 1
       done
       log_success "All builds completed successfully"
@@ -400,6 +409,7 @@ main() {
       check_prerequisites
       generate_project
       generate_content "$APP"
+      ensure_firebase_config "$APP"
       build_app "$APP" "$CONFIGURATION" || exit 1
       ;;
     *)

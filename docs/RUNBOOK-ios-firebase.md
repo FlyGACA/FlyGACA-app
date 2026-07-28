@@ -59,8 +59,15 @@ config file ships inside the app binary and is not a secret — it identifies th
 it doesn't authorize anything. Access is enforced by `firestore.rules` and App Check, not
 by keeping this file private.
 
-They are declared `optional: true` in `apple/project.yml`, so `ios:generate` and unsigned
-local builds keep working on a checkout where they're absent.
+They are declared `optional: true` in `apple/project.yml`. That flag only keeps **XcodeGen
+project generation** from failing when a plist is absent — it does **not** stop Xcode's
+build-time `CopyPlistFile` phase from requiring the file, so an unsigned build on a checkout
+without the plist would otherwise fail with `Build input file cannot be found`. To keep
+`ios:generate` and unsigned local/CI builds working before the real plists land,
+`scripts/native/ensure-firebase-config.sh` writes a clearly-labelled, non-functional
+**placeholder** plist for any app that doesn't have one (invoked by `ios:generate` and the
+build wrapper). A real plist you drop in per step 2 above is never overwritten and is used
+as-is; commit it exactly as this runbook describes.
 
 ## 3. Enable Apple in Firebase Authentication
 
