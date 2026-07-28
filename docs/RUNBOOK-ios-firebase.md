@@ -48,9 +48,11 @@ for a in PPL ELPT AIP CPL IR ATPL; do
 done
 ```
 
-Each line must read `com.flygaca.<lowercased target>`. Then regenerate:
+Each line must read `com.flygaca.<lowercased target>`. Then commit each real config and
+regenerate:
 
 ```bash
+git add -f apple/Apps/<Target>/GoogleService-Info.plist   # -f: the path is gitignored (see below)
 npm run ios:generate
 ```
 
@@ -59,8 +61,20 @@ config file ships inside the app binary and is not a secret — it identifies th
 it doesn't authorize anything. Access is enforced by `firestore.rules` and App Check, not
 by keeping this file private.
 
-They are declared `optional: true` in `apple/project.yml`, so `ios:generate` and unsigned
-local builds keep working on a checkout where they're absent.
+### Builds work before the real configs land
+
+`apple/Apps/*/GoogleService-Info.plist` is **gitignored** so a generated placeholder can
+never be committed by accident — which is also why real configs are added with `git add
+-f`. Each plist is declared `optional: true` in `apple/project.yml`, but that only spares
+*project generation*: XcodeGen still adds the file to the resources build phase, so
+`xcodebuild` fails ("Build input file cannot be found") on a checkout where the real
+configs are absent. To keep the documented "unsigned builds keep working when they're
+absent" guarantee, `scripts/native/ensure-firebase-plists.sh` writes a **placeholder**
+plist for any target that lacks one; it runs automatically inside `npm run ios:generate`
+and the `ios:build:*` wrapper, and never overwrites a real committed config. The
+placeholders carry the correct `BUNDLE_ID` and obviously-fake values (`PROJECT_ID` =
+`flygaca-placeholder`, `FG_PLACEHOLDER` = true) — harmless because Firebase is not wired
+until the PlatformLive target (Phase 4), so the file is only a bundled resource today.
 
 ## 3. Enable Apple in Firebase Authentication
 
