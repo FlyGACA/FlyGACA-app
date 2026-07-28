@@ -10,13 +10,22 @@
  * (DESIGN §8 — the server owns entitlement and cost control).
  */
 
-/** Free questions a signed-in free user may ask per UTC day. Must match src/calc/chat/chatQuota.ts. */
+/**
+ * Free questions a signed-in free user may ask per UTC day. Must match
+ * src/calc/chat/chatQuota.ts, which renders it to the user.
+ *
+ * This is the DEFAULT, not the last word: gateway.ts wraps it as
+ * `defineInt("FREE_DAILY_LIMIT", { default: FREE_DAILY_LIMIT })` and enforces the
+ * param's value, so setting that param tunes the live limit without a code change —
+ * and the client keeps showing this number. Only change the param knowingly.
+ */
 export const FREE_DAILY_LIMIT = 5;
 
 /**
  * Questions granted by one purchased credit pack (a one-time top-up for free users
  * who hit the daily limit but won't subscribe). Credits are spent only after the
- * day's free allowance is used and never expire. Mirror in src/lib/billing.ts.
+ * day's free allowance is used and never expire. Mirrored in
+ * src/lib/services/billing.ts (pinned by tests/client-server-mirrors.test.ts).
  */
 export const CREDIT_PACK_SIZE = 50;
 
