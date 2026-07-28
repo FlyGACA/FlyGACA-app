@@ -22,7 +22,7 @@ surface crawl in most dimensions and weaker in one:
 - Competitive benchmarking (Section 8) draws on domain knowledge of the aviation
   reference/training space and is labeled as such.
 
-Screenshots referenced below live in [`docs/screenshots/review-2026-07/`](screenshots/review-2026-07/).
+Screenshots referenced below live in [`docs/screenshots/review-2026-07/`](../../docs/screenshots/review-2026-07/).
 
 ---
 

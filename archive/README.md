@@ -14,10 +14,10 @@ never linted, formatted, type-checked, or bundled.
 Vendored as plain files with git history stripped. Neither collection is wired into the app build
 or into this repo's `.claude/` config.
 
-| Directory | Upstream | Pinned commit | License |
-|-----------|----------|---------------|---------|
-| `vendor/agency-roster/` | https://github.com/ziri22/agency-roster | `bc5384b2eb92ad37657e3cc395447c272737ec2a` | MIT |
-| `vendor/agency-agents/` | https://github.com/Raheel2774/agency-agents | `217a63b8b6b6ea5752fd436a05996c796ba0ec66` | MIT |
+| Directory               | Upstream                                    | Pinned commit                              | License |
+| ----------------------- | ------------------------------------------- | ------------------------------------------ | ------- |
+| `vendor/agency-roster/` | https://github.com/ziri22/agency-roster     | `bc5384b2eb92ad37657e3cc395447c272737ec2a` | MIT     |
+| `vendor/agency-agents/` | https://github.com/Raheel2774/agency-agents | `217a63b8b6b6ea5752fd436a05996c796ba0ec66` | MIT     |
 
 - **agency-roster** — 888 markdown "skills" (`skills/<division>/<agent>/SKILL.md`).
 - **agency-agents** — 258 subagent definitions (`<domain>/<agent>.md`) across 21 domains.
@@ -27,12 +27,13 @@ newer commit, replace the directory, and update the pinned commit above.
 
 ### `agent-configs/` — per-tool skill folders
 
-Twelve editor/agent config folders that used to sit at the repo root: `.agent`, `.codex`,
+Thirteen editor/agent config folders. Twelve used to sit at the repo root — `.agent`, `.codex`,
 `.cursor`, `.gemini`, `.kiro`, `.opencode`, `.qoder`, `.roo`, `.trae`, `.windsurf`, `.codebuddy`,
 `.continue`. Each is a skill-installer artifact carrying one copy of `ui-ux-pro-max/SKILL.md` plus
 relative symlinks into `.claude/skills/` and `.agents/skills/`.
 
-The twelve copies had already drifted into **seven distinct versions** of the same `SKILL.md`.
+The thirteenth, `github-prompts-ui-ux-pro-max/`, came from `.github/prompts/`. The copies had
+already drifted into **seven distinct versions** of the same file.
 `.claude/` and `.agents/` remain at the repo root — those are the live, curated skill sets, managed
 by `skills-lock.json`.
 
@@ -52,17 +53,40 @@ find .cursor -xtype l   # must print nothing
 Not referenced by any npm script, GitHub workflow, or other script. Each still runs if you invoke
 it directly with `node`.
 
-| File | Why it's here |
-|---|---|
-| `scripts/gen-avatar-live.mjs` | No references anywhere in the repo. |
-| `scripts/build-og-card.mjs` | Manual one-off; needs `fonts.gstatic.com` network access. The live OG pipeline is `npm run gen:og` → `scripts/build-og-images.mjs`. |
-| `scripts/captain-derivatives.mjs` | Produces favicons / social crops from the Captain Adel art; run by hand after `npm run gen:captain`. |
-| `scripts/build-airspaces-from-aip.mjs` | One-off AIP → airspace extraction. |
-| `functions-scripts/mint-api-key.mjs` | From `functions/scripts/`. Its siblings (`grant-org`, `grant-school-seats`, `grant-staff-access`, `school-cohort-report`) are documented in `docs/b2b/` and stayed put; this one had no references. |
-| `figma-ds/` | Manual Figma Plugin API pastes (`01-finish-foundations.js`, `02-core-components.js`) plus the handoff `README.md`, formerly `docs/design/figma-ds/`. Run inside Figma via the Scripter plugin — never from this repo. |
+| File                                   | Why it's here                                                                                                                                                                                                         |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/gen-avatar-live.mjs`          | No references anywhere in the repo.                                                                                                                                                                                   |
+| `scripts/build-og-card.mjs`            | Manual one-off; needs `fonts.gstatic.com` network access. The live OG pipeline is `npm run gen:og` → `scripts/build-og-images.mjs`.                                                                                   |
+| `scripts/captain-derivatives.mjs`      | Produces favicons / social crops from the Captain Adel art; run by hand after `npm run gen:captain`.                                                                                                                  |
+| `scripts/build-airspaces-from-aip.mjs` | One-off AIP → airspace extraction.                                                                                                                                                                                    |
+| `functions-scripts/mint-api-key.mjs`   | From `functions/scripts/`. Its siblings (`grant-org`, `grant-school-seats`, `grant-staff-access`, `school-cohort-report`) are documented in `docs/b2b/` and stayed put; this one had no references.                   |
+| `figma-ds/`                            | Manual Figma Plugin API pastes (`01-finish-foundations.js`, `02-core-components.js`) plus the handoff `README.md`, formerly `docs/design/figma-ds/`. Run inside Figma via the Scripter plugin — never from this repo. |
+
+### `docs/` — finished-work documents
+
+Point-in-time reports and checklists, each written against a state of the codebase that has since
+moved on. Kept as the record of _why_ things are the way they are; parked so reading `docs/` means
+live runbooks only.
+
+| File                           | What it was a snapshot of                                                                                                                                                                             |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `REVIEW-2026-07-site-audit.md` | Full-site audit of `main` @ `b127069`; findings tracked in `ROADMAP.md` now. Still links out to the **live** `docs/screenshots/review-2026-07/`, which stayed put — `README.md` renders those images. |
+| `TEST-COVERAGE-ANALYSIS.md`    | Coverage snapshot + proposal, superseded by the live `docs/TESTING-ROADMAP.md`.                                                                                                                       |
+| `PRODUCTION-AUDIT.md`          | Pre-flight audit run before the production cutover.                                                                                                                                                   |
+| `RUNBOOK-cutover.md`           | The legacy-PWA → modern-app cutover, since completed. Its DNS/secret-flip steps are still referenced from `ROADMAP.md` and `docs/RUNBOOK-deploy.md`.                                                  |
+
+`docs/STUDY-CONTENT-REVIEW.md` deliberately did **not** move — it is the live human-review gate for
+the exam question banks (cited by `docs/APPS-FAMILY-ROADMAP.md` as required before sale).
+
+### `investor/` — business material
+
+Pitch decks, feasibility studies and investor one-pagers in Arabic and English. Not app material;
+nothing in the repo reads them. Formerly `docs/investor/`.
 
 ## Restoring something
 
 `git mv` it back to its original path and re-add it to whatever should call it (an npm script in
 `package.json`, a workflow step, or an import). For `agent-configs/`, also fix the symlinks as
-shown above.
+shown above — except `github-prompts-ui-ux-pro-max/`, which came from `.github/prompts/` at the
+same depth and whose symlinks therefore need no adjustment. For anything in `docs/`, repoint the
+links noted in the tables above.

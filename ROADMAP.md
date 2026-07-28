@@ -52,7 +52,7 @@ The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/
 mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
-  price IDs — and deploy `firestore.rules`. See `docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+  price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
