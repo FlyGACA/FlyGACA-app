@@ -683,6 +683,78 @@
           "answer": 0,
           "explain": "Class G is uncontrolled airspace; ATC provides no separation service, though flight information may be available on request.",
           "cite": "GACAR Part 71 · ICAO Annex 11"
+        },
+        {
+          "q": "In which ICAO airspace classes is IFR flight provided with separation from all other IFR flights?",
+          "options": [
+            "Classes A, B, C, D and E",
+            "Class A only",
+            "Class G only",
+            "Classes F and G"
+          ],
+          "answer": 0,
+          "explain": "IFR flights are separated from other IFR flights in Classes A–E; in Class A all flight is IFR and separated, while VFR is not permitted.",
+          "cite": "ICAO Annex 11"
+        },
+        {
+          "q": "VFR flight is NOT permitted in which ICAO airspace class?",
+          "options": [
+            "Class A",
+            "Class C",
+            "Class E",
+            "Class G"
+          ],
+          "answer": 0,
+          "explain": "Class A airspace is available to IFR flights only; VFR operations are not permitted there.",
+          "cite": "ICAO Annex 11"
+        },
+        {
+          "q": "In Class C airspace, VFR flights are separated from —",
+          "options": [
+            "Nothing",
+            "IFR flights (and given traffic information on other VFR)",
+            "All other VFR flights",
+            "Only military traffic"
+          ],
+          "answer": 1,
+          "explain": "In Class C, VFR is separated from IFR and receives traffic information (with avoidance advice on request) regarding other VFR flights.",
+          "cite": "ICAO Annex 11"
+        },
+        {
+          "q": "A flight information service and alerting service, but no separation service, is characteristic of —",
+          "options": [
+            "Class A",
+            "Class B",
+            "Class G",
+            "Class C"
+          ],
+          "answer": 2,
+          "explain": "In Class G (uncontrolled) airspace ATC provides only flight information and alerting services; no separation is provided.",
+          "cite": "ICAO Annex 11"
+        },
+        {
+          "q": "Below 10,000 ft AMSL, the standard maximum indicated airspeed for VFR/IFR flights in Classes C, D, E, F and G is —",
+          "options": [
+            "200 kt",
+            "250 kt",
+            "300 kt",
+            "No limit"
+          ],
+          "answer": 1,
+          "explain": "A 250 kt IAS speed limit applies below 10,000 ft AMSL in Classes C–G (Classes A and B have no such general limit).",
+          "cite": "ICAO Annex 11"
+        },
+        {
+          "q": "An Air Traffic Service that provides advice and information useful for the safe and efficient conduct of flights is a —",
+          "options": [
+            "Flight information service",
+            "Area control service",
+            "Approach control service",
+            "Aerodrome control service"
+          ],
+          "answer": 0,
+          "explain": "The flight information service (FIS) provides advice and information useful for the safe and efficient conduct of flights.",
+          "cite": "ICAO Annex 11"
         }
       ]
     },
@@ -1035,6 +1107,278 @@
           "answer": 0,
           "explain": "A Trigger NOTAM draws attention to, and gives a short reference for, an AIRAC AIP Amendment or Supplement, so operators know a permanent change is about to take effect.",
           "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "The three categories of NOTAM series are commonly distinguished by their —",
+          "options": [
+            "Colour",
+            "Series letter and purpose (e.g. new, replace, cancel)",
+            "Font",
+            "Length"
+          ],
+          "answer": 1,
+          "explain": "NOTAMs are issued as NOTAMN (new), NOTAMR (replacing an earlier NOTAM) and NOTAMC (cancelling one), identified in the NOTAM's Q-line and identifier.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "An AIP Amendment differs from an AIP Supplement in that an Amendment —",
+          "options": [
+            "Is temporary",
+            "Introduces permanent changes to the AIP",
+            "Is never distributed",
+            "Applies only to VFR"
+          ],
+          "answer": 1,
+          "explain": "AIP Amendments make permanent changes to the AIP; Supplements publish temporary changes of a defined duration.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "The 'AIRAC' system exists primarily to —",
+          "options": [
+            "Reduce printing costs",
+            "Give operators advance notice of significant changes on common effective dates",
+            "Encrypt NOTAMs",
+            "Replace the AIP"
+          ],
+          "answer": 1,
+          "explain": "AIRAC provides operationally significant changes on standardised, pre-notified effective dates so operators can update charts, databases and procedures in advance.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "The Integrated Aeronautical Information Package includes the AIP, its amendments and supplements, NOTAM, AIC and —",
+          "options": [
+            "The aircraft flight manual",
+            "Checklists and pre-flight/post-flight information bulletins",
+            "The company operations manual",
+            "The load sheet"
+          ],
+          "answer": 1,
+          "explain": "The Integrated Aeronautical Information Package comprises the AIP (with amendments/supplements), NOTAM and PIB, AIC, and associated checklists and summaries.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "The primary quality objective of aeronautical information services is to ensure data is —",
+          "options": [
+            "Cheap",
+            "Accurate, resolved, timely and traceable (data quality/integrity)",
+            "Colourful",
+            "Written only in Arabic"
+          ],
+          "answer": 1,
+          "explain": "AIS quality management aims for accuracy, resolution, integrity, traceability and timeliness of aeronautical data.",
+          "cite": "ICAO Annex 15"
+        },
+        {
+          "q": "Coordinates and elevations published in the AIP are referenced to —",
+          "options": [
+            "A local datum chosen by each aerodrome",
+            "WGS-84 (horizontal) and mean sea level via EGM geoid (vertical)",
+            "Magnetic north only",
+            "The nearest VOR"
+          ],
+          "answer": 1,
+          "explain": "ICAO requires published geographic coordinates to use the WGS-84 datum, with elevations referenced to mean sea level.",
+          "cite": "ICAO Annex 15"
+        }
+      ]
+    },
+    {
+      "id": "aip-charts",
+      "title": "Aeronautical Charts & Instrument Plates",
+      "desc": "Reading enroute, SID/STAR, approach and aerodrome charts — minima, altitudes, holding and chart symbology.",
+      "source": "ICAO Annex 4 · PANS-OPS (Doc 8168)",
+      "questions": [
+        {
+          "q": "On an instrument approach chart, the abbreviation 'MDA' means —",
+          "options": [
+            "Minimum Descent Altitude",
+            "Maximum Descent Angle",
+            "Mean Directional Azimuth",
+            "Minimum Distance Approach"
+          ],
+          "answer": 0,
+          "explain": "MDA (Minimum Descent Altitude) is the lowest altitude to which descent is authorised on a non-precision approach without the required visual reference.",
+          "cite": "ICAO Annex 4 / PANS-OPS (Doc 8168)"
+        },
+        {
+          "q": "A 'DH' or 'DA' on a precision approach chart is the —",
+          "options": [
+            "Decision height / decision altitude",
+            "Departure heading",
+            "Density altitude",
+            "Distance to holding"
+          ],
+          "answer": 0,
+          "explain": "On a precision approach, the Decision Height/Altitude is the point at which a missed approach must be initiated if the required visual reference is not established.",
+          "cite": "ICAO Annex 4 / PANS-OPS"
+        },
+        {
+          "q": "On aeronautical charts, controlled airspace lateral limits and route data are found on the —",
+          "options": [
+            "Aerodrome ground chart",
+            "Enroute (ENR) chart",
+            "Load sheet",
+            "Weather chart"
+          ],
+          "answer": 1,
+          "explain": "Enroute charts depict ATS routes, airspace lateral/vertical limits, significant points and communication data.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "The four ICAO 'MSA' sectors on an approach chart provide —",
+          "options": [
+            "Minimum safe/sector altitudes within 25 NM of a reference point",
+            "Maximum speed areas",
+            "Metar sampling areas",
+            "Missed segment altitudes only"
+          ],
+          "answer": 0,
+          "explain": "The Minimum Sector Altitude gives at least 300 m (1,000 ft) obstacle clearance within 25 NM of the reference navigation aid/point, usually shown in quadrantal sectors.",
+          "cite": "ICAO Annex 4 / PANS-OPS"
+        },
+        {
+          "q": "A SID chart depicts —",
+          "options": [
+            "A standard instrument departure route",
+            "A surface movement diagram",
+            "A significant weather forecast",
+            "A search and rescue grid"
+          ],
+          "answer": 0,
+          "explain": "A Standard Instrument Departure (SID) chart shows a published departure route linking the runway to the enroute structure.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "A STAR chart depicts —",
+          "options": [
+            "A standard terminal arrival route",
+            "A stopway and runway table",
+            "A satellite tracking area",
+            "A star-fix celestial chart"
+          ],
+          "answer": 0,
+          "explain": "A Standard Terminal Arrival Route (STAR) chart shows a published arrival route from the enroute structure to an approach fix.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "On charts, an altitude that is mandatory is typically shown —",
+          "options": [
+            "Underlined and overlined (a line above and below the figure)",
+            "In italics",
+            "In red only",
+            "With a question mark"
+          ],
+          "answer": 0,
+          "explain": "A 'mandatory' altitude is depicted with a line above and below the figure; 'minimum' altitudes are underlined and 'maximum' altitudes overlined.",
+          "cite": "ICAO Annex 4 / PANS-OPS"
+        },
+        {
+          "q": "The aerodrome chart primarily provides —",
+          "options": [
+            "Runways, taxiways, aprons and ground movement/reference data",
+            "Enroute airways",
+            "Upper-wind forecasts",
+            "The company roster"
+          ],
+          "answer": 0,
+          "explain": "The aerodrome chart depicts the physical layout — runways, taxiways, aprons, stands and reference points — for ground movement and orientation.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "Runway visual range (RVR) minima on an approach plate refer to —",
+          "options": [
+            "The horizontal distance a pilot can see along the runway",
+            "The runway slope",
+            "The runway width",
+            "The runway bearing"
+          ],
+          "answer": 0,
+          "explain": "RVR is the range over which a pilot on the runway centreline can see the runway markings/lights, used as a landing minimum.",
+          "cite": "ICAO Annex 4 / PANS-OPS"
+        },
+        {
+          "q": "A 'circling' minimum on an approach chart applies when the aircraft —",
+          "options": [
+            "Manoeuvres visually to land on a runway not aligned with the approach",
+            "Holds overhead",
+            "Flies a straight-in ILS",
+            "Diverts to the alternate"
+          ],
+          "answer": 0,
+          "explain": "Circling minima apply to a visual manoeuvre after an instrument approach to land on a runway not suitably aligned for a straight-in landing.",
+          "cite": "ICAO Annex 4 / PANS-OPS"
+        },
+        {
+          "q": "Chart depiction of a VOR is a —",
+          "options": [
+            "Compass-rose symbol centred on the station",
+            "Solid triangle",
+            "Dashed square",
+            "Star"
+          ],
+          "answer": 0,
+          "explain": "A VOR is shown with a compass rose oriented to magnetic north, centred on the station symbol.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "The transition altitude on an approach chart is the altitude at or below which —",
+          "options": [
+            "Vertical position is controlled by reference to altitudes (QNH)",
+            "The aircraft must be on standard pressure",
+            "Speed must be reduced",
+            "The gear must be down"
+          ],
+          "answer": 0,
+          "explain": "At or below the transition altitude the aircraft's vertical position is expressed as an altitude (local QNH); above the transition level it is expressed as a flight level (1013.2 hPa).",
+          "cite": "ICAO Annex 4 / PANS-OPS"
+        },
+        {
+          "q": "A holding pattern depicted on a chart, unless otherwise stated, uses —",
+          "options": [
+            "Right (standard) turns",
+            "Left turns",
+            "No turns",
+            "Random turns"
+          ],
+          "answer": 0,
+          "explain": "The standard holding pattern uses right turns; a non-standard (left-turn) hold is explicitly annotated.",
+          "cite": "ICAO Doc 8168 (PANS-OPS)"
+        },
+        {
+          "q": "On an enroute chart, the figure beside an airway giving the lowest altitude guaranteeing obstacle clearance and navaid reception is the —",
+          "options": [
+            "Minimum En-route Altitude (MEA)",
+            "Maximum authorised altitude",
+            "Transition level",
+            "Cruise climb ceiling"
+          ],
+          "answer": 0,
+          "explain": "The MEA assures acceptable obstacle clearance and, where required, navigation-signal reception and communications along an airway segment.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "A depicted 'MOCA' provides obstacle clearance but only guarantees navaid signal coverage within —",
+          "options": [
+            "A limited distance of the navaid (e.g. ~22 NM)",
+            "Unlimited range",
+            "The whole FIR",
+            "5 NM of the aerodrome"
+          ],
+          "answer": 0,
+          "explain": "The Minimum Obstruction Clearance Altitude assures obstacle clearance for the whole segment but navaid reception only within a limited distance of the facility.",
+          "cite": "ICAO Annex 4"
+        },
+        {
+          "q": "The primary purpose of a chart's 'plan view' and 'profile view' on an approach plate is to show —",
+          "options": [
+            "The horizontal track and the vertical descent profile of the approach",
+            "Aircraft seating and cargo",
+            "The weather and the winds",
+            "The company logo"
+          ],
+          "answer": 0,
+          "explain": "The plan view shows the horizontal track/fixes; the profile view shows the vertical descent profile, altitudes and the missed-approach climb.",
+          "cite": "ICAO Annex 4 / PANS-OPS"
         }
       ]
     },
@@ -1331,6 +1675,834 @@
           "answer": 0,
           "explain": "ICAO Doc 9835, the Manual on the Implementation of ICAO Language Proficiency Requirements, expands on Annex 1's rating scale.",
           "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "The readability scale used to answer 'HOW DO YOU READ' runs from —",
+          "options": [
+            "1 (unreadable) to 5 (perfectly readable)",
+            "1 (best) to 9 (worst)",
+            "A to E",
+            "0 to 10"
+          ],
+          "answer": 0,
+          "explain": "Readability is reported on a 1-to-5 scale: 1 unreadable, 2 readable now and then, 3 readable but with difficulty, 4 readable, 5 perfectly readable.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "The word used to indicate 'yes' or 'that is correct' in radiotelephony is —",
+          "options": [
+            "ROGER",
+            "AFFIRM",
+            "WILCO",
+            "CORRECT"
+          ],
+          "answer": 1,
+          "explain": "'AFFIRM' means yes; 'ROGER' only means the transmission was received, not agreement.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "A distress message (MAYDAY) has priority over —",
+          "options": [
+            "Only routine messages",
+            "All other transmissions",
+            "Only urgency messages",
+            "Nothing — it has no special priority"
+          ],
+          "answer": 1,
+          "explain": "A distress (MAYDAY) message has absolute priority over all other transmissions.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "The distress and urgency signals are, respectively —",
+          "options": [
+            "SECURITE and PAN PAN",
+            "MAYDAY and PAN PAN",
+            "PAN PAN and MAYDAY",
+            "MAYDAY and SECURITE"
+          ],
+          "answer": 1,
+          "explain": "Distress is 'MAYDAY' (grave and imminent danger); urgency is 'PAN PAN' (a condition concerning safety but not requiring immediate assistance).",
+          "cite": "ICAO Annex 10 Vol II"
+        }
+      ]
+    },
+    {
+      "id": "elpt-phraseology",
+      "title": "Standard Radio Phraseology",
+      "desc": "ICAO standard words and phrases, read-back, callsigns and the numeric conventions used in radiotelephony.",
+      "source": "ICAO Annex 10 Vol II · Doc 4444",
+      "questions": [
+        {
+          "q": "When ATC issues a clearance limit, altitude, heading or speed, the pilot must —",
+          "options": [
+            "Acknowledge with ROGER only",
+            "Read back the clearance",
+            "Reply WILCO without repeating it",
+            "Remain silent unless unable"
+          ],
+          "answer": 1,
+          "explain": "Clearances and instructions such as level, heading, speed and route assignments must be read back so the controller can confirm they were correctly received (hear-back/read-back).",
+          "cite": "ICAO Annex 10 Vol II / PANS-ATM (Doc 4444)"
+        },
+        {
+          "q": "The altitude 10,000 ft is spoken in standard radiotelephony as —",
+          "options": [
+            "Ten thousand",
+            "One zero thousand",
+            "Ten thousand feet",
+            "One zero zero zero zero"
+          ],
+          "answer": 0,
+          "explain": "Whole thousands of feet are spoken as the number of thousands plus the word THOUSAND — 10,000 ft is 'ten thousand'.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "A flight level of FL180 is transmitted as —",
+          "options": [
+            "Flight level one hundred eighty",
+            "Flight level one eight zero",
+            "One eight zero flight level",
+            "Level eighteen"
+          ],
+          "answer": 1,
+          "explain": "Flight levels are spoken by pronouncing each digit — FL180 is 'flight level one eight zero'.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "An aircraft callsign may be abbreviated by ATC only —",
+          "options": [
+            "At any time to save time",
+            "After the controller has first used the abbreviated form",
+            "Never — full callsigns are always required",
+            "Only for VFR flights"
+          ],
+          "answer": 1,
+          "explain": "A pilot may abbreviate a callsign only after the ground station has done so; until then the full callsign is used to avoid confusion.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "The phrase 'CLEARED TO LAND' may be issued by —",
+          "options": [
+            "Any station on frequency",
+            "Only the aerodrome control tower",
+            "Approach control",
+            "The pilot to himself"
+          ],
+          "answer": 1,
+          "explain": "A landing clearance is issued by aerodrome (tower) control, which is responsible for the runway and its immediate vicinity.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "The correct read-back of the QNH 1013 is —",
+          "options": [
+            "QNH one thousand thirteen",
+            "QNH one zero one three",
+            "Altimeter ten thirteen",
+            "Standard"
+          ],
+          "answer": 1,
+          "explain": "Altimeter settings are read digit by digit — QNH 1013 is 'QNH one zero one three'.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "The instruction 'LINE UP AND WAIT' means —",
+          "options": [
+            "Enter the runway and hold ready for take-off",
+            "Take off immediately",
+            "Hold short of the runway",
+            "Backtrack the runway"
+          ],
+          "answer": 0,
+          "explain": "'LINE UP AND WAIT' authorises the aircraft to enter the runway and hold in the take-off position, awaiting a subsequent take-off clearance.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "A time of 0930 is normally transmitted, when no confusion is likely, as —",
+          "options": [
+            "Zero nine three zero",
+            "Three zero (the minutes only)",
+            "Nine thirty",
+            "Half past nine"
+          ],
+          "answer": 1,
+          "explain": "When no confusion is likely, time may be transmitted using the minutes of the hour only — 0930 becomes 'three zero'.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "If a controller cannot approve a requested clearance, the correct word is —",
+          "options": [
+            "NEGATIVE",
+            "UNABLE",
+            "DISREGARD",
+            "STANDBY"
+          ],
+          "answer": 1,
+          "explain": "'UNABLE' indicates that a clearance, instruction or request cannot be complied with, usually followed by a reason.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "'DISREGARD' transmitted by ATC means —",
+          "options": [
+            "Consider that transmission as not sent",
+            "Repeat the message",
+            "Comply when able",
+            "Continue as cleared"
+          ],
+          "answer": 0,
+          "explain": "'DISREGARD' tells the recipient to ignore a previous transmission as though it had not been sent.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "A heading of 270 degrees is transmitted as —",
+          "options": [
+            "Heading two seventy",
+            "Heading two seven zero",
+            "Turn west",
+            "Heading twenty-seven"
+          ],
+          "answer": 1,
+          "explain": "Headings are spoken as three digits pronounced individually — 270 is 'heading two seven zero'.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "'READ BACK' is a request for the pilot to —",
+          "options": [
+            "Repeat all, or a specified part, of the message back",
+            "Confirm receipt with ROGER",
+            "Comply with the instruction",
+            "Change frequency"
+          ],
+          "answer": 0,
+          "explain": "'READ BACK' asks the recipient to repeat all, or a specified part, of a message back exactly as received.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "When establishing initial contact, the aircraft should transmit —",
+          "options": [
+            "Its message first, then its callsign",
+            "The station being called, then its own callsign",
+            "Only its own callsign",
+            "ROGER"
+          ],
+          "answer": 1,
+          "explain": "Initial calls are made by stating the station addressed followed by the callsign of the aircraft calling.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "'CONFIRM' in ATC phraseology is used to —",
+          "options": [
+            "Request verification of a clearance or information",
+            "Grant permission",
+            "Cancel a clearance",
+            "Report an emergency"
+          ],
+          "answer": 0,
+          "explain": "'CONFIRM' requests verification that a clearance, instruction, action or information has been correctly received or understood.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "The word 'BREAK' in a transmission indicates —",
+          "options": [
+            "The separation between two messages",
+            "End of the transmission",
+            "An emergency",
+            "A frequency change"
+          ],
+          "answer": 0,
+          "explain": "'BREAK' indicates the separation between portions of a message; 'BREAK BREAK' separates messages to different aircraft in a busy environment.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "A read-back requiring correction by ATC is answered by the controller with —",
+          "options": [
+            "'NEGATIVE' followed by the correct version",
+            "'ROGER'",
+            "'CORRECT'",
+            "'STANDBY'"
+          ],
+          "answer": 0,
+          "explain": "If a read-back is incorrect the controller transmits 'NEGATIVE' (or 'NEGATIVE I SAY AGAIN') and passes the correct clearance.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "The transmission of a clearance void time is an example of information that must be —",
+          "options": [
+            "Read back",
+            "Acknowledged with ROGER only",
+            "Ignored if VFR",
+            "Confirmed by the flight service station"
+          ],
+          "answer": 0,
+          "explain": "Safety-critical clearance elements such as a clearance void time require a read-back to ensure correct receipt.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "'MONITOR (frequency)' instructs the pilot to —",
+          "options": [
+            "Listen out on the stated frequency without calling",
+            "Call immediately on the frequency",
+            "Squawk the frequency",
+            "Change to standby"
+          ],
+          "answer": 0,
+          "explain": "'MONITOR' means listen out on the specified frequency; the pilot does not make an initial call unless required.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "Speed 250 knots is transmitted as —",
+          "options": [
+            "Speed two hundred fifty knots",
+            "Speed two five zero knots",
+            "Speed twenty-five zero",
+            "Fast cruise"
+          ],
+          "answer": 1,
+          "explain": "Speeds are spoken by pronouncing each digit followed by the unit — 250 kt is 'speed two five zero knots'.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "The correct response to acknowledge and comply with an ATC instruction is —",
+          "options": [
+            "ROGER",
+            "WILCO",
+            "AFFIRM",
+            "COPY"
+          ],
+          "answer": 1,
+          "explain": "'WILCO' (will comply) both acknowledges the message and states the pilot will carry out the instruction.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "When a message must be recorded verbatim, ATC precedes it with —",
+          "options": [
+            "'I SAY AGAIN'",
+            "'WRITE DOWN' / 'WORD FOR WORD'",
+            "'HOW DO YOU READ'",
+            "'STANDBY'"
+          ],
+          "answer": 1,
+          "explain": "When a message is to be written down exactly, the phrase 'WORD FOR WORD' (or in some texts 'WRITE DOWN') alerts the recipient before it is passed.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "'HOW DO YOU READ' is a request for —",
+          "options": [
+            "A readability report of the transmission",
+            "The aircraft's heading",
+            "A repeat of the last message",
+            "The pilot's intentions"
+          ],
+          "answer": 0,
+          "explain": "'HOW DO YOU READ' asks for a report of transmission readability, answered on the 1-to-5 readability scale.",
+          "cite": "ICAO Annex 10 Vol II"
+        }
+      ]
+    },
+    {
+      "id": "elpt-comprehension",
+      "title": "Plain Language & Comprehension",
+      "desc": "Handling unexpected situations, plain-language exchanges and understanding ATC intent — the operational core of Level 4 English.",
+      "source": "ICAO Doc 9835 · Annex 10 Vol II",
+      "questions": [
+        {
+          "q": "The phrase 'we are running low on fuel and request priority' is best classified as —",
+          "options": [
+            "Routine information",
+            "An urgency (PAN PAN) situation",
+            "A distress (MAYDAY) situation unless fuel is critical",
+            "A read-back request"
+          ],
+          "answer": 2,
+          "explain": "A fuel concern is normally an urgency (PAN PAN); it becomes distress (MAYDAY) — 'MAYDAY FUEL' — only when the remaining fuel means a safe landing is no longer assured.",
+          "cite": "ICAO Annex 10 Vol II / Doc 9432"
+        },
+        {
+          "q": "A controller says 'expect further clearance at four zero'. This means the pilot should expect a new clearance —",
+          "options": [
+            "At 40 nautical miles",
+            "At time 40 minutes past the hour",
+            "In 40 seconds",
+            "At flight level 40"
+          ],
+          "answer": 1,
+          "explain": "'Expect further clearance at four zero' refers to the time — 40 minutes past the hour — by which a new clearance should be received.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "If a pilot does not fully understand a rapid ATC instruction, the safest action is to —",
+          "options": [
+            "Comply with the part heard and hope for the best",
+            "Request 'SAY AGAIN' or ask ATC to speak slower",
+            "Change frequency",
+            "Squawk 7600"
+          ],
+          "answer": 1,
+          "explain": "When comprehension is incomplete, the pilot should ask ATC to 'SAY AGAIN' or to 'SPEAK SLOWER' rather than act on a partly-understood instruction.",
+          "cite": "ICAO Doc 9835 (Language Proficiency Manual)"
+        },
+        {
+          "q": "Plain language, as distinct from standard phraseology, is used on the radio —",
+          "options": [
+            "Never — only phraseology is permitted",
+            "When standard phraseology does not cover the situation",
+            "Only by native English speakers",
+            "Only in emergencies declared as MAYDAY"
+          ],
+          "answer": 1,
+          "explain": "ICAO standard phraseology is used wherever it exists; plain (natural) language is used when phraseology cannot cover the situation — which is why plain-language proficiency is required.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The instruction 'give way to the company Airbus on your left and follow it' primarily tests a pilot's —",
+          "options": [
+            "Pronunciation",
+            "Comprehension and interaction skills",
+            "Vocabulary size only",
+            "Fluency only"
+          ],
+          "answer": 1,
+          "explain": "Acting correctly on a conditional, situation-specific instruction like this depends on comprehension and interactions — two of the ICAO rating-scale skills.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "A read-back that omits a runway assignment is dangerous mainly because it can lead to —",
+          "options": [
+            "A frequency congestion penalty",
+            "A runway incursion or wrong-runway event",
+            "A language proficiency downgrade",
+            "A loss of separation only en route"
+          ],
+          "answer": 1,
+          "explain": "Runway assignments are safety-critical; an incomplete read-back can allow a runway incursion or a departure/landing on the wrong runway.",
+          "cite": "ICAO Doc 9835 / Annex 10 Vol II"
+        },
+        {
+          "q": "When weather deteriorates unexpectedly and a diversion is needed, a pilot with only Level-3 English would most likely struggle to —",
+          "options": [
+            "Read the aircraft instruments",
+            "Negotiate an unplanned re-route in plain language with ATC",
+            "Fly the aircraft manually",
+            "Set the transponder"
+          ],
+          "answer": 1,
+          "explain": "Unexpected, non-routine situations require plain-language negotiation; a below-operational (Level 3) speaker cannot reliably manage this, which is why Level 4 is the minimum.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The ATC phrase 'traffic is a B738, twelve o'clock, five miles, opposite direction' is intended to help the pilot —",
+          "options": [
+            "Copy a clearance",
+            "Acquire and avoid conflicting traffic visually",
+            "Change squawk",
+            "Read back the QNH"
+          ],
+          "answer": 1,
+          "explain": "A traffic information call gives relative position, distance and direction so the pilot can visually acquire and avoid the other aircraft.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "A pilot hears 'say intentions'. The controller is asking the pilot to —",
+          "options": [
+            "Report the aircraft type",
+            "State what the pilot plans to do next",
+            "Read back the last clearance",
+            "Confirm the QNH"
+          ],
+          "answer": 1,
+          "explain": "'Say intentions' requests that the pilot state the planned course of action, common after an emergency or an unexpected situation.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "Using non-standard words such as 'okay' or 'yeah' instead of AFFIRM/ROGER is discouraged because it —",
+          "options": [
+            "Wastes battery power",
+            "Can be ambiguous across languages and cultures",
+            "Is illegal in all countries",
+            "Slows the aircraft"
+          ],
+          "answer": 1,
+          "explain": "Standard words are unambiguous internationally; casual substitutes can be misheard or misunderstood between speakers of different first languages.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "If a controller's accent is unfamiliar, an operationally proficient pilot should be able to —",
+          "options": [
+            "Understand a sufficiently wide range of accents used internationally",
+            "Only understand native speakers",
+            "Refuse the clearance",
+            "Demand a different controller"
+          ],
+          "answer": 0,
+          "explain": "The ICAO comprehension descriptor requires understanding of a range of accents (including non-native and regional) sufficient for the international aviation community.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The best response to a partially blocked or garbled transmission is to —",
+          "options": [
+            "Assume the most convenient meaning",
+            "Transmit 'SAY AGAIN' and, if needed, request a relay",
+            "Continue without acknowledging",
+            "Squawk 7700 immediately"
+          ],
+          "answer": 1,
+          "explain": "A garbled transmission should be clarified with 'SAY AGAIN'; if still unreadable, a relay via another station may be requested.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "An instruction to 'expedite climb' asks the pilot to —",
+          "options": [
+            "Climb at the best rate practicable",
+            "Climb only when convenient",
+            "Stop the climb",
+            "Reduce speed in the climb"
+          ],
+          "answer": 0,
+          "explain": "'Expedite' asks the pilot to comply as quickly as safely possible — here, to climb at the best practicable rate, often for separation.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "A pilot who can handle routine calls but 'freezes' during an unexpected engine problem demonstrates a weakness in the ICAO skill of —",
+          "options": [
+            "Pronunciation",
+            "Interactions",
+            "Structure",
+            "Vocabulary"
+          ],
+          "answer": 1,
+          "explain": "Managing an unexpected, non-routine exchange — responding appropriately and promptly — is the 'interactions' skill on the ICAO rating scale.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The word 'immediately' in 'turn right heading three six zero immediately' signals —",
+          "options": [
+            "A routine turn at pilot's discretion",
+            "An urgent action required for safety/separation",
+            "A frequency change",
+            "A speed reduction"
+          ],
+          "answer": 1,
+          "explain": "'Immediately' is used when prompt compliance is required for safety, typically to resolve a developing conflict.",
+          "cite": "ICAO Annex 10 Vol II / Doc 4444"
+        },
+        {
+          "q": "When a passenger medical emergency requires priority handling, the pilot would typically prefix the call with —",
+          "options": [
+            "MAYDAY only",
+            "PAN PAN (urgency) or, if life-threatening and requiring priority, MAYDAY",
+            "SECURITE",
+            "No prefix — a normal request suffices"
+          ],
+          "answer": 1,
+          "explain": "A medical situation needing priority is at least an urgency (PAN PAN); a MAYDAY is used when it is grave and imminent and demands immediate assistance.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "The purpose of confirming numbers such as headings and levels by read-back is chiefly to —",
+          "options": [
+            "Fill radio silence",
+            "Detect and correct hear-back errors before they cause a hazard",
+            "Demonstrate fluency",
+            "Satisfy recording requirements only"
+          ],
+          "answer": 1,
+          "explain": "Read-back allows the controller to catch a mis-received number (hear-back), correcting it before it results in a level bust or track deviation.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "A pilot unintelligibly rushing a long transmission most directly needs to improve —",
+          "options": [
+            "Vocabulary",
+            "Fluency and pronunciation (rate/clarity of delivery)",
+            "Comprehension",
+            "Interactions"
+          ],
+          "answer": 1,
+          "explain": "Rate and clarity of delivery are aspects of fluency and pronunciation on the ICAO scale; rushing degrades intelligibility.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "'SAY AGAIN ALL BEFORE [word]' asks ATC or the pilot to repeat —",
+          "options": [
+            "The whole message",
+            "The part of the message before the specified word",
+            "Only the callsign",
+            "Nothing — it cancels the message"
+          ],
+          "answer": 1,
+          "explain": "'SAY AGAIN ALL BEFORE …' requests a repeat of only the portion of the message preceding the specified word.",
+          "cite": "ICAO Annex 10 Vol II"
+        },
+        {
+          "q": "Level-4 English is considered adequate for —",
+          "options": [
+            "All aviation communication in every conceivable situation with no limitation",
+            "Effective communication in routine and many non-routine situations, though it may occasionally be strained",
+            "Native-like mastery",
+            "Written communication only"
+          ],
+          "answer": 1,
+          "explain": "Operational (Level 4) proficiency supports effective communication in routine and unexpected situations, though comprehension may slow or strain when events are complex.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "A conditional clearance such as 'behind the landing Boeing, line up behind' requires the pilot to —",
+          "options": [
+            "Line up immediately",
+            "Read back the conditional clearance including the word 'behind' twice",
+            "Ignore the traffic reference",
+            "Request a new clearance"
+          ],
+          "answer": 1,
+          "explain": "Conditional clearances must be read back with the condition and the word 'behind' repeated so the controller confirms the pilot has identified the correct reference traffic.",
+          "cite": "ICAO Doc 4444 (PANS-ATM)"
+        }
+      ]
+    },
+    {
+      "id": "elpt-rating-scale",
+      "title": "ICAO Language Proficiency Scale",
+      "desc": "The six rating-scale skills, the six proficiency levels, Level-4 requirements and re-evaluation intervals.",
+      "source": "ICAO Annex 1 · Doc 9835",
+      "questions": [
+        {
+          "q": "How many holistic descriptors/skills does the ICAO language proficiency rating scale assess?",
+          "options": [
+            "Four",
+            "Five",
+            "Six",
+            "Nine"
+          ],
+          "answer": 2,
+          "explain": "The scale rates six skills: pronunciation, structure, vocabulary, fluency, comprehension and interactions.",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "Which of the following is NOT one of the six ICAO rating-scale skills?",
+          "options": [
+            "Pronunciation",
+            "Interactions",
+            "Spelling",
+            "Fluency"
+          ],
+          "answer": 2,
+          "explain": "The six skills are pronunciation, structure, vocabulary, fluency, comprehension and interactions — spelling is not among them.",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "The ICAO language proficiency rating scale runs from —",
+          "options": [
+            "Level 1 (Pre-elementary) to Level 6 (Expert)",
+            "Level A to Level F",
+            "Level 0 to Level 5",
+            "Level 1 to Level 4 only"
+          ],
+          "answer": 0,
+          "explain": "The scale has six levels, from Level 1 (Pre-elementary) through to Level 6 (Expert).",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "The minimum ICAO level to exercise licence privileges in international operations is —",
+          "options": [
+            "Level 3 (Pre-operational)",
+            "Level 4 (Operational)",
+            "Level 5 (Extended)",
+            "Level 6 (Expert)"
+          ],
+          "answer": 1,
+          "explain": "Level 4 (Operational) is the minimum standard required to exercise the privileges of a licence or rating for international flight.",
+          "cite": "ICAO Annex 1, §1.2.9"
+        },
+        {
+          "q": "A pilot assessed at ICAO Level 4 must normally be re-evaluated at intervals not exceeding —",
+          "options": [
+            "Six months",
+            "Three years",
+            "Five years",
+            "Never — Level 4 is permanent"
+          ],
+          "answer": 1,
+          "explain": "Level 4 holders are re-evaluated at least every three years; Level 5 holders at least every six years; Level 6 holders need no further formal evaluation.",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "A pilot assessed at ICAO Level 5 (Extended) is normally re-evaluated at intervals not exceeding —",
+          "options": [
+            "Three years",
+            "Six years",
+            "Nine years",
+            "Never"
+          ],
+          "answer": 1,
+          "explain": "Level 5 (Extended) proficiency is re-evaluated at least every six years under the recommended ICAO scheme.",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "A pilot assessed at ICAO Level 6 (Expert) —",
+          "options": [
+            "Must re-test every three years",
+            "Is not required to be formally re-evaluated",
+            "May not fly internationally",
+            "Must re-test every year"
+          ],
+          "answer": 1,
+          "explain": "Level 6 (Expert) proficiency is considered stable and does not require formal periodic re-evaluation.",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "When a pilot's six skills are rated at different levels, the overall ICAO rating awarded is —",
+          "options": [
+            "The average of the six",
+            "The highest of the six",
+            "The lowest of the six",
+            "The most common of the six"
+          ],
+          "answer": 2,
+          "explain": "The final proficiency level is the lowest of the six individual skill ratings — a single weak skill caps the overall level.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The ICAO rating-scale skill of 'structure' refers to —",
+          "options": [
+            "Aircraft airframe knowledge",
+            "Command of relevant grammatical structures and sentence patterns",
+            "The physical test structure",
+            "Airspace structure vocabulary"
+          ],
+          "answer": 1,
+          "explain": "'Structure' assesses control of the grammatical structures and sentence patterns needed for the task.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The 'comprehension' descriptor primarily assesses a pilot's ability to —",
+          "options": [
+            "Speak quickly",
+            "Understand spoken English on common and work-related topics, including a range of accents",
+            "Read charts",
+            "Spell aviation terms"
+          ],
+          "answer": 1,
+          "explain": "'Comprehension' measures understanding of spoken English across common, concrete and work-related topics, including varied accents and dialects.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The 'interactions' descriptor is concerned with a speaker's ability to —",
+          "options": [
+            "Respond appropriately and promptly, checking and clarifying in exchanges",
+            "Pronounce vowels correctly",
+            "Use a wide vocabulary in isolation",
+            "Read written NOTAMs"
+          ],
+          "answer": 0,
+          "explain": "'Interactions' assesses responding immediately, appropriately and informatively, and managing the give-and-take of a conversation (checking, confirming, clarifying).",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "At Level 4, pronunciation, stress, rhythm and intonation —",
+          "options": [
+            "Must be native-like",
+            "May be influenced by the first language but only sometimes interfere with understanding",
+            "Are not assessed",
+            "Must match a British accent"
+          ],
+          "answer": 1,
+          "explain": "At Operational Level 4, first-language influence is permitted provided it only sometimes interferes with ease of understanding.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The ICAO language proficiency requirements apply to —",
+          "options": [
+            "Only airline pilots",
+            "Pilots, flight navigators and air traffic controllers who use radiotelephony in international operations",
+            "Only air traffic controllers",
+            "Cabin crew"
+          ],
+          "answer": 1,
+          "explain": "The requirements apply to flight crew and air traffic controllers (and flight navigators where required) using RTF for international flight.",
+          "cite": "ICAO Annex 1, §1.2.9"
+        },
+        {
+          "q": "The primary ICAO document providing guidance on implementing the language proficiency requirements is —",
+          "options": [
+            "Doc 4444 (PANS-ATM)",
+            "Doc 9835 (Manual on the Implementation of ICAO Language Proficiency Requirements)",
+            "Annex 6",
+            "Doc 8168 (PANS-OPS)"
+          ],
+          "answer": 1,
+          "explain": "Doc 9835 is the manual that expands on the Annex 1 requirements and the rating-scale descriptors.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "Language proficiency at Level 4 is intended to be tested in a context that is —",
+          "options": [
+            "Purely academic/literary",
+            "Work-related and operational (aviation) in nature",
+            "Only written",
+            "Based on general tourism English"
+          ],
+          "answer": 1,
+          "explain": "ICAO language testing must be aviation/work-related and communicative, not a general academic English exam.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "A speaker who can paraphrase successfully when they lack a specific word is demonstrating strength in —",
+          "options": [
+            "Vocabulary (and fluency)",
+            "Pronunciation only",
+            "Structure only",
+            "Reading"
+          ],
+          "answer": 0,
+          "explain": "Paraphrasing around an unknown word is an aspect of vocabulary range and fluency on the ICAO scale.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "The requirement to demonstrate language proficiency is recorded —",
+          "options": [
+            "Only in the operator's files",
+            "As an endorsement on the pilot's licence",
+            "On the aircraft airworthiness certificate",
+            "In the AIP"
+          ],
+          "answer": 1,
+          "explain": "The proficiency level and re-evaluation date are endorsed on the licence.",
+          "cite": "ICAO Annex 1"
+        },
+        {
+          "q": "Level 3 (Pre-operational) proficiency is —",
+          "options": [
+            "Sufficient for international flight",
+            "Below the operational standard and therefore not sufficient",
+            "Higher than Level 4",
+            "Only about pronunciation"
+          ],
+          "answer": 1,
+          "explain": "Level 3 is below the operational Level 4 minimum and does not meet the requirement for international operations.",
+          "cite": "ICAO Annex 1 / Doc 9835"
+        },
+        {
+          "q": "The rating-scale skill of 'fluency' relates to —",
+          "options": [
+            "The number of words known",
+            "The naturalness, flow and tempo of speech",
+            "Grammar accuracy",
+            "Accent only"
+          ],
+          "answer": 1,
+          "explain": "'Fluency' concerns the flow, tempo and naturalness of speech production, including appropriate use of connectors and hesitation.",
+          "cite": "ICAO Doc 9835"
+        },
+        {
+          "q": "If a pilot rates Level 5 in five skills and Level 3 in comprehension, the licence endorsement will show —",
+          "options": [
+            "Level 5",
+            "Level 4",
+            "Level 3",
+            "Level 6"
+          ],
+          "answer": 2,
+          "explain": "Because the overall level is the lowest skill rating, a Level-3 comprehension caps the endorsement at Level 3 — below the operational minimum.",
+          "cite": "ICAO Doc 9835"
         }
       ]
     },
@@ -3068,6 +4240,78 @@
           "answer": 0,
           "explain": "CAT typically occurs in strong wind-shear zones around the jet stream, often without visible cloud to warn pilots.",
           "cite": "FAA Aviation Weather Handbook"
+        },
+        {
+          "q": "Dew point is best defined as the temperature to which air must be cooled to become —",
+          "options": [
+            "Completely dry",
+            "Saturated (100% relative humidity)",
+            "Unstable",
+            "Supersonic"
+          ],
+          "answer": 1,
+          "explain": "Dew point is the temperature at which a given parcel of air becomes saturated; the closer the temperature/dew-point spread, the higher the humidity.",
+          "cite": "FAA Aviation Weather Handbook"
+        },
+        {
+          "q": "A warm front is typically associated with —",
+          "options": [
+            "A narrow band of violent thunderstorms",
+            "Widespread stratiform cloud and steady precipitation",
+            "Clear skies and gusty winds",
+            "Sudden temperature drops"
+          ],
+          "answer": 1,
+          "explain": "Warm fronts, with their shallow slope, typically bring extensive stratiform cloud, low ceilings and steady precipitation ahead of the front.",
+          "cite": "FAA Aviation Weather Handbook"
+        },
+        {
+          "q": "The three ingredients required for a thunderstorm to form are moisture, instability and —",
+          "options": [
+            "Snow",
+            "A lifting mechanism",
+            "High pressure",
+            "Calm wind"
+          ],
+          "answer": 1,
+          "explain": "Thunderstorms require sufficient moisture, an unstable lapse rate and a lifting force (front, terrain, heating or convergence) to trigger deep convection.",
+          "cite": "FAA Aviation Weather Handbook"
+        },
+        {
+          "q": "Mountain wave turbulence is most likely when strong winds blow —",
+          "options": [
+            "Parallel to a ridge in stable air",
+            "Roughly perpendicular to a mountain ridge with a stable layer aloft",
+            "In calm conditions",
+            "Only at night"
+          ],
+          "answer": 1,
+          "explain": "Mountain waves form when strong winds cross a ridge roughly perpendicularly with a stable layer aloft, producing wave action, rotors and turbulence downwind.",
+          "cite": "FAA Aviation Weather Handbook"
+        },
+        {
+          "q": "Freezing rain at the surface is a reliable indication of —",
+          "options": [
+            "A shallow, cold, dry airmass",
+            "Warmer air aloft above a sub-freezing surface layer (a temperature inversion)",
+            "Convective activity",
+            "Fog only"
+          ],
+          "answer": 1,
+          "explain": "Freezing rain forms when rain from a warmer layer aloft falls through a sub-freezing surface layer — direct evidence of warmer air above (an inversion).",
+          "cite": "FAA Aviation Weather Handbook"
+        },
+        {
+          "q": "The most hazardous aspect of a microburst for an aircraft on approach is —",
+          "options": [
+            "A steady tailwind",
+            "A rapid shift from a performance-increasing headwind to a performance-decreasing tailwind",
+            "Light rain",
+            "Reduced temperature"
+          ],
+          "answer": 1,
+          "explain": "Flying through a microburst, the aircraft first meets a headwind (rising performance), then a strong downdraft and finally a tailwind — a sudden loss of airspeed/performance close to the ground.",
+          "cite": "FAA Aviation Weather Handbook"
         }
       ]
     },
@@ -3412,6 +4656,78 @@
           "answer": 0,
           "explain": "By Newton's third law, engine/propeller torque rolls the airframe opposite to the direction the propeller turns.",
           "cite": "FAA Airplane Flying Handbook"
+        },
+        {
+          "q": "Increasing the wing angle of attack increases lift until —",
+          "options": [
+            "The speed of sound is reached",
+            "The critical (stalling) angle of attack is exceeded",
+            "The flaps retract",
+            "The CG moves aft"
+          ],
+          "answer": 1,
+          "explain": "Lift rises with angle of attack up to the critical angle; beyond it the airflow separates and the wing stalls, regardless of airspeed.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "Wingtip vortices (and the induced drag they represent) are strongest when an aircraft is —",
+          "options": [
+            "Light, clean and fast",
+            "Heavy, clean, and slow (high angle of attack)",
+            "On the ground",
+            "In a descent"
+          ],
+          "answer": 1,
+          "explain": "Induced drag and wingtip vortices are greatest at high angle of attack — heavy, slow, and clean configuration — such as just after take-off or in slow flight.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "Raising flaps generally —",
+          "options": [
+            "Increases the stalling speed and reduces lift/drag at a given speed",
+            "Reduces the stalling speed",
+            "Has no effect on stall speed",
+            "Increases the critical angle of attack"
+          ],
+          "answer": 0,
+          "explain": "Retracting flaps reduces camber and lift coefficient, raising the stalling speed and reducing drag for a given airspeed.",
+          "cite": "FAA Airplane Flying Handbook"
+        },
+        {
+          "q": "A forward centre-of-gravity position generally makes an aircraft —",
+          "options": [
+            "Less stable and harder to recover from a stall",
+            "More longitudinally stable but requiring more elevator/tail download",
+            "Impossible to fly",
+            "Faster in cruise with no penalty"
+          ],
+          "answer": 1,
+          "explain": "A forward CG increases longitudinal stability and stall resistance but requires greater tail download/elevator authority and can raise stall speed and reduce cruise performance.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "Load factor in a coordinated level turn is a function of —",
+          "options": [
+            "Airspeed only",
+            "Bank angle",
+            "Weight only",
+            "Altitude only"
+          ],
+          "answer": 1,
+          "explain": "In a level, coordinated turn the load factor depends on bank angle (1/cos of the bank), independent of aircraft weight — e.g. about 1.41 g at 45° bank.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "Vne (never-exceed speed) is depicted on the airspeed indicator by the —",
+          "options": [
+            "Top of the green arc",
+            "Red radial line",
+            "Bottom of the white arc",
+            "Top of the white arc"
+          ],
+          "answer": 1,
+          "explain": "Vne is marked by the red radial line; the aircraft must never be flown beyond it.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
         }
       ]
     },
@@ -3756,6 +5072,78 @@
           "answer": 0,
           "explain": "Situational awareness is the pilot's accurate, up-to-date mental picture of the aircraft, environment, and how they're likely to evolve.",
           "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "Empty-field (or 'empty-sky') myopia causes the eyes at high altitude with nothing to focus on to —",
+          "options": [
+            "Focus sharply at infinity",
+            "Relax to a short focal distance, reducing ability to detect distant traffic",
+            "See ultraviolet light",
+            "Improve night vision"
+          ],
+          "answer": 1,
+          "explain": "With no visual cues the eyes relax to a resting focus of only a few metres, so distant traffic can go undetected — pilots should deliberately focus on distant objects.",
+          "cite": "FAA Aeronautical Information Manual / aeromedical references"
+        },
+        {
+          "q": "The greatest risk from mild hypoxia is that the affected pilot —",
+          "options": [
+            "Feels obvious pain",
+            "May feel a false sense of well-being (euphoria) and not recognise the impairment",
+            "Immediately loses consciousness",
+            "Cannot start the engine"
+          ],
+          "answer": 1,
+          "explain": "Insidious hypoxia often produces euphoria and impaired judgement without the pilot recognising the degradation — which is what makes it dangerous.",
+          "cite": "FAA aeromedical references"
+        },
+        {
+          "q": "Time of useful consciousness at a cabin altitude of 25,000 ft is on the order of —",
+          "options": [
+            "Several hours",
+            "3 to 5 minutes",
+            "Indefinite",
+            "One second"
+          ],
+          "answer": 1,
+          "explain": "At around 25,000 ft, time of useful consciousness after a loss of pressurisation is only about 3–5 minutes, decreasing sharply with altitude.",
+          "cite": "FAA aeromedical references"
+        },
+        {
+          "q": "The leans, a common form of vestibular spatial disorientation, is best countered by —",
+          "options": [
+            "Closing the eyes",
+            "Trusting and flying by the flight instruments",
+            "Making rapid head movements",
+            "Increasing power"
+          ],
+          "answer": 1,
+          "explain": "The 'leans' is a false sensation of bank; the remedy is to believe and fly the instruments rather than bodily sensations.",
+          "cite": "FAA Instrument Flying Handbook / aeromedical references"
+        },
+        {
+          "q": "The startle/surprise response is a human-factors hazard because it can —",
+          "options": [
+            "Improve reaction time",
+            "Momentarily degrade a pilot's cognitive performance and delay a correct response",
+            "Prevent hypoxia",
+            "Increase night vision"
+          ],
+          "answer": 1,
+          "explain": "A sudden, unexpected event can trigger a startle response that briefly impairs perception and decision-making, delaying an appropriate reaction.",
+          "cite": "FAA Risk Management Handbook"
+        },
+        {
+          "q": "Effective crew/single-pilot resource management primarily aims to improve —",
+          "options": [
+            "Engine efficiency",
+            "The management of all available resources — information, equipment and people — to reduce error",
+            "Fuel burn",
+            "Aircraft speed"
+          ],
+          "answer": 1,
+          "explain": "Resource management (CRM/SRM) is about using all available resources — information, automation, people and self — to improve situational awareness and decision-making.",
+          "cite": "FAA Risk Management Handbook"
         }
       ]
     },
@@ -4099,6 +5487,78 @@
           ],
           "answer": 0,
           "explain": "A compass deviation card, mounted near the compass, lists correction values for the aircraft's own magnetic interference at various headings.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "A rhumb line (loxodrome) is a track that —",
+          "options": [
+            "Crosses every meridian at the same angle and appears straight on a Mercator chart",
+            "Is the shortest distance between two points",
+            "Always follows a great circle",
+            "Points at the magnetic pole"
+          ],
+          "answer": 0,
+          "explain": "A rhumb line maintains a constant true bearing, crossing all meridians at the same angle; it plots as a straight line on a Mercator projection but is not the shortest route.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "To convert a true heading to a magnetic heading, a pilot applies —",
+          "options": [
+            "Deviation",
+            "Variation",
+            "Wind correction angle",
+            "Compass acceleration error"
+          ],
+          "answer": 1,
+          "explain": "Magnetic variation (the angle between true and magnetic north) is applied to convert true to magnetic; deviation is then applied to obtain compass heading.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "On a sectional chart the effect of 'east is least, west is best' is a memory aid for applying —",
+          "options": [
+            "Deviation to compass heading",
+            "Variation between true and magnetic (subtract easterly, add westerly to true)",
+            "Wind correction",
+            "Time-zone changes"
+          ],
+          "answer": 1,
+          "explain": "'East is least (subtract), west is best (add)' reminds pilots to subtract easterly and add westerly variation when converting a true course to a magnetic course.",
+          "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
+        },
+        {
+          "q": "A VOR radial is defined as a magnetic bearing —",
+          "options": [
+            "Toward the station",
+            "Away from (outbound from) the station",
+            "Relative to the aircraft nose",
+            "From true north"
+          ],
+          "answer": 1,
+          "explain": "A radial is a magnetic course oriented FROM the VOR station; the aircraft is on a given radial regardless of which way it is heading.",
+          "cite": "FAA Instrument Flying Handbook"
+        },
+        {
+          "q": "An RNAV/GNSS system computes position primarily from —",
+          "options": [
+            "Ground-based NDB signals",
+            "Ranging signals from multiple satellites",
+            "Magnetic dip",
+            "Barometric pressure"
+          ],
+          "answer": 1,
+          "explain": "A GNSS receiver derives three-dimensional position from the ranging signals of several satellites simultaneously.",
+          "cite": "FAA Instrument Flying Handbook"
+        },
+        {
+          "q": "Given a true airspeed of 100 kt and a direct 20 kt tailwind, the groundspeed is —",
+          "options": [
+            "80 kt",
+            "100 kt",
+            "120 kt",
+            "20 kt"
+          ],
+          "answer": 2,
+          "explain": "A direct tailwind adds to true airspeed: 100 kt TAS + 20 kt tailwind = 120 kt groundspeed.",
           "cite": "FAA Pilot's Handbook of Aeronautical Knowledge"
         }
       ]
@@ -4758,6 +6218,70 @@
             "id": "part-61",
             "anchor": "sec-61-153"
           }
+        },
+        {
+          "q": "A commercial pilot certificate, by itself, permits a pilot to —",
+          "options": [
+            "Conduct scheduled airline operations as PIC",
+            "Act as PIC or required crew for compensation or hire, subject to the operating rules",
+            "Instruct for hire without a further rating",
+            "Fly only privately"
+          ],
+          "answer": 1,
+          "explain": "The commercial certificate allows flying for compensation or hire, but the type of operation is further governed by the operating rules (e.g. Parts 119/135/121) and any required ratings.",
+          "cite": "GACAR Part 61, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "To exercise commercial privileges at night or in an aircraft carrying passengers for hire beyond 50 NM, a commercial pilot generally needs —",
+          "options": [
+            "No additional qualification",
+            "An instrument rating (or the operation is restricted)",
+            "An ATP certificate",
+            "A flight instructor certificate"
+          ],
+          "answer": 1,
+          "explain": "Without an instrument rating a commercial pilot's carriage of passengers for hire is restricted (e.g. not at night or beyond 50 NM), mirroring the standard commercial limitation.",
+          "cite": "GACAR Part 61, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "Commercial pilot aeronautical experience is built as —",
+          "options": [
+            "Ground study only",
+            "Total time, PIC time, cross-country and night/instrument time to prescribed minimums",
+            "Simulator time only",
+            "Any flying with no logging"
+          ],
+          "answer": 1,
+          "explain": "Commercial eligibility requires prescribed totals of flight time — total, PIC, cross-country, night and instrument — logged and endorsed.",
+          "cite": "GACAR Part 61, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "A commercial pilot applicant must pass —",
+          "options": [
+            "Only a flight test",
+            "A knowledge (theory) test and a practical (flight) test",
+            "Only a medical",
+            "Only an English test"
+          ],
+          "answer": 1,
+          "explain": "Certification requires passing both the aeronautical-knowledge test and the practical flight test for the certificate sought.",
+          "cite": "GACAR Part 61, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
         }
       ]
     },
@@ -5140,6 +6664,70 @@
             "id": "part-91",
             "anchor": "sec-91-9"
           }
+        },
+        {
+          "q": "An operator conducting commercial air transport for compensation or hire must hold —",
+          "options": [
+            "Only a pilot certificate",
+            "An air operator certificate (and operations specifications)",
+            "Only aircraft registration",
+            "Nothing beyond insurance"
+          ],
+          "answer": 1,
+          "explain": "Commercial air transport requires the organisation to hold an operating certificate with associated operations specifications, in addition to the crew's individual certificates.",
+          "cite": "GACAR Part 119",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119"
+          }
+        },
+        {
+          "q": "Operations specifications (OpSpecs) issued with an operating certificate define —",
+          "options": [
+            "The livery colours",
+            "The authorisations, limitations and procedures under which the operator may conduct operations",
+            "Only the fuel supplier",
+            "The passenger menu"
+          ],
+          "answer": 1,
+          "explain": "OpSpecs are the certificate's operational authorisations and limitations — kinds of operation, areas, aircraft, and specific approvals.",
+          "cite": "GACAR Part 119",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119"
+          }
+        },
+        {
+          "q": "The distinction between Part 121 and Part 135 operators is primarily based on —",
+          "options": [
+            "Aircraft colour",
+            "Aircraft size/type and the kind of operation (e.g. transport-category/scheduled vs smaller/on-demand)",
+            "Crew nationality",
+            "The airport used"
+          ],
+          "answer": 1,
+          "explain": "Part 121 governs larger transport-category/scheduled air carrier operations; Part 135 governs commuter and on-demand operations with generally smaller aircraft.",
+          "cite": "GACAR Part 119",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119"
+          }
+        },
+        {
+          "q": "Common carriage for compensation or hire is characterised by —",
+          "options": [
+            "A private arrangement with one friend",
+            "Holding out to the public to transport persons or property for hire",
+            "Flying for personal travel",
+            "Ferry flights only"
+          ],
+          "answer": 1,
+          "explain": "Common carriage means holding out to the public — offering to carry persons or property for compensation — which triggers air-carrier certification requirements.",
+          "cite": "GACAR Part 119",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-119"
+          }
         }
       ]
     },
@@ -5504,6 +7092,70 @@
             "kind": "regulations",
             "id": "part-135",
             "anchor": "sec-135-658"
+          }
+        },
+        {
+          "q": "An aircraft's centre of gravity must remain —",
+          "options": [
+            "As far aft as possible",
+            "Within the forward and aft limits published for the aircraft weight",
+            "At the wingtip",
+            "Irrelevant once airborne"
+          ],
+          "answer": 1,
+          "explain": "Loading must keep the CG within the certified forward and aft limits for the relevant weight throughout the flight; outside them, controllability and stability are compromised.",
+          "cite": "GACAR Part 135, Subpart F (weight & balance)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135"
+          }
+        },
+        {
+          "q": "Exceeding the maximum take-off weight primarily results in —",
+          "options": [
+            "Better climb performance",
+            "Degraded performance — longer take-off run and reduced climb gradient",
+            "No effect",
+            "Lower stall speed"
+          ],
+          "answer": 1,
+          "explain": "Operating over MTOW lengthens the take-off distance, reduces the climb gradient and rate, and can breach structural and certification limits.",
+          "cite": "GACAR Part 135, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135"
+          }
+        },
+        {
+          "q": "Density altitude increases (degrading performance) with —",
+          "options": [
+            "Lower temperature and lower elevation",
+            "Higher temperature, higher elevation and higher humidity",
+            "Higher pressure only",
+            "Lower humidity only"
+          ],
+          "answer": 1,
+          "explain": "High density altitude — from heat, elevation and humidity — reduces engine power, propeller thrust and aerodynamic lift, degrading take-off and climb.",
+          "cite": "GACAR Part 135, Subpart F (performance)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135"
+          }
+        },
+        {
+          "q": "A performance-limited take-off calculation must account for —",
+          "options": [
+            "Only aircraft weight",
+            "Weight, pressure altitude, temperature, wind and runway condition/slope",
+            "Only the wind",
+            "Only the runway length"
+          ],
+          "answer": 1,
+          "explain": "Take-off performance depends on weight, pressure altitude, temperature, wind component and runway surface/slope — all are required inputs to the calculation.",
+          "cite": "GACAR Part 135, Subpart F",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-135"
           }
         }
       ]
@@ -5887,6 +7539,86 @@
             "id": "part-91",
             "anchor": "sec-91-193"
           }
+        },
+        {
+          "q": "To operate under IFR in controlled airspace, a pilot must first —",
+          "options": [
+            "Simply take off",
+            "Receive an appropriate ATC clearance",
+            "Cancel VFR",
+            "Squawk 1200"
+          ],
+          "answer": 1,
+          "explain": "IFR operations in controlled airspace require an ATC clearance before the aircraft may proceed under those rules.",
+          "cite": "GACAR Part 91 (IFR operations)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91"
+          }
+        },
+        {
+          "q": "Following a two-way radio communications failure under IFR in VMC, the pilot should —",
+          "options": [
+            "Climb to the service ceiling",
+            "Continue under VFR if practicable and land as soon as practicable",
+            "Descend into terrain",
+            "Squawk 1200 and ignore the failure"
+          ],
+          "answer": 1,
+          "explain": "If the failure occurs in VMC, or VMC is encountered, the pilot continues under VFR and lands as soon as practicable — the standard lost-comms rule.",
+          "cite": "GACAR Part 91, §91.185 (two-way radio failure)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91"
+          }
+        },
+        {
+          "q": "Under IFR lost-comms in IMC, the route to be flown is, in order of priority —",
+          "options": [
+            "Random direct to destination",
+            "Assigned; then vectored (expected); then expected; then filed (AVEF)",
+            "Always the filed route only",
+            "Whatever ATC last vectored, indefinitely"
+          ],
+          "answer": 1,
+          "explain": "The lost-comms route priority is: route Assigned; if none, the route Vectored to; then the route Expected; then the route Filed (the AVE-F order).",
+          "cite": "GACAR Part 91, §91.185",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91"
+          }
+        },
+        {
+          "q": "The IFR fuel requirement for an aeroplane is fuel to reach the destination, then the alternate (if required), plus —",
+          "options": [
+            "No reserve",
+            "A reserve to fly a specified additional time at normal cruise",
+            "Fuel for one circuit only",
+            "Half the trip fuel"
+          ],
+          "answer": 1,
+          "explain": "IFR fuel planning requires enough to reach the intended destination, then any required alternate, plus a final reserve for a specified additional period at normal cruise consumption.",
+          "cite": "GACAR Part 91 (IFR fuel)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91"
+          }
+        },
+        {
+          "q": "An alternate aerodrome is planned for an IFR flight when —",
+          "options": [
+            "Always, without exception",
+            "The destination forecast weather is below prescribed minima for a defined window around the ETA",
+            "Never for jets",
+            "Only at night"
+          ],
+          "answer": 1,
+          "explain": "An alternate is required when the destination's forecast weather around the estimated time of arrival is below the prescribed ceiling/visibility criteria.",
+          "cite": "GACAR Part 91 (IFR alternate)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-91"
+          }
         }
       ]
     },
@@ -6229,6 +7961,70 @@
           "answer": 1,
           "explain": "Saudi AIP ENR 1.1 states aircraft approaching from the same side as the traffic pattern shall arrange flight to join straight in on the downwind leg (those from the opposite side cross over the aerodrome at midfield first).",
           "cite": "Saudi AIP, ENR 1.1"
+        },
+        {
+          "q": "A published instrument approach procedure's final approach segment ends at —",
+          "options": [
+            "The initial approach fix",
+            "The missed approach point (or runway threshold on a precision approach)",
+            "The holding fix",
+            "The departure end"
+          ],
+          "answer": 1,
+          "explain": "The final approach segment runs from the final approach fix to the missed approach point (or, on an ILS, to the DA/threshold), where a missed approach is flown if not visual.",
+          "cite": "GACAR Part 97 / PANS-OPS",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97"
+          }
+        },
+        {
+          "q": "A standard holding pattern uses —",
+          "options": [
+            "Left turns and 2-minute inbound legs",
+            "Right turns with the timing/leg length specified for the altitude",
+            "No turns",
+            "Continuous descent"
+          ],
+          "answer": 1,
+          "explain": "The standard hold uses right-hand turns; inbound leg timing (commonly 1 minute at or below 14,000 ft, 1.5 minutes above) or a DME/RNAV distance defines the pattern.",
+          "cite": "GACAR Part 97 / PANS-OPS",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97"
+          }
+        },
+        {
+          "q": "On a precision (ILS) approach, reaching the Decision Altitude/Height without the required visual reference requires the pilot to —",
+          "options": [
+            "Continue descending",
+            "Execute the published missed approach",
+            "Enter a hold on the localiser",
+            "Land regardless"
+          ],
+          "answer": 1,
+          "explain": "At DA/DH, if the required visual references are not in sight, the pilot must initiate the published missed approach.",
+          "cite": "GACAR Part 97 / PANS-OPS",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97"
+          }
+        },
+        {
+          "q": "The three ICAO instrument-approach segments preceding the missed approach are —",
+          "options": [
+            "Taxi, take-off, climb",
+            "Initial, intermediate and final approach",
+            "Hold, cruise, descent",
+            "Departure, enroute, arrival"
+          ],
+          "answer": 1,
+          "explain": "An instrument approach is built from the initial, intermediate and final approach segments (with the missed approach as the fourth), each with its own obstacle-clearance criteria.",
+          "cite": "GACAR Part 97 / PANS-OPS",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-97"
+          }
         }
       ]
     },
@@ -6593,6 +8389,70 @@
             "kind": "regulations",
             "id": "part-61",
             "anchor": "sec-61-89"
+          }
+        },
+        {
+          "q": "An instrument rating permits a pilot to —",
+          "options": [
+            "Fly faster aircraft",
+            "Operate under IFR and in instrument meteorological conditions (IMC)",
+            "Instruct for hire",
+            "Skip the medical"
+          ],
+          "answer": 1,
+          "explain": "The instrument rating authorises flight under IFR and in IMC, within the privileges of the underlying pilot certificate.",
+          "cite": "GACAR Part 61 (Instrument Rating)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "Instrument-rating aeronautical experience emphasises —",
+          "options": [
+            "Aerobatic time",
+            "Instrument flight time, including cross-country under IFR and instrument approaches",
+            "Seaplane time",
+            "Formation flying"
+          ],
+          "answer": 1,
+          "explain": "The rating requires prescribed instrument time — actual or simulated — including cross-country IFR flying and a number of instrument approaches.",
+          "cite": "GACAR Part 61, §61.89 (instrument rating)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "To act as PIC under IFR, a pilot must, in addition to holding an instrument rating, be —",
+          "options": [
+            "Under 40 years old",
+            "Instrument current (recent instrument experience within the required period)",
+            "A flight instructor",
+            "A commercial pilot"
+          ],
+          "answer": 1,
+          "explain": "IFR PIC privileges require instrument currency — the prescribed recent instrument experience (approaches, holding and tracking) within the look-back period.",
+          "cite": "GACAR Part 61 (instrument recency)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "An instrument-rating applicant must pass —",
+          "options": [
+            "Only a medical exam",
+            "An instrument knowledge test and an instrument practical test",
+            "Only an English test",
+            "No tests if experienced"
+          ],
+          "answer": 1,
+          "explain": "The instrument rating requires passing both the instrument aeronautical-knowledge test and the instrument practical (flight) test.",
+          "cite": "GACAR Part 61 (Instrument Rating)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
           }
         }
       ]
@@ -6976,6 +8836,70 @@
             "id": "part-61",
             "anchor": "sec-61-173"
           }
+        },
+        {
+          "q": "The ATP certificate is the —",
+          "options": [
+            "Lowest pilot certificate",
+            "Highest level of pilot certificate, required to act as PIC of scheduled air-carrier aircraft",
+            "Same as a private certificate",
+            "A medical document"
+          ],
+          "answer": 1,
+          "explain": "The Airline Transport Pilot certificate is the highest pilot certificate and is required to act as PIC (and, per the rules, SIC) of certain air-carrier operations.",
+          "cite": "GACAR Part 61, Subpart G",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "A defining ATP eligibility requirement, compared with the commercial certificate, is —",
+          "options": [
+            "A lower age",
+            "A higher minimum age (typically 21) and substantially greater flight experience",
+            "No medical",
+            "No knowledge test"
+          ],
+          "answer": 1,
+          "explain": "ATP applicants must meet a higher minimum age (generally 21) and far greater aeronautical experience, including significant PIC and cross-country/night time.",
+          "cite": "GACAR Part 61, Subpart G",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "An ATP applicant must hold at least —",
+          "options": [
+            "A student pilot certificate",
+            "A commercial pilot certificate with an instrument rating (or equivalent)",
+            "Only a medical",
+            "A flight instructor certificate"
+          ],
+          "answer": 1,
+          "explain": "ATP certification builds on a commercial certificate with an instrument rating (or an acceptable equivalent), plus the additional experience and testing.",
+          "cite": "GACAR Part 61, Subpart G",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
+        },
+        {
+          "q": "An ATP certificate holder must hold a medical certificate of at least —",
+          "options": [
+            "Class 3",
+            "Class 1 for the relevant airline-transport privileges",
+            "No class",
+            "Class 2 only"
+          ],
+          "answer": 1,
+          "explain": "Exercising airline-transport (air carrier PIC) privileges requires the highest, Class 1, medical certificate.",
+          "cite": "GACAR Part 61, Subpart G / Part 67",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-61"
+          }
         }
       ]
     },
@@ -7358,6 +9282,70 @@
             "id": "part-121",
             "anchor": "sec-121-1001"
           }
+        },
+        {
+          "q": "Under an air carrier's operational control, the release of a flight is the joint responsibility of —",
+          "options": [
+            "The passengers",
+            "The pilot in command and (for dispatch operations) the aircraft dispatcher",
+            "The cabin crew alone",
+            "The fuel truck driver"
+          ],
+          "answer": 1,
+          "explain": "In dispatch operations, operational control and the flight release are shared between the PIC and the licensed aircraft dispatcher.",
+          "cite": "GACAR Part 121",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "A Minimum Equipment List (MEL) allows an aircraft to be dispatched with —",
+          "options": [
+            "Any inoperative item",
+            "Specific inoperative items under defined conditions and procedures",
+            "No inoperative items ever",
+            "Only cosmetic defects"
+          ],
+          "answer": 1,
+          "explain": "An approved MEL permits dispatch with certain items inoperative provided the associated conditions, limitations and procedures are met.",
+          "cite": "GACAR Part 121 (MEL)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "Air carrier operations require crew members to complete —",
+          "options": [
+            "No training",
+            "Approved training and qualification/checking programs before serving",
+            "Only a written test once",
+            "Training only after an incident"
+          ],
+          "answer": 1,
+          "explain": "Part 121/135 carriers must run approved training, qualification and recurrent checking programs; crew must be current and qualified to serve.",
+          "cite": "GACAR Part 121 (training & qualification)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "Flight and duty time limitations for air-carrier crews exist primarily to —",
+          "options": [
+            "Increase utilisation",
+            "Manage fatigue and preserve alertness for safety",
+            "Reduce fuel burn",
+            "Simplify scheduling only"
+          ],
+          "answer": 1,
+          "explain": "Flight, duty and rest limits are safety rules that manage crew fatigue and protect alertness.",
+          "cite": "GACAR Part 121 (flight/duty limitations)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
         }
       ]
     },
@@ -7721,6 +9709,70 @@
             "kind": "regulations",
             "id": "part-121",
             "anchor": "sec-121-1417"
+          }
+        },
+        {
+          "q": "For a transport-category take-off, V1 is the —",
+          "options": [
+            "Rotation speed",
+            "Take-off decision speed — the maximum speed at which the pilot must take the first action to stop within the accelerate-stop distance",
+            "Best climb speed",
+            "Never-exceed speed"
+          ],
+          "answer": 1,
+          "explain": "V1 is the decision speed: at or below it the take-off can be safely rejected within the accelerate-stop distance; above it the take-off is continued.",
+          "cite": "GACAR Part 121 (take-off performance)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "The 'balanced field length' is the runway length at which —",
+          "options": [
+            "The aircraft is empty",
+            "The accelerate-stop distance equals the accelerate-go distance for the chosen V1",
+            "No wind exists",
+            "The runway is level"
+          ],
+          "answer": 1,
+          "explain": "At the balanced field length the distance to accelerate to V1 and stop equals the distance to accelerate to V1, lose an engine, and continue to the screen height.",
+          "cite": "GACAR Part 121 (performance)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "Following an engine failure at altitude on a transport aircraft, 'driftdown' refers to —",
+          "options": [
+            "An uncontrolled descent",
+            "A controlled descent to the one-engine-inoperative net level-off altitude while maintaining obstacle clearance",
+            "A go-around",
+            "A holding pattern"
+          ],
+          "answer": 1,
+          "explain": "Driftdown is the planned descent on the remaining engine(s) to the OEI net ceiling, ensuring the net flight path clears enroute obstacles/terrain.",
+          "cite": "GACAR Part 121 (enroute performance)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
+          }
+        },
+        {
+          "q": "Transport-category landing performance requires the aeroplane to be able to land within —",
+          "options": [
+            "The full runway plus overrun",
+            "A defined percentage of the landing distance available (a required landing factor)",
+            "Any distance",
+            "Half the taxiway"
+          ],
+          "answer": 1,
+          "explain": "Dispatch landing performance requires the aeroplane to stop within a required proportion of the landing distance available (a safety factor applied to the demonstrated landing distance).",
+          "cite": "GACAR Part 121 (landing performance)",
+          "citeRef": {
+            "kind": "regulations",
+            "id": "part-121"
           }
         }
       ]

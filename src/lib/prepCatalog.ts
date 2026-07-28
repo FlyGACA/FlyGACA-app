@@ -96,7 +96,7 @@ export const PACKS: Pack[] = [
     kind: 'certificate',
     status: 'live',
     access: 'paid',
-    bankIds: ['radio-elpt'],
+    bankIds: ['radio-elpt', 'elpt-phraseology', 'elpt-comprehension', 'elpt-rating-scale'],
     sheetSlugs: ['saelpt-study-sheet'],
   },
   {
@@ -199,7 +199,7 @@ export const PACKS: Pack[] = [
     kind: 'subject',
     status: 'live',
     access: 'paid',
-    bankIds: ['aip-ais', 'airspace'],
+    bankIds: ['aip-ais', 'aip-charts', 'airspace'],
     sheetSlugs: [
       'saudi-aip-study-sheet-en',
       'saudi-aip-study-sheet-ar',

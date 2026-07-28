@@ -968,3 +968,253 @@ Please verify each answer key against the cited source before treating it as aut
 - [ ] **Weight and balance calculations before flight ensure the aircraft is operated —** — ✓ Within its certificated weight and center-of-gravity limits · _FAA Pilot's Handbook of Aeronautical Knowledge_
 - [ ] **A NOTAM should be checked during flight planning because it may report —** — ✓ Temporary hazards or changes such as runway closures or navaid outages · _GACAR Part 91_
 - [ ] **"Top of descent" in flight planning is the point calculated so the aircraft —** — ✓ Reaches the desired altitude/position at the planned descent rate · _FAA Pilot's Handbook of Aeronautical Knowledge_
+
+---
+
+## App-worth-it enrichment pass (2026-07) — verify answer key + citation
+
+Grows the corpus 486 → 642 questions (22 → 26 banks) so every iOS app reads as a
+substantial product. ELPT 24 → 91 (4 banks), AIP 51 → 79 (3 banks); the 9 CPL/IR/ATPL
+draft banks grow ~4 each (DRAFT markers retained). Same house rules: 4 options, `explain`,
+`cite`. ELPT/AIP-charts cite ICAO Annexes/Docs as free-text study pointers (not in the
+GACAR library index); the draft-bank additions cite the governing GACAR Part.
+
+### New ELPT banks (the elp pack — SAELPT)
+
+#### Standard Radio Phraseology `elpt-phraseology` — 22 new
+<sub>Source: ICAO Annex 10 Vol II · Doc 4444</sub>
+
+- [ ] **When ATC issues a clearance limit, altitude, heading or speed, the pilot must —** — ✓ Read back the clearance · _ICAO Annex 10 Vol II / PANS-ATM (Doc 4444)_
+- [ ] **The altitude 10,000 ft is spoken in standard radiotelephony as —** — ✓ Ten thousand · _ICAO Annex 10 Vol II_
+- [ ] **A flight level of FL180 is transmitted as —** — ✓ Flight level one eight zero · _ICAO Annex 10 Vol II_
+- [ ] **An aircraft callsign may be abbreviated by ATC only —** — ✓ After the controller has first used the abbreviated form · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **The phrase 'CLEARED TO LAND' may be issued by —** — ✓ Only the aerodrome control tower · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **The correct read-back of the QNH 1013 is —** — ✓ QNH one zero one three · _ICAO Annex 10 Vol II_
+- [ ] **The instruction 'LINE UP AND WAIT' means —** — ✓ Enter the runway and hold ready for take-off · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **A time of 0930 is normally transmitted, when no confusion is likely, as —** — ✓ Three zero (the minutes only) · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **If a controller cannot approve a requested clearance, the correct word is —** — ✓ UNABLE · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **'DISREGARD' transmitted by ATC means —** — ✓ Consider that transmission as not sent · _ICAO Annex 10 Vol II_
+- [ ] **A heading of 270 degrees is transmitted as —** — ✓ Heading two seven zero · _ICAO Annex 10 Vol II_
+- [ ] **'READ BACK' is a request for the pilot to —** — ✓ Repeat all, or a specified part, of the message back · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **When establishing initial contact, the aircraft should transmit —** — ✓ The station being called, then its own callsign · _ICAO Annex 10 Vol II_
+- [ ] **'CONFIRM' in ATC phraseology is used to —** — ✓ Request verification of a clearance or information · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **The word 'BREAK' in a transmission indicates —** — ✓ The separation between two messages · _ICAO Annex 10 Vol II_
+- [ ] **A read-back requiring correction by ATC is answered by the controller with —** — ✓ 'NEGATIVE' followed by the correct version · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **The transmission of a clearance void time is an example of information that must be —** — ✓ Read back · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **'MONITOR (frequency)' instructs the pilot to —** — ✓ Listen out on the stated frequency without calling · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **Speed 250 knots is transmitted as —** — ✓ Speed two five zero knots · _ICAO Annex 10 Vol II_
+- [ ] **The correct response to acknowledge and comply with an ATC instruction is —** — ✓ WILCO · _ICAO Annex 10 Vol II_
+- [ ] **When a message must be recorded verbatim, ATC precedes it with —** — ✓ 'WRITE DOWN' / 'WORD FOR WORD' · _ICAO Annex 10 Vol II_
+- [ ] **'HOW DO YOU READ' is a request for —** — ✓ A readability report of the transmission · _ICAO Annex 10 Vol II_
+
+#### Plain Language & Comprehension `elpt-comprehension` — 21 new
+<sub>Source: ICAO Doc 9835 · Annex 10 Vol II</sub>
+
+- [ ] **The phrase 'we are running low on fuel and request priority' is best classified as —** — ✓ A distress (MAYDAY) situation unless fuel is critical · _ICAO Annex 10 Vol II / Doc 9432_
+- [ ] **A controller says 'expect further clearance at four zero'. This means the pilot should expect a new clearance —** — ✓ At time 40 minutes past the hour · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **If a pilot does not fully understand a rapid ATC instruction, the safest action is to —** — ✓ Request 'SAY AGAIN' or ask ATC to speak slower · _ICAO Doc 9835 (Language Proficiency Manual)_
+- [ ] **Plain language, as distinct from standard phraseology, is used on the radio —** — ✓ When standard phraseology does not cover the situation · _ICAO Doc 9835_
+- [ ] **The instruction 'give way to the company Airbus on your left and follow it' primarily tests a pilot's —** — ✓ Comprehension and interaction skills · _ICAO Doc 9835_
+- [ ] **A read-back that omits a runway assignment is dangerous mainly because it can lead to —** — ✓ A runway incursion or wrong-runway event · _ICAO Doc 9835 / Annex 10 Vol II_
+- [ ] **When weather deteriorates unexpectedly and a diversion is needed, a pilot with only Level-3 English would most likely struggle to —** — ✓ Negotiate an unplanned re-route in plain language with ATC · _ICAO Doc 9835_
+- [ ] **The ATC phrase 'traffic is a B738, twelve o'clock, five miles, opposite direction' is intended to help the pilot —** — ✓ Acquire and avoid conflicting traffic visually · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **A pilot hears 'say intentions'. The controller is asking the pilot to —** — ✓ State what the pilot plans to do next · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **Using non-standard words such as 'okay' or 'yeah' instead of AFFIRM/ROGER is discouraged because it —** — ✓ Can be ambiguous across languages and cultures · _ICAO Doc 9835_
+- [ ] **If a controller's accent is unfamiliar, an operationally proficient pilot should be able to —** — ✓ Understand a sufficiently wide range of accents used internationally · _ICAO Doc 9835_
+- [ ] **The best response to a partially blocked or garbled transmission is to —** — ✓ Transmit 'SAY AGAIN' and, if needed, request a relay · _ICAO Annex 10 Vol II_
+- [ ] **An instruction to 'expedite climb' asks the pilot to —** — ✓ Climb at the best rate practicable · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **A pilot who can handle routine calls but 'freezes' during an unexpected engine problem demonstrates a weakness in the ICAO skill of —** — ✓ Interactions · _ICAO Doc 9835_
+- [ ] **The word 'immediately' in 'turn right heading three six zero immediately' signals —** — ✓ An urgent action required for safety/separation · _ICAO Annex 10 Vol II / Doc 4444_
+- [ ] **When a passenger medical emergency requires priority handling, the pilot would typically prefix the call with —** — ✓ PAN PAN (urgency) or, if life-threatening and requiring priority, MAYDAY · _ICAO Annex 10 Vol II_
+- [ ] **The purpose of confirming numbers such as headings and levels by read-back is chiefly to —** — ✓ Detect and correct hear-back errors before they cause a hazard · _ICAO Annex 10 Vol II_
+- [ ] **A pilot unintelligibly rushing a long transmission most directly needs to improve —** — ✓ Fluency and pronunciation (rate/clarity of delivery) · _ICAO Doc 9835_
+- [ ] **'SAY AGAIN ALL BEFORE [word]' asks ATC or the pilot to repeat —** — ✓ The part of the message before the specified word · _ICAO Annex 10 Vol II_
+- [ ] **Level-4 English is considered adequate for —** — ✓ Effective communication in routine and many non-routine situations, though it may occasionally be strained · _ICAO Doc 9835_
+- [ ] **A conditional clearance such as 'behind the landing Boeing, line up behind' requires the pilot to —** — ✓ Read back the conditional clearance including the word 'behind' twice · _ICAO Doc 4444 (PANS-ATM)_
+
+#### ICAO Language Proficiency Scale `elpt-rating-scale` — 20 new
+<sub>Source: ICAO Annex 1 · Doc 9835</sub>
+
+- [ ] **How many holistic descriptors/skills does the ICAO language proficiency rating scale assess?** — ✓ Six · _ICAO Annex 1 / Doc 9835_
+- [ ] **Which of the following is NOT one of the six ICAO rating-scale skills?** — ✓ Spelling · _ICAO Annex 1 / Doc 9835_
+- [ ] **The ICAO language proficiency rating scale runs from —** — ✓ Level 1 (Pre-elementary) to Level 6 (Expert) · _ICAO Annex 1 / Doc 9835_
+- [ ] **The minimum ICAO level to exercise licence privileges in international operations is —** — ✓ Level 4 (Operational) · _ICAO Annex 1, §1.2.9_
+- [ ] **A pilot assessed at ICAO Level 4 must normally be re-evaluated at intervals not exceeding —** — ✓ Three years · _ICAO Annex 1 / Doc 9835_
+- [ ] **A pilot assessed at ICAO Level 5 (Extended) is normally re-evaluated at intervals not exceeding —** — ✓ Six years · _ICAO Annex 1 / Doc 9835_
+- [ ] **A pilot assessed at ICAO Level 6 (Expert) —** — ✓ Is not required to be formally re-evaluated · _ICAO Annex 1 / Doc 9835_
+- [ ] **When a pilot's six skills are rated at different levels, the overall ICAO rating awarded is —** — ✓ The lowest of the six · _ICAO Doc 9835_
+- [ ] **The ICAO rating-scale skill of 'structure' refers to —** — ✓ Command of relevant grammatical structures and sentence patterns · _ICAO Doc 9835_
+- [ ] **The 'comprehension' descriptor primarily assesses a pilot's ability to —** — ✓ Understand spoken English on common and work-related topics, including a range of accents · _ICAO Doc 9835_
+- [ ] **The 'interactions' descriptor is concerned with a speaker's ability to —** — ✓ Respond appropriately and promptly, checking and clarifying in exchanges · _ICAO Doc 9835_
+- [ ] **At Level 4, pronunciation, stress, rhythm and intonation —** — ✓ May be influenced by the first language but only sometimes interfere with understanding · _ICAO Doc 9835_
+- [ ] **The ICAO language proficiency requirements apply to —** — ✓ Pilots, flight navigators and air traffic controllers who use radiotelephony in international operations · _ICAO Annex 1, §1.2.9_
+- [ ] **The primary ICAO document providing guidance on implementing the language proficiency requirements is —** — ✓ Doc 9835 (Manual on the Implementation of ICAO Language Proficiency Requirements) · _ICAO Doc 9835_
+- [ ] **Language proficiency at Level 4 is intended to be tested in a context that is —** — ✓ Work-related and operational (aviation) in nature · _ICAO Doc 9835_
+- [ ] **A speaker who can paraphrase successfully when they lack a specific word is demonstrating strength in —** — ✓ Vocabulary (and fluency) · _ICAO Doc 9835_
+- [ ] **The requirement to demonstrate language proficiency is recorded —** — ✓ As an endorsement on the pilot's licence · _ICAO Annex 1_
+- [ ] **Level 3 (Pre-operational) proficiency is —** — ✓ Below the operational standard and therefore not sufficient · _ICAO Annex 1 / Doc 9835_
+- [ ] **The rating-scale skill of 'fluency' relates to —** — ✓ The naturalness, flow and tempo of speech · _ICAO Doc 9835_
+- [ ] **If a pilot rates Level 5 in five skills and Level 3 in comprehension, the licence endorsement will show —** — ✓ Level 3 · _ICAO Doc 9835_
+
+#### Aeronautical Charts & Instrument Plates `aip-charts` (aip pack) — 16 new
+<sub>Source: ICAO Annex 4 · PANS-OPS (Doc 8168)</sub>
+
+- [ ] **On an instrument approach chart, the abbreviation 'MDA' means —** — ✓ Minimum Descent Altitude · _ICAO Annex 4 / PANS-OPS (Doc 8168)_
+- [ ] **A 'DH' or 'DA' on a precision approach chart is the —** — ✓ Decision height / decision altitude · _ICAO Annex 4 / PANS-OPS_
+- [ ] **On aeronautical charts, controlled airspace lateral limits and route data are found on the —** — ✓ Enroute (ENR) chart · _ICAO Annex 4_
+- [ ] **The four ICAO 'MSA' sectors on an approach chart provide —** — ✓ Minimum safe/sector altitudes within 25 NM of a reference point · _ICAO Annex 4 / PANS-OPS_
+- [ ] **A SID chart depicts —** — ✓ A standard instrument departure route · _ICAO Annex 4_
+- [ ] **A STAR chart depicts —** — ✓ A standard terminal arrival route · _ICAO Annex 4_
+- [ ] **On charts, an altitude that is mandatory is typically shown —** — ✓ Underlined and overlined (a line above and below the figure) · _ICAO Annex 4 / PANS-OPS_
+- [ ] **The aerodrome chart primarily provides —** — ✓ Runways, taxiways, aprons and ground movement/reference data · _ICAO Annex 4_
+- [ ] **Runway visual range (RVR) minima on an approach plate refer to —** — ✓ The horizontal distance a pilot can see along the runway · _ICAO Annex 4 / PANS-OPS_
+- [ ] **A 'circling' minimum on an approach chart applies when the aircraft —** — ✓ Manoeuvres visually to land on a runway not aligned with the approach · _ICAO Annex 4 / PANS-OPS_
+- [ ] **Chart depiction of a VOR is a —** — ✓ Compass-rose symbol centred on the station · _ICAO Annex 4_
+- [ ] **The transition altitude on an approach chart is the altitude at or below which —** — ✓ Vertical position is controlled by reference to altitudes (QNH) · _ICAO Annex 4 / PANS-OPS_
+- [ ] **A holding pattern depicted on a chart, unless otherwise stated, uses —** — ✓ Right (standard) turns · _ICAO Doc 8168 (PANS-OPS)_
+- [ ] **On an enroute chart, the figure beside an airway giving the lowest altitude guaranteeing obstacle clearance and navaid reception is the —** — ✓ Minimum En-route Altitude (MEA) · _ICAO Annex 4_
+- [ ] **A depicted 'MOCA' provides obstacle clearance but only guarantees navaid signal coverage within —** — ✓ A limited distance of the navaid (e.g. ~22 NM) · _ICAO Annex 4_
+- [ ] **The primary purpose of a chart's 'plan view' and 'profile view' on an approach plate is to show —** — ✓ The horizontal track and the vertical descent profile of the approach · _ICAO Annex 4 / PANS-OPS_
+
+### Grown banks — new questions only
+
+#### Radiotelephony & English Proficiency `radio-elpt` — 4 new (24 → 28)
+<sub>Source: ICAO Annex 10 · Annex 1</sub>
+
+- [ ] **The readability scale used to answer 'HOW DO YOU READ' runs from —** — ✓ 1 (unreadable) to 5 (perfectly readable) · _ICAO Annex 10 Vol II_
+- [ ] **The word used to indicate 'yes' or 'that is correct' in radiotelephony is —** — ✓ AFFIRM · _ICAO Annex 10 Vol II_
+- [ ] **A distress message (MAYDAY) has priority over —** — ✓ All other transmissions · _ICAO Annex 10 Vol II_
+- [ ] **The distress and urgency signals are, respectively —** — ✓ MAYDAY and PAN PAN · _ICAO Annex 10 Vol II_
+
+#### AIP & Aeronautical Information `aip-ais` — 6 new (27 → 33)
+<sub>Source: ICAO Annex 15 · AIP-KSA</sub>
+
+- [ ] **The three categories of NOTAM series are commonly distinguished by their —** — ✓ Series letter and purpose (e.g. new, replace, cancel) · _ICAO Annex 15_
+- [ ] **An AIP Amendment differs from an AIP Supplement in that an Amendment —** — ✓ Introduces permanent changes to the AIP · _ICAO Annex 15_
+- [ ] **The 'AIRAC' system exists primarily to —** — ✓ Give operators advance notice of significant changes on common effective dates · _ICAO Annex 15_
+- [ ] **The Integrated Aeronautical Information Package includes the AIP, its amendments and supplements, NOTAM, AIC and —** — ✓ Checklists and pre-flight/post-flight information bulletins · _ICAO Annex 15_
+- [ ] **The primary quality objective of aeronautical information services is to ensure data is —** — ✓ Accurate, resolved, timely and traceable (data quality/integrity) · _ICAO Annex 15_
+- [ ] **Coordinates and elevations published in the AIP are referenced to —** — ✓ WGS-84 (horizontal) and mean sea level via EGM geoid (vertical) · _ICAO Annex 15_
+
+#### Airspace & Air Traffic `airspace` — 6 new (24 → 30)
+<sub>Source: GACAR Part 71 · ICAO Annex 11</sub>
+
+- [ ] **In which ICAO airspace classes is IFR flight provided with separation from all other IFR flights?** — ✓ Classes A, B, C, D and E · _ICAO Annex 11_
+- [ ] **VFR flight is NOT permitted in which ICAO airspace class?** — ✓ Class A · _ICAO Annex 11_
+- [ ] **In Class C airspace, VFR flights are separated from —** — ✓ IFR flights (and given traffic information on other VFR) · _ICAO Annex 11_
+- [ ] **A flight information service and alerting service, but no separation service, is characteristic of —** — ✓ Class G · _ICAO Annex 11_
+- [ ] **Below 10,000 ft AMSL, the standard maximum indicated airspeed for VFR/IFR flights in Classes C, D, E, F and G is —** — ✓ 250 kt · _ICAO Annex 11_
+- [ ] **An Air Traffic Service that provides advice and information useful for the safe and efficient conduct of flights is a —** — ✓ Flight information service · _ICAO Annex 11_
+
+#### Aviation Weather `weather` — 6 new (22 → 28)
+<sub>Source: FAA Aviation Weather Handbook</sub>
+
+- [ ] **Dew point is best defined as the temperature to which air must be cooled to become —** — ✓ Saturated (100% relative humidity) · _FAA Aviation Weather Handbook_
+- [ ] **A warm front is typically associated with —** — ✓ Widespread stratiform cloud and steady precipitation · _FAA Aviation Weather Handbook_
+- [ ] **The three ingredients required for a thunderstorm to form are moisture, instability and —** — ✓ A lifting mechanism · _FAA Aviation Weather Handbook_
+- [ ] **Mountain wave turbulence is most likely when strong winds blow —** — ✓ Roughly perpendicular to a mountain ridge with a stable layer aloft · _FAA Aviation Weather Handbook_
+- [ ] **Freezing rain at the surface is a reliable indication of —** — ✓ Warmer air aloft above a sub-freezing surface layer (a temperature inversion) · _FAA Aviation Weather Handbook_
+- [ ] **The most hazardous aspect of a microburst for an aircraft on approach is —** — ✓ A rapid shift from a performance-increasing headwind to a performance-decreasing tailwind · _FAA Aviation Weather Handbook_
+
+#### Navigation & Flight Planning `navigation` — 6 new (22 → 28)
+<sub>Source: FAA Pilot's Handbook & Instrument references</sub>
+
+- [ ] **A rhumb line (loxodrome) is a track that —** — ✓ Crosses every meridian at the same angle and appears straight on a Mercator chart · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **To convert a true heading to a magnetic heading, a pilot applies —** — ✓ Variation · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **On a sectional chart the effect of 'east is least, west is best' is a memory aid for applying —** — ✓ Variation between true and magnetic (subtract easterly, add westerly to true) · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **A VOR radial is defined as a magnetic bearing —** — ✓ Away from (outbound from) the station · _FAA Instrument Flying Handbook_
+- [ ] **An RNAV/GNSS system computes position primarily from —** — ✓ Ranging signals from multiple satellites · _FAA Instrument Flying Handbook_
+- [ ] **Given a true airspeed of 100 kt and a direct 20 kt tailwind, the groundspeed is —** — ✓ 120 kt · _FAA Pilot's Handbook of Aeronautical Knowledge_
+
+#### Aerodynamics & Aircraft Systems `aerodynamics` — 6 new (22 → 28)
+<sub>Source: FAA Pilot's & Airplane Flying Handbooks</sub>
+
+- [ ] **Increasing the wing angle of attack increases lift until —** — ✓ The critical (stalling) angle of attack is exceeded · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **Wingtip vortices (and the induced drag they represent) are strongest when an aircraft is —** — ✓ Heavy, clean, and slow (high angle of attack) · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **Raising flaps generally —** — ✓ Increases the stalling speed and reduces lift/drag at a given speed · _FAA Airplane Flying Handbook_
+- [ ] **A forward centre-of-gravity position generally makes an aircraft —** — ✓ More longitudinally stable but requiring more elevator/tail download · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **Load factor in a coordinated level turn is a function of —** — ✓ Bank angle · _FAA Pilot's Handbook of Aeronautical Knowledge_
+- [ ] **Vne (never-exceed speed) is depicted on the airspeed indicator by the —** — ✓ Red radial line · _FAA Pilot's Handbook of Aeronautical Knowledge_
+
+#### Human Factors & Aeromedical `human-factors` — 6 new (22 → 28)
+<sub>Source: FAA aeromedical & risk-management references</sub>
+
+- [ ] **Empty-field (or 'empty-sky') myopia causes the eyes at high altitude with nothing to focus on to —** — ✓ Relax to a short focal distance, reducing ability to detect distant traffic · _FAA Aeronautical Information Manual / aeromedical references_
+- [ ] **The greatest risk from mild hypoxia is that the affected pilot —** — ✓ May feel a false sense of well-being (euphoria) and not recognise the impairment · _FAA aeromedical references_
+- [ ] **Time of useful consciousness at a cabin altitude of 25,000 ft is on the order of —** — ✓ 3 to 5 minutes · _FAA aeromedical references_
+- [ ] **The leans, a common form of vestibular spatial disorientation, is best countered by —** — ✓ Trusting and flying by the flight instruments · _FAA Instrument Flying Handbook / aeromedical references_
+- [ ] **The startle/surprise response is a human-factors hazard because it can —** — ✓ Momentarily degrade a pilot's cognitive performance and delay a correct response · _FAA Risk Management Handbook_
+- [ ] **Effective crew/single-pilot resource management primarily aims to improve —** — ✓ The management of all available resources — information, equipment and people — to reduce error · _FAA Risk Management Handbook_
+
+#### Commercial Pilot Licensing `cpl-licensing` — 4 new (18 → 22)
+<sub>Source: GACAR Part 61, Subpart F · DRAFT — pending review</sub>
+
+- [ ] **A commercial pilot certificate, by itself, permits a pilot to —** — ✓ Act as PIC or required crew for compensation or hire, subject to the operating rules · _GACAR Part 61, Subpart F_
+- [ ] **To exercise commercial privileges at night or in an aircraft carrying passengers for hire beyond 50 NM, a commercial pilot generally needs —** — ✓ An instrument rating (or the operation is restricted) · _GACAR Part 61, Subpart F_
+- [ ] **Commercial pilot aeronautical experience is built as —** — ✓ Total time, PIC time, cross-country and night/instrument time to prescribed minimums · _GACAR Part 61, Subpart F_
+- [ ] **A commercial pilot applicant must pass —** — ✓ A knowledge (theory) test and a practical (flight) test · _GACAR Part 61, Subpart F_
+
+#### Commercial Air Operations `commercial-ops` — 4 new (22 → 26)
+<sub>Source: GACAR Parts 119 · 135 · 91 · DRAFT — pending review</sub>
+
+- [ ] **An operator conducting commercial air transport for compensation or hire must hold —** — ✓ An air operator certificate (and operations specifications) · _GACAR Part 119_
+- [ ] **Operations specifications (OpSpecs) issued with an operating certificate define —** — ✓ The authorisations, limitations and procedures under which the operator may conduct operations · _GACAR Part 119_
+- [ ] **The distinction between Part 121 and Part 135 operators is primarily based on —** — ✓ Aircraft size/type and the kind of operation (e.g. transport-category/scheduled vs smaller/on-demand) · _GACAR Part 119_
+- [ ] **Common carriage for compensation or hire is characterised by —** — ✓ Holding out to the public to transport persons or property for hire · _GACAR Part 119_
+
+#### Commercial Performance & Loading `commercial-performance` — 4 new (21 → 25)
+<sub>Source: GACAR Part 91 · Part 135 (Subpart F) · DRAFT — pending review</sub>
+
+- [ ] **An aircraft's centre of gravity must remain —** — ✓ Within the forward and aft limits published for the aircraft weight · _GACAR Part 135, Subpart F (weight & balance)_
+- [ ] **Exceeding the maximum take-off weight primarily results in —** — ✓ Degraded performance — longer take-off run and reduced climb gradient · _GACAR Part 135, Subpart F_
+- [ ] **Density altitude increases (degrading performance) with —** — ✓ Higher temperature, higher elevation and higher humidity · _GACAR Part 135, Subpart F (performance)_
+- [ ] **A performance-limited take-off calculation must account for —** — ✓ Weight, pressure altitude, temperature, wind and runway condition/slope · _GACAR Part 135, Subpart F_
+
+#### IFR Flight Rules `ifr-rules` — 5 new (22 → 27)
+<sub>Source: GACAR Part 91, Subpart B/E · DRAFT — pending review</sub>
+
+- [ ] **To operate under IFR in controlled airspace, a pilot must first —** — ✓ Receive an appropriate ATC clearance · _GACAR Part 91 (IFR operations)_
+- [ ] **Following a two-way radio communications failure under IFR in VMC, the pilot should —** — ✓ Continue under VFR if practicable and land as soon as practicable · _GACAR Part 91, §91.185 (two-way radio failure)_
+- [ ] **Under IFR lost-comms in IMC, the route to be flown is, in order of priority —** — ✓ Assigned; then vectored (expected); then expected; then filed (AVEF) · _GACAR Part 91, §91.185_
+- [ ] **The IFR fuel requirement for an aeroplane is fuel to reach the destination, then the alternate (if required), plus —** — ✓ A reserve to fly a specified additional time at normal cruise · _GACAR Part 91 (IFR fuel)_
+- [ ] **An alternate aerodrome is planned for an IFR flight when —** — ✓ The destination forecast weather is below prescribed minima for a defined window around the ETA · _GACAR Part 91 (IFR alternate)_
+
+#### Instrument Procedures `instrument-procedures` — 4 new (22 → 26)
+<sub>Source: GACAR Part 97 · Saudi AIP (ENR) · DRAFT — pending review</sub>
+
+- [ ] **A published instrument approach procedure's final approach segment ends at —** — ✓ The missed approach point (or runway threshold on a precision approach) · _GACAR Part 97 / PANS-OPS_
+- [ ] **A standard holding pattern uses —** — ✓ Right turns with the timing/leg length specified for the altitude · _GACAR Part 97 / PANS-OPS_
+- [ ] **On a precision (ILS) approach, reaching the Decision Altitude/Height without the required visual reference requires the pilot to —** — ✓ Execute the published missed approach · _GACAR Part 97 / PANS-OPS_
+- [ ] **The three ICAO instrument-approach segments preceding the missed approach are —** — ✓ Initial, intermediate and final approach · _GACAR Part 97 / PANS-OPS_
+
+#### Instrument Rating Requirements `ir-rating` — 4 new (21 → 25)
+<sub>Source: GACAR Part 61 (Instrument Rating) · DRAFT — pending review</sub>
+
+- [ ] **An instrument rating permits a pilot to —** — ✓ Operate under IFR and in instrument meteorological conditions (IMC) · _GACAR Part 61 (Instrument Rating)_
+- [ ] **Instrument-rating aeronautical experience emphasises —** — ✓ Instrument flight time, including cross-country under IFR and instrument approaches · _GACAR Part 61, §61.89 (instrument rating)_
+- [ ] **To act as PIC under IFR, a pilot must, in addition to holding an instrument rating, be —** — ✓ Instrument current (recent instrument experience within the required period) · _GACAR Part 61 (instrument recency)_
+- [ ] **An instrument-rating applicant must pass —** — ✓ An instrument knowledge test and an instrument practical test · _GACAR Part 61 (Instrument Rating)_
+
+#### Airline Transport Pilot Licensing `atpl-licensing` — 4 new (22 → 26)
+<sub>Source: GACAR Part 61, Subpart G · DRAFT — pending review</sub>
+
+- [ ] **The ATP certificate is the —** — ✓ Highest level of pilot certificate, required to act as PIC of scheduled air-carrier aircraft · _GACAR Part 61, Subpart G_
+- [ ] **A defining ATP eligibility requirement, compared with the commercial certificate, is —** — ✓ A higher minimum age (typically 21) and substantially greater flight experience · _GACAR Part 61, Subpart G_
+- [ ] **An ATP applicant must hold at least —** — ✓ A commercial pilot certificate with an instrument rating (or equivalent) · _GACAR Part 61, Subpart G_
+- [ ] **An ATP certificate holder must hold a medical certificate of at least —** — ✓ Class 1 for the relevant airline-transport privileges · _GACAR Part 61, Subpart G / Part 67_
+
+#### Air Transport Operations `air-transport-ops` — 4 new (22 → 26)
+<sub>Source: GACAR Part 121 · DRAFT — pending review</sub>
+
+- [ ] **Under an air carrier's operational control, the release of a flight is the joint responsibility of —** — ✓ The pilot in command and (for dispatch operations) the aircraft dispatcher · _GACAR Part 121_
+- [ ] **A Minimum Equipment List (MEL) allows an aircraft to be dispatched with —** — ✓ Specific inoperative items under defined conditions and procedures · _GACAR Part 121 (MEL)_
+- [ ] **Air carrier operations require crew members to complete —** — ✓ Approved training and qualification/checking programs before serving · _GACAR Part 121 (training & qualification)_
+- [ ] **Flight and duty time limitations for air-carrier crews exist primarily to —** — ✓ Manage fatigue and preserve alertness for safety · _GACAR Part 121 (flight/duty limitations)_
+
+#### Transport Performance & Dispatch `advanced-weather-performance` — 4 new (21 → 25)
+<sub>Source: GACAR Part 121 (performance & dispatch) · DRAFT — pending review</sub>
+
+- [ ] **For a transport-category take-off, V1 is the —** — ✓ Take-off decision speed — the maximum speed at which the pilot must take the first action to stop within the accelerate-stop distance · _GACAR Part 121 (take-off performance)_
+- [ ] **The 'balanced field length' is the runway length at which —** — ✓ The accelerate-stop distance equals the accelerate-go distance for the chosen V1 · _GACAR Part 121 (performance)_
+- [ ] **Following an engine failure at altitude on a transport aircraft, 'driftdown' refers to —** — ✓ A controlled descent to the one-engine-inoperative net level-off altitude while maintaining obstacle clearance · _GACAR Part 121 (enroute performance)_
+- [ ] **Transport-category landing performance requires the aeroplane to be able to land within —** — ✓ A defined percentage of the landing distance available (a required landing factor) · _GACAR Part 121 (landing performance)_
