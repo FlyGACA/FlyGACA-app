@@ -57,11 +57,15 @@ is granted server-side and read-only on the client.
   - `users/{uid}.entitlement` is written ONLY here (`writeEntitlement`, bypassing `firestore.rules`
     via the Admin SDK) — derived by `billing-core.ts`'s pure functions from a paid checkout/renewal.
     Same for the pass grant, `chatCredits/{uid}` and `packEntitlements/{uid}` (pack ownership).
-- **Exam-prep packs**: one flat SAR price (`MOYASAR_PRICE_PREP_PACK_SAR`) shared by every sellable
-  pack; the bought pack rides on the checkout intent's `packId`, validated server-side against
-  `SELLABLE_PACK_IDS` in `functions/src/billing-core.ts` (which mirrors the paid + live packs in
-  `src/lib/prepCatalog.ts`). Ownership is written to `packEntitlements/{uid}` (server-only write,
-  owner-readable — same shape as `chatCredits`).
+- **Exam-prep packs**: priced by kind — certificate packs (`MOYASAR_PRICE_PREP_PACK_CERT_SAR`) above
+  single-subject packs (`MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR`); the bought pack rides on the checkout
+  intent's `packId`, validated server-side against `SELLABLE_PACK_IDS` in
+  `functions/src/billing-core.ts` (which mirrors the paid + live packs in `src/lib/prepCatalog.ts`).
+  Ownership is written to `packEntitlements/{uid}` (server-only write, owner-readable — same shape as
+  `chatCredits`).
+- **All-Access Exam Bundle** (`kind: 'bundle'`, `MOYASAR_PRICE_BUNDLE_SAR`): one payment writes
+  ownership of **every** sellable pack into `packEntitlements/{uid}` in a single grant, so the
+  storefront's per-pack `ownsPack`/`hasPackAccess` gates all light up with no extra plumbing.
 - **Collections** (all server-only; deny-all in `firestore.rules`):
   - `checkoutIntents/{id}` — the price/kind/uid a payment must match, written by
     `createCheckoutConfig`, read by `fulfillPayment`.
@@ -113,25 +117,35 @@ firebase functions:secrets:set MOYASAR_WEBHOOK_SECRET  # the shared_secret you s
 Params (set in `.env.<project>` for functions, or via the deploy prompt) — **SAR list prices**
 (major units, e.g. `"59"` or `"449.00"`), the authoritative source `createCheckoutConfig` derives
 the halalas amount from. Keep these in sync with the indicative figures shown on `/pricing`
-(`src/pages/pricing/Pricing.tsx`) and `PREP_PACK_PRICE` (`src/lib/prepCatalog.ts`) — there's no
-shared build-time constant across the language boundary, so a price change is a two-file edit:
+(`src/pages/pricing/Pricing.tsx`) and the pack constants (`PREP_PACK_PRICE_CERT` /
+`PREP_PACK_PRICE_SUBJECT` / `EXAM_BUNDLE_PRICE` in `src/lib/prepCatalog.ts`) — there's no shared
+build-time constant across the language boundary, so a price change is a two-file edit:
 
 ```
 MOYASAR_PRICE_PRO_MONTHLY_SAR=59
-MOYASAR_PRICE_PRO_ANNUAL_SAR=449
+MOYASAR_PRICE_PRO_ANNUAL_SAR=449      # list; run a lower founding value (e.g. 349) for the launch
 MOYASAR_PRICE_STUDENT_MONTHLY_SAR=39
 MOYASAR_PRICE_STUDENT_ANNUAL_SAR=299
 MOYASAR_PRICE_PASS_SAR=149            # one-time Exam Season Pass (→ 90 days pro)
-MOYASAR_PRICE_CREDITS_SAR=<set me>    # one-time Captain Adel credit pack (→ +50 credits) — no
-                                       # default; pick a price before deploy, it's shown nowhere
-                                       # else in the app pre-checkout
-MOYASAR_PRICE_PREP_PACK_SAR=39        # one-time exam-prep pack, flat (→ pack ownership)
+MOYASAR_PRICE_CREDITS_SAR=19          # one-time Captain Adel credit pack (→ +50 credits). MUST be
+                                       # set to a positive value or the credits checkout throws
+                                       # invalid-price (sarToHalalas) — it's shown nowhere pre-checkout
+MOYASAR_PRICE_PREP_PACK_SAR=49        # legacy flat exam-prep pack price — the fallback used only
+                                       # when a per-kind tier below is unset
+MOYASAR_PRICE_PREP_PACK_CERT_SAR=79   # certificate packs (PPL/CPL/IR/ATPL/ELP/Conversion)
+MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR=49 # single-subject packs (Medical, AIP)
+MOYASAR_PRICE_BUNDLE_SAR=199          # All-Access Exam Bundle — one payment grants every pack
 APP_ORIGIN=https://flygaca.com        # used to build Moyasar's callback_url (must be absolute)
 ```
 
+Certificate packs price above single-subject packs (`amountForCheckout` reads the pack's kind via
+`isCertificatePack` in `functions/src/billing-core.ts`); an unset tier falls back to
+`MOYASAR_PRICE_PREP_PACK_SAR`. B2C prices are env params — raising Pro (e.g. 449 → 499) after the
+launch is a param change, not a code deploy.
+
 To sell a pack that is `status: 'soon'` today, flip it to `'live'` in `src/lib/prepCatalog.ts`
-**and** add its id to `SELLABLE_PACK_IDS` in `functions/src/billing-core.ts`, then redeploy — no
-new Moyasar-side configuration is needed (every pack shares the one flat price).
+**and** add its id to `SELLABLE_PACK_IDS` in `functions/src/billing-core.ts` (and, if it's a
+licence pack, `CERTIFICATE_PACK_IDS`), then redeploy.
 
 **Publishable key on the client** (public, non-secret — restricted to card charges, not a
 capability to read data):

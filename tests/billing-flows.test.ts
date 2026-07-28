@@ -161,6 +161,28 @@ describe('startPackCheckout', () => {
   });
 });
 
+describe('startBundleCheckout', () => {
+  it('routes to native and requires sign-in just like Pro checkout', async () => {
+    h.native = true;
+    await expect((await load()).startBundleCheckout()).rejects.toThrow('native-billing');
+
+    h.native = false;
+    h.currentUser = null;
+    await expect((await load()).startBundleCheckout()).rejects.toThrow('sign-in-required');
+  });
+
+  it('navigates to /checkout with kind=bundle (no pack id) and carries a ref', async () => {
+    h.currentUser = { uid: 'u1' };
+    let assign = stubAssign();
+    await (await load()).startBundleCheckout();
+    expect(assign).toHaveBeenCalledWith('/checkout?kind=bundle');
+
+    assign = stubAssign();
+    await (await load()).startBundleCheckout({ ref: 'ABCD2345' });
+    expect(assign).toHaveBeenCalledWith('/checkout?kind=bundle&ref=ABCD2345');
+  });
+});
+
 describe('cancelAutoRenew', () => {
   it('routes to native and requires sign-in just like checkout', async () => {
     h.native = true;

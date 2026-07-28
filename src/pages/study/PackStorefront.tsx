@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { canCheckout, startPackCheckout } from '@/lib/services/billing';
 import { getStoredRef } from '@/lib/services/referral';
 import { Disclaimer } from '@/components/Disclaimer';
-import { packItemCount, PREP_PACK_PRICE, type Pack } from '@/lib/prepCatalog';
+import { packItemCount, packPrice, type Pack } from '@/lib/prepCatalog';
 import type { QuizData } from '@/lib/content';
 import styles from './Study.module.css';
 
@@ -54,7 +54,7 @@ export function PackStorefront({ pack, questionCount }: { pack: Pack; questionCo
 
         <div className={styles.packBuyRow}>
           <span className={styles.packBuyPrice}>
-            <bdi dir="ltr">{t('study.packPriceOnce', { n: PREP_PACK_PRICE })}</bdi>
+            <bdi dir="ltr">{t('study.packPriceOnce', { n: packPrice(pack2) })}</bdi>
           </span>
           {canCheckout() ? (
             <button

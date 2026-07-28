@@ -11,8 +11,8 @@ import { HubBackLink } from '@/components/HubBackLink';
 import {
   LIVE_PACKS,
   PACKS,
-  PREP_PACK_PRICE,
   packItemCount,
+  packPrice,
   type Pack,
   type PackKind,
 } from '@/lib/prepCatalog';
@@ -116,7 +116,7 @@ function PackCard({
       <span className={styles.bankDesc}>{desc}</span>
       <span className={styles.bankMeta}>
         {locked
-          ? t('study.packPrice', { n: PREP_PACK_PRICE })
+          ? t('study.packPrice', { n: packPrice(pack) })
           : t('study.packItemCount', { n: packItemCount(pack) })}
       </span>
     </Link>

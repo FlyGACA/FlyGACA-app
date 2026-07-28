@@ -74,6 +74,18 @@ export async function startPackCheckout(packId: string, opts?: { ref?: string })
 }
 
 /**
+ * Begin an All-Access Exam Bundle purchase — one payment that permanently unlocks
+ * every exam-prep pack. Same guards + flow as {@link startPackCheckout} (web-only;
+ * native routes through store IAP); the server prices and fulfils the `bundle` kind.
+ */
+export async function startBundleCheckout(opts?: { ref?: string }): Promise<void> {
+  await requireCheckoutReady();
+  const qs = new URLSearchParams({ kind: 'bundle' });
+  if (opts?.ref) qs.set('ref', opts.ref);
+  window.location.assign(`/checkout?${qs.toString()}`);
+}
+
+/**
  * Turn off the auto-renewal engine for a Pro/student subscriber — Moyasar has no
  * hosted billing portal, so "manage subscription" is this callable plus the
  * account page's own renewal/card-on-file display. The plan stays active until its

@@ -21,8 +21,9 @@ export interface Entitlement {
 export type Cadence = "monthly" | "annual";
 
 /** What a checkout is for. `pro`/`student` are recurring (token-renewed); the rest
- * are one-time purchases. */
-export type CheckoutKind = "pro" | "student" | "pass" | "credits" | "pack";
+ * are one-time purchases. `bundle` is the All-Access Exam Bundle — one payment that
+ * permanently grants every sellable pack. */
+export type CheckoutKind = "pro" | "student" | "pass" | "credits" | "pack" | "bundle";
 
 export function isRecurringKind(kind: CheckoutKind): boolean {
   return kind === "pro" || kind === "student";
@@ -39,7 +40,15 @@ export interface PriceEnv {
   studentAnnual: string;
   pass: string;
   credits: string;
+  /** Legacy flat prep-pack price — the fallback when a per-kind tier below is unset,
+   * so an existing deploy keeps pricing packs until the tiered env vars are set. */
   prepPack: string;
+  /** Certificate packs (a full licence's material: PPL/CPL/IR/ATPL/ELP/Conversion). */
+  prepPackCert: string;
+  /** Single-subject packs (Medical, AIP). */
+  prepPackSubject: string;
+  /** All-Access Exam Bundle — every sellable pack, permanent, one payment. */
+  bundle: string;
 }
 
 /** Convert a SAR major-unit string to halalas (integer minor units). Throws on a
@@ -54,11 +63,13 @@ export function sarToHalalas(sar: string | undefined): number {
 }
 
 /** The halalas amount for a checkout, from the configured SAR price table. `cadence`
- * only matters for the recurring kinds (`pro`/`student`); one-time kinds ignore it. */
+ * only matters for the recurring kinds (`pro`/`student`); `packId` selects the
+ * certificate-vs-subject tier for a `pack` checkout (ignored by every other kind). */
 export function amountForCheckout(
   kind: CheckoutKind,
   cadence: Cadence | undefined,
   env: PriceEnv,
+  packId?: string,
 ): number {
   switch (kind) {
   case "pro":
@@ -69,8 +80,14 @@ export function amountForCheckout(
     return sarToHalalas(env.pass);
   case "credits":
     return sarToHalalas(env.credits);
-  case "pack":
-    return sarToHalalas(env.prepPack);
+  case "pack": {
+    // Certificate packs (a full licence's material) price above single-subject
+    // packs; fall back to the legacy flat `prepPack` price if a tier is unset.
+    const tier = packId && isCertificatePack(packId) ? env.prepPackCert : env.prepPackSubject;
+    return sarToHalalas(tier || env.prepPack);
+  }
+  case "bundle":
+    return sarToHalalas(env.bundle);
   }
 }
 
@@ -142,6 +159,25 @@ export const SELLABLE_PACK_IDS = [
 /** Narrow untrusted input to a sellable pack id, else null. */
 export function sellablePackId(v: unknown): string | null {
   return typeof v === "string" && (SELLABLE_PACK_IDS as readonly string[]).includes(v) ? v : null;
+}
+
+/**
+ * Sellable packs that bundle a full licence's material (banks + ground school + path +
+ * study sheet) and so price at the higher certificate tier. The remaining sellable
+ * packs are single-subject. MUST mirror `kind: 'certificate'` in src/lib/prepCatalog.ts.
+ */
+export const CERTIFICATE_PACK_IDS = [
+  "ppl-exam",
+  "elp",
+  "conversion",
+  "cpl",
+  "ir",
+  "atpl",
+] as const;
+
+/** Whether a sellable pack id is a certificate pack (higher price tier). */
+export function isCertificatePack(id: string): boolean {
+  return (CERTIFICATE_PACK_IDS as readonly string[]).includes(id);
 }
 
 /** Days one successful (initial or renewal) charge buys, by cadence. */

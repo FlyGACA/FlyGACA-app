@@ -39,6 +39,7 @@ import {
   sellablePackId,
   verifyMoyasarSignature,
   MAX_RENEWAL_ATTEMPTS,
+  SELLABLE_PACK_IDS,
   type Cadence,
   type CheckoutKind,
   type Entitlement,
@@ -67,6 +68,9 @@ const priceStudentAnnual = defineString("MOYASAR_PRICE_STUDENT_ANNUAL_SAR");
 const pricePass = defineString("MOYASAR_PRICE_PASS_SAR");
 const priceCredits = defineString("MOYASAR_PRICE_CREDITS_SAR");
 const pricePrepPack = defineString("MOYASAR_PRICE_PREP_PACK_SAR");
+const pricePrepPackCert = defineString("MOYASAR_PRICE_PREP_PACK_CERT_SAR");
+const pricePrepPackSubject = defineString("MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR");
+const priceBundle = defineString("MOYASAR_PRICE_BUNDLE_SAR");
 
 function priceEnv(): PriceEnv {
   return {
@@ -77,10 +81,20 @@ function priceEnv(): PriceEnv {
     pass: pricePass.value(),
     credits: priceCredits.value(),
     prepPack: pricePrepPack.value(),
+    prepPackCert: pricePrepPackCert.value(),
+    prepPackSubject: pricePrepPackSubject.value(),
+    bundle: priceBundle.value(),
   };
 }
 
-const CHECKOUT_KINDS = new Set<CheckoutKind>(["pro", "student", "pass", "credits", "pack"]);
+const CHECKOUT_KINDS = new Set<CheckoutKind>([
+  "pro",
+  "student",
+  "pass",
+  "credits",
+  "pack",
+  "bundle",
+]);
 function checkoutKind(v: unknown): CheckoutKind | null {
   return typeof v === "string" && CHECKOUT_KINDS.has(v as CheckoutKind) ? (v as CheckoutKind) : null;
 }
@@ -99,6 +113,8 @@ function describeCheckout(kind: CheckoutKind, packId?: string): string {
     return "Fly GACA Captain Adel credit pack";
   case "pack":
     return `Fly GACA Exam Prep Pack — ${packId ?? ""}`;
+  case "bundle":
+    return "Fly GACA All-Access Exam Bundle";
   }
 }
 
@@ -219,6 +235,20 @@ async function grantPack(uid: string, rawPackId: unknown): Promise<void> {
   logger.info("funnel", { event: "pack_granted", uid, packId });
 }
 
+/**
+ * Record ownership of the All-Access Exam Bundle — permanent ownership of EVERY
+ * sellable pack in one write. Uses the same `packEntitlements/{uid}` shape as a single
+ * pack grant, so the storefront's existing `ownsPack`/`hasPackAccess` gates light up
+ * for every pack with no extra plumbing. Ownership survives any plan lapse.
+ */
+async function grantBundle(uid: string): Promise<void> {
+  const purchasedAt = new Date().toISOString();
+  const packs: Record<string, { purchasedAt: string; source: "moyasar" }> = {};
+  for (const id of SELLABLE_PACK_IDS) packs[id] = { purchasedAt, source: "moyasar" };
+  await getFirestore().collection("packEntitlements").doc(uid).set({ packs }, { merge: true });
+  logger.info("funnel", { event: "bundle_granted", uid });
+}
+
 /** Reward a completed referral, once per referee, on both sides. */
 async function processReferral(refereeUid: string, ref: string | undefined): Promise<void> {
   if (!ref || !isValidCode(ref)) return;
@@ -296,8 +326,10 @@ interface CheckoutIntent {
  */
 function redirectForIntent(intent: Pick<CheckoutIntent, "kind" | "packId">, ok: boolean): string {
   if (ok && intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=success`;
+  if (ok && intent.kind === "bundle") return "/study/packs?checkout=success";
   if (ok) return "/account?checkout=success";
   if (intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=cancel`;
+  if (intent.kind === "bundle") return "/study/packs?checkout=cancel";
   return "/pricing?checkout=cancel";
 }
 
@@ -315,6 +347,8 @@ async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): 
     await addCredits(uid);
   } else if (kind === "pack") {
     await grantPack(uid, intent.packId);
+  } else if (kind === "bundle") {
+    await grantBundle(uid);
   }
   await processReferral(uid, intent.ref ?? undefined);
 }
@@ -421,7 +455,7 @@ export const createCheckoutConfig = onCall(
       cadence = cadenceOf(request.data?.cadence);
     }
 
-    const amount = amountForCheckout(kind, cadence, priceEnv());
+    const amount = amountForCheckout(kind, cadence, priceEnv(), packId);
     const ref = normalizeCode(request.data?.ref as string | undefined);
     const checkoutId = randomUUID();
 

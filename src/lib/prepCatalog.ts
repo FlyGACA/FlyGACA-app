@@ -50,8 +50,31 @@ export interface Pack {
   exam?: { questions?: number; minutes?: number; passMark?: number };
 }
 
-/** Flat one-time price per paid pack, in SAR. Mirror of the STRIPE_PRICE_PREP_PACK price. */
-export const PREP_PACK_PRICE = 39;
+/**
+ * One-time pack prices, in SAR. Certificate packs bundle a full licence's material
+ * (topic banks + ground-school modules + a reading path + study sheet + its own timed
+ * mock exam), so they price above single-subject packs. Mirror of the server price env
+ * (`MOYASAR_PRICE_PREP_PACK_CERT_SAR` / `_SUBJECT_SAR`) and `amountForCheckout` in
+ * functions/src/billing-core.ts.
+ */
+export const PREP_PACK_PRICE_CERT = 79;
+export const PREP_PACK_PRICE_SUBJECT = 49;
+
+/** Back-compat alias: the base (single-subject) one-time price. Some copy shows a
+ * single "from" figure. Prefer {@link packPrice} for a specific pack. */
+export const PREP_PACK_PRICE = PREP_PACK_PRICE_SUBJECT;
+
+/**
+ * All-Access Exam Bundle — every paid pack, permanent, one payment. Sold as its own
+ * checkout kind (`bundle`) that grants ownership of all sellable packs. Mirror of the
+ * server `MOYASAR_PRICE_BUNDLE_SAR`.
+ */
+export const EXAM_BUNDLE_PRICE = 199;
+
+/** The one-time SAR price for a specific pack, by its kind. */
+export function packPrice(pack: Pack): number {
+  return pack.kind === 'certificate' ? PREP_PACK_PRICE_CERT : PREP_PACK_PRICE_SUBJECT;
+}
 
 export const PACKS: Pack[] = [
   // ── Certificates & ratings ─────────────────────────────────────────────────

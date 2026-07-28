@@ -462,6 +462,23 @@
   margin: 0;
 }
 
+/* Struck-through former price above the current price (founding launch discount). */
+.priceStrike {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  text-decoration: line-through;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+/* Founding-launch note on the Pro card. */
+.foundingNote {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--accent-bright);
+  font-weight: var(--fw-semibold);
+}
+
 /* Pro card: trial + money-back, and the student-pricing disclosure. */
 .proExtras {
   display: flex;

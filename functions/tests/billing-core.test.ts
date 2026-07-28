@@ -1,11 +1,13 @@
 import { createHmac } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
+  CERTIFICATE_PACK_IDS,
   MAX_RENEWAL_ATTEMPTS,
   PASS_DAYS,
   RENEWAL_LEAD_DAYS,
   SELLABLE_PACK_IDS,
   amountForCheckout,
+  isCertificatePack,
   cadenceDays,
   effectivePlan,
   entitlementFromCheckout,
@@ -27,7 +29,10 @@ const env: PriceEnv = {
   studentAnnual: "299",
   pass: "149",
   credits: "19",
-  prepPack: "39",
+  prepPack: "49",
+  prepPackCert: "79",
+  prepPackSubject: "49",
+  bundle: "199",
 };
 
 describe("sarToHalalas", () => {
@@ -60,7 +65,18 @@ describe("amountForCheckout", () => {
   it("prices the one-time SKUs regardless of cadence", () => {
     expect(amountForCheckout("pass", undefined, env)).toBe(14900);
     expect(amountForCheckout("credits", undefined, env)).toBe(1900);
-    expect(amountForCheckout("pack", undefined, env)).toBe(3900);
+    expect(amountForCheckout("bundle", undefined, env)).toBe(19900);
+  });
+
+  it("prices exam-prep packs by kind (certificate above subject)", () => {
+    // Certificate packs (a full licence's material) price at the higher tier.
+    expect(amountForCheckout("pack", undefined, env, "ppl-exam")).toBe(7900);
+    expect(amountForCheckout("pack", undefined, env, "cpl")).toBe(7900);
+    // Single-subject packs at the lower tier.
+    expect(amountForCheckout("pack", undefined, env, "medical")).toBe(4900);
+    expect(amountForCheckout("pack", undefined, env, "aip")).toBe(4900);
+    // No packId → subject tier (falls back to the legacy flat price if a tier is unset).
+    expect(amountForCheckout("pack", undefined, env)).toBe(4900);
   });
 });
 
@@ -71,6 +87,7 @@ describe("isRecurringKind", () => {
     expect(isRecurringKind("pass")).toBe(false);
     expect(isRecurringKind("credits")).toBe(false);
     expect(isRecurringKind("pack")).toBe(false);
+    expect(isRecurringKind("bundle")).toBe(false);
   });
 });
 
@@ -135,6 +152,16 @@ describe("sellablePackId", () => {
     expect(sellablePackId(null)).toBeNull();
     expect(sellablePackId(42)).toBeNull();
     expect(sellablePackId({ id: "ppl-exam" })).toBeNull();
+  });
+
+  it("partitions sellable packs into certificate vs subject (pricing tiers)", () => {
+    // Every certificate id must be sellable; the rest are subject packs. This guards
+    // the cert-vs-subject price split in amountForCheckout against catalog drift.
+    for (const id of CERTIFICATE_PACK_IDS) expect(sellablePackId(id)).toBe(id);
+    expect(isCertificatePack("ppl-exam")).toBe(true);
+    expect(isCertificatePack("medical")).toBe(false);
+    expect(isCertificatePack("aip")).toBe(false);
+    expect(isCertificatePack("nope")).toBe(false);
   });
 
   it("mirrors the paid+live packs (guards against catalog drift)", () => {
