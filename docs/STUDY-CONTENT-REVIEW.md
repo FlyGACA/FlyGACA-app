@@ -1218,3 +1218,30 @@ GACAR library index); the draft-bank additions cite the governing GACAR Part.
 - [ ] **The 'balanced field length' is the runway length at which —** — ✓ The accelerate-stop distance equals the accelerate-go distance for the chosen V1 · _GACAR Part 121 (performance)_
 - [ ] **Following an engine failure at altitude on a transport aircraft, 'driftdown' refers to —** — ✓ A controlled descent to the one-engine-inoperative net level-off altitude while maintaining obstacle clearance · _GACAR Part 121 (enroute performance)_
 - [ ] **Transport-category landing performance requires the aeroplane to be able to land within —** — ✓ A defined percentage of the landing distance available (a required landing factor) · _GACAR Part 121 (landing performance)_
+
+## Batch — ASA/Gleim-scale depth pass (corpus 642 → 1,000)
+
+To bring each app close to ASA Prepware / Gleim depth (their banks run ~600–1,000 per
+certificate), **every bank was grown toward ~40 questions** in one pass (+358 questions,
+26 banks). Per-app totals after this pass: **PPL 514, CPL 470, IR 392, ATPL 352, ELPT 151,
+AIP 113**.
+
+House rules held throughout (all machine-checked by `quiz-citations`, `pack-sources`,
+`data-shape`): exactly 4 options, non-empty `explain` + `cite`, in-range answer key, no
+duplicate prompt within a bank.
+
+- **Universal-knowledge banks** (weather, aerodynamics, navigation, human-factors,
+  flight-planning, aircraft-equipment, radio-elpt, the three `elpt-*` banks, aip-ais,
+  aip-charts, airspace, vfr-flight-rules) grew most — FAA-handbook / ICAO-Annex material,
+  free-text `cite`, no invented `citeRef`.
+- **GACAR regulatory / certificate banks** (air-law, pilot-licensing, medical, and the nine
+  CPL/IR/ATPL banks) grew with universal regulatory/IFR/commercial/transport concepts that
+  GACAR mirrors from the FAR framework, cited at the **Part level** (a `citeRef` to the
+  governing Part, no fabricated section number). The `DRAFT — pending review` markers on the
+  CPL/IR/ATPL banks are **retained**.
+
+- [ ] **Human review** of this pass against the official GACAR/AIP before production sale —
+      spot-check answer keys and confirm each Part-level citation governs the stated rule.
+      The universal-knowledge additions (weather/nav/aero/HF/charts/ELPT) are standard
+      ICAO/FAA material and are lower-risk; the Part-cited regulatory additions are the
+      priority for review.
