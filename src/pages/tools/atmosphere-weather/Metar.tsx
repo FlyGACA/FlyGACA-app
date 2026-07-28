@@ -6,8 +6,7 @@ import { OutputGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
 import { parseMetar } from '@/calc/metar';
 import { describeClouds, describeVisibility, describeWeather, describeWind } from '@/lib/wxText';
-
-const pad = (n: number) => String(n).padStart(2, '0');
+import { pad2 as pad } from '@/calc/zulu';
 
 export function Metar() {
   const { t } = useTranslation();

@@ -105,7 +105,7 @@ export const GUIDE_STATUS: Record<GuideSlug, GuideStatus> = {
   'the-airac-cycle': 'live',
 };
 
-export const isLiveGuide = (slug: GuideSlug): boolean => GUIDE_STATUS[slug] === 'live';
+const isLiveGuide = (slug: GuideSlug): boolean => GUIDE_STATUS[slug] === 'live';
 
 /** Published guides, in index order — drafts filtered out. */
 export const LIVE_GUIDE_SLUGS: readonly GuideSlug[] = GUIDE_SLUGS.filter(isLiveGuide);

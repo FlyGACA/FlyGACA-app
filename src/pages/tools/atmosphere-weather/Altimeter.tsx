@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { NumberField } from '@/components/calc/NumberField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { altimeter } from '@/calc/altimetry';
-
-const fmt = (n: number) => Math.round(n).toLocaleString();
 
 export function Altimeter() {
   const { t } = useTranslation();
@@ -57,7 +56,7 @@ export function Altimeter() {
         />
         <ResultStat
           label={t('altimeter.pa')}
-          value={r != null ? `${fmt(r.pressureAltitude)} ft` : '—'}
+          value={r != null ? `${fmtInt(r.pressureAltitude)} ft` : '—'}
         />
       </OutputGrid>
     </CalcShell>

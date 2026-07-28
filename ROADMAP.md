@@ -52,12 +52,13 @@ The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/
 mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
-  price IDs — and deploy `firestore.rules`. See `docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+  price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
   now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
-  needs Google Fonts (`fonts.gstatic.com`) network access: `node scripts/build-og-card.mjs`.
+  needs Google Fonts (`fonts.gstatic.com`) network access:
+  `node archive/scripts/scripts/build-og-card.mjs`.
 - **[platform]** **Re-enable and enforce CI.** The GitHub Actions **CI workflow is currently
   disabled** (`disabled_manually`), so no build/e2e/functions job runs on pushes or PRs — re-enable
   it under **Actions → CI → Enable workflow**. Then make the `build` (the `verify` chain), `e2e`,
@@ -101,6 +102,35 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   axe a11y checks to cover more critical flows.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
   the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
+
+## Tech debt — found during the July 2026 cleanup, deliberately deferred
+
+Verified during the repo cleanup and left outside its low-risk scope. None is a bug; recorded so
+the findings are not re-derived.
+
+- **[platform]** **`loadRegulationsLookup` has no callers.** `src/lib/content.ts` exposes it, and it
+  is the only consumer of `public/data/regulations-lookup.json` — which `scripts/parse-regulations.mjs`
+  generates and the `docs-parser` workflow regenerates and commits on every regulatory-markdown
+  change. A whole pipeline runs to produce a file nothing reads. Decide: wire the cross-reference
+  lookup into the library reader, or retire the loader, the JSON and the workflow step together.
+- **[platform]** **~64 dead i18n keys.** Verified unreferenced across all source files. Cleanest
+  cluster is the entire `command.*` namespace (superseded by `cmdk.*`, which is what
+  `CommandPalette.tsx` reads) plus `home.*` leftovers from the bento redesign. **A future sweep must
+  not be automated naively:** ~400+ further keys resolve only through template literals
+  (`guides.items.**`, `wx.code.*`, `notam.abbr.*` via `returnObjects`, `tools.items.*`, the bare
+  `account.${key}` in `LogbookTable.tsx`) and a literal-match pass will call all of them dead.
+  Re-run against current `main` first — the Moyasar work added a live `checkout.*` namespace.
+- **[platform]** **`functions/src/gateway.ts` (578 lines) holds pure logic that belongs in a `*-core`.**
+  `parseCookies`, `parseRequest` + the message/history caps, and the security-sensitive
+  `isAllowedOrigin` CORS policy have no Firebase deps; `functions/tests/gateway.test.ts` has to mock
+  `firebase-admin` + genkit just to unit-test `parseRequest`. A `gateway-core.ts` would let those be
+  tested with a bare import, like every other core.
+- **[platform]** **`usePageMeta` positional filler.** Ten pages call
+  `usePageMeta(title, undefined, undefined, { noindex: true })`. An options-object signature (or a
+  `useNoindexMeta` wrapper) removes the filler.
+- **[platform]** **Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
+  rewrite), `Chat.tsx` (572), `Document.tsx` (513), `content.ts` (455 — ~370 of which are corpus
+  type declarations that could move to `content.types.ts`).
 
 ## Later — exploratory / post-launch
 

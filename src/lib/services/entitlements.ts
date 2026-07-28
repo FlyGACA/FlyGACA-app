@@ -1,8 +1,8 @@
 /**
  * Frontend entitlement helpers. The `entitlement` record itself is written
  * SERVER-ONLY (Cloud Functions via the Admin SDK) and read here only to gate
- * UI — never to grant access. Pure predicate, mirrors functions/entitlements-core.js
- * so it is unit-testable without any backend.
+ * UI — never to grant access. Pure predicate, mirroring `effectivePlan` in
+ * functions/src/billing-core.ts so it is unit-testable without any backend.
  */
 
 export type Plan = 'free' | 'pro' | 'school';

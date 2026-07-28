@@ -229,16 +229,6 @@ export function toggleLesson(id: string): void {
   commit({ ...state, gsDone });
 }
 
-export function setCardKnown(bankId: string, cardKey: string, known: boolean): void {
-  recordStudyDay();
-  const cur = new Set(state.fcKnown[bankId] ?? []);
-  if (known) cur.add(cardKey);
-  else cur.delete(cardKey);
-  const fcKnown = { ...state.fcKnown, [bankId]: [...cur] };
-  save(FC_KEY, JSON.stringify(fcKnown));
-  commit({ ...state, fcKnown });
-}
-
 /** Grade a flashcard (spaced repetition): promote/reset its box + due date. */
 export function gradeCard(
   bankId: string,

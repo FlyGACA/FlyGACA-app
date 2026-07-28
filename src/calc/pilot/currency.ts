@@ -10,9 +10,8 @@
  * than asserting a pass: the tool never overstates currency.
  */
 import type { Flight, PilotRecord, Profile } from '@/lib/services/account';
-import { addDays, parseISO, validityByMonths, type Validity } from '@/calc/recency';
-
-const DAY = 86400000;
+import { DAY_MS as DAY, addDays, parseISO, validityByMonths, type Validity } from '@/calc/recency';
+import { num } from './flightFields';
 
 // ── Regulatory windows — verify against GACAR Part 61 / Part 67 ──
 export const FLIGHT_REVIEW_MONTHS = 24;
@@ -44,8 +43,6 @@ export interface CurrencyItem {
   /** Route to the tool that explains how to renew this item. */
   fixTo: string;
 }
-
-const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
 
 /** Map a validity window to a status, flipping to "expiring" within `soonDays`. */
 export function statusFromValidity(

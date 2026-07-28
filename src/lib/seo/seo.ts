@@ -129,7 +129,7 @@ export function ogImageFor(path: string): string {
  * fronts (`*.vercel.app`, `*.web.app`, `*.netlify.app`, `*.pages.dev`),
  * `localhost`, and the native shell are intentionally excluded.
  */
-export const DUPLICATE_HOSTS = new Set(['captadel.com', 'www.captadel.com']);
+const DUPLICATE_HOSTS = new Set(['captadel.com', 'www.captadel.com']);
 
 /**
  * If `loc` is on a known duplicate host, the canonical URL to redirect to

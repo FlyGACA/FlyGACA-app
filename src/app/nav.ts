@@ -29,7 +29,7 @@ export const NAV: NavItem[] = [
 // The four destinations surfaced as quick-access tabs in the mobile bottom dock;
 // everything else falls into the dock's "More" sheet. Adjust this set to retune
 // which routes get a dedicated tab.
-export const PRIMARY_KEYS = new Set(['/library', '/chat', '/tools', '/learn']);
+const PRIMARY_KEYS = new Set(['/library', '/chat', '/tools', '/learn']);
 export const PRIMARY = NAV.filter((item) => PRIMARY_KEYS.has(item.to));
 export const MORE = NAV.filter((item) => !PRIMARY_KEYS.has(item.to));
 

@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
 import { FieldGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
 import styles from './Loa.module.css';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 export function Loa() {
   const { t } = useTranslation();
   const [inputs, set] = useUrlState({ name: '', licence: '', aircraft: '', purpose: '', date: '' });
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard();
 
   const letter = [
     `Date: ${inputs.date || '____'}`,
@@ -26,16 +26,6 @@ export function Loa() {
     '',
     `Signed: ${inputs.name || '____'}`,
   ].join('\n');
-
-  async function copyText() {
-    try {
-      await navigator.clipboard.writeText(letter);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* ignore */
-    }
-  }
 
   return (
     <CalcShell
@@ -78,7 +68,7 @@ export function Loa() {
 
       <div className={styles.outputHead}>
         <span>{t('loa.output')}</span>
-        <button type="button" className={styles.copy} onClick={copyText}>
+        <button type="button" className={styles.copy} onClick={() => void copy(letter)}>
           {copied ? t('loa.copied') : t('loa.copy')}
         </button>
       </div>

@@ -1,14 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
- * Store-layer coverage for the three local-first preference modules. Their pure
- * list transforms are unit-tested elsewhere (tool-prefs / guide-prefs /
- * library-prefs specs); this file exercises the stateful wrappers — the
- * localStorage round-trip, hydration on load, and the mutators that persist.
+ * Cross-module store coverage for the three local-first preference modules,
+ * driven through the public API rather than per-module. Their pure list
+ * transforms are unit-tested elsewhere (tool-prefs / guide-prefs / library-prefs
+ * specs) and each module also has its own store spec; this file overlaps those
+ * deliberately, and is what covers the shared `createPrefStore` factory from
+ * more than one caller.
  *
- * Each module keeps a single module-level `state` seeded from localStorage at
- * import time, so every test seeds storage, resets the module registry, then
- * dynamically imports a fresh copy for full isolation.
+ * Each store holds a single module-level snapshot seeded from localStorage at
+ * import time (see src/lib/prefs/createPrefStore.ts), so every test seeds
+ * storage, resets the module registry, then dynamically imports a fresh copy
+ * for full isolation.
  */
 beforeEach(() => {
   localStorage.clear();

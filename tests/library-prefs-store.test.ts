@@ -3,16 +3,10 @@
  * covered in library-prefs.test.ts). Exercises hydration from localStorage and
  * the mutators that persist + notify, which were previously uncovered.
  */
-import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { describe, expect, it, beforeEach } from 'vitest';
+import { freshModule } from './helpers/freshModule';
 import { renderHook, act } from '@testing-library/react';
 import type { LibBookmark, LibDoc, LibNote, SavedSearch } from '@/lib/prefs/libraryPrefs';
-
-type Mod = typeof import('@/lib/prefs/libraryPrefs');
-
-async function fresh(): Promise<Mod> {
-  vi.resetModules();
-  return import('@/lib/prefs/libraryPrefs');
-}
 
 beforeEach(() => localStorage.clear());
 
@@ -32,7 +26,9 @@ describe('hydration', () => {
       JSON.stringify([{ kind: 'regulations', slug: 'part-91', title: 'Part 91' }]),
     );
     localStorage.setItem('flygaca:library-recents', JSON.stringify([doc('part-1')]));
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     expect(result.current.bookmarks).toHaveLength(1);
     expect(result.current.recents[0].slug).toBe('part-1');
@@ -40,7 +36,9 @@ describe('hydration', () => {
 
   it('falls back to empty state on corrupt JSON', async () => {
     localStorage.setItem('flygaca:library-bookmarks', '{not json');
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     expect(result.current.bookmarks).toEqual([]);
     expect(result.current.notes).toEqual({});
@@ -49,7 +47,9 @@ describe('hydration', () => {
 
 describe('toggleBookmark', () => {
   it('adds then removes a bookmark, persisting each time', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     const bm: LibBookmark = { kind: 'regulations', slug: 'part-91', title: 'Part 91' };
 
@@ -64,7 +64,9 @@ describe('toggleBookmark', () => {
   });
 
   it('treats a section anchor as a distinct bookmark', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     act(() => mod.toggleBookmark({ kind: 'regulations', slug: 'part-91', title: 'P' }));
     act(() =>
@@ -77,7 +79,9 @@ describe('toggleBookmark', () => {
 
 describe('recordView', () => {
   it('moves a re-viewed doc to the front and caps the list at 12', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     for (let i = 0; i < 14; i++) act(() => mod.recordView(doc(`d${i}`)));
     expect(result.current.recents).toHaveLength(12);
@@ -89,7 +93,9 @@ describe('recordView', () => {
 
 describe('saveSearch / removeSearch', () => {
   it('saves de-duplicated by normalized key and removes by key', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     const s: SavedSearch = { kind: 'regulations', category: 'all', query: 'VMC' };
     act(() => mod.saveSearch(s));
@@ -103,7 +109,9 @@ describe('saveSearch / removeSearch', () => {
 
 describe('addNote / removeNote', () => {
   it('appends notes under a doc key and deletes the key when empty', async () => {
-    const mod = await fresh();
+    const mod = await freshModule<typeof import('@/lib/prefs/libraryPrefs')>(
+      () => import('@/lib/prefs/libraryPrefs'),
+    );
     const { result } = renderHook(() => mod.useLibraryPrefs());
     const dk = mod.docKey(doc('part-91'));
 

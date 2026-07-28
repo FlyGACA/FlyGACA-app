@@ -2,10 +2,10 @@
  * Local-first Library personalization: bookmarks (document- and section-level),
  * recently-viewed documents, saved searches and per-document highlights/notes.
  * Persisted to localStorage and exposed via useSyncExternalStore so the library
- * hub and reader re-render on change. Mirrors src/lib/guidePrefs.ts; the list
- * transforms are pure (and unit-tested).
+ * hub and reader re-render on change. The list transforms are pure (and
+ * unit-tested); the store is a thin wrapper over them.
  */
-import { useSyncExternalStore } from 'react';
+import { createPrefStore, readJson, save } from './createPrefStore';
 
 export type LibraryKind = 'regulations' | 'reference' | 'handbook';
 
@@ -65,44 +65,14 @@ export interface LibraryPrefs {
   notes: Record<string, LibNote[]>;
 }
 
-function readJson<T>(key: string, fallback: T): T {
-  try {
-    const v = localStorage.getItem(key);
-    return v ? (JSON.parse(v) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-function save(key: string, val: unknown): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(val));
-  } catch {
-    /* storage unavailable — keep in-memory */
-  }
-}
-
-let state: LibraryPrefs = {
+const store = createPrefStore<LibraryPrefs>({
   bookmarks: readJson<LibBookmark[]>(BM_KEY, []),
   recents: readJson<LibDoc[]>(RECENT_KEY, []),
   searches: readJson<SavedSearch[]>(SEARCH_KEY, []),
   notes: readJson<Record<string, LibNote[]>>(NOTES_KEY, {}),
-};
+});
 
-const listeners = new Set<() => void>();
-function emit() {
-  for (const l of listeners) l();
-}
-
-export function useLibraryPrefs(): LibraryPrefs {
-  return useSyncExternalStore(
-    (l) => {
-      listeners.add(l);
-      return () => listeners.delete(l);
-    },
-    () => state,
-    () => state,
-  );
-}
+export const useLibraryPrefs = store.use;
 
 /** True when a document (or a specific section, if `anchor` given) is bookmarked. */
 export function isBookmarked(
@@ -116,43 +86,41 @@ export function isBookmarked(
 }
 
 export function toggleBookmark(b: LibBookmark): void {
-  state = { ...state, bookmarks: toggleBy(state.bookmarks, b, bookmarkKey) };
-  save(BM_KEY, state.bookmarks);
-  emit();
+  const bookmarks = toggleBy(store.get().bookmarks, b, bookmarkKey);
+  save(BM_KEY, bookmarks);
+  store.set({ ...store.get(), bookmarks });
 }
 
 export function recordView(d: LibDoc): void {
-  const next = addRecentBy(state.recents, d, docKey, RECENT_MAX);
-  state = { ...state, recents: next };
-  save(RECENT_KEY, state.recents);
-  emit();
+  const recents = addRecentBy(store.get().recents, d, docKey, RECENT_MAX);
+  save(RECENT_KEY, recents);
+  store.set({ ...store.get(), recents });
 }
 
 export function saveSearch(s: SavedSearch): void {
-  state = { ...state, searches: addRecentBy(state.searches, s, searchKey, SEARCH_MAX) };
-  save(SEARCH_KEY, state.searches);
-  emit();
+  const searches = addRecentBy(store.get().searches, s, searchKey, SEARCH_MAX);
+  save(SEARCH_KEY, searches);
+  store.set({ ...store.get(), searches });
 }
 
 export function removeSearch(key: string): void {
-  state = { ...state, searches: state.searches.filter((s) => searchKey(s) !== key) };
-  save(SEARCH_KEY, state.searches);
-  emit();
+  const searches = store.get().searches.filter((s) => searchKey(s) !== key);
+  save(SEARCH_KEY, searches);
+  store.set({ ...store.get(), searches });
 }
 
 export function addNote(dk: string, note: LibNote): void {
-  const list = [...(state.notes[dk] ?? []), note];
-  state = { ...state, notes: { ...state.notes, [dk]: list } };
-  save(NOTES_KEY, state.notes);
-  emit();
+  const list = [...(store.get().notes[dk] ?? []), note];
+  const notes = { ...store.get().notes, [dk]: list };
+  save(NOTES_KEY, notes);
+  store.set({ ...store.get(), notes });
 }
 
 export function removeNote(dk: string, id: string): void {
-  const list = (state.notes[dk] ?? []).filter((n) => n.id !== id);
-  const notes = { ...state.notes };
+  const list = (store.get().notes[dk] ?? []).filter((n) => n.id !== id);
+  const notes = { ...store.get().notes };
   if (list.length) notes[dk] = list;
   else delete notes[dk];
-  state = { ...state, notes };
-  save(NOTES_KEY, state.notes);
-  emit();
+  save(NOTES_KEY, notes);
+  store.set({ ...store.get(), notes });
 }

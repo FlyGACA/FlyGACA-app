@@ -5,8 +5,8 @@ import { useUrlState } from '@/hooks/useUrlState';
 import { parseTaf } from '@/calc/taf';
 import { describeClouds, describeVisibility, describeWeather, describeWind } from '@/lib/wxText';
 import styles from './Taf.module.css';
+import { pad2 as pad } from '@/calc/zulu';
 
-const pad = (n: number) => String(n).padStart(2, '0');
 const EXAMPLE =
   'TAF OERK 121100Z 1212/1318 33012KT 9999 FEW040 BECMG 1318/1320 02008KT TEMPO 1212/1216 5000 TSRA BKN030';
 

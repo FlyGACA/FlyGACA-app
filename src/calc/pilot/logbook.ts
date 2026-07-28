@@ -6,10 +6,7 @@
  */
 import type { Flight } from '@/lib/services/account';
 import { addDays, addMonths, parseISO } from '@/calc/recency';
-
-const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
-const sum = (flights: Flight[], key: keyof Flight): number =>
-  flights.reduce((s, f) => s + num(f[key] as string), 0);
+import { num, sum } from './flightFields';
 
 const LAST_N_DAYS = 90;
 

@@ -12,7 +12,6 @@
  */
 import { isActive, type Entitlement } from '@/lib/services/entitlements';
 import { PACKS_GATED, type Pack } from '@/lib/prepCatalog';
-import { useAccount } from '@/lib/services/account';
 import { FLAVOR_GRANTED_PACK_IDS } from '@/flavors/current';
 
 /**
@@ -44,10 +43,4 @@ export function hasPackAccess(
  */
 export function ownsPack(pack: Pack, ownedPackIds: readonly string[]): boolean {
   return ownedPackIds.includes(pack.id);
-}
-
-/** Reactive access check for the signed-in user, reading the account store. */
-export function usePackAccess(pack: Pack): boolean {
-  const { entitlement, ownedPacks } = useAccount();
-  return hasPackAccess(pack, entitlement, ownedPacks);
 }

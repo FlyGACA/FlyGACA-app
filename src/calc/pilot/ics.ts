@@ -11,8 +11,6 @@ export interface IcsEvent {
   date: Date;
 }
 
-const pad = (n: number) => String(n).padStart(2, '0');
-
 /** YYYYMMDD in UTC (all-day DATE value). */
 function dateStamp(d: Date): string {
   return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`;
@@ -32,7 +30,8 @@ function escape(text: string): string {
     .replace(/\r?\n/g, '\\n');
 }
 
-const DAY = 86400000;
+import { DAY_MS as DAY } from '@/calc/recency';
+import { pad2 as pad } from '@/calc/zulu';
 
 /** Fold content lines to ≤75 octets (approximated by chars) with CRLF + space. */
 function fold(line: string): string {

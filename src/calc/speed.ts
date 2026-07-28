@@ -2,7 +2,7 @@
  * Mach ↔ TAS via the local speed of sound (a = 38.967·√T_K kt, T from OAT).
  * Pure planning aid.
  */
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 /** Local speed of sound (kt) for an outside air temperature (°C). */
 export function speedOfSound(oatC: number): number | null {

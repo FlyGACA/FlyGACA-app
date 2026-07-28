@@ -12,7 +12,7 @@ import {
 } from '@/calc/chat/conversations';
 
 const TRANSCRIPT_KEY = 'flygaca:adel-transcript';
-export const CONV_KEY = 'flygaca:adel-conversations';
+const CONV_KEY = 'flygaca:adel-conversations';
 
 export function newConversationId(): string {
   return (

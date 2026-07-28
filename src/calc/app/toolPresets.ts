@@ -14,7 +14,7 @@ export interface Preset {
 }
 
 /** Cap on stored presets, so the list can't grow unbounded. */
-export const MAX_PRESETS = 50;
+const MAX_PRESETS = 50;
 
 /**
  * Add (or replace, by path+name) a preset and return a new list, newest-first,

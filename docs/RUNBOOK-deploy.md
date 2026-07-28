@@ -7,7 +7,7 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
   region `me-central1` — must match `functions/src/region.ts` and the `firebase.json` rewrites) are
   co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
   `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. Until the
-  `flygaca.com` DNS cutover to Firebase completes (see `RUNBOOK-cutover.md`), the apex is still
+  `flygaca.com` DNS cutover to Firebase completes (see `../archive/docs/RUNBOOK-cutover.md`), the apex is still
   served by Vercel.
 - **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
   `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
@@ -63,7 +63,7 @@ firebase deploy --only hosting                          # publish live
 npm run deploy:rules                                    # deploy firestore.rules
 ```
 
-Config: `firebase.json`, `.firebaserc`, `firestore.rules`. DNS cutover is in `RUNBOOK-cutover.md`.
+Config: `firebase.json`, `.firebaserc`, `firestore.rules`. DNS cutover is in `../archive/docs/RUNBOOK-cutover.md`.
 
 **Prerender:** the deploy workflow runs `npm run prerender` after the build, snapshotting the
 high-value routes (home + hubs + every tool/guide) into `dist/<route>/index.html` so Firebase serves

@@ -1,18 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-// Fresh module per test so each store hydrates from the current localStorage.
-type PrefsModule = typeof import('@/lib/prefs/dashboardPrefs');
-
-async function freshStore(): Promise<PrefsModule> {
-  vi.resetModules();
-  return import('@/lib/prefs/dashboardPrefs');
-}
+import { beforeEach, describe, expect, it } from 'vitest';
+import { freshModule } from './helpers/freshModule';
 
 beforeEach(() => localStorage.clear());
 
 describe('dashboardPrefs store', () => {
   it('starts empty and undismissed', async () => {
-    const prefs = await freshStore();
+    const prefs = await freshModule<typeof import('@/lib/prefs/dashboardPrefs')>(
+      () => import('@/lib/prefs/dashboardPrefs'),
+    );
     prefs.toggleWidget('study');
     prefs.toggleWidget('study'); // toggle back — end state must be empty
     expect(JSON.parse(localStorage.getItem('flygaca:dashboard-hidden')!)).toEqual([]);
@@ -20,7 +15,9 @@ describe('dashboardPrefs store', () => {
   });
 
   it('toggles widgets and persists the hidden list', async () => {
-    const prefs = await freshStore();
+    const prefs = await freshModule<typeof import('@/lib/prefs/dashboardPrefs')>(
+      () => import('@/lib/prefs/dashboardPrefs'),
+    );
     prefs.toggleWidget('trend');
     prefs.toggleWidget('adel');
     expect(JSON.parse(localStorage.getItem('flygaca:dashboard-hidden')!)).toEqual([
@@ -34,7 +31,9 @@ describe('dashboardPrefs store', () => {
   it('hydrates hidden widgets and dismissal from localStorage', async () => {
     localStorage.setItem('flygaca:dashboard-hidden', JSON.stringify(['study', 7, 'tools']));
     localStorage.setItem('flygaca:dashboard-role-dismissed', '1');
-    const prefs = await freshStore();
+    const prefs = await freshModule<typeof import('@/lib/prefs/dashboardPrefs')>(
+      () => import('@/lib/prefs/dashboardPrefs'),
+    );
     // Renderless read via the store's persistence round-trip: toggle a no-op id
     prefs.toggleWidget('probe');
     const hidden = JSON.parse(localStorage.getItem('flygaca:dashboard-hidden')!) as string[];
@@ -44,7 +43,9 @@ describe('dashboardPrefs store', () => {
   });
 
   it('persists and hydrates a custom widget order', async () => {
-    const prefs = await freshStore();
+    const prefs = await freshModule<typeof import('@/lib/prefs/dashboardPrefs')>(
+      () => import('@/lib/prefs/dashboardPrefs'),
+    );
     prefs.setWidgetOrder(['adel', 'currency', 'numbers']);
     expect(JSON.parse(localStorage.getItem('flygaca:dashboard-order')!)).toEqual([
       'adel',
@@ -54,14 +55,18 @@ describe('dashboardPrefs store', () => {
   });
 
   it('records the role-prompt dismissal', async () => {
-    const prefs = await freshStore();
+    const prefs = await freshModule<typeof import('@/lib/prefs/dashboardPrefs')>(
+      () => import('@/lib/prefs/dashboardPrefs'),
+    );
     prefs.dismissRolePrompt();
     expect(localStorage.getItem('flygaca:dashboard-role-dismissed')).toBe('1');
   });
 
   it('survives corrupt stored JSON', async () => {
     localStorage.setItem('flygaca:dashboard-hidden', '{nope');
-    const prefs = await freshStore();
+    const prefs = await freshModule<typeof import('@/lib/prefs/dashboardPrefs')>(
+      () => import('@/lib/prefs/dashboardPrefs'),
+    );
     prefs.toggleWidget('study');
     expect(JSON.parse(localStorage.getItem('flygaca:dashboard-hidden')!)).toEqual(['study']);
   });

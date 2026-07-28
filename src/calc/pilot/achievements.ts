@@ -4,10 +4,7 @@
  * coerce through `num`. The UI renders these as earned/locked badges.
  */
 import type { Flight } from '@/lib/services/account';
-
-const num = (s: string | undefined): number => parseFloat(String(s ?? '')) || 0;
-const sum = (flights: Flight[], key: keyof Flight): number =>
-  flights.reduce((s, f) => s + num(f[key] as string), 0);
+import { sum } from './flightFields';
 
 export interface Achievement {
   /** Stable id; the i18n label lives at `dashboard.achievementItems.<id>`. */
