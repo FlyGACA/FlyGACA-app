@@ -429,6 +429,90 @@
      "answer": 1,
      "explain": "ICAO requires published geographic coordinates to use the WGS-84 datum, with elevations referenced to mean sea level.",
      "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "The GEN section of the AIP contains —",
+     "options": [
+      "National regulations, general procedures, tables and charges",
+      "Only aerodrome charts",
+      "Only NOTAMs",
+      "The company manual"
+     ],
+     "answer": 0,
+     "explain": "GEN covers national rules, general information, tables/codes and administrative matters.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "AD (Aerodromes) section of the AIP provides —",
+     "options": [
+      "Aerodrome data, charts and operating information",
+      "En-route airways only",
+      "Weather forecasts only",
+      "Crew rosters"
+     ],
+     "answer": 0,
+     "explain": "The AD part gives aerodrome details — physical characteristics, procedures and charts — for each listed aerodrome.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "A PIB (Pre-flight Information Bulletin) is —",
+     "options": [
+      "A compilation of valid NOTAMs for a route or area",
+      "A weather chart",
+      "An aircraft manual",
+      "A licence"
+     ],
+     "answer": 0,
+     "explain": "The PIB compiles current NOTAMs relevant to a planned flight, produced from the NOTAM database.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "A SNOWTAM is a special series NOTAM notifying —",
+     "options": [
+      "Runway/taxiway conditions due to snow, ice, slush or standing water",
+      "Volcanic ash",
+      "Radio outages",
+      "Bird activity"
+     ],
+     "answer": 0,
+     "explain": "A SNOWTAM reports hazardous surface conditions from snow, ice, slush or water in a standard format.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "An ASHTAM notifies —",
+     "options": [
+      "Volcanic activity and ash cloud affecting operations",
+      "Snow conditions",
+      "Airspace closures for airshows",
+      "Fuel prices"
+     ],
+     "answer": 0,
+     "explain": "An ASHTAM gives information on volcanic activity, eruptions and ash clouds of significance to aviation.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "Data in the AIP is maintained current through —",
+     "options": [
+      "Amendments, supplements, AIC and NOTAM",
+      "Verbal briefings only",
+      "Social media",
+      "Annual reprints only"
+     ],
+     "answer": 0,
+     "explain": "The AIP is kept current by regular amendments, temporary supplements, AICs and time-critical NOTAM.",
+     "cite": "ICAO Annex 15"
+    },
+    {
+     "q": "The 'quality' of published aeronautical data is expressed in terms of accuracy, resolution and —",
+     "options": [
+      "Integrity",
+      "Colour",
+      "Cost",
+      "Language"
+     ],
+     "answer": 0,
+     "explain": "Data quality combines accuracy, resolution and integrity (plus traceability and timeliness).",
+     "cite": "ICAO Annex 15"
     }
    ]
   },
@@ -629,6 +713,210 @@
      "answer": 0,
      "explain": "The plan view shows the horizontal track/fixes; the profile view shows the vertical descent profile, altitudes and the missed-approach climb.",
      "cite": "ICAO Annex 4 / PANS-OPS"
+    },
+    {
+     "q": "On an approach plate, the FAF (Final Approach Fix) marks the start of the —",
+     "options": [
+      "Final approach segment",
+      "Missed approach",
+      "Initial approach",
+      "Departure"
+     ],
+     "answer": 0,
+     "explain": "The FAF begins the final approach segment, where final descent to the runway/MDA/DA is made.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "The IAF on an approach chart is the —",
+     "options": [
+      "Initial approach fix",
+      "Intermediate altitude fix",
+      "Instrument alignment frequency",
+      "Inbound arrival frequency"
+     ],
+     "answer": 0,
+     "explain": "The Initial Approach Fix marks the beginning of the initial approach segment.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "On a chart, a maximum authorised altitude for a segment is depicted with a line —",
+     "options": [
+      "Above the figure only",
+      "Below the figure only",
+      "Above and below",
+      "Circling the figure"
+     ],
+     "answer": 0,
+     "explain": "A maximum altitude carries a line above the figure; a minimum altitude has the line below; mandatory has both.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "The missed-approach point (MAPt) on a non-precision approach is where the pilot must —",
+     "options": [
+      "Begin the missed approach if visual reference is not established",
+      "Land regardless",
+      "Start the descent",
+      "Contact ground"
+     ],
+     "answer": 0,
+     "explain": "At the MAPt, if the required visual reference for landing is not available, the missed approach must be initiated.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "A holding pattern's inbound leg is normally flown for —",
+     "options": [
+      "1 minute at or below 14,000 ft (1.5 min above)",
+      "5 minutes always",
+      "10 seconds",
+      "Until fuel exhaustion"
+     ],
+     "answer": 0,
+     "explain": "Standard timing: 1 minute inbound at or below 14,000 ft, 1.5 minutes above (or by DME/RNAV distance).",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "On enroute charts, a 'changeover point' between two navaids indicates where to —",
+     "options": [
+      "Change the VOR used for course guidance",
+      "Change altitude",
+      "Change frequency to the next ATC unit",
+      "Squawk a new code"
+     ],
+     "answer": 0,
+     "explain": "The changeover point shows where to switch from the navaid behind to the one ahead for the airway segment.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "Terrain and obstacle elevations on aeronautical charts are given relative to —",
+     "options": [
+      "Mean sea level (AMSL)",
+      "The runway",
+      "The transition level",
+      "The aircraft"
+     ],
+     "answer": 0,
+     "explain": "Charted elevations of terrain and obstacles are referenced to mean sea level.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "A precision approach chart depicts a glidepath angle typically around —",
+     "options": [
+      "3°",
+      "10°",
+      "0.5°",
+      "6°"
+     ],
+     "answer": 0,
+     "explain": "The standard ILS/precision glidepath is about 3°.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "The plan view of an approach chart primarily shows —",
+     "options": [
+      "The horizontal track, fixes and minimum altitudes",
+      "The cabin layout",
+      "Fuel figures",
+      "Crew duties"
+     ],
+     "answer": 0,
+     "explain": "The plan view depicts the horizontal routing, fixes, holding and minimum sector altitudes.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "An RNAV (GNSS) approach uses waypoints defined by —",
+     "options": [
+      "Latitude/longitude coordinates",
+      "Coloured lights",
+      "NDB bearings only",
+      "Runway markings"
+     ],
+     "answer": 0,
+     "explain": "RNAV/GNSS approaches are built on coordinate-defined waypoints rather than ground-based navaids.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "Circling minima are generally higher than straight-in minima because —",
+     "options": [
+      "The aircraft manoeuvres visually at low level to align with the runway",
+      "The runway is longer",
+      "The wind is always calmer",
+      "GPS is unavailable"
+     ],
+     "answer": 0,
+     "explain": "Circling requires a low-level visual manoeuvre, so obstacle protection demands higher minima than a straight-in approach.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "The 'profile view' of an approach chart shows —",
+     "options": [
+      "The vertical descent path and altitudes",
+      "The taxi route",
+      "The METAR",
+      "The seating plan"
+     ],
+     "answer": 0,
+     "explain": "The profile view depicts the vertical descent profile, step-down altitudes and the missed-approach climb.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "An arrival (STAR) transitions traffic from the enroute structure to —",
+     "options": [
+      "An initial approach fix or the approach environment",
+      "The gate directly",
+      "The holding fuel",
+      "The departure runway"
+     ],
+     "answer": 0,
+     "explain": "A STAR links the enroute phase to the approach — commonly ending at an IAF.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "A depicted 'MSA 25 NM' provides at least 1,000 ft obstacle clearance within 25 NM of —",
+     "options": [
+      "The reference facility/waypoint",
+      "The airport boundary fence",
+      "The FAF only",
+      "Any VOR in the FIR"
+     ],
+     "answer": 0,
+     "explain": "The minimum sector altitude assures 1,000 ft (300 m) clearance within 25 NM of the specified reference point.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "On charts, a mandatory altitude is shown with a line —",
+     "options": [
+      "Both above and below the figure",
+      "Above only",
+      "Below only",
+      "To the right"
+     ],
+     "answer": 0,
+     "explain": "Mandatory altitudes carry a line above and below the figure.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "The primary purpose of an aerodrome/ground movement chart is to help the pilot —",
+     "options": [
+      "Navigate taxiways, runways and stands safely",
+      "Compute weight and balance",
+      "Read the weather",
+      "Plan the descent"
+     ],
+     "answer": 0,
+     "explain": "The ground chart supports safe surface navigation — taxiways, runways, aprons, stands and hot spots.",
+     "cite": "ICAO Annex 4"
+    },
+    {
+     "q": "A SID (Standard Instrument Departure) primarily provides —",
+     "options": [
+      "A published route and climb profile from the runway to the enroute structure",
+      "A landing sequence",
+      "A holding pattern",
+      "A fuel plan"
+     ],
+     "answer": 0,
+     "explain": "A SID standardises the departure path and climb gradients from the runway to the enroute phase.",
+     "cite": "ICAO Annex 4"
     }
    ]
   },
@@ -1031,6 +1319,134 @@
      "answer": 0,
      "explain": "The flight information service (FIS) provides advice and information useful for the safe and efficient conduct of flights.",
      "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "Class B airspace normally requires, before entry, that the aircraft —",
+     "options": [
+      "Obtain an ATC clearance",
+      "Only monitor the frequency",
+      "Squawk 1200",
+      "Do nothing special"
+     ],
+     "answer": 0,
+     "explain": "Entry into Class B requires a specific ATC clearance.",
+     "cite": "GACAR Part 71",
+     "citeRef": {
+      "kind": "regulations",
+      "id": "part-71"
+     }
+    },
+    {
+     "q": "In Class D airspace, ATC provides —",
+     "options": [
+      "Aerodrome control and traffic information (limited separation)",
+      "Full IFR/VFR separation for all",
+      "No service",
+      "Oceanic clearance"
+     ],
+     "answer": 0,
+     "explain": "Class D provides control-tower service with separation between IFR and traffic information on VFR; VFR/VFR are not separated.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "Class E airspace is controlled airspace in which VFR flights —",
+     "options": [
+      "Do not require a clearance",
+      "Require a clearance",
+      "Are prohibited",
+      "Must be IFR"
+     ],
+     "answer": 0,
+     "explain": "In Class E, IFR is controlled and separated from IFR; VFR needs no clearance and receives flight information/traffic where available.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A Flight Information Region (FIR) provides —",
+     "options": [
+      "Flight information service and alerting service",
+      "Full separation for all flights",
+      "Only military control",
+      "Customs service"
+     ],
+     "answer": 0,
+     "explain": "A FIR is airspace of defined dimensions within which FIS and alerting service are provided.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A control zone (CTR) normally extends —",
+     "options": [
+      "From the surface upward to a specified limit around an aerodrome",
+      "From 10,000 ft upward only",
+      "Only above FL100",
+      "Around VORs only"
+     ],
+     "answer": 0,
+     "explain": "A CTR is controlled airspace from the surface to an upper limit, established around one or more aerodromes.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A terminal control area (TMA) is usually established —",
+     "options": [
+      "At the confluence of ATS routes near busy aerodromes",
+      "Over open ocean",
+      "Only in Class G",
+      "Around danger areas"
+     ],
+     "answer": 0,
+     "explain": "A TMA is a control area normally established where ATS routes converge near one or more major aerodromes.",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "A prohibited area is airspace within which flight is —",
+     "options": [
+      "Not permitted at all",
+      "Permitted with clearance",
+      "Permitted only at night",
+      "Permitted for VFR only"
+     ],
+     "answer": 0,
+     "explain": "Flight within a prohibited area is not allowed; a restricted area allows flight under specified conditions.",
+     "cite": "GACAR Part 71",
+     "citeRef": {
+      "kind": "regulations",
+      "id": "part-71"
+     }
+    },
+    {
+     "q": "A danger area denotes airspace where —",
+     "options": [
+      "Activities dangerous to flight may exist at stated times",
+      "Flight is always forbidden",
+      "Only gliders may fly",
+      "ATC provides radar control"
+     ],
+     "answer": 0,
+     "explain": "A danger area indicates possible hazardous activity at specified periods; it is advisory (often over the high seas).",
+     "cite": "ICAO Annex 11"
+    },
+    {
+     "q": "Above the transition altitude, aircraft set their altimeters to —",
+     "options": [
+      "The standard setting 1013.2 hPa and fly flight levels",
+      "Local QNH",
+      "QFE",
+      "Any convenient value"
+     ],
+     "answer": 0,
+     "explain": "Above transition altitude, the standard pressure setting is used and vertical position is expressed as a flight level.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
+    },
+    {
+     "q": "The block of airspace between the transition altitude and transition level is the —",
+     "options": [
+      "Transition layer",
+      "Control zone",
+      "Buffer area",
+      "Terminal area"
+     ],
+     "answer": 0,
+     "explain": "The transition layer lies between the transition altitude (climb) and transition level (descent); climbing aircraft use standard, descending use QNH.",
+     "cite": "ICAO Doc 8168 (PANS-OPS)"
     }
    ]
   }
