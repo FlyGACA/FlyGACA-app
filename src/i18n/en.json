@@ -3093,6 +3093,52 @@
         }
       ]
     },
+    "refund": {
+      "title": "Refund & Cancellation Policy",
+      "intro": "How to cancel a Fly GACA purchase and when you can get a refund. This policy is part of our Terms of Use and follows the Consumer Protection Law and the E-Commerce Law of the Kingdom of Saudi Arabia.",
+      "sections": [
+        {
+          "h": "What is always free",
+          "p": "The GACAR library, guides and safety lessons are free and always will be — no payment is taken, so no refund question arises for them. This policy covers only the paid products: the Pro subscription, the 90-day Pass, exam-prep packs, and B2B Academy seat licences."
+        },
+        {
+          "h": "Cancelling a Pro subscription",
+          "p": "You can cancel Pro at any time from your account settings, or by emailing support@flygaca.com. Cancelling stops the next renewal; the Pro access you have already paid for continues to the end of the current billing period and is not cut off early. Subscriptions renew automatically until you cancel, so cancel before the renewal date to avoid the next charge."
+        },
+        {
+          "h": "Refund window for subscriptions",
+          "p": "If you have not made substantial use of paid features, you can request a full refund within 14 days of your first Pro payment, or within 14 days of an automatic renewal. “Substantial use” means meaningful consumption of paid features — for example Captain Adel questions beyond the free allowance, mock exams, or protected study content. After the window, or once paid features have been substantially used, the current period is non-refundable, but your access continues until it ends."
+        },
+        {
+          "h": "The 90-day Pass and exam-prep packs",
+          "p": "One-time purchases — the 90-day Pass, individual prep packs, and the all-packs bundle — are fully refundable within 14 days of purchase provided the content has not been opened and any bundled Pro days have not been used. Because these give immediate access to digital study material, they become non-refundable once you open the content, in line with the digital-content rules of the Saudi E-Commerce Law."
+        },
+        {
+          "h": "B2B Academy seat licences",
+          "p": "Academy seat licences are sold to organisations under a signed Order Form together with the Fly GACA Customer Agreement; refunds for those customers are governed by those documents rather than this page. Invoiced annual seat fees are non-refundable once seats have been granted, except where the Order Form or Saudi law requires otherwise, and any agreed refund or credit is documented by a ZATCA-compliant credit note against the original invoice."
+        },
+        {
+          "h": "Prices, VAT and official fees",
+          "p": "All prices are shown in Saudi Riyals and include VAT at the applicable rate. An approved refund includes the VAT that was charged, and a corresponding ZATCA-compliant credit note or adjusted receipt is issued. Official GACA, examination and testing fees are never part of a Fly GACA product and are never refundable by us."
+        },
+        {
+          "h": "How to request a refund",
+          "p": "Email support@flygaca.com from the address on your account, with your order or invoice number and the reason for your request. We acknowledge within 2 business days and decide within 5 business days of receiving the information we need. Approved refunds are returned to your original payment method through our payment processor, Moyasar; the time it then takes to appear depends on your bank or card issuer and is outside our control."
+        },
+        {
+          "h": "Incorrect or disputed charges",
+          "p": "If you believe a charge is incorrect, contact support@flygaca.com within 30 days of the charge date and we will investigate and respond within 5 business days. Please contact us before raising a dispute with your bank or card issuer — most issues are resolved faster and more easily directly with us."
+        },
+        {
+          "h": "Your statutory rights and changes to this policy",
+          "p": "Nothing in this policy limits any right you have under the Consumer Protection Law or the E-Commerce Law of the Kingdom of Saudi Arabia that cannot be excluded by contract. We may update this policy from time to time; the version in force at the time of your purchase applies to that purchase, and any material change is posted here with a clear effective date."
+        },
+        {
+          "h": "Contact",
+          "p": "Refunds and account or billing support: support@flygaca.com. Data-protection matters: privacy@flygaca.com. General queries and notices: i@flygaca.com. Fly GACA is operated by BDA Company International (شركة بدع الدولية), Commercial Registration 7030976893, Riyadh, Kingdom of Saudi Arabia."
+        }
+      ]
+    },
     "safety": {
       "title": "Safety Notice",
       "intro": "Aviation is safety-critical. Read this before you let anything here influence a flight.",
@@ -3291,6 +3337,7 @@
     "disclaimerLink": "Disclaimer",
     "terms": "Terms of Use",
     "privacy": "Privacy Notice",
+    "refund": "Refund & Cancellation",
     "safety": "Safety Notice",
     "gacaSite": "GACA official site ↗",
     "gacaRules": "GACAR & AIP ↗",

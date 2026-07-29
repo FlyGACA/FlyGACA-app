@@ -192,6 +192,7 @@ const About = lazyNamed(() => import('./pages/about/About'), 'About');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
+const RefundPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'RefundPage');
 const SafetyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'SafetyPage');
 const NotFound = lazyNamed(() => import('./pages/not-found/NotFound'), 'NotFound');
 const Offline = lazyNamed(() => import('./pages/offline/Offline'), 'Offline');
@@ -242,6 +243,7 @@ const flavorRoutes = [
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'refund', element: <RefundPage /> },
       { path: 'safety', element: <SafetyPage /> },
       { path: 'offline', element: <Offline /> },
       { path: '*', element: <NotFound /> },
@@ -351,6 +353,7 @@ const mainRoutes = [
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'refund', element: <RefundPage /> },
       { path: 'safety', element: <SafetyPage /> },
       { path: 'offline', element: <Offline /> },
       { path: '*', element: <NotFound /> },
