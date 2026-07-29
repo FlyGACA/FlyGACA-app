@@ -2034,6 +2034,7 @@
     "title": "Checkout",
     "preparing": "Preparing your checkout…",
     "confirming": "Confirming your payment…",
+    "promoApplied": "Promo {{code}} applied — you save SAR {{save}}.",
     "errors": {
       "generic": "Couldn't open checkout just now. Please try again.",
       "sign-in-required": "Sign in to check out.",

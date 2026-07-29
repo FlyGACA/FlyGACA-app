@@ -16,6 +16,7 @@ import { useAccount } from '@/lib/services/account';
 import { effectivePlan } from '@/lib/services/entitlements';
 import { annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
 import { captureRefFromUrl, getStoredRef } from '@/lib/services/referral';
+import { capturePromoFromUrl, getStoredPromo } from '@/lib/services/promo';
 import {
   EXAM_BUNDLE_PRICE,
   PREP_PACK_PRICE_CERT,
@@ -117,16 +118,18 @@ export function Pricing() {
     ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
     : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
 
-  // Persist an inbound ?ref=CODE so it survives the sign-in / checkout round-trip.
+  // Persist an inbound ?ref=CODE / ?promo=CODE so each survives the sign-in / checkout
+  // round-trip.
   useEffect(() => {
     captureRefFromUrl();
+    capturePromoFromUrl();
   }, []);
 
   async function checkout(variant: ProPlan) {
     setBusy(true);
     setError('');
     try {
-      await startProCheckout(variant, { annual, ref: getStoredRef() });
+      await startProCheckout(variant, { annual, ref: getStoredRef(), promo: getStoredPromo() });
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {
@@ -149,7 +152,7 @@ export function Pricing() {
     setBusy(true);
     setError('');
     try {
-      await startBundleCheckout({ ref: getStoredRef() });
+      await startBundleCheckout({ ref: getStoredRef(), promo: getStoredPromo() });
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {

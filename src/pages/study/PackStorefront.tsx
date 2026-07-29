@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { canCheckout, startPackCheckout } from '@/lib/services/billing';
 import { getStoredRef } from '@/lib/services/referral';
+import { getStoredPromo } from '@/lib/services/promo';
 import { Disclaimer } from '@/components/Disclaimer';
 import { packItemCount, packPrice, type Pack } from '@/lib/prepCatalog';
 import type { QuizData } from '@/lib/content';
@@ -22,7 +23,7 @@ export function PackStorefront({ pack, questionCount }: { pack: Pack; questionCo
     setBusy(true);
     setError('');
     try {
-      await startPackCheckout(pack2.id, { ref: getStoredRef() });
+      await startPackCheckout(pack2.id, { ref: getStoredRef(), promo: getStoredPromo() });
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
       if (code === 'sign-in-required') {

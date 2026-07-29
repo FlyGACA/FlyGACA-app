@@ -74,6 +74,40 @@ is granted server-side and read-only on the client.
     used by the renewal engine to charge off-session.
   - `subscriptions/{uid}` — auto-renew state: `cadence`, `autoRenew`, `status`
     (`active`/`past_due`/`canceled`), `failedAttempts`, `nextChargeAt`.
+  - `promoCodes/{code}` — a discount code + its `redeemed` counter (see below).
+  - `foundingGrants/{uid}` — one-time markers for the founding grandfather grant.
+
+## Promo codes (launch discounts)
+
+`createCheckoutConfig` applies a discount server-side (the client only passes the `?promo=` code;
+it never prices its own checkout). The policy is the pure `functions/src/promo-core.ts` (`applyPromo`
+/ `isPromoApplicable`), the doc is `promoCodes/{code}`:
+
+```
+promoCodes/LAUNCH25 = {
+  type: "percent",           // or "fixed" (value = halalas off)
+  value: 25,                 // percent 0–100, or halalas for fixed
+  active: true,              // a code is OFF unless active === true
+  appliesTo: ["pro","bundle"], // optional; omit = every checkout kind
+  expiresAt: "2026-12-31T00:00:00Z", // optional
+  maxRedemptions: 500,       // optional cap; redeemed increments on each paid grant
+  redeemed: 0
+}
+```
+
+The discount hits the **initial** charge only (the renewal engine charges the full list price), is
+clamped to `MIN_CHARGE_HALALAS` (SAR 1), and the applied code + saving are echoed in the checkout
+config so `/checkout` can confirm it. Codes are created out-of-band (Admin SDK / console) — deny-all
+to clients.
+
+## Founding access (grandfather grant)
+
+`claimFoundingAccess` (`functions/src/founding.ts`) grants a pre-launch account a complimentary,
+time-limited **Pro** window (`FOUNDING_GRANT_DAYS`, default 180) when monetization is turned on.
+Eligibility = the account's Firebase Auth `creationTime` predates `FOUNDING_CUTOFF_ISO` — a
+server-only signal, so it can't be spoofed. The app calls it on sign-in for a verified, still-free
+user (mirrors `claimSchoolSeat`); it's upgrade-only and one grant per account (the
+`foundingGrants/{uid}` marker is the lock). Policy lives in the pure `founding-core.ts`.
 
 ## Renewal engine (no native subscriptions)
 

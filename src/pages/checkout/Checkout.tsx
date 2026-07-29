@@ -25,6 +25,10 @@ declare global {
 interface CheckoutConfig {
   checkoutId: string;
   amount: number;
+  /** Pre-discount amount; equals `amount` when no promo applied. */
+  listAmount?: number;
+  /** The promo code that discounted `amount`, if any. */
+  promoApplied?: string | null;
   currency: string;
   description: string;
   callbackUrl: string;
@@ -80,12 +84,14 @@ export function Checkout() {
   const formRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [error, setError] = useState('');
+  const [promoNote, setPromoNote] = useState('');
 
   const paymentId = params.get('id');
   const kind = params.get('kind');
   const cadence = params.get('cadence') ?? undefined;
   const packId = params.get('packId') ?? undefined;
   const ref = params.get('ref') ?? undefined;
+  const promo = params.get('promo') ?? undefined;
 
   function fail(code: string) {
     setStatus('error');
@@ -137,11 +143,22 @@ export function Checkout() {
         if (!fns) throw new Error('billing-unavailable');
         const { httpsCallable } = await import('firebase/functions');
         const createConfig = httpsCallable<
-          { kind: string; cadence?: string; packId?: string; ref?: string },
+          { kind: string; cadence?: string; packId?: string; ref?: string; promo?: string },
           CheckoutConfig
         >(fns, 'createCheckoutConfig');
-        const res = await createConfig({ kind, cadence, packId, ref });
+        const res = await createConfig({ kind, cadence, packId, ref, promo });
         const cfg = res.data;
+
+        // Reassure the buyer a code landed — the widget already shows the discounted
+        // `amount`; this names the code and the saving (both amounts are in halalas).
+        if (cfg.promoApplied && cfg.listAmount && cfg.listAmount > cfg.amount) {
+          setPromoNote(
+            t('checkout.promoApplied', {
+              code: cfg.promoApplied,
+              save: (cfg.listAmount - cfg.amount) / 100,
+            }),
+          );
+        }
 
         await loadWidgetAssets();
         if (cancelled || !window.Moyasar) return;
@@ -185,7 +202,7 @@ export function Checkout() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentId, kind, cadence, packId, ref]);
+  }, [paymentId, kind, cadence, packId, ref, promo]);
 
   return (
     <section className={`container-narrow ${styles.page}`}>
@@ -208,6 +225,11 @@ export function Checkout() {
               <p role="status" className={styles.note}>
                 {t('checkout.preparing')}
               </p>
+            )}
+            {promoNote && (
+              <Alert tone="success" icon="🎟">
+                {promoNote}
+              </Alert>
             )}
             <div id={FORM_ID} ref={formRef} className={styles.form} />
           </>

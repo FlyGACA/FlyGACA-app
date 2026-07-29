@@ -49,7 +49,7 @@ async function requireCheckoutReady(): Promise<void> {
  */
 export async function startProCheckout(
   plan: ProPlan = 'annual',
-  opts?: { annual?: boolean; ref?: string },
+  opts?: { annual?: boolean; ref?: string; promo?: string },
 ): Promise<void> {
   await requireCheckoutReady();
   const kind = plan === 'monthly' || plan === 'annual' ? 'pro' : plan;
@@ -58,6 +58,7 @@ export async function startProCheckout(
   const qs = new URLSearchParams({ kind });
   if (cadence) qs.set('cadence', cadence);
   if (opts?.ref) qs.set('ref', opts.ref);
+  if (opts?.promo) qs.set('promo', opts.promo);
   window.location.assign(`/checkout?${qs.toString()}`);
 }
 
@@ -66,10 +67,14 @@ export async function startProCheckout(
  * {@link startProCheckout} (web-only; native routes through store IAP), navigating
  * to `/checkout` with the pack id the server re-validates against the sellable list.
  */
-export async function startPackCheckout(packId: string, opts?: { ref?: string }): Promise<void> {
+export async function startPackCheckout(
+  packId: string,
+  opts?: { ref?: string; promo?: string },
+): Promise<void> {
   await requireCheckoutReady();
   const qs = new URLSearchParams({ kind: 'pack', packId });
   if (opts?.ref) qs.set('ref', opts.ref);
+  if (opts?.promo) qs.set('promo', opts.promo);
   window.location.assign(`/checkout?${qs.toString()}`);
 }
 
@@ -78,10 +83,11 @@ export async function startPackCheckout(packId: string, opts?: { ref?: string })
  * every exam-prep pack. Same guards + flow as {@link startPackCheckout} (web-only;
  * native routes through store IAP); the server prices and fulfils the `bundle` kind.
  */
-export async function startBundleCheckout(opts?: { ref?: string }): Promise<void> {
+export async function startBundleCheckout(opts?: { ref?: string; promo?: string }): Promise<void> {
   await requireCheckoutReady();
   const qs = new URLSearchParams({ kind: 'bundle' });
   if (opts?.ref) qs.set('ref', opts.ref);
+  if (opts?.promo) qs.set('promo', opts.promo);
   window.location.assign(`/checkout?${qs.toString()}`);
 }
 

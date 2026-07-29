@@ -250,6 +250,18 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Promo codes and their redemption counters — validated + decremented ONLY
+    // server-side in the checkout callable. A client never reads a code (it just
+    // passes the string; the server prices it), so codes can't be enumerated/forged.
+    match /promoCodes/{code} {
+      allow read, write: if false;
+    }
+    // One-time founding-grant markers (grandfather comp). Written ONLY server-side by
+    // claimFoundingAccess as the idempotency lock; never client-readable/writable.
+    match /foundingGrants/{uid} {
+      allow read, write: if false;
+    }
+
     // Everything else stays denied. Server-only data is written with the Admin
     // SDK (which bypasses these rules); any client reaching an unlisted path is
     // refused here.

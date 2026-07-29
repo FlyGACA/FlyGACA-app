@@ -47,6 +47,7 @@ import {
 } from "./billing-core.js";
 import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
 import { isStudentEmail } from "./student-core.js";
+import { applyPromo, normalizePromoCode, type PromoCode } from "./promo-core.js";
 import {
   referralCode,
   normalizeCode,
@@ -312,9 +313,29 @@ interface CheckoutIntent {
   cadence?: Cadence | null;
   packId?: string | null;
   ref?: string | null;
+  /** The promo code applied to `amount`, if any — bumps its `redeemed` count on grant. */
+  promo?: string | null;
   amount: number;
   currency: string;
   status: "pending" | "fulfilled";
+}
+
+/**
+ * Resolve a promo code to the discounted checkout amount. Reads `promoCodes/{code}`
+ * and applies the pure `applyPromo` policy server-side (the client never prices its
+ * own discount). Returns the original amount + `promo: null` when no code applies.
+ */
+async function priceWithPromo(
+  rawAmount: number,
+  kind: CheckoutKind,
+  rawCode: unknown,
+): Promise<{ amount: number; promo: string | null }> {
+  const code = normalizePromoCode(rawCode as string | undefined);
+  if (!code) return { amount: rawAmount, promo: null };
+  const snap = await getFirestore().collection("promoCodes").doc(code).get();
+  const promo = snap.exists ? (snap.data() as PromoCode) : null;
+  const discounted = applyPromo(rawAmount, promo, kind);
+  return discounted < rawAmount ? { amount: discounted, promo: code } : { amount: rawAmount, promo: null };
 }
 
 /**
@@ -349,6 +370,15 @@ async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): 
     await grantPack(uid, intent.packId);
   } else if (kind === "bundle") {
     await grantBundle(uid);
+  }
+  // Count a redemption once per fulfilled payment (fulfillPayment is idempotent under
+  // the moyasarPayments/{id} marker, so this runs exactly once per successful charge).
+  if (intent.promo) {
+    await getFirestore()
+      .collection("promoCodes")
+      .doc(intent.promo)
+      .set({ redeemed: FieldValue.increment(1) }, { merge: true })
+      .catch(() => {}); // best-effort — never fail a paid grant on the counter
   }
   await processReferral(uid, intent.ref ?? undefined);
 }
@@ -455,7 +485,11 @@ export const createCheckoutConfig = onCall(
       cadence = cadenceOf(request.data?.cadence);
     }
 
-    const amount = amountForCheckout(kind, cadence, priceEnv(), packId);
+    const rawAmount = amountForCheckout(kind, cadence, priceEnv(), packId);
+    // Apply a promo code server-side (never trust a client-computed price). Recurring
+    // plans get the discount on the FIRST charge only — the renewal engine charges the
+    // full list price.
+    const { amount, promo } = await priceWithPromo(rawAmount, kind, request.data?.promo);
     const ref = normalizeCode(request.data?.ref as string | undefined);
     const checkoutId = randomUUID();
 
@@ -468,6 +502,7 @@ export const createCheckoutConfig = onCall(
         cadence: cadence ?? null,
         packId: packId ?? null,
         ref: isValidCode(ref) ? ref : null,
+        promo: promo ?? null,
         amount,
         currency: "SAR",
         status: "pending",
@@ -475,10 +510,14 @@ export const createCheckoutConfig = onCall(
       });
 
     const recurring = isRecurringKind(kind);
-    logger.info("funnel", { event: "checkout_started", kind, uid });
+    logger.info("funnel", { event: "checkout_started", kind, uid, promo: promo ?? undefined });
     return {
       checkoutId,
       amount,
+      // The pre-discount list amount + the applied code, so the checkout UI can show
+      // the saving; the CHARGE is always `amount`.
+      listAmount: rawAmount,
+      promoApplied: promo,
       currency: "SAR",
       description: describeCheckout(kind, packId),
       callbackUrl: `${appOrigin.value()}/checkout/return`,

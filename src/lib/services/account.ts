@@ -11,6 +11,7 @@ import { effectivePlan, type Entitlement } from '@/lib/services/entitlements';
 import { isAuthAvailable, onAuthChange } from '@/lib/services/auth';
 import { claimStaffAccessIfEligible } from '@/lib/services/staff';
 import { claimSchoolSeatIfEligible } from '@/lib/services/school';
+import { claimFoundingAccessIfEligible } from '@/lib/services/founding';
 import {
   loadAccount,
   saveProfileDoc,
@@ -318,6 +319,13 @@ function connectAuth(): void {
         // re-hydrate once when a seat is actually granted.
         if (loaded && effectivePlan(loaded.entitlement) === 'free' && user.emailVerified) {
           const granted = await claimSchoolSeatIfEligible(user.email, user.emailVerified);
+          if (granted && state.uid === user.uid) loaded = await loadAccount(user.uid);
+        }
+        // Founding grant: grandfather pre-launch accounts with a complimentary Pro
+        // window when monetization is on. Still-free verified users only; the server
+        // re-checks the account age and grants once, then we re-hydrate.
+        if (loaded && effectivePlan(loaded.entitlement) === 'free' && user.emailVerified) {
+          const granted = await claimFoundingAccessIfEligible(user.emailVerified);
           if (granted && state.uid === user.uid) loaded = await loadAccount(user.uid);
         }
         // The Firestore round-trip can outlive the session: if the user signed

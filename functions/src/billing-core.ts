@@ -15,7 +15,7 @@ export interface Entitlement {
   plan: Plan;
   /** ISO timestamp; absent means non-expiring. */
   expiresAt?: string;
-  source?: "moyasar" | "revenuecat" | "school" | "staff";
+  source?: "moyasar" | "revenuecat" | "school" | "staff" | "founding";
 }
 
 export type Cadence = "monthly" | "annual";
