@@ -28,13 +28,17 @@ export function effectivePlan(ent: Entitlement | null | undefined, now?: Date): 
 }
 
 /**
- * TEMPORARY promo: while `true`, the UI treats every visitor as Pro so all paywalls
- * are open. Only affects UI presentation via `uiPlan`/`uiIsPro` and `useFeature` —
- * the pure predicates above stay truthful, and server-enforced gates (Captain Adel's
- * chat quota / Pro model, handled in the Cloud Functions gateway) are unaffected.
- * Flip back to `false` to restore normal plan gating everywhere.
+ * Launch monetization switch. While `true`, the UI treats every visitor as Pro so all
+ * paywalls are open (the pre-revenue growth promo). Set to `false` to turn ON revenue:
+ * Pro features gate to paying users while the free tier stays generous (full library,
+ * all flight tools, 5 Captain Adel questions/day, ground school, quizzes, flashcards
+ * and the free sampler pack all remain open). Only affects UI presentation via
+ * `uiPlan`/`uiIsPro` and `useFeature`; the pure predicates above stay truthful and the
+ * server-enforced gates (chat quota / Pro model, exam-prep packs) are unaffected either
+ * way. Deploying this change is the go-live trigger — pair it with the founding launch
+ * offer on `/pricing`. Flip back to `true` only to reopen everything.
  */
-export const FREE_FOR_EVERYONE = true;
+export const FREE_FOR_EVERYONE = false;
 
 /**
  * Plan to PRESENT in the UI. Honours the {@link FREE_FOR_EVERYONE} promo; the pure

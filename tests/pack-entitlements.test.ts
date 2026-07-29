@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hasPackAccess, ownsPack } from '@/lib/services/packEntitlements';
-import { FREE_FOR_EVERYONE, type Entitlement } from '@/lib/services/entitlements';
+import { type Entitlement } from '@/lib/services/entitlements';
 import { PACKS_GATED, type Pack } from '@/lib/prepCatalog';
 
 // hasPackAccess is the paywall for the exam-prep product line. Its contract:
@@ -41,11 +41,11 @@ describe('hasPackAccess', () => {
     expect(hasPackAccess(paidPack, { plan: 'free' }, [], NOW)).toBe(false);
   });
 
-  it('is PROMO-IMMUNE — a paid unowned pack stays locked even under FREE_FOR_EVERYONE', () => {
-    // Guard: this test only proves immunity while the promo is actually on. The
-    // predicate must never consult FREE_FOR_EVERYONE, so a free-plan user is locked.
-    expect(FREE_FOR_EVERYONE).toBe(true);
+  it('is PROMO-IMMUNE — pack access never consults FREE_FOR_EVERYONE', () => {
+    // hasPackAccess is built on the pure isActive predicate, never uiPlan/useFeature,
+    // so a free-plan user is locked out of a paid pack whether the promo is on or off.
     expect(hasPackAccess(paidPack, { plan: 'free' }, [], NOW)).toBe(false);
+    expect(hasPackAccess(paidPack, null, [], NOW)).toBe(false);
   });
 
   it('unlocks a paid pack the user owns (permanent, plan-independent)', () => {

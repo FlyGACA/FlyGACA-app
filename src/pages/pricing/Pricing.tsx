@@ -6,11 +6,21 @@ import { PageHero } from '@/components/PageHero';
 import { SectionHeader } from '@/components/SectionHeader';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { faqLd } from '@/lib/seo/jsonld';
-import { canCheckout, startProCheckout, type ProPlan } from '@/lib/services/billing';
+import {
+  canCheckout,
+  startBundleCheckout,
+  startProCheckout,
+  type ProPlan,
+} from '@/lib/services/billing';
 import { useAccount } from '@/lib/services/account';
 import { effectivePlan } from '@/lib/services/entitlements';
 import { annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
 import { captureRefFromUrl, getStoredRef } from '@/lib/services/referral';
+import {
+  EXAM_BUNDLE_PRICE,
+  PREP_PACK_PRICE_CERT,
+  PREP_PACK_PRICE_SUBJECT,
+} from '@/lib/prepCatalog';
 import styles from './Pricing.module.css';
 
 /**
@@ -21,9 +31,20 @@ import styles from './Pricing.module.css';
 const PRO_PRICE = { monthly: 59, annual: 449 };
 const STUDENT_PRICE = { monthly: 39, annual: 299 };
 const PASS_PRICE = 149;
-// One-time per-pack exam-prep price. Mirror of PREP_PACK_PRICE in src/lib/prepCatalog.ts.
-const PREP_PRICE = 39;
+// One-time exam-prep prices, sourced from the catalog so the page can't drift from the
+// server price table: certificate packs price above single-subject packs, and the
+// All-Access bundle unlocks every pack in one payment.
+const PREP_FROM = PREP_PACK_PRICE_SUBJECT;
+const PREP_CERT = PREP_PACK_PRICE_CERT;
+const BUNDLE_PRICE = EXAM_BUNDLE_PRICE;
 const SCHOOL_FROM = 250;
+// Published B2B tier anchors (indicative, SAR) — validated with design partners; see
+// docs/b2b/PLAN.md §5. Surfacing them shortens the sales cycle for the smaller tiers.
+const SCHOOL_TIERS = { cohort: 6000, academy: 22000, institution: 40000 };
+// Time-boxed founding launch: Pro annual at a lower intro price to seed the first paying
+// cohort + reviews, then ratchet the list price up. Flip off when the launch window ends.
+const FOUNDING_OFFER = true;
+const FOUNDING_ANNUAL = 349;
 
 interface CompareRow {
   feature: string;
@@ -84,9 +105,14 @@ export function Pricing() {
   const faqs = t('pricing.faq', { returnObjects: true }) as unknown as Faq[];
   const schoolPoints = t('pricing.schoolsPoints', { returnObjects: true }) as unknown as string[];
 
+  // During the founding launch the annual price is the intro figure; the list price is
+  // shown struck-through so the discount is legible.
+  const proAnnual = FOUNDING_OFFER ? FOUNDING_ANNUAL : PRO_PRICE.annual;
   const proPrice = annual
-    ? t('pricing.perYr', { n: PRO_PRICE.annual, eq: monthlyEquivalent(PRO_PRICE.annual) })
+    ? t('pricing.perYr', { n: proAnnual, eq: monthlyEquivalent(proAnnual) })
     : t('pricing.perMo', { n: PRO_PRICE.monthly });
+  const proStrike =
+    FOUNDING_OFFER && annual ? t('pricing.wasYr', { n: PRO_PRICE.annual }) : undefined;
   const studentPrice = annual
     ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
     : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
@@ -112,6 +138,25 @@ export function Pricing() {
           ? t('pricing.studentVerifyNeeded')
           : t('pricing.checkoutError'),
       );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // The All-Access Exam Bundle is its own one-time checkout kind (not a ProPlan) — one
+  // payment permanently unlocks every exam-prep pack.
+  async function buyBundle() {
+    setBusy(true);
+    setError('');
+    try {
+      await startBundleCheckout({ ref: getStoredRef() });
+    } catch (e) {
+      const code = e instanceof Error ? e.message : '';
+      if (code === 'sign-in-required') {
+        navigate('/account');
+        return;
+      }
+      setError(t('pricing.checkoutError'));
     } finally {
       setBusy(false);
     }
@@ -166,6 +211,7 @@ export function Pricing() {
         <Plan
           name={t('pricing.plans.pro.name')}
           price={proPrice}
+          priceStrike={proStrike}
           priceNote={t('pricing.vatIncl')}
           features={f('pricing.plans.pro')}
           cta={
@@ -176,7 +222,7 @@ export function Pricing() {
                 : t('pricing.goPro')
           }
           highlight
-          badge={t('pricing.popular')}
+          badge={FOUNDING_OFFER ? t('pricing.foundingBadge') : t('pricing.popular')}
           ctaHref={isPaid ? '/account' : undefined}
           ctaOnClick={
             !isPaid && canCheckout()
@@ -190,6 +236,9 @@ export function Pricing() {
           belowCta={
             !isPaid && (
               <>
+                {FOUNDING_OFFER && (
+                  <p className={styles.foundingNote}>{t('pricing.foundingNote')}</p>
+                )}
                 <p className={styles.proExtras}>
                   <span>{t('pricing.trial')}</span>
                   <span>{t('pricing.moneyBack')}</span>
@@ -277,15 +326,47 @@ export function Pricing() {
           <h2 id="prep-head" className={styles.passHead}>
             {t('pricing.prepHead')}
           </h2>
-          <p className={styles.passLead}>{t('pricing.prepLead')}</p>
+          <p className={styles.passLead}>
+            {t('pricing.prepLead', { cert: PREP_CERT, subject: PREP_FROM })}
+          </p>
         </div>
         <div className={styles.passAside}>
           <span className={styles.passPrice}>
-            <bdi dir="ltr">{t('pricing.prepPer', { n: PREP_PRICE })}</bdi>
+            <bdi dir="ltr">{t('pricing.prepPer', { n: PREP_FROM })}</bdi>
           </span>
           <Link to="/study/packs" className={styles.passCta}>
             {t('pricing.prepCta')}
           </Link>
+        </div>
+      </section>
+
+      {/* All-Access Exam Bundle — one payment unlocks every pack (the "pay once for
+          everything" buyer who won't subscribe; still cheaper than annual Pro). */}
+      <section className={styles.passBand} aria-labelledby="bundle-head">
+        <div>
+          <h2 id="bundle-head" className={styles.passHead}>
+            {t('pricing.bundleHead')}
+          </h2>
+          <p className={styles.passLead}>{t('pricing.bundleLead')}</p>
+        </div>
+        <div className={styles.passAside}>
+          <span className={styles.passPrice}>
+            <bdi dir="ltr">{t('pricing.bundlePrice', { n: BUNDLE_PRICE })}</bdi>
+          </span>
+          {canCheckout() ? (
+            <button
+              type="button"
+              className={styles.passCta}
+              disabled={busy}
+              onClick={() => void buyBundle()}
+            >
+              {t('pricing.bundleCta')}
+            </button>
+          ) : (
+            <button type="button" className={styles.passCta} disabled aria-disabled="true">
+              {t('pricing.passComingSoon')}
+            </button>
+          )}
         </div>
       </section>
 
@@ -328,6 +409,16 @@ export function Pricing() {
               <li key={p}>{p}</li>
             ))}
           </ul>
+          <p className={styles.eyebrow}>{t('pricing.tiersLabel')}</p>
+          <ul className={styles.schoolsPoints}>
+            <li>{t('pricing.tierCohort', { n: SCHOOL_TIERS.cohort.toLocaleString('en-US') })}</li>
+            <li>{t('pricing.tierAcademy', { n: SCHOOL_TIERS.academy.toLocaleString('en-US') })}</li>
+            <li>
+              {t('pricing.tierInstitution', {
+                n: SCHOOL_TIERS.institution.toLocaleString('en-US'),
+              })}
+            </li>
+          </ul>
           <p className={styles.schoolsPrice}>
             <bdi dir="ltr">{t('pricing.perSeat', { n: SCHOOL_FROM })}</bdi> ·{' '}
             {t('pricing.schoolsMin')}
@@ -358,6 +449,8 @@ export function Pricing() {
 interface PlanProps {
   name: string;
   price: string;
+  /** Optional struck-through former price shown above `price` (e.g. a launch discount). */
+  priceStrike?: string;
   priceNote?: string;
   features: string[];
   cta: string;
@@ -375,6 +468,7 @@ interface PlanProps {
 function Plan({
   name,
   price,
+  priceStrike,
   priceNote,
   features,
   cta,
@@ -398,6 +492,11 @@ function Plan({
       {/* Fixed-height block so every card's feature list starts at the same Y,
           whether or not the plan carries a VAT note (Free has none). */}
       <div className={styles.priceBlock}>
+        {priceStrike && (
+          <p className={styles.priceStrike}>
+            <bdi dir="ltr">{priceStrike}</bdi>
+          </p>
+        )}
         <p className={styles.price}>
           <bdi dir="ltr">{price}</bdi>
         </p>
