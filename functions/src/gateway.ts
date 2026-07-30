@@ -20,6 +20,7 @@ import { createRateLimiter } from "./rate-limit-core.js";
 import { isPaidActive, type Entitlement } from "./billing-core.js";
 import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
 import { extractApiKey, hashApiKey } from "./api-key-core.js";
+import { apiTier, isOverMonthlyQuota, monthKey, remainingThisMonth, API_TIERS } from "./api-tier-core.js";
 import {
   anonymousAuthContext,
   extractBearerToken,
@@ -436,9 +437,30 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
   }
 
   const db = getFirestore();
-  const keyDoc = await db.collection("apiKeys").doc(hash).get();
+  // Key doc (auth + tier) and usage doc (monthly meter) read together.
+  const [keyDoc, usageDoc] = await Promise.all([
+    db.collection("apiKeys").doc(hash).get(),
+    db.collection("apiUsage").doc(hash).get(),
+  ]);
   if (!keyDoc.exists || keyDoc.data()?.active === false) {
     res.status(401).json({ error: "invalid api key" });
+    return;
+  }
+
+  // Tier monthly-quota gate. The plan's answer allowance is the metered value we sell;
+  // a key with no `tier` defaults to enterprise (uncapped) so legacy keys aren't
+  // throttled. The per-minute rate limiter above is a separate, coarse safety net.
+  const tier = apiTier(keyDoc.data()?.tier);
+  const month = monthKey(new Date());
+  const usedThisMonth =
+    (usageDoc.data()?.months as Record<string, number> | undefined)?.[month] ?? 0;
+  const quota = API_TIERS[tier].monthlyQuota;
+  if (quota !== null) {
+    res.setHeader("X-Quota-Limit", String(quota));
+    res.setHeader("X-Quota-Used", String(usedThisMonth));
+  }
+  if (isOverMonthlyQuota(usedThisMonth, tier)) {
+    res.status(429).json({ error: "monthly_quota_exceeded", tier, quota });
     return;
   }
 
@@ -450,13 +472,23 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
     return;
   }
 
-  // Meter per key (best-effort; billing/quota reads this offline). Never blocks the
-  // answer on the write.
+  // Meter per key, bucketed by calendar month (best-effort; the quota gate above reads
+  // the month bucket, billing reads it offline). Never blocks the answer on the write.
   void db
     .collection("apiUsage")
     .doc(hash)
-    .set({ count: FieldValue.increment(1), lastUsedAt: FieldValue.serverTimestamp() }, { merge: true })
+    .set(
+      {
+        count: FieldValue.increment(1),
+        lastUsedAt: FieldValue.serverTimestamp(),
+        months: { [month]: FieldValue.increment(1) },
+      },
+      { merge: true },
+    )
     .catch((err) => logger.error("api usage metering failed", { err }));
+
+  const remaining = remainingThisMonth(usedThisMonth + 1, tier);
+  if (remaining !== null) res.setHeader("X-Quota-Remaining", String(remaining));
 
   try {
     const out = await captainAdelFlow(parsed);

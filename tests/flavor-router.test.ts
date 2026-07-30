@@ -110,6 +110,7 @@ const MAIN_PATHS = [
   'checkout/return',
   'pricing',
   'schools',
+  'developers',
   'business/admin',
   'about',
   'disclaimer',
