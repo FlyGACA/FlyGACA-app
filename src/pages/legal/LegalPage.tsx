@@ -14,13 +14,15 @@ interface Section {
   p: string;
 }
 
-type LegalBase = 'legal.disclaimer' | 'legal.terms' | 'legal.privacy' | 'legal.safety';
+type LegalBase =
+  'legal.disclaimer' | 'legal.terms' | 'legal.privacy' | 'legal.refund' | 'legal.safety';
 
-/** The four legal docs, in footer order — drives the cross-doc nav + path map. */
+/** The five legal docs, in footer order — drives the cross-doc nav + path map. */
 const DOCS: { base: LegalBase; path: string; label: string }[] = [
   { base: 'legal.disclaimer', path: '/disclaimer', label: 'footer.disclaimerLink' },
   { base: 'legal.terms', path: '/terms', label: 'footer.terms' },
   { base: 'legal.privacy', path: '/privacy', label: 'footer.privacy' },
+  { base: 'legal.refund', path: '/refund', label: 'footer.refund' },
   { base: 'legal.safety', path: '/safety', label: 'footer.safety' },
 ];
 
@@ -137,4 +139,5 @@ export function LegalPage({ base }: { base: LegalBase }) {
 export const DisclaimerPage = () => <LegalPage base="legal.disclaimer" />;
 export const TermsPage = () => <LegalPage base="legal.terms" />;
 export const PrivacyPage = () => <LegalPage base="legal.privacy" />;
+export const RefundPage = () => <LegalPage base="legal.refund" />;
 export const SafetyPage = () => <LegalPage base="legal.safety" />;

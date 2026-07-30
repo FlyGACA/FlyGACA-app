@@ -156,6 +156,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/refund" viewTransition>
+                  {t('footer.refund')}
+                </Link>
+              </li>
+              <li>
                 <Link to="/safety" viewTransition>
                   {t('footer.safety')}
                 </Link>
