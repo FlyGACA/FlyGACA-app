@@ -92,6 +92,25 @@ export async function startBundleCheckout(opts?: { ref?: string; promo?: string 
 }
 
 /**
+ * Begin a self-serve B2B Cohort purchase — one payment creates a 25-seat, 90-day-intake
+ * org (docs/b2b/PLAN.md §5 "Starter — Cohort") with the buyer as sole owner, who lands
+ * on `/business/admin` able to invite seats immediately. Same guards + flow as
+ * {@link startBundleCheckout} (web-only; native has no B2B IAP surface, so it also
+ * throws `native-billing` — a B2B buyer completes on web). `orgName` is required and
+ * re-validated server-side.
+ */
+export async function startCohortCheckout(
+  orgName: string,
+  opts?: { ref?: string; promo?: string },
+): Promise<void> {
+  await requireCheckoutReady();
+  const qs = new URLSearchParams({ kind: 'cohort', orgName });
+  if (opts?.ref) qs.set('ref', opts.ref);
+  if (opts?.promo) qs.set('promo', opts.promo);
+  window.location.assign(`/checkout?${qs.toString()}`);
+}
+
+/**
  * Turn off the auto-renewal engine for a Pro/student subscriber — Moyasar has no
  * hosted billing portal, so "manage subscription" is this callable plus the
  * account page's own renewal/card-on-file display. The plan stays active until its

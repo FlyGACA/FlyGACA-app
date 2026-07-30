@@ -14,7 +14,7 @@ import {
 } from '@/lib/services/billing';
 import { useAccount } from '@/lib/services/account';
 import { effectivePlan } from '@/lib/services/entitlements';
-import { annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
+import { COHORT_PRICE_SAR, annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
 import { captureRefFromUrl, getStoredRef } from '@/lib/services/referral';
 import { capturePromoFromUrl, getStoredPromo } from '@/lib/services/promo';
 import {
@@ -41,7 +41,7 @@ const BUNDLE_PRICE = EXAM_BUNDLE_PRICE;
 const SCHOOL_FROM = 250;
 // Published B2B tier anchors (indicative, SAR) — validated with design partners; see
 // docs/b2b/PLAN.md §5. Surfacing them shortens the sales cycle for the smaller tiers.
-const SCHOOL_TIERS = { cohort: 6000, academy: 22000, institution: 40000 };
+const SCHOOL_TIERS = { cohort: COHORT_PRICE_SAR, academy: 22000, institution: 40000 };
 // Time-boxed founding launch: Pro annual at a lower intro price to seed the first paying
 // cohort + reviews, then ratchet the list price up. Flip off when the launch window ends.
 const FOUNDING_OFFER = true;

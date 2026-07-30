@@ -46,6 +46,7 @@ import {
   type PriceEnv,
 } from "./billing-core.js";
 import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
+import { buildCohortOrg } from "./org-core.js";
 import { isStudentEmail } from "./student-core.js";
 import { applyPromo, normalizePromoCode, type PromoCode } from "./promo-core.js";
 import {
@@ -72,6 +73,7 @@ const pricePrepPack = defineString("MOYASAR_PRICE_PREP_PACK_SAR");
 const pricePrepPackCert = defineString("MOYASAR_PRICE_PREP_PACK_CERT_SAR");
 const pricePrepPackSubject = defineString("MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR");
 const priceBundle = defineString("MOYASAR_PRICE_BUNDLE_SAR");
+const priceCohort = defineString("MOYASAR_PRICE_COHORT_SAR");
 
 function priceEnv(): PriceEnv {
   return {
@@ -85,6 +87,7 @@ function priceEnv(): PriceEnv {
     prepPackCert: pricePrepPackCert.value(),
     prepPackSubject: pricePrepPackSubject.value(),
     bundle: priceBundle.value(),
+    cohort: priceCohort.value(),
   };
 }
 
@@ -95,6 +98,7 @@ const CHECKOUT_KINDS = new Set<CheckoutKind>([
   "credits",
   "pack",
   "bundle",
+  "cohort",
 ]);
 function checkoutKind(v: unknown): CheckoutKind | null {
   return typeof v === "string" && CHECKOUT_KINDS.has(v as CheckoutKind) ? (v as CheckoutKind) : null;
@@ -116,6 +120,8 @@ function describeCheckout(kind: CheckoutKind, packId?: string): string {
     return `Fly GACA Exam Prep Pack — ${packId ?? ""}`;
   case "bundle":
     return "Fly GACA All-Access Exam Bundle";
+  case "cohort":
+    return "Fly GACA B2B Cohort (up to 25 seats, 90-day intake)";
   }
 }
 
@@ -250,6 +256,20 @@ async function grantBundle(uid: string): Promise<void> {
   logger.info("funnel", { event: "bundle_granted", uid });
 }
 
+/**
+ * Create the `orgs/{orgId}` doc for a self-serve Cohort purchase (org-core.buildCohortOrg)
+ * — the buyer becomes the sole owner of a 25-seat, 90-day-intake org and lands on
+ * /business/admin able to invite their cohort immediately via the existing
+ * `provisionSeats` callable. A fresh random id per purchase, so a buyer running a
+ * second intake gets a second org rather than overwriting their first.
+ */
+async function grantCohort(uid: string, orgName: string | null | undefined): Promise<void> {
+  const orgId = randomUUID();
+  const doc = buildCohortOrg(uid, orgName, new Date());
+  await getFirestore().collection("orgs").doc(orgId).set(doc);
+  logger.info("funnel", { event: "cohort_purchased", uid, orgId });
+}
+
 /** Reward a completed referral, once per referee, on both sides. */
 async function processReferral(refereeUid: string, ref: string | undefined): Promise<void> {
   if (!ref || !isValidCode(ref)) return;
@@ -312,6 +332,8 @@ interface CheckoutIntent {
   kind: CheckoutKind;
   cadence?: Cadence | null;
   packId?: string | null;
+  /** The buyer-supplied org name, for a `cohort` checkout only. */
+  orgName?: string | null;
   ref?: string | null;
   /** The promo code applied to `amount`, if any — bumps its `redeemed` count on grant. */
   promo?: string | null;
@@ -348,9 +370,11 @@ async function priceWithPromo(
 function redirectForIntent(intent: Pick<CheckoutIntent, "kind" | "packId">, ok: boolean): string {
   if (ok && intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=success`;
   if (ok && intent.kind === "bundle") return "/study/packs?checkout=success";
+  if (ok && intent.kind === "cohort") return "/business/admin?checkout=success";
   if (ok) return "/account?checkout=success";
   if (intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=cancel`;
   if (intent.kind === "bundle") return "/study/packs?checkout=cancel";
+  if (intent.kind === "cohort") return "/schools?checkout=cancel";
   return "/pricing?checkout=cancel";
 }
 
@@ -370,6 +394,8 @@ async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): 
     await grantPack(uid, intent.packId);
   } else if (kind === "bundle") {
     await grantBundle(uid);
+  } else if (kind === "cohort") {
+    await grantCohort(uid, intent.orgName);
   }
   // Count a redemption once per fulfilled payment (fulfillPayment is idempotent under
   // the moyasarPayments/{id} marker, so this runs exactly once per successful charge).
@@ -467,11 +493,19 @@ export const createCheckoutConfig = onCall(
 
     let packId: string | undefined;
     let cadence: Cadence | undefined;
+    let orgName: string | undefined;
 
     if (kind === "pack") {
       const valid = sellablePackId(request.data?.packId);
       if (!valid) throw new HttpsError("invalid-argument", "unknown-pack");
       packId = valid;
+    } else if (kind === "cohort") {
+      // The org name is display-only (it never gates price or fulfilment), but an
+      // empty one would land the buyer on an "Untitled cohort" org — worth failing
+      // the checkout early instead.
+      const raw = typeof request.data?.orgName === "string" ? request.data.orgName.trim() : "";
+      if (!raw) throw new HttpsError("invalid-argument", "org-name-required");
+      orgName = raw.slice(0, 120);
     } else if (kind === "student") {
       // Discounted student rate — gated server-side on a VERIFIED academic email so
       // it can't be self-claimed.
@@ -501,6 +535,7 @@ export const createCheckoutConfig = onCall(
         kind,
         cadence: cadence ?? null,
         packId: packId ?? null,
+        orgName: orgName ?? null,
         ref: isValidCode(ref) ? ref : null,
         promo: promo ?? null,
         amount,

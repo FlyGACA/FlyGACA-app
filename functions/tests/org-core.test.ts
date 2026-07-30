@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { buildInvite, checkSeatLimit, parseProvisionInput } from "../src/org-core.js";
+import {
+  COHORT_INTAKE_DAYS,
+  COHORT_SEAT_LIMIT,
+  DEFAULT_ORG_BANKS,
+  buildCohortOrg,
+  buildInvite,
+  checkSeatLimit,
+  parseProvisionInput,
+} from "../src/org-core.js";
 
 describe("parseProvisionInput", () => {
   it("accepts a valid payload without expiresAt", () => {
@@ -93,5 +101,42 @@ describe("buildInvite", () => {
     const a = buildInvite("Dup@X.com", "acme", { now: new Date(0) });
     const b = buildInvite("dup@x.com ", "acme", { now: new Date(1000) });
     expect(a?.key).toBe(b?.key);
+  });
+});
+
+describe("buildCohortOrg", () => {
+  const now = new Date("2026-07-30T00:00:00Z");
+
+  it("builds a 25-seat org owned solely by the buyer, with the intake-window expiry", () => {
+    const org = buildCohortOrg("uid_1", "Riyadh Flight Academy", now);
+    expect(org).toEqual({
+      name: "Riyadh Flight Academy",
+      ownerUids: ["uid_1"],
+      seatLimit: COHORT_SEAT_LIMIT,
+      passThreshold: 75,
+      banks: [...DEFAULT_ORG_BANKS],
+      source: "moyasar",
+      createdAt: now.toISOString(),
+      expiresAt: new Date(now.getTime() + COHORT_INTAKE_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+    });
+  });
+
+  it("trims the name and falls back to a generic label when blank/missing", () => {
+    expect(buildCohortOrg("uid_1", "  Padded Name  ", now).name).toBe("Padded Name");
+    expect(buildCohortOrg("uid_1", "", now).name).toBe("Untitled cohort");
+    expect(buildCohortOrg("uid_1", "   ", now).name).toBe("Untitled cohort");
+    expect(buildCohortOrg("uid_1", null, now).name).toBe("Untitled cohort");
+    expect(buildCohortOrg("uid_1", undefined, now).name).toBe("Untitled cohort");
+  });
+
+  it("caps an overlong name at 120 characters", () => {
+    const long = "x".repeat(500);
+    expect(buildCohortOrg("uid_1", long, now).name).toHaveLength(120);
+  });
+
+  it("returns a fresh banks array each call (never a shared mutable reference)", () => {
+    const a = buildCohortOrg("uid_1", "A", now);
+    const b = buildCohortOrg("uid_2", "B", now);
+    expect(a.banks).not.toBe(b.banks);
   });
 });

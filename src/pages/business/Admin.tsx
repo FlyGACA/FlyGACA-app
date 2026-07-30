@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from '@/pages/account/RequireSession';
 import { Disclaimer } from '@/components/Disclaimer';
@@ -16,6 +17,7 @@ import {
   type CohortRow,
 } from '@/lib/services/org';
 import { ProvisionPanel } from './ProvisionPanel';
+import { BuyCohortPanel } from './BuyCohortPanel';
 import styles from './admin.module.css';
 import { triggerDownload } from '@/lib/download';
 
@@ -74,7 +76,10 @@ function Inner() {
     return (
       <section className={`container-narrow ${styles.page}`}>
         <h1>{t('business.admin.title')}</h1>
-        <EmptyState icon="🔒">{t('business.admin.noAccess')}</EmptyState>
+        <BuyCohortPanel />
+        <EmptyState icon="🔒">
+          {t('business.admin.noAccess')} <Link to="/schools">{t('business.admin.talkToUs')}</Link>
+        </EmptyState>
         <Disclaimer />
       </section>
     );

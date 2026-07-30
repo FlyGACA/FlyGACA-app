@@ -18,7 +18,7 @@ import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import type { Entitlement } from "./billing-core.js";
 import { cohortRow, type CohortRow } from "./school-core.js";
-import { buildInvite, checkSeatLimit, parseProvisionInput } from "./org-core.js";
+import { DEFAULT_ORG_BANKS, buildInvite, checkSeatLimit, parseProvisionInput } from "./org-core.js";
 import { REGION } from "./region.js";
 
 if (getApps().length === 0) initializeApp();
@@ -30,9 +30,6 @@ const CALL_OPTS = {
   maxInstances: 5,
   enforceAppCheck: true,
 };
-
-/** The AIP prep pack's quiz banks — the default expected set (mirrors packCatalog). */
-const DEFAULT_BANKS = ["aip-ais", "airspace"];
 
 interface OrgDoc {
   name?: string;
@@ -83,7 +80,7 @@ export const getCohortReadiness = onCall(CALL_OPTS, async (request) => {
     throw new HttpsError("permission-denied", "not-an-owner");
   }
 
-  const banks = org.banks?.length ? org.banks : DEFAULT_BANKS;
+  const banks = org.banks?.length ? org.banks : [...DEFAULT_ORG_BANKS];
   const threshold = typeof org.passThreshold === "number" ? org.passThreshold : 75;
   const now = new Date();
 
