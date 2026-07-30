@@ -13,7 +13,7 @@ interface CardProps extends HTMLAttributes<HTMLElement> {
   variant?: CardVariant;
   /** CSS color or token expression, e.g. `var(--gold)` — sets `--cat-color`. */
   accent?: string;
-  as?: 'div' | 'article' | 'section' | 'li';
+  as?: 'div' | 'article' | 'section' | 'aside' | 'li';
 }
 
 export function Card({

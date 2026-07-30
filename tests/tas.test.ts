@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { trueAirspeed } from '../src/calc/tas';
+import { trueAirspeed } from '@/calc/tas';
 
 describe('trueAirspeed', () => {
   it('TAS exceeds CAS with altitude', () => {

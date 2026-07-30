@@ -1,18 +1,19 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { linkHref, type GroundSchoolData, type GsLesson } from '../../lib/content';
-import { adelLink } from '../../lib/adel';
-import { useStudyProgress, toggleLesson } from '../../lib/studyProgress';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { courseLd } from '../../lib/jsonld';
-import { Disclaimer } from '../../components/Disclaimer';
-import { SectionHeader } from '../../components/SectionHeader';
-import { HubBackLink } from '../../components/HubBackLink';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { GroundSchoolData, GsLesson } from '@/lib/content';
+import { linkHref } from '@/lib/contentLinks';
+import { adelLink } from '@/lib/adel';
+import { useStudyProgress, toggleLesson } from '@/lib/studyProgress';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { courseLd } from '@/lib/seo/jsonld';
+import { Disclaimer } from '@/components/Disclaimer';
+import { SectionHeader } from '@/components/SectionHeader';
+import { HubBackLink } from '@/components/HubBackLink';
 import styles from './GroundSchool.module.css';
+import { catToken } from '@/components/categoryTone';
 
 /** Per-module accent — cycles the Falcon hues from the design-token map. */
-const CAT_TOKENS = ['var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)', 'var(--cat-5)'];
 
 export function GroundSchool() {
   const { t, i18n } = useTranslation();
@@ -47,7 +48,7 @@ export function GroundSchool() {
               <section key={m.id} className={styles.module}>
                 <SectionHeader
                   title={m.title}
-                  tone={CAT_TOKENS[i % CAT_TOKENS.length]}
+                  tone={catToken(i)}
                   count={t('study.gsProgress', { done, total: m.lessons.length })}
                 />
                 <p className={styles.summary}>{m.summary}</p>

@@ -1,12 +1,12 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useFetchJson } from '../../lib/useFetchJson';
-import type { GroundSchoolData, QuizData } from '../../lib/content';
-import { useStudyProgress } from '../../lib/studyProgress';
-import { masteredCount, dueCount } from '../../calc/srs';
-import { ResultStat } from '../../components/calc/ResultStat';
-import { OutputGrid } from '../../components/calc/Grids';
-import { ProgressBar } from '../../components/ProgressBar';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import type { GroundSchoolData, QuizData } from '@/lib/content';
+import { useStudyProgress } from '@/lib/studyProgress';
+import { masteredCount, dueCount } from '@/calc/study/srs';
+import { ResultStat } from '@/components/calc/ResultStat';
+import { OutputGrid } from '@/components/calc/Grids';
+import { ProgressBar } from '@/components/ProgressBar';
 import styles from './Study.module.css';
 
 export const STUDY_MODES = [

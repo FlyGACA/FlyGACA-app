@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { machFromTas, speedOfSound, tasFromMach } from '../src/calc/speed';
-import { climbFromFtPerNm, ftPerNmFromPercent, timeToClimb } from '../src/calc/climb';
-import { standardRateTurn, turnPerformance } from '../src/calc/turn';
+import { machFromTas, speedOfSound, tasFromMach } from '@/calc/speed';
+import { climbFromFtPerNm, ftPerNmFromPercent, timeToClimb } from '@/calc/climb';
+import { standardRateTurn, turnPerformance } from '@/calc/turn';
 
 describe('speed of sound & Mach', () => {
   it('a ≈ 661 kt at ISA sea level (15°C)', () => {

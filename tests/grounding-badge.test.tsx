@@ -1,7 +1,7 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
-import '../src/i18n';
-import { GroundingBadge } from '../src/components/chat/GroundingBadge';
+import '@/i18n';
+import { GroundingBadge } from '@/components/chat/GroundingBadge';
 
 // GroundingBadge surfaces the brain's grounding verdict. The legacy rule —
 // render nothing for `na`/missing/unknown kinds — is the part most likely to
@@ -23,9 +23,7 @@ describe('<GroundingBadge />', () => {
     const { container: b } = render(<GroundingBadge />);
     expect(b).toBeEmptyDOMElement();
     // An unknown kind has no label key and must also render nothing.
-    const { container: c } = render(
-      <GroundingBadge kind={'bogus' as unknown as 'grounded'} />,
-    );
+    const { container: c } = render(<GroundingBadge kind={'bogus' as unknown as 'grounded'} />);
     expect(c).toBeEmptyDOMElement();
   });
 

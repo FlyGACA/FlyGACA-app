@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { enabled } from '../lib/analytics';
+import { enabled } from '@/lib/analytics';
 
 /**
  * Vercel Web Analytics + Speed Insights wrapper. Only renders in production

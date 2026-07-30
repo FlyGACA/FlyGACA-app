@@ -67,11 +67,15 @@ describe('parseRegulationFile', () => {
 
   it('throws when required frontmatter is missing', () => {
     const bad = part91.replace('category: airspace\n', '');
-    expect(() => parseRegulationFile({ slug: 'part-91', raw: bad })).toThrow(/missing required frontmatter/);
+    expect(() => parseRegulationFile({ slug: 'part-91', raw: bad })).toThrow(
+      /missing required frontmatter/,
+    );
   });
 
   it('throws when slug disagrees with the filename stem', () => {
-    expect(() => parseRegulationFile({ slug: 'part-92', raw: part91 })).toThrow(/must equal the filename stem/);
+    expect(() => parseRegulationFile({ slug: 'part-92', raw: part91 })).toThrow(
+      /must equal the filename stem/,
+    );
   });
 });
 
@@ -94,7 +98,9 @@ describe('buildLookup', () => {
 
   it('throws listing every unresolved cross-reference', () => {
     const incomplete = new Set(['part-91', 'part-121']); // missing part-43 and part-135
-    expect(() => buildLookup(records, { knownParts: incomplete })).toThrow(/Unresolved cross-reference/);
+    expect(() => buildLookup(records, { knownParts: incomplete })).toThrow(
+      /Unresolved cross-reference/,
+    );
     expect(() => buildLookup(records, { knownParts: incomplete })).toThrow(/part-91 → part-43/);
   });
 });

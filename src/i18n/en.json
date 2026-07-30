@@ -1795,14 +1795,14 @@
       "pro": "You're on Pro, thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": [
-      "Bulk seat licences",
-      "Admin dashboard & usage",
-      "Syllabus-aligned study"
-    ],
+    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
+    "tiersLabel": "Published tiers (indicative)",
+    "tierCohort": "Cohort — up to 25 seats · from SAR {{n}} / 90-day intake",
+    "tierAcademy": "Academy — up to 100 seats · from SAR {{n}} / year",
+    "tierInstitution": "Institution — 100+ seats · custom, from SAR {{n}}",
     "pass": "SAR {{n}} / 90 days",
     "vatIncl": "incl. 15% VAT",
     "vatExcl": "Invoiced annually · VAT-exclusive",
@@ -1818,9 +1818,16 @@
     "passCta": "Get the pass",
     "passComingSoon": "Available at launch",
     "prepHead": "Exam Prep packs",
-    "prepLead": "Prefer to pay once? Buy the prep pack for your certificate — question banks, a timed mock exam and study sheets. Every pack is included with Pro & School.",
-    "prepPer": "SAR {{n}} / pack · one-time",
+    "prepLead": "Prefer to pay once? Buy the prep pack for your certificate — question banks, a timed mock exam and study sheets. Certificate packs SAR {{cert}}, single subjects SAR {{subject}}; every pack is included with Pro & School.",
+    "prepPer": "from SAR {{n}} / pack · one-time",
     "prepCta": "Browse exam prep",
+    "bundleHead": "All-Access Exam Bundle",
+    "bundleLead": "Sitting more than one exam? Unlock every prep pack — PPL, CPL, IR, ATPL, ELP, AIP and more — with a single payment. Less than a year of Pro, and yours to keep.",
+    "bundlePrice": "SAR {{n}} · one-time · every pack",
+    "bundleCta": "Get the bundle",
+    "wasYr": "SAR {{n}} / yr",
+    "foundingBadge": "Founding offer",
+    "foundingNote": "Founding launch price — limited time",
     "schoolsEyebrow": "For flight schools & universities",
     "schoolsHead": "Equip a whole cohort",
     "schoolsMin": "min 10 seats",
@@ -1872,6 +1879,42 @@
       "csvParseError": "Could not parse CSV file. Ensure it's a valid CSV with emails in the first column.",
       "csvHint": "Upload a CSV file with email addresses in the first column (one email per row)."
     }
+  },
+  "developers": {
+    "eyebrow": "Developers",
+    "title": "Captain Adel API",
+    "subtitle": "Add a source-citing Saudi GACAR assistant to your own product.",
+    "intro": "The same retrieve-and-cite engine that powers Fly GACA, exposed as a simple HTTP API. Send a question, get a grounded answer with exact GACAR Part and section citations. Hosted in-Kingdom.",
+    "tiersHead": "Plans",
+    "tiers": [
+      {
+        "name": "Starter",
+        "price": "SAR 499 / mo",
+        "quota": "5,000 answers / month",
+        "blurb": "For a single product or a pilot integration."
+      },
+      {
+        "name": "Growth",
+        "price": "SAR 1,999 / mo",
+        "quota": "25,000 answers / month",
+        "blurb": "For a scaling product or a school LMS."
+      },
+      {
+        "name": "Enterprise",
+        "price": "Custom",
+        "quota": "Unlimited · SLA",
+        "blurb": "Volume pricing, SSO and a named contact."
+      }
+    ],
+    "tiersNote": "Indicative pricing. Every plan shares a per-minute rate limit; monthly quotas reset each calendar month.",
+    "endpointHead": "The endpoint",
+    "endpointLead": "POST /v1/ask with your key as a Bearer token (or an X-Api-Key header). Send a message; receive a grounded answer, its sources and kind.",
+    "requestLabel": "Request",
+    "responseLabel": "Response",
+    "getKeyHead": "Get an API key",
+    "getKeyLead": "Tell us about your product and the volume you expect, and we'll issue a key.",
+    "getKeyCta": "Request a key",
+    "getKeySubject": "Captain Adel API — key request"
   },
   "schools": {
     "title": "Fly GACA for schools",
@@ -2023,8 +2066,25 @@
       "cta": "Go to admin dashboard"
     }
   },
+  "checkout": {
+    "title": "Checkout",
+    "preparing": "Preparing your checkout…",
+    "confirming": "Confirming your payment…",
+    "promoApplied": "Promo {{code}} applied — you save SAR {{save}}.",
+    "errors": {
+      "generic": "Couldn't open checkout just now. Please try again.",
+      "sign-in-required": "Sign in to check out.",
+      "billing-unavailable": "Billing isn't connected in this build.",
+      "native-billing": "Manage your subscription from the app store.",
+      "unknown-checkout-kind": "That checkout isn't recognized. Please start again from Pricing.",
+      "unknown-pack": "That pack isn't available for purchase.",
+      "student-verification-required": "Verify your student email to use the student rate.",
+      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again."
+    }
+  },
   "account": {
     "title": "Account",
+    "eyebrow": "Your account",
     "signInTitle": "Sign in",
     "signInIntro": "Sync your logbook, study progress and bookmarks across devices — your data stays on this device first, sign-in adds backup and sync.",
     "showPassword": "Show",
@@ -2088,17 +2148,24 @@
       "passwordTooWeak": "Password must meet all complexity requirements.",
       "emailInUse": "An account already exists with that email.",
       "weakPassword": "Password must be at least 6 characters.",
+      "missingPassword": "Enter your password.",
+      "userDisabled": "This account has been disabled. Contact support if you think this is a mistake.",
       "tooManyRequests": "Too many attempts. Try again in a little while.",
       "network": "Network error. Check your connection and try again.",
       "providerDisabled": "This sign-in method is turned off for this app.",
       "unauthorizedDomain": "This site isn't authorized for sign-in yet. If you're on a preview link, use the main site.",
-      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site."
+      "config": "Sign-in is temporarily misconfigured on this site. Please try the main site.",
+      "popupBlocked": "The sign-in popup was blocked or closed. Redirecting you to continue…",
+      "technicalDetail": "(code: {{code}})",
+      "useMainSite": "Go to the main site to sign in"
     },
     "subscription": {
       "title": "Subscription",
       "renews": "Renews",
       "source": "Billed via",
       "manage": "Manage subscription",
+      "turnOffAutoRenew": "Turn off auto-renew",
+      "autoRenewOff": "Auto-renew is off. Your plan stays active until it expires.",
       "none": "You're on the free plan.",
       "activating": "Activating your subscription…",
       "checkoutSuccess": "You're Pro, thank you!",
@@ -2107,9 +2174,7 @@
         "generic": "Couldn't open billing just now. Please try again.",
         "sign-in-required": "Sign in to manage your subscription.",
         "billing-unavailable": "Billing isn't connected in this build.",
-        "no-subscription": "No active subscription to manage.",
-        "native-billing": "Manage your subscription from the app store.",
-        "no-url": "Couldn't reach billing just now. Please try again."
+        "native-billing": "Manage your subscription from the app store."
       }
     },
     "signOut": "Sign out",
@@ -2907,15 +2972,15 @@
       },
       "cpl": {
         "name": "CPL exam prep",
-        "desc": "Commercial Pilot Licence written prep — coming soon."
+        "desc": "Commercial Pilot Licence written prep — GACAR Part 61 privileges, commercial operations and performance."
       },
       "ir": {
         "name": "Instrument Rating prep",
-        "desc": "IR written prep — approaches, holds and IFR procedures. Coming soon."
+        "desc": "IR written prep — IFR flight rules, instrument procedures and the instrument-rating requirements."
       },
       "atpl": {
         "name": "ATPL exam prep",
-        "desc": "Airline Transport Pilot Licence theory prep — coming soon."
+        "desc": "Airline Transport Pilot Licence theory prep — ATP privileges and GACAR Part 121 air transport operations."
       }
     },
     "packMixed": "Mixed topics",
@@ -2999,11 +3064,11 @@
     },
     "terms": {
       "title": "Terms of Use",
-      "intro": "By using Fly GACA you agree to these terms. Contact us at i@flygaca.com.",
+      "intro": "By using Fly GACA you agree to these terms. Fly GACA is operated by BDA Company International (شركة بدع الدولية). Contact us at i@flygaca.com.",
       "sections": [
         {
           "h": "What Fly GACA is",
-          "p": "An independent educational platform and reference library for Saudi civil-aviation regulation. It is not affiliated with GACA."
+          "p": "An independent educational platform and reference library for Saudi civil-aviation regulation, operated by BDA Company International (شركة بدع الدولية), CR 7030976893, VAT 311415259500003, Riyadh 12965, Saudi Arabia (\"the Company\", \"we\"). \"Fly GACA\" is a product and trade name of the Company. It is not affiliated with GACA."
         },
         {
           "h": "Educational use only",
@@ -3015,7 +3080,7 @@
         },
         {
           "h": "Intellectual property",
-          "p": "Fly GACA owns its name, brand and design. The underlying regulatory documents belong to GACA and are shown for reference."
+          "p": "BDA Company International (operating as Fly GACA) owns the Fly GACA name, brand and design. The underlying regulatory documents belong to GACA and are shown for reference."
         },
         {
           "h": "Third-party content and links",
@@ -3027,17 +3092,17 @@
         },
         {
           "h": "Changes and governing law",
-          "p": "We may change the service and these terms at any time; continued use means acceptance. These terms are governed by the laws of the Kingdom of Saudi Arabia."
+          "p": "We may change the service and these terms at any time; continued use means acceptance. These terms are governed by the laws of the Kingdom of Saudi Arabia, and the competent courts of Riyadh have jurisdiction over any dispute."
         }
       ]
     },
     "privacy": {
       "title": "Privacy Notice",
-      "intro": "How Fly GACA handles your data. Contact us at privacy@flygaca.com.",
+      "intro": "How Fly GACA handles your data. The data controller is BDA Company International (شركة بدع الدولية). Contact us at privacy@flygaca.com.",
       "sections": [
         {
           "h": "Who we are",
-          "p": "Fly GACA operates flygaca.com as an independent educational reference. Reach us at privacy@flygaca.com."
+          "p": "flygaca.com is operated by BDA Company International (شركة بدع الدولية), CR 7030976893, Riyadh, Saudi Arabia — the data controller under the Saudi Personal Data Protection Law (PDPL). Fly GACA is its independent educational reference. Reach us at privacy@flygaca.com."
         },
         {
           "h": "What we collect",
@@ -3062,6 +3127,52 @@
         {
           "h": "Cookies & retention",
           "p": "We use minimal local storage (such as your language choice) and privacy-friendly analytics. We keep data only as long as needed for the purposes above."
+        }
+      ]
+    },
+    "refund": {
+      "title": "Refund & Cancellation Policy",
+      "intro": "How to cancel a Fly GACA purchase and when you can get a refund. This policy is part of our Terms of Use and follows the Consumer Protection Law and the E-Commerce Law of the Kingdom of Saudi Arabia.",
+      "sections": [
+        {
+          "h": "What is always free",
+          "p": "The GACAR library, guides and safety lessons are free and always will be — no payment is taken, so no refund question arises for them. This policy covers only the paid products: the Pro subscription, the 90-day Pass, exam-prep packs, and B2B Academy seat licences."
+        },
+        {
+          "h": "Cancelling a Pro subscription",
+          "p": "You can cancel Pro at any time from your account settings, or by emailing support@flygaca.com. Cancelling stops the next renewal; the Pro access you have already paid for continues to the end of the current billing period and is not cut off early. Subscriptions renew automatically until you cancel, so cancel before the renewal date to avoid the next charge."
+        },
+        {
+          "h": "Refund window for subscriptions",
+          "p": "If you have not made substantial use of paid features, you can request a full refund within 14 days of your first Pro payment, or within 14 days of an automatic renewal. “Substantial use” means meaningful consumption of paid features — for example Captain Adel questions beyond the free allowance, mock exams, or protected study content. After the window, or once paid features have been substantially used, the current period is non-refundable, but your access continues until it ends."
+        },
+        {
+          "h": "The 90-day Pass and exam-prep packs",
+          "p": "One-time purchases — the 90-day Pass, individual prep packs, and the all-packs bundle — are fully refundable within 14 days of purchase provided the content has not been opened and any bundled Pro days have not been used. Because these give immediate access to digital study material, they become non-refundable once you open the content, in line with the digital-content rules of the Saudi E-Commerce Law."
+        },
+        {
+          "h": "B2B Academy seat licences",
+          "p": "Academy seat licences are sold to organisations under a signed Order Form together with the Fly GACA Customer Agreement; refunds for those customers are governed by those documents rather than this page. Invoiced annual seat fees are non-refundable once seats have been granted, except where the Order Form or Saudi law requires otherwise, and any agreed refund or credit is documented by a ZATCA-compliant credit note against the original invoice."
+        },
+        {
+          "h": "Prices, VAT and official fees",
+          "p": "All prices are shown in Saudi Riyals and include VAT at the applicable rate. An approved refund includes the VAT that was charged, and a corresponding ZATCA-compliant credit note or adjusted receipt is issued. Official GACA, examination and testing fees are never part of a Fly GACA product and are never refundable by us."
+        },
+        {
+          "h": "How to request a refund",
+          "p": "Email support@flygaca.com from the address on your account, with your order or invoice number and the reason for your request. We acknowledge within 2 business days and decide within 5 business days of receiving the information we need. Approved refunds are returned to your original payment method through our payment processor, Moyasar; the time it then takes to appear depends on your bank or card issuer and is outside our control."
+        },
+        {
+          "h": "Incorrect or disputed charges",
+          "p": "If you believe a charge is incorrect, contact support@flygaca.com within 30 days of the charge date and we will investigate and respond within 5 business days. Please contact us before raising a dispute with your bank or card issuer — most issues are resolved faster and more easily directly with us."
+        },
+        {
+          "h": "Your statutory rights and changes to this policy",
+          "p": "Nothing in this policy limits any right you have under the Consumer Protection Law or the E-Commerce Law of the Kingdom of Saudi Arabia that cannot be excluded by contract. We may update this policy from time to time; the version in force at the time of your purchase applies to that purchase, and any material change is posted here with a clear effective date."
+        },
+        {
+          "h": "Contact",
+          "p": "Refunds and account or billing support: support@flygaca.com. Data-protection matters: privacy@flygaca.com. General queries and notices: i@flygaca.com. Fly GACA is operated by BDA Company International (شركة بدع الدولية), Commercial Registration 7030976893, Riyadh, Kingdom of Saudi Arabia."
         }
       ]
     },
@@ -3246,6 +3357,13 @@
       }
     ]
   },
+  "flavor": {
+    "home": "Home",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "getFullApp": "Get the full Fly GACA app"
+  },
   "footer": {
     "tagline": "Every Saudi reg. One captain on the answer. An independent educational reference for civil aviation in the Kingdom.",
     "explore": "Explore",
@@ -3256,10 +3374,12 @@
     "disclaimerLink": "Disclaimer",
     "terms": "Terms of Use",
     "privacy": "Privacy Notice",
+    "refund": "Refund & Cancellation",
     "safety": "Safety Notice",
     "gacaSite": "GACA official site ↗",
     "gacaRules": "GACAR & AIP ↗",
     "copyright": "Fly GACA · Independent of GACA · Made in the Kingdom · صُنع في السعودية",
+    "legalEntity": "Operated by BDA Company International (شركة بدع الدولية) — CR 7030976893 — VAT 311415259500003 — Riyadh, Saudi Arabia",
     "ctaTitle": "Study smarter with Captain Adel",
     "ctaText": "Go Pro for unlimited questions, deeper study tools, and full offline access to the library.",
     "browseLibrary": "Browse the library",
@@ -3307,6 +3427,7 @@
     "packs": "GACA Exam Prep — PPL, CPL, IR, ATPL",
     "pricing": "Pricing",
     "schools": "For Flight Schools",
+    "developers": "Captain Adel API",
     "about": "About",
     "account": "Account",
     "dashboard": "Dashboard",
@@ -3335,6 +3456,7 @@
     "packs": "Organized exam-prep packs for the Saudi GACA written exams — Private, Commercial, Instrument and ATPL. Question banks, timed mock exams and study sheets. Buy a pack once or get them all with Pro.",
     "pricing": "Fly GACA is free to study the Saudi GACAR; go Pro for offline access, exports and prep packs, or equip a whole flight school. Simple monthly or annual plans.",
     "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel, bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
+    "developers": "Add a source-citing Saudi GACAR assistant to your product — the Captain Adel API returns grounded answers with exact Part and section citations.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",
     "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel, an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
   },

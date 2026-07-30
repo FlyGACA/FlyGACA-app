@@ -105,7 +105,7 @@ export const GUIDE_STATUS: Record<GuideSlug, GuideStatus> = {
   'the-airac-cycle': 'live',
 };
 
-export const isLiveGuide = (slug: GuideSlug): boolean => GUIDE_STATUS[slug] === 'live';
+const isLiveGuide = (slug: GuideSlug): boolean => GUIDE_STATUS[slug] === 'live';
 
 /** Published guides, in index order — drafts filtered out. */
 export const LIVE_GUIDE_SLUGS: readonly GuideSlug[] = GUIDE_SLUGS.filter(isLiveGuide);
@@ -113,7 +113,7 @@ export const LIVE_GUIDE_SLUGS: readonly GuideSlug[] = GUIDE_SLUGS.filter(isLiveG
 // The section-anchor scheme now lives in a shared, unit-tested module so the
 // legal pages reuse the exact same ids; re-exported here so guide call sites
 // (and the TOC/copy-link) keep importing it from this module.
-export { sectionId } from '../../calc/anchor';
+export { sectionId } from '@/calc/library/anchor';
 
 /** Related tool routes per guide (label comes from the tool's i18n name). */
 export const GUIDE_TOOLS: Record<string, string[]> = {

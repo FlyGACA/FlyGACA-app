@@ -22,14 +22,13 @@ afterEach(() => {
   document.head.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
 });
 
-const metaColor = () =>
-  document.querySelector('meta[name="theme-color"]')?.getAttribute('content');
+const metaColor = () => document.querySelector('meta[name="theme-color"]')?.getAttribute('content');
 
 describe('theme store', () => {
   const KEY = 'flygaca:theme';
 
   it('readTheme defaults to falcon and reads a stored cockpit choice', async () => {
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     expect(m.readTheme()).toBe('falcon');
     localStorage.setItem(KEY, 'cockpit');
     expect(m.readTheme()).toBe('cockpit');
@@ -38,7 +37,7 @@ describe('theme store', () => {
   });
 
   it('applyTheme sets data-theme + theme-color for cockpit and clears them for falcon', async () => {
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     m.applyTheme('cockpit');
     expect(document.documentElement.getAttribute('data-theme')).toBe('cockpit');
     expect(metaColor()).toBe('#121212');
@@ -48,7 +47,7 @@ describe('theme store', () => {
   });
 
   it('applyTheme sets the day (light) theme + its ivory theme-color', async () => {
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     m.applyTheme('day');
     expect(document.documentElement.getAttribute('data-theme')).toBe('day');
     expect(metaColor()).toBe('#F5F2ED');
@@ -57,19 +56,19 @@ describe('theme store', () => {
   });
 
   it('readTheme reads a stored day choice', async () => {
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     localStorage.setItem(KEY, 'day');
     expect(m.readTheme()).toBe('day');
   });
 
   it('persistTheme writes the storage key', async () => {
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     m.persistTheme('cockpit');
     expect(localStorage.getItem(KEY)).toBe('cockpit');
   });
 
   it('setTheme applies and persists in one call', async () => {
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     m.setTheme('cockpit');
     expect(document.documentElement.getAttribute('data-theme')).toBe('cockpit');
     expect(localStorage.getItem(KEY)).toBe('cockpit');
@@ -79,7 +78,7 @@ describe('theme store', () => {
     const spy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('blocked');
     });
-    const m = await import('../src/lib/theme');
+    const m = await import('@/lib/theme');
     expect(m.readTheme()).toBe('falcon');
     spy.mockRestore();
     const setSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {

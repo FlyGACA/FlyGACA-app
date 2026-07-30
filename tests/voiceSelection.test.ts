@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickVoice, type VoiceInfo } from '../src/calc/voiceSelection';
+import { pickVoice, type VoiceInfo } from '@/calc/chat/voiceSelection';
 
 const v = (over: Partial<VoiceInfo>): VoiceInfo => ({
   name: 'Voice',

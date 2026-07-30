@@ -1,6 +1,6 @@
 import { describe, expect, it, afterEach } from 'vitest';
 import { render, screen, cleanup, within } from '@testing-library/react';
-import { Stepper } from '../src/components/Stepper';
+import { Stepper } from '@/components/Stepper';
 
 afterEach(cleanup);
 

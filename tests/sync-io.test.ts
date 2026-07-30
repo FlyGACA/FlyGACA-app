@@ -6,7 +6,7 @@
  * invariant that a profile write NEVER carries the server-only `entitlement`.
  */
 import { describe, expect, it, beforeEach, vi } from 'vitest';
-import type { Profile, Flight, PilotRecord } from '../src/lib/account';
+import type { Profile, Flight, PilotRecord } from '@/lib/services/account';
 
 const h = vi.hoisted(() => ({
   db: null as unknown,
@@ -17,7 +17,7 @@ const h = vi.hoisted(() => ({
   calls: [] as { fn: string; path: string; data?: unknown; opts?: unknown }[],
 }));
 
-vi.mock('../src/lib/firebase', () => ({
+vi.mock('@/lib/services/firebase', () => ({
   getDb: () => Promise.resolve(h.db),
 }));
 
@@ -48,7 +48,7 @@ import {
   deleteFlightDoc,
   addRecordDoc,
   deleteRecordDoc,
-} from '../src/lib/sync';
+} from '@/lib/services/sync';
 
 const profile: Profile = {
   email: 'pilot@example.com',

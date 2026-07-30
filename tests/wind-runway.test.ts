@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { parseRunways, windTable } from '../src/calc/windTable';
-import { hydroplaningSpeed } from '../src/calc/hydroplaning';
-import { factoredRunway } from '../src/calc/runwayPerf';
+import { parseRunways, windTable } from '@/calc/windTable';
+import { hydroplaningSpeed } from '@/calc/hydroplaning';
+import { factoredRunway } from '@/calc/runwayPerf';
 
 describe('windTable', () => {
   it('computes components for each runway against one wind', () => {

@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { SectionHeader } from '../../components/SectionHeader';
-import { EmptyState } from '../../components/EmptyState';
-import { ViewToggle } from '../../components/hub/ViewToggle';
-import { SortSelect } from '../../components/hub/SortSelect';
-import { useViewMode } from '../../lib/useViewMode';
-import { readingMinutes } from '../../lib/readingTime';
-import { useGuidePrefs, toggleBookmark } from '../../lib/guidePrefs';
+import { SectionHeader } from '@/components/SectionHeader';
+import { EmptyState } from '@/components/EmptyState';
+import { ViewToggle } from '@/components/hub/ViewToggle';
+import { SortSelect } from '@/components/hub/SortSelect';
+import { useViewMode } from '@/hooks/useViewMode';
+import { readingMinutes } from '@/lib/readingTime';
+import { useGuidePrefs, toggleBookmark } from '@/lib/prefs/guidePrefs';
 import {
   LIVE_GUIDE_SLUGS,
   GUIDE_META,
@@ -16,7 +16,7 @@ import {
   type GuideTopic,
 } from './guides';
 import styles from './Guides.module.css';
-import hub from '../../components/hub/hubList.module.css';
+import hub from '@/components/hub/hubList.module.css';
 
 interface Section {
   h: string;

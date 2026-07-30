@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import type { CrossRef } from '../../calc/chatCrossRefs';
+import type { CrossRef } from '@/calc/chat/chatCrossRefs';
 import styles from './CrossRefChips.module.css';
 
 /**

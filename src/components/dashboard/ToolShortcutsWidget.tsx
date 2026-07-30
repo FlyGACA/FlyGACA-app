@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useToolPrefs } from '../../lib/toolPrefs';
-import { TOOLS, type ToolMeta } from '../../lib/tools';
-import { CategoryIcon } from '../../lib/toolIcons';
+import { useToolPrefs } from '@/lib/prefs/toolPrefs';
+import { TOOLS, type ToolMeta } from '@/lib/tools';
+import { CategoryIcon } from '@/lib/toolIcons';
 import styles from './dashboard-widgets.module.css';
 
 const MAX_SHORTCUTS = 6;

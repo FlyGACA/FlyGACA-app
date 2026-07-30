@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PasswordField } from '../src/components/calc/PasswordField';
+import { PasswordField } from '@/components/calc/PasswordField';
 
 describe('PasswordField', () => {
   it('renders a password input with the show toggle unpressed', () => {

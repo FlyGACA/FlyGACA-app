@@ -6,9 +6,9 @@ import {
   offlineSupported,
   saveDocs,
   storageEstimate,
-} from '../../lib/offlineCache';
-import { CORPUS, loadJson, type CorpusIndex } from '../../lib/content';
-import { formatBytes } from '../../calc/offlineManifest';
+} from '@/lib/native/offlineCache';
+import { CORPUS, loadJson, type CorpusIndex } from '@/lib/content';
+import { formatBytes } from '@/calc/library/offlineManifest';
 import styles from './OfflineDownloads.module.css';
 
 /**

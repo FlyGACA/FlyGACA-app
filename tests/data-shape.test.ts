@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
- * Guards the corpus's semantic shape (see src/lib/content.ts · toSearchRef /
+ * Guards the corpus's semantic shape (see src/lib/contentLinks.ts · toSearchRef /
  * linkHref and scripts/normalize-corpus-data.mjs). Frontend links must be
  * semantic — corpus `{ kind, id, anchor }` pointers or `{ route }` app paths —
  * never a legacy `document.html?type=…&id=…#…` URL. If an upstream sync
@@ -24,7 +24,9 @@ const DATA_DIR = join(process.cwd(), 'public/data');
 const read = (name: string) => readFileSync(join(DATA_DIR, name), 'utf8');
 const jsonFiles = readdirSync(DATA_DIR).filter((f) => f.endsWith('.json'));
 
-describe('corpus data shape', () => {
+// These checks synchronously scan the full corpus (~130 MB of JSON), which can
+// exceed the default 5 s per-test timeout under parallel-worker I/O contention.
+describe('corpus data shape', { timeout: 30_000 }, () => {
   it('has JSON data files to check', () => {
     expect(jsonFiles.length).toBeGreaterThan(0);
   });
@@ -64,20 +66,29 @@ describe('corpus data shape', () => {
       paths: Array<{ steps: Array<{ url?: string; kind?: string; route?: string }> }>;
     };
     const steps = paths.paths.flatMap((p) => p.steps);
-    expect(steps.some((s) => 'url' in s), 'paths-index has legacy step.url').toBe(false);
+    expect(
+      steps.some((s) => 'url' in s),
+      'paths-index has legacy step.url',
+    ).toBe(false);
     expect(steps.every((s) => s.kind != null || s.route != null)).toBe(true);
 
     const gs = JSON.parse(read('groundschool.json')) as {
       modules: Array<{ lessons: Array<{ read?: { url?: string } }> }>;
     };
     const reads = gs.modules.flatMap((m) => m.lessons.map((l) => l.read).filter(Boolean));
-    expect(reads.some((r) => r && 'url' in r), 'groundschool has legacy read.url').toBe(false);
+    expect(
+      reads.some((r) => r && 'url' in r),
+      'groundschool has legacy read.url',
+    ).toBe(false);
 
     const quiz = JSON.parse(read('quiz.json')) as {
       banks: Array<{ questions: Array<{ citeUrl?: string; cite?: unknown; citeRef?: unknown }> }>;
     };
     const qs = quiz.banks.flatMap((b) => b.questions);
-    expect(qs.some((q) => 'citeUrl' in q), 'quiz has legacy citeUrl').toBe(false);
+    expect(
+      qs.some((q) => 'citeUrl' in q),
+      'quiz has legacy citeUrl',
+    ).toBe(false);
     // `cite` is the human-readable label; the semantic link lives in `citeRef`.
     // Guards against a migration clobbering the label with a ref object.
     expect(qs.every((q) => q.cite === undefined || typeof q.cite === 'string')).toBe(true);

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextField } from '../calc/TextField';
-import type { PilotRecord } from '../../lib/account';
-import styles from '../../pages/account/account.module.css';
+import { TextField } from '@/components/calc/TextField';
+import type { PilotRecord } from '@/lib/services/account';
+import styles from '@/pages/account/account.module.css';
 
 export type RecordDraft = Omit<PilotRecord, 'id'>;
 

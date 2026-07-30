@@ -1,6 +1,6 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
-import { Alert } from '../src/components/Alert';
+import { Alert } from '@/components/Alert';
 
 afterEach(cleanup);
 

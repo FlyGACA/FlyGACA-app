@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Disclaimer } from '../../components/Disclaimer';
-import { Breadcrumbs } from '../../components/Breadcrumbs';
-import { adelLink } from '../../lib/adel';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { articleLd, breadcrumbLd, type Crumb } from '../../lib/jsonld';
-import { readingMinutes } from '../../lib/readingTime';
-import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '../../lib/guidePrefs';
-import { useScrollToHash } from '../../lib/useScrollToHash';
+import { Disclaimer } from '@/components/Disclaimer';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { adelLink } from '@/lib/adel';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { useCopyToClipboardKeyed } from '@/hooks/useCopyToClipboard';
+import { articleLd, breadcrumbLd, type Crumb } from '@/lib/seo/jsonld';
+import { readingMinutes } from '@/lib/readingTime';
+import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '@/lib/prefs/guidePrefs';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 import {
   GUIDE_SLUGS,
   GUIDE_TOOLS,
@@ -21,8 +22,8 @@ import {
   sectionId,
   type GuideSlug,
 } from './guides';
-import { NotFound } from '../NotFound';
-import prose from '../legal/Prose.module.css';
+import { NotFound } from '@/pages/not-found/NotFound';
+import prose from '@/pages/legal/Prose.module.css';
 import styles from './Guides.module.css';
 
 interface Section {
@@ -75,7 +76,7 @@ export function Guide() {
   useScrollToHash(valid);
 
   const [progress, setProgress] = useState(0);
-  const [copied, setCopied] = useState<number | null>(null);
+  const { copiedKey: copied, copy } = useCopyToClipboardKeyed<number>();
   const onScroll = useCallback(() => {
     const el = document.documentElement;
     const total = el.scrollHeight - el.clientHeight;
@@ -91,13 +92,11 @@ export function Guide() {
     if (valid && slug && progress >= 95) markRead(slug);
   }, [valid, slug, progress]);
 
-  const copyLink = useCallback((i: number, anchor: string) => {
-    const href = `${window.location.origin}${window.location.pathname}#${anchor}`;
-    void navigator.clipboard?.writeText(href).then(() => {
-      setCopied(i);
-      window.setTimeout(() => setCopied((c) => (c === i ? null : c)), 1500);
-    });
-  }, []);
+  const copyLink = useCallback(
+    (i: number, anchor: string) =>
+      void copy(i, `${window.location.origin}${window.location.pathname}#${anchor}`),
+    [copy],
+  );
 
   if (!valid) return <NotFound />;
   const guideSlug = slug as GuideSlug;

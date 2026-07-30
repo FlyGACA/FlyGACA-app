@@ -5,7 +5,7 @@ import {
   billingChannel,
   toAppPath,
   nativeStore,
-} from '../src/lib/native-bridge';
+} from '@/lib/native/nativeBridge';
 
 describe('native-bridge on the web', () => {
   it('reports web platform and is not native', () => {
@@ -13,8 +13,8 @@ describe('native-bridge on the web', () => {
     expect(platform()).toBe('web');
   });
 
-  it('uses Stripe billing on the web', () => {
-    expect(billingChannel()).toBe('stripe');
+  it('uses Moyasar billing on the web', () => {
+    expect(billingChannel()).toBe('moyasar');
   });
 });
 

@@ -37,7 +37,7 @@ export function isStaffEmail(
 /**
  * The entitlement a staff member receives: the top `school` tier (Pro plus any
  * org-admin surfaces) with no expiry, tagged `source: "staff"` so it is
- * distinguishable from a Stripe grant and can be revoked deliberately.
+ * distinguishable from a Moyasar grant and can be revoked deliberately.
  */
 export function staffEntitlement(): Entitlement {
   return { plan: "school", source: "staff" };

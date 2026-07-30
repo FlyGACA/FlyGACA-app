@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { BentoCard } from '../BentoCard';
-import { TOOLS } from '../../../lib/tools';
+import { BentoCard } from '@/components/bento/BentoCard';
+import { TOOLS } from '@/lib/tools';
 import shared from './widgets.module.css';
 
 const QUICK = ['crosswind', 'tas', 'density-altitude'];

@@ -1,4 +1,4 @@
-import type { Airport } from './content';
+import type { Airport } from '@/lib/content';
 
 /** Region filter buckets for the aerodromes directory. */
 export type RegionFilter = 'all' | 'saudi' | 'gcc' | 'mena' | 'world';

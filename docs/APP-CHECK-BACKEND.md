@@ -1,7 +1,8 @@
 # Enforcing App Check on the backend functions
 
 The backend functions now live **in this repo**, under `functions/` (they were originally in a
-separate backend repo, which this doc used to target). The Stripe callables already ship with
+separate backend repo, which this doc used to target). The Moyasar billing callables
+(`createCheckoutConfig` / `confirmPayment` / `cancelAutoRenew`) already ship with
 `enforceAppCheck: true`; the `chat` gateway verifies the token when the `ENFORCE_APP_CHECK`
 param is flipped on (default off until real traffic sends valid tokens — see ROADMAP). This doc
 is the patch + checklist to **enforce Firebase App Check** end to end.
@@ -9,30 +10,30 @@ is the patch + checklist to **enforce Firebase App Check** end to end.
 The frontend is already enforcement-ready: it initializes App Check
 (`ReCaptchaEnterpriseProvider`, gated on `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`) and attaches the
 App Check token to every gateway call — `X-Firebase-AppCheck` on `/api/chat`
-(`src/lib/api.ts`), and `httpsCallable` auto-attaches it for `createCheckoutSession`.
+(`src/lib/api.ts`), and `httpsCallable` auto-attaches it for the billing callables.
 
 ## Functions in scope
 
 | Function | Kind | Invoked from app | How it's reached |
 | --- | --- | --- | --- |
-| `createCheckoutSession` | **Callable** (`onCall`) | `src/lib/billing.ts` (`httpsCallable`) | Firebase callable protocol |
+| `createCheckoutConfig` / `confirmPayment` / `cancelAutoRenew` | **Callable** (`onCall`) | `src/lib/services/billing.ts` (`httpsCallable`) | Firebase callable protocol |
 | `chat` | **HTTP** (`onRequest`) | `src/lib/api.ts` (`fetch`) | rewrite `/api/chat` → `chat` |
-| `protectedContent` | **HTTP** (`onRequest`) | `/api/content` (gated assets) | rewrite `/api/content` → `protectedContent` |
 
-All are deployed in region `me-central2` (matches `FUNCTIONS_REGION` in `src/lib/firebase.ts`).
+All are deployed in region `me-central1` (the source of truth is `functions/src/region.ts`;
+matches `FUNCTIONS_REGION` in `src/lib/services/firebase.ts`).
 
-## 1. Callable function — `createCheckoutSession`
+## 1. Callable functions — the Moyasar billing callables
 
 For callables, App Check is enforced by the framework via a single option. Match whichever
 generation the backend uses.
 
-**Cloud Functions v2** (`firebase-functions/v2/https`):
+**Cloud Functions v2** (`firebase-functions/https`):
 
 ```ts
-import { onCall } from 'firebase-functions/v2/https';
+import { onCall } from 'firebase-functions/https';
 
-export const createCheckoutSession = onCall(
-  { region: 'me-central2', enforceAppCheck: true }, // reject missing/invalid tokens
+export const createCheckoutConfig = onCall(
+  { region: REGION, enforceAppCheck: true }, // reject missing/invalid tokens
   (request) => {
     // request.app is populated when the App Check token is valid
     // ...existing checkout logic...

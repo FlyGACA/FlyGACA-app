@@ -1,4 +1,4 @@
-import type { Flight } from '../../lib/account';
+import type { Flight } from '@/lib/services/account';
 
 /** A flight without its store id — the shape of the add/edit form draft. */
 export type FlightDraft = Omit<Flight, 'id'>;

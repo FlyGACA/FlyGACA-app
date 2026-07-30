@@ -3,15 +3,16 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useFetchJson } from '../../lib/useFetchJson';
-import { useUrlState } from '../../lib/useUrlState';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { dataUrl, type ChartsIndex, type ChartDoc } from '../../lib/content';
-import { lockBodyScroll, unlockBodyScroll } from '../../lib/scroll-lock';
-import { Disclaimer } from '../../components/Disclaimer';
-import { ExternalLink } from '../../components/ExternalLink';
-import { Alert } from '../../components/Alert';
-import { EmptyState } from '../../components/EmptyState';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { useUrlState } from '@/hooks/useUrlState';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
+import { dataUrl, type ChartsIndex, type ChartDoc } from '@/lib/content';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
+import { Disclaimer } from '@/components/Disclaimer';
+import { ExternalLink } from '@/components/ExternalLink';
+import { Alert } from '@/components/Alert';
+import { EmptyState } from '@/components/EmptyState';
 import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path);
@@ -28,7 +29,7 @@ export function Charts() {
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);
   const [params, setParam] = useUrlState({ chart: '' });
   const [fullscreen, setFullscreen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard();
 
   // The fullscreen viewer covers the viewport — the page behind must not scroll.
   useEffect(() => {
@@ -70,17 +71,8 @@ export function Charts() {
 
   const copyLink = useCallback(() => {
     if (!active) return;
-    const url = `${window.location.origin}${window.location.pathname}?chart=${active.slug}`;
-    navigator.clipboard
-      ?.writeText(url)
-      .then(() => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-      })
-      .catch(() => {
-        /* clipboard blocked — ignore */
-      });
-  }, [active]);
+    void copy(`${window.location.origin}${window.location.pathname}?chart=${active.slug}`);
+  }, [active, copy]);
 
   // Create the Leaflet map once the (data-gated) container is in the DOM.
   const ready = docs.length > 0;

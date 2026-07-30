@@ -24,6 +24,7 @@ const ROUTES = [
   '/disclaimer',
   '/terms',
   '/privacy',
+  '/refund',
   '/safety',
 ];
 

@@ -27,6 +27,8 @@ const PRIVATE = new Set([
   '/logbook',
   '/records',
   '/settings',
+  '/checkout',
+  '/checkout/return',
 ]);
 // The former Guides + Study hubs now redirect to /learn — don't index the redirects
 // (their content + leaf pages live on, and `/learn` carries the hub priority).
@@ -117,7 +119,7 @@ for (const id of livePackIds) urls.set(`/study/packs/${id}`, today);
 
 // Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
 const HUBS = new Set(['/library', '/tools', '/learn', '/guides', '/study']);
-const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/safety']);
+const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/refund', '/safety']);
 function priority(u) {
   if (u === '/') return '1.0';
   if (HUBS.has(u)) return '0.9';
@@ -127,7 +129,7 @@ function priority(u) {
   return '0.6';
 }
 
-// Per-URL hreflang alternates mirror src/lib/seo.ts: English at the clean URL,
+// Per-URL hreflang alternates mirror src/lib/seo/seo.ts: English at the clean URL,
 // Arabic at its real `/ar` document (only where a snapshot exists), and x-default
 // at the clean URL. Head-hreflang (prerender-head.mjs) must stay byte-identical to
 // this — check-prerender.mjs enforces the Arabic side.

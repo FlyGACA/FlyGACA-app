@@ -11,6 +11,3 @@ generate:
     - outputDir: ../../functions/src/dataconnect-admin-generated
       package: "@dataconnect/admin-generated"
       packageJsonDir: ../../functions
-    - outputDir: ../../flygaca-app/src/dataconnect-admin-generated
-      package: "@dataconnect/admin-generated"
-      packageJsonDir: ../../flygaca-app

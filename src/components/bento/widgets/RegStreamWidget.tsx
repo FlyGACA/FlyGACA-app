@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { BentoCard } from '../BentoCard';
-import { useFetchJson } from '../../../lib/useFetchJson';
-import { CORPUS, type GacarIndex } from '../../../lib/content';
+import { BentoCard } from '@/components/bento/BentoCard';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { CORPUS, type GacarIndex } from '@/lib/content';
 import { StatValue } from './StatValue';
-import { StatusPill } from '../../StatusPill';
+import { StatusPill } from '@/components/StatusPill';
 import shared from './widgets.module.css';
 
 /** GACAR regulatory stream — live count of Parts and category streams. */

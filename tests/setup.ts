@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
-import i18n, { applyDocumentLang, type Lang } from '../src/i18n';
+import i18n, { applyDocumentLang, type Lang } from '@/i18n';
 import { initReactI18next } from 'react-i18next';
-import { clearJsonCache } from '../src/lib/content';
-import en from '../src/i18n/en.json';
-import ar from '../src/i18n/ar.json';
+import { clearJsonCache } from '@/lib/content';
+import en from '@/i18n/en.json';
+import ar from '@/i18n/ar.json';
 
 // The runtime JSON loader memoizes per path in a module-level cache; clear it
 // between tests so a stubbed fetch in one test never leaks into the next.
@@ -88,9 +88,6 @@ if (typeof window !== 'undefined') {
     configurable: true,
   });
 }
-
-
-
 
 // jsdom doesn't implement scrollIntoView; components that keep an active item in
 // view (e.g. the command palette) call it in an effect. Make it a no-op.

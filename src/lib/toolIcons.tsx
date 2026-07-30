@@ -19,7 +19,7 @@ import {
   ClipboardText,
   BookOpen,
 } from '@phosphor-icons/react';
-import type { ToolCategoryId } from './tools';
+import type { ToolCategoryId } from '@/lib/tools';
 
 /** The locked stroke weight for the whole tools surface. */
 export const TOOL_ICON_WEIGHT: IconWeight = 'regular';

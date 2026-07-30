@@ -5,7 +5,7 @@ import {
   markOnboardingSeen,
   replayOnboarding,
   useOnboardingSeen,
-} from '../src/lib/onboardingPrefs';
+} from '@/lib/prefs/onboardingPrefs';
 
 const KEY = 'flygaca:onboarding-seen';
 

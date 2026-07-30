@@ -26,7 +26,7 @@ export const claimStaffAccess = onCall(
     timeoutSeconds: 20,
     memory: "256MiB",
     maxInstances: 5,
-    // App Check on the grant surface, matching the Stripe callables — a stolen ID
+    // App Check on the grant surface, matching the billing callables — a stolen ID
     // token alone can't drive it from outside the app.
     enforceAppCheck: true,
   },

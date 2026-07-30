@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseTaf } from '../src/calc/taf';
+import { parseTaf } from '@/calc/taf';
 
 describe('parseTaf', () => {
   const r = parseTaf(
@@ -18,7 +18,9 @@ describe('parseTaf', () => {
     expect(r.groups[2].clouds[0]).toMatchObject({ cover: 'BKN', baseFt: 3000 });
   });
   it('handles FM and PROB groups', () => {
-    const t = parseTaf('TAF OEJN 010500Z 0106/0212 14010KT CAVOK FM011000 18015G25KT PROB30 0114/0118 4000 BR');
+    const t = parseTaf(
+      'TAF OEJN 010500Z 0106/0212 14010KT CAVOK FM011000 18015G25KT PROB30 0114/0118 4000 BR',
+    );
     const types = t.groups.map((g) => g.type);
     expect(types).toContain('FM');
     expect(types).toContain('PROB');

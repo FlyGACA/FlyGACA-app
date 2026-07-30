@@ -6,16 +6,16 @@ import { Footer } from './Footer';
 import { ErrorBoundary } from './ErrorBoundary';
 import { ScrollToTop } from './ScrollToTop';
 import { RouteFallback } from './RouteFallback';
-import { ScrollProgress } from '../components/ScrollProgress';
-import { CommandPalette } from '../components/CommandPalette/CommandPalette';
-import { PwaPrompts } from '../components/pwa/PwaPrompts';
-import { AnalyticsProvider } from '../components/AnalyticsProvider';
-import { useTourOpen } from '../lib/onboardingPrefs';
+import { ScrollProgress } from '@/components/ScrollProgress';
+import { CommandPalette } from '@/components/CommandPalette/CommandPalette';
+import { PwaPrompts } from '@/components/pwa/PwaPrompts';
+import { AnalyticsProvider } from '@/components/AnalyticsProvider';
+import { useTourOpen } from '@/lib/prefs/onboardingPrefs';
 
 // Lazy so the modal + its CSS stay out of the initial bundle (160 kB budget) —
 // only fetched on a genuine first visit to the home route.
-const OnboardingTour = lazy(() => import('../components/onboarding/OnboardingTour'));
-import { useOfflineBookmarkSync } from '../lib/useOfflineSync';
+const OnboardingTour = lazy(() => import('@/components/onboarding/OnboardingTour'));
+import { useOfflineBookmarkSync } from '@/hooks/useOfflineSync';
 
 /** The shared chrome: header + routed page + footer. Replaces the legacy
  *  build-chrome.js stamper — the chrome is now a component, never copied.

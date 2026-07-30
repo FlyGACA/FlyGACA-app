@@ -1,0 +1,18 @@
+{
+ "contentVersion": "2026-07-24",
+ "module": {
+  "id": "elp",
+  "kind": "certificate",
+  "status": "live",
+  "access": "paid",
+  "bankIds": [
+   "radio-elpt",
+   "elpt-phraseology",
+   "elpt-comprehension",
+   "elpt-rating-scale"
+  ],
+  "sheetSlugs": [
+   "saelpt-study-sheet"
+  ]
+ }
+}

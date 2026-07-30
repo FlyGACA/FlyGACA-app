@@ -6,7 +6,7 @@ export interface Tsd {
   timeMin: number;
 }
 
-const ok = (n: number) => Number.isFinite(n) && n > 0;
+import { ok } from './guards';
 
 /** Returns the completed triple, or null if fewer than two inputs are valid. */
 export function solveTsd(gs: number, distNm: number, timeMin: number): Tsd | null {

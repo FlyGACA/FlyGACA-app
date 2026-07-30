@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { bearingPoint, parseRunwayHeading, runwayEnds } from '../../calc/runway';
-import type { Airport } from '../../lib/content';
+import { bearingPoint, parseRunwayHeading, runwayEnds } from '@/calc/runway';
+import type { Airport } from '@/lib/content';
 import styles from './aerodrome.module.css';
 
 interface Props {

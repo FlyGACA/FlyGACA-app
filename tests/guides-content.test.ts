@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import en from '../src/i18n/en.json';
-import ar from '../src/i18n/ar.json';
-import { GUIDE_SLUGS, GUIDE_META, GUIDE_STATUS } from '../src/pages/guides/guides';
+import en from '@/i18n/en.json';
+import ar from '@/i18n/ar.json';
+import { GUIDE_SLUGS, GUIDE_META, GUIDE_STATUS } from '@/pages/guides/guides';
 
 /**
  * Content-completeness guard for guides. The i18n-parity test only checks that
@@ -23,6 +23,12 @@ const enItems = (en as unknown as Bundle).guides.items;
 const arItems = (ar as unknown as Bundle).guides.items;
 
 const nonEmptyStr = (v: unknown): boolean => typeof v === 'string' && v.trim().length > 0;
+
+/** Author-facing markers a *published* guide must never carry. `new-guide.mjs`
+ *  seeds the exact scaffold form `TODO (...)`, but a stray hand-written `TODO`
+ *  or `FIXME` note is just as much a "forgot to finish" signal, so catch both.
+ *  Case-sensitive and word-bounded so ordinary prose can't false-positive. */
+const LEFTOVER_MARKER = /\b(?:TODO|FIXME)\b/;
 
 /** Every author-facing string in a guide item, flattened — used to scan for
  *  unreplaced scaffold placeholders. */
@@ -50,15 +56,19 @@ function checkItem(item: GuideItem | undefined): void {
   for (const key of ['name', 'blurb', 'intro', 'adel'] as const) {
     expect(nonEmptyStr(item[key]), `"${key}" must be a non-empty string`).toBe(true);
   }
-  expect(Array.isArray(item.sections) && item.sections.length > 0, 'sections must be non-empty').toBe(
-    true,
-  );
+  expect(
+    Array.isArray(item.sections) && item.sections.length > 0,
+    'sections must be non-empty',
+  ).toBe(true);
   for (const s of item.sections as { h: unknown; p: unknown }[]) {
     expect(nonEmptyStr(s.h) && nonEmptyStr(s.p), 'each section needs an "h" and "p"').toBe(true);
   }
   const takeaways = item.takeaways as unknown[];
-  expect(Array.isArray(takeaways) && takeaways.length > 0, 'takeaways must be non-empty').toBe(true);
-  for (const tk of takeaways) expect(nonEmptyStr(tk), 'each takeaway must be a non-empty string').toBe(true);
+  expect(Array.isArray(takeaways) && takeaways.length > 0, 'takeaways must be non-empty').toBe(
+    true,
+  );
+  for (const tk of takeaways)
+    expect(nonEmptyStr(tk), 'each takeaway must be a non-empty string').toBe(true);
 }
 
 describe('guide content completeness (EN + AR)', () => {
@@ -77,18 +87,20 @@ describe('guide content completeness (EN + AR)', () => {
   // guide as a draft; the author replaces them before flipping it to 'live'
   // (GUIDE_AUTHORING.md §8). Nothing else catches a publish that skipped that
   // step — placeholders are non-empty strings, so the completeness check above
-  // passes — so a 'live' guide must carry no leftover scaffold placeholder.
+  // passes — so a 'live' guide must carry no leftover scaffold placeholder or
+  // stray TODO/FIXME note left behind while authoring.
   for (const slug of GUIDE_SLUGS) {
     if (GUIDE_STATUS[slug] !== 'live') continue;
-    it(`${slug} (live) has no leftover TODO placeholders`, () => {
+    it(`${slug} (live) has no leftover TODO/FIXME markers`, () => {
       for (const [lang, items] of [
         ['EN', enItems],
         ['AR', arItems],
       ] as const) {
-        const leftover = contentStrings(items[slug]).filter((s) => s.includes('TODO ('));
-        expect(leftover, `${lang} ${slug} still has scaffold placeholders: ${leftover.join(' | ')}`).toEqual(
-          [],
-        );
+        const leftover = contentStrings(items[slug]).filter((s) => LEFTOVER_MARKER.test(s));
+        expect(
+          leftover,
+          `${lang} ${slug} still has an unresolved TODO/FIXME marker: ${leftover.join(' | ')}`,
+        ).toEqual([]);
       }
     });
   }

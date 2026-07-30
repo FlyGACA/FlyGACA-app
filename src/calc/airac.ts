@@ -4,7 +4,7 @@
 
 const ANCHOR = Date.UTC(2020, 0, 2); // AIRAC 2001
 const CYCLE_MS = 28 * 86400000;
-const DAY_MS = 86400000;
+import { DAY_MS } from './recency';
 
 /** Effective time (ms, UTC) of the cycle in force at instant t. */
 function cycleEffective(t: number): number {

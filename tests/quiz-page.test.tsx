@@ -1,9 +1,9 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import i18n from '../src/i18n';
+import i18n from '@/i18n';
 import { renderWithRouter } from './helpers/render';
-import { Quiz } from '../src/pages/study/Quiz';
+import { Quiz } from '@/pages/study/Quiz';
 
 // A minimal QuizData fixture (one bank, one question) matching src/lib/content.ts.
 const fixture = {
