@@ -20,6 +20,13 @@ import { createRateLimiter } from "./rate-limit-core.js";
 import { isPaidActive, type Entitlement } from "./billing-core.js";
 import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
 import { extractApiKey, hashApiKey } from "./api-key-core.js";
+import { apiTier, isOverMonthlyQuota, monthKey, remainingThisMonth, API_TIERS } from "./api-tier-core.js";
+import {
+  anonymousAuthContext,
+  extractBearerToken,
+  toAuthContext,
+  type AuthContext,
+} from "./auth-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
 import type { ChatRequest, ChatTurn } from "./contract.js";
@@ -51,10 +58,16 @@ function parseCookies(cookieHeader: string | undefined): Record<string, string> 
 export class AuthError extends Error {}
 
 /**
- * Verify the Firebase ID token or Session Cookie, and App Check token.
- * Returns the uid when a valid token/session was presented.
+ * Verify the Firebase Session Cookie or ID token (optional → anonymous) and App
+ * Check token (enforced in prod). Returns the caller's auth context — `uid` plus
+ * the `email`/`emailVerified` claims — when a valid session/token was presented; an
+ * anonymous context otherwise. The token-parsing and claim-reading are the pure
+ * `auth-core` helpers; only the `verifySessionCookie` / `verifyIdToken` / App Check
+ * calls live here.
+ *
+ * Exported for unit testing; the route handlers below are the only callers.
  */
-export async function authenticate(req: Request): Promise<{ uid?: string }> {
+export async function authenticate(req: Request): Promise<AuthContext> {
   const appCheckToken = req.header("X-Firebase-AppCheck");
   if (ENFORCE_APP_CHECK.value()) {
     if (!appCheckToken) throw new AuthError("missing App Check token");
@@ -71,24 +84,23 @@ export async function authenticate(req: Request): Promise<{ uid?: string }> {
   if (sessionCookie) {
     try {
       const decoded = await getAuth().verifySessionCookie(sessionCookie, true);
-      return { uid: decoded.uid };
+      return toAuthContext(decoded);
     } catch {
       // If session cookie is expired/invalid, let it fall through to auth header check
     }
   }
 
   // 2. Fall back to Authorization Header (used by native apps / client fallbacks)
-  const authz = req.header("Authorization");
-  const idToken = authz?.startsWith("Bearer ") ? authz.slice(7) : undefined;
+  const idToken = extractBearerToken(req.header("Authorization"));
   if (idToken) {
     try {
       const decoded = await getAuth().verifyIdToken(idToken);
-      return { uid: decoded.uid };
+      return toAuthContext(decoded);
     } catch {
       // An invalid ID token is treated as anonymous, not fatal (mirrors legacy).
     }
   }
-  return {};
+  return anonymousAuthContext();
 }
 
 /**
@@ -288,8 +300,9 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
   // absent/invalid ID token (anonymous) is rejected with 401, distinct from the
   // App Check 403 above.
   let uid: string | undefined;
+  let emailVerified: boolean;
   try {
-    ({ uid } = await authenticate(req));
+    ({ uid, emailVerified } = await authenticate(req));
   } catch (err) {
     if (err instanceof AuthError) {
       res.status(403).json({ error: err.message });
@@ -331,7 +344,12 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
       const credit = await consumeCredit(uid);
       // Structured funnel events (Cloud Logging → offline conversion analysis):
       // hitting the wall is the upsell moment; a spent credit is micro-revenue.
-      logger.info("funnel", { event: credit ? "credit_spent" : "quota_exhausted", uid });
+      // `emailVerified` lets us segment conversion by verified-vs-unverified sign-up.
+      logger.info("funnel", {
+        event: credit ? "credit_spent" : "quota_exhausted",
+        uid,
+        emailVerified,
+      });
       if (!credit) {
         res.setHeader("Retry-After", String(quota.retryAfterSec));
         res.status(429).json({ error: "quota_exceeded" });
@@ -419,9 +437,30 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
   }
 
   const db = getFirestore();
-  const keyDoc = await db.collection("apiKeys").doc(hash).get();
+  // Key doc (auth + tier) and usage doc (monthly meter) read together.
+  const [keyDoc, usageDoc] = await Promise.all([
+    db.collection("apiKeys").doc(hash).get(),
+    db.collection("apiUsage").doc(hash).get(),
+  ]);
   if (!keyDoc.exists || keyDoc.data()?.active === false) {
     res.status(401).json({ error: "invalid api key" });
+    return;
+  }
+
+  // Tier monthly-quota gate. The plan's answer allowance is the metered value we sell;
+  // a key with no `tier` defaults to enterprise (uncapped) so legacy keys aren't
+  // throttled. The per-minute rate limiter above is a separate, coarse safety net.
+  const tier = apiTier(keyDoc.data()?.tier);
+  const month = monthKey(new Date());
+  const usedThisMonth =
+    (usageDoc.data()?.months as Record<string, number> | undefined)?.[month] ?? 0;
+  const quota = API_TIERS[tier].monthlyQuota;
+  if (quota !== null) {
+    res.setHeader("X-Quota-Limit", String(quota));
+    res.setHeader("X-Quota-Used", String(usedThisMonth));
+  }
+  if (isOverMonthlyQuota(usedThisMonth, tier)) {
+    res.status(429).json({ error: "monthly_quota_exceeded", tier, quota });
     return;
   }
 
@@ -433,13 +472,23 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
     return;
   }
 
-  // Meter per key (best-effort; billing/quota reads this offline). Never blocks the
-  // answer on the write.
+  // Meter per key, bucketed by calendar month (best-effort; the quota gate above reads
+  // the month bucket, billing reads it offline). Never blocks the answer on the write.
   void db
     .collection("apiUsage")
     .doc(hash)
-    .set({ count: FieldValue.increment(1), lastUsedAt: FieldValue.serverTimestamp() }, { merge: true })
+    .set(
+      {
+        count: FieldValue.increment(1),
+        lastUsedAt: FieldValue.serverTimestamp(),
+        months: { [month]: FieldValue.increment(1) },
+      },
+      { merge: true },
+    )
     .catch((err) => logger.error("api usage metering failed", { err }));
+
+  const remaining = remainingThisMonth(usedThisMonth + 1, tier);
+  if (remaining !== null) res.setHeader("X-Quota-Remaining", String(remaining));
 
   try {
     const out = await captainAdelFlow(parsed);

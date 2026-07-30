@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach, beforeEach, vi } from 'vitest';
 import { render, cleanup, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import i18n from '../src/i18n';
-import { OfflineDownloads } from '../src/components/pwa/OfflineDownloads';
+import i18n from '@/i18n';
+import { OfflineDownloads } from '@/components/pwa/OfflineDownloads';
 
 const SAVED_KEY = 'flygaca:offline:saved';
 const cachesDelete = vi.fn().mockResolvedValue(true);

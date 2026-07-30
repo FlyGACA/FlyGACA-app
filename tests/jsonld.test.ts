@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SITE_ORIGIN } from '../src/lib/seo';
+import { SITE_ORIGIN } from '@/lib/seo/seo';
 import {
   ORG_ID,
   SITE_ID,
@@ -13,7 +13,7 @@ import {
   softwareAppLd,
   techArticleLd,
   webSiteLd,
-} from '../src/lib/jsonld';
+} from '@/lib/seo/jsonld';
 
 describe('organization + website', () => {
   it('uses stable @id anchors matching the static graph', () => {
@@ -74,7 +74,11 @@ describe('article builders', () => {
     // author + publisher are self-contained Organization nodes (not bare @id refs)
     // so a per-item validator resolves them without the site-wide graph.
     expect(ld.author).toMatchObject({ '@type': 'Organization', '@id': ORG_ID, name: 'Fly GACA' });
-    expect(ld.publisher).toMatchObject({ '@type': 'Organization', '@id': ORG_ID, name: 'Fly GACA' });
+    expect(ld.publisher).toMatchObject({
+      '@type': 'Organization',
+      '@id': ORG_ID,
+      name: 'Fly GACA',
+    });
     // a single revision date is emitted as both datePublished and dateModified.
     expect(ld.datePublished).toBe('2026-01-15');
     expect(ld.dateModified).toBe('2026-01-15');

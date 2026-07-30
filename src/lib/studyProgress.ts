@@ -7,7 +7,7 @@
  * `flygaca:gs:*`) so existing data carries over. Date/streak logic is pure.
  */
 import { useSyncExternalStore } from 'react';
-import { scheduleCard, type SrsEntry } from '../calc/srs';
+import { scheduleCard, type SrsEntry } from '@/calc/study/srs';
 
 const Q_PREFIX = 'flygaca:quiz:';
 const GS_PREFIX = 'flygaca:gs:';
@@ -227,16 +227,6 @@ export function toggleLesson(id: string): void {
     delete gsDone[id];
   }
   commit({ ...state, gsDone });
-}
-
-export function setCardKnown(bankId: string, cardKey: string, known: boolean): void {
-  recordStudyDay();
-  const cur = new Set(state.fcKnown[bankId] ?? []);
-  if (known) cur.add(cardKey);
-  else cur.delete(cardKey);
-  const fcKnown = { ...state.fcKnown, [bankId]: [...cur] };
-  save(FC_KEY, JSON.stringify(fcKnown));
-  commit({ ...state, fcKnown });
 }
 
 /** Grade a flashcard (spaced repetition): promote/reset its box + due date. */

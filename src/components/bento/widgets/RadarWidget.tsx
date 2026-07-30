@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { BentoCard } from '../BentoCard';
-import { useFetchJson } from '../../../lib/useFetchJson';
-import { CORPUS, type GacarIndex } from '../../../lib/content';
+import { BentoCard } from '@/components/bento/BentoCard';
+import { useFetchJson } from '@/hooks/useFetchJson';
+import { CORPUS, type GacarIndex } from '@/lib/content';
 import shared from './widgets.module.css';
 import styles from './RadarWidget.module.css';
 
@@ -22,7 +22,7 @@ interface Blip {
  * so the scope reads as genuine regulatory coverage. Deterministic — no real-time
  * feed — but data-driven rather than decorative.
  */
-function buildBlips(data: GacarIndex | null | undefined): Blip[] {
+export function buildBlips(data: GacarIndex | null | undefined): Blip[] {
   if (!data || data.documents.length === 0) return [];
   const cats = data.categories.map((c) => c.id);
   const nCat = cats.length || 1;

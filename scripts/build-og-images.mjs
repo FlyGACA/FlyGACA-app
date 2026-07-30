@@ -1,6 +1,6 @@
 /**
  * Generate the per-section Open Graph cards (1200×630) referenced by
- * `ogImageFor()` in src/lib/seo.ts. One-shot, idempotent generator — run it when
+ * `ogImageFor()` in src/lib/seo/seo.ts. One-shot, idempotent generator — run it when
  * the template or section list changes (`npm run gen:og`); the PNGs are committed
  * to public/img/ and Vite copies public/ into dist/ verbatim (there is no
  * build-time image step, matching scripts/optimize-images.mjs).

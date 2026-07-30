@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach, beforeEach, vi } from 'vitest';
 import { render, cleanup, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import i18n from '../src/i18n';
-import { InstallButton } from '../src/components/pwa/InstallButton';
+import i18n from '@/i18n';
+import { InstallButton } from '@/components/pwa/InstallButton';
 
 // A synthetic beforeinstallprompt: a real Event carrying a mock prompt() so the
 // hook can capture it and the component can reveal the Install affordance.

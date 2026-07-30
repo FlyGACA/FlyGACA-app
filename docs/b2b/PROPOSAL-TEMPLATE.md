@@ -64,7 +64,10 @@ Readiness = full bank coverage + Mock Exam ≥ **{{PASS_THRESHOLD}}%** (default 
 | **Total** | | | **{{GRAND_TOTAL}}** |
 
 - **Billing:** {{BILLING_TERMS}} (e.g. invoice on signature, net 30 / annual / per-intake).
-- **Payment:** Stripe invoice / bank transfer, in SAR.
+- **Payment:** tax invoice payable by bank transfer (or Moyasar payment link), in SAR. Bank
+  details are supplied on the invoice itself. VAT (15%) is added at invoicing.
+- **Contracting party:** BDA Company International (شركة بدع الدولية), CR 7030976893,
+  VAT 311415259500003, Riyadh, Saudi Arabia — operating as Fly GACA.
 - **Overage:** seats used beyond {{N_SEATS}} are trued-up quarterly at {{OVERAGE_UNIT}}/seat.
 
 ## 6. Responsibilities
@@ -80,7 +83,7 @@ data for its own candidates. No official examination data is transmitted. {{DPA_
 
 ## 8. Acceptance
 
-| {{ORG_NAME}} | Fly GACA |
+| {{ORG_NAME}} | BDA Company International (Fly GACA) |
 | --- | --- |
 | Name: | Name: |
 | Title: | Title: |

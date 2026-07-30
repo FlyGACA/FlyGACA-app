@@ -1,8 +1,8 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import '../src/i18n';
-import { CalcShell } from '../src/components/CalcShell';
+import '@/i18n';
+import { CalcShell } from '@/components/CalcShell';
 
 // CalcShell is the shared frame every calculator follows. The conditional
 // affordances (try-an-example, ask-Adel, formula, related) and the always-on

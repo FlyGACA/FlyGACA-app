@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bearingPoint, parseRunwayHeading, runwayEnds } from '../src/calc/runway';
+import { bearingPoint, parseRunwayHeading, runwayEnds } from '@/calc/runway';
 
 describe('parseRunwayHeading', () => {
   it('expands a runway designator to its heading (number ×10)', () => {

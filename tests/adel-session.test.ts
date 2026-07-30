@@ -1,12 +1,10 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { adelLink } from '../src/lib/adel';
-import { sessionId } from '../src/lib/session';
+import { adelLink } from '@/lib/adel';
+import { sessionId } from '@/lib/session';
 
 describe('adelLink', () => {
   it('builds a chat deep link with the prompt URL-encoded', () => {
-    expect(adelLink('Explain crosswind limits')).toBe(
-      '/chat?q=Explain%20crosswind%20limits',
-    );
+    expect(adelLink('Explain crosswind limits')).toBe('/chat?q=Explain%20crosswind%20limits');
   });
 
   it('encodes characters that are significant in a query string', () => {

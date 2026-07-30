@@ -4,6 +4,8 @@
 
 Important: Fly GACA is **not affiliated with GACA** (the General Authority of Civil Aviation). It is a study and reference aid — it never replaces the official source, and every regulatory answer points to the exact Part/section to verify against the official GACA publication.
 
+Operator: Fly GACA is operated by BDA Company International (شركة بدع الدولية), a Saudi limited-liability company — CR 7030976893, VAT 311415259500003, Riyadh, Saudi Arabia.
+
 ## Library (GACAR regulations & reference)
 
 - [Reference Library](https://flygaca.com/library): Search all 74 GACAR Parts plus FAA, ICAO and GACA reference handbooks, full-text and deep-linked to the exact section.

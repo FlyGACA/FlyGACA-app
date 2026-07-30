@@ -49,27 +49,48 @@ describe('isSectionHeading', () => {
 
   it('rejects running-header noise (id and text variants, spaced or not)', () => {
     expect(
-      isRunningHeaderNoise({ kind: 'h3', id: 'sec-gacar-part-61-x-72', text: 'GACAR PART 61 - CERTIFICATION' }),
+      isRunningHeaderNoise({
+        kind: 'h3',
+        id: 'sec-gacar-part-61-x-72',
+        text: 'GACAR PART 61 - CERTIFICATION',
+      }),
     ).toBe(true);
     expect(
-      isRunningHeaderNoise({ kind: 'h3', id: 'sec-gacar-part105-parachute', text: 'GACAR PART105-PARACHUTE OPERATIONS' }),
+      isRunningHeaderNoise({
+        kind: 'h3',
+        id: 'sec-gacar-part105-parachute',
+        text: 'GACAR PART105-PARACHUTE OPERATIONS',
+      }),
     ).toBe(true);
-    expect(isSectionHeading({ kind: 'h3', id: 'sec-gacar-part-61-x-72', text: 'GACAR PART 61 - X' }, '61')).toBeNull();
+    expect(
+      isSectionHeading(
+        { kind: 'h3', id: 'sec-gacar-part-61-x-72', text: 'GACAR PART 61 - X' },
+        '61',
+      ),
+    ).toBeNull();
   });
 
   it('rejects an inline section cross-reference', () => {
     // "§ 61.5(b)" — number immediately followed by "(" — is a cross-ref, not a heading.
-    expect(isSectionHeading({ kind: 'p', id: null, text: '§ 61.5(b) applies here' }, '61')).toBeNull();
+    expect(
+      isSectionHeading({ kind: 'p', id: null, text: '§ 61.5(b) applies here' }, '61'),
+    ).toBeNull();
   });
 
   it('rejects a TOC line (page-leader dots / trailing page number)', () => {
     expect(
-      isSectionHeading({ kind: 'p', id: null, text: '§ 61.191 Applicability ·113 § 61.193 Eligibility' }, '61'),
+      isSectionHeading(
+        { kind: 'p', id: null, text: '§ 61.191 Applicability ·113 § 61.193 Eligibility' },
+        '61',
+      ),
     ).toBeNull();
   });
 
   it('treats a non-numbered <h3 id> (Definitions) as a heading with section: null', () => {
-    const h = isSectionHeading({ kind: 'h3', id: 'sec-acas-broadcast', text: 'ACAS broadcast.' }, '1');
+    const h = isSectionHeading(
+      { kind: 'h3', id: 'sec-acas-broadcast', text: 'ACAS broadcast.' },
+      '1',
+    );
     expect(h).toEqual({ section: null, title: 'ACAS broadcast', anchor: 'sec-acas-broadcast' });
   });
 });
@@ -177,7 +198,9 @@ describe('splitPartHtml — lineage inheritance', () => {
       '<p>(i) Single-engine;</p>' +
       '<p>(i) Multi-engine.</p>';
     const chunks = splitPartHtml(html, META);
-    const subs = chunks.map((c: Chunk) => c.sub_paragraph).filter((s: string) => s?.startsWith('1_'));
+    const subs = chunks
+      .map((c: Chunk) => c.sub_paragraph)
+      .filter((s: string) => s?.startsWith('1_'));
     expect(subs).toContain('1_i');
     expect(subs).toContain('1_i#2');
   });

@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { BentoCard } from '../BentoCard';
-import { StatusPill } from '../../StatusPill';
-import { CaptainAvatar } from '../../CaptainAvatar';
+import { BentoCard } from '@/components/bento/BentoCard';
+import { StatusPill } from '@/components/StatusPill';
+import { CaptainAvatar } from '@/components/CaptainAvatar';
 import shared from './widgets.module.css';
 
 /**

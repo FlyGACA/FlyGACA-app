@@ -1,9 +1,9 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import i18n from '../src/i18n';
-import { FlightForm } from '../src/components/account/FlightForm';
-import { BLANK_FLIGHT } from '../src/components/account/flight';
+import i18n from '@/i18n';
+import { FlightForm } from '@/components/account/FlightForm';
+import { BLANK_FLIGHT } from '@/components/account/flight';
 
 afterEach(() => {
   cleanup();
@@ -15,7 +15,12 @@ describe('<FlightForm />', () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
     render(
-      <FlightForm initial={BLANK_FLIGHT} submitLabel="Save" onSubmit={onSubmit} onCancel={() => {}} />,
+      <FlightForm
+        initial={BLANK_FLIGHT}
+        submitLabel="Save"
+        onSubmit={onSubmit}
+        onCancel={() => {}}
+      />,
     );
     await user.click(screen.getByRole('button', { name: 'Save' }));
     expect(onSubmit).not.toHaveBeenCalled();
@@ -25,7 +30,12 @@ describe('<FlightForm />', () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
     render(
-      <FlightForm initial={BLANK_FLIGHT} submitLabel="Save" onSubmit={onSubmit} onCancel={() => {}} />,
+      <FlightForm
+        initial={BLANK_FLIGHT}
+        submitLabel="Save"
+        onSubmit={onSubmit}
+        onCancel={() => {}}
+      />,
     );
     await user.type(screen.getByLabelText('Date'), '2026-06-21');
     await user.type(screen.getByLabelText('Type'), 'C172');
@@ -41,7 +51,12 @@ describe('<FlightForm />', () => {
     const user = userEvent.setup();
     const onCancel = vi.fn();
     render(
-      <FlightForm initial={BLANK_FLIGHT} submitLabel="Save" onSubmit={() => {}} onCancel={onCancel} />,
+      <FlightForm
+        initial={BLANK_FLIGHT}
+        submitLabel="Save"
+        onSubmit={() => {}}
+        onCancel={onCancel}
+      />,
     );
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(onCancel).toHaveBeenCalledOnce();

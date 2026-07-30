@@ -1,21 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import en from '../src/i18n/en.json';
-import ar from '../src/i18n/ar.json';
+import en from '@/i18n/en.json';
+import ar from '@/i18n/ar.json';
 
 /** Recursively collects the leaf paths → values of a translation object. */
 function leafEntries(obj: unknown, prefix = ''): [string, unknown][] {
   if (typeof obj !== 'object' || obj === null) return [[prefix, obj]];
-  return Object.entries(obj).flatMap(([k, v]) =>
-    leafEntries(v, prefix ? `${prefix}.${k}` : k),
-  );
+  return Object.entries(obj).flatMap(([k, v]) => leafEntries(v, prefix ? `${prefix}.${k}` : k));
 }
 
 /** The set of i18next interpolation tokens in a string (whitespace-normalized, sorted). */
 function placeholders(value: unknown): string[] {
   if (typeof value !== 'string') return [];
-  return (value.match(/\{\{\s*[^}]+?\s*\}\}/g) ?? [])
-    .map((tok) => tok.replace(/\s+/g, ''))
-    .sort();
+  return (value.match(/\{\{\s*[^}]+?\s*\}\}/g) ?? []).map((tok) => tok.replace(/\s+/g, '')).sort();
 }
 
 const enEntries = leafEntries(en);
@@ -59,9 +55,6 @@ describe('i18n parity (EN ⇄ AR)', () => {
         const b = placeholders(arMap.get(k));
         return a.join('|') !== b.join('|');
       });
-    expect(
-      mismatched,
-      `Placeholder mismatch in: ${mismatched.join(', ')}`,
-    ).toEqual([]);
+    expect(mismatched, `Placeholder mismatch in: ${mismatched.join(', ')}`).toEqual([]);
   });
 });

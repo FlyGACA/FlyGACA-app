@@ -50,8 +50,31 @@ export interface Pack {
   exam?: { questions?: number; minutes?: number; passMark?: number };
 }
 
-/** Flat one-time price per paid pack, in SAR. Mirror of the STRIPE_PRICE_PREP_PACK price. */
-export const PREP_PACK_PRICE = 39;
+/**
+ * One-time pack prices, in SAR. Certificate packs bundle a full licence's material
+ * (topic banks + ground-school modules + a reading path + study sheet + its own timed
+ * mock exam), so they price above single-subject packs. Mirror of the server price env
+ * (`MOYASAR_PRICE_PREP_PACK_CERT_SAR` / `_SUBJECT_SAR`) and `amountForCheckout` in
+ * functions/src/billing-core.ts.
+ */
+export const PREP_PACK_PRICE_CERT = 79;
+export const PREP_PACK_PRICE_SUBJECT = 49;
+
+/** Back-compat alias: the base (single-subject) one-time price. Some copy shows a
+ * single "from" figure. Prefer {@link packPrice} for a specific pack. */
+export const PREP_PACK_PRICE = PREP_PACK_PRICE_SUBJECT;
+
+/**
+ * All-Access Exam Bundle — every paid pack, permanent, one payment. Sold as its own
+ * checkout kind (`bundle`) that grants ownership of all sellable packs. Mirror of the
+ * server `MOYASAR_PRICE_BUNDLE_SAR`.
+ */
+export const EXAM_BUNDLE_PRICE = 199;
+
+/** The one-time SAR price for a specific pack, by its kind. */
+export function packPrice(pack: Pack): number {
+  return pack.kind === 'certificate' ? PREP_PACK_PRICE_CERT : PREP_PACK_PRICE_SUBJECT;
+}
 
 export const PACKS: Pack[] = [
   // ── Certificates & ratings ─────────────────────────────────────────────────
@@ -96,7 +119,7 @@ export const PACKS: Pack[] = [
     kind: 'certificate',
     status: 'live',
     access: 'paid',
-    bankIds: ['radio-elpt'],
+    bankIds: ['radio-elpt', 'elpt-phraseology', 'elpt-comprehension', 'elpt-rating-scale'],
     sheetSlugs: ['saelpt-study-sheet'],
   },
   {
@@ -108,10 +131,70 @@ export const PACKS: Pack[] = [
     pathIds: ['foreign-licence'],
     sheetSlugs: ['conversion-study-sheet'],
   },
-  // Announced, content pending — sold once live (see SELLABLE_PACK_IDS).
-  { id: 'cpl', kind: 'certificate', status: 'soon', access: 'paid', bankIds: [] },
-  { id: 'ir', kind: 'certificate', status: 'soon', access: 'paid', bankIds: [] },
-  { id: 'atpl', kind: 'certificate', status: 'soon', access: 'paid', bankIds: [] },
+  {
+    // CPL: GACAR Part 61 commercial licensing + commercial ops + performance, plus the
+    // shared subject banks. New banks are GACAR-cited; universal-knowledge banks reuse
+    // the shared corpus (see docs/APPS-FAMILY-ROADMAP.md). DRAFT content pending review.
+    id: 'cpl',
+    kind: 'certificate',
+    status: 'live',
+    access: 'paid',
+    bankIds: [
+      'cpl-licensing',
+      'commercial-ops',
+      'commercial-performance',
+      'air-law',
+      'pilot-licensing',
+      'medical',
+      'aircraft-equipment',
+      'weather',
+      'aerodynamics',
+      'human-factors',
+      'navigation',
+      'flight-planning',
+    ],
+    sheetSlugs: ['saudi-cpl-study-sheet'],
+  },
+  {
+    // IR: instrument rating requirements, IFR flight rules and instrument procedures
+    // (GACAR Part 61/91/97 + Saudi AIP ENR), plus the instrument-relevant subject banks.
+    id: 'ir',
+    kind: 'certificate',
+    status: 'live',
+    access: 'paid',
+    bankIds: [
+      'ir-rating',
+      'ifr-rules',
+      'instrument-procedures',
+      'airspace',
+      'aip-ais',
+      'aircraft-equipment',
+      'navigation',
+      'weather',
+      'flight-planning',
+      'radio-elpt',
+    ],
+    sheetSlugs: ['saudi-ir-study-sheet'],
+  },
+  {
+    // ATPL: airline transport pilot licensing + GACAR Part 121 air transport operations
+    // and transport performance/dispatch, plus the shared advanced-knowledge banks.
+    id: 'atpl',
+    kind: 'certificate',
+    status: 'live',
+    access: 'paid',
+    bankIds: [
+      'atpl-licensing',
+      'air-transport-ops',
+      'advanced-weather-performance',
+      'air-law',
+      'aircraft-equipment',
+      'weather',
+      'navigation',
+      'flight-planning',
+      'human-factors',
+    ],
+  },
 
   // ── Subject packs ──────────────────────────────────────────────────────────
   {
@@ -139,7 +222,7 @@ export const PACKS: Pack[] = [
     kind: 'subject',
     status: 'live',
     access: 'paid',
-    bankIds: ['aip-ais', 'airspace'],
+    bankIds: ['aip-ais', 'aip-charts', 'airspace'],
     sheetSlugs: [
       'saudi-aip-study-sheet-en',
       'saudi-aip-study-sheet-ar',
@@ -164,8 +247,6 @@ export const PACKS: Pack[] = [
  * access; it is independent of the app-wide FREE_FOR_EVERYONE promo.
  */
 export const PACKS_GATED = true;
-
-export const PACK_IDS = PACKS.map((p) => p.id);
 
 /** Live packs only — everything with a detail page / that appears in the sitemap. */
 export const LIVE_PACKS = PACKS.filter((p) => p.status === 'live');

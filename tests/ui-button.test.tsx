@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { Button, ButtonLink } from '../src/components/ui/Button';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { renderWithRouter } from './helpers/render';
 
 afterEach(cleanup);

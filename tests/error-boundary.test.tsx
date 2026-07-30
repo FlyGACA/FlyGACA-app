@@ -1,7 +1,7 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
-import '../src/i18n';
-import { ErrorBoundary } from '../src/app/ErrorBoundary';
+import '@/i18n';
+import { ErrorBoundary } from '@/app/ErrorBoundary';
 
 // The top-level boundary keeps the app from white-screening when a route throws:
 // the shared chrome stays mounted and a calm, bilingual fallback is shown.

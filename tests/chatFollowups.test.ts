@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { followupSuggestions } from '../src/calc/chatFollowups';
+import { followupSuggestions } from '@/calc/chat/chatFollowups';
 
 describe('followupSuggestions', () => {
   it('offers none for a refusal', () => {

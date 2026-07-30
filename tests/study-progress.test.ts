@@ -8,7 +8,7 @@ import {
   EXAM_HISTORY_MAX,
   type ExamResult,
   type StudyState,
-} from '../src/lib/studyProgress';
+} from '@/lib/studyProgress';
 
 describe('pushHistory', () => {
   const mk = (pct: number): ExamResult => ({ pct, passed: pct >= 75, date: '2026-06-21' });

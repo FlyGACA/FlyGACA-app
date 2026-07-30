@@ -22,7 +22,7 @@ export interface TasResult {
   isaDev: number;
 }
 
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 export function trueAirspeed({ cas, pa, oat }: TasInput): TasResult | null {
   if (!fin(cas, pa, oat)) return null;

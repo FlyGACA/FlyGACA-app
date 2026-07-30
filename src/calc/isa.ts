@@ -12,7 +12,7 @@ const FT_PER_ISA_DEG = 118.8; // ~feet of density altitude per °C of ISA deviat
 
 export type QnhUnit = 'hpa' | 'inhg';
 
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 /** Pressure altitude (ft) from field elevation and the altimeter setting. */
 export function pressureAltitude(

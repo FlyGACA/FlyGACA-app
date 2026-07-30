@@ -1,11 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Disclaimer } from '../../components/Disclaimer';
-import { usePageMeta } from '../../lib/usePageMeta';
-import { articleLd, breadcrumbLd } from '../../lib/jsonld';
-import { sectionId } from '../../calc/anchor';
-import { useScrollToHash } from '../../lib/useScrollToHash';
+import { Disclaimer } from '@/components/Disclaimer';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { useCopyToClipboardKeyed } from '@/hooks/useCopyToClipboard';
+import { articleLd, breadcrumbLd } from '@/lib/seo/jsonld';
+import { sectionId } from '@/calc/library/anchor';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 import styles from './Prose.module.css';
 
 interface Section {
@@ -24,7 +25,7 @@ const DOCS: { base: LegalBase; path: string; label: string }[] = [
 ];
 
 /** Last revision of the legal copy (ISO) — shown to readers and fed to the Article schema. */
-const LAST_UPDATED = '2026-06-22';
+const LAST_UPDATED = '2026-07-27';
 
 /** Renders a legal/reference page from structured i18n content. */
 export function LegalPage({ base }: { base: LegalBase }) {
@@ -51,15 +52,13 @@ export function LegalPage({ base }: { base: LegalBase }) {
   useScrollToHash();
 
   const sections = t(`${base}.sections`, { returnObjects: true }) as unknown as Section[];
-  const [copied, setCopied] = useState<number | null>(null);
+  const { copiedKey: copied, copy } = useCopyToClipboardKeyed<number>();
 
-  const copyLink = useCallback((i: number, anchor: string) => {
-    const href = `${window.location.origin}${window.location.pathname}#${anchor}`;
-    void navigator.clipboard?.writeText(href).then(() => {
-      setCopied(i);
-      window.setTimeout(() => setCopied((c) => (c === i ? null : c)), 1500);
-    });
-  }, []);
+  const copyLink = useCallback(
+    (i: number, anchor: string) =>
+      void copy(i, `${window.location.origin}${window.location.pathname}#${anchor}`),
+    [copy],
+  );
 
   const updatedLabel = t('legal.lastUpdated', {
     date: new Date(LAST_UPDATED).toLocaleDateString(i18n.language, {

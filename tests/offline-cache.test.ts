@@ -1,6 +1,6 @@
 /**
  * Tests for the "save for offline" Cache API wrapper. The pure list/format
- * helpers live in src/calc/offlineManifest.ts (covered by offlineManifest.test.ts);
+ * helpers live in src/calc/library/offlineManifest.ts (covered by offlineManifest.test.ts);
  * this exercises feature-detection, corrupt-storage fallback and the cache
  * mutators with a stubbed Cache API.
  */
@@ -8,10 +8,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const SAVED_KEY = 'flygaca:offline:saved';
 
-type Mod = typeof import('../src/lib/offlineCache');
+type Mod = typeof import('@/lib/native/offlineCache');
 async function fresh(): Promise<Mod> {
   vi.resetModules();
-  return import('../src/lib/offlineCache');
+  return import('@/lib/native/offlineCache');
 }
 
 /** A minimal in-memory Cache API double. */

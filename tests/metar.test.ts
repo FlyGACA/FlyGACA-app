@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseMetar, parseWind, parseCloud } from '../src/calc/metar';
+import { parseMetar, parseWind, parseCloud } from '@/calc/metar';
 
 describe('parseWind', () => {
   it('parses direction, speed and gust', () => {
@@ -41,6 +41,8 @@ describe('parseMetar', () => {
     expect(r.altimInHg).toBeCloseTo(29.92, 2);
   });
   it('collects weather phenomena', () => {
-    expect(parseMetar('OERK 121200Z 00000KT 3000 +TSRA BKN030 20/18 Q1010').weather).toContain('+TSRA');
+    expect(parseMetar('OERK 121200Z 00000KT 3000 +TSRA BKN030 20/18 Q1010').weather).toContain(
+      '+TSRA',
+    );
   });
 });

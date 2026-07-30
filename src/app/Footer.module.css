@@ -183,6 +183,10 @@
   color: var(--brand-hover);
   text-decoration: none;
 }
+.legalEntity {
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+}
 
 /* --- Bottom bar --- */
 .bottom {

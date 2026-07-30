@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convertAll } from '../src/calc/units';
+import { convertAll } from '@/calc/units';
 
 describe('convertAll', () => {
   it('converts knots to other speeds', () => {

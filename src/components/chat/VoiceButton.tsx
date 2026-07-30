@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { pickSpeechLang } from '../../calc/speech';
+import { pickSpeechLang } from '@/calc/chat/speech';
 import styles from './VoiceButton.module.css';
 
 /**

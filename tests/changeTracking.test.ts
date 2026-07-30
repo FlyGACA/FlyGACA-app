@@ -8,7 +8,7 @@ import {
   watchedChanges,
   type SourceEntry,
   type SourceStatus,
-} from '../src/calc/changeTracking';
+} from '@/calc/library/changeTracking';
 
 // The Updates page reads these pure helpers to tell a Pro user what regulatory
 // sources moved since they last looked. The branches below are that contract.

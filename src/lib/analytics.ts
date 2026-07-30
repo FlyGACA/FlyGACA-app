@@ -1,5 +1,5 @@
 import { track } from '@vercel/analytics';
-import { isNative } from './native-bridge';
+import { isNative } from '@/lib/native/nativeBridge';
 
 /** Whether analytics should run at all: web only (the native App Store builds
  *  stay free of web beacons) and production only (dev/test never emit). */

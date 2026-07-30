@@ -3,13 +3,39 @@
  * regulatory window is supplied by the caller — the tools cite the relevant
  * GACAR Part and tell the user to confirm the exact period there.
  */
-const DAY = 86400000;
+/** One day in milliseconds. The shared constant for every day-count in the app. */
+export const DAY_MS = 86400000;
+
+const DAY = DAY_MS;
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
 export function parseISO(s: string): Date | null {
   if (!ISO.test(s)) return null;
   const d = new Date(`${s}T12:00:00Z`);
   return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/**
+ * The app's one calendar-date format: en-GB, UTC, "4 Jun 2026".
+ *
+ * Pinned to en-GB and UTC on purpose — an aviation date must not drift by a day
+ * with the reader's locale or timezone, and every surface that shows an expiry
+ * (currency board, records, the regulation tools) has to agree character for
+ * character.
+ */
+export function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/** `formatDate` straight from an ISO `YYYY-MM-DD` string; `fallback` when unparseable. */
+export function formatISODate(s: string, fallback = '—'): string {
+  const d = parseISO(s);
+  return d ? formatDate(d) : fallback;
 }
 
 export function addDays(d: Date, n: number): Date {
@@ -23,7 +49,7 @@ export function addMonths(d: Date, n: number): Date {
 }
 
 /** The date `n` days before `now`. */
-export function daysAgo(n: number, now: Date = new Date()): Date {
+function daysAgo(n: number, now: Date = new Date()): Date {
   return addDays(now, -n);
 }
 

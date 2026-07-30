@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { FEATURE_PLAN, hasFeature, type Feature } from '../src/lib/features';
-import type { Entitlement } from '../src/lib/entitlements';
+import { FEATURE_PLAN, hasFeature, type Feature } from '@/lib/services/features';
+import type { Entitlement } from '@/lib/services/entitlements';
 
 // `hasFeature` is the single gate the UI reads to decide whether to show a
 // premium feature or its upsell. Like `effectivePlan`, it never grants access —

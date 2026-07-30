@@ -34,6 +34,7 @@
   --falcon-mist-2: #243749; /* brighter mist — raised border on dark (Design System) */
   --falcon-gold-soft: #e0c588; /* softened gold — gold button hover */
   --ivory: #f5f2ed; /* light reading surface */
+  --pure-white: #fff; /* literal white — third-party brand marks only, never a surface */
 
   /* --- Light reading surfaces + ink (authored per The-Office Design System;
      the app ships dark-first, so these seed future light/reading views) --- */

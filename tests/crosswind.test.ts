@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveCrosswind, runwayHeading } from '../src/calc/crosswind';
+import { resolveCrosswind, runwayHeading } from '@/calc/crosswind';
 
 describe('runwayHeading', () => {
   it('expands a runway designator (≤36) to a heading', () => {

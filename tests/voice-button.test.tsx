@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
-import { VoiceButton } from '../src/components/chat/VoiceButton';
+import { VoiceButton } from '@/components/chat/VoiceButton';
 
 /** A controllable Web Speech API double. */
 class FakeRecognition {

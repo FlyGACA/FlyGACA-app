@@ -70,7 +70,9 @@ jobs:
       # crawlers that decide citations, so a coverage gap must fail the deploy
       # loudly instead of shipping silently.
       - name: Verify prerender coverage
-        run: npm run check:prerender
+        run: |
+          npm run check:prerender
+          npm run check:prerender:coverage
 
       # When a data bucket is configured, mirror the heavy /data corpus to it and
       # drop it from the Hosting release — keeps each release ~12 MB instead of

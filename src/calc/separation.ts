@@ -4,7 +4,7 @@
  * zero. The required minima themselves are set by ATC procedures — this only
  * does the geometry. Pure.
  */
-const fin = (...xs: number[]) => xs.every(Number.isFinite);
+import { fin } from './guards';
 
 export interface Separation {
   /** Closure rate, kt (positive = the follower is catching up). */

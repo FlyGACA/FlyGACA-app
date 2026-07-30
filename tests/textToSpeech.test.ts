@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
-import { ttsSupported, pickTtsLang, toSpeechText } from '../src/calc/textToSpeech';
+import { ttsSupported, pickTtsLang, toSpeechText } from '@/calc/chat/textToSpeech';
 
 afterEach(() => vi.unstubAllGlobals());
 
