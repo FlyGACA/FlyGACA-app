@@ -28,6 +28,10 @@ jobs:
     name: build · deploy hosting${{ github.event_name != 'workflow_dispatch' && ' + rules' || '' }}
     runs-on: ubuntu-latest
     environment: production
+    env:
+      # Optional Slack deploy alerts (see Office/06-operations-it/slack-best-practices.md §8.1).
+      # No-op until the SLACK_WEBHOOK_URL secret is set in this repo's Actions secrets.
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v7
 
@@ -116,3 +120,12 @@ jobs:
       - name: Clean up credentials
         if: always()
         run: rm -f "${RUNNER_TEMP}/firebase-sa.json"
+
+      # Optional: post the deploy result to Slack. Gated on the SLACK_WEBHOOK_URL
+      # secret (mapped to job env above) so it silently no-ops until configured.
+      - name: Notify Slack (deploy result)
+        if: ${{ always() && env.SLACK_WEBHOOK_URL != '' }}
+        run: |
+          curl -fsS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{\"text\": \"*${{ github.repository }}* deploy on \`${{ github.ref_name }}\` → *${{ job.status }}* (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>)\"}"
