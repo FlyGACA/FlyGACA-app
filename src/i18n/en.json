@@ -1887,7 +1887,10 @@
       "csvSelected": "Selected: {{name}}",
       "csvEmpty": "CSV file is empty or contains no valid emails.",
       "csvParseError": "Could not parse CSV file. Ensure it's a valid CSV with emails in the first column.",
-      "csvHint": "Upload a CSV file with email addresses in the first column (one email per row)."
+      "csvHint": "Upload a CSV file with email addresses in the first column (one email per row).",
+      "inputModeLabel": "Email input method",
+      "csvPreviewCount": "{{count}} email(s) parsed",
+      "csvPreviewMore": "+{{count}} more"
     }
   },
   "developers": {

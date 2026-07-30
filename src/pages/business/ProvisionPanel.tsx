@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { provisionSeats } from '@/lib/services/org';
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/scrollLock';
+import { Tabs, Tab } from '@/components/ui/Tabs';
+import { Button } from '@/components/ui/Button';
 import styles from './admin.module.css';
 
 interface ProvisionPanelProps {
@@ -10,10 +13,14 @@ interface ProvisionPanelProps {
   onClose: () => void;
 }
 
+const MODAL_TITLE_ID = 'provision-panel-title';
+const CSV_PREVIEW_LIMIT = 5;
+
 export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: ProvisionPanelProps) {
   const { t } = useTranslation();
   const [emails, setEmails] = useState('');
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvEmails, setCsvEmails] = useState<string[]>([]);
   const [inputMode, setInputMode] = useState<'manual' | 'csv'>('manual');
   const [expiresAt, setExpiresAt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,6 +30,11 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
     success: boolean;
     error?: string;
   }> | null>(null);
+
+  useEffect(() => {
+    lockBodyScroll();
+    return () => unlockBodyScroll();
+  }, []);
 
   const parseCSV = async (file: File): Promise<string[]> => {
     const text = await file.text();
@@ -40,6 +52,7 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
 
     setCsvError('');
     setCsvFile(file);
+    setCsvEmails([]);
 
     try {
       const emailsFromCsv = await parseCSV(file);
@@ -48,6 +61,7 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
         setCsvFile(null);
         return;
       }
+      setCsvEmails(emailsFromCsv);
     } catch {
       setCsvError(t('business.admin.csvParseError'));
       setCsvFile(null);
@@ -93,9 +107,15 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={MODAL_TITLE_ID}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className={styles.modalHead}>
-          <h2>{t('business.admin.addSeats')}</h2>
+          <h2 id={MODAL_TITLE_ID}>{t('business.admin.addSeats')}</h2>
           <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
             ✕
           </button>
@@ -112,9 +132,9 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
                 </li>
               ))}
             </ul>
-            <button type="button" className="btn btn-primary" onClick={onClose}>
+            <Button type="button" variant="primary" onClick={onClose}>
               {t('business.admin.done')}
-            </button>
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className={styles.modalBody}>
@@ -132,29 +152,28 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
               <div className={styles.warning}>{t('business.admin.seatLimitReached')}</div>
             )}
 
-            <div className={styles.inputModeTabs}>
-              <button
-                type="button"
-                className={`${styles.tab} ${inputMode === 'manual' ? styles.tabActive : ''}`}
+            <Tabs label={t('business.admin.inputModeLabel')} className={styles.inputModeTabs}>
+              <Tab
+                active={inputMode === 'manual'}
                 onClick={() => {
                   setInputMode('manual');
                   setCsvError('');
                   setCsvFile(null);
+                  setCsvEmails([]);
                 }}
               >
                 {t('business.admin.tabManual')}
-              </button>
-              <button
-                type="button"
-                className={`${styles.tab} ${inputMode === 'csv' ? styles.tabActive : ''}`}
+              </Tab>
+              <Tab
+                active={inputMode === 'csv'}
                 onClick={() => {
                   setInputMode('csv');
                   setEmails('');
                 }}
               >
                 {t('business.admin.tabCsv')}
-              </button>
-            </div>
+              </Tab>
+            </Tabs>
 
             {inputMode === 'manual' ? (
               <div className={styles.formGroup}>
@@ -179,10 +198,28 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
                   disabled={!canAddMore}
                   className={styles.fileInput}
                 />
-                {csvFile && (
-                  <p className={styles.fileInfo}>
-                    {t('business.admin.csvSelected', { name: csvFile.name })}
-                  </p>
+                {csvFile && csvEmails.length > 0 && (
+                  <div className={styles.csvPreview}>
+                    <p className={styles.fileInfo}>
+                      {t('business.admin.csvSelected', { name: csvFile.name })}
+                      {' — '}
+                      {t('business.admin.csvPreviewCount', { count: csvEmails.length })}
+                    </p>
+                    <ul className={styles.csvPreviewList}>
+                      {csvEmails.slice(0, CSV_PREVIEW_LIMIT).map((email) => (
+                        <li key={email}>
+                          <bdi dir="ltr">{email}</bdi>
+                        </li>
+                      ))}
+                    </ul>
+                    {csvEmails.length > CSV_PREVIEW_LIMIT && (
+                      <p className={styles.csvHint}>
+                        {t('business.admin.csvPreviewMore', {
+                          count: csvEmails.length - CSV_PREVIEW_LIMIT,
+                        })}
+                      </p>
+                    )}
+                  </div>
                 )}
                 {csvError && <p className={styles.csvErrorMsg}>{csvError}</p>}
                 <p className={styles.csvHint}>{t('business.admin.csvHint')}</p>
@@ -201,12 +238,12 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
             </div>
 
             <div className={styles.modalFooter}>
-              <button type="button" className="btn btn-clay" onClick={onClose}>
+              <Button type="button" variant="clay" onClick={onClose}>
                 {t('business.admin.cancel')}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="btn btn-primary"
+                variant="primary"
                 disabled={
                   isSubmitting ||
                   !canAddMore ||
@@ -214,7 +251,7 @@ export function ProvisionPanel({ orgId, seatLimit, seatsUsed, onClose }: Provisi
                 }
               >
                 {isSubmitting ? t('business.admin.provisioning') : t('business.admin.sendInvites')}
-              </button>
+              </Button>
             </div>
           </form>
         )}

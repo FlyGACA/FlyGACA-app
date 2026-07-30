@@ -1,8 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { RequireSession } from '@/pages/account/RequireSession';
 import { Disclaimer } from '@/components/Disclaimer';
+import { EmptyState } from '@/components/EmptyState';
+import { StatStrip } from '@/components/StatStrip';
+import { StatusPill, type StatusTone } from '@/components/StatusPill';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   getMyOrgs,
@@ -72,9 +77,9 @@ function Inner() {
       <section className={`container-narrow ${styles.page}`}>
         <h1>{t('business.admin.title')}</h1>
         <BuyCohortPanel />
-        <p className={styles.muted}>
+        <EmptyState icon="🔒">
           {t('business.admin.noAccess')} <Link to="/schools">{t('business.admin.talkToUs')}</Link>
-        </p>
+        </EmptyState>
         <Disclaimer />
       </section>
     );
@@ -100,50 +105,54 @@ function Inner() {
         </p>
       </header>
 
-      <div className={styles.stats}>
-        <Stat label={t('business.admin.seats')} value={data.counts.total} />
-        <Stat label={t('business.admin.active')} value={data.counts.active} />
-        <Stat label={t('business.admin.ready')} value={data.counts.ready} />
-      </div>
+      <StatStrip
+        stats={[
+          { value: data.counts.total, label: t('business.admin.seats') },
+          { value: data.counts.active, label: t('business.admin.active') },
+          { value: data.counts.ready, label: t('business.admin.ready') },
+        ]}
+      />
 
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>{t('business.admin.col.email')}</th>
-              <th>{t('business.admin.col.seat')}</th>
-              <th>{t('business.admin.col.coverage')}</th>
-              <th>{t('business.admin.col.exam')}</th>
-              <th>{t('business.admin.col.readyCol')}</th>
-              <th>{t('business.admin.col.active')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.rows.map((r) => (
-              <tr key={r.email}>
-                <td>
-                  <bdi dir="ltr">{r.email}</bdi>
-                </td>
-                <td>{t(`business.admin.status.${r.status}`)}</td>
-                <td>{r.coverage}</td>
-                <td>{r.hasProgress ? `${r.examBest}%` : '—'}</td>
-                <td>{readyCell(r, t)}</td>
-                <td>
-                  <bdi dir="ltr">{r.lastActive || '—'}</bdi>
-                </td>
+      <Card>
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>{t('business.admin.col.email')}</th>
+                <th>{t('business.admin.col.seat')}</th>
+                <th>{t('business.admin.col.coverage')}</th>
+                <th>{t('business.admin.col.exam')}</th>
+                <th>{t('business.admin.col.readyCol')}</th>
+                <th>{t('business.admin.col.active')}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {data.rows.map((r) => (
+                <tr key={r.email}>
+                  <td>
+                    <bdi dir="ltr">{r.email}</bdi>
+                  </td>
+                  <td>{statusCell(r, t)}</td>
+                  <td>{r.coverage}</td>
+                  <td>{r.hasProgress ? `${r.examBest}%` : '—'}</td>
+                  <td>{readyCell(r, t)}</td>
+                  <td>
+                    <bdi dir="ltr">{r.lastActive || '—'}</bdi>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
 
       <div className={styles.actions}>
-        <button type="button" className="btn btn-clay" onClick={() => setShowInvitePanel(true)}>
+        <Button type="button" variant="clay" onClick={() => setShowInvitePanel(true)}>
           {t('business.admin.addSeats')}
-        </button>
-        <button type="button" className="btn btn-clay" onClick={() => exportCsv(data)}>
+        </Button>
+        <Button type="button" variant="clay" onClick={() => exportCsv(data)}>
           {t('business.admin.exportCsv')}
-        </button>
+        </Button>
       </div>
 
       {showInvitePanel && (
@@ -161,18 +170,23 @@ function Inner() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className={styles.stat}>
-      <span className={styles.statValue}>{value}</span>
-      <span className={styles.statLabel}>{label}</span>
-    </div>
-  );
+const SEAT_STATUS_TONE: Partial<Record<CohortRow['status'], StatusTone>> = {
+  active: 'success',
+  invited: 'warning',
+  expired: 'danger',
+};
+
+function statusCell(r: CohortRow, t: (k: string) => string): ReactNode {
+  const label = t(`business.admin.status.${r.status}`);
+  const tone = SEAT_STATUS_TONE[r.status];
+  if (!tone) return <span className={styles.muted}>{label}</span>;
+  return <StatusPill tone={tone}>{label}</StatusPill>;
 }
 
-function readyCell(r: CohortRow, t: (k: string) => string): string {
-  if (!r.hasProgress) return '—';
-  return r.ready ? t('business.admin.yes') : t('business.admin.no');
+function readyCell(r: CohortRow, t: (k: string) => string): ReactNode {
+  if (!r.hasProgress) return <span className={styles.muted}>—</span>;
+  if (r.ready) return <StatusPill tone="success">{t('business.admin.yes')}</StatusPill>;
+  return <span className={styles.muted}>{t('business.admin.no')}</span>;
 }
 
 /** Client-side CSV export — same columns as school-cohort-report.mjs. */
