@@ -26,13 +26,14 @@ is granted server-side and read-only on the client.
 ## Pieces
 
 - **Frontend**:
-  - `src/lib/services/billing.ts` — `startProCheckout(plan)` / `startPackCheckout(packId)`
-    navigate to the in-app `/checkout` route (no network call yet); `cancelAutoRenew()` calls the
+  - `src/lib/services/billing.ts` — `startProCheckout(plan)` / `startPackCheckout(packId)` /
+    `startBundleCheckout()` / `startCohortCheckout(orgName)` navigate to the in-app `/checkout` route
+    (no network call yet); `cancelAutoRenew()` calls the
     callable of the same name. `effectivePlan(entitlement)` gates UI; `refreshAccount()` re-reads
     the entitlement after checkout returns.
   - `src/pages/checkout/Checkout.tsx` — the checkout surface itself, handling BOTH legs of a
     purchase:
-    - **Start** (`?kind=pro|student|pass|credits|pack&...`): calls `createCheckoutConfig` to price
+    - **Start** (`?kind=pro|student|pass|credits|pack|bundle|cohort&...`): calls `createCheckoutConfig` to price
       the checkout server-side, then mounts Moyasar's hosted JS widget
       (`cdn.moyasar.com/mpf/…/moyasar.{js,css}`). Card/mada/Apple Pay/STC Pay data goes straight
       from the browser to Moyasar — it never touches this app's servers (PCI SAQ‑A scope).
@@ -66,6 +67,14 @@ is granted server-side and read-only on the client.
 - **All-Access Exam Bundle** (`kind: 'bundle'`, `MOYASAR_PRICE_BUNDLE_SAR`): one payment writes
   ownership of **every** sellable pack into `packEntitlements/{uid}` in a single grant, so the
   storefront's per-pack `ownsPack`/`hasPackAccess` gates all light up with no extra plumbing.
+- **B2B self-serve Cohort** (`kind: 'cohort'`, `MOYASAR_PRICE_COHORT_SAR`): the self-serve slice of
+  the Starter tier in `docs/b2b/PLAN.md` §5 — one payment creates an `orgs/{orgId}` doc
+  (`org-core.buildCohortOrg`) with the buyer as sole owner, `seatLimit: 25` and a 90-day informational
+  `expiresAt`. The buyer lands on `/business/admin?checkout=success` and can invite seats immediately
+  via the existing `provisionSeats` callable — no ops-script (`grant-org.mjs`) step needed for this
+  tier. Academy/Institution stay invoice-only (`/schools`'s contact form). The checkout requires a
+  non-blank `orgName` (`createCheckoutConfig` throws `org-name-required` otherwise); the name is
+  display-only and never affects price or fulfilment.
 - **Collections** (all server-only; deny-all in `firestore.rules`):
   - `checkoutIntents/{id}` — the price/kind/uid a payment must match, written by
     `createCheckoutConfig`, read by `fulfillPayment`.
@@ -169,6 +178,7 @@ MOYASAR_PRICE_PREP_PACK_SAR=49        # legacy flat exam-prep pack price — the
 MOYASAR_PRICE_PREP_PACK_CERT_SAR=79   # certificate packs (PPL/CPL/IR/ATPL/ELP/Conversion)
 MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR=49 # single-subject packs (Medical, AIP)
 MOYASAR_PRICE_BUNDLE_SAR=199          # All-Access Exam Bundle — one payment grants every pack
+MOYASAR_PRICE_COHORT_SAR=6000         # B2B self-serve Cohort — 25 seats, one 90-day intake
 APP_ORIGIN=https://flygaca.com        # used to build Moyasar's callback_url (must be absolute)
 ```
 

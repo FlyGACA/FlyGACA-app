@@ -79,6 +79,61 @@ export function checkSeatLimit(args: {
   return { ok: true };
 }
 
+/** Seats included in one self-serve Cohort purchase (docs/b2b/PLAN.md §5 "Starter —
+ * Cohort"). MUST mirror the tier's published seat cap on /schools and /pricing. */
+export const COHORT_SEAT_LIMIT = 25;
+
+/** Days the purchased intake window covers, from the purchase date — informational
+ * only (seats keep their own optional per-invite expiry set via provisionSeats). */
+export const COHORT_INTAKE_DAYS = 90;
+
+/** Default quiz banks a freshly-created org reports on — the AIP prep pack (the B2B
+ * beachhead product; see docs/b2b/PLAN.md §2). Also the `getCohortReadiness` fallback
+ * for any org whose `banks` field is unset. */
+export const DEFAULT_ORG_BANKS = ["aip-ais", "airspace"] as const;
+
+/** The `orgs/{orgId}` doc a self-serve Cohort purchase creates. Pure so the shape is
+ * unit-tested against the Starter tier definition without a Firebase runtime; the
+ * billing callable (`grantForIntent` in billing.ts) just picks an id and writes this
+ * verbatim on a successful `cohort` checkout. */
+export interface CohortOrgDoc {
+  name: string;
+  ownerUids: string[];
+  seatLimit: number;
+  passThreshold: number;
+  banks: string[];
+  source: "moyasar";
+  createdAt: string;
+  /** End of the purchased intake window — informational; each invited seat keeps its
+   * own optional expiry, set by the owner via provisionSeats. */
+  expiresAt: string;
+}
+
+/**
+ * Build the org doc for a freshly-purchased Cohort: the buyer becomes the sole owner
+ * of a 25-seat, 90-day-intake org they can immediately invite members into via the
+ * existing `provisionSeats` callable — no ops-script step required. `name` falls back
+ * to a generic label when blank so a stale/tampered checkout intent can't crash
+ * fulfilment (the callable validates non-blank before charging).
+ */
+export function buildCohortOrg(
+  uid: string,
+  name: string | null | undefined,
+  now: Date = new Date(),
+): CohortOrgDoc {
+  const trimmed = (name ?? "").trim().slice(0, 120);
+  return {
+    name: trimmed || "Untitled cohort",
+    ownerUids: [uid],
+    seatLimit: COHORT_SEAT_LIMIT,
+    passThreshold: 75,
+    banks: [...DEFAULT_ORG_BANKS],
+    source: "moyasar",
+    createdAt: now.toISOString(),
+    expiresAt: new Date(now.getTime() + COHORT_INTAKE_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+  };
+}
+
 /** A `schoolInvites/{key}` document plus the doc-id key it is written under. */
 export interface BuiltInvite {
   key: string;

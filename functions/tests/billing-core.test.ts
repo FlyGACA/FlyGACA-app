@@ -33,6 +33,7 @@ const env: PriceEnv = {
   prepPackCert: "79",
   prepPackSubject: "49",
   bundle: "199",
+  cohort: "6000",
 };
 
 describe("sarToHalalas", () => {
@@ -66,6 +67,7 @@ describe("amountForCheckout", () => {
     expect(amountForCheckout("pass", undefined, env)).toBe(14900);
     expect(amountForCheckout("credits", undefined, env)).toBe(1900);
     expect(amountForCheckout("bundle", undefined, env)).toBe(19900);
+    expect(amountForCheckout("cohort", undefined, env)).toBe(600000);
   });
 
   it("prices exam-prep packs by kind (certificate above subject)", () => {
@@ -88,6 +90,7 @@ describe("isRecurringKind", () => {
     expect(isRecurringKind("credits")).toBe(false);
     expect(isRecurringKind("pack")).toBe(false);
     expect(isRecurringKind("bundle")).toBe(false);
+    expect(isRecurringKind("cohort")).toBe(false);
   });
 });
 

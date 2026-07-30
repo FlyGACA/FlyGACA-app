@@ -90,6 +90,7 @@ export function Checkout() {
   const kind = params.get('kind');
   const cadence = params.get('cadence') ?? undefined;
   const packId = params.get('packId') ?? undefined;
+  const orgName = params.get('orgName') ?? undefined;
   const ref = params.get('ref') ?? undefined;
   const promo = params.get('promo') ?? undefined;
 
@@ -143,10 +144,17 @@ export function Checkout() {
         if (!fns) throw new Error('billing-unavailable');
         const { httpsCallable } = await import('firebase/functions');
         const createConfig = httpsCallable<
-          { kind: string; cadence?: string; packId?: string; ref?: string; promo?: string },
+          {
+            kind: string;
+            cadence?: string;
+            packId?: string;
+            orgName?: string;
+            ref?: string;
+            promo?: string;
+          },
           CheckoutConfig
         >(fns, 'createCheckoutConfig');
-        const res = await createConfig({ kind, cadence, packId, ref, promo });
+        const res = await createConfig({ kind, cadence, packId, orgName, ref, promo });
         const cfg = res.data;
 
         // Reassure the buyer a code landed — the widget already shows the discounted
@@ -202,7 +210,7 @@ export function Checkout() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentId, kind, cadence, packId, ref, promo]);
+  }, [paymentId, kind, cadence, packId, orgName, ref, promo]);
 
   return (
     <section className={`container-narrow ${styles.page}`}>

@@ -1837,7 +1837,17 @@
     "admin": {
       "title": "Cohort dashboard",
       "loading": "Loading your cohort…",
-      "noAccess": "This dashboard is for school administrators. Your account isn't an admin of any cohort — if you manage a school, ask us to set you up.",
+      "noAccess": "Need the Academy or Institution tier, prefer an invoice, or already work with us?",
+      "talkToUs": "Talk to us",
+      "buyCohort": {
+        "title": "Buy a Cohort",
+        "lead": "SAR {{price}} for up to 25 seats, one 90-day intake. Pay online and start inviting your cohort right away.",
+        "orgNameLabel": "Organisation / school name",
+        "orgNamePlaceholder": "e.g. Riyadh Flight Academy",
+        "cta": "Buy Cohort — SAR {{price}}",
+        "busy": "Opening checkout…",
+        "error": "Couldn't start checkout. Please try again."
+      },
       "subtitle": "Seat status and study readiness (pass mark {{threshold}}%). Readiness is practice progress, not an exam result.",
       "seats": "Seats",
       "active": "Active",
@@ -2002,6 +2012,8 @@
       "intro": "Put a group through structured, bilingual Saudi AIP preparation — ICAO Annex 15, the AIRAC cycle, and the full GEN / ENR / AD structure — with cited practice, a Mock Exam, and a readiness report for your training file. Seat pricing is by invoice; tell us your numbers below.",
       "seatsLabel": "Seats",
       "tagPopular": "Most popular",
+      "buyNow": "Buy now — SAR {{price}}",
+      "buyNowNote": "Self-serve: pay online, then invite up to 25 seats yourself from the admin dashboard.",
       "note": "Preparation only — Fly GACA is not affiliated with GACA and never replaces the official exam or eAIP. Every item cites the exact Part/section.",
       "tiers": [
         {
@@ -2078,6 +2090,7 @@
       "native-billing": "Manage your subscription from the app store.",
       "unknown-checkout-kind": "That checkout isn't recognized. Please start again from Pricing.",
       "unknown-pack": "That pack isn't available for purchase.",
+      "org-name-required": "Enter your organisation or school name to continue.",
       "student-verification-required": "Verify your student email to use the student rate.",
       "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again."
     }

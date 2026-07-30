@@ -22,8 +22,9 @@ export type Cadence = "monthly" | "annual";
 
 /** What a checkout is for. `pro`/`student` are recurring (token-renewed); the rest
  * are one-time purchases. `bundle` is the All-Access Exam Bundle — one payment that
- * permanently grants every sellable pack. */
-export type CheckoutKind = "pro" | "student" | "pass" | "credits" | "pack" | "bundle";
+ * permanently grants every sellable pack. `cohort` is the self-serve B2B Starter tier —
+ * one payment creates a 25-seat, 90-day-intake org (see org-core.buildCohortOrg). */
+export type CheckoutKind = "pro" | "student" | "pass" | "credits" | "pack" | "bundle" | "cohort";
 
 export function isRecurringKind(kind: CheckoutKind): boolean {
   return kind === "pro" || kind === "student";
@@ -49,6 +50,8 @@ export interface PriceEnv {
   prepPackSubject: string;
   /** All-Access Exam Bundle — every sellable pack, permanent, one payment. */
   bundle: string;
+  /** Self-serve B2B Starter ("Cohort") tier — up to 25 seats, one 90-day intake. */
+  cohort: string;
 }
 
 /** Convert a SAR major-unit string to halalas (integer minor units). Throws on a
@@ -88,6 +91,8 @@ export function amountForCheckout(
   }
   case "bundle":
     return sarToHalalas(env.bundle);
+  case "cohort":
+    return sarToHalalas(env.cohort);
   }
 }
 
