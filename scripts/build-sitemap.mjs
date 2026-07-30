@@ -119,7 +119,7 @@ for (const id of livePackIds) urls.set(`/study/packs/${id}`, today);
 
 // Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
 const HUBS = new Set(['/library', '/tools', '/learn', '/guides', '/study']);
-const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/safety']);
+const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/refund', '/safety']);
 function priority(u) {
   if (u === '/') return '1.0';
   if (HUBS.has(u)) return '0.9';
