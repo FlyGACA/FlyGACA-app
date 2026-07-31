@@ -9,7 +9,15 @@ permissions:
   pull-requests: write
 jobs:
   build_and_preview:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    # Same-repo PRs only — forks can't read the service-account secret. Dependabot
+    # is excluded for the same reason: its runs read from the *Dependabot* secret
+    # store, not Actions secrets, so firebaseServiceAccount arrives empty and the
+    # deploy action aborts with "Input required and not supplied:
+    # firebaseServiceAccount". Skipping is correct — a dependency bump has no
+    # preview worth publishing.
+    if: >-
+      ${{ github.event.pull_request.head.repo.full_name == github.repository
+      && github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
