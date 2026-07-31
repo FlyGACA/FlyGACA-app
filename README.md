@@ -268,12 +268,14 @@ npm run preview     # Serve the production build locally
 
 ### Native Mobile Shells
 
-The **iOS project is committed** (`ios/`) — clone, then open it in Xcode. Capacitor 8 uses Swift
-Package Manager, so no CocoaPods. See [`docs/RUNBOOK-native.md`](docs/RUNBOOK-native.md) for details.
+The `ios/`/`android/` platform projects are **generated on the build machine, never committed**
+(`.gitignore` excludes both) — Capacitor 8 uses Swift Package Manager, so no CocoaPods. See
+[`docs/RUNBOOK-native.md`](docs/RUNBOOK-native.md) for the full setup.
 
 ```bash
 npm install         # SPM references node_modules/@capacitor/* — install first
 npm run build       # produce dist/ (cap copies it into the shell)
+npx cap add ios     # generate ios/ (once per machine, or per flavor via npm run flavor:ios)
 npx cap sync ios    # copy web assets + regenerate the SPM manifest
 npm run cap:open    # open ios/App in Xcode → set signing team → run
 ```
