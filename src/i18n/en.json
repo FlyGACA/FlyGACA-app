@@ -3057,13 +3057,13 @@
     "removePreset": "Remove preset"
   },
   "meta": {
-    "home": "Saudi Aviation Library",
-    "library": "GACAR Reference Library",
+    "home": "Saudi Aviation Library - GACAR Study Guide",
+    "library": "GACAR Regulations Library - All 74 Parts",
     "charts": "Saudi VFR Charts",
     "sheets": "Study Sheets",
-    "chat": "Captain Adel, AI Flight Instructor",
-    "tools": "Flight Tools & Calculators",
-    "learn": "Learn, Guides & Study",
+    "chat": "Ask Captain Adel - AI GACAR Instructor",
+    "tools": "Aviation Flight Tools - Crosswind, Density Altitude & More",
+    "learn": "Saudi PPL & ATPL Study Guides - 244 Practice Questions",
     "guides": "Pilot Guides",
     "study": "GACAR Study & Exam Prep",
     "quiz": "Quizzes",
@@ -3086,12 +3086,12 @@
   },
   "metaDesc": {
     "updates": "Track when the Saudi GACAR, AIP and AIP-derived sources change, see the current AIRAC cycle and watch the sources that matter to you. A Fly GACA Pro feature.",
-    "library": "Browse and search all 74 GACAR Parts plus FAA, ICAO and GACA reference handbooks, full-text and deep-linked to the exact section. Independent and free; verify against GACA.",
+    "library": "Browse all 74 GACAR Parts across 6 domains in English and Arabic. The most complete free index of Saudi civil-aviation regulations online.",
     "charts": "Pan and zoom Saudi VFR (visual) charts from the GACA AIP, grouped by region with shareable links. Part of Fly GACA's independent aviation library.",
     "sheets": "One-page study sheets for the Saudi PPL, CPL, IR, Class 1 medical, licence conversion and SAELPT, read or download. Free study aids from Fly GACA.",
-    "chat": "Ask Captain Adel, the AI flight instructor that answers from Saudi GACAR with the exact Part and section cited. Independent study help, always verify against GACA.",
-    "tools": "54 free flight calculators, crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders and more, built for Saudi pilots, instructors and cadets.",
-    "learn": "Learn to fly in Saudi Arabia: plain-language GACAR guides plus active practice, quizzes, flashcards, ground school and a timed mock exam, each citing the exact Part. Free.",
+    "chat": "Ask any question about Saudi aviation regulations. Captain Adel is an AI instructor trained on all 74 GACAR Parts - every answer cites the exact Part and section.",
+    "tools": "55 free aviation calculators: crosswind & headwind components, true airspeed, density altitude, weight & balance. Built for Saudi pilots and students.",
+    "learn": "20 guides and 244 practice questions for Saudi PPL, CPL and ATPL candidates. Covers GACAR requirements, Saudi airspace, METAR/TAF reading, and more.",
     "guides": "Plain-language guides to becoming a pilot in Saudi Arabia: PPL and CPL requirements, the GACA medical, licence conversion and SAELPT, each citing the GACAR Part.",
     "study": "Prepare for Saudi civil-aviation exams with GACAR quizzes, flashcards, ground school and a timed mock exam, every answer linked to the regulation. Free.",
     "quiz": "Practise GACAR written-exam questions across 12 domains, each explanation deep-linked to the cited Part and section. Free Saudi aviation exam prep from Fly GACA.",
@@ -3103,7 +3103,7 @@
     "pricing": "Fly GACA is free to study the Saudi GACAR; go Pro for offline access, exports and prep packs, or equip a whole flight school. Simple monthly or annual plans.",
     "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel, bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",
-    "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel, an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
+    "home": "Free library of all 74 GACAR Parts in English and Arabic. Ask Captain Adel, an AI instructor who cites the exact Part and section. Study for Saudi PPL, CPL & ATPL."
   },
   "dashboard": {
     "eyebrow": "Flight deck",
