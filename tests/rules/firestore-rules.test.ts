@@ -387,9 +387,7 @@ describe('moyasarCustomers & default-deny', () => {
   it('denies a client reading or writing their own auto-renew subscription state', async () => {
     await seed(`subscriptions/${ALICE}`, { autoRenew: true, cadence: 'annual' });
     await assertFails(getDoc(doc(dbFor(ALICE), `subscriptions/${ALICE}`)));
-    await assertFails(
-      setDoc(doc(dbFor(ALICE), `subscriptions/${ALICE}`), { autoRenew: false }),
-    );
+    await assertFails(setDoc(doc(dbFor(ALICE), `subscriptions/${ALICE}`), { autoRenew: false }));
   });
 
   it('denies a client reading the school-invite roster', async () => {
@@ -488,6 +486,43 @@ describe('referral bookkeeping — fully server-only', () => {
     await seed(`referrals/${BOB}`, { referrerUid: ALICE });
     await assertFails(getDoc(doc(dbFor(BOB), `referrals/${BOB}`)));
     await assertFails(setDoc(doc(dbFor(BOB), `referrals/${BOB}`), { referrerUid: ALICE }));
+  });
+});
+
+describe('chatUsage, promoCodes & foundingGrants — fully server-only', () => {
+  it('denies a client reading its own free-question usage counter', async () => {
+    await seed(`chatUsage/${ALICE}`, { day: '2026-07-31', count: 3 });
+    await assertFails(getDoc(doc(dbFor(ALICE), `chatUsage/${ALICE}`)));
+  });
+
+  it('denies a client writing/resetting its own usage counter', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `chatUsage/${ALICE}`), { day: '2026-07-31', count: 0 }),
+    );
+  });
+
+  it('denies a client reading a promo code (codes are priced server-side only)', async () => {
+    await seed('promoCodes/LAUNCH25', { percentOff: 25, redemptions: 4 });
+    await assertFails(getDoc(doc(dbFor(ALICE), 'promoCodes/LAUNCH25')));
+  });
+
+  it('denies a client writing/forging or redeeming a promo code', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), 'promoCodes/LAUNCH25'), { percentOff: 100, redemptions: 0 }),
+    );
+  });
+
+  it('denies a client reading its own founding-grant idempotency marker', async () => {
+    await seed(`foundingGrants/${ALICE}`, { grantedAt: '2026-01-01T00:00:00.000Z' });
+    await assertFails(getDoc(doc(dbFor(ALICE), `foundingGrants/${ALICE}`)));
+  });
+
+  it('denies a client writing/forging a founding-grant marker (self-granting)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(ALICE), `foundingGrants/${ALICE}`), {
+        grantedAt: '2026-01-01T00:00:00.000Z',
+      }),
+    );
   });
 });
 
