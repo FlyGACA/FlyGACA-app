@@ -91,7 +91,13 @@ function getApp(): Promise<FirebaseApp | null> {
       }
     }
     return app;
-  })();
+  })().catch((err) => {
+    // Evict the memo on failure so a later caller can retry (same pattern as
+    // content.ts's loadJson) — a transient chunk 404 or a bad-config throw must
+    // not permanently wedge auth/billing/Firestore for the rest of the tab.
+    appPromise = null;
+    throw err;
+  });
   return appPromise;
 }
 
@@ -103,12 +109,14 @@ function getApp(): Promise<FirebaseApp | null> {
  * token degrades to an unverified request rather than blocking the call.
  */
 export async function getAppCheckToken(): Promise<string | null> {
-  await getApp(); // ensures App Check init was attempted (memoized)
-  if (!appCheck) return null;
   try {
+    await getApp(); // ensures App Check init was attempted (memoized)
+    if (!appCheck) return null;
     const { getToken } = await import('firebase/app-check');
     return (await getToken(appCheck, /* forceRefresh */ false)).token;
   } catch {
+    // Best-effort, per the doc contract: a failed getApp()/getToken degrades to
+    // an unverified request (null token) rather than rejecting the caller.
     return null;
   }
 }
@@ -125,7 +133,10 @@ export function getFirebaseAuth(): Promise<Auth | null> {
       connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
     }
     return auth;
-  })();
+  })().catch((err) => {
+    authPromise = null;
+    throw err;
+  });
   return authPromise;
 }
 
@@ -139,7 +150,10 @@ export function getDb(): Promise<Firestore | null> {
     const db = getFirestore(app);
     if (useEmulator()) connectFirestoreEmulator(db, '127.0.0.1', 8080);
     return db;
-  })();
+  })().catch((err) => {
+    dbPromise = null;
+    throw err;
+  });
   return dbPromise;
 }
 
@@ -153,7 +167,10 @@ export function getFns(): Promise<Functions | null> {
     const fns = getFunctions(app, FUNCTIONS_REGION);
     if (useEmulator()) connectFunctionsEmulator(fns, '127.0.0.1', 5001);
     return fns;
-  })();
+  })().catch((err) => {
+    fnsPromise = null;
+    throw err;
+  });
   return fnsPromise;
 }
 
@@ -173,7 +190,10 @@ export function getAnalyticsClient(): Promise<Analytics | null> {
     const { getAnalytics, isSupported } = await import('firebase/analytics');
     if (!(await isSupported())) return null;
     return getAnalytics(app);
-  })();
+  })().catch((err) => {
+    analyticsPromise = null;
+    throw err;
+  });
   return analyticsPromise;
 }
 
