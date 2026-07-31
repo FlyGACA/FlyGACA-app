@@ -110,11 +110,19 @@ jobs:
 
       - name: Deploy
         run: |
-          # On push to main: hosting + rules + indexes. On manual run: honor the input.
+          # On push to main: hosting + rules. On manual run: honor the input.
+          #
+          # Indexes are deliberately NOT deployed: firestore.indexes.json declares
+          # no indexes and no fieldOverrides, but asking for firestore:indexes still
+          # makes the CLI reconcile against the live index set — a call the deploy
+          # service account isn't permitted to make, which failed every deploy with
+          # "collectionGroups/subscriptions/indexes had HTTP Error: 403". If indexes
+          # ever need managing from CI, grant the SA roles/datastore.indexAdmin and
+          # add firestore:indexes back here.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
             TARGETS="hosting"
           else
-            TARGETS="hosting,firestore:rules,firestore:indexes"
+            TARGETS="hosting,firestore:rules"
           fi
           echo "Deploying: ${TARGETS}"
           npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
