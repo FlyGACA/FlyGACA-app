@@ -6,6 +6,7 @@
   "description": "Fly GACA — independent educational platform and open regulatory library for Saudi civil aviation. Modern TypeScript rebuild of the Fly GACA frontend.",
   "scripts": {
     "dev": "vite",
+    "dev:emu": "node scripts/dev-emu.mjs",
     "build:sitemap": "node scripts/build-sitemap.mjs",
     "build:airports": "node scripts/build-airports.mjs",
     "build:chunks": "node scripts/build-rag-chunks.mjs",
