@@ -77,6 +77,40 @@ function resolveChrome() {
 
 const slug = (r) => (r === '/' ? 'home' : r.replace(/^\/+/, '').replace(/[^\w.-]+/g, '-') || 'home');
 
+/**
+ * A browser context configured for driving this app.
+ *
+ * Two non-obvious settings:
+ *
+ *  * `reducedMotion` — entry animations (stagger-grid fade-up, CountUp) are
+ *    still mid-flight when the DOM first settles, so a screenshot catches the
+ *    home page's stat counters reading 18/14/5 instead of their true 74/55/20.
+ *    This captures the resting state instead. (The repo's own Playwright config
+ *    does the same, for the same reason.)
+ *
+ *  * the init script — a fresh context has empty localStorage, which to this app
+ *    means a first-time visitor, so the 5-step welcome tour mounts as a modal
+ *    over the hero and swallows clicks. Seeding the "seen" flag (the value is
+ *    the tour *version*, see src/lib/onboardingPrefs.ts) suppresses it before
+ *    any app code runs. Set SHOW_TOUR=1 when you actually want to drive it.
+ */
+async function newDriverContext(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    reducedMotion: 'reduce',
+  });
+  if (!process.env.SHOW_TOUR) {
+    await context.addInitScript(() => {
+      try {
+        localStorage.setItem('flygaca:onboarding-seen', '1');
+      } catch {
+        /* storage disabled — the tour will show; not fatal */
+      }
+    });
+  }
+  return context;
+}
+
 /** Wait for the SPA shell to mount and the lazy route chunk to paint. */
 async function waitForApp(page) {
   await page.waitForFunction(
@@ -86,14 +120,32 @@ async function waitForApp(page) {
     },
     { timeout: 30000 },
   );
+  let note = '';
   try {
     // An <h1> is the universal "real content rendered" signal across these
     // pages. Auth-gated pages render a sign-in prompt with no <h1>; expected.
     await page.waitForSelector('h1', { timeout: 10000 });
-    return '';
   } catch {
-    return '  (no <h1> — shell/gate)';
+    note = '  (no <h1> — shell/gate)';
   }
+  // An <h1> is necessary but not sufficient: sections below the fold sit behind
+  // their own lazy chunk + <Suspense>, and their fallback is a *sized* empty
+  // div (the home page's HomeDashboard placeholder is 520 px tall). Screenshot
+  // at this point and you get a big blank band that looks like a broken page.
+  // Wait for any tall fallback placeholder to detach — best-effort, because not
+  // every route has one.
+  await page
+    .waitForFunction(
+      () =>
+        ![...document.querySelectorAll('div[class*="allback"]')].some(
+          (d) => d.getBoundingClientRect().height > 100,
+        ),
+      { timeout: 15000 },
+    )
+    .catch(() => {
+      note += '  (a Suspense placeholder never resolved)';
+    });
+  return note;
 }
 
 /**
@@ -115,7 +167,7 @@ const flows = {
    * runway 34 / wind 290° / 18 kt must resolve to a 340° heading, 13.8 kt of
    * crosswind from the left, 11.6 kt of headwind, at a 50° wind angle — and
    * because calculator state rides the URL, the querystring must pick the
-   * inputs up too (that is the useNumericInputs contract, `nums.<key>`).
+   * inputs up too, then rebuild the same answer on a cold load.
    */
   async crosswind(page) {
     await page.goto(`${BASE_URL}/tools/crosswind`, {
@@ -218,7 +270,10 @@ const flows = {
 const argv = process.argv.slice(2);
 const flowIdx = argv.findIndex((a) => a === '--flow');
 const flowName = flowIdx >= 0 ? argv[flowIdx + 1] : null;
-const routes = argv.filter((a, i) => i !== flowIdx && i !== flowIdx + 1);
+// Drop the "--flow <name>" pair from the route list — but only when it is
+// actually present. Guarding on `flowIdx >= 0` matters: with findIndex's -1,
+// `i !== flowIdx + 1` silently eats argv[0], i.e. the first route.
+const routes = flowIdx >= 0 ? argv.filter((_, i) => i !== flowIdx && i !== flowIdx + 1) : argv;
 
 mkdirSync(SHOTS, { recursive: true });
 
@@ -236,7 +291,7 @@ if (flowName) {
     await browser.close();
     process.exit(2);
   }
-  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const context = await newDriverContext(browser);
   const page = await context.newPage();
   const pageErrors = [];
   page.on('pageerror', (e) => pageErrors.push(e.message));
@@ -266,7 +321,7 @@ if (flowName) {
 } else {
   for (const route of routes.length ? routes : ['/']) {
     // Fresh context per route so a giant-DOM page can't degrade later navigations.
-    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const context = await newDriverContext(browser);
     const page = await context.newPage();
     const consoleErrors = [];
     const pageErrors = [];

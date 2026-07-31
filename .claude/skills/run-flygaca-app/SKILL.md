@@ -5,112 +5,197 @@ description: Build, run, screenshot, and drive the Fly GACA frontend (Vite + Rea
 
 The Fly GACA frontend is a Vite + React + TypeScript single-page app. An agent
 drives it by starting the Vite dev server and pointing the Playwright-based
-driver at it — `.claude/skills/run-flygaca-app/driver.mjs` navigates routes,
-waits for the SPA to mount, and writes a screenshot per route. (`chromium-cli`
-is not available in this environment, so the driver uses Playwright's chromium
-directly.)
+driver at it: `.claude/skills/run-flygaca-app/driver.mjs`. The driver has two
+modes — **screenshot routes**, and **run a flow** that types into real inputs
+and asserts the recomputed output. (`chromium-cli` is not available here, so the
+driver uses Playwright's chromium directly.)
+
+Prefer the driver over hand-rolled Playwright: it already suppresses the
+first-run tour, waits out the lazy dashboard, and freezes entry animations —
+three traps that silently corrupt screenshots (see Gotchas).
 
 All paths below are relative to the repo root (the unit).
 
 ## Prerequisites
 
-No `apt-get` needed — a Playwright chromium is **pre-installed** at
-`/opt/pw-browsers` (`PLAYWRIGHT_BROWSERS_PATH` is already exported), and the
-driver launches it via an explicit `executablePath`. Node 20+ and the repo's
-npm deps are the only requirements.
-
-> Do **not** run `npx playwright install` — browser downloads are blocked here
-> (HTTP 403). The pre-installed binary is what the driver uses.
-
-## Setup
+Node 20+ (this session used v26.5.0) and the repo's npm deps. No `apt-get`, no
+`npx playwright install`: `playwright-core` 1.61.1 wants chromium revision
+**1228**, and that revision was already cached at
+`~/Library/Caches/ms-playwright/chromium-1228`, so `chromium.launch()` resolves
+on its own. `resolveChrome()` in the driver falls back to an explicit
+`executablePath` (macOS/Linux/Windows layouts, plus `/opt/pw-browsers`) for
+environments where the revision doesn't match or downloads are blocked;
+override with `CHROME_PATH` if needed.
 
 ```bash
 npm install
 ```
 
-## Build
-
-```bash
-npm run build        # build:sitemap → tsc -b → vite build, emits dist/
-```
-
 ## Run (agent path)
 
-Start the dev server in the background, wait for it to serve, then drive it:
+Start the dev server in the background, poll until it serves, then drive it:
 
 ```bash
 npm run dev > /tmp/vite.log 2>&1 &                                  # serves http://localhost:5173
-curl -sf -o /dev/null -w '%{http_code}\n' http://localhost:5173     # → 200 once ready (~0.3s)
+curl -sf -o /dev/null -w '%{http_code}\n' http://localhost:5173     # → 200 once ready (~1 poll)
 
-node .claude/skills/run-flygaca-app/driver.mjs / /tools /library /chat
+# screenshot mode — one or more routes
+node .claude/skills/run-flygaca-app/driver.mjs / /tools /library/part-121
+
+# flow mode — real interaction, asserted
+node .claude/skills/run-flygaca-app/driver.mjs --flow crosswind
+node .claude/skills/run-flygaca-app/driver.mjs --flow rtl
 ```
 
-The driver takes one or more **routes** (default `/`), screenshots each, and
-reports console/page errors. Output looks like:
+Screenshot mode reports title + console/page errors per route and writes
+`$SHOTS_DIR/<slug>.png`:
 
 ```
-✓ /  "Fly GACA — Saudi Aviation Library"  → /tmp/shots/home.png
-    ⚠ 2 console error(s): Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID
+✓ /  "Saudi Aviation Library - GACAR Study Guide — Fly GACA"  → /tmp/shots/home.png
+    ✓ no console/page errors
 ```
 
-Screenshots → `/tmp/shots/<slug>.png` (e.g. `home.png`, `tools.png`). Exit code
-is non-zero if any route fails to load/mount or throws a page error (console
-errors are warnings, not failures).
+Flow mode prints one line per assertion and exits non-zero if any fail:
+
+```
+flow: crosswind
+  ✓ runway heading: 340°
+  ✓ crosswind: 13.8 kt
+  ✓ headwind: 11.6 kt
+  ✓ wind angle: 50°
+  ✓ inputs in URL: yes
+  ✓ crosswind restored from URL: 13.8 kt
+  ✓ disclaimer present: yes
+```
+
+`crosswind` types runway 34 / wind 290° / 18 kt into the reference calculator,
+asserts all four outputs, asserts the inputs reached the querystring, then
+cold-loads `?rwy=34&wdir=290&wspd=18` and asserts the same answer rebuilds.
+`rtl` clicks the language toggle and asserts `<html dir>` flips to `rtl` and
+`lang` to `ar`. **Adding a flow is the intended way to extend this** — drop a
+function in the `flows` object returning `{name, got, want}` checks.
 
 | env var | default | purpose |
 |---|---|---|
 | `BASE_URL` | `http://localhost:5173` | point at preview (`:4173`) or another host |
 | `SHOTS_DIR` | `/tmp/shots` | where screenshots land |
-| `CHROME_PATH` | auto (`/opt/pw-browsers/chromium-*/chrome-linux/chrome`) | override the chromium binary |
+| `CHROME_PATH` | auto-resolved | override the chromium binary |
+| `SHOW_TOUR` | unset | set to `1` to let the first-run welcome tour appear |
 
-Stop the dev server when done: `pkill -f vite`.
+Stop the dev server when done — but see the `pkill` gotcha below if an e2e run
+may be in flight:
+
+```bash
+pkill -f "vite$"     # the dev server; leaves `vite preview` (e2e, :4173) alone
+```
 
 ## Run (human path)
 
 ```bash
-npm run dev          # → http://localhost:5173, open in a browser; Ctrl-C to stop
+npm run dev          # → http://localhost:5173; Ctrl-C to stop
 ```
 
-Useless headless — there's no window to see; use the agent path above instead.
+Nothing to see headless — use the agent path.
+
+## Build
+
+```bash
+npm run build        # build:sitemap → tsc -b → vite build → prerender-head
+```
+
+Takes ~12 s and ends with `PWA … precache 253 entries` and
+`prerender-head: wrote 403 route snapshots`.
 
 ## Test
 
 ```bash
-npm run test         # vitest — 37 files, 199 tests pass (incl. i18n EN/AR parity)
+npm run test         # vitest — 121 files, 863 tests
+npm run test:e2e     # playwright — builds, serves :4173, 49 tests (~1 min)
 ```
 
-`npm run test:e2e` (Playwright, builds + serves a preview on :4173) needs a
-chromium matching Playwright's expected revision; the pre-installed binary is a
-different revision and the download is blocked, so e2e doesn't run as-is here.
-The `driver.mjs` agent path sidesteps this by launching the pre-installed binary
-directly.
+**Neither suite fully passes on a machine with a populated `.env.local`** — and
+the failures are the environment's fault, not the code's:
+
+| suite | with the repo's `.env.local` | with Firebase keys blanked |
+|---|---|---|
+| `npm run test` | 5 failed / 858 passed | **863 passed** (121/121 files) |
+| `npm run test:e2e` | 2 failed / 47 passed | **49 passed** |
+
+Every failure is in a *"without Firebase config"* / *"not configured"* test —
+`auth.test.ts`, `billing.test.ts`, `sync.test.ts`, and the e2e
+`account local sign-in` + `pricing Go-Pro stays disabled` specs. See Gotchas for
+the cause and the one-file workaround. CI is unaffected: it builds from
+`.env.example`.
 
 ## Gotchas
 
-- **`npx playwright install` fails (403).** Browser downloads are network-blocked.
-  Use the pre-installed `/opt/pw-browsers` chromium — the driver already resolves it.
-- **Playwright revision mismatch.** The installed Playwright expects a newer
-  chromium revision than the one at `/opt/pw-browsers`, so `chromium.launch()` with
-  no path can't find a browser. The driver passes an explicit `executablePath`,
-  which bypasses the revision lookup and works fine for nav/screenshot.
-- **`ERR_CERT_AUTHORITY_INVALID` console errors are expected** — an external
-  resource (analytics/font CDN) fails its TLS check in this sandbox. The app
-  renders correctly; these are warnings, not app errors.
-- **Don't use a foreground `sleep` to wait for the server** — it's blocked in this
-  harness. Poll with `curl` (as above) instead.
-- **Library document pages render huge DOMs** (a full GACAR Part is ~13k nodes /
-  ~500 KB of text). A full-page screenshot of those can exceed the timeout, so the
-  driver falls back to a clipped top-of-page shot — and, failing that, skips the
-  image while still verifying the DOM mounted. The route is reported `✓`, with a
-  note on the screenshot; it is **not** a failure. Each route also runs in its own
-  browser context so a giant document can't degrade later navigations.
+- **A fresh browser context is a first-time visitor, so the 5-step welcome tour
+  mounts as a modal over the hero** and swallows clicks. It is gated on
+  `localStorage['flygaca:onboarding-seen']` (the value is the tour *version*,
+  `src/lib/onboardingPrefs.ts`). The driver seeds that key in an `addInitScript`
+  before any app code runs; `SHOW_TOUR=1` opts back in.
+- **Waiting for `<h1>` is not enough.** Below-the-fold sections sit behind their
+  own lazy chunk + `<Suspense>`, and the fallback is a *sized* empty div — the
+  home page's `HomeDashboard` placeholder measures 520 px. Screenshot at `h1`
+  and you get a large blank band that reads as a broken page; it resolves by
+  `networkidle`. The driver waits for any tall `*allback*` div to detach.
+- **Without reduced motion, screenshots capture animations mid-flight and the
+  numbers are wrong.** The home page's `CountUp` stats photograph as **18 / 14 /
+  5** instead of their true **74 / 55 / 20**. The driver sets
+  `reducedMotion: 'reduce'` on every context (as the repo's own
+  `playwright.config.ts` does, for the same reason).
+- **The crosswind placeholders are `34` / `290` / `18` — the exact values the
+  flow types in.** A screenshot cannot tell you whether those fields are filled;
+  on a cold load `input.value` is `""` and only the placeholder shows. Assert the
+  computed stats, never the input's appearance.
+- **`LangToggle` renders "ع" but carries `aria-label="Switch language"`,** and
+  aria-label wins for the accessible name — `getByRole('button', {name: /ع/})`
+  never resolves. There are two toggles (header + footer); take `.first()`.
+- **Both test suites fail when `.env.local` carries real Firebase config.** The
+  repo's `.env.local` sets `VITE_FIREBASE_API_KEY` / `PROJECT_ID` / `APP_ID` plus
+  `VITE_FIREBASE_EMULATOR=1`. Vite loads it in every mode, so tests asserting the
+  *unconfigured* path instead find Firebase configured — and, with the emulators
+  up (Firestore `:8080`, Auth `:9099`, UI `:4000`), reach a live backend and get
+  `FirebaseError: 7 PERMISSION_DENIED`. To run either suite as CI sees it, blank
+  the three keys in a mode-specific override, which outranks `.env.local` and is
+  gitignored (`.env.*.local`) — then delete it:
+
+  ```bash
+  # unit tests run in mode "test"; the e2e build runs in mode "production"
+  printf 'VITE_FIREBASE_API_KEY=\nVITE_FIREBASE_PROJECT_ID=\nVITE_FIREBASE_APP_ID=\nVITE_FIREBASE_EMULATOR=0\n' > .env.test.local
+  npm run test; rm -f .env.test.local
+  ```
+
+  Do **not** conclude the app is broken from these failures, and do not "fix"
+  the tests.
+- **A full GACAR Part will not screenshot.** `/library/part-121` (632 KB of HTML)
+  exceeds the timeout for a full-page shot *and* for the clipped fallback, so the
+  driver skips the image and reports `screenshot skipped — page mounted, DOM
+  verified`. That is a `✓`, not a failure.
+- **`/library/part-121` logs a React duplicate-key console error**
+  (`Encountered two children with the same key … sub-h`). Pre-existing, reported
+  as a `⚠` warning, and it does not fail the route.
+- **`pkill -f vite` also kills `vite preview`.** The e2e suite serves the
+  production build on `:4173` via `vite preview`, so pkill-ing "vite" to clean up
+  a dev server mid-run drops the e2e web server too and every spec fails with
+  `net::ERR_CONNECTION_REFUSED at http://localhost:4173`. That error means you
+  shot the server, not that the app is broken. Use `pkill -f "vite$"`-style
+  precision, or just don't clean up while e2e is running.
+- **Don't wait on the server with a foreground `sleep`** — this harness blocks it
+  (`Blocked: sleep 45 followed by …`). Poll with `curl` as shown above; the dev
+  server was ready on the first poll.
 
 ## Troubleshooting
 
-- **`browserType.launch: Executable doesn't exist … run npx playwright install`**:
-  the pre-installed binary wasn't found. Check `ls /opt/pw-browsers/` and set
-  `CHROME_PATH=/opt/pw-browsers/chromium-*/chrome-linux/chrome` to the listed dir.
-- **Driver hangs / `Timeout … waiting for #root`**: the dev server isn't serving.
-  Confirm `curl http://localhost:5173` returns 200 and check `/tmp/vite.log`.
-- **`EADDRINUSE` on `npm run dev`**: a previous server is still up — `pkill -f vite`
-  first.
+- **`browserType.launch: Executable doesn't exist`** — the cached revision
+  doesn't match `playwright-core`. Check `ls ~/Library/Caches/ms-playwright`
+  (Linux: `~/.cache/ms-playwright`) against
+  `node -e "console.log(require('./node_modules/playwright-core/browsers.json').browsers.find(b=>b.name==='chromium').revision)"`
+  and set `CHROME_PATH` to the binary inside the matching `chromium-<rev>` dir.
+- **Driver hangs, or `Timeout … waiting for #root`** — the dev server isn't
+  serving. Confirm `curl http://localhost:5173` returns 200; check `/tmp/vite.log`.
+- **`EADDRINUSE` on `npm run dev`** — a previous server is still up;
+  `pkill -f "vite$"`.
+- **A flow fails on `getByLabel(...)`** — the label text comes from
+  `src/i18n/en.json` and is matched verbatim; if copy changed, re-read the key
+  rather than guessing.
