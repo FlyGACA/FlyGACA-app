@@ -119,7 +119,10 @@ async function launchChromium(chromium) {
   } catch (err) {
     console.warn(`prerender: chromium launch failed (${err.message}); installing browser…`);
     await new Promise((resolve) => {
-      const inst = spawn('npx', ['playwright', 'install', 'chromium'], { cwd: root, stdio: 'ignore' });
+      const inst = spawn('npx', ['playwright', 'install', 'chromium'], {
+        cwd: root,
+        stdio: 'ignore',
+      });
       inst.on('exit', resolve);
       inst.on('error', resolve);
     });
@@ -147,7 +150,17 @@ try {
       await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle', timeout: 30000 });
       // Wait for a real-app element the static shell never contains.
       await page.waitForSelector('footer', { timeout: 15000 });
-      const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
+      // Rendered against the preview server, so Vite's runtime-injected
+      // modulepreload/stylesheet hints resolved to absolute preview-origin URLs
+      // (http://localhost:<port>/assets/…). Strip that origin back to root-relative
+      // before writing, or the snapshot ships dead, CSP-blocked asset URLs to
+      // production — they 404 for real users and break every lazy-loaded route
+      // (Study, Charts, …).
+      const rendered = await page.evaluate(() => document.documentElement.outerHTML);
+      const html = `<!doctype html>\n${rendered}`.replace(
+        new RegExp(`(https?:)?//localhost:${PORT}`, 'g'),
+        '',
+      );
       const file = outPath(route);
       mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, html);
