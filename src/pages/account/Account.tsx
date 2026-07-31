@@ -11,7 +11,7 @@ import { SubscriptionPanel } from '@/components/account/SubscriptionPanel';
 import { refreshAccount, signOut, useAccount } from '@/lib/services/account';
 import { uiPlan } from '@/lib/services/entitlements';
 import { isAuthAvailable, resendEmailVerification } from '@/lib/services/auth';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { AccountSignedOut } from './AccountSignedOut';
 import account from './account.module.css';
 import styles from './AccountPage.module.css';
@@ -57,7 +57,7 @@ export function Account() {
   const { t } = useTranslation();
   // Session-gated dashboard — keep it out of the index (no SEO value; a thin,
   // login-walled page to a crawler).
-  usePageMeta(t('meta.account'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('meta.account'));
   const { session, uid, emailVerified, profile, entitlement, syncError } = useAccount();
   const plan = uiPlan(entitlement);
   const [params, setParams] = useSearchParams();

@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { CaptainAvatar } from '@/components/CaptainAvatar';
 import { openCommandPalette } from '@/components/CommandPalette/openCommandPalette';
 import styles from './NotFound.module.css';
@@ -16,7 +16,7 @@ export function NotFound() {
   const { t } = useTranslation();
   // A SPA can't return a real 404 status, so noindex the soft-404 to keep unknown
   // URLs out of the index instead of letting them rank as thin pages.
-  usePageMeta(t('meta.notFound'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('meta.notFound'));
 
   return (
     <section className={`container-narrow ${styles.page}`}>

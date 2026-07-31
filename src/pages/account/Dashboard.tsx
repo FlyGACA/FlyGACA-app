@@ -24,7 +24,7 @@ import { uiPlan } from '@/lib/services/entitlements';
 import { useFeature } from '@/lib/services/features';
 import { setWidgetOrder, toggleWidget, useDashboardPrefs } from '@/lib/prefs/dashboardPrefs';
 import { moveId } from '@/lib/prefs/toolPrefs';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import {
   dashboardOrder,
   orderedWidgets,
@@ -43,7 +43,7 @@ import { triggerDownload } from '@/lib/download';
 export function Dashboard() {
   const { t } = useTranslation();
   // Session-gated — keep out of the index.
-  usePageMeta(t('meta.dashboard'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('meta.dashboard'));
   return (
     <RequireSession>
       <Inner />

@@ -25,7 +25,7 @@ import {
 import { LogbookTable } from './LogbookTable';
 import { LogbookBreakdown } from './LogbookBreakdown';
 import type { Flight } from '@/lib/services/account';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';
 import styles from './account.module.css';
 import { triggerDownload } from '@/lib/download';
@@ -33,7 +33,7 @@ import { triggerDownload } from '@/lib/download';
 export function Logbook() {
   const { t } = useTranslation();
   // Session-gated — keep out of the index.
-  usePageMeta(t('meta.logbook'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('meta.logbook'));
   return (
     <RequireSession>
       <Inner />

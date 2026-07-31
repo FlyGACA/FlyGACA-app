@@ -45,6 +45,10 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   ask-Captain-Adel entry point — all wired through `src/pages/account/Dashboard.tsx`.
 - **Offline page.** A graceful PWA offline fallback route (`src/pages/Offline.tsx`), backing the
   app-shell precache + network-first `/data/*` caching already configured in `vite.config.ts`.
+- **`usePageMeta` positional filler removed.** Added `useNoindexMeta(title)`
+  (`src/hooks/usePageMeta.ts`) and switched the ten noindex-only call sites (`FlavorSettings`,
+  `Checkout`, `Logbook`, `Settings`, `Account`, `Currency`, `Dashboard`, `Records`, business
+  `Admin`, `NotFound`) off the `undefined, undefined, { noindex: true }` filler.
 
 ## Now — production hardening & go-live confidence
 
@@ -125,9 +129,6 @@ the findings are not re-derived.
   `isAllowedOrigin` CORS policy have no Firebase deps; `functions/tests/gateway.test.ts` has to mock
   `firebase-admin` + genkit just to unit-test `parseRequest`. A `gateway-core.ts` would let those be
   tested with a bare import, like every other core.
-- **[platform]** **`usePageMeta` positional filler.** Ten pages call
-  `usePageMeta(title, undefined, undefined, { noindex: true })`. An options-object signature (or a
-  `useNoindexMeta` wrapper) removes the filler.
 - **[platform]** **Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
   rewrite), `Chat.tsx` (572), `Document.tsx` (513), `content.ts` (455 — ~370 of which are corpus
   type declarations that could move to `content.types.ts`).

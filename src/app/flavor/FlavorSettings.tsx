@@ -5,7 +5,7 @@ import { openExternal } from '@/lib/native/nativeBridge';
 import { LangToggle } from '../../components/LangToggle';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Disclaimer } from '../../components/Disclaimer';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import styles from './flavor.module.css';
 
 /**
@@ -14,7 +14,7 @@ import styles from './flavor.module.css';
  */
 export function FlavorSettings() {
   const { t } = useTranslation();
-  usePageMeta(t('flavor.settings'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('flavor.settings'));
 
   return (
     <section className={`container-narrow ${styles.settingsPage}`}>

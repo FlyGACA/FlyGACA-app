@@ -15,7 +15,7 @@ import {
 } from '@/lib/services/account';
 import { replayOnboarding, openTour } from '@/lib/prefs/onboardingPrefs';
 import { uiPlan } from '@/lib/services/entitlements';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import styles from './account.module.css';
 import { triggerDownload } from '@/lib/download';
 
@@ -25,7 +25,7 @@ const LICENCE_TYPES = ['SPL', 'PPL', 'CPL', 'ATPL'] as const;
 export function Settings() {
   const { t } = useTranslation();
   // Session-gated — keep out of the index.
-  usePageMeta(t('meta.settings'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('meta.settings'));
   return (
     <RequireSession>
       <Inner />
