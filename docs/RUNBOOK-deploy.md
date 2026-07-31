@@ -22,11 +22,13 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 > deployed without the prerender) was removed at the same time — **`deploy.yml` is the only
 > production deploy workflow**.
 
-> **Incident note (2026-07-31):** the Vercel project that had been serving the `flygaca.com` apex
-> was deleted before the DNS cutover to Firebase was completed, leaving `flygaca.com` DNS pointed at
-> Vercel with no deployment behind it (`404 DEPLOYMENT_NOT_FOUND` on every request). Fixed by adding
-> `flygaca.com` + `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing
-> their DNS records at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
+> **Incident note (2026-07-31):** `flygaca.com` was returning Vercel's `404 DEPLOYMENT_NOT_FOUND` on
+> every request — DNS still pointed at Vercel's edge, but the domain wasn't bound to a live
+> deployment there (the Vercel project itself, `fly-gaca/flygaca`, is still active and still builds
+> preview deployments on push; only the `flygaca.com` domain association/alias stopped resolving —
+> root cause on the Vercel side not fully diagnosed). Fixed by adding `flygaca.com` +
+> `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing their DNS records
+> at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
 
 ## Build env vars (set in each platform's build settings)
 
