@@ -45,16 +45,6 @@ const StudyIcon: FC<IconProps> = (p) => (
   </Svg>
 );
 
-/** Grid glyph for the “More” entry. */
-export const MoreIcon: FC<IconProps> = (p) => (
-  <Svg {...p}>
-    <rect x="3" y="3" width="7" height="7" rx="1.5" />
-    <rect x="14" y="3" width="7" height="7" rx="1.5" />
-    <rect x="3" y="14" width="7" height="7" rx="1.5" />
-    <rect x="14" y="14" width="7" height="7" rx="1.5" />
-  </Svg>
-);
-
 const GuidesIcon: FC<IconProps> = (p) => (
   <Svg {...p}>
     <circle cx="12" cy="12" r="10" />

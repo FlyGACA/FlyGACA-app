@@ -81,17 +81,6 @@ export function clearJsonCache(): void {
   jsonCache.clear();
 }
 
-export interface ToolEntry {
-  id: string;
-  route: string;
-  live: boolean;
-}
-
-export interface ToolsManifest {
-  version: number;
-  tools: ToolEntry[];
-}
-
 export interface GacarCategory {
   id: string;
   label: string;
@@ -509,24 +498,4 @@ export interface RegulationRecord {
   references: string[];
   sectionRefs: string[];
   sections: string[];
-}
-
-/**
- * The optimized cross-reference lookup dictionary (public/data/regulations-lookup.json),
- * compiled in CI so the frontend can render "references / referenced by" instantly without
- * re-parsing the corpus. `index.referencedBy` is the reverse graph: slug → Parts that cite it.
- */
-export interface RegulationsLookup {
-  generated: string | null;
-  count: number;
-  parts: Record<string, RegulationRecord>;
-  index: {
-    byPart: string[];
-    referencedBy: Record<string, string[]>;
-  };
-}
-
-/** Load the compiled regulatory cross-reference lookup (cached for the tab session). */
-export function loadRegulationsLookup(): Promise<RegulationsLookup> {
-  return loadJson<RegulationsLookup>('/data/regulations-lookup.json');
 }

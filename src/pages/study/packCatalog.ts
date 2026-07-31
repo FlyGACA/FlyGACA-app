@@ -69,8 +69,6 @@ export const PACKS: Pack[] = [
  */
 export const PACKS_GATED = true;
 
-export const PACK_IDS = PACKS.map((p) => p.id);
-
 /** Total pieces of material a pack bundles, for the "what's inside" count. */
 export function packItemCount(p: Pack): number {
   return (
