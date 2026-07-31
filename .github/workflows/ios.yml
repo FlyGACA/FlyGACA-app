@@ -7,6 +7,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Least privilege: these jobs build, test and upload artifacts. `upload-artifact`
+# uses the Actions runtime token, not GITHUB_TOKEN scopes, so read is enough —
+# and this workflow handles the signing certificate and App Store Connect key,
+# making a write-all token the wrong default here in particular.
+permissions:
+  contents: read
+
 concurrency:
   group: ios-${{ github.ref }}
   cancel-in-progress: true
