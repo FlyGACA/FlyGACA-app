@@ -161,3 +161,8 @@ export function usePageMeta(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, description, pathname, jsonKey, noindex, ogType]);
 }
+
+/** Shorthand for the common noindex-only case (session-gated pages, 404s) — avoids the `undefined, undefined` filler. */
+export function useNoindexMeta(title?: string) {
+  usePageMeta(title, undefined, undefined, { noindex: true });
+}

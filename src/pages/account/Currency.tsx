@@ -6,7 +6,7 @@ import { UpsellCard } from '@/components/UpsellCard';
 import { Disclaimer } from '@/components/Disclaimer';
 import { useAccount } from '@/lib/services/account';
 import { uiIsPro } from '@/lib/services/entitlements';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { computeCurrency, recordCurrency } from '@/calc/pilot/currency';
 import { buildIcs } from '@/calc/pilot/ics';
 import { adelLink } from '@/lib/adel';
@@ -16,7 +16,7 @@ import { triggerDownload } from '@/lib/download';
 export function Currency() {
   const { t } = useTranslation();
   // Session-gated — keep out of the index.
-  usePageMeta(t('meta.currency'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('meta.currency'));
   return (
     <RequireSession>
       <Inner />

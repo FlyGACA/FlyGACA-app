@@ -11,7 +11,7 @@ import {
   useAccount,
   type RecordCategory,
 } from '@/lib/services/account';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { DAY_MS, formatISODate, parseISO } from '@/calc/recency';
 import { EXPIRING_SOON_DAYS, type CurrencyStatus } from '@/calc/pilot/currency';
 import account from './account.module.css';
@@ -41,7 +41,7 @@ function expiryStatus(expires: string): CurrencyStatus | null {
 export function Records() {
   const { t } = useTranslation();
   // Session-gated — keep out of the index.
-  usePageMeta(t('records.title'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('records.title'));
   return (
     <RequireSession>
       <Inner />

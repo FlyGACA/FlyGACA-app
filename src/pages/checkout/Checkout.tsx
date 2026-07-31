@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
 import { Alert } from '@/components/Alert';
 import { Disclaimer } from '@/components/Disclaimer';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { getFns, getFirebaseAuth } from '@/lib/services/firebase';
 import styles from './Checkout.module.css';
 
@@ -78,7 +78,7 @@ function loadWidgetAssets(): Promise<void> {
  */
 export function Checkout() {
   const { t } = useTranslation();
-  usePageMeta(t('checkout.title'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('checkout.title'));
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const formRef = useRef<HTMLDivElement>(null);

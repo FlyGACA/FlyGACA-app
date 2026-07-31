@@ -8,7 +8,7 @@ import { StatStrip } from '@/components/StatStrip';
 import { StatusPill, type StatusTone } from '@/components/StatusPill';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { usePageMeta } from '@/hooks/usePageMeta';
+import { useNoindexMeta } from '@/hooks/usePageMeta';
 import {
   getMyOrgs,
   getCohortReadiness,
@@ -24,7 +24,7 @@ import { triggerDownload } from '@/lib/download';
 /** Cohort admin dashboard — an org owner sees their seats + study readiness. */
 export function BusinessAdmin() {
   const { t } = useTranslation();
-  usePageMeta(t('business.admin.title'), undefined, undefined, { noindex: true });
+  useNoindexMeta(t('business.admin.title'));
   return (
     <RequireSession>
       <Inner />
