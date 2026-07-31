@@ -131,6 +131,16 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
       <br /><sub><b style="color: #8fc9a8;">💳 Pricing</b><br />free core library, Pro upgrade</sub>
     </td>
   </tr>
+  <tr>
+    <td width="50%" align="center" style="padding: 1rem;">
+      <img src="docs/screenshots/review-2026-07/home-first-visit-tour.png" alt="First-visit onboarding tour" width="100%" style="border-radius: 8px; border: 1px solid #2d6e8a20;" />
+      <br /><sub><b style="color: #2d6e8a;">👋 First-visit tour</b><br />onboarding for new pilots</sub>
+    </td>
+    <td width="50%" align="center" style="padding: 1rem;">
+      <img src="docs/screenshots/review-2026-07/mobile-more-sheet.png" alt="Mobile navigation sheet" width="100%" style="border-radius: 8px; border: 1px solid #8fc9a820;" />
+      <br /><sub><b style="color: #8fc9a8;">📱 Mobile navigation</b><br />the full app in your pocket</sub>
+    </td>
+  </tr>
 </table>
 
 <div align="center"><sub style="color: #666;">Screenshots from the live app — explore it at <a href="https://flygaca.com" style="color: #2d6e8a;">flygaca.com</a>.</sub></div>
