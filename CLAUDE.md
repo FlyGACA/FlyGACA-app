@@ -16,21 +16,29 @@ library** (`/library`, documents + charts), **Captain Adel** chat (`/chat`), the
 catalog** (`/tools/*`), a **learn/guides** hub (`/learn`, `/guides/:slug`), **study** tools
 (`/study/*` — quiz, flashcards, ground school, mock exam, paths, exam-prep **packs**, study sheets),
 an authenticated **account** area (`/dashboard`, `/currency`, `/logbook`, `/records`, `/settings`),
-**pricing/schools** (`/pricing`, `/schools`), a **B2B org-admin** cohort dashboard
-(`/business/admin`), and legal pages. `/learn` is the canonical hub — `/study` and `/guides` redirect
-into it (`/study` → `/learn?tab=practice`); don't relink them to the old paths.
+**pricing/schools/checkout** (`/pricing`, `/schools`, `/checkout`), a **licensed Captain Adel API**
+marketing page (`/developers` — see `docs/LICENSED-API.md`), a **B2B org-admin** cohort dashboard
+(`/business/admin`), and legal pages (incl. `/refund`). `/learn` is the canonical hub — `/study` and
+`/guides` redirect into it (`/study` → `/learn?tab=practice`); don't relink them to the old paths.
+Beyond the web app, `apple/` is a native iOS app family (one shared Swift package,
+`apple/FlyGACAKit`, one App Store app per exam-prep pack) built from a **flavor** switch
+(`src/flavors/`, `src/app/flavor/`, `IS_FLAVOR_APP` in `src/router.tsx`) that swaps in a reduced,
+single-pack route tree; `scripts/build-flavor.mjs` slices content per flavor. See
+`apple/ARCHITECTURE.md`, `docs/RUNBOOK-native.md`, and `docs/STORE-SUITE.md`.
 
 The repo also contains the **backend**: `functions/` holds the Firebase Cloud Functions — the
 Express gateway (`chat`) serving `/api/chat` + `/api/feedback` (auth, App Check, rate limiting, free
-daily quota, SSE), the Captain Adel RAG flow (Genkit + Gemini, see
-`docs/DESIGN-genkit-rag-backend.md`), Stripe billing (`stripeWebhook` writes
-`users/{uid}.entitlement`), a referral-code callable, the `claimStaffAccess` and `claimSchoolSeat`
-complimentary/seat-grant callables, and the B2B org callables (`getMyOrgs`, `getCohortReadiness`,
-`provisionSeats`). `functions/src/index.ts` is the single deploy manifest — only triggers exported
-there are deployed. It is its own npm package with its own CI gate — run
-`npm run lint && npm test && npm run build` inside `functions/` when you touch it (root
-`npm run verify` does not cover it). Deploy region is `me-central1` (`functions/src/region.ts`;
-firebase.json's rewrite regions must match).
+daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authenticated, see
+`docs/LICENSED-API.md`), the Captain Adel RAG flow (Genkit + Gemini, see
+`docs/DESIGN-genkit-rag-backend.md`), **Moyasar** billing (`createCheckoutConfig`, `confirmPayment`,
+`cancelAutoRenew`, `moyasarWebhook`, `renewMoyasarSubscriptions`, and `getReferralCode`, all in
+`billing.ts` — writes `users/{uid}.entitlement`), the `claimStaffAccess`, `claimSchoolSeat`, and
+`claimFoundingAccess` (pre-launch grandfather grant) complimentary/seat-grant callables, and the B2B
+org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/src/index.ts` is the
+single deploy manifest — only triggers exported there are deployed. It is its own npm package with
+its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
+it (root `npm run verify` does not cover it). Deploy region is `me-central1`
+(`functions/src/region.ts`; firebase.json's rewrite regions must match).
 
 ## Architecture
 
@@ -78,10 +86,10 @@ firebase.json's rewrite regions must match).
   `FieldGrid`).
 - **Services:** `src/lib/` holds the typed frontend services, grouped by concern:
   `src/lib/services/` (Firebase/account: `firebase`, `auth`, `account`, `sync`, `org`, `staff`,
-  `school`, `entitlements`, `packEntitlements`, `features`, `billing`, `pricing`, `referral`,
-  `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference stores — all built
-  on the `createPrefStore` factory, which owns the listener/snapshot plumbing and the best-effort
-  storage helpers; never hand-roll another `useSyncExternalStore` store here),
+  `school`, `founding`, `entitlements`, `packEntitlements`, `features`, `billing`, `promo`,
+  `pricing`, `referral`, `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference
+  stores — all built on the `createPrefStore` factory, which owns the listener/snapshot plumbing and
+  the best-effort storage helpers; never hand-roll another `useSyncExternalStore` store here),
   `src/lib/seo/` (`seo`, `jsonld`), `src/lib/native/` (`nativeBridge`, `pwa`, `offlineCache`),
   with cross-cutting modules (`api`, `content`, `analytics`, `theme`, …) at the `src/lib/` root.
   `tools.ts` and `prepCatalog.ts` stay pinned at the `src/lib/` root — pipeline scripts under
@@ -107,20 +115,26 @@ firebase.json's rewrite regions must match).
 
 - **Pattern:** every business rule lives in a pure, Firebase-free `*-core.ts` module (e.g.
   `billing-core`, `chat-quota-core`, `rate-limit-core`, `staff-core`, `school-core`, `student-core`,
-  `org-core`, `referral-core`, `feedback-core`, `api-key-core`) so policy is unit-testable in
-  isolation; the
-  Express/Firestore wrappers (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `org.ts`) stay
-  thin. Client-side mirrors (`src/calc/chat/chatQuota.ts`, `src/lib/entitlements.ts`,
-  `src/lib/features.ts`) must match their server core.
+  `org-core`, `referral-core`, `feedback-core`, `api-key-core`, `api-tier-core`, `founding-core`,
+  `promo-core`, `auth-core`) so policy is unit-testable in isolation; the Express/Firestore wrappers
+  (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `founding.ts`, `org.ts`) stay thin.
+  Client-side mirrors (`src/calc/chat/chatQuota.ts`, `src/lib/services/entitlements.ts`,
+  `src/lib/services/features.ts`) must match their server core.
 - **Entitlement is server-owned.** `users/{uid}.entitlement` is written **only** by Cloud Functions
-  through the Admin SDK (which bypasses `firestore.rules`): `stripeWebhook` (Stripe tiers),
-  `claimStaffAccess` (`staff.ts`), and `claimSchoolSeat` (`school.ts`); B2B seats are provisioned via
-  `provisionSeats` (`org.ts`). Grants only ever upgrade — a grant never downgrades, so it can't
-  clobber a paid plan. Clients can never write `entitlement` (rules forbid it). A domain/staff/student
-  match is honoured **only for a verified email** — email verification is the ownership proof. The app
-  never grants; it only reads `entitlement` to gate UI.
+  through the Admin SDK (which bypasses `firestore.rules`): the **Moyasar** billing callables
+  (`billing.ts` — `createCheckoutConfig`/`confirmPayment`/`moyasarWebhook`), `claimStaffAccess`
+  (`staff.ts`), `claimSchoolSeat` (`school.ts`), and `claimFoundingAccess` (`founding.ts` —
+  one-time, time-limited Pro grant for accounts created before the launch cutoff); B2B seats are
+  provisioned via `provisionSeats` (`org.ts`). Grants only ever upgrade — a grant never downgrades,
+  so it can't clobber a paid plan. Clients can never write `entitlement` (rules forbid it). A
+  domain/staff/student match is honoured **only for a verified email** — email verification is the
+  ownership proof. The app never grants; it only reads `entitlement` to gate UI. Checkout supports
+  server-validated promo codes (`promo-core.ts`, `promoCodes/{code}`) applied only to the first
+  charge — the client passes the code string, never a price.
 - Docs: `docs/DESIGN-genkit-rag-backend.md`, `docs/BILLING.md`, `docs/APP-CHECK-BACKEND.md`,
-  `docs/b2b/` (org-admin dashboard + study-progress-sync design).
+  `docs/LICENSED-API.md` (the `/v1/ask` metered API, `api-tier-core.ts` tiers),
+  `docs/PRICING-REVENUE-STRATEGY.md`, `docs/b2b/` (org-admin dashboard + study-progress-sync
+  design).
 
 ## Hosting & deploy
 
@@ -128,7 +142,7 @@ The single Vite build (`dist/`) is served from several fronts, all pointing at t
 Cloud Functions gateway for `/api/*`:
 
 - **Firebase Hosting** (`flygaca-app.web.app`) is the **canonical origin** that fronts the Cloud
-  Functions (`chat`, `stripeWebhook`). `npm run deploy` builds → `prerender` → coverage check →
+  Functions (`chat`, `moyasarWebhook`). `npm run deploy` builds → `prerender` → coverage check →
   `firebase deploy`.
 - **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) and the **Netlify** / **Vercel**
   mirrors each serve `dist/` and **proxy `/api/*` back to the Firebase origin** as a same-origin
@@ -184,8 +198,10 @@ assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory co
 
 `MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
 `GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
-`SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility), and `docs/` (design, billing,
-`RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `b2b/` designs). The legacy source (the original vanilla
+`SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility), `docs/ARCHITECTURE-BLUEPRINT.md`
+(platform-wide technical blueprint), and `docs/` generally (design, billing, `RUNBOOK-deploy.md` /
+`DATA-HOSTING.md`, `LICENSED-API.md`, `PRICING-REVENUE-STRATEGY.md`, `RUNBOOK-native.md` /
+`STORE-SUITE.md` (the iOS app family), `b2b/` designs). The legacy source (the original vanilla
 Fly GACA site) remains the reference for anything still ported from the old site.
 
 `archive/` is parked non-app material — vendored third-party reference collections, the per-tool
