@@ -17,6 +17,7 @@ Operator: Fly GACA is operated by BDA Company International (شركة بدع ا�
 ## Tools (flight calculators)
 
 - [Flight Tools & Calculators](https://flygaca.com/tools): 55 free calculators — crosswind, density altitude, TAS, weight & balance, METAR/TAF decoders, and more.
+- [Kingdom Airspace HUD](https://flygaca.com/hud): An interactive, fully simulated training view of Saudi airspace — animated scenario traffic over real AIP CTR/TMA zones. Not real air traffic.
 
 ## Guides
 

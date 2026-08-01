@@ -330,6 +330,12 @@
         "concept": "{{parts}} GACAR Parts across {{domains}} domains",
         "cta": "Open the regulations"
       },
+      "hud": {
+        "eyebrow": "Airspace HUD",
+        "heading": "Watch the Kingdom's airspace come alive",
+        "note": "Simulated training scenario — not real traffic",
+        "cta": "Open the HUD"
+      },
       "reg": {
         "live": "Live",
         "heading": "GACAR regulations",
@@ -3500,6 +3506,7 @@
     "verify": "Verify",
     "contact": "Contact",
     "flightTools": "Flight tools",
+    "airspaceHud": "Airspace HUD (simulated)",
     "disclaimerLink": "Disclaimer",
     "terms": "Terms of Use",
     "privacy": "Privacy Notice",

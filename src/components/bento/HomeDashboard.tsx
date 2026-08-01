@@ -3,6 +3,7 @@ import { BentoGrid } from './BentoGrid';
 import { AdelFeatureWidget } from './widgets/AdelFeatureWidget';
 import { SearchFeatureWidget } from './widgets/SearchFeatureWidget';
 import { RadarWidget } from './widgets/RadarWidget';
+import { HudWidget } from './widgets/HudWidget';
 import { RegStreamWidget } from './widgets/RegStreamWidget';
 import { ComplianceWidget } from './widgets/ComplianceWidget';
 import { ToolsWidget } from './widgets/ToolsWidget';
@@ -26,6 +27,7 @@ export default function HomeDashboard() {
         <AdelFeatureWidget />
         <SearchFeatureWidget />
         <RadarWidget />
+        <HudWidget />
         <RegStreamWidget />
         <ComplianceWidget />
         <ToolsWidget />

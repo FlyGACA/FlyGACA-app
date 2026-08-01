@@ -125,6 +125,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/hud" viewTransition>
+                  {t('footer.airspaceHud')}
+                </Link>
+              </li>
+              <li>
                 <Link to="/pricing" viewTransition>
                   {t('nav.pricing')}
                 </Link>
