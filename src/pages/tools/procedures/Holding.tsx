@@ -6,6 +6,7 @@ import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { holdTiming, holdingEntry } from '@/calc/holding';
 import seg from '@/components/calc/calc.module.css';
+import { HoldingDiagram } from './HoldingDiagram';
 
 export function Holding() {
   const { t } = useTranslation();
@@ -114,6 +115,9 @@ export function Holding() {
           value={timing?.fuel != null ? `${Math.round(timing.fuel)}` : '—'}
         />
       </OutputGrid>
+      {entry != null && (
+        <HoldingDiagram inboundDeg={nums.inbound} entry={entry} rightTurns={right} />
+      )}
     </CalcShell>
   );
 }

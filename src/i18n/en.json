@@ -997,6 +997,8 @@
     "wca": "Wind-correction angle",
     "heading": "Heading to fly",
     "gs": "Groundspeed",
+    "legendWind": "Wind",
+    "diagramLabel": "Wind triangle diagram: heading {{hdg}}° with wind from {{wdir}}° at {{wspd}} kt gives {{gs}} kt groundspeed.",
     "formula": "WCA = asin(wind × sin(wind − course) ÷ TAS). Heading = course + WCA; groundspeed = TAS·cos(WCA) − wind·cos(wind − course)."
   },
   "greatCircle": {
@@ -1147,6 +1149,7 @@
     "direct": "Direct",
     "parallel": "Parallel",
     "teardrop": "Teardrop",
+    "diagramLabel": "Holding diagram: {{entry}} entry, inbound {{inbound}}°, {{turns}} turns.",
     "formula": "Entry sectors (standard right turns): Direct spans 180°, Parallel 110° and Teardrop 70° relative to the inbound course. A lap is two legs plus two 180° turns (~1 min each)."
   },
   "separation": {

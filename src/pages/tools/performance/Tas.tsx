@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { trueAirspeed } from '@/calc/tas';
 import { NumberField } from '@/components/calc/NumberField';
+import { GaugeDial } from '@/components/calc/GaugeDial';
 
 const EXAMPLE = { cas: '110', pa: '8000', oat: '10' };
 
@@ -79,6 +80,9 @@ export function Tas() {
           value={r ? `${r.isaDev >= 0 ? 'ISA+' : 'ISA'}${Math.round(r.isaDev)}°C` : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <GaugeDial label={t('tas.trueAirspeed')} value={r.tas} min={0} max={400} unit="KT" />
+      )}
     </CalcShell>
   );
 }
