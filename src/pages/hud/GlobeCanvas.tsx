@@ -57,8 +57,8 @@ function cssVar(name: string, fallback: string): string {
 const matchesFilter = (kind: FleetKind, filter: FleetFilter): boolean =>
   filter === 'all' ? true : filter === 'commercial' ? kind === 'jet' : kind === 'drone';
 
-/** Home view over the Kingdom. */
-const HOME_CAM: Camera = { lat0: 24.5, lon0: 45, zoom: 1.7 };
+/** Home view over the Kingdom (zoomed so the peninsula fills the viewport). */
+const HOME_CAM: Camera = { lat0: 24.5, lon0: 45, zoom: 2.6 };
 const GRATICULE = graticule(15);
 const CORRIDOR_LINE = sampleGreatCircle(DRONE_CORRIDOR.a, DRONE_CORRIDOR.b, 12);
 
@@ -325,10 +325,10 @@ export function GlobeCanvas({
           const shade = nightPath(sun, camRef.current);
           ctx.fillStyle = palette.shade;
           if (shade.kind === 'full') {
-            ctx.globalAlpha = 0.3;
+            ctx.globalAlpha = 0.22;
             ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
           } else if (shade.kind === 'path') {
-            ctx.globalAlpha = 0.3;
+            ctx.globalAlpha = 0.22;
             ctx.beginPath();
             shade.points.forEach((p, i) => {
               const x = cx + p.x * R;
@@ -382,7 +382,8 @@ export function GlobeCanvas({
           ctx.beginPath();
           ctx.arc(x, y, 1.8, 0, Math.PI * 2);
           ctx.fill();
-          if (camRef.current.zoom >= 1.25) {
+          // Labels only once the Kingdom is reasonably large, to avoid clutter.
+          if (camRef.current.zoom >= 1.9) {
             ctx.globalAlpha = 0.7;
             ctx.fillText(hubPt.code, x + 4, y + 3);
           }

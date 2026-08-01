@@ -11,6 +11,7 @@ import { renderWithRouter } from './helpers/render';
 import { StatValue } from '@/components/bento/widgets/StatValue';
 import { ToolsWidget } from '@/components/bento/widgets/ToolsWidget';
 import { LearnWidget } from '@/components/bento/widgets/LearnWidget';
+import { HudWidget } from '@/components/bento/widgets/HudWidget';
 import { TOOLS } from '@/lib/tools';
 import { GUIDE_SLUGS } from '@/pages/guides/guides';
 
@@ -63,5 +64,15 @@ describe('LearnWidget', () => {
     );
     renderWithRouter(<LearnWidget />);
     await waitFor(() => expect(screen.getByText('5')).toBeInTheDocument());
+  });
+});
+
+describe('HudWidget', () => {
+  it('links to /hud and keeps the simulated-scenario framing visible', () => {
+    renderWithRouter(<HudWidget />);
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/hud');
+    // The SIM note is the honesty guard — the teaser must never read as live.
+    expect(screen.getByText(/simulated training scenario/i)).toBeInTheDocument();
+    expect(screen.getByText(/FALCON-07/)).toBeInTheDocument();
   });
 });
