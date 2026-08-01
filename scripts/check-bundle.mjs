@@ -23,8 +23,10 @@ const DIST = 'dist';
 // its shared helpers (calc/guards, calc/recency date fns, components/validityStatus,
 // prefs/createPrefStore, …) are imported by eagerly-loaded chunks, so initial JS
 // rose ~0.3 kB (185.8 → 186.1) even as total source shrank — an accepted trade.
-// Tighten as the shell shrinks.
-const BUDGET_KB = 187;
+// Tighten as the shell shrinks. Rebased 187 → 188 when the router gained the
+// /hud, /library/map and airspace-HUD route registrations (each page itself is
+// a lazy chunk; only the route-table entries land in the shell).
+const BUDGET_KB = 188;
 
 const html = readFileSync(join(DIST, 'index.html'), 'utf8');
 const files = [...html.matchAll(/(?:src|href)="(\/assets\/[^"]+\.js)"/g)].map((m) => m[1]);

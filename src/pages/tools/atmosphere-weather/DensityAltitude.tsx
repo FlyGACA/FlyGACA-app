@@ -6,6 +6,7 @@ import { fmtInt } from '@/components/calc/format';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { densityAltitude } from '@/calc/isa';
 import { NumberField } from '@/components/calc/NumberField';
+import { GaugeDial } from '@/components/calc/GaugeDial';
 
 const EXAMPLE = { elev: '5000', qnh: '1013', oat: '30' };
 
@@ -80,6 +81,15 @@ export function DensityAltitude() {
           tone="headline"
         />
       </OutputGrid>
+      {r != null && (
+        <GaugeDial
+          label={t('densityAltitude.densityAltitude')}
+          value={r.da}
+          min={-2000}
+          max={16000}
+          unit="FT"
+        />
+      )}
     </CalcShell>
   );
 }

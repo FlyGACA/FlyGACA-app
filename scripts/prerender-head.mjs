@@ -166,6 +166,7 @@ const STATIC_META = {
   '/': 'home',
   '/library': 'library',
   '/library/charts': 'charts',
+  '/library/map': 'libraryMap',
   '/tools': 'tools',
   '/chat': 'chat',
   '/learn': 'learn',

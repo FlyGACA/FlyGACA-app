@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { windTriangle } from '@/calc/navigation';
+import { WindTriangleDiagram } from './WindTriangleDiagram';
 
 export function WindTriangle() {
   const { t } = useTranslation();
@@ -78,6 +79,16 @@ export function WindTriangle() {
           value={r != null ? `${Math.round(r.groundSpeed)} kt` : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <WindTriangleDiagram
+          courseDeg={nums.crs}
+          tasKt={nums.tas}
+          windDirDeg={nums.wdir}
+          windSpeedKt={nums.wspd}
+          headingDeg={r.heading}
+          groundSpeedKt={r.groundSpeed}
+        />
+      )}
     </CalcShell>
   );
 }
