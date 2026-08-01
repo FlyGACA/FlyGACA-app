@@ -1550,6 +1550,8 @@
     "scopeNote": "Training-scenario traffic from the Airspace HUD simulation, with the field's nearby control zones. Not real air traffic.",
     "search": "Search by ICAO, name, city or country",
     "runways": "Runways",
+    "daylight": "Daylight (UTC)",
+    "daylightAria": "Daylight band for today — sunrise {{rise}}Z, sunset {{set}}Z UTC.",
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
