@@ -5,7 +5,8 @@ import { CalcShell } from '@/components/CalcShell';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { airportLd } from '@/lib/seo/jsonld';
 import { regionBadge } from '@/lib/aerodromes';
-import { fetchJson, type Airport, type AirportsIndex } from '@/lib/content';
+import { fetchJson, type Airport, type AirportsIndex, type AirspacesIndex } from '@/lib/content';
+import { AerodromeScope } from '@/components/aerodrome/AerodromeScope';
 import { AirportTypeIcon } from '@/components/aerodrome/AirportTypeIcon';
 import { RunwayDiagram } from '@/components/aerodrome/RunwayDiagram';
 import { PositionMarker } from '@/components/aerodrome/PositionMarker';
@@ -17,6 +18,7 @@ export function AerodromeDetail() {
   const { icao = '' } = useParams();
   const code = icao.toUpperCase();
   const { data, error, loading } = useFetchJson<AirportsIndex>('/data/airports.json');
+  const { data: airspaces } = useFetchJson<AirspacesIndex>('/data/airspaces-index.json');
 
   const inCore = useMemo(() => data?.airports.find((a) => a.icao === code), [data, code]);
   // Long-tail airfields aren't in the eager core file; fetch the lazy tier and
@@ -164,6 +166,12 @@ export function AerodromeDetail() {
           </dl>
         </section>
       )}
+
+      <AerodromeScope
+        center={{ lat: a.lat, lon: a.lon }}
+        icao={a.icao}
+        zones={airspaces?.airspaces ?? []}
+      />
 
       <a
         className={styles.map}

@@ -1536,6 +1536,8 @@
     "formula": "Converting a foreign licence to a GACA licence follows these steps. The current detailed requirements are published by GACA, confirm before you start."
   },
   "aerodromesTool": {
+    "scopeTitle": "{{icao}} area scope — simulated",
+    "scopeNote": "Training-scenario traffic from the Airspace HUD simulation, with the field's nearby control zones. Not real air traffic.",
     "search": "Search by ICAO, name, city or country",
     "runways": "Runways",
     "freqs": "Frequencies",
