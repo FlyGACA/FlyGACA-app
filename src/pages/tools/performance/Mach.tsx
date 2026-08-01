@@ -75,7 +75,9 @@ export function Mach() {
         />
         <ResultStat label={t('mach.lss')} value={r != null ? `${r.lss.toFixed(0)} kt` : '—'} />
       </OutputGrid>
-      {r != null && <GaugeDial label={t('mach.mach')} value={r.mach} min={0} max={1} unit="M" />}
+      {r != null && (
+        <GaugeDial label={t('mach.mach')} value={r.mach} min={0} max={1} unit="M" decimals={2} />
+      )}
     </CalcShell>
   );
 }
