@@ -171,7 +171,7 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
         <div className={styles.result} role="status">
           {/* Decorative — the pass/fail line below carries the announcement. */}
           <span
-            className={`${styles.stamp} ${passed ? styles.stampPass : styles.stampFail}`}
+            className={passed ? styles.stamp : `${styles.stamp} ${styles.stampFail}`}
             aria-hidden="true"
           >
             {passed ? t('study.stampPass') : t('study.stampFail')}

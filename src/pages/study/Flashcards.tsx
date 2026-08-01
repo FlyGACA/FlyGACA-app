@@ -254,8 +254,7 @@ function CardView({
     const end = () => onLeaveEnd();
     el.addEventListener('animationend', end);
     return () => el.removeEventListener('animationend', end);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [leaving]);
+  }, [leaving, onLeaveEnd]);
   const wrapperClass = [
     styles.cardWrapper,
     styles.cardEnter,
