@@ -1,30 +1,64 @@
 /**
- * Import function triggers from their respective submodules:
+ * Cloud Functions entry point. Only the triggers exported here are deployed, so
+ * this file is the single manifest of the backend's functions:
+ *  - `chat`            — the Captain Adel gateway (Express app in ./gateway).
+ *  - Moyasar billing   — checkout/confirm/cancel callables, the webhook, and the
+ *                        token-renewal engine (./billing).
+ *  - `claimStaffAccess`— complimentary staff full-access grant (./staff).
+ *  - `claimSchoolSeat` — self-serve school-seat grant (domain/invite, ./school).
+ *  - `claimFoundingAccess` — grandfather grant for pre-launch accounts (./founding).
  *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ * Deploy region is pinned in ./region (must match firebase.json's rewrite regions).
  */
+import { setGlobalOptions } from "firebase-functions";
+import { onRequest } from "firebase-functions/https";
+import { defineSecret } from "firebase-functions/params";
+import app from "./gateway.js";
+import { REGION } from "./region.js";
 
-import {setGlobalOptions} from "firebase-functions";
+// Moyasar billing — checkout/confirm/cancel callables, the webhook, the daily
+// renewal engine, and the referral-code callable.
+export {
+  createCheckoutConfig,
+  confirmPayment,
+  cancelAutoRenew,
+  getReferralCode,
+  moyasarWebhook,
+  renewMoyasarSubscriptions,
+} from "./billing.js";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+// Staff / complimentary full-access grant (see ./staff.ts).
+export { claimStaffAccess } from "./staff.js";
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
+// Self-serve school-seat grant — verified email on an approved domain or the invite
+// roster self-unlocks the `school` entitlement (see ./school.ts).
+export { claimSchoolSeat } from "./school.js";
+
+// Founding grant — a pre-launch account self-unlocks a complimentary, time-limited
+// Pro window when monetization is turned on (see ./founding.ts).
+export { claimFoundingAccess } from "./founding.js";
+
+// B2B org admin — owner-verified cohort read + provisioning for the /business/admin
+// dashboard (see ./org.ts). Callables: read-only path (getMyOrgs, getCohortReadiness)
+// and self-serve provisioning (provisionSeats).
+export { getMyOrgs, getCohortReadiness, provisionSeats } from "./org.js";
+
+// The Google GenAI API key the Captain Adel flow (genkit `googleAI()`) reads from
+// the environment. Bound as a secret so it is available to the `chat` container.
+const geminiApiKey = defineSecret("GOOGLE_GENAI_API_KEY");
+
+export const chat = onRequest(
+  {
+    region: REGION,
+    secrets: [geminiApiKey],
+    // The 18 MB corpus + BM25 index live in memory on warm instances.
+    memory: "1GiB",
+    // Streamed turns can be long-lived.
+    timeoutSeconds: 300,
+    invoker: "public", // public edge; auth/App Check enforced in the app
+  },
+  app,
+);
+
+// Cap concurrent containers per function as a cost control against traffic spikes.
 setGlobalOptions({ maxInstances: 10 });
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });

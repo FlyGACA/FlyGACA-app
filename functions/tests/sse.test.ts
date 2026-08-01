@@ -6,7 +6,7 @@ import { frame, doneFrame, pingFrame, SSE_HEADERS } from "../src/sse.js";
 describe("frame", () => {
   it("serializes an event as one JSON data: line with a blank terminator", () => {
     expect(frame({ type: "token", delta: "hi" })).toBe(
-      'data: {"type":"token","delta":"hi"}\n\n',
+      "data: {\"type\":\"token\",\"delta\":\"hi\"}\n\n",
     );
   });
 
