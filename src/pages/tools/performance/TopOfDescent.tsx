@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { topOfDescent } from '@/calc/descent';
+import { ProfileRamp } from './ProfileRamp';
 
 export function TopOfDescent() {
   const { t } = useTranslation();
@@ -66,6 +67,14 @@ export function TopOfDescent() {
           value={r != null ? `${Math.round(r.rodFpm)} ft/min` : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <ProfileRamp
+          mode="descent"
+          angleDeg={nums.angle}
+          altLabel={`${Math.round(nums.alt)} ft`}
+          distLabel={`${r.distanceNm.toFixed(1)} NM`}
+        />
+      )}
     </CalcShell>
   );
 }

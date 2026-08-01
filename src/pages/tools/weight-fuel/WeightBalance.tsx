@@ -5,7 +5,8 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { fmtInt } from '@/components/calc/format';
 import { OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
-import { percentMac, weightBalance } from '@/calc/weightBalance';
+import { cgEnvelopeStatus, percentMac, weightBalance } from '@/calc/weightBalance';
+import { CgEnvelope } from './CgEnvelope';
 import styles from './WeightBalance.module.css';
 
 const STATIONS = ['empty', 'front', 'rear', 'baggage', 'fuelStation'] as const;
@@ -25,6 +26,9 @@ export function WeightBalance() {
     ua: '',
     lemac: '',
     mac: '',
+    cgFwd: '',
+    cgAft: '',
+    mtow: '',
   });
 
   const stations = [
@@ -39,6 +43,8 @@ export function WeightBalance() {
 
   const r = weightBalance(stations);
   const pmac = r != null ? percentMac(r.cg, nums.lemac, nums.mac) : null;
+  const limits = { cgFwd: nums.cgFwd, cgAft: nums.cgAft, mtow: nums.mtow };
+  const status = r != null ? cgEnvelopeStatus(r.weight, r.cg, limits) : 'unknown';
 
   return (
     <CalcShell
@@ -57,6 +63,9 @@ export function WeightBalance() {
         set('ua', '48');
         set('lemac', '35');
         set('mac', '5');
+        set('cgFwd', '35');
+        set('cgAft', '47');
+        set('mtow', '2450');
       }}
       adelPrompt={() =>
         r != null
@@ -94,6 +103,27 @@ export function WeightBalance() {
             onChange={(v) => set('mac', v)}
           />
         </div>
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>{t('weightBalance.limits')}</span>
+          <NumberField
+            label={t('weightBalance.cgFwd')}
+            value={inputs.cgFwd}
+            onChange={(v) => set('cgFwd', v)}
+          />
+          <NumberField
+            label={t('weightBalance.cgAft')}
+            value={inputs.cgAft}
+            onChange={(v) => set('cgAft', v)}
+          />
+        </div>
+        <div className={styles.row}>
+          <span className={styles.rowLabel} />
+          <NumberField
+            label={t('weightBalance.mtow')}
+            value={inputs.mtow}
+            onChange={(v) => set('mtow', v)}
+          />
+        </div>
       </div>
 
       <OutputGrid>
@@ -107,7 +137,23 @@ export function WeightBalance() {
           label={t('weightBalance.percentMac')}
           value={pmac != null ? `${pmac.toFixed(1)} %` : '—'}
         />
+        <ResultStat
+          label={t('weightBalance.envelopeStatus')}
+          value={t(`weightBalance.envelope.${status}`)}
+          tone={status === 'in' ? 'good' : status === 'out' ? 'bad' : undefined}
+        />
       </OutputGrid>
+
+      {r != null && (
+        <CgEnvelope
+          weight={r.weight}
+          cg={r.cg}
+          cgFwd={nums.cgFwd}
+          cgAft={nums.cgAft}
+          mtow={nums.mtow}
+          status={status}
+        />
+      )}
     </CalcShell>
   );
 }

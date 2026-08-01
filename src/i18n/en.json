@@ -904,6 +904,7 @@
     "oat": "OAT (°C)",
     "temp": "ISA temperature",
     "dev": "ISA deviation",
+    "thermoLabel": "OAT {{oat}}°C, ISA {{isa}}°C",
     "formula": "ISA temperature = 15 °C − 1.98 °C per 1000 ft. The deviation is OAT minus that standard temperature."
   },
   "altimeter": {
@@ -1046,6 +1047,10 @@
     "sr": "Specific range",
     "formula": "Specific range = groundspeed ÷ fuel flow = distance per unit of fuel. Higher is more efficient."
   },
+  "profile": {
+    "climb": "Climb · {{angle}}°",
+    "descent": "Descent · {{angle}}°"
+  },
   "weightBalance": {
     "weight": "Weight",
     "arm": "Arm",
@@ -1059,6 +1064,18 @@
     "rear": "Rear seats",
     "baggage": "Baggage",
     "fuelStation": "Fuel",
+    "limits": "Envelope limits",
+    "cgFwd": "Fwd CG limit",
+    "cgAft": "Aft CG limit",
+    "mtow": "Max weight",
+    "envelopeStatus": "Envelope",
+    "envelope": {
+      "in": "Within limits",
+      "out": "Out of limits",
+      "unknown": "Limits not set"
+    },
+    "envelopeCgAxis": "Weight × CG",
+    "envelopeSummary": "Loaded {{weight}} at CG {{cg}} — {{status}}",
     "formula": "CG = Σ(weight × arm) ÷ Σweight. %MAC = (CG − LEMAC) ÷ MAC × 100. Load the real arms and limits from the AFM/POH."
   },
   "zulu": {
@@ -3849,6 +3866,8 @@
     "etpTime": "ETP, time",
     "pnrDist": "PNR, distance",
     "pnrTime": "PNR, time",
+    "diagramEtpPnr": "ETP {{etp}} NM, PNR {{pnr}} NM of {{total}} NM",
+    "diagramEtp": "ETP {{etp}} NM of {{total}} NM",
     "formula": "The equal time point (ETP) is where continuing and returning take the same time: distance = D·GSh/(GSo+GSh). The point of no return (PNR) is the farthest you can go and still return within your usable endurance E: time = E·GSh/(GSo+GSh). A planning aid: use your operator’s fuel policy."
   },
   "topOfClimb": {

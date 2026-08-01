@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { climbFromFtPerNm } from '@/calc/climb';
+import { ProfileRamp } from './ProfileRamp';
 
 export function ClimbGradient() {
   const { t } = useTranslation();
@@ -56,6 +57,9 @@ export function ClimbGradient() {
           value={r?.fpm != null ? `${Math.round(r.fpm)} ft/min` : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <ProfileRamp mode="climb" angleDeg={r.degrees} distLabel={`${r.percent.toFixed(1)} %`} />
+      )}
     </CalcShell>
   );
 }

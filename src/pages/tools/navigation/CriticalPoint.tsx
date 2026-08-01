@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { equalTimePoint, pointOfNoReturn } from '@/calc/criticalPoint';
+import { RouteCriticalPoints } from './RouteCriticalPoints';
 
 /** "100 min" → "1h 40m" once past an hour. */
 function mins(t: number): string {
@@ -90,6 +91,13 @@ export function CriticalPoint() {
           value={pnr != null ? mins(pnr.timeMin) : '—'}
         />
       </OutputGrid>
+      {etp != null && (
+        <RouteCriticalPoints
+          totalNm={nums.dist}
+          etpNm={etp.distNm}
+          pnrNm={pnr != null ? pnr.distNm : NaN}
+        />
+      )}
     </CalcShell>
   );
 }
