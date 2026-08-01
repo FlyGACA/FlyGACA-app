@@ -10,6 +10,13 @@ on:
       - 'content/regulations/**'
   workflow_dispatch:
 
+# Least privilege baseline. The `parse` job re-declares `contents: write` for
+# the commit it pushes; job-level permissions override this, so narrowing the
+# default costs that job nothing while the `lint` and `embeddings` jobs — the
+# latter holding SUPABASE_SERVICE_ROLE_KEY and OPENAI_API_KEY — drop to read.
+permissions:
+  contents: read
+
 concurrency:
   group: docs-parser-${{ github.ref }}
   cancel-in-progress: false

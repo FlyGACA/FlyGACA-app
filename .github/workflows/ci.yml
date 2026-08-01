@@ -5,6 +5,13 @@ on:
   push:
     branches: [main]
 
+# Least privilege: every job here only checks out code and uploads artifacts,
+# neither of which needs a writable token. Without this the job inherits the
+# repository default (currently "write"), handing a write-all GITHUB_TOKEN to
+# `npm ci` and every build script it runs.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
