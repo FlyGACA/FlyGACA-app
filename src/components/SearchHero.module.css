@@ -149,7 +149,10 @@
   font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--moon-mute);
+  /* --text-dim is the page-background caption token (AA ~6:1, theme-aware), not
+     --moon-mute — a dark-band token that only hit 3.59:1 once the hero went flat
+     on the page background (WCAG AA needs 4.5:1). */
+  color: var(--text-dim);
 }
 .suggestList {
   display: flex;
