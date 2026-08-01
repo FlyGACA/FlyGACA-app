@@ -1938,6 +1938,13 @@
     "getKeyCta": "Request a key",
     "getKeySubject": "Captain Adel API — key request"
   },
+  "libraryMap": {
+    "eyebrow": "Library constellation",
+    "title": "The GACAR, as a constellation",
+    "subtitle": "Every Part is a star in its domain's sector, sized by how often other Parts cite it — and the lines are the corpus's real cross-references. Hover to name a Part, click to open it.",
+    "hint": "Hover to explore · click a star to open the Part",
+    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list."
+  },
   "hud": {
     "badge": "Training scenario · SIM data",
     "eyebrow": "Simulated flight information region",
@@ -3568,6 +3575,7 @@
     "schools": "For Flight Schools",
     "developers": "Captain Adel API",
     "hud": "Kingdom Airspace HUD — Simulated",
+    "libraryMap": "GACAR Constellation Map",
     "about": "About",
     "account": "Account",
     "dashboard": "Dashboard",
@@ -3598,6 +3606,7 @@
     "schools": "Equip your cadets with the Saudi GACAR library, 55 flight tools and Captain Adel, bulk Pro seat licences, an admin dashboard and syllabus-aligned study.",
     "developers": "Add a source-citing Saudi GACAR assistant to your product — the Captain Adel API returns grounded answers with exact Part and section citations.",
     "hud": "A mission-control style, fully simulated view of Saudi airspace for education: animated training traffic, sector density and real AIP airspace zones. Not real air traffic, and not affiliated with GACA.",
+    "libraryMap": "An interactive constellation of all GACAR Parts connected by their real cross-references — hover to identify a Part, click to read it. Part of Fly GACA's independent aviation library.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",
     "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel, an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
   },

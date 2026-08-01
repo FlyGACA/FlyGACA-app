@@ -26,6 +26,7 @@ const childPaths = (tree: Routeish[]) => (tree[0].children ?? []).map((r) => r.p
 const MAIN_PATHS = [
   'library',
   'library/charts',
+  'library/map',
   'library/reference/:slug',
   'library/handbook/:slug',
   'library/:slug',
