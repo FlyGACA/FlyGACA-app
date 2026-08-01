@@ -41,3 +41,23 @@ export function airacCycle(date: Date = new Date()): AiracCycle {
     daysToNext: Math.ceil((next - t) / DAY_MS),
   };
 }
+
+/** Days in one AIRAC cycle. */
+export const AIRAC_CYCLE_DAYS = 28;
+
+export interface AiracProgress {
+  /** 1-based day within the current cycle (1…28). */
+  dayInCycle: number;
+  /** Fraction of the cycle elapsed, 0…1. */
+  fraction: number;
+}
+
+/** How far through the current 28-day cycle `date` sits — drives the ring. */
+export function cycleProgress(date: Date = new Date()): AiracProgress {
+  const t = date.getTime();
+  const into = t - cycleEffective(t);
+  return {
+    dayInCycle: Math.floor(into / DAY_MS) + 1,
+    fraction: Math.min(1, Math.max(0, into / CYCLE_MS)),
+  };
+}
