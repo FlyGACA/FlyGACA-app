@@ -172,9 +172,21 @@ export function AerodromeScope({ center, icao, zones = [], rangeNm = 120 }: Aero
       draw(sweep);
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+    // Pause the loop while the tab is hidden (the HUD globe's pattern) — the
+    // sweep resumes from wherever it was, nothing else carries state.
+    const start = () => {
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    };
+    const onVisibility = () => {
+      cancelAnimationFrame(raf);
+      if (!document.hidden) start();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    start();
     return () => {
       cancelAnimationFrame(raf);
+      document.removeEventListener('visibilitychange', onVisibility);
       observer?.disconnect();
     };
   }, [center, near, rangeNm, reduce, scenario]);

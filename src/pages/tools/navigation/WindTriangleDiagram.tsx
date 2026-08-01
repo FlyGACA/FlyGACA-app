@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { norm360 } from '@/calc/guards';
 import styles from './WindTriangleDiagram.module.css';
 
 interface WindTriangleDiagramProps {
@@ -11,10 +12,11 @@ interface WindTriangleDiagramProps {
 }
 
 const C = 110;
-/** Aviation bearing → screen point at radius `r` (y grows down). */
+/** Aviation bearing → screen point at radius `r` (y grows down). Bearings are
+ *  normalised first so unconstrained inputs stay numerically stable. */
 const pt = (deg: number, r: number) => ({
-  x: C + Math.sin((deg * Math.PI) / 180) * r,
-  y: C - Math.cos((deg * Math.PI) / 180) * r,
+  x: C + Math.sin((norm360(deg) * Math.PI) / 180) * r,
+  y: C - Math.cos((norm360(deg) * Math.PI) / 180) * r,
 });
 
 /**
@@ -38,9 +40,10 @@ export function WindTriangleDiagram({
   // course/groundspeed vector.
   const h = pt(headingDeg, tasKt * scale);
   const g = pt(courseDeg, groundSpeedKt * scale);
+  // Normalised so the accessible text always reads as a 0–359° bearing.
   const label = t('windTriangle.diagramLabel', {
-    hdg: Math.round(headingDeg),
-    wdir: Math.round(windDirDeg),
+    hdg: Math.round(norm360(headingDeg)),
+    wdir: Math.round(norm360(windDirDeg)),
     wspd: Math.round(windSpeedKt),
     gs: Math.round(groundSpeedKt),
   });

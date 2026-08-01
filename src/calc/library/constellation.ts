@@ -42,7 +42,8 @@ export interface ConstellationLayout {
 const GOLDEN = 0.61803;
 
 export function buildConstellation(parts: readonly ConstellationPart[]): ConstellationLayout {
-  const categories = [...new Set(parts.map((p) => p.category))];
+  // Sorted so sector assignment is stable regardless of the input ordering.
+  const categories = [...new Set(parts.map((p) => p.category))].sort();
   const bySlug = new Map(parts.map((p) => [p.slug, p]));
 
   // Inbound-reference degree drives node size: hub Parts read bigger.
