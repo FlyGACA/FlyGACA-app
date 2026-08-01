@@ -239,11 +239,6 @@
   flex-wrap: wrap;
   gap: var(--space-2);
 }
-.badgeProg {
-  opacity: 0.75;
-  font-variant-numeric: tabular-nums;
-}
-
 /* ── Customize disclosure (show/hide widgets) ── */
 .customize {
   border: var(--hairline-bright);

@@ -433,7 +433,7 @@
   margin-block-start: var(--space-6);
 }
 
-/* Study-hub streak milestone nudge. */
+/* Study-hub streak milestone nudge — one celebratory entrance per view. */
 .milestone {
   margin: 0;
   padding: var(--space-3) var(--space-4);
@@ -443,6 +443,19 @@
   color: var(--text);
   font-weight: var(--fw-semibold);
   text-align: center;
+  animation: milestone-in var(--dur-entry) var(--ease-entry) both;
+}
+@keyframes milestone-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+    scale: 0.98;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .milestone {
+    animation: none;
+  }
 }
 
 .examBar {
