@@ -11,6 +11,9 @@ export function useCardGlow<T extends HTMLElement = HTMLElement>() {
   const ref = useRef<T>(null);
 
   const onPointerMove = useCallback((e: React.PointerEvent<T>) => {
+    // Hover-capable pointers only — a touch drag must not paint (and then
+    // strand) the glow. Belt-and-braces with the CSS @media (hover: hover) gate.
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();

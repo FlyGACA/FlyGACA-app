@@ -12,14 +12,18 @@
   border: var(--hairline);
   border-radius: var(--radius-lg);
   box-shadow: var(--elev-2);
-  transition: box-shadow var(--dur-slow) var(--ease);
-  /* Promote to its own layer so the entry scale/opacity and hover lift stay on
-     the compositor — the path to a steady 120fps. */
-  will-change: transform, opacity;
+  transition: box-shadow var(--dur) var(--ease);
 }
 
-/* Deepen the drop shadow as the card lifts on hover/focus. */
-.card:hover,
+/* Deepen the drop shadow as the card lifts on hover/focus. Hover halves live
+   behind (hover: hover) so a tap on a touch device never strands the lifted
+   state; the focus-visible halves stay unconditional for keyboard users. */
+@media (hover: hover) {
+  .card:hover {
+    box-shadow: var(--elev-3);
+  }
+}
+
 .link:focus-visible {
   box-shadow: var(--elev-3);
 }
@@ -43,7 +47,7 @@
   pointer-events: none;
   border-radius: inherit;
   opacity: 0;
-  transition: opacity var(--dur-slow) var(--ease);
+  transition: opacity var(--dur) var(--ease);
   background: radial-gradient(
     260px circle at var(--glow-x) var(--glow-y),
     var(--glow-tint),
@@ -51,7 +55,12 @@
   );
 }
 
-.card:hover .glow,
+@media (hover: hover) {
+  .card:hover .glow {
+    opacity: 1;
+  }
+}
+
 .link:focus-visible .glow {
   opacity: 1;
 }
@@ -68,7 +77,12 @@
   transition: border-color var(--dur) var(--ease);
 }
 
-.card:hover::after,
+@media (hover: hover) {
+  .card:hover::after {
+    border-color: var(--glow-edge, var(--border-bright));
+  }
+}
+
 .link:focus-visible::after {
   border-color: var(--glow-edge, var(--border-bright));
 }
@@ -120,6 +134,12 @@
 /* Half-width single-row tile — the co-equal feature tiles (Ask / Search). */
 .spanWide {
   grid-column: span 6;
+}
+
+/* Full-bleed row. `1 / -1` is column-count independent, so no breakpoint
+   overrides are needed — it spans the 12-, 6- and 1-column grids alike. */
+.spanFull {
+  grid-column: 1 / -1;
 }
 
 /* Tablet: 6-col grid — a deliberate 2-up rhythm. The nav/stat tiles pair
