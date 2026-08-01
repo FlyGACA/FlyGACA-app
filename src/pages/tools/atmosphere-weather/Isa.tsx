@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { isaDeviation, isaTemperature } from '@/calc/isa';
+import { IsaThermometer } from './IsaThermometer';
 
 export function Isa() {
   const { t } = useTranslation();
@@ -59,6 +60,9 @@ export function Isa() {
           tone="headline"
         />
       </OutputGrid>
+      {isaTemp != null && dev != null && (
+        <IsaThermometer oat={nums.oat} isaTemp={isaTemp} dev={dev} />
+      )}
     </CalcShell>
   );
 }
