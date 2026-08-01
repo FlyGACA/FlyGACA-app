@@ -34,3 +34,29 @@ export function percentMac(cg: number, lemac: number, macLength: number): number
   if (!fin(cg) || !fin(lemac) || !fin(macLength) || macLength === 0) return null;
   return ((cg - lemac) / macLength) * 100;
 }
+
+/** AFM/POH loading limits — forward and aft CG arm, and max gross weight.
+ *  Any field may be NaN (blank), in which case that bound is not checked. */
+export interface CgLimits {
+  cgFwd: number;
+  cgAft: number;
+  mtow: number;
+}
+
+export type EnvelopeStatus = 'in' | 'out' | 'unknown';
+
+/**
+ * Whether the loaded (weight, cg) point sits within whichever limits were
+ * given. Missing (NaN) limits are simply not checked; with no valid point or
+ * no usable limit at all, the status is 'unknown' (the tool can't assert a
+ * pass it can't prove — same posture as the currency engine).
+ */
+export function cgEnvelopeStatus(weight: number, cg: number, limits: CgLimits): EnvelopeStatus {
+  if (!fin(weight, cg)) return 'unknown';
+  const checks: boolean[] = [];
+  if (fin(limits.cgFwd)) checks.push(cg >= limits.cgFwd);
+  if (fin(limits.cgAft)) checks.push(cg <= limits.cgAft);
+  if (fin(limits.mtow)) checks.push(weight <= limits.mtow);
+  if (checks.length === 0) return 'unknown';
+  return checks.every(Boolean) ? 'in' : 'out';
+}

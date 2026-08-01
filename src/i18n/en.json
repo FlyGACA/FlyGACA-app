@@ -1059,6 +1059,18 @@
     "rear": "Rear seats",
     "baggage": "Baggage",
     "fuelStation": "Fuel",
+    "limits": "Envelope limits",
+    "cgFwd": "Fwd CG limit",
+    "cgAft": "Aft CG limit",
+    "mtow": "Max weight",
+    "envelopeStatus": "Envelope",
+    "envelope": {
+      "in": "Within limits",
+      "out": "Out of limits",
+      "unknown": "Limits not set"
+    },
+    "envelopeCgAxis": "Weight × CG",
+    "envelopeSummary": "Loaded {{weight}} at CG {{cg}} — {{status}}",
     "formula": "CG = Σ(weight × arm) ÷ Σweight. %MAC = (CG − LEMAC) ÷ MAC × 100. Load the real arms and limits from the AFM/POH."
   },
   "zulu": {
