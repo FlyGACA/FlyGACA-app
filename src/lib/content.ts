@@ -17,7 +17,23 @@ export * from './content.types';
  * URL funnels through {@link dataUrl}, so flipping the origin is a single
  * build-env change with no call-site edits.
  */
-const DATA_BASE = import.meta.env.VITE_DATA_BASE_URL ?? '/data';
+/**
+ * Resolve the corpus data origin from the (possibly empty) build-env value.
+ * Exported for unit tests (see tests/content-dataurl.test.ts).
+ *
+ * `||` not `??`: the deploy workflow sets `VITE_DATA_BASE_URL` to
+ * `${{ vars.DATA_BASE_URL }}`, which expands to an EMPTY STRING when that repo var is
+ * unset (the default). `??` only falls back on null/undefined, so `''` would slip
+ * through and strip the `/data` prefix off every fetch (→ Firebase's SPA catch-all
+ * returns index.html at HTTP 200 → `res.json()` fails on HTML → "Could not load this
+ * content"). An empty value must fall back to same-origin `/data`. Trailing slashes
+ * are trimmed so a bucket origin like `…/data/` + `/x.json` never doubles up.
+ */
+export function resolveDataBase(raw: string | undefined): string {
+  return (raw || '/data').replace(/\/+$/, '');
+}
+
+const DATA_BASE = resolveDataBase(import.meta.env.VITE_DATA_BASE_URL);
 
 /** Map a `/data/…`-rooted path onto the configured data origin (no-op when unset). */
 export function dataUrl(path: string): string {

@@ -51,7 +51,9 @@
   color: var(--color-error);
 }
 .save {
-  color: var(--brand);
+  /* --teal-bright is the "link on dark" token (~5.5:1 on --surface); --brand
+     (#2d6e8a) is only 3.1:1 there and fails WCAG AA color-contrast. */
+  color: var(--teal-bright);
   font-variant-numeric: tabular-nums;
 }
 .save:hover:not(:disabled) {
