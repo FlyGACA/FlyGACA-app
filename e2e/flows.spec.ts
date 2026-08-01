@@ -23,7 +23,11 @@ test('library full-text search finds passages and links into the reader', async 
 
 test('language toggle flips the document to Arabic / RTL', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Switch language' }).first().click();
+  // Match on the accessible name only, not the role: LangToggle is now a real
+  // <a hrefLang> that navigates to the /ar URL (it used to be a <button>), so
+  // getByRole('button') matches nothing. getByLabel survives that change and
+  // any future one, because aria-label is what the control actually promises.
+  await page.getByLabel('Switch language').first().click();
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
 });
@@ -62,16 +66,21 @@ test('chat renders a streamed answer, grounding badge and source', async ({ page
   await expect(page.getByText('§91.155', { exact: true })).toBeVisible();
 });
 
-test('account local sign-in and sign-out round-trip', async ({ page }) => {
+test('account session round-trip: signed-in view and sign-out', async ({ page }) => {
+  // This suite runs `vite preview` over dist/, i.e. a *production* bundle, and
+  // CI has no Firebase config. AccountSignedOut picks its card accordingly:
+  //   isAuthAvailable() ? <FirebaseSignIn/> : import.meta.env.DEV ? <LocalSignIn/> : <AuthUnavailable/>
+  // so the local email form — which this test used to fill — exists only in a dev
+  // server and can never render here. Seed the session directly instead (the same
+  // affordance the chat spec uses) and assert what production actually ships.
+  await page.addInitScript(() => localStorage.setItem('flygaca:session', 'pilot@example.com'));
   await page.goto('/account');
-  await page.getByLabel('Email').fill('pilot@example.com');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  // Signed-in view exposes a sign-out control.
   const signOut = page.getByRole('button', { name: 'Sign out' });
   await expect(signOut).toBeVisible();
   await signOut.click();
-  // Back to the sign-in form.
-  await expect(page.getByLabel('Email')).toBeVisible();
+  // Signed out in a config-less production build → the explicit "unavailable"
+  // notice, never a fake sign-in form that would imply a session it can't create.
+  await expect(page.getByText(/Sign-in is temporarily unavailable/i)).toBeVisible();
 });
 
 test('pricing Go-Pro stays disabled when billing is not configured', async ({ page }) => {
@@ -87,8 +96,12 @@ test('exam-prep storefront lists certificate & subject packs with prices', async
   await expect(page.getByRole('heading', { name: 'Certificates & ratings' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Subject packs' })).toBeVisible();
   // A paid pack is locked (pack access ignores the FREE_FOR_EVERYONE promo) and shows its price.
+  // Assert the shape of the price, not a specific amount: this previously pinned
+  // "SAR 39", the pack moved to SAR 49, and the stale assertion sat undetected
+  // while CI was disabled. What the storefront must guarantee is that a locked
+  // pack advertises a one-time price at all.
   const medical = page.getByRole('link', { name: /Aviation medical/ });
-  await expect(medical).toContainText('SAR 39');
+  await expect(medical).toContainText(/SAR\s*\d+\s*·\s*one-time/);
 });
 
 test('a paid pack page offers Buy but disables it when billing is off', async ({ page }) => {
