@@ -1087,6 +1087,8 @@
     "result": "Converted time",
     "nextDay": "(next day)",
     "prevDay": "(previous day)",
+    "dialAria": "Live Zulu (UTC) clock",
+    "ksaLabel": "KSA",
     "formula": "Saudi Arabia is UTC+3 (Arabia Standard Time), with no daylight saving."
   },
   "airac": {

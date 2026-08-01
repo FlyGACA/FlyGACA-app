@@ -30,3 +30,21 @@ export const pad2 = (n: number): string => String(n).padStart(2, '0');
 export function formatHm(hh: number, mm: number): string {
   return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
 }
+
+export interface ClockAngles {
+  hourDeg: number;
+  minDeg: number;
+  secDeg: number;
+}
+
+/**
+ * Clock-hand angles in degrees clockwise from 12 o'clock, for an analog dial.
+ * Hands advance continuously (the hour hand creeps with the minutes, the minute
+ * hand with the seconds). Values wrap, so any integer h/m/s is accepted.
+ */
+export function clockAngles(hh: number, mm: number, ss: number): ClockAngles {
+  const s = ((ss % 60) + 60) % 60;
+  const m = ((((mm % 60) + 60) % 60) + s / 60) % 60;
+  const h = (((hh % 12) + 12) % 12) + m / 60;
+  return { secDeg: s * 6, minDeg: m * 6, hourDeg: h * 30 };
+}
