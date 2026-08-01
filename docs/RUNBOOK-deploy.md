@@ -30,6 +30,37 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 > `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing their DNS records
 > at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
 
+## Planned: region cutover `me-central1` → `me-central2` (in-Kingdom / PDPL)
+
+The Functions deploy to **`me-central1`** (Doha, Qatar). For the PDPL the in-Kingdom region is
+**`me-central2`** (Dammam) — also where Firestore already lives (`firestore.location` in
+`firebase.json`), so co-locating the Functions there is the goal. This is **not a repo-only edit**:
+the Hosting deploy validates the `/api/*` rewrites against the *live* Functions and refuses to
+finalize a version whose rewrite points at a region where the function doesn't exist
+(`Error: Unable to find a valid endpoint for function … present but in the wrong region`). So the
+config flip is the **last** step, run only after the Functions already exist in `me-central2`.
+Order:
+
+1. **Pre-check availability** — confirm Cloud Functions (2nd gen / Cloud Run) is enabled for
+   `me-central2` on the `flygaca-app` project by deploying one function there as a canary. This is
+   the "pending Google access grant" item — don't start until it succeeds.
+2. **Deploy the Functions to `me-central2` first** — creates the `me-central2` functions (the
+   `me-central1` ones stay live for now). Verify the secrets (`GOOGLE_GENAI_API_KEY`, `MOYASAR_*`, …)
+   bind in the new region. Note: the live Functions currently lag `main` (Stripe/RevenueCat-era
+   names are still deployed) — bring prod current in the same deploy.
+3. **Flip the repo config** (a small, reviewable PR): `REGION` in `functions/src/region.ts`, the
+   three `/api/*` rewrites in `firebase.json`, and `FUNCTIONS_REGION` in
+   `src/lib/services/firebase.ts` → `me-central2` (the `functions/tests/region.test.ts` drift-guard
+   enforces the rewrite↔`REGION` match; the pinned `billing.test.ts` region assertion moves too).
+   Deploy hosting so the frontend ships `FUNCTIONS_REGION=me-central2` and the rewrites resolve.
+4. **Smoke-test in prod** — `/api/chat`, `/api/feedback`, `/api/moyasar-webhook`, and a callable
+   (checkout) must all resolve.
+5. **Delete the stranded region** — `firebase functions:delete <name> --region me-central1` for each.
+6. **Update the PDPL copy** — `src/i18n/{en,ar}.json` says chat is processed in `me-central1`; update
+   it to in-Kingdom (`me-central2`), reconciling with legal that the gateway being in-Kingdom is
+   distinct from where the Gemini model call itself runs (see `Captain-Adel`'s in-Kingdom-model note)
+   — don't overclaim.
+
 ## Build env vars (set in each platform's build settings)
 
 All `VITE_*` are public, non-secret (values in `.env.example`):
