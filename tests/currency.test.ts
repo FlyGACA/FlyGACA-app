@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   computeCurrency,
+  currencyRingFraction,
   recordCurrency,
   rollingLandingExpiry,
   statusFromValidity,
@@ -182,5 +183,17 @@ describe('recordCurrency', () => {
     expect(items[0].label).toBe('Instrument Rating');
     expect(items[0].id).toBe('record-a');
     expect(items[0].fixTo).toBe('/records');
+  });
+});
+
+describe('currencyRingFraction', () => {
+  it('fills proportionally over the 90-day horizon and caps at full', () => {
+    expect(currencyRingFraction({ daysLeft: 90 })).toBeCloseTo(1, 5);
+    expect(currencyRingFraction({ daysLeft: 45 })).toBeCloseTo(0.5, 5);
+    expect(currencyRingFraction({ daysLeft: 300 })).toBe(1); // far off → full
+  });
+  it('reads empty for a lapsed or unassessable item', () => {
+    expect(currencyRingFraction({ daysLeft: -5 })).toBe(0);
+    expect(currencyRingFraction({ daysLeft: null })).toBe(0);
   });
 });
