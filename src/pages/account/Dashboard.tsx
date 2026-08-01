@@ -11,7 +11,7 @@ import { BarSparkline } from '@/components/dashboard/BarSparkline';
 import { BentoGrid } from '@/components/bento/BentoGrid';
 import { BentoCard } from '@/components/bento/BentoCard';
 import { StatValue } from '@/components/bento/widgets/StatValue';
-import { StatusPill } from '@/components/StatusPill';
+import { AchievementStamp } from '@/components/dashboard/AchievementStamp';
 import { RolePickerCard } from '@/components/dashboard/RolePickerCard';
 import { StudyWidget } from '@/components/dashboard/StudyWidget';
 import { ToolShortcutsWidget } from '@/components/dashboard/ToolShortcutsWidget';
@@ -255,21 +255,15 @@ function Inner() {
               </span>
             </div>
             <div className={styles.badges}>
-              {badges.map((b) => (
-                <StatusPill
+              {badges.map((b, idx) => (
+                <AchievementStamp
                   key={b.id}
-                  tone={b.earned ? 'success' : 'data'}
-                  title={b.earned ? undefined : `${b.have} / ${b.target}`}
-                >
-                  {b.earned ? '★ ' : ''}
-                  {t(`dashboard.achievementItems.${b.id}`)}
-                  {!b.earned && (
-                    <span className={styles.badgeProg}>
-                      {' '}
-                      · {b.have}/{b.target}
-                    </span>
-                  )}
-                </StatusPill>
+                  label={t(`dashboard.achievementItems.${b.id}`)}
+                  earned={b.earned}
+                  have={b.have}
+                  target={b.target}
+                  index={idx}
+                />
               ))}
             </div>
           </BentoCard>

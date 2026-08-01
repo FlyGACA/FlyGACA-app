@@ -4,6 +4,8 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import type { GroundSchoolData, QuizData } from '@/lib/content';
 import { useStudyProgress } from '@/lib/studyProgress';
 import { masteredCount, dueCount } from '@/calc/study/srs';
+import { glidePathBins, mergeBins } from '@/calc/study/glidePath';
+import { GlidePathStrip } from '@/components/study/GlidePathStrip';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { OutputGrid } from '@/components/calc/Grids';
 import { ProgressBar } from '@/components/ProgressBar';
@@ -86,6 +88,14 @@ export function StudyDashboard() {
         />
         <ResultStat label={t('study.lessonsDone')} value={`${doneLessons}/${lessons.length}`} />
       </OutputGrid>
+
+      {banks.length > 0 && (
+        <GlidePathStrip
+          bins={mergeBins(
+            banks.map((b) => glidePathBins(fcSrs[b.id] ?? {}, keysFor(b.questions.length))),
+          )}
+        />
+      )}
 
       {milestone && (
         <p className={styles.milestone} role="status">

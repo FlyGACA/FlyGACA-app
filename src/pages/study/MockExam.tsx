@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
@@ -169,6 +169,13 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
     return (
       <section className={`container-narrow ${styles.page}`}>
         <div className={styles.result} role="status">
+          {/* Decorative — the pass/fail line below carries the announcement. */}
+          <span
+            className={passed ? styles.stamp : `${styles.stamp} ${styles.stampFail}`}
+            aria-hidden="true"
+          >
+            {passed ? t('study.stampPass') : t('study.stampFail')}
+          </span>
           <p className={styles.resultPct}>{pct}%</p>
           <p>{t('study.scoreLine', { correct, total: questions.length })}</p>
           <p className={passed ? styles.passed : styles.failed}>
@@ -238,6 +245,7 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
               className={`${styles.summaryCell} ${answers[idx] != null ? styles.summaryDone : ''} ${
                 flags[idx] ? styles.summaryFlag : ''
               }`}
+              style={{ '--cell-i': idx } as CSSProperties}
               aria-label={`${idx + 1}${flags[idx] ? ' ⚑' : ''}`}
               onClick={() => {
                 setI(idx);
@@ -274,6 +282,15 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
           role="timer"
           aria-label={t('study.examTimeLeft')}
         >
+          {/* Depleting fuel bar; the mm:ss text stays the accessible value. */}
+          <span className={styles.fuelTrack} aria-hidden="true">
+            <span
+              className={styles.fuelLevel}
+              style={{
+                inlineSize: `${((seconds / Math.max(1, cfg.minutes * 60)) * 100).toFixed(1)}%`,
+              }}
+            />
+          </span>
           {t('study.examTimeLeft')}: {mm}:{ss}
         </span>
       </div>

@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
 import { dueKeys, masteredCount } from '@/calc/study/srs';
+import { glidePathBins } from '@/calc/study/glidePath';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { GlidePathStrip } from '@/components/study/GlidePathStrip';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
@@ -98,6 +101,7 @@ type Card = QuizQuestion & { key: string };
 function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
   const { t } = useTranslation();
   const { fcSrs } = useStudyProgress();
+  const reduce = usePrefersReducedMotion();
 
   const allCards: Card[] = useMemo(
     () => bank.questions.map((c, idx) => ({ ...c, key: String(idx) })),
@@ -118,19 +122,31 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bank]);
 
-  const [queue] = useState<Card[]>(initial);
+  // One runner serves the initial due-based session and every follow-up
+  // (reset / review-missed) session — restart() swaps the queue in place.
+  const [queue, setQueue] = useState<Card[]>(initial);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [got, setGot] = useState(0);
   const [again, setAgain] = useState<Card[]>([]);
-  const [extra, setExtra] = useState<Card[] | null>(null);
+  // The graded card's fly-out stage; advance() runs when its animation lands.
+  const [leaving, setLeaving] = useState<'known' | 'again' | null>(null);
   const card = queue[i];
   const done = i >= queue.length;
 
+  // Persist the grade immediately — the fly-out is purely cosmetic, so under
+  // reduced motion the same step just runs without the leaving stage.
   function grade(correct: boolean) {
+    if (leaving) return;
     gradeCard(bank.id, card.key, correct);
     if (correct) setGot((n) => n + 1);
     else setAgain((r) => [...r, card]);
+    if (reduce) advance();
+    else setLeaving(correct ? 'known' : 'again');
+  }
+
+  function advance() {
+    setLeaving(null);
     setFlipped(false);
     setI((n) => n + 1);
   }
@@ -139,6 +155,7 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
   useEffect(() => {
     if (done) return;
     const onKey = (e: KeyboardEvent) => {
+      if (leaving) return;
       if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
         setFlipped((f) => !f);
@@ -153,15 +170,15 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped, done, i]);
+  }, [flipped, done, i, leaving]);
 
   function restart(cards: Card[]) {
-    setExtra(shuffle(cards));
-  }
-
-  // Switch into a follow-up "review the missed ones" session.
-  if (extra) {
-    return <DeckSession bank={bank} cards={extra} onBack={onBack} />;
+    setQueue(shuffle(cards));
+    setI(0);
+    setFlipped(false);
+    setGot(0);
+    setAgain([]);
+    setLeaving(null);
   }
 
   return (
@@ -185,81 +202,24 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
         </div>
       ) : (
         <CardView
+          key={card.key}
           card={card}
           flipped={flipped}
-          onFlip={() => setFlipped((f) => !f)}
+          leaving={leaving}
+          onFlip={() => {
+            if (!leaving) setFlipped((f) => !f);
+          }}
           onGrade={grade}
+          onLeaveEnd={advance}
           progress={{ done: i + 1, total: queue.length }}
         />
       )}
-    </section>
-  );
-}
-
-/** A standalone deck session over an explicit card list (the "review missed" flow). */
-function DeckSession({
-  bank,
-  cards,
-  onBack,
-}: {
-  bank: QuizBank;
-  cards: Card[];
-  onBack: () => void;
-}) {
-  const { t } = useTranslation();
-  const [queue] = useState<Card[]>(cards);
-  const [i, setI] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const [got, setGot] = useState(0);
-  const [again, setAgain] = useState(0);
-  const card = queue[i];
-  const done = i >= queue.length;
-
-  function grade(correct: boolean) {
-    gradeCard(bank.id, card.key, correct);
-    if (correct) setGot((n) => n + 1);
-    else setAgain((n) => n + 1);
-    setFlipped(false);
-    setI((n) => n + 1);
-  }
-
-  useEffect(() => {
-    if (done) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        setFlipped((f) => !f);
-      } else if (flipped && (e.key === 'ArrowRight' || e.key === '1')) {
-        e.preventDefault();
-        grade(true);
-      } else if (flipped && (e.key === 'ArrowLeft' || e.key === '2')) {
-        e.preventDefault();
-        grade(false);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped, done, i]);
-
-  return (
-    <section className={`container-narrow ${styles.page}`}>
-      <button type="button" className={styles.back} onClick={onBack}>
-        ← {t('study.back')}
-      </button>
-      {done ? (
-        <div className={styles.result} role="status">
-          <p>{t('study.deckDone', { known: got, review: again })}</p>
-        </div>
-      ) : (
-        <CardView
-          card={card}
-          flipped={flipped}
-          onFlip={() => setFlipped((f) => !f)}
-          onGrade={grade}
-          progress={{ done: i + 1, total: queue.length }}
-        />
-      )}
+      <GlidePathStrip
+        bins={glidePathBins(
+          fcSrs[bank.id] ?? {},
+          allCards.map((c) => c.key),
+        )}
+      />
     </section>
   );
 }
@@ -267,17 +227,42 @@ function DeckSession({
 function CardView({
   card,
   flipped,
+  leaving,
   onFlip,
   onGrade,
+  onLeaveEnd,
   progress,
 }: {
   card: Card;
   flipped: boolean;
+  leaving: 'known' | 'again' | null;
   onFlip: () => void;
   onGrade: (correct: boolean) => void;
+  onLeaveEnd: () => void;
   progress: { done: number; total: number };
 }) {
   const { t } = useTranslation();
+  const wrapRef = useRef<HTMLDivElement>(null);
+  // Native listener rather than React's onAnimationEnd: React only registers
+  // the unprefixed event when the environment advertises CSS animation
+  // support, which jsdom doesn't — the DOM event itself is dependable.
+  // Attached only during the fly-out, so the enter animation never advances.
+  useEffect(() => {
+    if (!leaving) return;
+    const el = wrapRef.current;
+    if (!el) return;
+    const end = () => onLeaveEnd();
+    el.addEventListener('animationend', end);
+    return () => el.removeEventListener('animationend', end);
+  }, [leaving, onLeaveEnd]);
+  const wrapperClass = [
+    styles.cardWrapper,
+    styles.cardEnter,
+    leaving === 'known' ? styles.cardLeaveKnown : '',
+    leaving === 'again' ? styles.cardLeaveAgain : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
   return (
     <>
       <p className={styles.qProgress} role="status" aria-live="polite">
@@ -285,7 +270,8 @@ function CardView({
       </p>
       <ProgressBar percent={Math.round(((progress.done - 1) / progress.total) * 100)} />
       <div
-        className={styles.cardWrapper}
+        ref={wrapRef}
+        className={wrapperClass}
         role="button"
         tabIndex={0}
         aria-pressed={flipped}
@@ -321,6 +307,7 @@ function CardView({
             type="button"
             className={`${styles.mark} ${styles.markReview}`}
             onClick={() => onGrade(false)}
+            disabled={leaving != null}
           >
             {t('study.again')}
           </button>
@@ -328,6 +315,7 @@ function CardView({
             type="button"
             className={`${styles.mark} ${styles.markKnown}`}
             onClick={() => onGrade(true)}
+            disabled={leaving != null}
           >
             {t('study.gotIt')}
           </button>
