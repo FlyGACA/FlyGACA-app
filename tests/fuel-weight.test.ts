@@ -63,4 +63,9 @@ describe('cgEnvelopeStatus', () => {
     expect(cgEnvelopeStatus(NaN, 40, limits)).toBe('unknown');
     expect(cgEnvelopeStatus(2000, 40, { cgFwd: NaN, cgAft: NaN, mtow: NaN })).toBe('unknown');
   });
+  it('ignores an inverted forward/aft CG pair instead of reporting a false out', () => {
+    // cgAft <= cgFwd is bad data — the CG bounds are dropped, not failed.
+    expect(cgEnvelopeStatus(2000, 40, { cgFwd: 47, cgAft: 35, mtow: 2450 })).toBe('in');
+    expect(cgEnvelopeStatus(2000, 40, { cgFwd: 47, cgAft: 35, mtow: NaN })).toBe('unknown');
+  });
 });

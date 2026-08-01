@@ -53,10 +53,17 @@ export type EnvelopeStatus = 'in' | 'out' | 'unknown';
  */
 export function cgEnvelopeStatus(weight: number, cg: number, limits: CgLimits): EnvelopeStatus {
   if (!fin(weight, cg)) return 'unknown';
+  const { cgFwd, cgAft, mtow } = limits;
+  // A forward+aft pair only bounds a range when properly ordered; an inverted
+  // pair (cgAft <= cgFwd) is bad data, so ignore both bounds rather than report
+  // a false 'out'. This matches the plot, which won't draw an inverted box.
+  const cgPairUsable = !(fin(cgFwd) && fin(cgAft)) || cgAft > cgFwd;
   const checks: boolean[] = [];
-  if (fin(limits.cgFwd)) checks.push(cg >= limits.cgFwd);
-  if (fin(limits.cgAft)) checks.push(cg <= limits.cgAft);
-  if (fin(limits.mtow)) checks.push(weight <= limits.mtow);
+  if (cgPairUsable) {
+    if (fin(cgFwd)) checks.push(cg >= cgFwd);
+    if (fin(cgAft)) checks.push(cg <= cgAft);
+  }
+  if (fin(mtow)) checks.push(weight <= mtow);
   if (checks.length === 0) return 'unknown';
   return checks.every(Boolean) ? 'in' : 'out';
 }

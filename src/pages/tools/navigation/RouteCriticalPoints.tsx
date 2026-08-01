@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fin } from '@/calc/guards';
 import styles from './RouteCriticalPoints.module.css';
 
@@ -21,9 +22,16 @@ const xFor = (nm: number, total: number) => X0 + clamp01(nm / total) * (X1 - X0)
  * numbers; PNR is dashed so it reads apart from the ETP by shape, not hue.
  */
 export function RouteCriticalPoints({ totalNm, etpNm, pnrNm }: RouteCriticalPointsProps) {
+  const { t } = useTranslation();
   if (!fin(totalNm) || totalNm <= 0) return null;
   const hasPnr = fin(pnrNm);
-  const label = `ETP ${Math.round(etpNm)} NM${hasPnr ? `, PNR ${Math.round(pnrNm)} NM` : ''} of ${Math.round(totalNm)} NM`;
+  const label = hasPnr
+    ? t('criticalPoint.diagramEtpPnr', {
+        etp: Math.round(etpNm),
+        pnr: Math.round(pnrNm),
+        total: Math.round(totalNm),
+      })
+    : t('criticalPoint.diagramEtp', { etp: Math.round(etpNm), total: Math.round(totalNm) });
   return (
     <figure className={styles.wrap}>
       <svg viewBox="0 0 260 96" role="img" aria-label={label} className={styles.svg}>

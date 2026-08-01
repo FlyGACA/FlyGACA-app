@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './IsaThermometer.module.css';
 
 interface IsaThermometerProps {
@@ -23,6 +24,7 @@ const yFor = (c: number) => BOTTOM - frac(c) * (BOTTOM - TOP);
  * by the OAT sitting above/below the ISA line, not hue alone.
  */
 export function IsaThermometer({ oat, isaTemp, dev }: IsaThermometerProps) {
+  const { t } = useTranslation();
   const warm = dev >= 0;
   const isaY = yFor(isaTemp);
   const oatY = yFor(oat);
@@ -31,7 +33,10 @@ export function IsaThermometer({ oat, isaTemp, dev }: IsaThermometerProps) {
       <svg
         viewBox="0 0 170 200"
         role="img"
-        aria-label={`OAT ${Math.round(oat)}°C, ISA ${Math.round(isaTemp)}°C`}
+        aria-label={t('isaTool.thermoLabel', {
+          oat: Math.round(oat),
+          isa: Math.round(isaTemp),
+        })}
         className={styles.svg}
       >
         <rect x={64} y={14} width={14} height={164} rx={7} className={styles.tube} />

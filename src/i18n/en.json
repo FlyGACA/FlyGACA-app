@@ -904,6 +904,7 @@
     "oat": "OAT (°C)",
     "temp": "ISA temperature",
     "dev": "ISA deviation",
+    "thermoLabel": "OAT {{oat}}°C, ISA {{isa}}°C",
     "formula": "ISA temperature = 15 °C − 1.98 °C per 1000 ft. The deviation is OAT minus that standard temperature."
   },
   "altimeter": {
@@ -3865,6 +3866,8 @@
     "etpTime": "ETP, time",
     "pnrDist": "PNR, distance",
     "pnrTime": "PNR, time",
+    "diagramEtpPnr": "ETP {{etp}} NM, PNR {{pnr}} NM of {{total}} NM",
+    "diagramEtp": "ETP {{etp}} NM of {{total}} NM",
     "formula": "The equal time point (ETP) is where continuing and returning take the same time: distance = D·GSh/(GSo+GSh). The point of no return (PNR) is the farthest you can go and still return within your usable endurance E: time = E·GSh/(GSo+GSh). A planning aid: use your operator’s fuel policy."
   },
   "topOfClimb": {
