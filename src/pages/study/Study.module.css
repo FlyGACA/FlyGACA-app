@@ -250,6 +250,42 @@
   margin: 0;
 }
 
+/* Post-exam verdict stamp — PASS a solid ring, FAIL dashed, so the state
+   reads by shape as well as colour. Decorative (aria-hidden in the page). */
+.stamp {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  border: 3px solid var(--success);
+  border-radius: var(--radius-md);
+  color: var(--success);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-h3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  rotate: -6deg;
+  animation: stamp-in var(--dur-slow) var(--ease-entry) both;
+}
+.stampFail {
+  border-style: dashed;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    scale: 1.7;
+  }
+  60% {
+    opacity: 1;
+    scale: 0.94;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp {
+    animation: none;
+  }
+}
+
 /* ── Flashcard — 3D flip ── */
 .cardWrapper {
   perspective: 900px;
@@ -434,9 +470,44 @@
     opacity: 0.55;
   }
 }
+/* Depleting fuel-gauge bar beside the clock; the 1 s linear transition rides
+   the 1 Hz tick so the level drains continuously. */
+.fuelTrack {
+  display: inline-block;
+  inline-size: 64px;
+  block-size: 8px;
+  margin-inline-end: var(--space-2);
+  vertical-align: middle;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  overflow: hidden;
+}
+.fuelLevel {
+  display: block;
+  block-size: 100%;
+  background: var(--accent);
+  transition: inline-size 1s linear;
+}
+.timerWarn .fuelLevel {
+  background: var(--warning);
+}
+/* Danger reads by pattern (hatching), not hue alone — the cockpit theme
+   collapses the accents to amber. */
+.timerDanger .fuelLevel {
+  background-color: var(--danger);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 4px,
+    color-mix(in srgb, var(--text) 35%, transparent) 4px 8px
+  );
+}
 @media (prefers-reduced-motion: reduce) {
   .timerDanger {
     animation: none;
+  }
+  .fuelLevel {
+    transition: none;
   }
 }
 .examNav {
@@ -492,6 +563,9 @@
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: var(--transition-color);
+  /* Cells cascade in (capped delay so long exams don't crawl). */
+  animation: cell-in var(--dur) var(--ease-entry) both;
+  animation-delay: calc(min(var(--cell-i, 0) * 14ms, 420ms));
 }
 .summaryCell:hover {
   border-color: var(--brand-hover);
@@ -503,6 +577,27 @@
 }
 .summaryFlag {
   box-shadow: inset 0 0 0 2px var(--warning);
+  animation:
+    cell-in var(--dur) var(--ease-entry) both,
+    flag-pulse 2s var(--ease) infinite;
+  animation-delay: calc(min(var(--cell-i, 0) * 14ms, 420ms)), 0s;
+}
+@keyframes cell-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+@keyframes flag-pulse {
+  50% {
+    box-shadow: inset 0 0 0 3px var(--warning);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .summaryCell,
+  .summaryFlag {
+    animation: none;
+  }
 }
 
 /* Post-exam per-topic breakdown. */

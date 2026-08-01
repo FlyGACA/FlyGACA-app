@@ -3064,6 +3064,8 @@
     "examTimeLeft": "Time left",
     "examPassed": "Passed",
     "examFailed": "Below the pass mark",
+    "stampPass": "Pass",
+    "stampFail": "Fail",
     "examPassMark": "Pass mark: {{n}}%",
     "paths": "Reading paths",
     "pathsDesc": "Guided routes through the library, step by step.",

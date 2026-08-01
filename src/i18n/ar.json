@@ -3064,6 +3064,8 @@
     "examTimeLeft": "الوقت المتبقّي",
     "examPassed": "ناجح",
     "examFailed": "دون درجة النجاح",
+    "stampPass": "ناجح",
+    "stampFail": "راسب",
     "examPassMark": "درجة النجاح: {{n}}%",
     "paths": "مسارات القراءة",
     "pathsDesc": "مسارات موجّهة عبر المكتبة، خطوة بخطوة.",
