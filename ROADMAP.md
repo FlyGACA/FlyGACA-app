@@ -49,6 +49,10 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   (`src/hooks/usePageMeta.ts`) and switched the ten noindex-only call sites (`FlavorSettings`,
   `Checkout`, `Logbook`, `Settings`, `Account`, `Currency`, `Dashboard`, `Records`, business
   `Admin`, `NotFound`) off the `undefined, undefined, { noindex: true }` filler.
+- **`content.ts` split.** The ~370 lines of corpus/content JSON type declarations moved to
+  `src/lib/content.types.ts`; `content.ts` now holds only the runtime loader (`fetchJson`,
+  `loadJson`, `CORPUS`, `loadRegulationsLookup`, …) and re-exports the types so existing
+  `@/lib/content` imports are unaffected.
 
 ## Now — production hardening & go-live confidence
 
@@ -130,8 +134,7 @@ the findings are not re-derived.
   `firebase-admin` + genkit just to unit-test `parseRequest`. A `gateway-core.ts` would let those be
   tested with a bare import, like every other core.
 - **[platform]** **Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
-  rewrite), `Chat.tsx` (572), `Document.tsx` (513), `content.ts` (455 — ~370 of which are corpus
-  type declarations that could move to `content.types.ts`).
+  rewrite), `Chat.tsx` (572), `Document.tsx` (513).
 
 ## Later — exploratory / post-launch
 
