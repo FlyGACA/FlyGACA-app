@@ -118,12 +118,13 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bank]);
 
-  const [queue] = useState<Card[]>(initial);
+  // One runner serves the initial due-based session and every follow-up
+  // (reset / review-missed) session — restart() swaps the queue in place.
+  const [queue, setQueue] = useState<Card[]>(initial);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [got, setGot] = useState(0);
   const [again, setAgain] = useState<Card[]>([]);
-  const [extra, setExtra] = useState<Card[] | null>(null);
   const card = queue[i];
   const done = i >= queue.length;
 
@@ -156,12 +157,11 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
   }, [flipped, done, i]);
 
   function restart(cards: Card[]) {
-    setExtra(shuffle(cards));
-  }
-
-  // Switch into a follow-up "review the missed ones" session.
-  if (extra) {
-    return <DeckSession bank={bank} cards={extra} onBack={onBack} />;
+    setQueue(shuffle(cards));
+    setI(0);
+    setFlipped(false);
+    setGot(0);
+    setAgain([]);
   }
 
   return (
@@ -182,74 +182,6 @@ function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
               </button>
             )}
           </div>
-        </div>
-      ) : (
-        <CardView
-          card={card}
-          flipped={flipped}
-          onFlip={() => setFlipped((f) => !f)}
-          onGrade={grade}
-          progress={{ done: i + 1, total: queue.length }}
-        />
-      )}
-    </section>
-  );
-}
-
-/** A standalone deck session over an explicit card list (the "review missed" flow). */
-function DeckSession({
-  bank,
-  cards,
-  onBack,
-}: {
-  bank: QuizBank;
-  cards: Card[];
-  onBack: () => void;
-}) {
-  const { t } = useTranslation();
-  const [queue] = useState<Card[]>(cards);
-  const [i, setI] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const [got, setGot] = useState(0);
-  const [again, setAgain] = useState(0);
-  const card = queue[i];
-  const done = i >= queue.length;
-
-  function grade(correct: boolean) {
-    gradeCard(bank.id, card.key, correct);
-    if (correct) setGot((n) => n + 1);
-    else setAgain((n) => n + 1);
-    setFlipped(false);
-    setI((n) => n + 1);
-  }
-
-  useEffect(() => {
-    if (done) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        setFlipped((f) => !f);
-      } else if (flipped && (e.key === 'ArrowRight' || e.key === '1')) {
-        e.preventDefault();
-        grade(true);
-      } else if (flipped && (e.key === 'ArrowLeft' || e.key === '2')) {
-        e.preventDefault();
-        grade(false);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped, done, i]);
-
-  return (
-    <section className={`container-narrow ${styles.page}`}>
-      <button type="button" className={styles.back} onClick={onBack}>
-        ← {t('study.back')}
-      </button>
-      {done ? (
-        <div className={styles.result} role="status">
-          <p>{t('study.deckDone', { known: got, review: again })}</p>
         </div>
       ) : (
         <CardView
