@@ -6,6 +6,7 @@ import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { pivotalAltitude } from '@/calc/navigation';
+import { GaugeDial } from '@/components/calc/GaugeDial';
 
 export function PivotalAltitude() {
   const { t } = useTranslation();
@@ -46,6 +47,9 @@ export function PivotalAltitude() {
           tone="headline"
         />
       </OutputGrid>
+      {alt != null && (
+        <GaugeDial label={t('pivotalAlt.altitude')} value={alt} min={0} max={2000} unit="FT" />
+      )}
     </CalcShell>
   );
 }

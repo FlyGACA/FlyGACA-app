@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { machFromTas, tasFromMach } from '@/calc/speed';
+import { GaugeDial } from '@/components/calc/GaugeDial';
 import seg from '@/components/calc/calc.module.css';
 
 export function Mach() {
@@ -74,6 +75,7 @@ export function Mach() {
         />
         <ResultStat label={t('mach.lss')} value={r != null ? `${r.lss.toFixed(0)} kt` : '—'} />
       </OutputGrid>
+      {r != null && <GaugeDial label={t('mach.mach')} value={r.mach} min={0} max={1} unit="M" />}
     </CalcShell>
   );
 }
