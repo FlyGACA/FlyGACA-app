@@ -36,6 +36,16 @@ for (const path of PAGES) {
     });
     await expect(page.locator('h1').first()).toBeVisible();
 
+    // The home bento is a lazy chunk behind Suspense; the hero h1 paints before
+    // it resolves, so without this wait axe may scan the fallback and never see
+    // a tile. A visible tile heading inside the named region proves the grid
+    // mounted (its reduced-motion variants render it settled on first paint).
+    if (path === '/') {
+      const dashboard = page.getByRole('region', { name: 'Fly GACA dashboard' });
+      await expect(dashboard).toBeVisible();
+      await expect(dashboard.getByRole('heading', { level: 3 }).first()).toBeVisible();
+    }
+
     // The reader injects a very large (~500 KB) regulation document; auditing the
     // whole DOM times out axe. Audit the reader's own chrome and skip the
     // sanitized third-party body (its .content styles are verified separately).
