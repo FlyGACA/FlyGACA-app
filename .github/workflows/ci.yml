@@ -83,7 +83,10 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 17
+          # 21+, not 17: firebase-tools v15 refuses to start the emulator on an
+          # older runtime ("firebase-tools no longer supports Java version
+          # before 21"), which failed this job outright.
+          java-version: 21
 
       - run: npm ci
 
