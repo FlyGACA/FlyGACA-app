@@ -20,6 +20,7 @@ const ROUTES = [
   '/guides/saudi-ppl-requirements',
   '/pricing',
   '/schools',
+  '/hud',
   '/about',
   '/disclaimer',
   '/terms',

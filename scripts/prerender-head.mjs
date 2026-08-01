@@ -172,6 +172,7 @@ const STATIC_META = {
   '/pricing': 'pricing',
   '/schools': 'schools',
   '/developers': 'developers',
+  '/hud': 'hud',
   '/about': 'about',
   '/study/quiz': 'quiz',
   '/study/flashcards': 'flashcards',

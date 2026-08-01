@@ -16,6 +16,7 @@ const PAGES = [
   '/study/quiz',
   '/study/flashcards',
   '/study/exam',
+  '/hud',
 ];
 
 for (const path of PAGES) {

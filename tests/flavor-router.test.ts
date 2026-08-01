@@ -111,6 +111,7 @@ const MAIN_PATHS = [
   'pricing',
   'schools',
   'developers',
+  'hud',
   'business/admin',
   'about',
   'disclaimer',
