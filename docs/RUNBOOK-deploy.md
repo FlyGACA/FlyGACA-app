@@ -6,9 +6,9 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
   SEO-PLAN P0.a): the `/api/chat` and `/api/feedback` Cloud Functions (the Captain Adel gateway,
   region `me-central1` — must match `functions/src/region.ts` and the `firebase.json` rewrites) are
   co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
-  `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. Until the
-  `flygaca.com` DNS cutover to Firebase completes (see `../archive/docs/RUNBOOK-cutover.md`), the apex is still
-  served by Vercel.
+  `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The `flygaca.com` DNS
+  cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed 2026-07-31: the apex and
+  `www` both resolve to Firebase Hosting now.
 - **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
   `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
   working. The proxy is same-origin to the browser, so the strict CSP (`connect-src 'self'`) is
@@ -21,6 +21,14 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 > `firebase-hosting-merge.yml` workflow (which raced `deploy.yml` on every push to `main` and
 > deployed without the prerender) was removed at the same time — **`deploy.yml` is the only
 > production deploy workflow**.
+
+> **Incident note (2026-07-31):** `flygaca.com` was returning Vercel's `404 DEPLOYMENT_NOT_FOUND` on
+> every request — DNS still pointed at Vercel's edge, but the domain wasn't bound to a live
+> deployment there (the Vercel project itself, `fly-gaca/flygaca`, is still active and still builds
+> preview deployments on push; only the `flygaca.com` domain association/alias stopped resolving —
+> root cause on the Vercel side not fully diagnosed). Fixed by adding `flygaca.com` +
+> `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing their DNS records
+> at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
 
 ## Build env vars (set in each platform's build settings)
 

@@ -59,4 +59,5 @@ firebase deploy --only hosting           # publish to the live Firebase site
 
 ## Done-when
 
-Parity checklist ✅ · preview smoke ✅ · secret flip ✅ · DNS switched · legacy retained for rollback.
+Parity checklist ✅ · preview smoke ✅ · secret flip ✅ · DNS switched ✅ (2026-07-31, `flygaca.com` +
+`www.flygaca.com` both resolve to Firebase Hosting) · legacy retained for rollback.
