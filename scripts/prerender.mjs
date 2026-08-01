@@ -156,7 +156,20 @@ try {
       // before writing, or the snapshot ships dead, CSP-blocked asset URLs to
       // production — they 404 for real users and break every lazy-loaded route
       // (Study, Charts, …).
-      const rendered = await page.evaluate(() => document.documentElement.outerHTML);
+      const rendered = await page.evaluate(() => {
+        // App Check's reCAPTCHA Enterprise self-injects a floating badge, a
+        // gstatic script and iframes at runtime. Baking those into the static
+        // snapshot makes reCAPTCHA throw "placeholder element must be empty" on
+        // every real load — on hydration it re-injects into a container the
+        // snapshot already populated. Strip them so the snapshot carries only the
+        // app's own markup (the live bundle re-creates them cleanly at runtime).
+        document
+          .querySelectorAll(
+            '.grecaptcha-badge, script[src*="recaptcha"], iframe[src*="recaptcha"], [id^="g-recaptcha"]',
+          )
+          .forEach((el) => el.remove());
+        return document.documentElement.outerHTML;
+      });
       const html = `<!doctype html>\n${rendered}`.replace(
         new RegExp(`(https?:)?//localhost:${PORT}`, 'g'),
         '',
