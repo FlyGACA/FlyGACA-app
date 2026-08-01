@@ -68,3 +68,23 @@ export function sunTimes(date: Date, lat: number, lng: number): SunTimes | null 
   const civil = event(-6);
   return { sunrise: sun.rise, sunset: sun.set, civilDawn: civil.rise, civilDusk: civil.set };
 }
+
+const rightAscension = (l: number) => Math.atan2(Math.sin(l) * Math.cos(e), Math.cos(l));
+const siderealTime = (d: number) => rad * (280.16 + 360.9856235 * d);
+
+/**
+ * The subsolar point — where the sun is directly overhead — for an instant.
+ * Latitude is the solar declination; longitude follows the Earth's rotation
+ * (right ascension minus Greenwich sidereal time). Drives the HUD's day/night
+ * terminator; same SunCalc math as the event times above.
+ */
+export function subsolarPoint(date: Date): { lat: number; lon: number } | null {
+  if (Number.isNaN(date.getTime())) return null;
+  const d = toDays(date);
+  const M = solarMeanAnomaly(d);
+  const L = eclipticLongitude(M);
+  const lat = declination(L) / rad;
+  const lonRaw = (rightAscension(L) - siderealTime(d)) / rad;
+  const lon = ((((lonRaw + 180) % 360) + 360) % 360) - 180;
+  return { lat, lon };
+}
