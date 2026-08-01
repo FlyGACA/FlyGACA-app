@@ -173,10 +173,25 @@
   padding-block: var(--space-6) var(--space-10);
 }
 
-/* Reserve the grid's rough height while its chunk loads, to avoid layout shift. */
+/* Reserve the dashboard's real height while its lazy chunk loads, to avoid
+   layout shift. Values are measured wrap heights (max of EN/AR, ~3% under so
+   any residual shift is a small downward one) at 1280 / 820 / 390 px —
+   re-measure if the widget set or spans change. */
 .dashboardFallback {
-  min-block-size: clamp(320px, 60vw, 520px);
+  min-block-size: 1240px;
   contain: layout style;
+}
+
+@media (max-width: 960px) {
+  .dashboardFallback {
+    min-block-size: 1900px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboardFallback {
+    min-block-size: 2380px;
+  }
 }
 
 .notice {

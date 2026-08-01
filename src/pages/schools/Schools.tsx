@@ -94,8 +94,9 @@ export function Schools() {
           tone="var(--cat-1)"
         />
         <BentoGrid label={t('schools.featuresHead')}>
+          {/* Six features × md tile the 12-col desktop grid as two complete 3-up rows. */}
           {features.map((f, i) => (
-            <BentoCard key={i} span="sm" tone={FEATURE_TONES[i % FEATURE_TONES.length]}>
+            <BentoCard key={i} span="md" tone={FEATURE_TONES[i % FEATURE_TONES.length]}>
               <h3 className={styles.featTitle}>{f.h}</h3>
               <p className={styles.featBody}>{f.p}</p>
             </BentoCard>
