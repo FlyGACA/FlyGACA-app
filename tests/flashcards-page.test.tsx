@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
-import { screen, cleanup, act } from '@testing-library/react';
+import { screen, cleanup, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '@/i18n';
 import { renderWithRouter } from './helpers/render';
@@ -42,13 +42,18 @@ describe('<Flashcards /> interaction', () => {
     const flip = screen.getByRole('button', { name: 'Reveal answer' });
     await user.click(flip);
 
-    // Flipping reveals the answer and the SRS grade controls.
-    expect(screen.getByText('4')).toBeInTheDocument();
+    // Flipping reveals the answer and the SRS grade controls. (Scoped to the
+    // card's <strong> — the glide-path strip also renders bare stage digits.)
+    expect(screen.getByText('4', { selector: 'strong' })).toBeInTheDocument();
     const gotIt = screen.getByRole('button', { name: 'Got it →' });
     expect(screen.getByRole('button', { name: '← Again' })).toBeInTheDocument();
 
-    // Grading the only card advances past it (the grade control is gone).
+    // Grading starts the card's fly-out; advancing happens on animationend
+    // (jsdom never fires it on its own, so dispatch the contract event —
+    // unless reduced motion already advanced synchronously).
     await user.click(gotIt);
+    const wrapper = screen.queryByRole('button', { name: 'Tap or press Enter to flip' });
+    if (wrapper) fireEvent.animationEnd(wrapper);
     expect(screen.queryByRole('button', { name: 'Got it →' })).toBeNull();
   });
 });

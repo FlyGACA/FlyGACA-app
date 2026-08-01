@@ -3042,6 +3042,12 @@
     "again": "← كرّرها",
     "dueCount": "{{n}} مستحقّة",
     "masteredCount": "{{n}} متقَنة",
+    "glidePath": {
+      "title": "مسار الانزلاق",
+      "newLabel": "جديدة",
+      "masteredLabel": "الإتقان",
+      "summary": "{{total}} بطاقة — {{fresh}} جديدة و{{mastered}} متقَنة"
+    },
     "progress": "{{done}} من {{total}}",
     "deckDone": "اكتملت المجموعة، {{known}} معروفة، {{review}} للمراجعة.",
     "reset": "إعادة المجموعة",

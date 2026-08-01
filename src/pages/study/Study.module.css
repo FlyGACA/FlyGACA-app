@@ -297,6 +297,54 @@
   box-shadow: var(--clay-shadow-hover);
 }
 
+/* ── Flashcard — grade motion ──
+   The graded card flies out toward inline-end (known) / inline-start (again);
+   [dir='rtl'] flips --fly-x so the direction semantics mirror. No local
+   reduced-motion override here on purpose: advancing waits on animationend,
+   and the global reduce reset (global.css) shrinks durations to 0.01ms so the
+   event still fires — `animation: none` would strand the deck instead. */
+.cardEnter {
+  animation: fc-card-in var(--dur-slow) var(--ease-entry) both;
+}
+.cardLeaveKnown,
+.cardLeaveAgain {
+  pointer-events: none;
+}
+.cardLeaveKnown {
+  --fly-x: 1;
+  animation: fc-fly-out var(--dur) var(--ease) forwards;
+}
+.cardLeaveAgain {
+  --fly-x: -1;
+  animation: fc-fly-out var(--dur) var(--ease) forwards;
+}
+:global([dir='rtl']) .cardLeaveKnown {
+  --fly-x: -1;
+}
+:global([dir='rtl']) .cardLeaveAgain {
+  --fly-x: 1;
+}
+.cardLeaveKnown .cardFront,
+.cardLeaveKnown .cardBack {
+  border-color: color-mix(in srgb, var(--success) 55%, transparent);
+}
+.cardLeaveAgain .cardFront,
+.cardLeaveAgain .cardBack {
+  border-color: color-mix(in srgb, var(--warning) 55%, transparent);
+}
+@keyframes fc-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+}
+@keyframes fc-fly-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--fly-x) * 55%)) rotate(calc(var(--fly-x) * 4deg));
+  }
+}
+
 .cardQ {
   font-size: var(--fs-lg);
 }
