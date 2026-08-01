@@ -354,22 +354,11 @@
         "live": "live calculators",
         "cta": "All tools"
       },
-      "study": {
-        "eyebrow": "Study",
-        "questions": "practice questions",
-        "cta": "Start studying"
-      },
       "adel": {
         "status": "Online",
         "heading": "Captain Adel",
         "desc": "Ask anything; he cites the exact Part and section.",
         "cta": "Ask Captain Adel"
-      },
-      "guides": {
-        "eyebrow": "Learn",
-        "heading": "Study guides",
-        "count": "guides",
-        "cta": "Browse guides"
       },
       "learn": {
         "eyebrow": "Learn",
