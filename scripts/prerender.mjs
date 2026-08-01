@@ -198,9 +198,26 @@ try {
   // the static shell never contains, then dumps the live DOM.
   // Navigate + capture the hydrated document to `file` (a real-app <footer> is
   // the signal the app rendered over the static shell).
-  async function snapshot(url, file) {
+  //
+  // `lang` is the language the finished document must be in. A <footer> is not a
+  // sufficient signal on its own: i18next applies <html lang/dir> asynchronously,
+  // so an /ar route can reach "footer rendered" while the root element still says
+  // lang="en". Serializing there writes an English-bodied file to dist/ar/... and
+  // `check:prerender` rejects it — which is exactly how the deploy failed, on a
+  // *different* route each run (ar/tools/vfr-minima, ar/library/part-138), the
+  // signature of a race rather than a broken page. Waiting for the language to
+  // land removes the race at its source.
+  async function snapshot(url, file, lang = 'en') {
     await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
     await page.waitForSelector('footer', { timeout: 15000 });
+    await page.waitForFunction(
+      (want) => {
+        const el = document.documentElement;
+        return el.lang === want && (want !== 'ar' || el.dir === 'rtl');
+      },
+      lang,
+      { timeout: 15000 },
+    );
     const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, html);
@@ -222,7 +239,7 @@ try {
   for (const route of arRouteList) {
     const arRoute = route === '/' ? '/ar' : `/ar${route}`;
     try {
-      await snapshot(`${BASE}${arRoute}`, outPathAr(route));
+      await snapshot(`${BASE}${arRoute}`, outPathAr(route), 'ar');
       doneAr++;
     } catch (err) {
       console.warn(`  prerender: skipped ar ${route} — ${err.message}`);
