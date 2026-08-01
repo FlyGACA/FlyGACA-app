@@ -1046,6 +1046,10 @@
     "sr": "Specific range",
     "formula": "Specific range = groundspeed ÷ fuel flow = distance per unit of fuel. Higher is more efficient."
   },
+  "profile": {
+    "climb": "Climb · {{angle}}°",
+    "descent": "Descent · {{angle}}°"
+  },
   "weightBalance": {
     "weight": "Weight",
     "arm": "Arm",
