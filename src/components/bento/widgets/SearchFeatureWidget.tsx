@@ -23,7 +23,7 @@ export function SearchFeatureWidget() {
   return (
     <BentoCard span="wide" tone="cyan">
       <p className={shared.eyebrow}>{t('home.dashboard.search.eyebrow')}</p>
-      <p className={shared.heading}>{t('home.dashboard.search.heading')}</p>
+      <h3 className={shared.heading}>{t('home.dashboard.search.heading')}</h3>
       <p className={shared.desc}>{t('home.dashboard.search.desc')}</p>
       <form className={shared.featForm} onSubmit={onSubmit}>
         <input

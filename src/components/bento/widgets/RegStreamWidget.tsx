@@ -1,22 +1,27 @@
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '@/components/bento/BentoCard';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { CORPUS, type GacarIndex } from '@/lib/content';
 import { StatValue } from './StatValue';
 import { StatusPill } from '@/components/StatusPill';
+import { CardCta } from './CardCta';
 import shared from './widgets.module.css';
 
 /** GACAR regulatory stream — live count of Parts and category streams. */
 export function RegStreamWidget() {
   const { t } = useTranslation();
+  const headingId = useId();
   const { data, loading } = useFetchJson<GacarIndex>(CORPUS.regulations.index);
 
   return (
-    <BentoCard span="md" tone="cyan" to="/library" label={t('home.dashboard.reg.cta')}>
+    <BentoCard span="md" tone="cyan" to="/library" labelledBy={headingId}>
       <StatusPill tone="live" pulse>
         {t('home.dashboard.reg.live')}
       </StatusPill>
-      <p className={shared.heading}>{t('home.dashboard.reg.heading')}</p>
+      <h3 id={headingId} className={shared.heading}>
+        {t('home.dashboard.reg.heading')}
+      </h3>
       {loading || !data ? (
         <div className={shared.skeleton} />
       ) : (
@@ -27,12 +32,7 @@ export function RegStreamWidget() {
           </span>
         </div>
       )}
-      <span className={`${shared.foot} cardHoverArrow`}>
-        {t('home.dashboard.reg.cta')}
-        <span className={shared.arrow} aria-hidden="true">
-          →
-        </span>
-      </span>
+      <CardCta label={t('home.dashboard.reg.cta')} />
     </BentoCard>
   );
 }

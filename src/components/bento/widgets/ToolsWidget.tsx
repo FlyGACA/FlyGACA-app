@@ -1,6 +1,8 @@
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '@/components/bento/BentoCard';
 import { TOOLS } from '@/lib/tools';
+import { CardCta } from './CardCta';
 import shared from './widgets.module.css';
 
 const QUICK = ['crosswind', 'tas', 'density-altitude'];
@@ -13,11 +15,14 @@ const LIVE_COUNT = TOOLS.filter((tool) => tool.status === 'live').length;
 /** Flight-planning tools — live calculator count + quick chips. */
 export function ToolsWidget() {
   const { t } = useTranslation();
+  const headingId = useId();
 
   return (
-    <BentoCard span="md" tone="default" to="/tools" label={t('home.dashboard.tools.cta')}>
+    <BentoCard span="md" tone="default" to="/tools" labelledBy={headingId}>
       <p className={shared.eyebrow}>{t('home.dashboard.tools.eyebrow')}</p>
-      <p className={shared.heading}>{t('home.dashboard.tools.heading')}</p>
+      <h3 id={headingId} className={shared.heading}>
+        {t('home.dashboard.tools.heading')}
+      </h3>
       <div className={shared.statRow}>
         <span className={shared.statSecondary}>{LIVE_COUNT}</span>
         <span className={shared.unit}>{t('home.dashboard.tools.live')}</span>
@@ -29,12 +34,7 @@ export function ToolsWidget() {
           </span>
         ))}
       </div>
-      <span className={`${shared.foot} cardHoverArrow`}>
-        {t('home.dashboard.tools.cta')}
-        <span className={shared.arrow} aria-hidden="true">
-          →
-        </span>
-      </span>
+      <CardCta label={t('home.dashboard.tools.cta')} />
     </BentoCard>
   );
 }

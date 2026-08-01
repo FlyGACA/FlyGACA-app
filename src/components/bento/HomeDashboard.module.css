@@ -13,6 +13,9 @@
 .eyebrow {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
+  /* The eyebrow is the region's <h2>; undo the global heading bolding so it
+     keeps reading as a quiet instrument label. */
+  font-weight: var(--fw-regular);
   text-transform: uppercase;
   letter-spacing: var(--tracking-eyebrow);
   color: var(--text-dim);
