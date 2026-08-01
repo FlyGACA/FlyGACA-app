@@ -24,6 +24,7 @@ import {
 } from '@/calc/pilot/logbook';
 import { LogbookTable } from './LogbookTable';
 import { LogbookBreakdown } from './LogbookBreakdown';
+import { CountUp } from '@/components/CountUp';
 import type { Flight } from '@/lib/services/account';
 import { useNoindexMeta } from '@/hooks/usePageMeta';
 import { Alert } from '@/components/Alert';
@@ -127,16 +128,25 @@ function Inner() {
         <OutputGrid>
           <ResultStat
             label={t('account.totalHours')}
-            value={summary.totalHours.toFixed(1)}
+            value={<CountUp to={summary.totalHours} decimals={1} />}
             tone="headline"
           />
-          <ResultStat label={t('account.pic')} value={summary.picHours.toFixed(1)} />
-          <ResultStat label={t('account.night')} value={summary.nightHours.toFixed(1)} />
-          <ResultStat label={t('account.ifr')} value={summary.ifrHours.toFixed(1)} />
-          <ResultStat label={t('account.ldg')} value={summary.landings.toFixed(0)} />
+          <ResultStat
+            label={t('account.pic')}
+            value={<CountUp to={summary.picHours} decimals={1} />}
+          />
+          <ResultStat
+            label={t('account.night')}
+            value={<CountUp to={summary.nightHours} decimals={1} />}
+          />
+          <ResultStat
+            label={t('account.ifr')}
+            value={<CountUp to={summary.ifrHours} decimals={1} />}
+          />
+          <ResultStat label={t('account.ldg')} value={<CountUp to={summary.landings} />} />
           <ResultStat
             label={t('account.last90')}
-            value={summary.last90.hours.toFixed(1)}
+            value={<CountUp to={summary.last90.hours} decimals={1} />}
             sub={t('account.flightsLogged', { n: summary.last90.flightCount })}
           />
         </OutputGrid>

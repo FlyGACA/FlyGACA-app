@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { StatusPill } from './StatusPill';
 import { ProgressBar } from './ProgressBar';
+import { CurrencyRing } from './CurrencyRing';
 import type { CurrencyItem } from '@/calc/pilot/currency';
 import { formatDate } from '@/calc/recency';
 import { VALIDITY_LABEL, VALIDITY_TONE } from './validityStatus';
@@ -24,6 +25,7 @@ export function CurrencyBoard({ items, showFix = true }: Props) {
     <ul className={styles.board}>
       {items.map((item) => (
         <li key={item.id} className={styles.row} data-status={item.status}>
+          <CurrencyRing item={item} />
           <div className={styles.main}>
             <span className={styles.label}>{item.label ?? t(item.labelKey)}</span>
             <span className={styles.detail}>{t(item.detailKey, item.detailVars)}</span>

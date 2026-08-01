@@ -6,6 +6,8 @@ interface CountUpProps {
   to: number;
   /** Duration of the count in ms. */
   duration?: number;
+  /** Decimal places to render (default 0 — whole numbers). */
+  decimals?: number;
 }
 
 /**
@@ -16,7 +18,7 @@ interface CountUpProps {
  * otherwise freeze on its first value. Honours reduced-motion by rendering the final
  * value immediately, and the live number is announced to assistive tech only as it settles.
  */
-export function CountUp({ to, duration = 1300 }: CountUpProps) {
+export function CountUp({ to, duration = 1300, decimals = 0 }: CountUpProps) {
   const reduce = usePrefersReducedMotion();
   const [value, setValue] = useState(reduce ? to : 0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -44,7 +46,9 @@ export function CountUp({ to, duration = 1300 }: CountUpProps) {
         const p = Math.min(1, (now - start) / duration);
         // easeOutCubic — fast then settling, matching the comp's counters.
         const eased = 1 - Math.pow(1 - p, 3);
-        setValue(Math.round(from + (to - from) * eased));
+        // Ease the raw figure; formatting to `decimals` happens at render so
+        // fractional stats (e.g. logbook hours) count smoothly, not in jumps.
+        setValue(from + (to - from) * eased);
         if (p < 1) frame.current = requestAnimationFrame(tick);
       };
       frame.current = requestAnimationFrame(tick);
@@ -82,5 +86,5 @@ export function CountUp({ to, duration = 1300 }: CountUpProps) {
     };
   }, [to, duration, reduce]);
 
-  return <span ref={ref}>{value}</span>;
+  return <span ref={ref}>{value.toFixed(decimals)}</span>;
 }
