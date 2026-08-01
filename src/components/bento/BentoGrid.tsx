@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { BENTO_DELAY_CHILDREN_S, BENTO_STAGGER_S } from './motion';
 import styles from './BentoGrid.module.css';
 
 interface BentoGridProps {
@@ -12,17 +13,23 @@ interface BentoGridProps {
  * The bento layout shell. As a framer-motion container it orchestrates the
  * staggered kinetic entry: each child `BentoCard` inherits the `hidden`→`show`
  * variant and settles in `--dur-stagger` after the previous one. Reduced-motion
- * collapses the stagger to a near-instant crossfade.
+ * makes both variant states no-ops so the grid renders settled on first paint —
+ * no fade to race an axe scan or flash on a slow device.
  */
 export function BentoGrid({ children, label }: BentoGridProps) {
   const reduce = useReducedMotion();
 
-  const container: Variants = {
-    hidden: {},
-    show: {
-      transition: reduce ? { staggerChildren: 0 } : { staggerChildren: 0.07, delayChildren: 0.05 },
-    },
-  };
+  const container: Variants = reduce
+    ? { hidden: {}, show: {} }
+    : {
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: BENTO_STAGGER_S,
+            delayChildren: BENTO_DELAY_CHILDREN_S,
+          },
+        },
+      };
 
   return (
     <motion.section

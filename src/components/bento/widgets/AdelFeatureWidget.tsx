@@ -30,7 +30,7 @@ export function AdelFeatureWidget() {
           <StatusPill tone="live" pulse>
             {t('home.dashboard.adel.status')}
           </StatusPill>
-          <p className={shared.heading}>{t('home.dashboard.adel.heading')}</p>
+          <h3 className={shared.heading}>{t('home.dashboard.adel.heading')}</h3>
         </div>
       </div>
       <p className={shared.desc}>{t('home.dashboard.adel.desc')}</p>

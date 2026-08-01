@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { BentoCard } from '@/components/bento/BentoCard';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { CORPUS, type GacarIndex } from '@/lib/content';
+import { withAlpha } from '@/lib/color';
+import { CardCta } from './CardCta';
 import shared from './widgets.module.css';
 import styles from './RadarWidget.module.css';
 
@@ -65,8 +67,9 @@ function cssVar(name: string, fallback: string): string {
 export function RadarWidget() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
+  const headingId = useId();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { data } = useFetchJson<GacarIndex>(CORPUS.regulations.index);
+  const { data, loading } = useFetchJson<GacarIndex>(CORPUS.regulations.index);
   const blips = useMemo(() => buildBlips(data), [data]);
   const [tip, setTip] = useState<{ title: string; left: number; top: number } | null>(null);
   const lastTitle = useRef<string | null>(null);
@@ -132,12 +135,14 @@ export function RadarWidget() {
       }
       ctx.globalAlpha = 1;
 
-      // Sweep wedge with a fading trailing gradient
+      // Sweep wedge with a fading trailing gradient. The transparent stops are
+      // derived from the same token as the leading edge so themed sweeps
+      // (cockpit amber, day teal) fade through their own hue, not cyan.
       const trail = 1.1; // radians of trail behind the leading edge
       const grad = ctx.createConicGradient(sweep - trail, cx, cy);
-      grad.addColorStop(0, 'rgba(63, 224, 255, 0)');
+      grad.addColorStop(0, withAlpha(cyan, 0));
       grad.addColorStop(trail / (Math.PI * 2), cyan);
-      grad.addColorStop(trail / (Math.PI * 2) + 0.001, 'rgba(63, 224, 255, 0)');
+      grad.addColorStop(trail / (Math.PI * 2) + 0.001, withAlpha(cyan, 0));
       ctx.save();
       ctx.globalAlpha = 0.28;
       ctx.beginPath();
@@ -274,8 +279,14 @@ export function RadarWidget() {
   const caption = t('home.dashboard.radar.concept', { parts, domains });
 
   return (
-    <BentoCard span="tall" tone="cyan" to="/library" label={t('home.dashboard.radar.title')}>
+    <BentoCard span="tall" tone="cyan" to="/library" labelledBy={headingId}>
       <p className={shared.eyebrow}>{t('home.dashboard.radar.eyebrow')}</p>
+      {/* The tile's design has no visible title; the sr-only heading names the
+          link and keeps the tile in the document outline. The canvas stays
+          decorative to AT — the visible caption carries the coverage figure. */}
+      <h3 id={headingId} className={shared.srOnly}>
+        {t('home.dashboard.radar.title')}
+      </h3>
       <div className={styles.scope}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
         {tip && (
@@ -288,17 +299,12 @@ export function RadarWidget() {
           </span>
         )}
       </div>
-      <p className={styles.concept}>{caption}</p>
-      {/* The canvas is decorative to AT; this carries the same coverage figure. */}
-      <p className={shared.srOnly}>
-        {t('home.dashboard.radar.title')}: {caption}
-      </p>
-      <span className={`${shared.foot} cardHoverArrow`}>
-        {t('home.dashboard.radar.cta')}
-        <span className={shared.arrow} aria-hidden="true">
-          →
-        </span>
-      </span>
+      {loading || !data ? (
+        <span className={`${shared.skeleton} ${shared.skeletonText}`} />
+      ) : (
+        <p className={styles.concept}>{caption}</p>
+      )}
+      <CardCta label={t('home.dashboard.radar.cta')} />
     </BentoCard>
   );
 }

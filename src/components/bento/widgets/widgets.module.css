@@ -65,11 +65,6 @@
   text-shadow: var(--glow-stat-cyan);
 }
 
-.statGreen {
-  color: var(--neon-green);
-  text-shadow: var(--glow-stat-green);
-}
-
 /* Secondary metric — quieter than the signature stat so one number leads. */
 .statSecondary {
   font-size: var(--fs-h2);
@@ -119,7 +114,7 @@
   transition: border-color var(--dur) var(--ease);
 }
 
-.featInput:focus {
+.featInput:focus-visible {
   border-color: var(--brand-hover);
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -141,6 +136,12 @@
 }
 
 .featBtn:hover {
+  background: var(--brand-hover);
+}
+
+/* Keyboard focus mirrors hover (the ring itself comes from the global
+   :focus-visible rule). */
+.featBtn:focus-visible {
   background: var(--brand-hover);
 }
 
@@ -188,12 +189,15 @@
 }
 
 /* Nudge the arrow along the inline axis on hover. translateX is physical, so
-   mirror it under RTL to keep the nudge pointing toward the inline-end. */
-:global(.cardHoverArrow):hover .arrow {
-  transform: translateX(3px);
-}
-:global([dir='rtl']) :global(.cardHoverArrow):hover .arrow {
-  transform: translateX(-3px);
+   mirror it under RTL to keep the nudge pointing toward the inline-end.
+   Hover-capable pointers only — a tap must not strand the nudged arrow. */
+@media (hover: hover) {
+  :global(.cardHoverArrow):hover .arrow {
+    transform: translateX(3px);
+  }
+  :global([dir='rtl']) :global(.cardHoverArrow):hover .arrow {
+    transform: translateX(-3px);
+  }
 }
 
 /* Loading skeleton */
@@ -216,6 +220,19 @@
   to {
     background-position: -200% 0;
   }
+}
+
+/* Caption-sized shimmer — stands in for a one-line caption while data loads. */
+.skeletonText {
+  inline-size: 70%;
+  block-size: 1rem;
+}
+
+/* Inline second-stat shimmer — holds the slot of an async statSecondary pair. */
+.skeletonInline {
+  margin-block-start: 0;
+  inline-size: 4.5rem;
+  block-size: var(--fs-h2);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -51,10 +51,10 @@ All tokens are CSS Custom Properties on `:root`. There are no token transformati
 
 ### Typography Tokens
 ```css
-/* Families */
---font-sans:  'Cairo', system-ui, …          /* UI / headings / Arabic */
---font-body:  'Atkinson Hyperlegible', …     /* body copy — legibility */
---font-mono:  ui-monospace, 'JetBrains Mono', …
+/* Families — one face for Latin AND Arabic (the Cairo/Atkinson split is retired) */
+--font-sans:  'Readex Pro', system-ui, …     /* headings / brand / UI */
+--font-body:  'Readex Pro', system-ui, …     /* body — intentionally the same family */
+--font-mono:  'JetBrains Mono', ui-monospace, …
 
 /* Fluid type scale */
 --fs-display: clamp(2.6rem, 1.5rem + 4.6vw, 4.6rem)
@@ -122,6 +122,10 @@ All tokens are CSS Custom Properties on `:root`. There are no token transformati
 --lift-hover: 1.015   /* micro scale-lift on hover */
 ```
 
+`--ease-entry` / `--dur-entry` / `--dur-stagger` / `--lift-hover` are mirrored by
+`src/components/bento/motion.ts` (framer-motion can't read CSS custom properties);
+`tests/bento-motion-parity.test.ts` fails on any drift between the two.
+
 ### Bento / Neon Tokens (dashboard only)
 ```css
 --neon-green: #2bffb0   /* active / live / ON */
@@ -149,9 +153,9 @@ All tokens are CSS Custom Properties on `:root`. There are no token transformati
 src/
   app/          Header, Footer, Layout, RouteFallback
   components/
-    bento/      BentoCard, BentoGrid, HomeDashboard, useCardGlow
-                widgets/  (AdelFeature, Compliance, Radar, RegStream, Search,
-                            Study, Tools, StatValue)
+    bento/      BentoCard, BentoGrid, HomeDashboard, useCardGlow, motion
+                widgets/  (AdelFeature, Compliance, Hud, Learn, Radar, RegStream,
+                            Search, Tools, StatValue, CardCta)
     calc/       NumberField, TextField, ResultStat, Grids — calc primitives
     CalcShell           shared frame for every calculator page
     Disclaimer          the legal disclaimer (NEVER inline or reword)
@@ -180,12 +184,36 @@ src/
 
 **BentoCard** — interactive tile for the home dashboard:
 ```tsx
-<BentoCard span="md" tone="cyan" to="/library" label="Open the library">
+const headingId = useId();
+<BentoCard span="md" tone="cyan" to="/library" labelledBy={headingId}>
+  <h3 id={headingId} className={shared.heading}>GACAR regulations</h3>
   {/* tile content */}
 </BentoCard>
-// span: 'sm' | 'md' | 'lg' | 'tall' | 'wide'
+// span: 'sm' | 'md' | 'lg' | 'tall' | 'wide' | 'full'
 // tone: 'default' | 'cyan' | 'green'
+// labelledBy: id of the tile's heading — names the link from the heading
+// label: fallback name only, for a link tile with no heading (labelledBy wins;
+//        an aria-label would otherwise hide the tile's content from AT)
+// className: extra class merged onto the card root
 ```
+
+**Bento best practices** (enforced by `tests/bento-*.test.*` where testable):
+- Every tile carries exactly one `<h3>` (sr-only if the design has no visible
+  title) under the grid region's `<h2>`; link tiles name themselves from it via
+  `labelledBy`, never from an `aria-label` CTA string.
+- Data-driven stats always have a skeleton state — never render a bogus `0`
+  while a fetch is pending.
+- Hover-only affordances (glow, lift, arrow nudge) sit behind
+  `@media (hover: hover)` in CSS and `useHoverCapable()` in JS so taps on touch
+  devices never strand them; tap feedback (`whileTap`) stays.
+- Motion values come only from `src/components/bento/motion.ts` (mirrors the
+  motion tokens above). Reduced-motion renders the resting UI on first paint —
+  no faster fade, no initial hidden frame.
+- Canvas paint reads tokens via `cssVar()`; alpha variants derive with
+  `withAlpha()` (`src/lib/color.ts`) — never a literal `rgba()` of one theme's
+  hue.
+- Spans must sum to complete rows at every breakpoint (12 / 6 / 1 columns) — no
+  trailing holes; `full` closes out a grid as a full-bleed final row.
 
 **SectionHeader** — section divider with glowing accent bar:
 ```tsx
@@ -226,7 +254,7 @@ The `--tone` CSS variable sets the bar color and its glow. Any token value is va
 | Language | TypeScript 5 strict |
 | Routing | react-router-dom v6, `lazyNamed()` for code-split routes |
 | i18n | i18next + react-i18next (en/ar, runtime switch) |
-| Animation | framer-motion (bento tiles only; lazy-imported) |
+| Animation | framer-motion (bento only; kept out of the initial shell — it ships in the async route/bento chunks) |
 | Maps | Leaflet (Aerodromes tool) |
 | Native shell | Capacitor 6 (iOS/Android; inert on web) |
 | Build | Vite 6 + @vitejs/plugin-react |

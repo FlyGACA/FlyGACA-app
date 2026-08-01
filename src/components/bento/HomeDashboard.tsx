@@ -20,7 +20,9 @@ export default function HomeDashboard() {
   return (
     <div className={styles.wrap}>
       <header className={styles.head}>
-        <p className={styles.eyebrow}>{t('home.dashboard.overview')}</p>
+        {/* The region's real heading (h1 hero → h2 here → h3 tiles), styled as
+            the quiet eyebrow label — .eyebrow undoes the global h2 bolding. */}
+        <h2 className={styles.eyebrow}>{t('home.dashboard.overview')}</h2>
         <span className={styles.rule} aria-hidden="true" />
       </header>
       <BentoGrid label={t('home.dashboard.region')}>
