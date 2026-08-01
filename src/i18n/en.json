@@ -1109,6 +1109,7 @@
     "utc": "UTC",
     "localKsa": "KSA",
     "noEvent": "The sun does not cross this angle on this date.",
+    "arcAria": "Sun path across the day, from sunrise to sunset.",
     "formula": "Computed from the sun's position for the date and place. Civil twilight is the sun 6° below the horizon. Shown in UTC and KSA local (UTC+3)."
   },
   "validity": {
