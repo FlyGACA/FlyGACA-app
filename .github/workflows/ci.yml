@@ -6,9 +6,10 @@ on:
     branches: [main]
 
 # Least privilege: every job here only checks out code and uploads artifacts,
-# neither of which needs a writable token. Without this the job inherits the
-# repository default (currently "write"), handing a write-all GITHUB_TOKEN to
-# `npm ci` and every build script it runs.
+# neither of which needs a writable token. The repo default is already "read",
+# so this pins the grant explicitly — it can't silently widen if that default is
+# ever flipped back to "write", which would otherwise hand a write-all
+# GITHUB_TOKEN to `npm ci` and every build script it runs.
 permissions:
   contents: read
 

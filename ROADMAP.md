@@ -61,6 +61,17 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
   price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+- **[platform]** **Scope CI credentials least-privilege as they're provisioned.** An OAuth/token
+  scope-minimization review (Aug 2026) found the current surface already minimal — every workflow's
+  `GITHUB_TOKEN` is default-deny (`contents: read`, repo default confirmed `read`) with write escalated
+  only per-job, and Google sign-in requests only default `openid/email/profile` (no `addScope`). It
+  also found **no third-party CI credentials exist yet** — Cloudflare/Supabase/OpenAI/App-Store-Connect
+  secrets are all unset and their jobs no-op. When each is added, scope it minimally and keep it
+  confined to its one job: `CLOUDFLARE_API_TOKEN` → `Workers Scripts: Edit` only; `SUPABASE_SERVICE_ROLE_KEY`
+  + `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
+  Admin; the Firebase deploy SA stays **without** `datastore.indexAdmin` (see the note in `deploy.yml`).
+  Separately, periodically review the operator-account **claude.ai MCP connector** consent grants
+  (Airtable, Gmail, Drive, etc.) — third-party delegated grants that live outside this repo.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
