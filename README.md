@@ -70,6 +70,28 @@
 
 ---
 
+## ✨ 2026 Snapshot
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/Regulatory%20Library-Open%20Access-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="Open regulatory library" />
+<img src="https://img.shields.io/badge/Flight%20Tools-55%2B-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="55+ flight tools" />
+<img src="https://img.shields.io/badge/Languages-EN%20%E2%87%84%20AR-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="English and Arabic" />
+<img src="https://img.shields.io/badge/Platforms-Web%20%C2%B7%20PWA%20%C2%B7%20iOS%20%C2%B7%20Android-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="Web, PWA, iOS and Android" />
+
+</div>
+
+```mermaid
+flowchart LR
+    A["📚 Library"] --> B["🤖 Captain Adel"]
+    B --> C["🧮 Flight Tools"]
+    C --> D["🎓 Learn & Study"]
+    D --> E["👤 Pilot Account"]
+    E --> F["🏫 Schools & B2B"]
+```
+
+---
+
 ## 🎯 About the Project
 
 **Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. It turns the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into something accessible, searchable, and genuinely reliable.
@@ -144,6 +166,33 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 </table>
 
 <div align="center"><sub style="color: #666;">Screenshots from the live app — explore it at <a href="https://flygaca.com" style="color: #2d6e8a;">flygaca.com</a>.</sub></div>
+
+---
+
+## 🧭 Experience Lanes
+
+<table style="border-collapse: collapse;">
+  <tr>
+    <td width="33.33%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/library" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/home-hero.png" alt="Regulatory library lane" width="100%" style="border-radius: 10px; border: 1px solid #2d6e8a20;" />
+      </a>
+      <br /><sub><b style="color: #2d6e8a;">📚 Library lane</b><br />find Parts, sections, and references fast</sub>
+    </td>
+    <td width="33.33%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/learn" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/home-first-visit-tour.png" alt="Learn and study lane" width="100%" style="border-radius: 10px; border: 1px solid #8fc9a820;" />
+      </a>
+      <br /><sub><b style="color: #8fc9a8;">🎓 Study lane</b><br />guides, packs, flashcards, mock exams</sub>
+    </td>
+    <td width="33.33%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/dashboard" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/pricing.png" alt="Account and growth lane" width="100%" style="border-radius: 10px; border: 1px solid #2d6e8a20;" />
+      </a>
+      <br /><sub><b style="color: #2d6e8a;">🚀 Growth lane</b><br />account, pricing, schools, and progression</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
