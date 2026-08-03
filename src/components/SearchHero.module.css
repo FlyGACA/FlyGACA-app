@@ -10,10 +10,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: start;
   max-inline-size: 760px;
-  margin-inline: auto;
 }
 
 /* Instrument-label eyebrow: uppercase kicker flanked by short hairline rules. */
@@ -27,8 +26,7 @@
   color: var(--accent-bright);
   font-weight: var(--fw-semibold);
 }
-.eyebrow::before,
-.eyebrow::after {
+.eyebrow::before {
   content: '';
   inline-size: 16px;
   block-size: 1px;
@@ -141,7 +139,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-2);
   margin-block-start: var(--space-4);
 }
@@ -157,7 +155,7 @@
 .suggestList {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-2);
   list-style: none;
   margin: 0;
@@ -199,14 +197,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-4) var(--space-6);
   margin-block-start: var(--space-6);
 }
 .stats {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-3);
   margin: 0;
 }
