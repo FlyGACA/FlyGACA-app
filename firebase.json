@@ -11,17 +11,17 @@
       {
         "source": "/api/chat",
         "function": "chat",
-        "region": "me-central1"
+        "region": "me-central2"
       },
       {
         "source": "/api/feedback",
         "function": "chat",
-        "region": "me-central1"
+        "region": "me-central2"
       },
       {
         "source": "/api/moyasar-webhook",
         "function": "moyasarWebhook",
-        "region": "me-central1"
+        "region": "me-central2"
       },
       {
         "source": "**",
