@@ -1087,6 +1087,8 @@
     "result": "Converted time",
     "nextDay": "(next day)",
     "prevDay": "(previous day)",
+    "dialAria": "Live Zulu (UTC) clock",
+    "ksaLabel": "KSA",
     "formula": "Saudi Arabia is UTC+3 (Arabia Standard Time), with no daylight saving."
   },
   "airac": {
@@ -1095,6 +1097,7 @@
     "effective": "Effective",
     "next": "Next cycle",
     "daysToNext": "Days to next",
+    "ringAria": "AIRAC cycle {{id}}, day {{day}} of 28",
     "formula": "AIRAC cycles are 28 days. Effective dates are fixed worldwide; the identifier is the 2-digit year plus the cycle number within that year."
   },
   "sunTimes": {
@@ -1109,6 +1112,7 @@
     "utc": "UTC",
     "localKsa": "KSA",
     "noEvent": "The sun does not cross this angle on this date.",
+    "arcAria": "Sun path across the day, from sunrise to sunset.",
     "formula": "Computed from the sun's position for the date and place. Civil twilight is the sun 6° below the horizon. Shown in UTC and KSA local (UTC+3)."
   },
   "validity": {
@@ -1546,6 +1550,8 @@
     "scopeNote": "Training-scenario traffic from the Airspace HUD simulation, with the field's nearby control zones. Not real air traffic.",
     "search": "Search by ICAO, name, city or country",
     "runways": "Runways",
+    "daylight": "Daylight (UTC)",
+    "daylightAria": "Daylight band for today — sunrise {{rise}}Z, sunset {{set}}Z UTC.",
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",

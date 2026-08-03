@@ -10,6 +10,7 @@ import { AerodromeScope } from '@/components/aerodrome/AerodromeScope';
 import { AirportTypeIcon } from '@/components/aerodrome/AirportTypeIcon';
 import { RunwayDiagram } from '@/components/aerodrome/RunwayDiagram';
 import { PositionMarker } from '@/components/aerodrome/PositionMarker';
+import { DaylightStrip } from '@/components/aerodrome/DaylightStrip';
 import styles from './Aerodromes.module.css';
 
 export function AerodromeDetail() {
@@ -121,6 +122,11 @@ export function AerodromeDetail() {
         </dl>
         <PositionMarker lat={a.lat} lon={a.lon} />
       </div>
+
+      <section className={styles.detailSection}>
+        <h2 className={styles.detailH2}>{t('aerodromesTool.daylight')}</h2>
+        <DaylightStrip lat={a.lat} lon={a.lon} />
+      </section>
 
       {a.rwys.length > 0 && (
         <section className={styles.detailSection}>

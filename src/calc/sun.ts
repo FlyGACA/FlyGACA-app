@@ -69,6 +69,27 @@ export function sunTimes(date: Date, lat: number, lng: number): SunTimes | null 
   return { sunrise: sun.rise, sunset: sun.set, civilDawn: civil.rise, civilDusk: civil.set };
 }
 
+export interface Daylight {
+  /** True when `now` sits between sunrise and sunset. */
+  isUp: boolean;
+  /**
+   * How far `now` has moved through the daylight span — 0 at sunrise, 1 at
+   * sunset, clamped. `null` when the day has no sunrise/sunset (polar day or
+   * night, or an invalid instant), so callers can fall back to a static arc.
+   */
+  progress: number | null;
+}
+
+/** Position of `now` within a day's daylight span, for the sun-path arc. */
+export function daylight(times: SunTimes, now: Date): Daylight {
+  const { sunrise, sunset } = times;
+  if (!sunrise || !sunset || Number.isNaN(now.getTime())) return { isUp: false, progress: null };
+  const span = sunset.getTime() - sunrise.getTime();
+  if (span <= 0) return { isUp: false, progress: null };
+  const raw = (now.getTime() - sunrise.getTime()) / span;
+  return { isUp: raw >= 0 && raw <= 1, progress: Math.min(1, Math.max(0, raw)) };
+}
+
 const rightAscension = (l: number) => Math.atan2(Math.sin(l) * Math.cos(e), Math.cos(l));
 const siderealTime = (d: number) => rad * (280.16 + 360.9856235 * d);
 
