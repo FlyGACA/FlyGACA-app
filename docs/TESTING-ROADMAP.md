@@ -131,12 +131,13 @@ sibling repos.
 whole shortfall lives in three Firebase wrappers — exactly the code that charges cards and writes
 `users/{uid}.entitlement`.
 
-- [ ] `functions/tests/founding-routes.test.ts` — `src/founding.ts` (`claimFoundingAccess`) is the
+- [ ] `functions/tests/founding-routes.test.ts` — `functions/src/founding.ts`
+      (`claimFoundingAccess`) is the
       **only backend file at 0%**, and it grants a Pro entitlement. Clone the
       `staff-routes.test.ts` / `school-routes.test.ts` harness and assert: unauthenticated
       rejection, the launch-cutoff gate, the `foundingGrants/{uid}` idempotency marker, and the
       upgrade-only rule (a grant must never clobber a paid plan).
-- [ ] `src/billing.ts` (~50% lines / 37% branch). The webhook → `fulfillPayment` → grant chain is
+- [ ] `functions/src/billing.ts` (~50% lines / 37% branch). The webhook → `fulfillPayment` → grant chain is
       well tested (`billing-webhook.test.ts`); everything else has **zero hits** today:
       `createCheckoutConfig` (incl. `priceEnv` / `checkoutKind` / `priceWithPromo` — the
       server-side promo pricing), `confirmPayment`, `cancelAutoRenew`, `getReferralCode`,
@@ -145,8 +146,8 @@ whole shortfall lives in three Firebase wrappers — exactly the code that charg
       Start with the renewal loop — it charges saved card tokens unattended, so a retry-accounting
       bug means double-charged or silently dropped subscribers. Extend the webhook test's
       `fetch`-to-Moyasar + Admin-SDK mocks.
-- [ ] `src/gateway.ts` (~71% lines) rejection paths — App Check failures, malformed bodies,
-      quota-exhausted responses — and `src/corpus.ts` branch gaps (~79%). Pairs with the
+- [ ] `functions/src/gateway.ts` (~71% lines) rejection paths — App Check failures, malformed
+      bodies, quota-exhausted responses — and `functions/src/corpus.ts` branch gaps (~79%). Pairs with the
       `gateway-core.ts` extraction already recorded under Tech debt in `ROADMAP.md`: extracting the
       pure parsing/CORS logic makes these testable with a bare import.
 - [ ] **Exit:** raise the `functions/vitest.config.ts` ratchet (66/66/77/67 today) to just below
