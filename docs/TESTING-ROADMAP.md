@@ -20,7 +20,7 @@ The rest of the family, same date:
 
 | Surface | Lines | Branches | Notes |
 | --- | --- | --- | --- |
-| `functions/` (276 tests) | 76.5% | 75.2% | ratchet 67/66; every `*-core.ts` ≈100%, three wrappers drag → **Phase 5** |
+| `functions/` (316 tests) | 90.9% | 86.9% | ratchet 88/84/91/89 (stmt/branch/func/line); Phase 5 landed (founding + billing wrappers); `gateway.ts` still ~71% |
 | Firestore rules (`tests/rules/`, emulator) | — | — | comprehensive — every collection has allow + deny cases |
 | Captain-Adel (`FlyGACA/Captain-Adel`) | 96.3% | 89.9% | `node --test` coverage, report-only; holes → **Phase 9** |
 | iOS `FlyGACAKit` (`ay2m/FlyGACA`) | — | — | engines/models/store tested; `FeatureUI` + 2 decoders untested → **Phase 9** |
@@ -28,7 +28,8 @@ The rest of the family, same date:
 The aviation-math core (`src/calc/*` — every module has a referencing spec), the backend
 `*-core.ts` policy modules, and the client↔server mirror tests are all at or near 100%: the
 "pure core, thin wrapper" architecture is holding. The open gaps are concentrated, not diffuse:
-(1) the backend **wrappers that move money and write entitlements** (Phase 5), (2) the
+(1) the backend **wrappers that move money and write entitlements** (Phase 5 — **now landed** for
+the founding + billing callables and the renewal engine; `gateway.ts` remains), (2) the
 **configured-Firebase half** of the client services (Phase 6), (3) a tail of zero-coverage
 components plus shared date-math branches (Phase 7), and (4) everything behind sign-in or payment
 in E2E (Phase 8). Family-wide items are batched in Phase 9. Phases 1–4 record the earlier push and
@@ -131,27 +132,32 @@ sibling repos.
 whole shortfall lives in three Firebase wrappers — exactly the code that charges cards and writes
 `users/{uid}.entitlement`.
 
-- [ ] `functions/tests/founding-routes.test.ts` — `functions/src/founding.ts`
-      (`claimFoundingAccess`) is the
-      **only backend file at 0%**, and it grants a Pro entitlement. Clone the
-      `staff-routes.test.ts` / `school-routes.test.ts` harness and assert: unauthenticated
-      rejection, the launch-cutoff gate, the `foundingGrants/{uid}` idempotency marker, and the
-      upgrade-only rule (a grant must never clobber a paid plan).
-- [ ] `functions/src/billing.ts` (~50% lines / 37% branch). The webhook → `fulfillPayment` → grant chain is
-      well tested (`billing-webhook.test.ts`); everything else has **zero hits** today:
-      `createCheckoutConfig` (incl. `priceEnv` / `checkoutKind` / `priceWithPromo` — the
-      server-side promo pricing), `confirmPayment`, `cancelAutoRenew`, `getReferralCode`,
-      `grantBundle` / `grantCohort`, and the entire scheduled renewal loop
-      (`renewMoyasarSubscriptions` / `renewOne` / `recordRenewalFailure` / `moyasarChargeToken`).
-      Start with the renewal loop — it charges saved card tokens unattended, so a retry-accounting
-      bug means double-charged or silently dropped subscribers. Extend the webhook test's
-      `fetch`-to-Moyasar + Admin-SDK mocks.
+- [x] `functions/tests/founding-routes.test.ts` — `functions/src/founding.ts`
+      (`claimFoundingAccess`) was the
+      **only backend file at 0%**, and it grants a Pro entitlement. Cloned the
+      `staff-routes.test.ts` / `school-routes.test.ts` harness (plus a `firebase-admin/auth`
+      `getUser` mock for the server-only creation-time signal) and covered: unauthenticated
+      rejection, the unverified-email gate, the launch-cutoff eligibility gate, the successful
+      time-limited grant, the `foundingGrants/{uid}` one-grant-ever marker, and the upgrade-only
+      rule (never touches a non-free account). **Now 100% lines / 93% branch.**
+- [x] `functions/src/billing.ts` (was ~50% lines / 37% branch → **now ~97% lines / 84% branch**,
+      via `functions/tests/billing-callables.test.ts`). Covered the previously-zero-hit surface:
+      `createCheckoutConfig` (all validation guards + every accepted kind + `priceWithPromo`'s
+      server-side discount and inactive-code fallthrough), `confirmPayment` (auth/id guards, the
+      payment-is-yours check, amount-mismatch cancel, and the full fulfilment matrix — pro card-save
+      + subscription, bundle, cohort, credits, pack, promo-redemption counting), `cancelAutoRenew`,
+      `getReferralCode`, and the entire scheduled renewal loop (`renewMoyasarSubscriptions` /
+      `renewOne` / `recordRenewalFailure`) — successful recharge, lost-token cancel, the
+      past_due→give-up retry ladder, and the non-paid-result failure path. Driven through the
+      callable/schedule `.run()` escape hatch with an in-memory Firestore (incl. the `where`-query
+      for the due sweep) + a per-test Moyasar `fetch` stub.
 - [ ] `functions/src/gateway.ts` (~71% lines) rejection paths — App Check failures, malformed
       bodies, quota-exhausted responses — and `functions/src/corpus.ts` branch gaps (~79%). Pairs with the
       `gateway-core.ts` extraction already recorded under Tech debt in `ROADMAP.md`: extracting the
-      pure parsing/CORS logic makes these testable with a bare import.
-- [ ] **Exit:** raise the `functions/vitest.config.ts` ratchet (66/66/77/67 today) to just below
-      the new live numbers — Phase 5 alone should put lines/branches in the high 80s.
+      pure parsing/CORS logic makes these testable with a bare import. *(Still open — carried
+      forward; the money/entitlement wrappers above were the priority.)*
+- [x] **Exit:** raised the `functions/vitest.config.ts` ratchet from 66/66/77/67 to **88/84/91/89**
+      (live now 90.0/86.9/93.1/90.9 stmts/branch/funcs/lines, up from 75.6/75.2/81.8/76.5).
 
 ## Phase 6 — The configured-Firebase half of the client services
 
