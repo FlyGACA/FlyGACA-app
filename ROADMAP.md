@@ -22,6 +22,33 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
 
 ## Recently shipped (post-rebuild)
 
+- **Interactive features round 7 — chat motion**
+  ([#444](https://github.com/FlyGACA/FlyGACA-app/pull/444)): Captain Adel's source citations
+  stagger in as an answer lands (`SourceList`, shared `--dur-stagger` cadence), and a small shared
+  `Waveform` equalizer plays on the voice controls — while the mic is listening (`VoiceButton`) and
+  while an answer is read aloud (`SpeakButton`). Decorative, reduced-motion safe.
+- **Interactive features round 6 — ambient & time**
+  ([#441](https://github.com/FlyGACA/FlyGACA-app/pull/441)): a sun-path arc on `sun-times`, a live
+  analog Zulu dial on `zulu-clock`, an AIRAC cycle progress ring on `airac`, and a today's-daylight
+  band on the aerodrome detail page. Backed by additive pure helpers — `daylight()` (`src/calc/sun.ts`),
+  `clockAngles()` (`src/calc/zulu.ts`), `cycleProgress()` (`src/calc/airac.ts`).
+- **Interactive features round 5 — account pack**
+  ([#438](https://github.com/FlyGACA/FlyGACA-app/pull/438)): radial currency rings on `CurrencyBoard`
+  (status by shape + hue, shared across `/currency` · `/records` · dashboard), a reusable
+  `ProgressRing` on the library offline-download button, and count-ups on the logbook summary tiles
+  (`CountUp` gained a `decimals` prop). Pure `currencyRingFraction` on the currency engine.
+- **Interactive features round 4 — instrument pack**
+  ([#437](https://github.com/FlyGACA/FlyGACA-app/pull/437)): a CG-envelope plot on `weight-balance`
+  (`cgEnvelopeStatus`), a shared climb/descent `ProfileRamp` across the four TOD/VDP/climb-gradient/
+  top-of-climb tools, `GaugeDial` on `mach` + `pivotal-altitude` (with a fractional-readout fix),
+  `E6b` reusing `WindTriangleDiagram`, an ISA thermometer, an altimeter dial, and an ETP/PNR route
+  diagram on `route-critical-points`.
+- **Interactive features round 3 — study motion**
+  ([#435](https://github.com/FlyGACA/FlyGACA-app/pull/435)): graded flashcards fly out with the next
+  card entering, an SRS "glide path" strip shows the deck's spread across Leitner boxes (pure
+  `src/calc/study/glidePath.ts` + `GlidePathStrip`), the mock exam gains a depleting fuel-gauge timer
+  and an animated PASS/FAIL stamp, and the dashboard gains achievement stamps. Visual layer only —
+  the `srs` engine and exam scoring stay untouched as cross-platform contracts.
 - **Interactive features round 2**
   ([#433](https://github.com/FlyGACA/FlyGACA-app/pull/433)): the holding tool's animated
   entry-procedure racetrack (CSS `offset-path`), a shared `GaugeDial` needle on the TAS and
@@ -86,10 +113,10 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   also found **no third-party CI credentials exist yet** — Cloudflare/Supabase/OpenAI/App-Store-Connect
   secrets are all unset and their jobs no-op. When each is added, scope it minimally and keep it
   confined to its one job: `CLOUDFLARE_API_TOKEN` → `Workers Scripts: Edit` only; `SUPABASE_SERVICE_ROLE_KEY`
-  + `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
-  Admin; the Firebase deploy SA stays **without** `datastore.indexAdmin` (see the note in `deploy.yml`).
-  Separately, periodically review the operator-account **claude.ai MCP connector** consent grants
-  (Airtable, Gmail, Drive, etc.) — third-party delegated grants that live outside this repo.
+  - `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
+    Admin; the Firebase deploy SA stays **without** `datastore.indexAdmin` (see the note in `deploy.yml`).
+    Separately, periodically review the operator-account **claude.ai MCP connector** consent grants
+    (Airtable, Gmail, Drive, etc.) — third-party delegated grants that live outside this repo.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
@@ -141,21 +168,6 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   the flavor route tree. Concrete flow list: `docs/TESTING-ROADMAP.md` **Phase 8**.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
   the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
-- **[product]** **Interactive study pack (motions round 3).** Motion for the study surfaces,
-  visual layer only — the SRS engine (`src/calc/study/srs.ts`) and exam scoring stay untouched as
-  cross-platform contracts. Graded flashcards fly out and the next card enters (the CSS 3D flip
-  is already live), an SRS "glide path" strip shows the deck's spread across Leitner boxes (pure
-  `src/calc/study/glidePath.ts` + a shared `GlidePathStrip`), the mock exam gains a depleting
-  fuel-gauge timer on the existing warn/danger thresholds, an animated pass/fail result stamp and
-  summary-grid fill-in, and the dashboard gains achievement stamps + a streak-milestone entrance.
-- **[product]** **Instrument pack (motions round 4).** A CG-envelope plot on `weight-balance`
-  (the biggest unfilled visual in the catalog), one shared countdown ring for `part61-currency` ·
-  `medical-validity` · `flight-review`, `E6b.tsx` reusing `WindTriangleDiagram` (it re-implements
-  the math today with no diagram), motion for the crosswind `WindDiagram` (the reference diagram
-  is the only static one), and `GaugeDial` on `mach` + `pivotal-altitude`.
-- **[product]** **Account pack (motions round 5).** Currency rings on `CurrencyBoard` (today:
-  pills + linear bars only), logbook summary count-ups via the existing `StatValue`, records
-  expiry rings, and a mini glide-path in the dashboard `StudyWidget` (reuses round 3).
 
 ## Tech debt — found during the July 2026 cleanup, deliberately deferred
 
@@ -187,13 +199,11 @@ the findings are not re-derived.
 
 - **[product]** Content & tools expansion — more guides, quiz banks, and reading paths, deeper
   ground school, and new calculators as the corpus grows.
-- **[product]** **Interactive features — further motion packs.** A shared climb/descent profile
-  ramp (`climb-gradient` / `top-of-climb` / `top-of-descent` / `descent-vdp`), a sun-arc for
-  `sun-times` plus a daylight section on aerodrome pages (pure `src/calc/sun.ts` import),
-  turn-circle diagrams (`standard-rate-turn` / `turn-performance`), an AIRAC cycle ring, a
-  `takeoff-landing` runway-margin bar, a wind-table compass rose, a library offline-download
-  progress ring (the counter is text-only today), a `/updates` change pulse, and restrained chat
-  motion (citation reveal, voice-listening waveform) preserving the one-focal-loop rule.
+- **[product]** **Interactive features — further motion packs.** What's left in the catalog after
+  rounds 3–7 shipped: turn-circle diagrams (`standard-rate-turn` / `turn-performance`), a
+  `takeoff-landing` runway-margin bar, a wind-table compass rose, motion for the crosswind
+  `WindDiagram` (the reference diagram is still the static one), and a `/updates` change pulse —
+  each preserving the one-focal-loop rule.
 - **[product]** Captain Adel enhancements — richer grounding and exam-mode ties. (Saved-chat UX,
   including archive search, is shipped — see **Recently shipped**.)
 - **[product]** **Study analytics — deeper insights.** `StudyDashboard` already surfaces
