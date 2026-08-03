@@ -28,12 +28,8 @@ export function SunArc({ progress, label }: SunArcProps) {
   const y = HORIZON - R * Math.sin(theta);
   const arc = `M ${CX - R} ${HORIZON} A ${R} ${R} 0 0 1 ${CX + R} ${HORIZON}`;
   return (
-    <div
-      className={`${styles.wrap} ${progress == null ? styles.static : ''}`}
-      role="img"
-      aria-label={label}
-    >
-      <svg viewBox="0 0 200 116" className={styles.svg}>
+    <div className={`${styles.wrap} ${progress == null ? styles.static : ''}`}>
+      <svg viewBox="0 0 200 116" className={styles.svg} role="img" aria-label={label}>
         <path d={`${arc} Z`} className={styles.sky} />
         <path d={arc} className={styles.path} />
         <line

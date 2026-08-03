@@ -58,6 +58,6 @@ export function cycleProgress(date: Date = new Date()): AiracProgress {
   const into = t - cycleEffective(t);
   return {
     dayInCycle: Math.floor(into / DAY_MS) + 1,
-    fraction: Math.min(1, Math.max(0, into / CYCLE_MS)),
+    fraction: Math.min(1, Math.max(0, into / (AIRAC_CYCLE_DAYS * DAY_MS))),
   };
 }

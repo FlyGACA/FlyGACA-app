@@ -24,8 +24,8 @@ interface AiracRingProps {
 export function AiracRing({ id, dayInCycle, fraction, label }: AiracRingProps) {
   const offset = CIRC * (1 - Math.min(1, Math.max(0, fraction)));
   return (
-    <div className={styles.wrap} role="img" aria-label={label}>
-      <svg viewBox="0 0 120 120" className={styles.svg}>
+    <div className={styles.wrap}>
+      <svg viewBox="0 0 120 120" className={styles.svg} role="img" aria-label={label}>
         <circle cx={60} cy={60} r={R} className={styles.track} />
         <circle
           cx={60}
@@ -35,7 +35,7 @@ export function AiracRing({ id, dayInCycle, fraction, label }: AiracRingProps) {
           style={{ '--circ': CIRC.toFixed(2), '--offset': offset.toFixed(2) } as CSSProperties}
         />
       </svg>
-      <div className={styles.center}>
+      <div className={styles.center} aria-hidden="true">
         <span className={styles.id}>{id}</span>
         <span className={styles.day}>
           <bdi dir="ltr">
