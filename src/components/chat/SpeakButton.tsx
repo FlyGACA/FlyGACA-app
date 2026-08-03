@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ttsSupported, pickTtsLang, toSpeechText } from '@/calc/chat/textToSpeech';
 import { pickVoice } from '@/calc/chat/voiceSelection';
+import { Waveform } from './Waveform';
 import styles from './SpeakButton.module.css';
 
 /**
@@ -71,7 +72,7 @@ export function SpeakButton({ text }: { text: string }) {
       aria-label={speaking ? t('chat.stopSpeaking') : t('chat.speak')}
       aria-pressed={speaking}
     >
-      <span aria-hidden="true">{speaking ? '◼' : '🔊'}</span>
+      {speaking ? <Waveform /> : <span aria-hidden="true">🔊</span>}
       <span className={styles.label}>{speaking ? t('chat.stopSpeaking') : t('chat.speak')}</span>
     </button>
   );

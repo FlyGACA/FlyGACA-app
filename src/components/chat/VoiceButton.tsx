@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { pickSpeechLang } from '@/calc/chat/speech';
+import { Waveform } from './Waveform';
 import styles from './VoiceButton.module.css';
 
 /**
@@ -76,7 +77,7 @@ export function VoiceButton({ onTranscript }: { onTranscript: (text: string) => 
       aria-pressed={listening}
       title={listening ? t('chat.voice.listening') : t('chat.voice.start')}
     >
-      <span aria-hidden="true">🎤</span>
+      {listening ? <Waveform /> : <span aria-hidden="true">🎤</span>}
     </button>
   );
 }
