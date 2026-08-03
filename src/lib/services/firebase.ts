@@ -22,13 +22,14 @@ const env = import.meta.env;
 
 /**
  * Region for `httpsCallable` functions. Must match where the billing callables
- * deploy — `me-central1` (the single source of truth is functions/src/region.ts;
- * see also functions/src/billing.ts + index.ts and the firebase.json rewrites).
- * A mismatch makes createCheckoutSession / createBillingPortalSession resolve a
- * nonexistent endpoint and 404 in production. The chat gateway (/api/chat) is
- * reached by a hosting fetch, not this region, so it is unaffected.
+ * deploy — `me-central2` (Dammam, in-Kingdom; the single source of truth is
+ * functions/src/region.ts; see also functions/src/billing.ts + index.ts and the
+ * firebase.json rewrites). A mismatch makes the checkout callables resolve a
+ * nonexistent endpoint and 404 in production, so this MUST ship in the same deploy
+ * that moves the functions' region. The chat gateway (/api/chat) is reached by a
+ * hosting fetch, not this region, so it is unaffected.
  */
-export const FUNCTIONS_REGION = 'me-central1';
+export const FUNCTIONS_REGION = 'me-central2';
 
 const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY as string | undefined,
