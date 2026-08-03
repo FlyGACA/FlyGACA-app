@@ -15,9 +15,30 @@
  * API are mocked behind a small in-memory Firestore (get/set/create + a `where`-query
  * for the due-subscriptions sweep) and a per-test `fetch` stub. Mirrors billing-webhook.test.ts.
  */
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CallableRequest } from "firebase-functions/https";
 import { MAX_RENEWAL_ATTEMPTS } from "../src/billing-core.js";
+
+// billing.ts reads its Moyasar config from process.env (defineSecret/defineString).
+// Snapshot-and-restore the keys we override so they don't leak into other test files
+// sharing a Vitest worker.
+const ENV_OVERRIDES: Record<string, string> = {
+  MOYASAR_SECRET_KEY: "sk_test",
+  MOYASAR_WEBHOOK_SECRET: "whsec_test",
+  MOYASAR_PRICE_PRO_MONTHLY_SAR: "59",
+  MOYASAR_PRICE_PRO_ANNUAL_SAR: "449",
+  MOYASAR_PRICE_STUDENT_MONTHLY_SAR: "39",
+  MOYASAR_PRICE_STUDENT_ANNUAL_SAR: "299",
+  MOYASAR_PRICE_PASS_SAR: "149",
+  MOYASAR_PRICE_CREDITS_SAR: "19",
+  MOYASAR_PRICE_PREP_PACK_SAR: "39",
+  MOYASAR_PRICE_PREP_PACK_CERT_SAR: "59",
+  MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR: "29",
+  MOYASAR_PRICE_BUNDLE_SAR: "199",
+  MOYASAR_PRICE_COHORT_SAR: "2499",
+  APP_ORIGIN: "https://flygaca.com",
+};
+const savedEnv: Record<string, string | undefined> = {};
 
 const h = vi.hoisted(() => ({
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
@@ -109,28 +130,21 @@ let getReferralCode: (request: CallableRequest<unknown>) => Promise<{ code: stri
 let renewMoyasarSubscriptions: (event: unknown) => Promise<void>;
 
 beforeAll(async () => {
-  Object.assign(process.env, {
-    MOYASAR_SECRET_KEY: "sk_test",
-    MOYASAR_WEBHOOK_SECRET: "whsec_test",
-    MOYASAR_PRICE_PRO_MONTHLY_SAR: "59",
-    MOYASAR_PRICE_PRO_ANNUAL_SAR: "449",
-    MOYASAR_PRICE_STUDENT_MONTHLY_SAR: "39",
-    MOYASAR_PRICE_STUDENT_ANNUAL_SAR: "299",
-    MOYASAR_PRICE_PASS_SAR: "149",
-    MOYASAR_PRICE_CREDITS_SAR: "19",
-    MOYASAR_PRICE_PREP_PACK_SAR: "39",
-    MOYASAR_PRICE_PREP_PACK_CERT_SAR: "59",
-    MOYASAR_PRICE_PREP_PACK_SUBJECT_SAR: "29",
-    MOYASAR_PRICE_BUNDLE_SAR: "199",
-    MOYASAR_PRICE_COHORT_SAR: "2499",
-    APP_ORIGIN: "https://flygaca.com",
-  });
+  for (const k of Object.keys(ENV_OVERRIDES)) savedEnv[k] = process.env[k];
+  Object.assign(process.env, ENV_OVERRIDES);
   const mod = await import("../src/billing.js");
   createCheckoutConfig = (request) => mod.createCheckoutConfig.run(request);
   confirmPayment = (request) => mod.confirmPayment.run(request);
   cancelAutoRenew = (request) => mod.cancelAutoRenew.run(request);
   getReferralCode = (request) => mod.getReferralCode.run(request);
   renewMoyasarSubscriptions = (event) => mod.renewMoyasarSubscriptions.run(event);
+});
+
+afterAll(() => {
+  for (const [k, v] of Object.entries(savedEnv)) {
+    if (v === undefined) delete process.env[k];
+    else process.env[k] = v;
+  }
 });
 
 beforeEach(() => {

@@ -20,7 +20,7 @@ The rest of the family, same date:
 
 | Surface | Lines | Branches | Notes |
 | --- | --- | --- | --- |
-| `functions/` (316 tests) | 90.9% | 86.9% | ratchet 89/84; Phase 5 landed (founding + billing wrappers); `gateway.ts` still ~71% |
+| `functions/` (316 tests) | 90.9% | 86.9% | ratchet 88/84/91/89 (stmt/branch/func/line); Phase 5 landed (founding + billing wrappers); `gateway.ts` still ~71% |
 | Firestore rules (`tests/rules/`, emulator) | — | — | comprehensive — every collection has allow + deny cases |
 | Captain-Adel (`FlyGACA/Captain-Adel`) | 96.3% | 89.9% | `node --test` coverage, report-only; holes → **Phase 9** |
 | iOS `FlyGACAKit` (`ay2m/FlyGACA`) | — | — | engines/models/store tested; `FeatureUI` + 2 decoders untested → **Phase 9** |
