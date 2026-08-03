@@ -3,23 +3,36 @@
 A phased plan for raising unit-test coverage where it protects the highest-risk code first.
 Companion to `ROADMAP.md` (product) — this one tracks the **test suite**.
 
-## Where we are
+## Where we are — August 2026 family-wide audit
 
 `npm run test:coverage` measures the unit-testable layers only (`src/calc`, `src/hooks`,
-`src/lib`, `src/components` — pages and app chrome are excluded by `vitest.config.ts` and covered
-by the Playwright E2E suite). The current baseline sits right on the ratchet floor:
+`src/lib`, `src/components` — pages and app chrome are excluded by `vitest.config.ts` and owned by
+the Playwright E2E suite). Measured 2026-08-03 (186 spec files):
 
-| Metric | Coverage |
-| --- | --- |
-| Statements | ~72% |
-| Branches | ~71% |
-| Functions | ~74% |
-| Lines | ~73% |
+| Metric | Coverage | Ratchet |
+| --- | --- | --- |
+| Statements | 81.8% | 76 |
+| Branches | 76.8% | 73 |
+| Functions | 85.6% | 79 |
+| Lines | 82.8% | 77 |
 
-The aviation-math core (`src/calc/*`) and the `src/lib` root are well covered. The gaps cluster in
-(1) the account/billing/entitlement **services**, (2) a handful of untested **hooks**, and (3) the
-**bento/dashboard widgets**. Separately, the backend (`functions/`) has solid `*-core.ts` unit
-tests but **no coverage gate**.
+The rest of the family, same date:
+
+| Surface | Lines | Branches | Notes |
+| --- | --- | --- | --- |
+| `functions/` (276 tests) | 76.5% | 75.2% | ratchet 67/66; every `*-core.ts` ≈100%, three wrappers drag → **Phase 5** |
+| Firestore rules (`tests/rules/`, emulator) | — | — | comprehensive — every collection has allow + deny cases |
+| Captain-Adel (`FlyGACA/Captain-Adel`) | 96.3% | 89.9% | `node --test` coverage, report-only; holes → **Phase 9** |
+| iOS `FlyGACAKit` (`ay2m/FlyGACA`) | — | — | engines/models/store tested; `FeatureUI` + 2 decoders untested → **Phase 9** |
+
+The aviation-math core (`src/calc/*` — every module has a referencing spec), the backend
+`*-core.ts` policy modules, and the client↔server mirror tests are all at or near 100%: the
+"pure core, thin wrapper" architecture is holding. The open gaps are concentrated, not diffuse:
+(1) the backend **wrappers that move money and write entitlements** (Phase 5), (2) the
+**configured-Firebase half** of the client services (Phase 6), (3) a tail of zero-coverage
+components plus shared date-math branches (Phase 7), and (4) everything behind sign-in or payment
+in E2E (Phase 8). Family-wide items are batched in Phase 9. Phases 1–4 record the earlier push and
+are complete except where noted.
 
 ## Conventions for new tests
 
@@ -43,17 +56,19 @@ Reuse the existing patterns — don't invent new scaffolding:
 This is the code that gates money and access. `CLAUDE.md` requires the client mirrors to match the
 server core.
 
-- [ ] `tests/staff.test.ts` — `src/lib/services/staff.ts`: pure `looksLikeStaff()` matching + all
+- [x] `tests/staff.test.ts` — `src/lib/services/staff.ts`: pure `looksLikeStaff()` matching + all
       `claimStaffAccessIfEligible` no-op/happy paths (callable `claimStaffAccess`).
-- [ ] `tests/school.test.ts` — `src/lib/services/school.ts` (0%): `claimSchoolSeatIfEligible`
+- [x] `tests/school.test.ts` — `src/lib/services/school.ts` (0%): `claimSchoolSeatIfEligible`
       (callable `claimSchoolSeat`).
-- [ ] `tests/waitlist.test.ts` — `src/lib/services/waitlist.ts` (0%): `addDoc` payload shape +
+- [x] `tests/waitlist.test.ts` — `src/lib/services/waitlist.ts` (0%): `addDoc` payload shape +
       the `'unavailable'` throw when the db is null.
-- [ ] `tests/study-progress-sync.test.ts` — `src/lib/services/studyProgressSync.ts` (16%):
-      local-first no-op paths + the initial upload payload/path.
-- [ ] Broaden existing suites to lift the uncovered branches in `services/account.ts` (~66%),
-      `services/billing.ts` (~62%), `services/auth.ts` (~72%).
-- [ ] Backend coverage gate: add `@vitest/coverage-v8` + a ratchet threshold to
+- [x] `tests/study-progress-sync.test.ts` — `src/lib/services/studyProgressSync.ts` (16%):
+      local-first no-op paths + the initial upload payload/path. (Now ~88% lines.)
+- [x] Broaden existing suites to lift the uncovered branches in `services/account.ts` (~66%),
+      `services/billing.ts` (~62%), `services/auth.ts` (~72%). *Partially:* `billing.ts` lifted to
+      ~86% lines; `account.ts`/`auth.ts` still sit near 70% — the remainder needs the
+      configured-Firebase harness and is carried into **Phase 6**.
+- [x] Backend coverage gate: add `@vitest/coverage-v8` + a ratchet threshold to
       `functions/vitest.config.ts` and a `test:coverage` script, so the `functions` CI job can't
       silently regress.
 
@@ -103,3 +118,151 @@ unit-covered) and would pressure unit-testing of data/auth/router-param pages th
 Recommendation: **keep pages E2E-owned**, keep growing the smoke nets above for crash-safety, and
 expand `e2e/flows.spec.ts` for the data/auth flows — rather than folding pages into the unit-coverage
 ratchet.
+
+---
+
+Phases 5–9 come from the **August 2026 family-wide audit** (per-function hit counts, not just file
+percentages — see *Measuring* below). Ordered by risk: money first, then access, then UI, then the
+sibling repos.
+
+## Phase 5 — Backend money & entitlement wrappers  *(highest risk — go-live confidence)*
+
+`functions/` is two codebases in one: every pure `*-core.ts` policy module sits at ≈100%, and the
+whole shortfall lives in three Firebase wrappers — exactly the code that charges cards and writes
+`users/{uid}.entitlement`.
+
+- [ ] `functions/tests/founding-routes.test.ts` — `src/founding.ts` (`claimFoundingAccess`) is the
+      **only backend file at 0%**, and it grants a Pro entitlement. Clone the
+      `staff-routes.test.ts` / `school-routes.test.ts` harness and assert: unauthenticated
+      rejection, the launch-cutoff gate, the `foundingGrants/{uid}` idempotency marker, and the
+      upgrade-only rule (a grant must never clobber a paid plan).
+- [ ] `src/billing.ts` (~50% lines / 37% branch). The webhook → `fulfillPayment` → grant chain is
+      well tested (`billing-webhook.test.ts`); everything else has **zero hits** today:
+      `createCheckoutConfig` (incl. `priceEnv` / `checkoutKind` / `priceWithPromo` — the
+      server-side promo pricing), `confirmPayment`, `cancelAutoRenew`, `getReferralCode`,
+      `grantBundle` / `grantCohort`, and the entire scheduled renewal loop
+      (`renewMoyasarSubscriptions` / `renewOne` / `recordRenewalFailure` / `moyasarChargeToken`).
+      Start with the renewal loop — it charges saved card tokens unattended, so a retry-accounting
+      bug means double-charged or silently dropped subscribers. Extend the webhook test's
+      `fetch`-to-Moyasar + Admin-SDK mocks.
+- [ ] `src/gateway.ts` (~71% lines) rejection paths — App Check failures, malformed bodies,
+      quota-exhausted responses — and `src/corpus.ts` branch gaps (~79%). Pairs with the
+      `gateway-core.ts` extraction already recorded under Tech debt in `ROADMAP.md`: extracting the
+      pure parsing/CORS logic makes these testable with a bare import.
+- [ ] **Exit:** raise the `functions/vitest.config.ts` ratchet (66/66/77/67 today) to just below
+      the new live numbers — Phase 5 alone should put lines/branches in the high 80s.
+
+## Phase 6 — The configured-Firebase half of the client services
+
+Local-first means the null-Firebase path is well tested; the configured path largely isn't.
+
+- [ ] A shared "configured Firebase" fixture (extend the `vi.hoisted` holder idiom from
+      `tests/account-firebase.test.ts`) so suites can exercise the non-null path without an
+      emulator.
+- [ ] `src/lib/services/firebase.ts` (~18% lines — the real init/emulator wiring),
+      `services/auth.ts` (~71% — error-mapping branches), `services/account.ts` (~71% — profile
+      CRUD + sync-conflict paths). Carried from Phase 1.
+- [ ] `src/lib/native/nativeBridge.ts` (~34%) — a fake `window.Capacitor` fixture to exercise the
+      plugin routing (auth/IAP/offline-cache). Matters more with every iOS-family release; today
+      only the inert-on-web behaviour is verified.
+
+## Phase 7 — Component zeros + shared date-math branches
+
+16 files under the coverage `include` are at literal 0%. Entitlement-adjacent UI first, then the
+rest; same render-smoke patterns as Phases 2–3.
+
+- [ ] Revenue-facing: `components/account/SubscriptionPanel.tsx` (50% lines / 21% branch — renders
+      entitlement state, the client half of Phase 5) and `components/UpsellCard.tsx` (0%).
+- [ ] User-data entry: `components/account/RecordForm.tsx` (0%),
+      `components/account/PasswordStrength.tsx` (0%), `components/calc/SelectField.tsx` (0% — part
+      of the shared calc field kit).
+- [ ] The rest of the zeros: `SearchHero`, `ScrollProgress`, `AnalyticsProvider`, `BrandMark`,
+      `highlight.tsx`, `categoryTone.ts`, `onboarding/OnboardingHint` (+ lift `OnboardingTour`,
+      51%/27%), `dashboard/UpdatesWatchWidget`, the aerodrome family (`RunwayDiagram`,
+      `AirportTypeIcon`, `AerodromesHero`, `PositionMarker`; `AerodromeScope` sits at 13%), and the
+      `RadarWidget` render path (25% — only the pure `buildBlips` is covered). `CommandPalette` is
+      the biggest branch gap of the covered files (~51% branch).
+- [ ] `src/calc/recency.ts` (**57% branch**) — the shared date engine under the currency/validity
+      tools. Table-driven edge-date spec: `addMonths` month-end behaviour (e.g. 31 Jan + 1 month),
+      `parseISO` rejections, `withinDays` window boundaries, `daysLeft` sign at expiry. Also
+      `calc/hud/callsigns.ts` (71% lines).
+- [ ] **Exit:** raise the app ratchet (76/73/79/77 today) to just below the new live numbers.
+
+## Phase 8 — E2E: authenticated & paid flows
+
+The Playwright suite covers public surfaces well (27-route smoke, 13 flows, axe sweep) but every
+deep flow runs anonymous. This is the concrete work-list behind the standing **[platform] E2E
+coverage** item in `ROADMAP.md`.
+
+- [ ] Extend the session-stub fixture (the account round-trip in `e2e/flows.spec.ts`) to walk the
+      signed-in surfaces: dashboard widgets render, logbook entry create/edit/delete, records CRUD,
+      settings.
+- [ ] Mocked-success checkout: stub the billing callable, drive `/checkout` → `/checkout/return`,
+      assert the entitlement-gated UI flips. Closes the loop that Phase 5 opens server-side.
+- [ ] Study flows beyond the free sampler's timed exam: quiz, flashcards, ground school, paths —
+      today these pages rely on unit tests only.
+- [ ] Flavor route-tree smoke: boot with `IS_FLAVOR_APP` and assert the reduced single-pack tree —
+      unit-tested in `tests/flavor-router.test.ts`, never driven in a browser.
+- [ ] Arabic/RTL passes: run the axe sweep on key routes in `ar` (today only the toggle flow
+      asserts RTL flips).
+
+## Phase 9 — Family-wide (work lands in the named repos)
+
+Tracked here the way `docs/APPS-FAMILY-ROADMAP.md` tracks the app family; the commits belong in
+each repo.
+
+**`ay2m/FlyGACA` (FlyGACAKit)** — engines/models/store are tested (incl. the SRS parity vectors);
+the gaps:
+
+- [ ] Decode tests for `GroundSchool.swift` and `ReadingPaths.swift` — `quiz.json` and the module
+      manifest are decode-tested, these two content formats are not, so a malformed
+      `sync-content.sh` refresh fails at app runtime instead of in CI.
+- [ ] Exam-scoring parity vectors mirroring the web contract (`percent = round(correct/total ×
+      100)`, `passed = percent ≥ passMark`, unanswered = wrong, auto-submit at 0:00) — same
+      pattern as `LeitnerTests`' SRS vectors.
+- [ ] Wire a UI-test target — every target in `apple/project.yml` has `testTargets: []`, so the
+      documented `AppleTests/ScreenshotTests.swift` flow cannot run and all seven `FeatureUI`
+      views (incl. `ModuleHomeView`, `QuizView`, `ExamTimerView`) have zero coverage.
+
+**`FlyGACA/Captain-Adel`** — 96.3% lines overall; three specific holes:
+
+- [ ] `evals/checks/citation-faithfulness.js` (39% lines / **0% functions**) — the opt-in
+      per-claim judge's extraction/verdict logic is deterministic; unit-test it with fixture
+      claims, no API key needed.
+- [ ] Page scripts: of 13 files in `public/assets/js/`, only `chat-core.js` is test-loaded. Start
+      with `exam.js` and `checkout.js` (scoring + payment UI), following the
+      `test/chat-core.test.js` pattern for classic scripts under `node:test`.
+- [ ] `src/billing/routes.js` (66% branch) — the uncovered lines are all Moyasar/Firestore error
+      paths.
+
+**App Store metadata repos (PPL · CPL · IR · ATPL · ELPT · AIP)**
+
+- [ ] A fixture self-test for `scripts/check-metadata.mjs` (feed it a deliberately broken locale
+      tree, assert it fails). The script is byte-identical across all six repos and is each repo's
+      entire CI gate — author the test once, sync to the siblings.
+
+## Known-good — don't re-audit these
+
+Verified in the August 2026 audit; future coverage passes should skip them:
+
+- `tests/rules/firestore-rules.test.ts` — every collection in `firestore.rules` has allow **and**
+  deny/self-grant/forgery cases.
+- The backend `*-core.ts` policy modules — all ≈100%.
+- `tests/client-server-mirrors.test.ts` (client mirrors ↔ server cores) and
+  `tests/i18n-parity.test.ts`.
+- Every `src/calc` module is imported by at least one spec — calc gaps are branch-level only
+  (`recency`, `callsigns` above), not missing files.
+- Captain-Adel's brain + eval harness (`evals/cases.json`, 73 cases, EN+AR, plus the parity gate).
+
+## Measuring
+
+- App: `npm run test:coverage` (per-file JSON in `coverage/coverage-summary.json`).
+- Backend: `cd functions && npm run test:coverage`. Per-function hit counts (how the Phase 5
+  zero-hit list was produced): add `--coverage.reporter=json` and read `fnMap`/`f` in
+  `coverage/coverage-final.json`.
+- Captain-Adel: `npm run test:coverage` (`node --test --experimental-test-coverage`).
+- iOS: `cd apple/FlyGACAKit && swift test` — no coverage tooling wired; the Phase 9 gaps are
+  file-level (sources with no referencing test).
+
+Numbers in this doc were measured 2026-08-03 on `main` @ `c93c2c3` (app, functions) and the
+sibling repos' `main` of the same date.

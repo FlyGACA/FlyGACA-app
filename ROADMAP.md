@@ -75,6 +75,10 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
   price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+- **[platform]** **Close the backend money-path test gap.** `functions/src/founding.ts` (the
+  entitlement-granting `claimFoundingAccess` callable) has zero test coverage, and half of
+  `billing.ts` — `confirmPayment`, `cancelAutoRenew`, and the scheduled auto-renewal charge loop —
+  never runs under test. Work-list and exit criteria: `docs/TESTING-ROADMAP.md` **Phase 5**.
 - **[platform]** **Scope CI credentials least-privilege as they're provisioned.** An OAuth/token
   scope-minimization review (Aug 2026) found the current surface already minimal — every workflow's
   `GITHUB_TOKEN` is default-deny (`contents: read`, repo default confirmed `read`) with write escalated
@@ -133,7 +137,8 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
-  axe a11y checks to cover more critical flows.
+  axe a11y checks to cover more critical flows — signed-in surfaces, mocked checkout, study flows,
+  the flavor route tree. Concrete flow list: `docs/TESTING-ROADMAP.md` **Phase 8**.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
   the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
 - **[product]** **Interactive study pack (motions round 3).** Motion for the study surfaces,
