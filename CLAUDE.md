@@ -12,18 +12,25 @@ touch user-facing copy — the product helps you find/study regulation, it never
 assistant cites the exact Part/section.
 
 The app is more than calculators. Live surfaces (see `src/router.tsx`) include the **regulatory
-library** (`/library`, documents + charts), **Captain Adel** chat (`/chat`), the **flight-tools
-catalog** (`/tools/*`), a **learn/guides** hub (`/learn`, `/guides/:slug`), **study** tools
-(`/study/*` — quiz, flashcards, ground school, mock exam, paths, exam-prep **packs**, study sheets),
-an authenticated **account** area (`/dashboard`, `/currency`, `/logbook`, `/records`, `/settings`),
-**pricing/schools/checkout** (`/pricing`, `/schools`, `/checkout`), a **licensed Captain Adel API**
-marketing page (`/developers` — see `docs/LICENSED-API.md`), a **B2B org-admin** cohort dashboard
-(`/business/admin`), and legal pages (incl. `/refund`). `/learn` is the canonical hub — `/study` and
-`/guides` redirect into it (`/study` → `/learn?tab=practice`); don't relink them to the old paths.
+library** (`/library`, documents + charts, plus `/library/map` — a Leaflet aerodrome map — and the
+`/updates` corpus change feed), **Captain Adel** chat (`/chat`), the **flight-tools catalog**
+(`/tools/*`), the interactive **Kingdom Airspace HUD** (`/hud` — a simulated-traffic globe/HUD,
+pure sim logic in `src/calc/hud/`), a **learn/guides** hub (`/learn`, `/guides/:slug`), **study**
+tools (`/study/*` — quiz, flashcards, ground school, mock exam, paths, exam-prep **packs**, study
+sheets), an authenticated **account** area (`/account`, `/dashboard`, `/currency`, `/logbook`,
+`/records`, `/settings`), **pricing/schools/checkout** (`/pricing`, `/schools`, `/checkout`,
+`/checkout/return`), a **licensed Captain Adel API** marketing page (`/developers` — see
+`docs/LICENSED-API.md`), a **B2B org-admin** cohort dashboard (`/business/admin`), and `/about` +
+legal pages (incl. `/refund`). Home itself is a **bento dashboard** (`src/components/bento/` —
+grid, card glow, and a widgets/ family — lazy-loaded off the hero's critical path), and the global
+**command palette** (`src/components/CommandPalette/`) jumps between all of these. `/learn` is the
+canonical hub — `/study` and `/guides` redirect into it (`/study` → `/learn?tab=practice`); don't
+relink them to the old paths.
 Beyond the web app, `apple/` is a native iOS app family (one shared Swift package,
 `apple/FlyGACAKit`, one App Store app per exam-prep pack) built from a **flavor** switch
-(`src/flavors/`, `src/app/flavor/`, `IS_FLAVOR_APP` in `src/router.tsx`) that swaps in a reduced,
-single-pack route tree; `scripts/build-flavor.mjs` slices content per flavor. See
+(`src/flavors/`, `src/app/flavor/`; `IS_FLAVOR_APP` is defined in `src/flavors/current.ts` and
+consumed by `src/router.tsx`) that swaps in a reduced, single-pack route tree;
+`scripts/build-flavor.mjs` slices content per flavor. See
 `apple/ARCHITECTURE.md`, `docs/RUNBOOK-native.md`, and `docs/STORE-SUITE.md`.
 
 The repo also contains the **backend**: `functions/` holds the Firebase Cloud Functions — the
@@ -38,7 +45,9 @@ org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/
 single deploy manifest — only triggers exported there are deployed. It is its own npm package with
 its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
 it (root `npm run verify` does not cover it). Deploy region is `me-central1`
-(`functions/src/region.ts`; firebase.json's rewrite regions must match).
+(`functions/src/region.ts`; firebase.json's rewrite regions must match — `functions/tests/region.test.ts`
+guards that pairing). A cutover to `me-central2` (in-Kingdom / PDPL) is planned but **not done** —
+the runbook lives in `docs/RUNBOOK-deploy.md`; Firestore already sits in `me-central2`.
 
 ## Architecture
 
@@ -49,16 +58,20 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central1`
   search; `check:prerender` asserts coverage. A fuller static-HTML prerender (`npm run prerender`)
   runs in the deploy pipeline.
 - **Routing:** `src/router.tsx` is the single route table (routes are lazy-loaded per page). Pages
-  live one-per-folder under `src/pages/`. The shared chrome (`src/app/Layout|Header|Footer`)
+  live one-per-folder under `src/pages/`. The shared chrome (`src/app/Layout|Header|Footer`, plus
+  `MobileDock`, `AccountMenu`, and the `src/app/nav.ts` nav registry)
   replaces the legacy `build-chrome.js` stamper — chrome is now a component, never copied.
 - **i18n / RTL:** `src/i18n/index.ts` boots i18next from `en.json` / `ar.json` and mirrors the
   choice onto `<html lang/dir>` so RTL flips document-wide. `LangToggle` switches languages.
 - **Styling:** `src/styles/tokens.css` is the design-token source of truth (the Falcon palette);
   components use CSS Modules with **logical properties** so RTL mirrors automatically. See
-  `FIGMA_DESIGN_SYSTEM.md` for the design system.
+  `FIGMA_DESIGN_SYSTEM.md` for the design system. Motion is tokenized too: `framer-motion` mirrors
+  the CSS motion tokens in `src/components/bento/motion.ts`, and
+  `tests/bento-motion-parity.test.ts` **fails the build if the two drift**; respect
+  `usePrefersReducedMotion`.
 - **Data:** the regulatory JSON corpus + indexes ship under `public/data/` and are fetched at
-  runtime via `src/lib/content.ts` (`fetchJson`; corpus-link routing lives in
-  `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
+  runtime via `src/lib/content.ts` (`fetchJson`; corpus shapes in `src/lib/content.types.ts`,
+  corpus-link routing in `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
 - **Calculators:** pure, DOM-free logic in `src/calc/*` (no DOM/i18n) so it is unit-testable.
@@ -69,8 +82,10 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central1`
   `chat*`, `conversations`, `transcript`, `markdown`, `speech`, `textToSpeech`, `voiceSelection`),
   `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`, plus the shared
   `flightFields` readers for the free-text `Flight` columns), `calc/library/`
-  (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`), `calc/study/`
-  (`srs` — the cross-platform contract the apple/ Swift port mirrors — and `shuffle`), and `calc/app/`
+  (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`, `constellation`),
+  `calc/study/` (`srs` — the cross-platform contract the apple/ Swift port mirrors — `shuffle`, and
+  `glidePath`), `calc/hud/` (the airspace-sim engine: `scenario`, `kinematics`, `projection`,
+  `sectors`, `geoKsa`, `callsigns`, `simMetar`, seeded `rng`), and `calc/app/`
   (`authError`, `dashboardLayout`, `toolPresets`). Subfolders may import the flat core
   (`@/calc/recency`), never each other sideways. The
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
@@ -79,7 +94,9 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central1`
   string-only pages (decoders, directories) use raw `useUrlState`. Because `CalcShell` renders a
   copy-link button unconditionally, a page that keeps inputs in `useState` silently hands out blank
   links — that is what the hook prevents, not a style preference. Shared field/output layout comes
-  from `FieldGrid`/`OutputGrid` + `ResultStat` (`src/components/calc/`), and whole-number output
+  from `FieldGrid`/`OutputGrid` + `ResultStat` (`src/components/calc/` — which also holds the
+  `NumberField`/`SelectField`/`TextField` field primitives and the `GaugeDial` instrument readout),
+  and whole-number output
   goes through `fmtInt` (`src/components/calc/format.ts`). This replaces the legacy `FGCalc` helper
   (`calc-tools.js`). **Crosswind is the reference implementation** every
   other tool follows (its bespoke diagram-beside-inputs layout is the one sanctioned exception to
@@ -94,7 +111,9 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central1`
   with cross-cutting modules (`api`, `content`, `analytics`, `theme`, …) at the `src/lib/` root.
   `tools.ts` and `prepCatalog.ts` stay pinned at the `src/lib/` root — pipeline scripts under
   `scripts/` parse them by that literal path. The shared React hooks live in `src/hooks/`
-  (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta`, `useCopyToClipboard`, …). `entitlements.isActive` is a pure
+  (`useNumericInputs`, `useUrlState`, `useFetchJson`, `usePageMeta` — which also exports
+  `useNoindexMeta` — `useCopyToClipboard`, `useOfflineSync`, `useViewMode`, `useForm`,
+  `usePrefersReducedMotion`, …). `entitlements.isActive` is a pure
   predicate mirroring `functions/src/billing-core.ts`, and `features.ts` (`FEATURE_PLAN` /
   `useFeature`) is the single source of truth for which plan unlocks which premium feature — but the
   `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant, and true
@@ -119,7 +138,8 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central1`
   `promo-core`, `auth-core`) so policy is unit-testable in isolation; the Express/Firestore wrappers
   (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `founding.ts`, `org.ts`) stay thin.
   Client-side mirrors (`src/calc/chat/chatQuota.ts`, `src/lib/services/entitlements.ts`,
-  `src/lib/services/features.ts`) must match their server core.
+  `src/lib/services/features.ts`) must match their server core —
+  `tests/client-server-mirrors.test.ts` enforces this, it is not just convention.
 - **Entitlement is server-owned.** `users/{uid}.entitlement` is written **only** by Cloud Functions
   through the Admin SDK (which bypasses `firestore.rules`): the **Moyasar** billing callables
   (`billing.ts` — `createCheckoutConfig`/`confirmPayment`/`moyasarWebhook`), `claimStaffAccess`
@@ -141,19 +161,23 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central1`
 The single Vite build (`dist/`) is served from several fronts, all pointing at the **same** Firebase
 Cloud Functions gateway for `/api/*`:
 
-- **Firebase Hosting** (`flygaca-app.web.app`) is the **canonical origin** that fronts the Cloud
-  Functions (`chat`, `moyasarWebhook`). `npm run deploy` builds → `prerender` → coverage check →
-  `firebase deploy`.
+- **Firebase Hosting** is the **canonical origin**: it fronts the Cloud Functions (`chat`,
+  `moyasarWebhook`) and — since the DNS cutover completed 2026-07-31 — serves the `flygaca.com`
+  apex and `www` directly (with `flygaca-app.web.app` as the underlying site). `npm run deploy`
+  builds → `prerender` → coverage check → `firebase deploy`, but the **production deploy path is
+  the `deploy.yml` workflow**, which additionally offloads the corpus to the bucket.
 - **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) and the **Netlify** / **Vercel**
   mirrors each serve `dist/` and **proxy `/api/*` back to the Firebase origin** as a same-origin
   rewrite — so chat/content keep working and the strict CSP (`connect-src 'self'`) never changes.
-  Keep any new API surface under `/api/*` for this to hold.
+  Keep any new API surface under `/api/*` for this to hold. The mirrors `X-Robots-Tag: noindex`
+  any host that isn't `flygaca.com`.
 - Redirects consolidate the marketing domains onto `flygaca.com` (e.g. `captadel.com` → `flygaca.com`
-  in `vercel.json`).
+  in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 
-See `docs/RUNBOOK-deploy.md` for the cutover/runbook and `docs/DATA-HOSTING.md` for how the corpus
-bucket is served. `dataconnect/` (Firebase Data Connect) and `supabase/migrations/` (pgvector for
-RAG embeddings) hold the datastore schemas.
+See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
+cutover and the planned `me-central1` → `me-central2` functions cutover) and `docs/DATA-HOSTING.md`
+for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
+`supabase/migrations/` (pgvector for RAG embeddings) hold the datastore schemas.
 
 ## Conventions (enforced)
 
@@ -166,13 +190,20 @@ RAG embeddings) hold the datastore schemas.
 - **Never commit build output.** `public/sitemap.xml` / `public/robots.txt` are regenerated by
   `build:sitemap` and git-ignored. Keep branches synced with `main`; see `docs/MERGE-CONFLICTS.md`
   for prevention + how to resolve lockfile / i18n conflicts.
-- Run `npm run verify` before committing. It chains the frontend CI gate —
-  `typecheck → lint → format:check → test → build → check:bundle`. CI (`.github/workflows/ci.yml`)
-  runs this plus three more jobs you should be aware of when your change touches them:
-  **functions** (`lint · test · build` inside `functions/`), **Firestore rules**
+- Run `npm run verify` before committing. It chains the frontend gate —
+  `typecheck → lint → format:check → test → build → check:bundle` (`check:bundle` fails if the
+  initial gzipped JS exceeds its budget — 188 kB today; route chunks excluded by design). CI
+  (`.github/workflows/ci.yml`) mirrors the same steps individually but swaps `test` for
+  `test:coverage` — a coverage **ratchet** with thresholds in `vitest.config.ts` — plus three more
+  jobs you should be aware of when your change touches them:
+  **functions** (`lint · test:coverage · build` inside `functions/`), **Firestore rules**
   (`npm run test:rules`, emulator-backed — `firestore.rules` + `tests/rules/`), and **e2e · a11y**
-  (`npm run test:e2e`, Playwright, `e2e/`). A separate **docs-parser** workflow lints the regulatory
-  Markdown (`lint:md`), runs `parse:regulations`, and upserts embeddings.
+  (`npm run test:e2e`, Playwright — `e2e/smoke.spec.ts`, `flows.spec.ts`, `a11y.spec.ts`).
+  `.github/workflows/` holds six workflows in all: `ci.yml`, **`deploy.yml`** (the only production
+  deploy — build, budgets, prerender, corpus-bucket offload, `firebase deploy`),
+  `deploy-cloudflare.yml` (mirror, secret-gated), `firebase-hosting-pull-request.yml` (PR
+  previews), `ios.yml` (Swift tests + per-app builds), and **docs-parser** — which lints the
+  regulatory Markdown (`lint:md`), runs `parse:regulations`, and upserts embeddings.
 
 ## Adding a new tool
 
@@ -188,24 +219,33 @@ only structure (route, category, status, keywords).
 ## Content & data pipelines (`scripts/`)
 
 Node ESM scripts under `scripts/` (many wired to npm scripts) maintain the corpus and generated
-assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory corpus),
-`parse:regulations` (compile the cross-ref lookup from `content/regulations/*.md`), `build:airports`
-/ `build:chunks` / `embeddings:upsert` (Supabase pgvector), `build:sitemap`, `gen:og`,
-`gen:aip-sheet` (build the AIP study sheet), `optimize:img`, and `new:guide` (scaffold a guide — see
-`GUIDE_AUTHORING.md`).
+assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory corpus; `sync:gaca:apply`
+is the apply-and-normalise variant), `parse:regulations` (compile the cross-ref lookup from
+`content/regulations/*.md`), `build:airports` / `build:chunks` / `embeddings:upsert` (Supabase
+pgvector), `build:sitemap`, `gen:og`, `gen:aip-sheet` (build the AIP study sheet), `gen:captain`
+(Captain Adel imagery), `audit:ai` (the AI-search visibility audit behind `SEO-PLAN.md`),
+`optimize:img`, and `new:guide` (scaffold a guide — see `GUIDE_AUTHORING.md`). Shared script
+helpers live in `scripts/lib/` (flavor slicing, markdown splitting, regulations parsing, sync
+merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
+`deploy:rules` / `deploy:functions` / `deploy:all` — `npm run deploy` alone does **not** deploy
+`functions/`.
 
 ## Where to look
 
 `MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
 `GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
-`SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility), `docs/ARCHITECTURE-BLUEPRINT.md`
-(platform-wide technical blueprint), and `docs/` generally (design, billing, `RUNBOOK-deploy.md` /
-`DATA-HOSTING.md`, `LICENSED-API.md`, `PRICING-REVENUE-STRATEGY.md`, `RUNBOOK-native.md` /
-`STORE-SUITE.md` (the iOS app family), `b2b/` designs). The legacy source (the original vanilla
-Fly GACA site) remains the reference for anything still ported from the old site.
+`SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility; vendored skills live under
+`.claude/skills/`, pinned by `skills-lock.json`), `docs/ARCHITECTURE-BLUEPRINT.md`
+(platform-wide technical blueprint), root `SECURITY.md`, and `docs/` generally (design, billing,
+`RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `RUNBOOK-firebase.md`, the `RUNBOOK-ios-*.md` set,
+`LICENSED-API.md`, `PRICING-REVENUE-STRATEGY.md`, `RUNBOOK-native.md` /
+`STORE-SUITE.md` (the iOS app family), `APPS-FAMILY-ROADMAP.md`, `STUDY-CONTENT-REVIEW.md`,
+`TESTING-ROADMAP.md`, `corpus-link-shape.md`, `docs/seo/`, `b2b/` designs). The legacy source (the
+original vanilla Fly GACA site) remains the reference for anything still ported from the old site.
 
 `archive/` is parked non-app material — vendored third-party reference collections, the per-tool
 agent-config folders, scripts nothing calls, finished-work docs (completed audits, the legacy-PWA
 cutover runbook), and the investor material. Nothing there is imported, built, or linted; see
-`archive/README.md` before assuming something is missing. `docs/` is now live engineering
-documentation only.
+`archive/README.md` before assuming something is missing. `docs/` is live engineering
+documentation, plus two point-in-time subtrees (`docs/seo/archive/`,
+`docs/screenshots/review-2026-07/`).
