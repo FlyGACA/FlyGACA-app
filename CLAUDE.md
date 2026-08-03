@@ -70,8 +70,8 @@ the runbook lives in `docs/RUNBOOK-deploy.md`; Firestore already sits in `me-cen
   `tests/bento-motion-parity.test.ts` **fails the build if the two drift**; respect
   `usePrefersReducedMotion`.
 - **Data:** the regulatory JSON corpus + indexes ship under `public/data/` and are fetched at
-  runtime via `src/lib/content.ts` (`fetchJson`; corpus shapes in `content.types.ts`, corpus-link
-  routing in `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
+  runtime via `src/lib/content.ts` (`fetchJson`; corpus shapes in `src/lib/content.types.ts`,
+  corpus-link routing in `src/lib/contentLinks.ts`) + the `useFetchJson` hook — the heavy corpus never
   enters the JS bundle. (The ~19 MB `library-search.json` and ebooks remain lazy/streamed, as in the
   legacy app.) In production the corpus is offloaded to a bucket and served network-first.
 - **Calculators:** pure, DOM-free logic in `src/calc/*` (no DOM/i18n) so it is unit-testable.
