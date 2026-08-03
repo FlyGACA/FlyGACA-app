@@ -15,7 +15,8 @@
   max-inline-size: 760px;
 }
 
-/* Instrument-label eyebrow: uppercase kicker flanked by short hairline rules. */
+/* Instrument-label eyebrow: uppercase kicker with a short leading hairline rule
+   (left-aligned, matching PageHero). */
 .eyebrow {
   display: inline-flex;
   align-items: center;
