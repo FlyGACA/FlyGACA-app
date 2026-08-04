@@ -1184,6 +1184,9 @@
     "effective": "Effective",
     "next": "Next cycle",
     "daysToNext": "Days to next",
+    "currencyLabel": "AIRAC cycle currency",
+    "badge": "AIRAC {{id}}",
+    "nextIn": "Next {{id}} in {{days}} d",
     "ringAria": "AIRAC cycle {{id}}, day {{day}} of 28",
     "formula": "AIRAC cycles are 28 days. Effective dates are fixed worldwide; the identifier is the 2-digit year plus the cycle number within that year."
   },
