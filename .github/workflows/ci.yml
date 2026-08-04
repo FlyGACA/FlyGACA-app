@@ -49,6 +49,9 @@ jobs:
       - name: Bundle budget
         run: npm run check:bundle
 
+      - name: Perf budget (per-chunk + total JS)
+        run: npm run check:perf
+
   functions:
     name: functions · lint · test · build
     runs-on: ubuntu-latest

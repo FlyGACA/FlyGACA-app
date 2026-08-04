@@ -4,7 +4,7 @@
  * so the heavy corpus never bloats the JS bundle.
  */
 
-import type { CorpusMeta, LibraryKind, RegulationsLookup } from './content.types';
+import type { CorpusMeta, LibraryKind } from './content.types';
 
 export * from './content.types';
 
@@ -116,8 +116,3 @@ export const CORPUS: Record<LibraryKind, CorpusMeta> = {
   },
   handbook: { index: '/data/ebooks-index.json', dir: '/data/ebooks', base: '/library/handbook' },
 };
-
-/** Load the compiled regulatory cross-reference lookup (cached for the tab session). */
-export function loadRegulationsLookup(): Promise<RegulationsLookup> {
-  return loadJson<RegulationsLookup>('/data/regulations-lookup.json');
-}
