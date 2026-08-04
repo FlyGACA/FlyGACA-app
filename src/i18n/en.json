@@ -863,6 +863,13 @@
       "categories": "Collections"
     }
   },
+  "provenance": {
+    "label": "Source & provenance",
+    "updated": "Updated {{date}}",
+    "revision": "Rev {{revision}}",
+    "officialSource": "Official source",
+    "officialSourceTitle": "Open the authoritative GACA publication (opens in a new tab)"
+  },
   "glossary": {
     "eyebrow": "Reference Library",
     "title": "Aviation glossary",
@@ -936,7 +943,6 @@
     "filterToc": "Filter contents",
     "verifyAtGaca": "Read the official GACAR at gaca.gov.sa",
     "verifyLine": "Reproduced for study. Always verify against the official GACAR at gaca.gov.sa.",
-    "updated": "Updated {{date}}",
     "sections": "sections",
     "findPlaceholder": "Find in this document…",
     "findCount": "{{n}}/{{total}}",

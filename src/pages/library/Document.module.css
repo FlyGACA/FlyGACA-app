@@ -58,10 +58,6 @@
   font-size: var(--fs-xs);
   color: var(--text-muted);
 }
-.updated {
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-}
 .verify {
   margin-block-start: var(--space-3);
   font-size: var(--fs-xs);

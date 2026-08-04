@@ -40,6 +40,7 @@ import { ReaderToc } from './ReaderToc';
 import { ReaderNotes } from './ReaderNotes';
 import { Disclaimer } from '@/components/Disclaimer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Provenance } from '@/components/Provenance';
 import styles from './Document.module.css';
 
 interface DocumentProps {
@@ -389,14 +390,14 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             <div className={styles.meta}>
               {badge && <span className={styles.badge}>{badge}</span>}
               {count && <span className={styles.pages}>{count}</span>}
-              {dateModified && (
-                <time className={styles.updated} dateTime={dateModified}>
-                  {t('document.updated', { date: dateModified })}
-                </time>
-              )}
             </div>
             {doc && <h1>{doc.title}</h1>}
             <p className={styles.verify}>{t('document.verifyLine')}</p>
+            <Provenance
+              date={dateModified}
+              revision={doc?.revision}
+              sourceUrl={doc?.sourceUrl ?? index.data?.sourceUrl}
+            />
           </header>
 
           <ReaderToolbar

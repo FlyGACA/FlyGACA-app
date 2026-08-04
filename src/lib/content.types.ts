@@ -81,6 +81,8 @@ export interface CorpusIndex {
   count: number;
   categories: GacarCategory[];
   documents: CorpusDoc[];
+  /** Authoritative source URL for the corpus (e.g. the GACA regulations page). */
+  sourceUrl?: string;
 }
 
 export interface CorpusMeta {
