@@ -29,6 +29,7 @@
     "new:guide": "node scripts/new-guide.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
     "check:perf": "node scripts/check-perf-budget.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "audit:ai": "node scripts/audit-ai-visibility.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",

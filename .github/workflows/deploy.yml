@@ -127,6 +127,18 @@ jobs:
           echo "Deploying: ${TARGETS}"
           npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
 
+      # Tell IndexNow-participating engines (Bing, Yandex, Seznam, Naver, …) that
+      # content changed, so they recrawl now instead of on their next scheduled
+      # pass. Dark until the INDEXNOW_KEY secret is set and the matching key file is
+      # hosted at the domain root; the script no-ops (exit 0) without the key and is
+      # fail-open, so it can never break a deploy. Google doesn't use IndexNow — this
+      # complements the sitemap, it doesn't replace it.
+      - name: Ping IndexNow
+        env:
+          SITE_URL: https://flygaca.com
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: node scripts/indexnow.mjs
+
       - name: Clean up credentials
         if: always()
         run: rm -f "${RUNNER_TEMP}/firebase-sa.json"
