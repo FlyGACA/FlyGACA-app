@@ -18,17 +18,22 @@ import { describe, expect, it } from 'vitest';
  */
 import {
   FREE_DAILY_LIMIT as SERVER_FREE_DAILY_LIMIT,
+  ANON_DAILY_LIMIT as SERVER_ANON_DAILY_LIMIT,
   CREDIT_PACK_SIZE as SERVER_CREDIT_PACK_SIZE,
 } from '../functions/src/chat-quota-core';
 import { SELLABLE_PACK_IDS } from '../functions/src/billing-core';
 
-import { FREE_DAILY_LIMIT } from '@/calc/chat/chatQuota';
+import { FREE_DAILY_LIMIT, ANON_DAILY_LIMIT } from '@/calc/chat/chatQuota';
 import { CREDIT_PACK_SIZE } from '@/lib/services/billing';
 import { PACKS } from '@/lib/prepCatalog';
 
 describe('chat quota', () => {
   it('the free daily limit matches functions/src/chat-quota-core.ts', () => {
     expect(FREE_DAILY_LIMIT).toBe(SERVER_FREE_DAILY_LIMIT);
+  });
+
+  it('the anonymous daily limit matches functions/src/chat-quota-core.ts', () => {
+    expect(ANON_DAILY_LIMIT).toBe(SERVER_ANON_DAILY_LIMIT);
   });
 
   /**

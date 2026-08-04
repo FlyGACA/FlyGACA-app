@@ -5,6 +5,7 @@
  * and translates its stream/result into either the legacy SSE frames or a
  * buffered `ChatResponse`.
  */
+import { createHash } from "node:crypto";
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -18,7 +19,12 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { captainAdelFlow } from "./captain-adel.js";
 import { createRateLimiter } from "./rate-limit-core.js";
 import { isPaidActive, type Entitlement } from "./billing-core.js";
-import { checkDailyQuota, FREE_DAILY_LIMIT, type DailyUsage } from "./chat-quota-core.js";
+import {
+  checkDailyQuota,
+  FREE_DAILY_LIMIT,
+  ANON_DAILY_LIMIT,
+  type DailyUsage,
+} from "./chat-quota-core.js";
 import { extractApiKey, hashApiKey } from "./api-key-core.js";
 import { apiTier, isOverMonthlyQuota, monthKey, remainingThisMonth, API_TIERS } from "./api-tier-core.js";
 import {
@@ -39,6 +45,11 @@ const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: false })
 // can be tuned (A/B 3 vs 5/day) without a code change. The client counter stays a
 // separate nudge; this is the enforced value.
 const FREE_DAILY_LIMIT_PARAM = defineInt("FREE_DAILY_LIMIT", { default: FREE_DAILY_LIMIT });
+
+// Anonymous (not-signed-in) Captain Adel questions per day — a deploy-time param so
+// the free-trial allowance can be tuned without a code change. Anonymous turns have
+// no uid, so the daily quota is keyed on a hashed client IP (see `anonQuotaKey`).
+const ANON_DAILY_LIMIT_PARAM = defineInt("ANON_DAILY_LIMIT", { default: ANON_DAILY_LIMIT });
 
 /** Helper to parse cookie strings without external packages */
 function parseCookies(cookieHeader: string | undefined): Record<string, string> {
@@ -152,11 +163,11 @@ app.use(helmet());
 // sitewide). The proxy-chain depth varies by front (direct function URL = 1 hop,
 // Firebase Hosting = 2, Cloudflare Worker → Hosting = 3+), so no fixed hop count
 // is right. Leftmost-XFF is client-forgeable, but a forger only shards their own
-// bucket — real browsers never send XFF — and the hard cost control is the
-// per-uid limiter on /chat below, behind auth.
+// bucket — real browsers never send XFF — and the hard cost control is the per-turn
+// limiter on /chat below (keyed on uid, or on IP for anonymous callers).
 app.set("trust proxy", true);
-// Rate limiting: 30 requests per minute per IP — a best-effort backstop for
-// unauthenticated traffic (which otherwise only ever reaches the cheap 401 path).
+// Rate limiting: 30 requests per minute per IP — a best-effort backstop in front of
+// everything, incl. the metered anonymous chat trial (per-IP daily quota below).
 app.use(
   rateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -200,19 +211,35 @@ async function readEntitlement(uid: string): Promise<Entitlement | null> {
 }
 
 /**
- * Atomically consume one free-tier question for `uid` in a Firestore transaction on
- * `chatUsage/{uid}` — durable across instances, unlike the in-memory burst limiter,
- * so the daily allowance can't be reset by clearing localStorage or spreading load
- * across function instances. On a transaction error it fails open (allowed); the
- * per-uid burst limiter is the hard backstop. `chatUsage` is server-only (deny-all
- * in firestore.rules).
+ * The Firestore `chatUsage` doc id for an anonymous caller: `anon:<hash>` where the
+ * hash is a truncated SHA-256 of the client IP. We never persist a raw IP (PDPL) —
+ * the hash is a stable-per-IP-per-day-ish bucket, enough to cap a not-signed-in
+ * visitor's daily allowance without storing personal data. An absent IP collapses to
+ * a single shared `anon:none` bucket (conservative — worst case is one shared cap).
  */
-async function consumeFreeQuota(
-  uid: string,
+function anonQuotaKey(ip: string | undefined): string {
+  const hash = createHash("sha256")
+    .update(ip || "none")
+    .digest("hex")
+    .slice(0, 32);
+  return `anon:${hash}`;
+}
+
+/**
+ * Atomically consume one daily question for `key` in a Firestore transaction on
+ * `chatUsage/{key}` — durable across instances, unlike the in-memory burst limiter,
+ * so the daily allowance can't be reset by clearing localStorage or spreading load
+ * across function instances. `key` is the caller's `uid` (signed-in) or an
+ * `anon:<ipHash>` bucket (anonymous). On a transaction error it fails open (allowed);
+ * the per-uid/per-IP burst limiter is the hard backstop. `chatUsage` is server-only
+ * (deny-all in firestore.rules).
+ */
+async function consumeDailyQuota(
+  key: string,
   limit: number,
 ): Promise<{ allowed: boolean; retryAfterSec: number }> {
   const db = getFirestore();
-  const ref = db.collection("chatUsage").doc(uid);
+  const ref = db.collection("chatUsage").doc(key);
   try {
     return await db.runTransaction(async (tx) => {
       const snap = await tx.get(ref);
@@ -222,7 +249,7 @@ async function consumeFreeQuota(
       return { allowed: verdict.allowed, retryAfterSec: verdict.retryAfterSec };
     });
   } catch (err) {
-    logger.error("chat quota transaction failed", { uid, err });
+    logger.error("chat quota transaction failed", { key, err });
     return { allowed: true, retryAfterSec: 0 };
   }
 }
@@ -296,9 +323,10 @@ app.use((req, res, next) => {
 });
 
 app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<void> => {
-  // Auth / App Check. Captain Adel chat requires a signed-in Firebase user — an
-  // absent/invalid ID token (anonymous) is rejected with 401, distinct from the
-  // App Check 403 above.
+  // Auth / App Check. Captain Adel chat is usable WITHOUT an account: an absent or
+  // invalid ID token yields an anonymous caller (metered by hashed client IP on a
+  // small daily free-trial allowance), not a 401. App Check failures still 403,
+  // enforced only when ENFORCE_APP_CHECK is on.
   let uid: string | undefined;
   let emailVerified: boolean;
   try {
@@ -310,12 +338,11 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     }
     throw err;
   }
-  if (!uid) {
-    res.status(401).json({ error: "sign-in required" });
-    return;
-  }
 
-  const verdict = chatLimiter.check(`uid:${uid}`);
+  // Per-turn burst limiter — the hard cost backstop (DESIGN §8 N4). Keyed on the uid
+  // when signed in, else on the client IP so one anonymous visitor can't flood.
+  const limiterKey = uid ? `uid:${uid}` : `ip:${req.ip ?? "none"}`;
+  const verdict = chatLimiter.check(limiterKey);
   if (!verdict.allowed) {
     res.setHeader("Retry-After", String(verdict.retryAfterSec));
     res.status(429).json({ error: "rate_limited" });
@@ -330,30 +357,45 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
     return;
   }
 
-  // Plan gate — the server is the source of truth (DESIGN §8). Free users are held
-  // to the daily free-question allowance and never get the Pro model, regardless of
-  // what the client sends; the app's localStorage counter and Pro toggle are only
-  // UI nudges. Checked after parseRequest so a malformed turn never burns quota.
-  const paid = isPaidActive(await readEntitlement(uid));
-  if (!paid) {
-    parsed.provider = undefined; // collapse a client-requested 'pro' tier to flash
-    const quota = await consumeFreeQuota(uid, FREE_DAILY_LIMIT_PARAM.value());
-    // Past the daily free allowance a purchased credit (if any) covers the turn;
-    // only 429 when neither free questions nor credits remain.
+  // Quota / plan gate — the server is the source of truth (DESIGN §8). The client's
+  // localStorage counter and Pro toggle are only UI nudges. Checked after
+  // parseRequest so a malformed turn never burns quota.
+  if (!uid) {
+    // Anonymous: a small daily free-trial allowance, metered per hashed IP, always on
+    // the flash model. No entitlement and no credits — there's no account to bill;
+    // when the trial is spent the client nudges the visitor to sign in.
+    parsed.provider = undefined; // never the Pro model for an anonymous caller
+    const quota = await consumeDailyQuota(anonQuotaKey(req.ip), ANON_DAILY_LIMIT_PARAM.value());
     if (!quota.allowed) {
-      const credit = await consumeCredit(uid);
-      // Structured funnel events (Cloud Logging → offline conversion analysis):
-      // hitting the wall is the upsell moment; a spent credit is micro-revenue.
-      // `emailVerified` lets us segment conversion by verified-vs-unverified sign-up.
-      logger.info("funnel", {
-        event: credit ? "credit_spent" : "quota_exhausted",
-        uid,
-        emailVerified,
-      });
-      if (!credit) {
-        res.setHeader("Retry-After", String(quota.retryAfterSec));
-        res.status(429).json({ error: "quota_exceeded" });
-        return;
+      logger.info("funnel", { event: "anon_quota_exhausted" });
+      res.setHeader("Retry-After", String(quota.retryAfterSec));
+      res.status(429).json({ error: "quota_exceeded" });
+      return;
+    }
+  } else {
+    // Signed-in: free users are held to the daily free-question allowance and never
+    // get the Pro model regardless of what the client sends; paid users bypass both.
+    const paid = isPaidActive(await readEntitlement(uid));
+    if (!paid) {
+      parsed.provider = undefined; // collapse a client-requested 'pro' tier to flash
+      const quota = await consumeDailyQuota(uid, FREE_DAILY_LIMIT_PARAM.value());
+      // Past the daily free allowance a purchased credit (if any) covers the turn;
+      // only 429 when neither free questions nor credits remain.
+      if (!quota.allowed) {
+        const credit = await consumeCredit(uid);
+        // Structured funnel events (Cloud Logging → offline conversion analysis):
+        // hitting the wall is the upsell moment; a spent credit is micro-revenue.
+        // `emailVerified` lets us segment conversion by verified-vs-unverified sign-up.
+        logger.info("funnel", {
+          event: credit ? "credit_spent" : "quota_exhausted",
+          uid,
+          emailVerified,
+        });
+        if (!credit) {
+          res.setHeader("Retry-After", String(quota.retryAfterSec));
+          res.status(429).json({ error: "quota_exceeded" });
+          return;
+        }
       }
     }
   }

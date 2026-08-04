@@ -14,6 +14,7 @@ import express from "express";
 import type { AddressInfo } from "node:net";
 import type { Server } from "node:http";
 import { hashApiKey } from "../src/api-key-core.js";
+import { captainAdelFlow } from "../src/captain-adel.js";
 
 const today = new Date().toISOString().slice(0, 10);
 
@@ -111,9 +112,10 @@ let server: Server;
 let base: string;
 
 beforeAll(async () => {
-  // Pin the free-tier limit so the quota tests don't depend on deploy-time param
+  // Pin the free-tier limits so the quota tests don't depend on deploy-time param
   // resolution (an unbound defineInt resolves to 0 outside a deployed function).
   process.env.FREE_DAILY_LIMIT = "5";
+  process.env.ANON_DAILY_LIMIT = "3";
   const app = (await import("../src/gateway.js")).default;
   const harness = express();
   harness.use(express.json());
@@ -172,21 +174,81 @@ async function call(path: string, init: RequestInit & { json?: unknown } = {}): 
 
 const auth = (uid: string) => ({ Authorization: `Bearer ${uid}` });
 
+// Distinct client IPs for anonymous quota tests. `trust proxy` is on, so the
+// leftmost X-Forwarded-For becomes req.ip and thus the (hashed) quota bucket.
+const fromIp = (ip: string) => ({ "X-Forwarded-For": ip });
+
 describe("POST /chat — auth & validation", () => {
-  it("401s an anonymous (no bearer) request", async () => {
-    const r = await call("/chat", { method: "POST", json: { message: "hi" } });
-    expect(r.status).toBe(401);
-    expect(r.body).toEqual({ error: "sign-in required" });
+  it("answers an anonymous (no bearer) request within the free trial", async () => {
+    const r = await call("/chat", {
+      method: "POST",
+      headers: fromIp("203.0.113.10"),
+      json: { message: "hi" },
+    });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ answer: "A" });
+    // Metered on a hashed-IP bucket, never a raw IP or a real uid.
+    const keys = Object.keys(h.stores.chatUsage ?? {});
+    expect(keys).toHaveLength(1);
+    expect(keys[0]).toMatch(/^anon:[0-9a-f]{32}$/);
+    expect(h.stores.chatUsage?.[keys[0]]).toEqual({ day: today, count: 1 });
   });
 
-  it("401s when the ID token is invalid (treated as anonymous)", async () => {
-    const r = await call("/chat", { method: "POST", headers: auth("bad"), json: { message: "hi" } });
-    expect(r.status).toBe(401);
+  it("treats an invalid ID token as anonymous (answers, does not 401)", async () => {
+    const r = await call("/chat", {
+      method: "POST",
+      headers: { ...auth("bad"), ...fromIp("203.0.113.11") },
+      json: { message: "hi" },
+    });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ answer: "A" });
   });
 
   it("400s a signed-in request with a blank message", async () => {
     const r = await call("/chat", { method: "POST", headers: auth("u-blank"), json: { message: "  " } });
     expect(r.status).toBe(400);
+  });
+});
+
+describe("POST /chat — anonymous free trial", () => {
+  it("429s (quota_exceeded) once the anonymous daily allowance is spent", async () => {
+    const ip = fromIp("203.0.113.20");
+    for (let i = 0; i < 3; i++) {
+      const ok = await call("/chat", { method: "POST", headers: ip, json: { message: "hi" } });
+      expect(ok.status).toBe(200); // ANON_DAILY_LIMIT = 3
+    }
+    const r = await call("/chat", { method: "POST", headers: ip, json: { message: "hi" } });
+    expect(r.status).toBe(429);
+    expect(r.body).toEqual({ error: "quota_exceeded" });
+    expect(r.headers.get("retry-after")).toBeTruthy();
+  });
+
+  it("meters each client IP independently", async () => {
+    const a = fromIp("203.0.113.21");
+    for (let i = 0; i < 3; i++) {
+      await call("/chat", { method: "POST", headers: a, json: { message: "hi" } });
+    }
+    // A is exhausted; a different IP still gets its own allowance.
+    const exhausted = await call("/chat", { method: "POST", headers: a, json: { message: "hi" } });
+    expect(exhausted.status).toBe(429);
+    const fresh = await call("/chat", {
+      method: "POST",
+      headers: fromIp("203.0.113.22"),
+      json: { message: "hi" },
+    });
+    expect(fresh.status).toBe(200);
+  });
+
+  it("never serves the Pro model to an anonymous caller", async () => {
+    await call("/chat", {
+      method: "POST",
+      headers: fromIp("203.0.113.23"),
+      json: { message: "hi", provider: "pro" },
+    });
+    const lastArg = (captainAdelFlow as unknown as { mock: { calls: unknown[][] } }).mock.calls.at(
+      -1,
+    )?.[0] as { provider?: string };
+    expect(lastArg.provider).toBeUndefined();
   });
 });
 

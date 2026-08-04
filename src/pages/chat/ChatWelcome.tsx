@@ -18,27 +18,13 @@ const CAPABILITIES = [
   { id: 'verify', tone: 'warning' as const },
 ];
 
-/** Empty-state welcome: avatar, sign-in gate, capabilities, starter prompts. */
-export function ChatWelcome({
-  signedIn,
-  onAsk,
-}: {
-  signedIn: boolean;
-  onAsk: (q: string) => void;
-}) {
+/** Empty-state welcome: avatar, capabilities, starter prompts. */
+export function ChatWelcome({ onAsk }: { onAsk: (q: string) => void }) {
   const { t } = useTranslation();
   return (
     <div className={styles.welcome}>
       <CaptainAvatar size="xl" glow live animated pose="wave" className={styles.welcomeAvatar} />
       <p className={styles.welcomeLead}>{t('chat.welcome')}</p>
-      {!signedIn && (
-        <div className={styles.gate}>
-          <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
-          <Link className="btn btn-primary" to="/account">
-            {t('account.goSignIn')}
-          </Link>
-        </div>
-      )}
       <div className={styles.capabilities}>
         {CAPABILITIES.map((c) => (
           <StatusPill key={c.id} tone={c.tone}>
