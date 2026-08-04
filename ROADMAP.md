@@ -102,10 +102,12 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
   price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
-- **[platform]** **Close the backend money-path test gap.** `functions/src/founding.ts` (the
-  entitlement-granting `claimFoundingAccess` callable) has zero test coverage, and half of
-  `functions/src/billing.ts` — `confirmPayment`, `cancelAutoRenew`, and the scheduled auto-renewal charge loop —
-  never runs under test. Work-list and exit criteria: `docs/TESTING-ROADMAP.md` **Phase 5**.
+- **[platform]** ~~Close the backend money-path test gap.~~ **Done.** The entitlement-granting
+  `claimFoundingAccess` callable, the Moyasar billing callables (`confirmPayment` /
+  `cancelAutoRenew` / `createCheckoutConfig` / `getReferralCode`), the scheduled auto-renewal charge
+  loop, and the gateway route/streaming/App-Check paths are now under test; `functions/` coverage is
+  98% lines / 90% branches with the ratchet raised to match. See `docs/TESTING-ROADMAP.md`
+  **Phase 5** (complete).
 - **[platform]** **Scope CI credentials least-privilege as they're provisioned.** An OAuth/token
   scope-minimization review (Aug 2026) found the current surface already minimal — every workflow's
   `GITHUB_TOKEN` is default-deny (`contents: read`, repo default confirmed `read`) with write escalated
