@@ -2697,6 +2697,60 @@
           "Required to exercise commercial and airline pilot privileges.",
           "Assesses vision, hearing, cardiovascular and general fitness.",
           "Validity shortens with age, confirm the period in GACAR Part 67."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 67 medical standards, administered by GACA-authorized examiners.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Who needs it",
+            "value": "Anyone exercising commercial (CPL) or airline (ATPL) pilot privileges.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "What it assesses",
+            "value": "Vision, hearing, cardiovascular health and general fitness.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Examiner",
+            "value": "A GACA-authorized aviation medical examiner (AME).",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Validity",
+            "value": "Time-limited and shorter with age — confirm the current period.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Lower classes",
+            "value": "Class 2 covers the PPL; Class 1 is the higher standard.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is a GACA Class 1 medical certificate?",
+            "a": "A GACA Class 1 medical is the higher-standard aeromedical certificate required to exercise commercial (CPL) and airline (ATPL) pilot privileges, issued under the GACAR Part 67 medical standards by a GACA-authorized aviation medical examiner. Confirm the current standards in GACAR Part 67."
+          },
+          {
+            "q": "Who needs a Class 1 medical in Saudi Arabia?",
+            "a": "Anyone exercising commercial or airline transport pilot privileges needs a valid Class 1 medical; a private pilot (PPL) only needs a Class 2. Check which class your intended privileges require in GACAR Part 67."
+          },
+          {
+            "q": "What does a Class 1 aviation medical examine?",
+            "a": "It assesses vision, hearing, cardiovascular health, neurological and mental fitness, and general physical condition against the GACAR Part 67 standards. The exact tests are set by GACA — verify the current requirements with a GACA-authorized examiner."
+          },
+          {
+            "q": "How long is a GACA Class 1 medical valid?",
+            "a": "The validity is time-limited and generally shortens as you get older. The current periods are set in GACAR Part 67 — confirm your exact validity with GACA, as it depends on your age and the privileges exercised."
+          },
+          {
+            "q": "Where do I get a GACA Class 1 medical?",
+            "a": "From a GACA-authorized aviation medical examiner (AME). Fly GACA is an independent educational study aid and does not conduct medical examinations or issue certificates — GACA is the authority. Find an authorized examiner through GACA."
+          }
         ]
       },
       "foreign-license-conversion-to-gaca": {
@@ -2722,6 +2776,60 @@
           "Bring a valid foreign licence, logbook, current medical and ID.",
           "Expect an air-law exam, English proficiency check and a skill test.",
           "Confirm the current GACA requirements before you apply."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 61 — conversion or validation of a foreign licence.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Documents",
+            "value": "A valid foreign licence, logbook, a current medical and photo ID.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Air-law exam",
+            "value": "A GACA air-law examination on Saudi regulations.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "English",
+            "value": "ICAO English Level 4 or above.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Skill test",
+            "value": "A skill test with a GACA-authorized examiner may be required.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Medical",
+            "value": "A current GACA medical of the appropriate class.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "Can I convert a foreign pilot licence to a GACA licence?",
+            "a": "Yes. If you hold a valid licence from another ICAO authority you can apply to convert or validate it under GACAR Part 61. You typically provide the foreign licence, your logbook, a current medical and photo ID, pass a GACA air-law examination and the English proficiency check, and may sit a skill test. Confirm the current process and eligibility with GACA."
+          },
+          {
+            "q": "What do I need to convert my licence to GACA?",
+            "a": "A valid foreign licence, your logbook, a current GACA-accepted medical, photo ID, ICAO English Level 4, and a pass in the GACA air-law examination — with a skill test where required. Verify the exact document list and steps with GACA before applying."
+          },
+          {
+            "q": "Do I have to retake exams to convert my licence?",
+            "a": "You generally sit a GACA air-law examination covering Saudi regulations and demonstrate ICAO English proficiency; a skill test may also be required depending on your licence and ratings. The current requirements are set by GACA under Part 61 — confirm them before you apply."
+          },
+          {
+            "q": "Do I need a new medical to convert my licence?",
+            "a": "Yes — a current GACA medical of the class appropriate to your privileges (Class 1 for commercial/airline, Class 2 for private), under GACAR Part 67. Check the accepted medicals and validity with GACA."
+          },
+          {
+            "q": "Does Fly GACA convert or issue licences?",
+            "a": "No. Fly GACA is an independent educational study aid; it does not process conversions or issue licences. GACA is the authority — apply and confirm all requirements through GACA."
+          }
         ]
       },
       "icao-english-saelpt": {
@@ -2747,6 +2855,60 @@
           "ICAO Level 4 is the minimum to use English on the radio.",
           "Six skills are scored: pronunciation, structure, vocabulary, fluency, comprehension, interaction.",
           "Level 4 is re-tested periodically; higher levels last longer."
+        ],
+        "keyFacts": [
+          {
+            "label": "Standard",
+            "value": "ICAO language proficiency (Annex 1), assessed by the Saudi test (SAELPT).",
+            "ref": "ICAO Annex 1"
+          },
+          {
+            "label": "Minimum level",
+            "value": "Level 4 (Operational) to use English on the radio.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Skills scored",
+            "value": "Pronunciation, structure, vocabulary, fluency, comprehension, interaction.",
+            "ref": "ICAO Annex 1"
+          },
+          {
+            "label": "Scale",
+            "value": "Levels 1–6; Level 6 is Expert.",
+            "ref": "ICAO Annex 1"
+          },
+          {
+            "label": "Re-testing",
+            "value": "Level 4 is re-assessed periodically; higher levels last longer.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Who needs it",
+            "value": "Any pilot using English on the radio for their licence.",
+            "ref": "SAELPT"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What English level do pilots need in Saudi Arabia?",
+            "a": "Pilots must demonstrate ICAO English language proficiency at Level 4 (Operational) or above to use English on the radio, assessed through the Saudi Aviation English test (SAELPT) against the ICAO Annex 1 scale. Confirm the current requirement with GACA."
+          },
+          {
+            "q": "What is the SAELPT?",
+            "a": "The Saudi Aviation English Language Proficiency Test — the assessment used to rate a pilot's English against the ICAO Annex 1 language-proficiency scale. It scores six skill areas: pronunciation, structure, vocabulary, fluency, comprehension and interactions. Verify current test details with GACA."
+          },
+          {
+            "q": "What are the ICAO language proficiency levels?",
+            "a": "The ICAO scale runs from Level 1 to Level 6, with Level 4 (Operational) the minimum for radio use and Level 6 (Expert) the highest. Six skills are rated and your overall level is the lowest of the six. Confirm how the levels apply to your licence with GACA."
+          },
+          {
+            "q": "How often do I need to re-test my aviation English?",
+            "a": "Level 4 is re-assessed periodically, while higher levels are valid for longer (Level 6 is typically not re-tested). The exact intervals are set by GACA under the ICAO framework — confirm your re-test date with GACA."
+          },
+          {
+            "q": "How is aviation English scored?",
+            "a": "Across six skills — pronunciation, structure, vocabulary, fluency, comprehension and interactions — each rated 1–6; your overall proficiency level is the lowest score of the six. Check the current SAELPT scoring with GACA."
+          }
         ]
       },
       "airspace-explained": {
