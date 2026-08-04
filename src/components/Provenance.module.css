@@ -12,11 +12,14 @@
 }
 
 .source {
-  color: var(--brand);
+  /* --link, not --brand: the brand teal is intentionally too low-contrast as
+     text on the night background (fails WCAG AA at this size); --link is the
+     accessible, theme-aware link colour. */
+  color: var(--link);
   text-decoration: none;
   white-space: nowrap;
 }
 .source:hover {
-  color: var(--brand-hover);
+  color: var(--link);
   text-decoration: underline;
 }
