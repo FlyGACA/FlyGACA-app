@@ -148,12 +148,41 @@
   text-transform: capitalize;
 }
 .changedDot {
+  position: relative;
   inline-size: 8px;
   block-size: 8px;
   border-radius: 50%;
   background: var(--gold);
   /* Soft halo so the "changed" marker reads at a glance (box-shadow → no reflow). */
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent);
+}
+/* A slow radar pulse rings out from each changed marker — the page's one focal
+   loop, drawing the eye to what moved since the last visit. Transform/opacity
+   only (no reflow); the static halo above carries the signal on its own. */
+.changedDot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 55%, transparent);
+  animation: updates-pulse 2.4s var(--ease) infinite;
+}
+@keyframes updates-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .changedDot::after {
+    animation: none;
+    display: none;
+  }
 }
 
 .watchHint {

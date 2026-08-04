@@ -16,6 +16,7 @@ import {
   normalizePresets,
   type Preset,
 } from '@/calc/app/toolPresets';
+import { regulationForRoute, regulationLink } from '@/lib/toolRegulations';
 import styles from './CalcShell.module.css';
 
 const PRESETS_KEY = 'flygaca:tool-presets';
@@ -160,6 +161,11 @@ export function CalcShell({
 
   const adelHref = adelPrompt ? adelLink(adelPrompt()) : null;
 
+  // Cross-link the tool to the GACAR Part it operates under, where one is
+  // mapped (src/lib/toolRegulations.ts) — internal link to the cited source.
+  const reg = regulationForRoute(pathname);
+  const regLink = reg ? regulationLink(reg) : null;
+
   return (
     <article className={`container-narrow ${styles.shell} page-enter`}>
       <header className={styles.head}>
@@ -289,6 +295,15 @@ export function CalcShell({
           <summary>{t('calc.howItWorks')}</summary>
           <div className={styles.formulaBody}>{formula}</div>
         </details>
+      )}
+
+      {regLink && (
+        <nav className={styles.regLink} aria-label={t('calc.governingReg')}>
+          <span className={styles.relatedLabel}>{t('calc.governingReg')}</span>
+          <Link to={regLink.to} className={styles.regChip}>
+            {regLink.label}
+          </Link>
+        </nav>
       )}
 
       {related && related.length > 0 && (

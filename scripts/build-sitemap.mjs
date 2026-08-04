@@ -117,12 +117,34 @@ for (const id of livePackIds) urls.set(`/study/packs/${id}`, today);
 // Not indexed by design: chart sheets and study sheets (selected by ?param on a
 // single viewer page, no per-item URL) and the 1,736 definition terms (search-only).
 
-// Priority tiers: home → hubs → reference/guide content → tools → legal → rest.
+// Highest-demand regulatory pages: the Part pages the corpus cross-references
+// the most, from the real inbound-reference counts in regulations-lookup.json
+// (index.referencedBy — how many other Parts cite each Part). Boosting their
+// sitemap priority surfaces the load-bearing Parts to crawlers.
+// Deliberately NOT emitted: per-section #fragment URLs — search engines
+// normalize #fragments away to the base page, so clause-level "demand" is
+// expressed as Part-page priority instead. The signal is thin today (the parser
+// has processed a handful of Parts); it strengthens automatically as
+// content/regulations/*.md grows, with no change here.
+let highDemand = new Set();
+try {
+  const referencedBy = readJson('public/data/regulations-lookup.json').index?.referencedBy ?? {};
+  highDemand = new Set(
+    Object.entries(referencedBy)
+      .filter(([, refs]) => Array.isArray(refs) && refs.length >= 2)
+      .map(([slug]) => `/library/${slug}`),
+  );
+} catch {
+  /* the lookup is optional — absent → no boost, sitemap still builds */
+}
+
+// Priority tiers: home → hubs / top-cited Parts → reference/guide content → tools → legal → rest.
 const HUBS = new Set(['/library', '/tools', '/learn', '/guides', '/study']);
 const LEGAL = new Set(['/disclaimer', '/terms', '/privacy', '/refund', '/safety']);
 function priority(u) {
   if (u === '/') return '1.0';
   if (HUBS.has(u)) return '0.9';
+  if (highDemand.has(u)) return '0.9'; // most cross-referenced Part pages
   if (u.startsWith('/library/') || u.startsWith('/guides/')) return '0.8';
   if (u.startsWith('/tools/')) return '0.7';
   if (LEGAL.has(u)) return '0.3';

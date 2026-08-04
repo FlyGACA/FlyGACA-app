@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next';
+import type { CSSProperties } from 'react';
+import styles from './WindDiagram.module.css';
 
 /** Compact wind-vector diagram: runway aligned to its heading, wind arrow
- *  blowing from the reported direction. Ported from tools-crosswind.js draw(). */
+ *  blowing from the reported direction. Ported from tools-crosswind.js draw().
+ *  The wind arrow is the single focal element — it glides to its new bearing as
+ *  the reported direction changes; the runway stays put as the reference frame. */
 interface WindDiagramProps {
   runwayHeading: number;
   windDir: number;
@@ -31,11 +35,6 @@ export function WindDiagram({
   const xwBad = Math.abs(crosswind) >= 15;
   const stroke = xwBad ? 'var(--danger)' : 'var(--link)';
 
-  const [wx1, wy1] = pt(windDir, R - 6);
-  const [wx2, wy2] = pt(windDir, 34);
-  const head = pt(windDir, 47);
-  const [hxl, hyl] = pt(windDir + 14, 48);
-  const [hxr, hyr] = pt(windDir - 14, 48);
   const [labelX, labelY] = pt(windDir, R);
 
   const ticks = Array.from({ length: 12 }, (_, i) => {
@@ -101,20 +100,21 @@ export function WindDiagram({
           transform={`rotate(${runwayHeading} ${CX} ${CY})`}
         />
       </g>
-      <line
-        x1={wx1}
-        y1={wy1}
-        x2={wx2}
-        y2={wy2}
-        stroke={stroke}
-        strokeWidth={3}
-        strokeLinecap="round"
-      />
-      <polygon
-        points={`${head[0]},${head[1]} ${hxl},${hyl} ${hxr},${hyr}`}
-        fill={stroke}
-        transform={`rotate(180 ${head[0]} ${head[1]})`}
-      />
+      <g className={styles.wind} style={{ '--dir': `${windDir}deg` } as CSSProperties}>
+        <line
+          x1={CX}
+          y1={CY - (R - 6)}
+          x2={CX}
+          y2={CY - 34}
+          stroke={stroke}
+          strokeWidth={3}
+          strokeLinecap="round"
+        />
+        <polygon
+          points={`${CX},${CY - 30} ${CX - 6},${CY - 44} ${CX + 6},${CY - 44}`}
+          fill={stroke}
+        />
+      </g>
       <text
         x={labelX}
         y={labelY - 6}

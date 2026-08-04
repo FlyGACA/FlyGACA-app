@@ -7,6 +7,8 @@ import { sanitizeHtml, tocFromHtml, useFetchText } from '@/hooks/useFetchText';
 import { CORPUS } from '@/lib/content';
 import type { CorpusIndex, LibraryKind } from '@/lib/content';
 import { docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
+import { gacarSectionAnchor } from '@/calc/library/anchor';
+import { toolsForPartSlug } from '@/lib/toolRegulations';
 import { adelLink } from '@/lib/adel';
 import { loadSaved, removeDoc, saveDoc } from '@/lib/native/offlineCache';
 import { shareCurrent } from '@/lib/share';
@@ -232,21 +234,37 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     return () => obs.disconnect();
   }, [html]);
 
-  // Decorate each heading with a trailing copy-link anchor (added to sanitized DOM).
+  // Decorate each heading with a clean clause anchor + a trailing copy-link
+  // affordance (added to the sanitized DOM). The clean `sec-<part>-<n>` anchor
+  // is derived from the "§ P.n" in the heading text so every section gets a
+  // predictable, shareable citation deep link, even where the corpus heading id
+  // is OCR-noisy; the copy-link prefers it.
   useEffect(() => {
     const root = contentRef.current;
     if (!root || !html) return;
     const heads = root.querySelectorAll<HTMLElement>('h2[id],h3[id]');
     heads.forEach((h) => {
+      const clean = gacarSectionAnchor(h.textContent ?? '');
+      if (clean && h.id !== clean && !root.querySelector(`[id="${clean}"]`)) {
+        const target = document.createElement('span');
+        target.id = clean;
+        target.className = styles.anchorTarget;
+        target.setAttribute('aria-hidden', 'true');
+        h.prepend(target);
+      }
       if (h.querySelector(`.${styles.anchor}`)) return;
       const a = document.createElement('button');
       a.type = 'button';
       a.className = styles.anchor;
       a.textContent = '#';
       a.setAttribute('aria-label', t('document.copyLink'));
-      a.addEventListener('click', () => copyLink(h.id));
+      a.addEventListener('click', () => copyLink(clean ?? h.id));
       h.appendChild(a);
     });
+    // The load-time hash-scroll ran before these ids existed; honor a hash that
+    // points at a freshly-injected clean anchor.
+    const id = hash.replace(/^#/, '');
+    if (id) document.getElementById(id)?.scrollIntoView();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [html, copyLink]);
 
@@ -302,6 +320,9 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
 
   const { prev, next } = docNeighbors(docs, slug);
   const related = relatedDocs(docs, slug);
+  // Reciprocal of the tools' "governing regulation" link: the flight tools that
+  // operate under this Part (regulations corpus only).
+  const partTools = kind === 'regulations' ? toolsForPartSlug(slug) : [];
   const adel = doc ? adelLink(t('document.adelPrompt', { title: doc.title })) : null;
 
   // "Save for offline": warm the SW data cache with this doc's HTML + its index.
@@ -470,6 +491,19 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
                 ))}
               </ul>
             </section>
+          )}
+
+          {partTools.length > 0 && (
+            <nav className={styles.toolLinks} aria-label={t('document.relatedTools')}>
+              <span className={styles.toolLinksLabel}>{t('document.relatedTools')}</span>
+              <div className={styles.toolChips}>
+                {partTools.map((r) => (
+                  <Link key={r.toolId} to={`/tools/${r.toolId}`} className={styles.toolChip}>
+                    {t(`tools.items.${r.toolId}.name`)}
+                  </Link>
+                ))}
+              </div>
+            </nav>
           )}
 
           <nav className={styles.prevNext} aria-label={t('library.title')}>

@@ -882,6 +882,7 @@
     "askAdel": "Ask Captain Adel about this",
     "adelPrompt": "Explain {{title}} in simple terms and cite the exact GACAR Part and section.",
     "related": "Related documents",
+    "relatedTools": "Flight tools for this Part",
     "prev": "Previous",
     "next": "Next",
     "annotate": "Annotate",
@@ -947,6 +948,17 @@
     "radius": "Turn radius",
     "rule": "Rule of thumb",
     "formula": "A rate-one turn is 3°/s. Bank = atan(V × 0.0524 ÷ g); radius = V ÷ 0.0524. Rule of thumb: bank ≈ TAS/10 + 7."
+  },
+  "turnCircle": {
+    "label": "Turn circle: {{bank}}° bank, {{radius}} NM radius"
+  },
+  "runwayBar": {
+    "required": "Required",
+    "available": "Available",
+    "aria": "Runway margin: {{required}} m required of {{available}} m available"
+  },
+  "compassRose": {
+    "aria": "Compass rose: wind {{dir}}° at {{spd}} kt against each runway"
   },
   "windTable": {
     "windDir": "Wind direction (°)",
@@ -3571,6 +3583,7 @@
     "shareNote": "The link carries your inputs, share it and the tool opens pre-filled.",
     "howItWorks": "How it works",
     "related": "Related tools",
+    "governingReg": "Governing regulation",
     "savePreset": "Save preset",
     "presets": "Saved presets",
     "presetName": "Preset name",
