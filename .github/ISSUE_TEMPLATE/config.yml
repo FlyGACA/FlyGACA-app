@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/FlyGACA/FlyGACA-app/security/policy
+    about: Please report vulnerabilities privately per our Security Policy — do not open a public issue.
+  - name: 💬 Questions & general help
+    url: https://flygaca.com
+    about: For usage questions or feedback, email i@flygaca.com or visit flygaca.com.
+  - name: ⚠️ Regulatory accuracy — verify against GACA
+    url: https://gaca.gov.sa
+    about: Fly GACA is independent and not affiliated with GACA. GACA is always the authoritative source.
