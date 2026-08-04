@@ -936,6 +936,7 @@
     "filterToc": "تصفية المحتويات",
     "verifyAtGaca": "اقرأ لوائح GACAR الرسمية على gaca.gov.sa",
     "verifyLine": "مُعاد إنتاجه للدراسة. تحقّق دائمًا من لوائح GACAR الرسمية على gaca.gov.sa.",
+    "updated": "محدّث في {{date}}",
     "sections": "أقسام",
     "findPlaceholder": "ابحث في هذا المستند…",
     "findCount": "{{n}}/{{total}}",
