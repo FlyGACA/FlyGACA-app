@@ -51,6 +51,6 @@ describe('hero stats stay truthful', () => {
   });
 
   it('live guide count matches the Learn hub figure', () => {
-    expect(LIVE_GUIDE_SLUGS.length).toBe(21);
+    expect(LIVE_GUIDE_SLUGS.length).toBe(22);
   });
 });

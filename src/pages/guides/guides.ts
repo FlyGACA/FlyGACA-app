@@ -21,6 +21,7 @@ export const GUIDE_SLUGS = [
   'decoding-notams',
   'the-airac-cycle',
   'pilot-currency-and-recency',
+  'vfr-weather-minimums',
 ] as const;
 
 export type GuideSlug = (typeof GUIDE_SLUGS)[number];
@@ -52,6 +53,7 @@ export const GUIDE_TOPICS: GuideTopic[] = [
 
 /** Per-guide classification — structure only; labels are localized in i18n. */
 export const GUIDE_META: Record<GuideSlug, { topic: GuideTopic; level: GuideLevel }> = {
+  'vfr-weather-minimums': { topic: 'operations', level: 'intermediate' },
   'pilot-currency-and-recency': { topic: 'operations', level: 'intermediate' },
   'how-to-become-a-pilot-in-saudi-arabia': { topic: 'licensing', level: 'beginner' },
   'gacar-explained': { topic: 'regulation', level: 'beginner' },
@@ -85,6 +87,7 @@ export type GuideStatus = 'draft' | 'live';
  * `scripts/new-guide.mjs` seeds every new guide as 'draft'.
  */
 export const GUIDE_STATUS: Record<GuideSlug, GuideStatus> = {
+  'vfr-weather-minimums': 'live',
   'pilot-currency-and-recency': 'live',
   'how-to-become-a-pilot-in-saudi-arabia': 'live',
   'gacar-explained': 'live',
@@ -120,6 +123,7 @@ export { sectionId } from '@/calc/library/anchor';
 
 /** Related tool routes per guide (label comes from the tool's i18n name). */
 export const GUIDE_TOOLS: Record<string, string[]> = {
+  'vfr-weather-minimums': ['/tools/vfr-minima', '/tools/airspace'],
   'pilot-currency-and-recency': ['/tools/part61-currency', '/tools/flight-review'],
   'how-to-become-a-pilot-in-saudi-arabia': ['/tools/medical-validity', '/tools/part61-currency'],
   'gaca-medical-class-1': ['/tools/medical-validity'],
@@ -161,6 +165,7 @@ export const TOOL_NAME_KEY: Record<string, string> = {
 
 /** GACAR library doc slugs each guide cites (see public/data/gacar-index.json). */
 export const GUIDE_REGS: Record<string, string[]> = {
+  'vfr-weather-minimums': ['part-91', 'part-71'],
   'pilot-currency-and-recency': ['part-61', 'part-91'],
   'how-to-become-a-pilot-in-saudi-arabia': ['part-61', 'part-67'],
   'gacar-explained': ['part-1', 'part-61', 'part-91'],
@@ -189,6 +194,7 @@ export const partNumber = (slug: string): string => slug.replace(/^part-/, '');
 
 /** Guide → quiz bank id (quiz.json) for the "Test yourself" cross-link. */
 export const GUIDE_QUIZ: Record<string, string> = {
+  'vfr-weather-minimums': 'airspace',
   'pilot-currency-and-recency': 'pilot-licensing',
   'how-to-become-a-pilot-in-saudi-arabia': 'pilot-licensing',
   'gacar-explained': 'air-law',
