@@ -200,6 +200,29 @@ export function courseLd(a: ArticleInput): JsonLd {
   };
 }
 
+/**
+ * AboutPage — for the /about page. A schema.org `AboutPage` (a WebPage subtype)
+ * whose `mainEntity` is the site's Organization: it tells crawlers the page is
+ * *about* Fly GACA the publisher, strengthening the entity/authorship signal
+ * that AI answer engines weigh when deciding whom to cite. The Organization is
+ * referenced by its stable `@id` (emitted in full by `organizationLd()` on the
+ * same page), so the two nodes merge into one entity.
+ */
+export function aboutPageLd(a: ArticleInput): JsonLd {
+  const url = canonicalUrl(a.path);
+  return {
+    '@context': CONTEXT,
+    '@type': 'AboutPage',
+    name: a.title,
+    ...(a.description ? { description: a.description } : {}),
+    url,
+    inLanguage: a.lang ?? 'en',
+    isPartOf: { '@id': SITE_ID },
+    mainEntity: { '@id': ORG_ID },
+    publisher: orgNode(),
+  };
+}
+
 export interface QA {
   q: string;
   a: string;

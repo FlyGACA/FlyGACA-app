@@ -10,7 +10,7 @@ import { Stepper } from '@/components/Stepper';
 import { BentoGrid } from '@/components/bento/BentoGrid';
 import { BentoCard, type BentoTone } from '@/components/bento/BentoCard';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { articleLd, breadcrumbLd, faqLd, organizationLd } from '@/lib/seo/jsonld';
+import { aboutPageLd, breadcrumbLd, faqLd, organizationLd } from '@/lib/seo/jsonld';
 import styles from './About.module.css';
 
 interface Section {
@@ -44,9 +44,11 @@ export function About() {
   const features = t('about.features.items', { returnObjects: true }) as unknown as Section[];
   const faqs = t('about.faq', { returnObjects: true }) as unknown as Faq[];
 
+  const corrections = t('about.corrections.body', { returnObjects: true }) as unknown as string[];
+
   usePageMeta(t('meta.about'), t('metaDesc.about'), [
     organizationLd(),
-    articleLd({
+    aboutPageLd({
       title: t('about.title'),
       description: t('metaDesc.about'),
       path: '/about',
@@ -149,6 +151,30 @@ export function About() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Corrections & sourcing — the editorial-process / E-E-A-T signal. The
+          not-affiliated / verify-against-GACA line stays in <Disclaimer/> below;
+          this section covers how we source the corpus and how to report an error. */}
+      <section className={styles.block} aria-labelledby="about-corrections">
+        <SectionHeader
+          id="about-corrections"
+          title={t('about.corrections.head')}
+          tone="var(--cat-1)"
+        />
+        <div className={styles.corrections}>
+          {corrections.map((p, i) => (
+            <p key={i} className={styles.correctionsBody}>
+              {p}
+            </p>
+          ))}
+          <a
+            className={`btn ${styles.correctionsCta}`}
+            href="mailto:i@flygaca.com?subject=Fly%20GACA%20correction"
+          >
+            {t('about.corrections.reportCta')}
+          </a>
+        </div>
       </section>
 
       <Disclaimer />
