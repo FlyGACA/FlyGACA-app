@@ -3707,6 +3707,15 @@
       }
     ],
     "contactTitle": "Contact",
+    "corrections": {
+      "head": "Corrections & sourcing",
+      "body": [
+        "The regulations, charts and handbooks in the library are reproduced from the official Saudi civil-aviation sources — chiefly the GACAR and the Saudi AIP. We machine-extract, index and cross-reference the published text; we do not author, interpret or amend it.",
+        "We track the source documents and surface changes in the updates feed, but ingestion can lag an official revision. Treat a section's date as when we captured it, not a guarantee that it is the latest version.",
+        "Found an error, a stale section, or a mismatch with the official text? Tell us and we'll fix it — corrections are reviewed and, where confirmed, corrected in the corpus."
+      ],
+      "reportCta": "Report a correction"
+    },
     "stats": [
       {
         "value": "74",

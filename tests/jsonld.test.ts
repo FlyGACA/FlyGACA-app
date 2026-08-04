@@ -3,6 +3,7 @@ import { SITE_ORIGIN } from '@/lib/seo/seo';
 import {
   ORG_ID,
   SITE_ID,
+  aboutPageLd,
   airportLd,
   articleLd,
   breadcrumbLd,
@@ -116,6 +117,22 @@ describe('course + faq + software', () => {
     expect(ld.isAccessibleForFree).toBe(true);
     expect(ld.offers).toEqual({ '@type': 'Offer', price: '0', priceCurrency: 'SAR' });
     expect(ld.url).toBe(`${SITE_ORIGIN}/tools/crosswind`);
+  });
+});
+
+describe('aboutPageLd', () => {
+  it('is an AboutPage whose mainEntity is the Organization', () => {
+    const ld = aboutPageLd({
+      title: 'About Fly GACA',
+      description: 'Independent educational library.',
+      path: '/about',
+      lang: 'en',
+    });
+    expect(ld['@type']).toBe('AboutPage');
+    expect(ld.url).toBe(`${SITE_ORIGIN}/about`);
+    expect(ld.mainEntity).toEqual({ '@id': ORG_ID });
+    expect(ld.isPartOf).toEqual({ '@id': SITE_ID });
+    expect(ld.publisher).toMatchObject({ '@type': 'Organization', '@id': ORG_ID });
   });
 });
 
