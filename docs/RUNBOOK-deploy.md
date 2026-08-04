@@ -4,7 +4,8 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 
 - **Firebase Hosting** is the **canonical/production** front (decided 2026-07-06, closing
   SEO-PLAN P0.a): the `/api/chat` and `/api/feedback` Cloud Functions (the Captain Adel gateway,
-  region `me-central1` — must match `functions/src/region.ts` and the `firebase.json` rewrites) are
+  region `me-central2` in the repo — must match `functions/src/region.ts` and the `firebase.json`
+  rewrites; **the deployed functions are still `me-central1`**, see the cutover section below) are
   co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
   `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The `flygaca.com` DNS
   cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed 2026-07-31: the apex and
@@ -30,36 +31,99 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 > `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing their DNS records
 > at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
 
-## Planned: region cutover `me-central1` → `me-central2` (in-Kingdom / PDPL)
+> **Incident note (2026-08-04):** a second accidental `firebase init` (same class as `c1897f0`
+> above) scaffolded over the backend in the working tree — `functions/src/index.ts` was reduced to
+> the stock template (**every** export gone, i.e. an empty deploy manifest), `functions/package.json`
+> lost genkit/express/helmet and downgraded `firebase-admin`, `tsconfig.json` lost `skipLibCheck`,
+> `dataconnect/schema.gql` + `dataconnect.yaml` were replaced, and `firebase.json` gained a duplicate
+> `apphosting` backend. Caught before any deploy and reverted from git (nothing was committed). Had
+> it deployed, `--only functions` would have read the empty manifest as "delete every live
+> function". **Before running `firebase init` in this repo, commit or stash first, then read the
+> diff** — `init` overwrites existing config without asking.
 
-The Functions deploy to **`me-central1`** (Doha, Qatar). For the PDPL the in-Kingdom region is
-**`me-central2`** (Dammam) — also where Firestore already lives (`firestore.location` in
-`firebase.json`), so co-locating the Functions there is the goal. This is **not a repo-only edit**:
-the Hosting deploy validates the `/api/*` rewrites against the *live* Functions and refuses to
-finalize a version whose rewrite points at a region where the function doesn't exist
-(`Error: Unable to find a valid endpoint for function … present but in the wrong region`). So the
-config flip is the **last** step, run only after the Functions already exist in `me-central2`.
-Order:
+## Region cutover `me-central1` → `me-central2` (in-Kingdom / PDPL) — IN PROGRESS
 
-1. **Pre-check availability** — confirm Cloud Functions (2nd gen / Cloud Run) is enabled for
-   `me-central2` on the `flygaca-app` project by deploying one function there as a canary. This is
-   the "pending Google access grant" item — don't start until it succeeds.
-2. **Deploy the Functions to `me-central2` first** — creates the `me-central2` functions (the
-   `me-central1` ones stay live for now). Verify the secrets (`GOOGLE_GENAI_API_KEY`, `MOYASAR_*`, …)
-   bind in the new region. Note: the live Functions currently lag `main` (Stripe/RevenueCat-era
-   names are still deployed) — bring prod current in the same deploy.
-3. **Flip the repo config** (a small, reviewable PR): `REGION` in `functions/src/region.ts`, the
-   three `/api/*` rewrites in `firebase.json`, and `FUNCTIONS_REGION` in
-   `src/lib/services/firebase.ts` → `me-central2` (the `functions/tests/region.test.ts` drift-guard
-   enforces the rewrite↔`REGION` match; the pinned `billing.test.ts` region assertion moves too).
-   Deploy hosting so the frontend ships `FUNCTIONS_REGION=me-central2` and the rewrites resolve.
-4. **Smoke-test in prod** — `/api/chat`, `/api/feedback`, `/api/moyasar-webhook`, and a callable
-   (checkout) must all resolve.
-5. **Delete the stranded region** — `firebase functions:delete <name> --region me-central1` for each.
-6. **Update the PDPL copy** — `src/i18n/{en,ar}.json` says chat is processed in `me-central1`; update
-   it to in-Kingdom (`me-central2`), reconciling with legal that the gateway being in-Kingdom is
-   distinct from where the Gemini model call itself runs (see `Captain-Adel`'s in-Kingdom-model note)
-   — don't overclaim.
+For the PDPL the in-Kingdom region is **`me-central2`** (Dammam) — where Firestore already lives
+(`firestore.location` in `firebase.json`) — so co-locating the Functions there is the goal.
+
+**Repo status: done.** Commit `3007ae1` (2026-08-03) flipped all three pinned values —
+`functions/src/region.ts`, the three `/api/*` rewrites in `firebase.json`, and `FUNCTIONS_REGION` in
+`src/lib/services/firebase.ts`. The `functions/tests/region.test.ts` drift-guard passes.
+
+**Production status: not started.** Verified against `flygaca-app` on 2026-08-04:
+
+| Live function                                 | Region        | In repo at `main`?                      |
+| --------------------------------------------- | ------------- | --------------------------------------- |
+| `chat`                                        | `me-central1` | yes — needs moving                      |
+| `createCheckoutSession`                       | `me-central1` | no — replaced by `createCheckoutConfig` |
+| `stripeWebhook`                               | `me-central1` | no — Stripe replaced by Moyasar         |
+| `revenuecatWebhook`, `linkRevenueCatIdentity` | `me-central1` | no — RevenueCat dropped                 |
+| `grantSchoolLicence`, `revokeSchoolLicence`   | `me-central1` | no — replaced by `claimSchoolSeat`      |
+| `protectedContent`                            | `me-central1` | no                                      |
+| `ext-firestore-*` (4)                         | `us-central1` | Firebase Extensions, unrelated          |
+
+So this is **not only a region move**. Production is a full generation behind `main`: `moyasarWebhook`
+and every other current export (`confirmPayment`, `cancelAutoRenew`, `getReferralCode`,
+`renewMoyasarSubscriptions`, `claimStaffAccess`, `claimSchoolSeat`, `claimFoundingAccess`,
+`getMyOrgs`, `getCohortReadiness`, `provisionSeats`) **has never been deployed**. The first deploy is
+simultaneously a region cutover _and_ the Stripe/RevenueCat → Moyasar billing migration. Treat the
+billing half as the risky half.
+
+Sequencing constraint: the Hosting deploy validates the `/api/*` rewrites against the _live_
+Functions and refuses to finalize a version whose rewrite points at a region where the function
+doesn't exist (`Error: Unable to find a valid endpoint for function … present but in the wrong
+region`). **Functions must exist in `me-central2` before hosting is deployed.**
+
+### Blocker: the required secrets do not exist
+
+Checked 2026-08-04 — all three return 404 on `flygaca-app`. The deploy will fail without them:
+
+```bash
+npx firebase functions:secrets:set GOOGLE_GENAI_API_KEY  --project flygaca-app  # chat gateway
+npx firebase functions:secrets:set MOYASAR_SECRET_KEY    --project flygaca-app  # billing callables
+npx firebase functions:secrets:set MOYASAR_WEBHOOK_SECRET --project flygaca-app # moyasarWebhook
+npx firebase functions:secrets:access GOOGLE_GENAI_API_KEY --project flygaca-app  # verify
+```
+
+(The live `chat` predates this code and sources its key some other way — don't assume it carries
+over.)
+
+### Order
+
+1. **Pre-check `me-central2` availability** — confirm Cloud Functions 2nd gen / Cloud Run is enabled
+   for `me-central2` on `flygaca-app` by deploying a single function there as a canary. Don't start
+   until it succeeds.
+2. **Set the three secrets** (above). Verify each reads back.
+3. **Deploy the Functions** — `npm run deploy:functions`. This creates the full current export set in
+   `me-central2`; the eight `me-central1` functions stay live and untouched. Confirm the secrets bind
+   in the new region (`firebase functions:log`), and that `renewMoyasarSubscriptions`' schedule
+   registered.
+4. **Register the Moyasar webhook** — point it at `https://flygaca.com/api/moyasar-webhook` in the
+   Moyasar dashboard and confirm the signing secret matches `MOYASAR_WEBHOOK_SECRET`. Until this is
+   done, payment confirmations drop silently: the charge succeeds, the entitlement never gets
+   written. Do this **before** the app starts sending users to Moyasar checkout.
+5. **Deploy hosting** — `npm run deploy` (build → prerender → coverage check → hosting). The rewrites
+   now resolve, and the frontend ships `FUNCTIONS_REGION=me-central2` so callables land in the new
+   region.
+6. **Smoke-test in prod** — `/api/chat` (streamed answer + citation), `/api/feedback`, a callable
+   (`createCheckoutConfig`), and a Moyasar test charge end-to-end through to the `entitlement` write.
+7. **Retire the old generation** — only once step 6 is clean:
+   ```bash
+   for fn in chat createCheckoutSession stripeWebhook revenuecatWebhook \
+             linkRevenueCatIdentity grantSchoolLicence revokeSchoolLicence protectedContent; do
+     npx firebase functions:delete "$fn" --region me-central1 --project flygaca-app
+   done
+   ```
+   **Check for live Stripe/RevenueCat subscribers first.** Deleting those webhooks ends renewal
+   processing for anyone still on them — that's a billing migration decision, not a cleanup step.
+   `chat` is the only one of the eight that is purely a region move.
+8. **Update the PDPL copy** — `src/i18n/{en,ar}.json` (key at `…privacy…`, currently "Chat questions
+   are processed in a nearby Google Cloud region (me-central1)") → in-Kingdom `me-central2`.
+   Reconcile with legal that the _gateway_ being in-Kingdom is distinct from where the Gemini model
+   call itself runs (see `Captain-Adel`'s in-Kingdom-model note) — don't overclaim. Both bundles, or
+   `tests/i18n-parity.test.ts` fails.
+9. **Update the docs** — flip this section to done, and correct `CLAUDE.md` (which still describes the
+   deploy region as `me-central1`).
 
 ## Build env vars (set in each platform's build settings)
 

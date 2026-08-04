@@ -61,6 +61,38 @@ Then check:
 
 Stripe/RevenueCat billing is Batch 3c (`src/lib/billing.ts`).
 
+## Remote Config (operational kill-switches)
+
+`src/lib/services/remoteConfig.ts` reads a small, closed set of typed flags from the published
+Remote Config template. They are **availability switches, not entitlements** — never gate paid
+access on one; that stays with `features.ts` + the gateway.
+
+Every flag defaults to "the app works normally", so an unconfigured build, a blocked fetch, an
+offline load, the emulator (Remote Config has none) and the test suite all behave as if Remote
+Config didn't exist. Fetching is lazy — the first `useRemoteFlag()` read starts it, so pages that
+use no flag pay nothing. `realtime` is on by default, so a flipped switch reaches already-open tabs
+without a reload.
+
+The published template is version-controlled in `remoteconfig.template.json`.
+
+```bash
+# Flip a switch: edit remoteconfig.template.json, then publish it.
+npm run deploy:remoteconfig
+
+# Pull the live template back (e.g. after a console edit) so the repo isn't stale.
+npm run remoteconfig:get
+
+# Audit what shipped.
+npx firebase remoteconfig:versions:list
+```
+
+Publishing is deliberately **not** part of `npm run deploy` / `deploy:all` — a routine app deploy
+must never silently re-publish the template and revert a kill-switch someone flipped in the console
+during an incident. Flip in the console for speed, then reconcile the repo with `remoteconfig:get`.
+
+Adding a flag: add it to `REMOTE_FLAG_DEFAULTS` with the value that means "normal", add the matching
+parameter to `remoteconfig.template.json`, and read it with `useRemoteFlag('my_flag')`.
+
 ## Authorizing a domain (preview deploys & new hosts)
 
 Sign-in (Google popup **and** email/password) fails on any origin the Firebase project doesn't

@@ -17,6 +17,7 @@ import type { AppCheck } from 'firebase/app-check';
 import type { Auth } from 'firebase/auth';
 import type { Firestore } from 'firebase/firestore';
 import type { Functions } from 'firebase/functions';
+import type { RemoteConfig } from 'firebase/remote-config';
 
 const env = import.meta.env;
 
@@ -166,6 +167,41 @@ export function getFns(): Promise<Functions | null> {
     return fns;
   })();
   return fnsPromise;
+}
+
+let remoteConfigPromise: Promise<RemoteConfig | null> | null = null;
+/**
+ * Lazy Remote Config client — resolves to `null` unless config is present, we're
+ * in a real browser, and the SDK reports Remote Config is supported (so SSR,
+ * tests and unsupported native webviews all no-op and callers fall back to their
+ * in-app defaults).
+ *
+ * Remote Config has **no emulator**, so an emulator session deliberately gets
+ * `null` rather than reading the live production template — same call as
+ * analytics. Flags then resolve to their defaults, which is the safe baseline.
+ *
+ * Fetches are cached by the SDK for 12h in production; dev drops that to a
+ * minute so a template change is visible without clearing storage.
+ * `src/lib/services/remoteConfig.ts` is the only intended caller — read flags
+ * through `useRemoteFlag`, not this accessor.
+ */
+export function getRemoteConfigClient(): Promise<RemoteConfig | null> {
+  if (!isFirebaseConfigured()) return Promise.resolve(null);
+  if (typeof window === 'undefined') return Promise.resolve(null);
+  remoteConfigPromise ??= (async () => {
+    if (useEmulator()) return null;
+    const app = await getApp();
+    if (!app) return null;
+    const { getRemoteConfig, isSupported } = await import('firebase/remote-config');
+    if (!(await isSupported())) return null;
+    const rc = getRemoteConfig(app);
+    rc.settings.minimumFetchIntervalMillis = import.meta.env.DEV ? 60_000 : 12 * 60 * 60 * 1000;
+    // Flags are never on the critical path — time a hung fetch out well before
+    // the SDK's one-minute default rather than holding the connection open.
+    rc.settings.fetchTimeoutMillis = 10_000;
+    return rc;
+  })();
+  return remoteConfigPromise;
 }
 
 let analyticsPromise: Promise<Analytics | null> | null = null;

@@ -44,10 +44,13 @@ daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authe
 org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/src/index.ts` is the
 single deploy manifest — only triggers exported there are deployed. It is its own npm package with
 its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
-it (root `npm run verify` does not cover it). Deploy region is `me-central1`
-(`functions/src/region.ts`; firebase.json's rewrite regions must match — `functions/tests/region.test.ts`
-guards that pairing). A cutover to `me-central2` (in-Kingdom / PDPL) is planned but **not done** —
-the runbook lives in `docs/RUNBOOK-deploy.md`; Firestore already sits in `me-central2`.
+it (root `npm run verify` does not cover it). Deploy region is `me-central2` (in-Kingdom / PDPL,
+co-located with Firestore — `functions/src/region.ts`; firebase.json's rewrite regions must match —
+`functions/tests/region.test.ts` guards that pairing). **The deployed functions are still
+`me-central1` and a full generation behind `main`** (Stripe/RevenueCat-era names; `moyasarWebhook`
+and every current export have never been deployed) — the first deploy is both the region cutover and
+the Moyasar billing migration, and it is blocked on three unset secrets. See the ordered runbook in
+`docs/RUNBOOK-deploy.md`.
 
 ## Architecture
 
@@ -103,8 +106,8 @@ the runbook lives in `docs/RUNBOOK-deploy.md`; Firestore already sits in `me-cen
   `FieldGrid`).
 - **Services:** `src/lib/` holds the typed frontend services, grouped by concern:
   `src/lib/services/` (Firebase/account: `firebase`, `auth`, `account`, `sync`, `org`, `staff`,
-  `school`, `founding`, `entitlements`, `packEntitlements`, `features`, `billing`, `promo`,
-  `pricing`, `referral`, `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference
+  `school`, `founding`, `entitlements`, `packEntitlements`, `features`, `remoteConfig`, `billing`,
+  `promo`, `pricing`, `referral`, `waitlist`, `studyProgressSync`), `src/lib/prefs/` (localStorage preference
   stores — all built on the `createPrefStore` factory, which owns the listener/snapshot plumbing and
   the best-effort storage helpers; never hand-roll another `useSyncExternalStore` store here),
   `src/lib/seo/` (`seo`, `jsonld`), `src/lib/native/` (`nativeBridge`, `pwa`, `offlineCache`),
@@ -117,7 +120,13 @@ the runbook lives in `docs/RUNBOOK-deploy.md`; Firestore already sits in `me-cen
   predicate mirroring `functions/src/billing-core.ts`, and `features.ts` (`FEATURE_PLAN` /
   `useFeature`) is the single source of truth for which plan unlocks which premium feature — but the
   `entitlement` record is **server-only**; the app reads it only to gate UI, never to grant, and true
-  enforcement stays in the gateway. Exam-prep packs are gated by `packEntitlements.ts` (a
+  enforcement stays in the gateway. `remoteConfig.ts` (`useRemoteFlag`) is the separate,
+  **non-entitlement** channel: Firebase Remote Config kill-switches for whether a surface is
+  available at all right now (backend degraded, payment provider down). Every flag defaults to
+  "works normally", so an unconfigured/offline/test build behaves as if it weren't there; the
+  published template is version-controlled in `remoteconfig.template.json` and shipped separately
+  via `npm run deploy:remoteconfig` (see `docs/RUNBOOK-firebase.md`). Never gate paid access on a
+  flag. Exam-prep packs are gated by `packEntitlements.ts` (a
   promo-immune gate: a pack unlocks on permanent one-time ownership in `packEntitlements/{uid}` OR an
   active paid plan); their structure lives in `prepCatalog.ts` (names/blurbs localized under
   `study.packCatalog.<id>`, same structure-in-TS pattern as `tools.ts`).
@@ -175,7 +184,7 @@ Cloud Functions gateway for `/api/*`:
   in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 
 See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
-cutover and the planned `me-central1` → `me-central2` functions cutover) and `docs/DATA-HOSTING.md`
+cutover and the in-progress `me-central1` → `me-central2` functions cutover) and `docs/DATA-HOSTING.md`
 for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
 `supabase/migrations/` (pgvector for RAG embeddings) hold the datastore schemas.
 

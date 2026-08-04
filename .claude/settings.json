@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(JSON.stringify\\({dependencies:p.dependencies,devDependencies:p.devDependencies},null,2\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/firebase/package.json'\\).version\\)\")",
+      "Bash(node -e \"const s=require\\('./package.json'\\).scripts;for\\(const k of Object.keys\\(s\\)\\)if\\(/deploy|test|lint/.test\\(k\\)\\)console.log\\(k,'=',s[k]\\)\")",
+      "Bash(node -e \"console.log\\(Object.keys\\(require\\('./firebase.json'\\)\\)\\)\")",
+      "Bash(npx vitest *)",
+      "Bash(npm run *)",
+      "Bash(npx eslint *)",
+      "Bash(npx prettier *)",
+      "mcp__firebase__firebase_get_environment",
+      "mcp__firebase__functions_list_functions",
+      "Bash(rm -f src/genkit-sample.ts)",
+      "Bash(npm ci *)",
+      "Bash(npm test *)",
+      "Bash(echo \"\\(exit $?\\)\")",
+      "Bash(npx --yes firebase-tools@15 functions:secrets:access)",
+      "Bash(gcloud secrets *)",
+      "Bash(timeout 120 npx --yes firebase-tools@15 functions:secrets:get GOOGLE_GENAI_API_KEY --project flygaca-app)",
+      "Bash(timeout 120 npx --yes firebase-tools@15 functions:secrets:get MOYASAR_SECRET_KEY --project flygaca-app)",
+      "Bash(timeout 120 npx --yes firebase-tools@15 functions:secrets:get MOYASAR_WEBHOOK_SECRET --project flygaca-app)",
+      "Bash(git checkout *)",
+      "Bash(node -e \"const c=require\\('./firebase.json'\\); console.log\\('apphosting entries:', c.apphosting.length, '| remoteconfig:', JSON.stringify\\(c.remoteconfig\\)\\)\")",
+      "Bash(git check-ignore *)",
+      "Bash(grep -n \"planned \\\\`me-central1\\\\`\" CLAUDE.md)",
+      "Bash(timeout 120 npx --yes firebase-tools@15 functions:config:get --project flygaca-app)",
+      "Bash(timeout 120 npx --yes firebase-tools@15 functions:secrets:get GEMINI_API_KEY --project flygaca-app)",
+      "Bash(timeout 900 npx --yes firebase-tools@15 deploy --only functions:chat --project flygaca-app --non-interactive)"
+    ]
+  }
+}

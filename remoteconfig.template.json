@@ -1,1 +1,27 @@
-{}
+{
+  "conditions": [],
+  "parameters": {
+    "chat_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Kill-switch: Captain Adel chat accepts questions. Set false during a RAG/gateway incident.",
+      "valueType": "BOOLEAN"
+    },
+    "checkout_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Kill-switch: Moyasar checkout is open. Set false during a payment-provider incident.",
+      "valueType": "BOOLEAN"
+    },
+    "offline_downloads_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Kill-switch: offline document/AIP downloads are offered. Set false during corpus-bucket trouble.",
+      "valueType": "BOOLEAN"
+    }
+  },
+  "parameterGroups": {}
+}
