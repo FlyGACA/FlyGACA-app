@@ -445,7 +445,6 @@ FlyGACA-app/
 │   └── router.tsx       single route table (all lazy except Home)
 ├── tests/               Vitest unit + i18n-parity
 ├── scripts/             build-sitemap.mjs, prerender-head.mjs, build-og-images.mjs
-├── archive/             parked non-app material (see archive/README.md)
 ├── firebase.json        hosting + CSP headers
 ├── vite.config.ts       Vite + PWA config
 └── CLAUDE.md            primary AI collaboration guidelines

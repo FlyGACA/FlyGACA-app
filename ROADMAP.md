@@ -101,7 +101,9 @@ The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/
 mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
-  price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+  price IDs — and deploy `firestore.rules`. See `docs/BILLING.md` (the completed cutover runbook now
+  lives in the `flygaca/office` repo; recover the original with
+  `git show <pre-2026-08-04>:archive/docs/RUNBOOK-cutover.md`).
 - **[platform]** **Close the backend money-path test gap.** `functions/src/founding.ts` (the
   entitlement-granting `claimFoundingAccess` callable) has zero test coverage, and half of
   `functions/src/billing.ts` — `confirmPayment`, `cancelAutoRenew`, and the scheduled auto-renewal charge loop —
@@ -121,8 +123,9 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
   now renders in **Readex Pro** (the Cairo→Readex swap shipped); only the PNG re-render remains — it
-  needs Google Fonts (`fonts.gstatic.com`) network access:
-  `node archive/scripts/scripts/build-og-card.mjs`.
+  needs Google Fonts (`fonts.gstatic.com`) network access. The `build-og-card.mjs` renderer was
+  removed with `archive/` on 2026-08-04 — restore it into `scripts/` before running this
+  (`git show <pre-2026-08-04>:archive/scripts/scripts/build-og-card.mjs`).
 - **[platform]** **Re-enable and enforce CI.** The GitHub Actions **CI workflow is currently
   disabled** (`disabled_manually`), so no build/e2e/functions job runs on pushes or PRs — re-enable
   it under **Actions → CI → Enable workflow**. Then make the `build` (the `verify` chain), `e2e`,

@@ -371,7 +371,7 @@ npm run deploy:all    # Deploy Hosting, Functions, and Firestore rules
 ```
 
 > [!NOTE]
-> For CI logic, multi-platform deploy commands, and cutover steps, see the runbooks in `docs/` — `RUNBOOK-deploy.md`, `RUNBOOK-firebase.md`, `RUNBOOK-native.md` (the completed cutover is archived at `archive/docs/RUNBOOK-cutover.md`).
+> For CI logic, multi-platform deploy commands, and cutover steps, see the runbooks in `docs/` — `RUNBOOK-deploy.md`, `RUNBOOK-firebase.md`, `RUNBOOK-native.md`. The completed DNS-cutover runbook moved out of this repo to `flygaca/office` on 2026-08-04.
 
 ---
 

@@ -252,9 +252,9 @@ merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 `TESTING-ROADMAP.md`, `corpus-link-shape.md`, `docs/seo/`, `b2b/` designs). The legacy source (the
 original vanilla Fly GACA site) remains the reference for anything still ported from the old site.
 
-`archive/` is parked non-app material — vendored third-party reference collections, the per-tool
-agent-config folders, scripts nothing calls, finished-work docs (completed audits, the legacy-PWA
-cutover runbook), and the investor material. Nothing there is imported, built, or linted; see
-`archive/README.md` before assuming something is missing. `docs/` is live engineering
-documentation, plus two point-in-time subtrees (`docs/seo/archive/`,
+Non-app material — investor decks, finished-work docs (completed audits, the legacy-PWA cutover
+runbook), vendored third-party reference collections, and per-tool agent configs — no longer lives
+in this repo; it belongs in the separate `flygaca/office` repo. The old `archive/` tree was removed
+on 2026-08-04 and is recoverable from git history (`git log --diff-filter=D -- archive/`). `docs/`
+is live engineering documentation, plus two point-in-time subtrees (`docs/seo/archive/`,
 `docs/screenshots/review-2026-07/`).

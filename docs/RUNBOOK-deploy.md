@@ -8,7 +8,7 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
   rewrites; **the deployed functions are still `me-central1`**, see the cutover section below) are
   co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
   `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The `flygaca.com` DNS
-  cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed 2026-07-31: the apex and
+  cutover to Firebase (runbook moved to the `flygaca/office` repo) completed 2026-07-31: the apex and
   `www` both resolve to Firebase Hosting now.
 - **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
   `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
@@ -29,7 +29,7 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 > preview deployments on push; only the `flygaca.com` domain association/alias stopped resolving —
 > root cause on the Vercel side not fully diagnosed). Fixed by adding `flygaca.com` +
 > `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing their DNS records
-> at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
+> at Firebase — see the completed cutover runbook in the `flygaca/office` repo.
 
 > **Incident note (2026-08-04):** a second accidental `firebase init` (same class as `c1897f0`
 > above) scaffolded over the backend in the working tree — `functions/src/index.ts` was reduced to
@@ -166,7 +166,7 @@ firebase deploy --only hosting                          # publish live
 npm run deploy:rules                                    # deploy firestore.rules
 ```
 
-Config: `firebase.json`, `.firebaserc`, `firestore.rules`. DNS cutover is in `../archive/docs/RUNBOOK-cutover.md`.
+Config: `firebase.json`, `.firebaserc`, `firestore.rules`. The DNS-cutover runbook is in the `flygaca/office` repo.
 
 **Prerender:** the deploy workflow runs `npm run prerender` after the build, snapshotting the
 high-value routes (home + hubs + every tool/guide) into `dist/<route>/index.html` so Firebase serves
