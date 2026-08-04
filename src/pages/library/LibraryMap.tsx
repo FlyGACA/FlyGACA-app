@@ -8,12 +8,9 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { breadcrumbLd } from '@/lib/seo/jsonld';
 import { buildConstellation } from '@/calc/library/constellation';
-import type { ConstellationNode, ConstellationPart } from '@/calc/library/constellation';
+import type { ConstellationNode } from '@/calc/library/constellation';
+import type { RegulationsLookup } from '@/lib/content.types';
 import styles from './LibraryMap.module.css';
-
-interface RegulationsLookup {
-  parts: Record<string, ConstellationPart & { pages?: number }>;
-}
 
 /** Read a CSS custom property off :root so canvas paint stays token-driven. */
 function cssVar(name: string, fallback: string): string {
