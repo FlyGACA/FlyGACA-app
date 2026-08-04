@@ -44,10 +44,15 @@ daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authe
 org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/src/index.ts` is the
 single deploy manifest — only triggers exported there are deployed. It is its own npm package with
 its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
-it (root `npm run verify` does not cover it). Deploy region is `me-central1`
-(`functions/src/region.ts`; firebase.json's rewrite regions must match — `functions/tests/region.test.ts`
-guards that pairing). A cutover to `me-central2` (in-Kingdom / PDPL) is planned but **not done** —
-the runbook lives in `docs/RUNBOOK-deploy.md`; Firestore already sits in `me-central2`.
+it (root `npm run verify` does not cover it). Deploy region is `me-central2` (Dammam, in-Kingdom /
+PDPL; the single source of truth is `functions/src/region.ts`, mirrored client-side by
+`FUNCTIONS_REGION` in `src/lib/services/firebase.ts`). firebase.json's rewrite regions must match —
+`functions/tests/region.test.ts` guards and pins that pairing. The `me-central1` → `me-central2`
+cutover is **switched in code/config** (Firestore already sits in `me-central2`), but the production
+Cloud Functions have **not been redeployed** to `me-central2` yet — they still run in `me-central1`,
+so a Firebase Hosting deploy currently errors ("functions … present but in the wrong region") until
+the next functions deploy lands. (`docs/RUNBOOK-deploy.md` still calls the cutover "planned" and is
+itself stale.)
 
 ## Architecture
 
@@ -175,7 +180,8 @@ Cloud Functions gateway for `/api/*`:
   in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 
 See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
-cutover and the planned `me-central1` → `me-central2` functions cutover) and `docs/DATA-HOSTING.md`
+cutover and the in-progress `me-central1` → `me-central2` functions cutover — config switched, the
+production functions redeploy still pending) and `docs/DATA-HOSTING.md`
 for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
 `supabase/migrations/` (pgvector for RAG embeddings) hold the datastore schemas.
 
