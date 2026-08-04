@@ -389,6 +389,11 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             <div className={styles.meta}>
               {badge && <span className={styles.badge}>{badge}</span>}
               {count && <span className={styles.pages}>{count}</span>}
+              {dateModified && (
+                <time className={styles.updated} dateTime={dateModified}>
+                  {t('document.updated', { date: dateModified })}
+                </time>
+              )}
             </div>
             {doc && <h1>{doc.title}</h1>}
             <p className={styles.verify}>{t('document.verifyLine')}</p>

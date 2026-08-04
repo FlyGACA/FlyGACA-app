@@ -218,6 +218,45 @@ export function faqLd(items: QA[]): JsonLd {
   };
 }
 
+export interface DefinedTerm {
+  /** The term or abbreviation being defined. */
+  term: string;
+  /** Its plain-language definition. */
+  def: string;
+}
+
+/**
+ * DefinedTermSet — for the bilingual aviation glossary. Each entry becomes a
+ * schema.org `DefinedTerm` bound back to the set, so a crawler (or AI answer
+ * engine) reads the page as a structured vocabulary of Saudi-aviation terms
+ * rather than loose prose.
+ */
+export function definedTermSetLd(a: {
+  name: string;
+  description?: string;
+  /** Router path of the glossary (canonicalized internally). */
+  path: string;
+  terms: DefinedTerm[];
+  /** BCP-47 language of the current rendering (e.g. 'en' | 'ar'). */
+  lang?: string;
+}): JsonLd {
+  const url = canonicalUrl(a.path);
+  return {
+    '@context': CONTEXT,
+    '@type': 'DefinedTermSet',
+    name: a.name,
+    ...(a.description ? { description: a.description } : {}),
+    url,
+    inLanguage: a.lang ?? 'en',
+    hasDefinedTerm: a.terms.map((tm) => ({
+      '@type': 'DefinedTerm',
+      name: tm.term,
+      description: tm.def,
+      inDefinedTermSet: url,
+    })),
+  };
+}
+
 export interface SoftwareAppInput {
   title: string;
   description?: string;

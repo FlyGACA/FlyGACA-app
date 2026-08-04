@@ -213,7 +213,12 @@ export function Library() {
         stats={stats}
         chipsLabel={t('library.popular')}
         chips={SUGGESTIONS[kind].map((s) => ({ label: s, onClick: () => setQuery(s) }))}
-        trailing={<Link to="/library/charts">{t('library.viewCharts')} →</Link>}
+        trailing={
+          <>
+            <Link to="/library/charts">{t('library.viewCharts')} →</Link>
+            <Link to="/library/glossary">{t('library.viewGlossary')} →</Link>
+          </>
+        }
       />
 
       <OfflineDownloads />

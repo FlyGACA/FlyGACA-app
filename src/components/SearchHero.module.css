@@ -249,7 +249,12 @@
   letter-spacing: 0.06em;
   color: var(--moon-soft);
 }
-/* Trailing slot — typically a link (e.g. "Browse charts →"). */
+/* Trailing slot — one or more links (e.g. "Browse charts →", "Glossary →"). */
+.trailing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
 .trailing a {
   font-size: var(--fs-sm);
   font-weight: var(--fw-bold);
