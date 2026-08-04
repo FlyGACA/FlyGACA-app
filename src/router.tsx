@@ -23,6 +23,7 @@ const Document = lazyNamed(() => import('./pages/library/Document'), 'Document')
 }>;
 const Charts = lazyNamed(() => import('./pages/library/Charts'), 'Charts');
 const LibraryMap = lazyNamed(() => import('./pages/library/LibraryMap'), 'LibraryMap');
+const Glossary = lazyNamed(() => import('./pages/library/Glossary'), 'Glossary');
 const Updates = lazyNamed(() => import('./pages/updates/Updates'), 'Updates');
 const Chat = lazyNamed(() => import('./pages/chat/Chat'), 'Chat');
 
@@ -267,6 +268,7 @@ const mainRoutes = [
       { path: 'library', element: <Library /> },
       { path: 'library/charts', element: <Charts /> },
       { path: 'library/map', element: <LibraryMap /> },
+      { path: 'library/glossary', element: <Glossary /> },
       { path: 'library/reference/:slug', element: <Document kind="reference" /> },
       { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },

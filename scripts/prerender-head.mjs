@@ -167,6 +167,7 @@ const STATIC_META = {
   '/library': 'library',
   '/library/charts': 'charts',
   '/library/map': 'libraryMap',
+  '/library/glossary': 'glossary',
   '/tools': 'tools',
   '/chat': 'chat',
   '/learn': 'learn',

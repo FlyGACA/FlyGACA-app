@@ -27,6 +27,7 @@ const MAIN_PATHS = [
   'library',
   'library/charts',
   'library/map',
+  'library/glossary',
   'library/reference/:slug',
   'library/handbook/:slug',
   'library/:slug',

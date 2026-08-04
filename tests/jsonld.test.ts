@@ -7,6 +7,7 @@ import {
   articleLd,
   breadcrumbLd,
   courseLd,
+  definedTermSetLd,
   faqLd,
   itemListLd,
   organizationLd,
@@ -115,6 +116,34 @@ describe('course + faq + software', () => {
     expect(ld.isAccessibleForFree).toBe(true);
     expect(ld.offers).toEqual({ '@type': 'Offer', price: '0', priceCurrency: 'SAR' });
     expect(ld.url).toBe(`${SITE_ORIGIN}/tools/crosswind`);
+  });
+});
+
+describe('definedTermSetLd', () => {
+  it('binds each term back to the set as a DefinedTerm', () => {
+    const ld = definedTermSetLd({
+      name: 'Aviation glossary',
+      description: 'Key Saudi-aviation terms.',
+      path: '/library/glossary',
+      terms: [
+        { term: 'METAR', def: 'A routine aerodrome weather report.' },
+        { term: 'NOTAM', def: 'A notice to air missions.' },
+      ],
+      lang: 'en',
+    });
+    expect(ld['@type']).toBe('DefinedTermSet');
+    expect(ld.url).toBe(`${SITE_ORIGIN}/library/glossary`);
+    expect(ld.inLanguage).toBe('en');
+    const terms = ld.hasDefinedTerm as Array<{
+      '@type': string;
+      name: string;
+      description: string;
+      inDefinedTermSet: string;
+    }>;
+    expect(terms).toHaveLength(2);
+    expect(terms[0]['@type']).toBe('DefinedTerm');
+    expect(terms[0].name).toBe('METAR');
+    expect(terms[0].inDefinedTermSet).toBe(`${SITE_ORIGIN}/library/glossary`);
   });
 });
 
