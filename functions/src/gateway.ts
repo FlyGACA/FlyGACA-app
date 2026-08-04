@@ -35,7 +35,12 @@ import {
 } from "./auth-core.js";
 import { parseFeedback } from "./feedback-core.js";
 import { frame, doneFrame, pingFrame, SSE_HEADERS } from "./sse.js";
-import type { ChatRequest, ChatTurn } from "./contract.js";
+import {
+  parseCookies,
+  parseRequest,
+  isAllowedOrigin,
+  MESSAGE_MAX_CHARS,
+} from "./gateway-core.js";
 
 if (getApps().length === 0) initializeApp();
 
@@ -50,20 +55,6 @@ const FREE_DAILY_LIMIT_PARAM = defineInt("FREE_DAILY_LIMIT", { default: FREE_DAI
 // the free-trial allowance can be tuned without a code change. Anonymous turns have
 // no uid, so the daily quota is keyed on a hashed client IP (see `anonQuotaKey`).
 const ANON_DAILY_LIMIT_PARAM = defineInt("ANON_DAILY_LIMIT", { default: ANON_DAILY_LIMIT });
-
-/** Helper to parse cookie strings without external packages */
-function parseCookies(cookieHeader: string | undefined): Record<string, string> {
-  const list: Record<string, string> = {};
-  if (!cookieHeader) return list;
-  cookieHeader.split(";").forEach((cookie) => {
-    const parts = cookie.split("=");
-    const name = parts.shift()?.trim();
-    if (name) {
-      list[name] = decodeURIComponent(parts.join("="));
-    }
-  });
-  return list;
-}
 
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 export class AuthError extends Error {}
@@ -112,47 +103,6 @@ export async function authenticate(req: Request): Promise<AuthContext> {
     }
   }
   return anonymousAuthContext();
-}
-
-/**
- * Hard input caps (cost control, DESIGN N4). History *count* was always capped
- * (12 turns); these bound the *size* of what reaches Gemini. An over-long
- * message is rejected (400) rather than truncated — silent truncation changes
- * the question; an over-long history turn is dropped like any other malformed
- * turn. Exported for unit testing.
- */
-export const MESSAGE_MAX_CHARS = 4000;
-export const HISTORY_CONTENT_MAX_CHARS = 8000;
-
-/** Coerce a raw request body into a validated `ChatRequest` (or null). Exported for unit testing. */
-export function parseRequest(body: unknown): ChatRequest | null {
-  if (!body || typeof body !== "object") return null;
-  const b = body as Record<string, unknown>;
-  if (typeof b.message !== "string" || b.message.trim() === "") return null;
-  if (b.message.length > MESSAGE_MAX_CHARS) return null;
-
-  const history: ChatTurn[] = Array.isArray(b.history)
-    ? (b.history as unknown[])
-      .filter(
-        (t): t is ChatTurn =>
-          !!t &&
-            typeof t === "object" &&
-            (("role" in t &&
-              ((t as ChatTurn).role === "user" ||
-                (t as ChatTurn).role === "assistant")) as boolean) &&
-            typeof (t as ChatTurn).content === "string" &&
-            (t as ChatTurn).content.length <= HISTORY_CONTENT_MAX_CHARS,
-      )
-      .slice(-12) // cap history length (cost control, DESIGN N4)
-    : [];
-
-  return {
-    message: b.message,
-    history,
-    product: typeof b.product === "string" ? b.product : "flygaca",
-    provider: typeof b.provider === "string" ? b.provider : undefined,
-    session: typeof b.session === "string" ? b.session : undefined,
-  };
 }
 
 const app = express();
@@ -276,35 +226,7 @@ async function consumeCredit(uid: string): Promise<boolean> {
     return false;
   }
 }
-// CORS — explicit allowlist. Every front serves the SPA same-origin and proxies
-// /api/* here, so the Origin we see is the page origin. Production fronts are
-// listed exactly; preview/channel deploys match a few project-scoped suffixes.
-const ALLOWED_ORIGINS = new Set([
-  "https://flygaca.com",
-  "https://www.flygaca.com",
-  "https://flygaca-app.web.app",
-  "https://flygaca-app.firebaseapp.com",
-  "https://flygaca-app.vercel.app",
-]);
-// Project-scoped preview/channel hosts (https only). Add the Netlify / Cloudflare
-// mirror origins here if those fronts are ever accessed directly.
-const ALLOWED_ORIGIN_SUFFIXES = [
-  ".flygaca-app.web.app", // Firebase Hosting preview channels
-  ".flygaca-app.firebaseapp.com",
-  "-flygaca-app.vercel.app", // Vercel git/preview deploys
-];
-
-function isAllowedOrigin(origin: string): boolean {
-  if (ALLOWED_ORIGINS.has(origin)) return true;
-  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true; // local dev
-  // The leading '.'/'-' in each suffix prevents look-alikes (e.g.
-  // evil-flygaca-app.web.app) from matching a real subdomain we control.
-  return (
-    origin.startsWith("https://") &&
-    ALLOWED_ORIGIN_SUFFIXES.some((suffix) => origin.endsWith(suffix))
-  );
-}
-
+// CORS — explicit allowlist (policy in `gateway-core.ts` `isAllowedOrigin`).
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   // No Origin → same-origin or non-browser caller: nothing to gate, and the
