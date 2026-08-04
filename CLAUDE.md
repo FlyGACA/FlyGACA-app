@@ -197,8 +197,10 @@ for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
   `build:sitemap` and git-ignored. Keep branches synced with `main`; see `docs/MERGE-CONFLICTS.md`
   for prevention + how to resolve lockfile / i18n conflicts.
 - Run `npm run verify` before committing. It chains the frontend gate —
-  `typecheck → lint → format:check → test → build → check:bundle` (`check:bundle` fails if the
-  initial gzipped JS exceeds its budget — 188 kB today; route chunks excluded by design). CI
+  `typecheck → lint → format:check → test → build → check:bundle → check:perf` (`check:bundle` fails
+  if the initial gzipped JS exceeds its budget — 188 kB today; route chunks excluded by design.
+  `check:perf` is the companion gate over **every** emitted chunk — a per-chunk gz ceiling plus a
+  total-footprint ceiling — catching a lazy route chunk that balloons, which `check:bundle` ignores). CI
   (`.github/workflows/ci.yml`) mirrors the same steps individually but swaps `test` for
   `test:coverage` — a coverage **ratchet** with thresholds in `vitest.config.ts` — plus three more
   jobs you should be aware of when your change touches them:
