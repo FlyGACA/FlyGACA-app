@@ -48,8 +48,11 @@ it (root `npm run verify` does not cover it). Deploy region is `me-central2` (Da
 PDPL; the single source of truth is `functions/src/region.ts`, mirrored client-side by
 `FUNCTIONS_REGION` in `src/lib/services/firebase.ts`). firebase.json's rewrite regions must match —
 `functions/tests/region.test.ts` guards and pins that pairing. The `me-central1` → `me-central2`
-cutover is **done in code/config** (Firestore already sat in `me-central2`); note the
-`docs/RUNBOOK-deploy.md` runbook still describes it as planned and is itself stale.
+cutover is **switched in code/config** (Firestore already sits in `me-central2`), but the production
+Cloud Functions have **not been redeployed** to `me-central2` yet — they still run in `me-central1`,
+so a Firebase Hosting deploy currently errors ("functions … present but in the wrong region") until
+the next functions deploy lands. (`docs/RUNBOOK-deploy.md` still calls the cutover "planned" and is
+itself stale.)
 
 ## Architecture
 
@@ -177,7 +180,8 @@ Cloud Functions gateway for `/api/*`:
   in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 
 See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
-cutover and the completed `me-central1` → `me-central2` functions cutover) and `docs/DATA-HOSTING.md`
+cutover and the in-progress `me-central1` → `me-central2` functions cutover — config switched, the
+production functions redeploy still pending) and `docs/DATA-HOSTING.md`
 for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
 `supabase/migrations/` (pgvector for RAG embeddings) hold the datastore schemas.
 
