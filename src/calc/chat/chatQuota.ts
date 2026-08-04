@@ -8,6 +8,14 @@
 /** Questions a free user may ask Captain Adel per day before the upsell gate. */
 export const FREE_DAILY_LIMIT = 5;
 
+/**
+ * Questions an anonymous (not-signed-in) visitor may ask per day before the
+ * sign-in nudge — a smaller "taste" than the signed-in free allowance. Must match
+ * `ANON_DAILY_LIMIT` in functions/src/chat-quota-core.ts (the enforced value),
+ * pinned by tests/client-server-mirrors.test.ts.
+ */
+export const ANON_DAILY_LIMIT = 3;
+
 export interface Usage {
   /** UTC calendar day, `YYYY-MM-DD`. */
   day: string;
@@ -34,14 +42,17 @@ export function currentUsage(
   return { day: today, count: Math.floor(raw.count) };
 }
 
-/** Free questions left today (never negative). */
-export function remaining(usage: Usage): number {
-  return Math.max(0, FREE_DAILY_LIMIT - usage.count);
+/**
+ * Questions left today (never negative). `limit` defaults to the signed-in free
+ * allowance; the chat page passes `ANON_DAILY_LIMIT` for a not-signed-in visitor.
+ */
+export function remaining(usage: Usage, limit: number = FREE_DAILY_LIMIT): number {
+  return Math.max(0, limit - usage.count);
 }
 
-/** True once the free user has spent the day's allowance. */
-export function isExhausted(usage: Usage): boolean {
-  return remaining(usage) <= 0;
+/** True once the day's allowance (`limit`, default free tier) is spent. */
+export function isExhausted(usage: Usage, limit: number = FREE_DAILY_LIMIT): boolean {
+  return remaining(usage, limit) <= 0;
 }
 
 /** Record one more question used today. */

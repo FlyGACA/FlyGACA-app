@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { sendChatStream, sendFeedback, type ChatTurn } from '@/lib/api';
 import { getIdToken } from '@/lib/services/auth';
@@ -16,6 +16,7 @@ import {
   isExhausted,
   remaining,
   FREE_DAILY_LIMIT,
+  ANON_DAILY_LIMIT,
   type Usage,
 } from '@/calc/chat/chatQuota';
 import { partSlug, conversationParts } from '@/calc/chat/chatSources';
@@ -65,7 +66,6 @@ export function Chat() {
   const { t } = useTranslation();
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation<Message>[]>(() =>
     loadConversations<Message>(),
   );
@@ -85,10 +85,17 @@ export function Chat() {
 
   const { entitlement, session, chatCredits } = useAccount();
   const isPro = hasFeature(entitlement, 'adel-unlimited');
-  const left = remaining(currentUsage(usage));
+  // Anonymous visitors get a smaller daily "taste" before the sign-in nudge; a
+  // signed-in free account gets the full free allowance. (Both are UI nudges — the
+  // server enforces the same split, keyed on uid or hashed IP.)
+  const dailyLimit = session ? FREE_DAILY_LIMIT : ANON_DAILY_LIMIT;
+  const left = remaining(currentUsage(usage), dailyLimit);
   // Purchased credits cover questions past the daily free allowance, so having a
   // balance lifts the gate (the server spends a credit when the free quota is out).
-  const gated = !isPro && isExhausted(currentUsage(usage)) && chatCredits <= 0;
+  // Anonymous users have no account to hold credits, so the balance only matters
+  // when signed in.
+  const gated =
+    !isPro && isExhausted(currentUsage(usage), dailyLimit) && (session ? chatCredits <= 0 : true);
 
   // Buy a one-time question pack (checkout redirects on success; a signed-in chat
   // user won't hit 'sign-in-required', and offline/unconfigured errors are inert).
@@ -155,19 +162,12 @@ export function Chat() {
     const q = question.trim();
     if (!q || busy) return;
 
-    // Signing in is required before any question reaches Captain Adel. Guard here —
-    // the single choke point for every entry path (suggestions, "surprise me",
-    // follow-ups, the composer, deep-link auto-send) — so a signed-out tap never
-    // renders a user turn or the "typing" bubble before disclosing the requirement.
-    if (!session) {
-      navigate('/account');
-      return;
-    }
-
-    // Free-tier daily gate (UI nudge only; the server is the source of truth).
+    // No sign-in required — anonymous visitors can ask Captain Adel. The daily gate
+    // below (UI nudge only; the server is the source of truth) holds them to the
+    // anonymous allowance and nudges them to sign in once it's spent.
     if (!isPro) {
       const u = currentUsage(usage);
-      if (isExhausted(u)) return;
+      if (isExhausted(u, dailyLimit)) return;
       const next = consume(u);
       setUsage(next);
       persistUsage(next);
@@ -446,7 +446,7 @@ export function Chat() {
             setAtBottom(near);
           }}
         >
-          {messages.length === 0 && <ChatWelcome signedIn={!!session} onAsk={(q) => void ask(q)} />}
+          {messages.length === 0 && <ChatWelcome onAsk={(q) => void ask(q)} />}
 
           {messages.map((m, i) => (
             <ChatMessage
@@ -494,23 +494,26 @@ export function Chat() {
 
       {hasMessages && <SourcesDigest parts={digest} />}
 
-      {!session ? (
-        <div className={styles.gate}>
-          <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
-          <Link className="btn btn-primary" to="/account">
-            {t('account.goSignIn')}
-          </Link>
-        </div>
-      ) : gated ? (
-        <div className={styles.gate}>
-          <p className={styles.gateNote}>{t('chat.quota.exhausted')}</p>
-          <UpsellCard variant="inline" />
-          {canCheckout() && (
-            <button type="button" className="btn" onClick={() => void buyCredits()}>
-              {t('chat.quota.buyCredits', { n: CREDIT_PACK_SIZE })}
-            </button>
-          )}
-        </div>
+      {gated ? (
+        session ? (
+          <div className={styles.gate}>
+            <p className={styles.gateNote}>{t('chat.quota.exhausted')}</p>
+            <UpsellCard variant="inline" />
+            {canCheckout() && (
+              <button type="button" className="btn" onClick={() => void buyCredits()}>
+                {t('chat.quota.buyCredits', { n: CREDIT_PACK_SIZE })}
+              </button>
+            )}
+          </div>
+        ) : (
+          // Anonymous trial spent — nudge to sign in for more (no account to bill).
+          <div className={styles.gate}>
+            <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
+            <Link className="btn btn-primary" to="/account">
+              {t('account.goSignIn')}
+            </Link>
+          </div>
+        )
       ) : (
         <>
           <form
@@ -558,9 +561,7 @@ export function Chat() {
           ) : chatCredits > 0 && isExhausted(currentUsage(usage)) ? (
             <p className={styles.quota}>{t('chat.quota.credits', { n: chatCredits })}</p>
           ) : (
-            <p className={styles.quota}>
-              {t('chat.quota.left', { n: left, limit: FREE_DAILY_LIMIT })}
-            </p>
+            <p className={styles.quota}>{t('chat.quota.left', { n: left, limit: dailyLimit })}</p>
           )}
         </>
       )}
