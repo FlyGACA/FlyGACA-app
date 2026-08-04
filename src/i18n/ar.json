@@ -863,6 +863,13 @@
       "categories": "المجموعات"
     }
   },
+  "provenance": {
+    "label": "المصدر والإسناد",
+    "updated": "محدّث في {{date}}",
+    "revision": "مراجعة {{revision}}",
+    "officialSource": "المصدر الرسمي",
+    "officialSourceTitle": "افتح منشور GACA الرسمي (يفتح في تبويب جديد)"
+  },
   "glossary": {
     "eyebrow": "المكتبة المرجعية",
     "title": "مسرد الطيران",
@@ -936,7 +943,6 @@
     "filterToc": "تصفية المحتويات",
     "verifyAtGaca": "اقرأ لوائح GACAR الرسمية على gaca.gov.sa",
     "verifyLine": "مُعاد إنتاجه للدراسة. تحقّق دائمًا من لوائح GACAR الرسمية على gaca.gov.sa.",
-    "updated": "محدّث في {{date}}",
     "sections": "أقسام",
     "findPlaceholder": "ابحث في هذا المستند…",
     "findCount": "{{n}}/{{total}}",
