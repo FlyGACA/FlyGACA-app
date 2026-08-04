@@ -2559,6 +2559,99 @@
     "askAdel": "Learn more with Captain Adel",
     "tools": "Related tools",
     "items": {
+      "pilot-currency-and-recency": {
+        "name": "Pilot currency and recency in Saudi Arabia",
+        "blurb": "The recent-experience, night, instrument and flight-review rules that keep you legal to fly under GACAR Part 61.",
+        "intro": "Holding a licence is not the same as being current. Under the GACA Civil Aviation Regulations you must keep recent flight experience and a satisfactory flight review to exercise your privileges, on top of a current medical. This guide explains the kinds of currency GACAR Part 61 tracks and how to stay ahead of them. It is an educational overview, not the regulation, so always confirm the exact figures and intervals in the current GACAR at gaca.gov.sa.",
+        "sections": [
+          {
+            "h": "Currency is not the same as a valid licence",
+            "p": "A pilot licence does not lapse the way currency does. To act as pilot in command you also need recent flight experience, a satisfactory flight review, and a current medical certificate under GACAR Part 67. You can hold a perfectly valid licence and still be unable to carry passengers or act as pilot in command until you regain the item you have lost. GACAR Part 61 sets these recency rules."
+          },
+          {
+            "h": "Recent experience to carry passengers",
+            "p": "Before carrying passengers you must have completed a set number of takeoffs and landings within a preceding period, in the same category and class of aircraft, under GACAR Part 61 recent flight experience (§61.57). The exact count and the length of the window are set by the regulation and can change, so read them at source rather than from a summary."
+          },
+          {
+            "h": "Night currency is separate",
+            "p": "Carrying passengers during the night period adds its own requirement: takeoffs and landings made to a full stop at night. Meeting the daytime requirement does not make you night-current. Check the current definition of the night period and the required count in GACAR Part 61."
+          },
+          {
+            "h": "Instrument recency",
+            "p": "To act as pilot in command under instrument flight rules you must have logged recent instrument experience, typically instrument approaches, holding, and intercepting and tracking courses, within a preceding period. If you fall outside it you regain currency by passing an instrument proficiency check with an authorized person. See GACAR Part 61 for the recency rule and Part 91 for the IFR operating rules."
+          },
+          {
+            "h": "The flight review",
+            "p": "On a recurring interval you must complete a flight review with a GACA-authorized instructor to keep acting as pilot in command. Certain proficiency or licence checks can count in its place. Confirm the current interval and the required content in GACAR Part 61."
+          },
+          {
+            "h": "Keeping track",
+            "p": "Currency is read from your logbook, so record each flight's date, its takeoffs and landings, and your instrument time and approaches. The Fly GACA Part 61 currency and flight-review tools estimate your status from those entries, but the regulation, not the tool, is the authority."
+          }
+        ],
+        "adel": "Explain the GACAR Part 61 recency requirements to carry passengers by day, at night, and under IFR, and how the flight review works.",
+        "takeaways": [
+          "A current licence is not enough; you also need recent experience, a flight review, and a current medical.",
+          "Carrying passengers needs recent takeoffs and landings; night adds a separate full-stop requirement.",
+          "Acting as pilot in command under IFR needs recent instrument experience or an instrument proficiency check.",
+          "A recurring flight review with an authorized instructor keeps your pilot-in-command privileges alive.",
+          "Read currency from your logbook, and confirm every figure and interval in the current GACAR."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 61 recent flight experience and flight review, with the Part 67 medical.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Passenger currency",
+            "value": "Recent takeoffs and landings in the same category and class before carrying passengers.",
+            "ref": "GACAR §61.57"
+          },
+          {
+            "label": "Night currency",
+            "value": "A separate set of night takeoffs and landings to a full stop to carry passengers at night.",
+            "ref": "GACAR §61.57"
+          },
+          {
+            "label": "Instrument recency",
+            "value": "Recent instrument experience, or an instrument proficiency check, to act as PIC under IFR.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Flight review",
+            "value": "A recurring flight review with an authorized instructor to keep acting as pilot in command.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Medical",
+            "value": "A current GACA medical certificate appropriate to your licence, separate from currency.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What does it mean to be a current pilot in Saudi Arabia?",
+            "a": "Being current means you have met the recent-experience and flight-review requirements of GACAR Part 61 and hold a current medical, so you may exercise your licence privileges. A licence itself does not lapse the way currency does: you can hold a valid licence yet be unable to carry passengers or act as pilot in command until you regain currency. Confirm the exact requirements in GACAR Part 61 and Part 67 at gaca.gov.sa."
+          },
+          {
+            "q": "How many takeoffs and landings do I need to carry passengers?",
+            "a": "GACAR Part 61 recent flight experience (§61.57) requires a set number of takeoffs and landings within a preceding period, in the same category and class of aircraft, before you may carry passengers, with a separate requirement for night. Because the exact figures and time window can change, verify them in the current GACAR Part 61 rather than relying on a summary."
+          },
+          {
+            "q": "What is night currency and how is it different?",
+            "a": "Night currency is a separate recent-experience requirement to carry passengers during the night period: takeoffs and landings made to a full stop at night. Meeting the daytime requirement does not make you night-current. Check the current definition of the night period and the required count in GACAR Part 61."
+          },
+          {
+            "q": "How do I stay current to fly IFR in Saudi Arabia?",
+            "a": "To act as pilot in command under instrument flight rules you must have logged recent instrument experience, typically instrument approaches, holding, and intercepting and tracking courses, within a preceding period. If you fall outside it, you regain currency by passing an instrument proficiency check with an authorized person. See GACAR Part 61 for the recency rule and Part 91 for the IFR operating rules."
+          },
+          {
+            "q": "What is a flight review and how often do I need one?",
+            "a": "A flight review is a recurring check with a GACA-authorized instructor that you must complete to keep acting as pilot in command; some proficiency or licence checks can satisfy it in place of a standalone review. Confirm the current interval and required content in GACAR Part 61. Fly GACA is an independent study aid and does not conduct reviews or issue licences; GACA is the authority."
+          }
+        ]
+      },
       "how-to-become-a-pilot-in-saudi-arabia": {
         "name": "How to become a pilot in Saudi Arabia",
         "blurb": "The full path to a Saudi pilot licence, medical, training, exams and the GACAR Parts that govern each step.",
