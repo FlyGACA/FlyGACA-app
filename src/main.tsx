@@ -26,6 +26,7 @@ import './styles/global.css';
 import './styles/native.css';
 import { router } from './router';
 import { initNative } from '@/lib/native/nativeBridge';
+import { reportWebVitals } from '@/lib/analytics';
 import { captureReferral } from '@/lib/share';
 import { canonicalRedirect, isMirrorHost, localeRedirect } from '@/lib/seo/seo';
 import { applyTheme, readTheme } from '@/lib/theme';
@@ -79,4 +80,9 @@ if (redirectTo) {
   // Native shell bootstrap (no-op on the web). Deep links route through the
   // same data router the rest of the app uses.
   void initNative({ onDeepLink: (path) => void router.navigate(path) });
+
+  // Field-measure Core Web Vitals (LCP/INP/CLS/FCP/TTFB) → analytics. Registers
+  // early so nothing is missed; web-vitals is dynamic-imported (off the initial
+  // bundle) and the call is a no-op off the web/prod path.
+  reportWebVitals();
 }
