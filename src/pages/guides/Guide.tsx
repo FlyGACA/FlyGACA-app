@@ -6,7 +6,9 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { adelLink } from '@/lib/adel';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useCopyToClipboardKeyed } from '@/hooks/useCopyToClipboard';
-import { articleLd, breadcrumbLd, type Crumb } from '@/lib/seo/jsonld';
+import { articleLd, breadcrumbLd, faqLd, type Crumb, type QA } from '@/lib/seo/jsonld';
+import { KeyFacts, type KeyFact } from '@/components/KeyFacts';
+import { Faq } from '@/components/Faq';
 import { readingMinutes } from '@/lib/readingTime';
 import { useGuidePrefs, toggleBookmark, toggleRead, markRead } from '@/lib/prefs/guidePrefs';
 import { useScrollToHash } from '@/hooks/useScrollToHash';
@@ -51,6 +53,12 @@ export function Guide() {
       ]
     : [];
 
+  // Answer-first FAQ (optional per guide) — read before the meta hook so its
+  // FAQPage schema can join the JSON-LD. The on-page text (rendered below) is
+  // emitted verbatim, as an FAQPage rich result requires.
+  const faqsRaw = valid ? t(`${base}.faqs`, { returnObjects: true }) : null;
+  const faqs = Array.isArray(faqsRaw) ? (faqsRaw as unknown as QA[]) : [];
+
   // Hook must run before the early return; title is undefined for unknown slugs.
   usePageMeta(
     valid ? t(`${base}.name`) : undefined,
@@ -64,6 +72,7 @@ export function Guide() {
             lang: i18n.language,
           }),
           breadcrumbLd(crumbs),
+          ...(faqs.length ? [faqLd(faqs)] : []),
         ]
       : undefined,
     // Valid guides are editorial articles; an unknown slug renders <NotFound/>,
@@ -102,6 +111,8 @@ export function Guide() {
   const guideSlug = slug as GuideSlug;
   const sections = t(`${base}.sections`, { returnObjects: true }) as unknown as Section[];
   const takeaways = t(`${base}.takeaways`, { returnObjects: true }) as unknown as string[];
+  const keyFactsRaw = t(`${base}.keyFacts`, { returnObjects: true });
+  const keyFacts = Array.isArray(keyFactsRaw) ? (keyFactsRaw as unknown as KeyFact[]) : [];
   const intro = t(`${base}.intro`);
   const adel = adelLink(t(`${base}.adel`));
   const tools = GUIDE_TOOLS[guideSlug] ?? [];
@@ -164,6 +175,8 @@ export function Guide() {
           </ul>
         </aside>
       )}
+
+      {keyFacts.length > 0 && <KeyFacts title={t('guides.keyFactsTitle')} facts={keyFacts} />}
 
       {sections.length > 1 && (
         <nav className={styles.onThisPage} aria-label={t('guides.onThisPage')}>
@@ -245,6 +258,8 @@ export function Guide() {
           </ul>
         </section>
       )}
+
+      {faqs.length > 0 && <Faq title={t('guides.faqTitle')} items={faqs} />}
 
       <div className={styles.readToggleRow}>
         <button
