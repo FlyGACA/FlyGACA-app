@@ -5,6 +5,7 @@ import { TextField } from '@/components/calc/TextField';
 import { FieldGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { parseRunways, windTable } from '@/calc/windTable';
+import { CompassRose } from './CompassRose';
 import styles from './WindTable.module.css';
 
 export function WindTable() {
@@ -82,6 +83,8 @@ export function WindTable() {
           </table>
         </div>
       )}
+
+      {rows.length > 0 && <CompassRose windDir={nums.dir} windSpeed={nums.spd} rows={rows} />}
     </CalcShell>
   );
 }

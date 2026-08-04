@@ -6,6 +6,7 @@ import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { factoredRunway } from '@/calc/runwayPerf';
+import { RunwayMarginBar } from './RunwayMarginBar';
 
 export function TakeoffLanding() {
   const { t } = useTranslation();
@@ -107,6 +108,9 @@ export function TakeoffLanding() {
           tone={r?.margin != null ? (r.ok ? 'good' : 'bad') : undefined}
         />
       </OutputGrid>
+      {r?.margin != null && (
+        <RunwayMarginBar requiredM={r.required} availableM={nums.avail} ok={r.ok} />
+      )}
     </CalcShell>
   );
 }

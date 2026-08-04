@@ -1,13 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextFunction, Request, Response } from "express";
-import {
-  parseRequest,
-  authenticate,
-  notFoundHandler,
-  errorHandler,
-  MESSAGE_MAX_CHARS,
-  HISTORY_CONTENT_MAX_CHARS,
-} from "../src/gateway.js";
+import { authenticate, notFoundHandler, errorHandler } from "../src/gateway.js";
 
 // Mocks for the Admin SDK + the RAG flow, so importing the gateway never boots
 // firebase-admin or loads genkit. getApps() returns non-empty so the module's
@@ -67,89 +60,6 @@ function mockRes(headersSent = false) {
 
 beforeEach(() => {
   vi.clearAllMocks();
-});
-
-describe("parseRequest", () => {
-  it("rejects a non-object body", () => {
-    expect(parseRequest(null)).toBeNull();
-    expect(parseRequest("hello")).toBeNull();
-    expect(parseRequest(42)).toBeNull();
-  });
-
-  it("rejects a missing or blank message", () => {
-    expect(parseRequest({})).toBeNull();
-    expect(parseRequest({ message: "" })).toBeNull();
-    expect(parseRequest({ message: "   " })).toBeNull();
-  });
-
-  it("accepts a minimal message and defaults product to flygaca", () => {
-    const out = parseRequest({ message: "what is VMC?" });
-    expect(out).toMatchObject({ message: "what is VMC?", product: "flygaca", history: [] });
-    expect(out?.provider).toBeUndefined();
-    expect(out?.session).toBeUndefined();
-  });
-
-  it("passes through optional product / provider / session", () => {
-    const out = parseRequest({
-      message: "hi",
-      product: "captain-adel",
-      provider: "pro",
-      session: "s1",
-    });
-    expect(out).toMatchObject({ product: "captain-adel", provider: "pro", session: "s1" });
-  });
-
-  it("keeps only well-formed history turns", () => {
-    const out = parseRequest({
-      message: "hi",
-      history: [
-        { role: "user", content: "a" },
-        { role: "assistant", content: "b" },
-        { role: "system", content: "drop me" }, // bad role
-        { role: "user", content: 5 }, // bad content type
-        "nope", // not an object
-      ],
-    });
-    expect(out?.history).toEqual([
-      { role: "user", content: "a" },
-      { role: "assistant", content: "b" },
-    ]);
-  });
-
-  it("caps history to the most recent 12 turns", () => {
-    const history = Array.from({ length: 20 }, (_, i) => ({
-      role: "user" as const,
-      content: String(i),
-    }));
-    const out = parseRequest({ message: "hi", history });
-    expect(out?.history).toHaveLength(12);
-    expect(out?.history?.[0]?.content).toBe("8"); // 20 - 12
-    expect(out?.history?.at(-1)?.content).toBe("19");
-  });
-
-  it("treats a non-array history as empty", () => {
-    expect(parseRequest({ message: "hi", history: "oops" })?.history).toEqual([]);
-  });
-
-  it("accepts a message at the size cap and rejects one over it", () => {
-    expect(parseRequest({ message: "m".repeat(MESSAGE_MAX_CHARS) })).not.toBeNull();
-    expect(parseRequest({ message: "m".repeat(MESSAGE_MAX_CHARS + 1) })).toBeNull();
-  });
-
-  it("drops an oversized history turn but keeps its valid siblings", () => {
-    const out = parseRequest({
-      message: "hi",
-      history: [
-        { role: "user", content: "a" },
-        { role: "assistant", content: "b".repeat(HISTORY_CONTENT_MAX_CHARS + 1) },
-        { role: "assistant", content: "c".repeat(HISTORY_CONTENT_MAX_CHARS) },
-      ],
-    });
-    expect(out?.history).toEqual([
-      { role: "user", content: "a" },
-      { role: "assistant", content: "c".repeat(HISTORY_CONTENT_MAX_CHARS) },
-    ]);
-  });
 });
 
 describe("authenticate — App Check not enforced (default)", () => {

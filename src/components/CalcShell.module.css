@@ -123,6 +123,37 @@
   transform: scale(0.97);
 }
 
+/* Governing-regulation cross-link — the authoritative source the tool operates
+   under. Gold-accented so it reads as the citation, distinct from related tools. */
+.regLink {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.regChip {
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, var(--border-bright));
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+  transition: var(--transition-interactive);
+}
+.regChip:hover {
+  border-color: var(--gold);
+  color: var(--text);
+  text-decoration: none;
+}
+.regChip:active {
+  transform: scale(0.97);
+}
+
 .intro {
   margin-block-start: var(--space-3);
   color: var(--text-muted);
