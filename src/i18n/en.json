@@ -2568,6 +2568,60 @@
           "Minimum age 17, a current Class 2 medical, and ICAO English Level 4.",
           "Train with an approved instructor or ATO, dual, solo, cross-country and night.",
           "Finish with the theory exams and a skill test with an authorized examiner."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 61 for licensing, with the Part 67 medical standards.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Minimum age",
+            "value": "17 years old to be issued a PPL.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Medical",
+            "value": "A current GACA Class 2 medical certificate.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "English",
+            "value": "ICAO English Level 4 (Operational) or above.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Training",
+            "value": "Dual, solo, cross-country and night with an approved instructor or ATO.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Tests",
+            "value": "Theoretical-knowledge examinations and a skill test with an authorized examiner.",
+            "ref": "GACAR Part 61"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What are the requirements for a private pilot licence in Saudi Arabia?",
+            "a": "Under GACAR Part 61 you must be at least 17 years old, hold a current GACA Class 2 medical certificate, and meet the ICAO English requirement (Level 4 or above). You complete dual, solo, cross-country and night training with a GACA-approved instructor or Approved Training Organization (ATO), then pass the theoretical-knowledge examinations and a skill test with an authorized examiner. Always confirm the current requirements against GACAR Part 61 and Part 67 at gaca.gov.sa."
+          },
+          {
+            "q": "How old do you have to be to get a PPL in Saudi Arabia?",
+            "a": "You must be at least 17 years old to be issued a Private Pilot Licence under GACAR Part 61. You can begin training earlier; the age applies to issue of the licence. Confirm the current minimum age in GACAR Part 61."
+          },
+          {
+            "q": "What medical certificate do I need for a Saudi PPL?",
+            "a": "A current GACA Class 2 medical certificate, issued under the GACAR Part 67 medical standards by a GACA-authorized aviation medical examiner. Check the current standards and validity period in GACAR Part 67."
+          },
+          {
+            "q": "Do I need English language proficiency for a Saudi PPL?",
+            "a": "Yes. You must demonstrate ICAO English language proficiency at Level 4 (Operational) or above through the Saudi aviation English assessment. Verify the current language requirement with GACA."
+          },
+          {
+            "q": "Where can I train for a PPL in Saudi Arabia?",
+            "a": "You train with a GACA-approved flight instructor or an Approved Training Organization (ATO). Fly GACA is an independent educational study aid — it does not provide flight training or issue licences; GACA is the authority. Confirm approved training providers with GACA."
+          }
         ]
       },
       "saudi-cpl-requirements": {
@@ -3032,6 +3086,8 @@
     "draft": "Draft",
     "readProgress": "{{done}} of {{total}} read",
     "keyTakeaways": "Key takeaways",
+    "keyFactsTitle": "Key facts",
+    "faqTitle": "Frequently asked questions",
     "copyLink": "Copy link to section",
     "copied": "Copied",
     "regsCited": "Regulations cited",
