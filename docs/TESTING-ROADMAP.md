@@ -121,6 +121,13 @@ Recommendation: **keep pages E2E-owned**, keep growing the smoke nets above for 
 expand `e2e/flows.spec.ts` for the data/auth flows — rather than folding pages into the unit-coverage
 ratchet.
 
+**Update (Aug 2026):** the oversized-file split pass is the working model for this. `Chat.tsx`,
+`Document.tsx`, `Pricing.tsx`, and `SignInForms.tsx` each shed their pure logic into tested
+`calc/*` modules and ratchet-counted hooks (`calc/chat/chatStream`,
+`calc/app/{pricingView,passwordPolicy,emailShape}`, `useConversations`, `useFindInPage`,
+`usePricingCheckout`, `useSignInForm`, …) while the page itself stayed a thin, E2E-owned shell —
+raising the ratchet without folding `src/pages/**` into the `include`.
+
 ---
 
 Phases 5–9 come from the **August 2026 family-wide audit** (per-function hit counts, not just file
@@ -190,8 +197,9 @@ rest; same render-smoke patterns as Phases 2–3.
 - [ ] Revenue-facing: `components/account/SubscriptionPanel.tsx` (50% lines / 21% branch — renders
       entitlement state, the client half of Phase 5) and `components/UpsellCard.tsx` (0%).
 - [ ] User-data entry: `components/account/RecordForm.tsx` (0%),
-      `components/account/PasswordStrength.tsx` (0%), `components/calc/SelectField.tsx` (0% — part
-      of the shared calc field kit).
+      `components/account/PasswordStrength.tsx` (0% render — but its rule-test and score logic now
+      lives in the fully-tested `calc/app/passwordPolicy.ts`, so only the presentational shell is
+      uncovered), `components/calc/SelectField.tsx` (0% — part of the shared calc field kit).
 - [ ] The rest of the zeros: `SearchHero`, `ScrollProgress`, `AnalyticsProvider`, `BrandMark`,
       `highlight.tsx`, `categoryTone.ts`, `onboarding/OnboardingHint` (+ lift `OnboardingTour`,
       51%/27%), `dashboard/UpdatesWatchWidget`, the aerodrome family (`RunwayDiagram`,

@@ -91,7 +91,8 @@ itself stale.)
   `calc/study/` (`srs` — the cross-platform contract the apple/ Swift port mirrors — `shuffle`, and
   `glidePath`), `calc/hud/` (the airspace-sim engine: `scenario`, `kinematics`, `projection`,
   `sectors`, `geoKsa`, `callsigns`, `simMetar`, seeded `rng`), and `calc/app/`
-  (`authError`, `dashboardLayout`, `toolPresets`). Subfolders may import the flat core
+  (`authError`, `dashboardLayout`, `emailShape`, `passwordPolicy`, `pricingView`, `toolPresets`).
+  Subfolders may import the flat core
   (`@/calc/recency`), never each other sideways. The
   `CalcShell` component provides the shared frame (copy-link · try-an-example · ask-Captain-Adel ·
   disclaimer). Input state lives in the URL: a page that consumes **any numeric input** uses

@@ -94,6 +94,13 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   `src/lib/content.types.ts`; `content.ts` now holds only the runtime loader (`fetchJson`,
   `loadJson`, `CORPUS`, `loadRegulationsLookup`, …) and re-exports the types so existing
   `@/lib/content` imports are unaffected.
+- **Oversized file splits.** The five largest pages/modules were split along house seams with no
+  behavior change (Aug 2026): `Chat.tsx` (573→341), `Document.tsx` (553→405),
+  `functions/src/billing.ts` (777→721), `Pricing.tsx` (526→260), and `SignInForms.tsx` (416→146).
+  Each lifted pure logic into tested `calc/*` / `*-core` modules first (`calc/chat/chatStream`,
+  `lib/readerMarks`, `calc/app/{pricingView,passwordPolicy,emailShape}`, `billing-core` /
+  `promo-core`) before moving hooks and presentational page-folder components, so both the frontend
+  and `functions/` coverage ratchets rose across the run.
 
 ## Now — production hardening & go-live confidence
 
@@ -194,8 +201,10 @@ the findings are not re-derived.
   `isAllowedOrigin` CORS policy have no Firebase deps; `functions/tests/gateway.test.ts` has to mock
   `firebase-admin` + genkit just to unit-test `parseRequest`. A `gateway-core.ts` would let those be
   tested with a bare import, like every other core.
-- **[platform]** **Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
-  rewrite), `Chat.tsx` (572), `Document.tsx` (513).
+- **[platform]** ~~**Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
+  rewrite), `Chat.tsx` (572), `Document.tsx` (513).~~ **Done.** All five oversized pages/modules were
+  split along house seams with zero behavior change (Aug 2026) — see **Recently shipped**
+  ("Oversized file splits"). (`functions/src/gateway.ts`, above, is still open.)
 
 ## Later — exploratory / post-launch
 
