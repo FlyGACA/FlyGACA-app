@@ -1,48 +1,30 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { passwordRuleResults, passwordScore, type PasswordRuleId } from '@/calc/app/passwordPolicy';
 import styles from './passwordStrength.module.css';
 
 interface PasswordStrengthProps {
   password?: string;
 }
 
+const RULE_LABEL_KEY: Record<PasswordRuleId, string> = {
+  length: 'account.ruleLength',
+  mixed: 'account.ruleMixed',
+  number: 'account.ruleNumber',
+  special: 'account.ruleSpecial',
+};
+
 export function PasswordStrength({ password = '' }: PasswordStrengthProps) {
   const { t } = useTranslation();
 
-  const requirements = useMemo(() => {
-    return [
-      { id: 'length', label: t('account.ruleLength'), test: (val: string) => val.length >= 8 },
-      {
-        id: 'mixed',
-        label: t('account.ruleMixed'),
-        test: (val: string) => /[a-z]/.test(val) && /[A-Z]/.test(val),
-      },
-      { id: 'number', label: t('account.ruleNumber'), test: (val: string) => /\d/.test(val) },
-      {
-        id: 'special',
-        label: t('account.ruleSpecial'),
-        test: (val: string) => /[^A-Za-z0-9]/.test(val),
-      },
-    ];
-  }, [t]);
+  // Rule tests + score come from the shared policy (src/calc/app/passwordPolicy),
+  // the same source the sign-up form validates against; only labels live here.
+  const results = useMemo(
+    () => passwordRuleResults(password).map((r) => ({ ...r, label: t(RULE_LABEL_KEY[r.id]) })),
+    [password, t],
+  );
 
-  const results = useMemo(() => {
-    return requirements.map((req) => ({
-      ...req,
-      met: req.test(password),
-    }));
-  }, [password, requirements]);
-
-  const score = useMemo(() => {
-    if (!password) return -1;
-    const lengthMet = results.find((r) => r.id === 'length')?.met;
-    if (!lengthMet) return 0;
-
-    const metCount = results.filter((r) => r.id !== 'length' && r.met).length;
-    if (metCount === 0) return 1;
-    if (metCount === 1 || metCount === 2) return 2;
-    return 3;
-  }, [password, results]);
+  const score = useMemo(() => passwordScore(password), [password]);
 
   const strengthLabel = useMemo(() => {
     if (score === -1) return '';
