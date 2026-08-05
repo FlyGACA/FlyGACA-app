@@ -26,3 +26,15 @@ export function relatedDocs(docs: CorpusDoc[], slug: string | undefined, limit =
   if (!current) return [];
   return docs.filter((d) => d.slug !== slug && d.category === current.category).slice(0, limit);
 }
+
+/**
+ * Coerce a corpus date-ish string to a bare `YYYY-MM-DD`, or `undefined` when it
+ * isn't date-shaped. The reader resolves a document's freshness in order
+ * effectiveDate → revision → the index's generated date, coercing each through
+ * this. Mirrors the same coercion in `scripts/build-sitemap.mjs` +
+ * `scripts/prerender-head.mjs` — those are plain Node `.mjs` and can't import
+ * this TS, so keep the three in sync by hand.
+ */
+export function asDate(v?: string): string | undefined {
+  return v && /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : undefined;
+}

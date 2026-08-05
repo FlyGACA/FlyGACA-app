@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
+import { asDate, docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
 import type { CorpusDoc } from '@/lib/content';
 
 const doc = (slug: string, category: string): CorpusDoc => ({ slug, title: slug, category });
@@ -40,5 +40,19 @@ describe('relatedDocs', () => {
   it('is empty for an unknown slug or a lone category', () => {
     expect(relatedDocs(docs, 'nope')).toEqual([]);
     expect(relatedDocs(docs, 'part-91')).toEqual([]);
+  });
+});
+
+describe('asDate', () => {
+  it('truncates a date-shaped string to YYYY-MM-DD', () => {
+    expect(asDate('2026-07-23')).toBe('2026-07-23');
+    expect(asDate('2026-07-23T09:00:00Z')).toBe('2026-07-23');
+  });
+
+  it('is undefined for a non-date string, empty, or missing value', () => {
+    expect(asDate('Rev. 3')).toBeUndefined();
+    expect(asDate('2026')).toBeUndefined();
+    expect(asDate('')).toBeUndefined();
+    expect(asDate(undefined)).toBeUndefined();
   });
 });

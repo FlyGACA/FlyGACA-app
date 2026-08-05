@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   clearAnnotations,
   clearHighlights,
+  decorateHeadings,
   highlightMatches,
   nearestSectionId,
   wrapAnnotation,
@@ -115,5 +116,69 @@ describe('wrapAnnotation / clearAnnotations', () => {
     clearAnnotations(root);
     expect(root.querySelectorAll('mark[data-annot]')).toHaveLength(0);
     expect(root.querySelectorAll('mark[data-hit]')).toHaveLength(1);
+  });
+});
+
+describe('decorateHeadings', () => {
+  const opts = (onCopy: (id: string) => void) => ({
+    anchorTargetClass: 'anchorTarget',
+    anchorClass: 'anchor',
+    label: 'Copy link',
+    onCopy,
+  });
+
+  it('injects a clean clause anchor and a copy-link button per section heading', () => {
+    const root = reader('<h2 id="sec-noise91-155">§ 91.155 Basic VFR weather minimums</h2>');
+    decorateHeadings(
+      root,
+      opts(() => {}),
+    );
+    const target = root.querySelector('span#sec-91-155');
+    expect(target).not.toBeNull();
+    expect(target?.getAttribute('aria-hidden')).toBe('true');
+    expect(target?.className).toBe('anchorTarget');
+    const btn = root.querySelector('button.anchor');
+    expect(btn).not.toBeNull();
+    expect(btn?.getAttribute('aria-label')).toBe('Copy link');
+    expect(btn?.textContent).toBe('#');
+  });
+
+  it('copies the clean id when derivable, else the heading id', () => {
+    const copied: string[] = [];
+    const root = reader(
+      '<h2 id="sec-noise91-155">§ 91.155 minimums</h2><h3 id="sec-intro">Introduction</h3>',
+    );
+    decorateHeadings(
+      root,
+      opts((id) => copied.push(id)),
+    );
+    root.querySelectorAll<HTMLButtonElement>('button.anchor').forEach((b) => b.click());
+    // The § P.n heading copies the clean id; the prose heading falls back to its own id.
+    expect(copied).toEqual(['sec-91-155', 'sec-intro']);
+  });
+
+  it('is idempotent — a second run adds no duplicate anchor or button', () => {
+    const root = reader('<h2 id="sec-noise91-155">§ 91.155 minimums</h2>');
+    decorateHeadings(
+      root,
+      opts(() => {}),
+    );
+    decorateHeadings(
+      root,
+      opts(() => {}),
+    );
+    expect(root.querySelectorAll('span#sec-91-155')).toHaveLength(1);
+    expect(root.querySelectorAll('button.anchor')).toHaveLength(1);
+  });
+
+  it('does not inject a target when the heading already carries the clean id', () => {
+    const root = reader('<h2 id="sec-91-155">§ 91.155 minimums</h2>');
+    decorateHeadings(
+      root,
+      opts(() => {}),
+    );
+    // No extra span — the heading's own id already is the clean anchor.
+    expect(root.querySelector('span#sec-91-155')).toBeNull();
+    expect(root.querySelectorAll('button.anchor')).toHaveLength(1);
   });
 });
