@@ -2559,6 +2559,184 @@
     "askAdel": "Learn more with Captain Adel",
     "tools": "Related tools",
     "items": {
+      "gaca-medical-class-2": {
+        "name": "GACA Class 2 medical",
+        "blurb": "The medical certificate a private pilot needs under GACAR Part 67, and how it differs from Class 1.",
+        "intro": "A Class 2 medical certificate is the aeromedical standard for private (PPL) flying in the Kingdom. It is issued under the GACAR Part 67 medical standards by a GACA-authorized examiner and sits a step below the Class 1 that commercial pilots need. This guide explains who needs a Class 2, what it covers, and where to confirm the current standards. It is an educational overview, not the regulation, so verify the requirements in GACAR Part 67 at gaca.gov.sa.",
+        "sections": [
+          {
+            "h": "Who needs a Class 2",
+            "p": "A Class 2 medical is the minimum for exercising Private Pilot Licence privileges, and a student pilot needs a valid medical before flying solo. If you intend to fly commercially you will need the higher Class 1 instead. GACAR Part 67 sets which class each privilege requires."
+          },
+          {
+            "h": "What is assessed",
+            "p": "Like the higher classes, a Class 2 examination covers vision, hearing, cardiovascular health, and general physical and mental fitness, judged against the Class 2 standard by a GACA-authorized aviation medical examiner. The Class 2 thresholds are generally less demanding than Class 1, but the current standards are set by GACA."
+          },
+          {
+            "h": "Validity",
+            "p": "A Class 2 certificate is valid for a set period that typically shortens as you get older. The exact validity periods are in GACAR Part 67 — track your expiry so you never fly on a lapsed medical."
+          },
+          {
+            "h": "Class 2 vs Class 1",
+            "p": "Class 1 is the higher standard for commercial and airline pilots; Class 2 is for private pilots. Holding a current Class 1 also satisfies the Class 2 requirement, but not the other way round. Match your medical class to the privileges you intend to exercise."
+          },
+          {
+            "h": "Getting and keeping one",
+            "p": "Book with a GACA-authorized aviation medical examiner, bring identification and any relevant medical history, and renew before it expires. The Fly GACA medical-validity tool estimates your expiry from the issue date, but the certificate and GACAR Part 67 are the authority."
+          }
+        ],
+        "adel": "What does a GACA Class 2 medical assess, who needs it, and how does it differ from Class 1 under GACAR Part 67?",
+        "takeaways": [
+          "Class 2 is the medical standard for private (PPL) flying, a step below Class 1.",
+          "A student pilot needs a valid medical before their first solo.",
+          "It assesses vision, hearing, cardiovascular and general fitness, to the Class 2 standard.",
+          "Validity is time-limited and shortens with age — confirm the period in GACAR Part 67.",
+          "A current Class 1 also covers Class 2, but not the reverse; match the class to your privileges."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 67 medical standards, administered by GACA-authorized examiners.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Who needs it",
+            "value": "Private pilots (PPL) and student pilots before solo.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "What it assesses",
+            "value": "Vision, hearing, cardiovascular health and general fitness, to the Class 2 standard.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Examiner",
+            "value": "A GACA-authorized aviation medical examiner (AME).",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Validity",
+            "value": "Time-limited and shorter with age — confirm the current period.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Vs Class 1",
+            "value": "Class 1 (commercial) is higher and also covers Class 2; the reverse is not true.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is a GACA Class 2 medical certificate?",
+            "a": "A GACA Class 2 medical is the aeromedical certificate required to exercise Private Pilot Licence (PPL) privileges, issued under the GACAR Part 67 medical standards by a GACA-authorized aviation medical examiner. It is a step below the Class 1 that commercial and airline pilots need. Confirm the current standards in GACAR Part 67."
+          },
+          {
+            "q": "Who needs a Class 2 medical in Saudi Arabia?",
+            "a": "Private pilots need a valid Class 2 medical to exercise their privileges, and student pilots need a valid medical before flying solo. If you intend to fly commercially you need the higher Class 1 instead. Check which class your intended privileges require in GACAR Part 67."
+          },
+          {
+            "q": "What does a Class 2 aviation medical examine?",
+            "a": "It assesses vision, hearing, cardiovascular health, and general physical and mental fitness against the GACAR Part 67 Class 2 standards, which are generally less demanding than Class 1. The exact tests are set by GACA — verify the current requirements with a GACA-authorized examiner."
+          },
+          {
+            "q": "How long is a GACA Class 2 medical valid?",
+            "a": "The validity is time-limited and generally shortens as you get older. The current periods are set in GACAR Part 67 — confirm your exact validity with GACA, as it depends on your age. Renew before it expires so you never fly on a lapsed medical."
+          },
+          {
+            "q": "Is a Class 2 medical enough to fly commercially?",
+            "a": "No. Commercial (CPL) and airline (ATPL) privileges require the higher Class 1 medical; a Class 2 only covers private flying. A current Class 1 also satisfies the Class 2 requirement, but a Class 2 does not meet the Class 1 standard. Confirm the class your privileges need in GACAR Part 67. Fly GACA is an independent study aid and does not conduct examinations or issue certificates; GACA is the authority."
+          }
+        ]
+      },
+      "vfr-weather-minimums": {
+        "name": "VFR weather minimums in Saudi Arabia",
+        "blurb": "The flight visibility and distance from cloud you need to fly VFR under GACAR Part 91, and how they change with airspace and altitude.",
+        "intro": "Flying under visual flight rules means staying clear of cloud and keeping enough visibility to see and avoid other traffic and terrain. GACAR Part 91 sets the minimum flight visibility and distance from cloud for VFR, and they change with the class of airspace and your altitude. This guide explains the shape of those minimums and where to confirm the exact figures. It is an educational overview, not the regulation, so always read the current numbers in GACAR Part 91 at gaca.gov.sa.",
+        "sections": [
+          {
+            "h": "What VFR minimums are",
+            "p": "Under visual flight rules you navigate by outside visual reference, so the rules require a minimum flight visibility and a minimum distance from cloud, measured below, above and horizontally, so you can see and avoid other aircraft. These basic VFR weather minimums live in GACAR Part 91 (§91.155). Meeting them is a condition of flying VFR, not a recommendation."
+          },
+          {
+            "h": "They change with airspace and altitude",
+            "p": "The required visibility and cloud clearance depend on the class of airspace you are in and whether you are above or below certain altitudes. Controlled airspace generally demands more; uncontrolled airspace (Class G) near the surface demands less. The airspace classes themselves are defined in GACAR Part 71. Identify your airspace first, then read the minimum that applies to it."
+          },
+          {
+            "h": "Special VFR",
+            "p": "When a control zone is below the basic VFR minimums, an air traffic control clearance for Special VFR may allow flight clear of cloud with a reduced visibility, at the controller's discretion. It is a clearance you request, not an entitlement, and it carries its own conditions in GACAR Part 91."
+          },
+          {
+            "h": "Night and other limits",
+            "p": "Additional limits can apply at night and in some airspace, and VFR flight is not permitted in Class A. Night VFR also interacts with the night-rating and recency rules. Treat the basic minimums as the floor and layer any stricter local or operational limit on top of them."
+          },
+          {
+            "h": "Before you go",
+            "p": "Get the current weather (METAR/TAF) and forecasts, compare them against the minimum for your route's airspace and altitude, and build a margin. If the numbers are close, the safe answer is often to wait. The Fly GACA VFR minimums and airspace tools help you check, but the regulation is the authority."
+          }
+        ],
+        "adel": "What are the GACAR Part 91 basic VFR weather minimums, and how do the visibility and cloud-clearance requirements change with airspace class?",
+        "takeaways": [
+          "VFR requires a minimum flight visibility and a set distance from cloud, from GACAR Part 91 (§91.155).",
+          "The exact figures change with airspace class (defined in Part 71) and your altitude.",
+          "Controlled airspace generally needs more; Class G near the surface needs less; VFR is barred in Class A.",
+          "Special VFR is an ATC clearance for reduced minimums in a control zone, not an entitlement.",
+          "Check current weather against the minimum for your airspace, and confirm the exact numbers in GACAR Part 91."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rule",
+            "value": "Basic VFR weather minimums are set in GACAR Part 91.",
+            "ref": "GACAR §91.155"
+          },
+          {
+            "label": "What is required",
+            "value": "A minimum flight visibility and a minimum distance from cloud (below, above, horizontal).",
+            "ref": "GACAR §91.155"
+          },
+          {
+            "label": "Varies by",
+            "value": "Airspace class and altitude — controlled airspace generally requires more.",
+            "ref": "GACAR Part 91"
+          },
+          {
+            "label": "Airspace classes",
+            "value": "The classes that drive the minimums are defined in GACAR Part 71.",
+            "ref": "GACAR Part 71"
+          },
+          {
+            "label": "Special VFR",
+            "value": "An ATC clearance for reduced minimums in a control zone, at the controller's discretion.",
+            "ref": "GACAR Part 91"
+          },
+          {
+            "label": "Class A",
+            "value": "VFR flight is not permitted in Class A airspace.",
+            "ref": "GACAR Part 91"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What are the VFR weather minimums in Saudi Arabia?",
+            "a": "Under GACAR Part 91 basic VFR weather minimums (§91.155), flying under visual flight rules requires a minimum flight visibility and a minimum distance from cloud, measured below, above and horizontally. The exact figures depend on the class of airspace and your altitude. Because the numbers can change, confirm the current values in GACAR Part 91 at gaca.gov.sa rather than relying on a summary."
+          },
+          {
+            "q": "How much visibility do I need to fly VFR?",
+            "a": "The minimum flight visibility for VFR is set by GACAR Part 91 and varies with airspace class and altitude; controlled airspace generally requires more visibility than uncontrolled airspace near the surface. Identify the airspace for your route and read the required visibility for it in GACAR Part 91."
+          },
+          {
+            "q": "How far from clouds do I have to stay under VFR?",
+            "a": "VFR requires a minimum distance from cloud, expressed as a distance below, above and horizontally from cloud, so you can see and avoid other traffic. The exact distances depend on the airspace class and altitude and are set in GACAR Part 91 (§91.155). Verify the current figures at source."
+          },
+          {
+            "q": "What is Special VFR?",
+            "a": "Special VFR is a clearance an air traffic controller may issue that allows flight within a control zone at less than the basic VFR minimums, typically remaining clear of cloud with a reduced visibility. It is granted at the controller's discretion and carries its own conditions in GACAR Part 91; it is something you request, not an automatic right."
+          },
+          {
+            "q": "Can I fly VFR at night in Saudi Arabia?",
+            "a": "Night VFR is subject to the basic weather minimums plus any additional night and airspace limits, and it interacts with the night-rating and recency rules. VFR is never permitted in Class A airspace. Confirm the current night and VFR requirements in GACAR Part 91 and Part 61, and treat the published minimums as a floor to build margin above."
+          }
+        ]
+      },
       "pilot-currency-and-recency": {
         "name": "Pilot currency and recency in Saudi Arabia",
         "blurb": "The recent-experience, night, instrument and flight-review rules that keep you legal to fly under GACAR Part 61.",

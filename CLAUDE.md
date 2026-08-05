@@ -198,7 +198,7 @@ for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
   for prevention + how to resolve lockfile / i18n conflicts.
 - Run `npm run verify` before committing. It chains the frontend gate —
   `typecheck → lint → format:check → test → build → check:bundle → check:perf` (`check:bundle` fails
-  if the initial gzipped JS exceeds its budget — 188 kB today; route chunks excluded by design.
+  if the initial gzipped JS exceeds its budget — 189 kB today; route chunks excluded by design.
   `check:perf` is the companion gate over **every** emitted chunk — a per-chunk gz ceiling plus a
   total-footprint ceiling — catching a lazy route chunk that balloons, which `check:bundle` ignores). CI
   (`.github/workflows/ci.yml`) mirrors the same steps individually but swaps `test` for
