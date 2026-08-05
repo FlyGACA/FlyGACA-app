@@ -32,15 +32,23 @@ import { getFirestore, FieldValue, type DocumentReference } from "firebase-admin
 import {
   amountForCheckout,
   cadenceDays,
+  cadenceOf,
+  checkoutKind,
+  describeCheckout,
   entitlementFromCheckout,
   entitlementFromPass,
   isRecurringKind,
   nextChargeAt,
+  paymentMatchesIntent,
+  redirectForIntent,
+  renewalBaseDate,
+  renewalFailureOutcome,
   sellablePackId,
   verifyMoyasarSignature,
-  MAX_RENEWAL_ATTEMPTS,
+  webhookPaymentId,
   SELLABLE_PACK_IDS,
   type Cadence,
+  type CheckoutIntent,
   type CheckoutKind,
   type Entitlement,
   type PriceEnv,
@@ -48,7 +56,7 @@ import {
 import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
 import { buildCohortOrg } from "./org-core.js";
 import { isStudentEmail } from "./student-core.js";
-import { applyPromo, normalizePromoCode, type PromoCode } from "./promo-core.js";
+import { normalizePromoCode, priceAfterPromo, type PromoCode } from "./promo-core.js";
 import {
   referralCode,
   normalizeCode,
@@ -89,40 +97,6 @@ function priceEnv(): PriceEnv {
     bundle: priceBundle.value(),
     cohort: priceCohort.value(),
   };
-}
-
-const CHECKOUT_KINDS = new Set<CheckoutKind>([
-  "pro",
-  "student",
-  "pass",
-  "credits",
-  "pack",
-  "bundle",
-  "cohort",
-]);
-function checkoutKind(v: unknown): CheckoutKind | null {
-  return typeof v === "string" && CHECKOUT_KINDS.has(v as CheckoutKind) ? (v as CheckoutKind) : null;
-}
-function cadenceOf(v: unknown): Cadence {
-  return v === "monthly" ? "monthly" : "annual";
-}
-function describeCheckout(kind: CheckoutKind, packId?: string): string {
-  switch (kind) {
-  case "pro":
-    return "Fly GACA Pro";
-  case "student":
-    return "Fly GACA Pro (Student)";
-  case "pass":
-    return "Fly GACA Exam Season Pass";
-  case "credits":
-    return "Fly GACA Captain Adel credit pack";
-  case "pack":
-    return `Fly GACA Exam Prep Pack — ${packId ?? ""}`;
-  case "bundle":
-    return "Fly GACA All-Access Exam Bundle";
-  case "cohort":
-    return "Fly GACA B2B Cohort (up to 25 seats, 90-day intake)";
-  }
 }
 
 // ---- Minimal Moyasar REST client (Node's global fetch; no SDK dependency) --------
@@ -327,25 +301,10 @@ async function upsertSubscription(uid: string, cadence: Cadence, expiresAtIso: s
     );
 }
 
-interface CheckoutIntent {
-  uid: string;
-  kind: CheckoutKind;
-  cadence?: Cadence | null;
-  packId?: string | null;
-  /** The buyer-supplied org name, for a `cohort` checkout only. */
-  orgName?: string | null;
-  ref?: string | null;
-  /** The promo code applied to `amount`, if any — bumps its `redeemed` count on grant. */
-  promo?: string | null;
-  amount: number;
-  currency: string;
-  status: "pending" | "fulfilled";
-}
-
 /**
  * Resolve a promo code to the discounted checkout amount. Reads `promoCodes/{code}`
- * and applies the pure `applyPromo` policy server-side (the client never prices its
- * own discount). Returns the original amount + `promo: null` when no code applies.
+ * and applies the pure `priceAfterPromo` policy server-side (the client never prices
+ * its own discount). Returns the original amount + `promo: null` when no code applies.
  */
 async function priceWithPromo(
   rawAmount: number,
@@ -356,32 +315,13 @@ async function priceWithPromo(
   if (!code) return { amount: rawAmount, promo: null };
   const snap = await getFirestore().collection("promoCodes").doc(code).get();
   const promo = snap.exists ? (snap.data() as PromoCode) : null;
-  const discounted = applyPromo(rawAmount, promo, kind);
-  return discounted < rawAmount ? { amount: discounted, promo: code } : { amount: rawAmount, promo: null };
-}
-
-/**
- * Where the confirming client should navigate next — a RELATIVE path (never built
- * from APP_ORIGIN), so it resolves correctly on whichever host actually served the
- * app (prod, a preview deploy, localhost) rather than forcing a redirect to the
- * configured production origin. `callback_url` (Moyasar's own redirect target, which
- * DOES need to be absolute) is built separately in createCheckoutConfig.
- */
-function redirectForIntent(intent: Pick<CheckoutIntent, "kind" | "packId">, ok: boolean): string {
-  if (ok && intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=success`;
-  if (ok && intent.kind === "bundle") return "/study/packs?checkout=success";
-  if (ok && intent.kind === "cohort") return "/business/admin?checkout=success";
-  if (ok) return "/account?checkout=success";
-  if (intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=cancel`;
-  if (intent.kind === "bundle") return "/study/packs?checkout=cancel";
-  if (intent.kind === "cohort") return "/schools?checkout=cancel";
-  return "/pricing?checkout=cancel";
+  return priceAfterPromo(rawAmount, promo, kind, code);
 }
 
 async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): Promise<void> {
   const { uid, kind } = intent;
   if (kind === "pro" || kind === "student") {
-    const cadence: Cadence = intent.cadence === "monthly" ? "monthly" : "annual";
+    const cadence: Cadence = cadenceOf(intent.cadence);
     const entitlement = entitlementFromCheckout(cadence, new Date());
     await writeEntitlement(uid, entitlement);
     await saveCardToken(uid, payment);
@@ -448,7 +388,7 @@ async function fulfillPayment(
   const intent = intentSnap.data() as CheckoutIntent;
 
   const paid = payment.status === "paid";
-  const amountOk = payment.amount === intent.amount && payment.currency === intent.currency;
+  const amountOk = paymentMatchesIntent(payment, intent);
   if (!paid || !amountOk) {
     if (!amountOk) {
       logger.error("moyasar_amount_mismatch", {
@@ -646,9 +586,8 @@ export const moyasarWebhook = onRequest(
     }
 
     // Payload shape per Moyasar's payment-webhooks docs: `{ id, type, data: <payment> }`.
-    // `data.id` is the payment id; fall back to a top-level `id` defensively.
     const body = req.body as { id?: string; data?: { id?: string } } | undefined;
-    const paymentId = body?.data?.id ?? body?.id;
+    const paymentId = webhookPaymentId(body);
     if (!paymentId) {
       res.status(400).send("Missing payment id");
       return;
@@ -672,21 +611,26 @@ async function recordRenewalFailure(
   failedAttempts: number,
   uid: string,
 ): Promise<void> {
-  const attempts = failedAttempts + 1;
-  if (attempts >= MAX_RENEWAL_ATTEMPTS) {
+  const outcome = renewalFailureOutcome(failedAttempts);
+  if (outcome.gaveUp) {
     await subRef.set(
-      { status: "canceled", autoRenew: false, failedAttempts: attempts, updatedAt: FieldValue.serverTimestamp() },
+      {
+        status: outcome.status,
+        autoRenew: outcome.autoRenew,
+        failedAttempts: outcome.attempts,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
       { merge: true },
     );
-    logger.error("moyasar_renewal_gave_up", { uid, attempts });
+    logger.error("moyasar_renewal_gave_up", { uid, attempts: outcome.attempts });
   } else {
     // Retry on tomorrow's run — RENEWAL_LEAD_DAYS gives headroom before the
     // existing entitlement actually lapses.
     await subRef.set(
-      { status: "past_due", failedAttempts: attempts, updatedAt: FieldValue.serverTimestamp() },
+      { status: outcome.status, failedAttempts: outcome.attempts, updatedAt: FieldValue.serverTimestamp() },
       { merge: true },
     );
-    logger.info("funnel", { event: "renewal_retry_scheduled", uid, attempts });
+    logger.info("funnel", { event: "renewal_retry_scheduled", uid, attempts: outcome.attempts });
   }
 }
 
@@ -728,7 +672,7 @@ async function renewOne(secretKey: string, uid: string, cadence: Cadence, failed
 
   const userSnap = await db.collection("users").doc(uid).get();
   const current = userSnap.exists ? (userSnap.data()?.entitlement as Entitlement | undefined) : undefined;
-  const base = current?.expiresAt ? new Date(current.expiresAt) : new Date();
+  const base = renewalBaseDate(current?.expiresAt, new Date());
   const entitlement = entitlementFromCheckout(cadence, base);
   await writeEntitlement(uid, entitlement);
   await subRef.set(
