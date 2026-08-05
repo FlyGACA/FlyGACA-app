@@ -373,43 +373,8 @@
   }
 }
 
-/* ── Composer (clay floating input bar) ── */
-.composer {
-  display: flex;
-  gap: var(--space-3);
-  align-items: flex-end;
-  background: var(--surface);
-  /* Keep the 3px clay thickness/radius/shadow, but use the accessible input
-     border colour at rest so the field boundary clears WCAG 1.4.11 3:1
-     (the teal --clay-border tint was ~1.5:1). Focus still goes brand-hover. */
-  border: 3px solid var(--border-input);
-  border-radius: var(--clay-radius);
-  box-shadow: var(--clay-shadow);
-  padding: var(--space-3);
-  transition: var(--transition-interactive);
-}
-.composer:focus-within {
-  border-color: var(--brand-hover);
-  box-shadow:
-    var(--clay-shadow-hover),
-    0 0 0 2px color-mix(in srgb, var(--focus) 28%, transparent);
-}
-
-.input {
-  flex: 1;
-  resize: none;
-  padding: var(--space-2) var(--space-3);
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text);
-  font: inherit;
-  line-height: var(--lh-snug);
-  /* composer:focus-within handles the visual focus ring */
-}
-.input:focus {
-  outline: none;
-}
+/* The composer bar and quota gate moved to components/chat/ChatComposer.module.css
+   and ChatGate.module.css alongside their components. */
 
 .note {
   font-size: var(--fs-xs);
@@ -465,19 +430,6 @@
 }
 .proHint {
   color: var(--text-dim);
-}
-
-/* Exhausted free-tier gate (replaces the composer). */
-.gate {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.gateNote {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  text-align: center;
-  margin: 0;
 }
 
 /* ── Mobile ── give answers (and their sources) the full column ── */

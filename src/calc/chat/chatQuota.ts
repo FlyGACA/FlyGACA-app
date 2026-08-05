@@ -59,3 +59,42 @@ export function isExhausted(usage: Usage, limit: number = FREE_DAILY_LIMIT): boo
 export function consume(usage: Usage): Usage {
   return { day: usage.day, count: usage.count + 1 };
 }
+
+/**
+ * The daily allowance for a visitor: the full free allowance once signed in,
+ * the smaller anonymous "taste" otherwise.
+ */
+export function dailyLimitFor(signedIn: boolean): number {
+  return signedIn ? FREE_DAILY_LIMIT : ANON_DAILY_LIMIT;
+}
+
+export interface QuotaGate {
+  /** The allowance that applies to this visitor today. */
+  dailyLimit: number;
+  /** Questions left today (never negative). */
+  left: number;
+  /** True when the upsell/sign-in gate should replace the composer. */
+  gated: boolean;
+}
+
+/**
+ * The chat page's quota view in one pure derivation. Pro users are never
+ * gated; a signed-in free user with purchased credits keeps asking past the
+ * daily allowance (the server spends a credit); an anonymous visitor has no
+ * account to hold credits, so an exhausted taste always gates. UI nudge only —
+ * the server stays the source of truth.
+ */
+export function quotaGate(
+  raw: Partial<Usage> | null | undefined,
+  who: { signedIn: boolean; isPro: boolean; chatCredits: number },
+  now: Date = new Date(),
+): QuotaGate {
+  const usage = currentUsage(raw, now);
+  const dailyLimit = dailyLimitFor(who.signedIn);
+  return {
+    dailyLimit,
+    left: remaining(usage, dailyLimit),
+    gated:
+      !who.isPro && isExhausted(usage, dailyLimit) && (who.signedIn ? who.chatCredits <= 0 : true),
+  };
+}

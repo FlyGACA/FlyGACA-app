@@ -5,7 +5,10 @@ import {
   currentUsage,
   dayKey,
   isExhausted,
+  quotaGate,
   remaining,
+  ANON_DAILY_LIMIT,
+  dailyLimitFor,
 } from '@/calc/chat/chatQuota';
 
 const now = new Date('2026-06-20T09:00:00Z');
@@ -56,5 +59,44 @@ describe('remaining / isExhausted / consume', () => {
     let u = currentUsage(null, now);
     for (let i = 0; i < FREE_DAILY_LIMIT + 3; i++) u = consume(u);
     expect(remaining(u)).toBe(0);
+  });
+});
+
+describe('dailyLimitFor / quotaGate', () => {
+  const fresh = null;
+  const spent = (limit: number) => ({ day: dayKey(now), count: limit });
+
+  it('picks the signed-in vs anonymous allowance', () => {
+    expect(dailyLimitFor(true)).toBe(FREE_DAILY_LIMIT);
+    expect(dailyLimitFor(false)).toBe(ANON_DAILY_LIMIT);
+  });
+
+  it('a fresh visitor is not gated and sees the full allowance', () => {
+    const g = quotaGate(fresh, { signedIn: false, isPro: false, chatCredits: 0 }, now);
+    expect(g).toEqual({ dailyLimit: ANON_DAILY_LIMIT, left: ANON_DAILY_LIMIT, gated: false });
+  });
+
+  it('an anonymous visitor gates once the taste is spent (credits ignored)', () => {
+    const g = quotaGate(spent(ANON_DAILY_LIMIT), { signedIn: false, isPro: false, chatCredits: 9 }, now);
+    expect(g.gated).toBe(true);
+    expect(g.left).toBe(0);
+  });
+
+  it('a signed-in free user gates only with no credits left', () => {
+    const who = { signedIn: true, isPro: false };
+    expect(quotaGate(spent(FREE_DAILY_LIMIT), { ...who, chatCredits: 0 }, now).gated).toBe(true);
+    expect(quotaGate(spent(FREE_DAILY_LIMIT), { ...who, chatCredits: 3 }, now).gated).toBe(false);
+  });
+
+  it('Pro users are never gated', () => {
+    const g = quotaGate(spent(FREE_DAILY_LIMIT), { signedIn: true, isPro: true, chatCredits: 0 }, now);
+    expect(g.gated).toBe(false);
+  });
+
+  it("yesterday's spend resets today", () => {
+    const yesterday = { day: '2026-06-19', count: FREE_DAILY_LIMIT };
+    const g = quotaGate(yesterday, { signedIn: true, isPro: false, chatCredits: 0 }, now);
+    expect(g.gated).toBe(false);
+    expect(g.left).toBe(FREE_DAILY_LIMIT);
   });
 });
