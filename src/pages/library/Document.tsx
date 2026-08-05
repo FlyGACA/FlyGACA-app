@@ -63,7 +63,12 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const index = useFetchJson<CorpusIndex>(corpus.index);
   const docs = useMemo(() => index.data?.documents ?? [], [index.data]);
   const doc = docs.find((d) => d.slug === slug);
-  const { text, error, loading } = useFetchText(`${corpus.dir}/${slug}.html`);
+  // Skip the body request in two cases: the index that would tell us whether
+  // this doc has a body is still loading, and cite-only docs (no body exists —
+  // fetching would 404 and surface as a misleading "could not load" error).
+  const citeOnly = !!doc?.citeOnly;
+  const bodyPath = index.data && !citeOnly ? `${corpus.dir}/${slug}.html` : '';
+  const { text, error, loading } = useFetchText(bodyPath);
   const online = useOnline();
   const prefs = useLibraryPrefs();
   const dk = docKey({ kind, slug: slug ?? '' });
@@ -158,6 +163,11 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   }, [onScroll]);
 
   const html = useMemo(() => (text ? sanitizeHtml(text) : ''), [text]);
+  // Two ways a real index entry ends up with nothing to render: it's cite-only
+  // (never fetched), or the fetch succeeded on an empty/blank file — a 200 that
+  // yields no markup, which would otherwise render as a silently blank page.
+  const noBody =
+    !!doc && !index.loading && !loading && !error && (citeOnly || (text !== null && !html));
   const toc = useMemo(() => (text ? tocFromHtml(text) : []), [text]);
   const filteredToc = useMemo(() => {
     const needle = filter.trim().toLowerCase();
@@ -219,6 +229,10 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     if (!root || !html) return;
     const heads = Array.from(root.querySelectorAll<HTMLElement>('h2[id],h3[id]'));
     if (!heads.length) return;
+    // Scroll-spy is an enhancement — skip it where IntersectionObserver isn't
+    // available (jsdom, prerender) rather than throwing. Same guard as
+    // CountUp.tsx and GlobeCanvas.tsx; the TOC still navigates without it.
+    if (typeof IntersectionObserver === 'undefined') return;
     const obs = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -350,7 +364,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
         <Link to="/library">← {t('library.title')}</Link>
       </p>
 
-      {loading && <p>{t('common.loading')}</p>}
+      {(loading || index.loading) && <p>{t('common.loading')}</p>}
       {error &&
         (online ? (
           <p role="alert">{t('common.loadError')}</p>
@@ -361,6 +375,40 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             <p>{t('offline.unavailableHint')}</p>
           </div>
         ))}
+
+      {/*
+       * No body to render, but the entry is real. Without this the page would
+       * show breadcrumbs over blank space: `html` is '' so every block below is
+       * skipped, and an empty-but-200 body never sets `error`.
+       */}
+      {noBody && (
+        <>
+          <header className={styles.head}>
+            <div className={styles.meta}>
+              {badge && <span className={styles.badge}>{badge}</span>}
+            </div>
+            {doc && <h1>{doc.title}</h1>}
+          </header>
+          <div className={styles.citeNotice} role="status">
+            <h2>{t('document.notReproduced')}</h2>
+            <p>
+              {citeOnly && doc?.source
+                ? t('document.notReproducedHint', { source: doc.source })
+                : t('document.unavailableHint')}
+            </p>
+            {doc?.sourceUrl && (
+              <a
+                className={styles.citeSource}
+                href={doc.sourceUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t('document.readAtSource')} ↗
+              </a>
+            )}
+          </div>
+        </>
+      )}
 
       {html && (
         <>

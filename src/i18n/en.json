@@ -890,7 +890,11 @@
     "saveNote": "Save note",
     "notePlaceholder": "Your note…",
     "notes": "Notes ({{n}})",
-    "removeNote": "Remove note"
+    "removeNote": "Remove note",
+    "notReproduced": "Not reproduced here",
+    "notReproducedHint": "We cite this document but don’t host its text — it’s published by {{source}} and stays with its rights holder. Open it at the official source to read it in full.",
+    "unavailableHint": "The text of this document isn’t available yet. It’s listed so lessons and questions can cite it accurately.",
+    "readAtSource": "Read at the official source"
   },
   "pressureAltitude": {
     "elevation": "Field elevation (ft)",

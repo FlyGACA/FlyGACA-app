@@ -108,7 +108,9 @@
    "title": "AC 60-22 - Aeronautical Decision Making",
    "category": "faa-rules",
    "badge": "FAA AC",
-   "sections": 0
+   "citeOnly": true,
+   "source": "FAA (Advisory Circular 60-22)",
+   "sourceUrl": "https://www.faa.gov/regulations_policies/advisory_circulars"
   },
   {
    "slug": "ac-61-138-airline-transport-pilot-certification-training-program",

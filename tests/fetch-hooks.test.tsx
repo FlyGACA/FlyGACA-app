@@ -96,4 +96,40 @@ describe('useFetchText', () => {
     expect(result.current.text).toBeNull();
     expect(result.current.error?.message).toMatch(/404/);
   });
+
+  // An empty path is the caller's "nothing to fetch" — the reader passes it for
+  // a cite-only doc, whose body was never reproduced. Requesting the corpus root
+  // instead would 404 and surface as a misleading load error.
+  it('settles idle without fetching when the path is empty', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okText('<p>nope</p>'));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result } = renderHook(() => useFetchText(''));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(result.current.text).toBeNull();
+    expect(result.current.error).toBeNull();
+  });
+
+  it('starts fetching once an empty path becomes a real one', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okText('<p>hi</p>'));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result, rerender } = renderHook(({ p }) => useFetchText(p), {
+      initialProps: { p: '' },
+    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(fetchMock).not.toHaveBeenCalled();
+    rerender({ p: '/data/page.html' });
+    await waitFor(() => expect(result.current.text).toBe('<p>hi</p>'));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  // A 0-byte file is a 200 with an empty body: no error, but nothing to render.
+  // The reader distinguishes this from "still loading" to avoid a blank page.
+  it('reports an empty body as text, not as an error', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okText('')));
+    const { result } = renderHook(() => useFetchText('/data/empty.html'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.text).toBe('');
+    expect(result.current.error).toBeNull();
+  });
 });

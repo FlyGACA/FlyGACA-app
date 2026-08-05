@@ -93,4 +93,37 @@ describe('corpus data shape', { timeout: 30_000 }, () => {
     // Guards against a migration clobbering the label with a ref object.
     expect(qs.every((q) => q.cite === undefined || typeof q.cite === 'string')).toBe(true);
   });
+
+  /**
+   * Every reference-index entry must resolve to something a reader can show:
+   * either a non-empty body file, or `citeOnly` + a `sourceUrl` to link out to.
+   * A 0-byte body is the dangerous case — it fetches 200, so it never trips the
+   * reader's error path and renders as a silently blank page (that was AC 60-22,
+   * blank since it was added). Lessons and quiz questions deep-link straight
+   * into this reader, so a broken entry ships as a dead citation.
+   */
+  it('every reference-index doc has a body or is cite-only with a source', () => {
+    const idx = JSON.parse(read('reference-index.json')) as {
+      documents: Array<{ slug: string; citeOnly?: boolean; sourceUrl?: string }>;
+    };
+    expect(idx.documents.length).toBeGreaterThan(0);
+
+    const bodyBytes = (slug: string) => {
+      try {
+        return readFileSync(join(DATA_DIR, 'library', `${slug}.html`)).byteLength;
+      } catch {
+        return -1; // no file at all
+      }
+    };
+
+    const broken = idx.documents
+      .filter((d) => !d.citeOnly && bodyBytes(d.slug) <= 0)
+      .map((d) => `${d.slug} (${bodyBytes(d.slug) < 0 ? 'no file' : 'empty file'})`);
+    expect(broken, `reference docs with no readable body: ${broken.join(', ')}`).toEqual([]);
+
+    // Cite-only entries are the deliberate opposite: no body, but they must give
+    // the reader somewhere to send the user.
+    const sourceless = idx.documents.filter((d) => d.citeOnly && !d.sourceUrl).map((d) => d.slug);
+    expect(sourceless, `cite-only docs missing sourceUrl: ${sourceless.join(', ')}`).toEqual([]);
+  });
 });

@@ -7,11 +7,22 @@ interface FetchState {
   loading: boolean;
 }
 
-/** Loads a text/HTML asset at runtime with abort-on-unmount. */
+/**
+ * Loads a text/HTML asset at runtime with abort-on-unmount.
+ *
+ * An empty `path` is an explicit "nothing to fetch" — it settles idle (no text,
+ * no error, not loading) rather than requesting the corpus root. Callers use it
+ * to skip the request entirely: while the index that names the file is still in
+ * flight, or for a cite-only doc whose body was never reproduced.
+ */
 export function useFetchText(path: string): FetchState {
-  const [state, setState] = useState<FetchState>({ text: null, error: null, loading: true });
+  const [state, setState] = useState<FetchState>({ text: null, error: null, loading: !!path });
 
   useEffect(() => {
+    if (!path) {
+      setState({ text: null, error: null, loading: false });
+      return;
+    }
     const controller = new AbortController();
     setState({ text: null, error: null, loading: true });
     fetch(dataUrl(path), { signal: controller.signal })

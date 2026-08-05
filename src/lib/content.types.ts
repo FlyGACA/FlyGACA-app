@@ -74,6 +74,15 @@ export interface CorpusDoc extends SourceProvenance {
   badge?: string;
   sections?: number;
   outline?: string[];
+  /**
+   * The document body is deliberately NOT reproduced here — third-party
+   * copyright (Cessna, ICAO) or a paywalled source. The entry still exists so
+   * lessons and quiz questions can cite it; the reader shows a cite-only notice
+   * that links out to `sourceUrl` instead of fetching a body that isn't there.
+   */
+  citeOnly?: boolean;
+  /** Human-readable rights holder, shown with the cite-only notice. */
+  source?: string;
 }
 
 export interface CorpusIndex {
