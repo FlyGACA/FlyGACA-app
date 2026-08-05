@@ -4,6 +4,7 @@ import {
   applyPromo,
   isPromoApplicable,
   normalizePromoCode,
+  priceAfterPromo,
   type PromoCode,
 } from "../src/promo-core.js";
 
@@ -68,5 +69,29 @@ describe("applyPromo", () => {
     expect(applyPromo(44900, { type: "percent", value: 25, active: false }, "pro", now)).toBe(44900);
     const scoped: PromoCode = { type: "percent", value: 25, active: true, appliesTo: ["bundle"] };
     expect(applyPromo(44900, scoped, "pro", now)).toBe(44900);
+  });
+});
+
+describe("priceAfterPromo", () => {
+  it("reports the code only when it actually lowers the amount", () => {
+    const p: PromoCode = { type: "percent", value: 25, active: true };
+    expect(priceAfterPromo(44900, p, "pro", "LAUNCH25", now)).toEqual({
+      amount: 33675,
+      promo: "LAUNCH25",
+    });
+  });
+
+  it("treats a present-but-inapplicable code as no promo", () => {
+    // Expired code → applyPromo returns the amount unchanged → not stamped onto the intent.
+    const expired: PromoCode = { type: "percent", value: 25, active: true, expiresAt: past };
+    expect(priceAfterPromo(44900, expired, "pro", "OLD", now)).toEqual({ amount: 44900, promo: null });
+    // Wrong-kind scope.
+    const scoped: PromoCode = { type: "percent", value: 25, active: true, appliesTo: ["bundle"] };
+    expect(priceAfterPromo(44900, scoped, "pro", "BUNDLEONLY", now)).toEqual({
+      amount: 44900,
+      promo: null,
+    });
+    // No code doc at all.
+    expect(priceAfterPromo(44900, null, "pro", "MISSING", now)).toEqual({ amount: 44900, promo: null });
   });
 });

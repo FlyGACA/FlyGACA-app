@@ -30,6 +30,47 @@ export function isRecurringKind(kind: CheckoutKind): boolean {
   return kind === "pro" || kind === "student";
 }
 
+/** The set of accepted checkout kinds — the allow-list `checkoutKind` narrows to. */
+export const CHECKOUT_KINDS = new Set<CheckoutKind>([
+  "pro",
+  "student",
+  "pass",
+  "credits",
+  "pack",
+  "bundle",
+  "cohort",
+]);
+
+/** Narrow untrusted client input to a known {@link CheckoutKind}, else null. */
+export function checkoutKind(v: unknown): CheckoutKind | null {
+  return typeof v === "string" && CHECKOUT_KINDS.has(v as CheckoutKind) ? (v as CheckoutKind) : null;
+}
+
+/** Coerce untrusted cadence input: only "monthly" is monthly; everything else is annual. */
+export function cadenceOf(v: unknown): Cadence {
+  return v === "monthly" ? "monthly" : "annual";
+}
+
+/** The Moyasar payment description (product line) for a checkout kind. */
+export function describeCheckout(kind: CheckoutKind, packId?: string): string {
+  switch (kind) {
+  case "pro":
+    return "Fly GACA Pro";
+  case "student":
+    return "Fly GACA Pro (Student)";
+  case "pass":
+    return "Fly GACA Exam Season Pass";
+  case "credits":
+    return "Fly GACA Captain Adel credit pack";
+  case "pack":
+    return `Fly GACA Exam Prep Pack — ${packId ?? ""}`;
+  case "bundle":
+    return "Fly GACA All-Access Exam Bundle";
+  case "cohort":
+    return "Fly GACA B2B Cohort (up to 25 seats, 90-day intake)";
+  }
+}
+
 /** Configured SAR list prices (major units, e.g. "59" or "59.00") for every sellable
  * SKU — the authoritative source the server derives the halalas amount from. Mirror
  * the indicative figures shown on `/pricing` (src/pages/pricing/Pricing.tsx) and the
@@ -240,4 +281,107 @@ export function verifyMoyasarSignature(
   const a = Buffer.from(expected, "utf8");
   const b = Buffer.from(signature, "utf8");
   return a.length === b.length && timingSafeEqual(a, b);
+}
+
+// ---- Checkout intent + fulfilment (pure) ----------------------------------------
+
+/**
+ * The server-trusted checkout record persisted at `checkoutIntents/{id}` by the
+ * checkout callable and read back at fulfilment. The `amount`/`currency`/`uid`/`kind`
+ * here — never the payment's own (browser-influenced) metadata — decide what gets
+ * granted; see billing.ts `fulfillPayment`.
+ */
+export interface CheckoutIntent {
+  uid: string;
+  kind: CheckoutKind;
+  cadence?: Cadence | null;
+  packId?: string | null;
+  /** The buyer-supplied org name, for a `cohort` checkout only. */
+  orgName?: string | null;
+  ref?: string | null;
+  /** The promo code applied to `amount`, if any — bumps its `redeemed` count on grant. */
+  promo?: string | null;
+  amount: number;
+  currency: string;
+  status: "pending" | "fulfilled";
+}
+
+/**
+ * Where the confirming client should navigate next — a RELATIVE path (never built
+ * from APP_ORIGIN) so it resolves on whichever host served the app (prod, a preview
+ * deploy, localhost). Moyasar's own absolute `callback_url` is built separately.
+ */
+export function redirectForIntent(
+  intent: Pick<CheckoutIntent, "kind" | "packId">,
+  ok: boolean,
+): string {
+  if (ok && intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=success`;
+  if (ok && intent.kind === "bundle") return "/study/packs?checkout=success";
+  if (ok && intent.kind === "cohort") return "/business/admin?checkout=success";
+  if (ok) return "/account?checkout=success";
+  if (intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=cancel`;
+  if (intent.kind === "bundle") return "/study/packs?checkout=cancel";
+  if (intent.kind === "cohort") return "/schools?checkout=cancel";
+  return "/pricing?checkout=cancel";
+}
+
+/**
+ * The anti-tamper cross-check at fulfilment: a fetched payment matches the stored
+ * intent only when its amount AND currency are exactly the server-priced ones — the
+ * browser could have altered the widget's amount/metadata before submitting, so the
+ * intent (not the payment) is the source of truth for what was owed.
+ */
+export function paymentMatchesIntent(
+  payment: { amount: number; currency: string },
+  intent: { amount: number; currency: string },
+): boolean {
+  return payment.amount === intent.amount && payment.currency === intent.currency;
+}
+
+/**
+ * The payment id from a Moyasar webhook body. Payload shape per Moyasar's
+ * payment-webhooks docs is `{ id, type, data: <payment> }`, so `data.id` is the
+ * payment id; fall back to a top-level `id` defensively.
+ */
+export function webhookPaymentId(
+  body: { id?: string; data?: { id?: string } } | undefined,
+): string | undefined {
+  return body?.data?.id ?? body?.id;
+}
+
+/** The subscription state after a failed renewal charge (pure — the wrapper writes it). */
+export interface RenewalFailureOutcome {
+  /** The incremented failed-attempt count to persist. */
+  attempts: number;
+  /** True once the retry budget is spent and auto-renew gives up. */
+  gaveUp: boolean;
+  status: "canceled" | "past_due";
+  /** Present (and false) only when giving up, to switch auto-renew off. */
+  autoRenew?: false;
+}
+
+/**
+ * The retry/give-up ladder for a failed renewal charge: increment the attempt count,
+ * and once it reaches `max` (default MAX_RENEWAL_ATTEMPTS) cancel + switch auto-renew
+ * off (the plan then lapses at its already-set `expiresAt`); otherwise mark it
+ * past_due for tomorrow's sweep.
+ */
+export function renewalFailureOutcome(
+  failedAttempts: number,
+  max: number = MAX_RENEWAL_ATTEMPTS,
+): RenewalFailureOutcome {
+  const attempts = failedAttempts + 1;
+  return attempts >= max
+    ? { attempts, gaveUp: true, status: "canceled", autoRenew: false }
+    : { attempts, gaveUp: false, status: "past_due" };
+}
+
+/**
+ * The base date a successful renewal charge extends from: the current `expiresAt`
+ * when present, else `now`. NB (pinned behavior): this extends from `expiresAt` even
+ * when it is already in the PAST, so a long-lapsed subscriber who renews gets a period
+ * measured from their old expiry rather than from today. Documented here, not changed.
+ */
+export function renewalBaseDate(currentExpiresAt: string | undefined, now: Date): Date {
+  return currentExpiresAt ? new Date(currentExpiresAt) : now;
 }
