@@ -240,6 +240,8 @@ merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 
 ## Where to look
 
+> 📖 **Family context:** [The Book of Fly GACA](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) is the whole-family reference — all ten repos, the shared tenets, and the glossary in one place.
+
 `MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
 `GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
 `SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility; vendored skills live under
