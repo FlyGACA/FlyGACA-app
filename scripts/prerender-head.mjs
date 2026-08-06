@@ -176,6 +176,7 @@ const STATIC_META = {
   '/developers': 'developers',
   '/hud': 'hud',
   '/about': 'about',
+  '/support': 'support',
   '/study/quiz': 'quiz',
   '/study/flashcards': 'flashcards',
   '/study/groundschool': 'groundschool',
