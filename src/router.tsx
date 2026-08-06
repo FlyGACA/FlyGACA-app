@@ -193,6 +193,7 @@ const Developers = lazyNamed(() => import('./pages/developers/Developers'), 'Dev
 const Hud = lazyNamed(() => import('./pages/hud/Hud'), 'Hud');
 const BusinessAdmin = lazyNamed(() => import('./pages/business/Admin'), 'BusinessAdmin');
 const About = lazyNamed(() => import('./pages/about/About'), 'About');
+const SupportPage = lazyNamed(() => import('./pages/support/SupportPage'), 'SupportPage');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
@@ -358,6 +359,7 @@ const mainRoutes = [
       { path: 'hud', element: <Hud /> },
       { path: 'business/admin', element: <BusinessAdmin /> },
       { path: 'about', element: <About /> },
+      { path: 'support', element: <SupportPage /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },

@@ -146,6 +146,11 @@ export function Footer() {
             <h2>{t('footer.legal')}</h2>
             <ul>
               <li>
+                <Link to="/support" viewTransition>
+                  {t('footer.support')}
+                </Link>
+              </li>
+              <li>
                 <Link to="/disclaimer" viewTransition>
                   {t('footer.disclaimerLink')}
                 </Link>
