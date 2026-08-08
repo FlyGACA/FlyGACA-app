@@ -56,6 +56,14 @@ jobs:
           # Hosting release small (see the "Offload data corpus" step + docs/
           # DATA-HOSTING.md). Empty → the app fetches /data same-origin as before.
           VITE_DATA_BASE_URL: ${{ vars.DATA_BASE_URL }}
+          # Moyasar publishable key (public, restricted to card charges — safe to
+          # ship in the page, but rotatable, so it lives in an Actions variable, not
+          # the repo). Set the MOYASAR_PUBLISHABLE_KEY repo variable (Settings →
+          # Secrets and variables → Actions → Variables) to pk_live_…; this overrides
+          # the .env.example placeholder. Empty → checkout shows "billing-unavailable"
+          # (fails closed). The matching secret key stays server-only in Secret
+          # Manager (MOYASAR_SECRET_KEY). See docs/BILLING.md.
+          VITE_MOYASAR_PUBLISHABLE_KEY: ${{ vars.MOYASAR_PUBLISHABLE_KEY }}
 
       - name: Bundle budget
         run: npm run check:bundle
