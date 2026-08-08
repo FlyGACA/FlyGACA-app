@@ -4119,12 +4119,60 @@
     "theme": "Theme",
     "getFullApp": "Get the full Fly GACA app"
   },
+  "support": {
+    "eyebrow": "Help & support",
+    "title": "Support",
+    "intro": "Need a hand with Fly GACA or one of our exam-prep apps? Reach the team below, and check the common questions for the quickest answers.",
+    "appContext": "You're viewing support for {{name}}.",
+    "appPackLink": "Open the {{name}} study pack",
+    "contactHead": "Contact us",
+    "responseNote": "We read every message and reply within 2 business days. Email us in English or Arabic.",
+    "contacts": [
+      {
+        "label": "Support & help",
+        "email": "support@flygaca.com"
+      },
+      {
+        "label": "General & corrections",
+        "email": "i@flygaca.com"
+      }
+    ],
+    "faqHead": "Common questions",
+    "faq": [
+      {
+        "q": "Do the apps need an account or internet?",
+        "a": "No. Each exam-prep app is fully offline — no sign-in, no server, no account. Study mode, quizzes, flashcards, mock exams and your progress all work the moment you install."
+      },
+      {
+        "q": "How is my study progress saved?",
+        "a": "Your progress, streaks and spaced-repetition schedule are stored on your device and shared across the Fly GACA apps on that device. There is no cloud account to set up or sign in to."
+      },
+      {
+        "q": "How do refunds and cancellations work?",
+        "a": "Paid purchases follow our Refund & Cancellation Policy, including a 14-day window for content you haven't opened. See the policy linked below, or email support@flygaca.com with your order number."
+      },
+      {
+        "q": "Is Fly GACA official?",
+        "a": "No. Fly GACA is an independent educational platform and is not affiliated with, endorsed by, or operated by GACA. GACA (gaca.gov.sa) is always the authoritative source — we cite it and defer to it."
+      },
+      {
+        "q": "I found a mistake in a question or citation.",
+        "a": "Please tell us. Email i@flygaca.com with the app, the question bank and the question, and we'll review it. Practice questions are Fly-GACA-authored study material, not real exam questions."
+      },
+      {
+        "q": "Which app matches my exam?",
+        "a": "Each app covers one Saudi certificate or rating — PPL, ELPT, AIP, CPL, IR or ATPL. Open the matching study pack on flygaca.com to compare before you buy."
+      }
+    ],
+    "relatedHead": "More help"
+  },
   "footer": {
     "tagline": "Every Saudi reg. One captain on the answer. An independent educational reference for civil aviation in the Kingdom.",
     "explore": "Explore",
     "legal": "Legal",
     "verify": "Verify",
     "contact": "Contact",
+    "support": "Support",
     "flightTools": "Flight tools",
     "airspaceHud": "Airspace HUD (simulated)",
     "disclaimerLink": "Disclaimer",
@@ -4189,6 +4237,7 @@
     "libraryMap": "GACAR Constellation Map",
     "glossary": "Aviation Glossary",
     "about": "About",
+    "support": "Support",
     "account": "Account",
     "dashboard": "Dashboard",
     "logbook": "Logbook",
@@ -4221,6 +4270,7 @@
     "libraryMap": "An interactive constellation of all GACAR Parts connected by their real cross-references — hover to identify a Part, click to read it. Part of Fly GACA's independent aviation library.",
     "glossary": "A bilingual glossary of Saudi aviation: plain-language definitions of the GACAR, AIP, airspace, weather and licensing terms and abbreviations pilots meet — METAR, QNH, VFR, PPL and more. Independent; verify against GACA.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",
+    "support": "Get help with Fly GACA and the Saudi exam-prep apps — how to contact support, response times, refunds, offline study and saved progress. Independent; not affiliated with GACA.",
     "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel, an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
   },
   "dashboard": {

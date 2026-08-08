@@ -410,6 +410,7 @@ New to the Fly GACA ecosystem? [**The Book of Fly GACA**](https://github.com/ay2
 | **Operator** | BDA Company International (شركة بدع الدولية) — CR 7030976893, Riyadh, Saudi Arabia |
 | **GitHub** | [@FlyGACA](https://github.com/FlyGACA) |
 | **Email** | [i@flygaca.com](mailto:i@flygaca.com) |
+| **Support** | [support@flygaca.com](mailto:support@flygaca.com) · [flygaca.com/support](https://flygaca.com/support) |
 | **Website** | [flygaca.com](https://flygaca.com) |
 | **Project** | [github.com/FlyGACA/FlyGACA-app](https://github.com/FlyGACA/FlyGACA-app) |
 

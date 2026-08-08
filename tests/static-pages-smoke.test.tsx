@@ -16,6 +16,7 @@ import { Hud } from '@/pages/hud/Hud';
 import { NotFound } from '@/pages/not-found/NotFound';
 import { Offline } from '@/pages/offline/Offline';
 import { DisclaimerPage, TermsPage, PrivacyPage, SafetyPage } from '@/pages/legal/LegalPage';
+import { SupportPage } from '@/pages/support/SupportPage';
 
 const PAGES: Record<string, ComponentType> = {
   About,
@@ -28,6 +29,7 @@ const PAGES: Record<string, ComponentType> = {
   TermsPage,
   PrivacyPage,
   SafetyPage,
+  SupportPage,
 };
 
 afterEach(() => {
