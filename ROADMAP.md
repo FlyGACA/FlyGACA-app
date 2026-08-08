@@ -196,15 +196,20 @@ the findings are not re-derived.
   (`guides.items.**`, `wx.code.*`, `notam.abbr.*` via `returnObjects`, `tools.items.*`, the bare
   `account.${key}` in `LogbookTable.tsx`) and a literal-match pass will call all of them dead.
   Re-run against current `main` first — the Moyasar work added a live `checkout.*` namespace.
-- **[platform]** **`functions/src/gateway.ts` (578 lines) holds pure logic that belongs in a `*-core`.**
+- **[platform]** ~~**`functions/src/gateway.ts` (578 lines) holds pure logic that belongs in a `*-core`.**
   `parseCookies`, `parseRequest` + the message/history caps, and the security-sensitive
   `isAllowedOrigin` CORS policy have no Firebase deps; `functions/tests/gateway.test.ts` has to mock
   `firebase-admin` + genkit just to unit-test `parseRequest`. A `gateway-core.ts` would let those be
-  tested with a bare import, like every other core.
+  tested with a bare import, like every other core.~~ **Done.** `functions/src/gateway-core.ts` now
+  holds `parseCookies`, `parseRequest` + the caps, and the `isAllowedOrigin` CORS allowlist — all
+  tested with a bare import in `functions/tests/gateway-core.test.ts` (no `firebase-admin`/genkit
+  mocks). The one pure helper still inline in `gateway.ts` is the ~7-line `anonQuotaKey` (a PDPL-safe
+  truncated SHA-256 IP hash), deliberately left: it's already covered via the `/chat` route and a
+  standalone lift buys little. See `docs/TESTING-ROADMAP.md` (records it as "now optional").
 - **[platform]** ~~**Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
   rewrite), `Chat.tsx` (572), `Document.tsx` (513).~~ **Done.** All five oversized pages/modules were
   split along house seams with zero behavior change (Aug 2026) — see **Recently shipped**
-  ("Oversized file splits"). (`functions/src/gateway.ts`, above, is still open.)
+  ("Oversized file splits").
 
 ## Later — exploratory / post-launch
 

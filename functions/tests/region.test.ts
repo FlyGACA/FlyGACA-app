@@ -19,7 +19,7 @@ describe("REGION", () => {
     // Pinned so a change is a deliberate, reviewed edit — not a silent drift.
     // Moving regions is a migration (new functions, stranding the live ones),
     // never a one-line edit — see the module doc comment.
-    expect(REGION).toBe("me-central2");
+    expect(REGION).toBe("me-central1");
   });
 });
 
