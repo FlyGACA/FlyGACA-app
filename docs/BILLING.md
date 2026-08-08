@@ -195,9 +195,16 @@ licence pack, `CERTIFICATE_PACK_IDS`), then redeploy.
 capability to read data):
 
 ```
-# .env.local / the production build env
-VITE_MOYASAR_PUBLISHABLE_KEY=pk_test_…   # pk_live_… in production
+# local dev → .env.local
+VITE_MOYASAR_PUBLISHABLE_KEY=pk_test_…
 ```
+
+For **production**, don't rely on the `.env.example` placeholder — the deploy workflow copies
+`.env.example` to `.env.local` and then overrides this var from a repo **Actions variable**. Set
+`MOYASAR_PUBLISHABLE_KEY` = `pk_live_…` under *Settings → Secrets and variables → Actions →
+Variables*; `deploy.yml`'s Build step injects it as `VITE_MOYASAR_PUBLISHABLE_KEY` (fails closed to
+"billing-unavailable" if the variable is unset). It's public and rotatable, so it lives as a
+variable, not a Secret-Manager secret (that's only `MOYASAR_SECRET_KEY` / `MOYASAR_WEBHOOK_SECRET`).
 
 **1. Create the webhook** — Moyasar dashboard → *Webhooks* → add `https://<host>/api/moyasar-webhook`,
 subscribed to `payment_paid` (and, if you want faster renewal-failure visibility, `payment_failed`).

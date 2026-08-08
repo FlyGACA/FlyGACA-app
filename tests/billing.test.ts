@@ -3,11 +3,11 @@ import { canCheckout, startProCheckout } from '@/lib/services/billing';
 import { FUNCTIONS_REGION } from '@/lib/services/firebase';
 
 // The billing callables (createCheckoutConfig / confirmPayment / cancelAutoRenew)
-// deploy to me-central2 (functions/src/region.ts is the source of truth). The
+// deploy to me-central1 (functions/src/region.ts is the source of truth). The
 // httpsCallable client region MUST match or checkout 404s in production.
 describe('callable region', () => {
-  it('targets me-central2 where the billing functions live', () => {
-    expect(FUNCTIONS_REGION).toBe('me-central2');
+  it('targets me-central1 where the billing functions live', () => {
+    expect(FUNCTIONS_REGION).toBe('me-central1');
   });
 });
 
