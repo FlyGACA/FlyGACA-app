@@ -116,6 +116,7 @@ const MAIN_PATHS = [
   'hud',
   'business/admin',
   'about',
+  'support',
   'disclaimer',
   'terms',
   'privacy',
