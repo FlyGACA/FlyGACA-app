@@ -284,12 +284,18 @@ async function saveCardToken(uid: string, payment: MoyasarPayment): Promise<void
     );
 }
 
-async function upsertSubscription(uid: string, cadence: Cadence, expiresAtIso: string): Promise<void> {
+async function upsertSubscription(
+  uid: string,
+  kind: CheckoutKind,
+  cadence: Cadence,
+  expiresAtIso: string,
+): Promise<void> {
   await getFirestore()
     .collection("subscriptions")
     .doc(uid)
     .set(
       {
+        kind,
         cadence,
         autoRenew: true,
         status: "active",
@@ -325,7 +331,7 @@ async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): 
     const entitlement = entitlementFromCheckout(cadence, new Date());
     await writeEntitlement(uid, entitlement);
     await saveCardToken(uid, payment);
-    await upsertSubscription(uid, cadence, entitlement.expiresAt!);
+    await upsertSubscription(uid, kind, cadence, entitlement.expiresAt!);
   } else if (kind === "pass") {
     await grantPass(uid);
   } else if (kind === "credits") {
@@ -634,7 +640,13 @@ async function recordRenewalFailure(
   }
 }
 
-async function renewOne(secretKey: string, uid: string, cadence: Cadence, failedAttempts: number): Promise<void> {
+async function renewOne(
+  secretKey: string,
+  uid: string,
+  kind: CheckoutKind | undefined,
+  cadence: Cadence,
+  failedAttempts: number,
+): Promise<void> {
   const db = getFirestore();
   const subRef = db.collection("subscriptions").doc(uid);
   const customerSnap = await db.collection("moyasarCustomers").doc(uid).get();
@@ -651,7 +663,10 @@ async function renewOne(secretKey: string, uid: string, cadence: Cadence, failed
   let payment: MoyasarPayment;
   try {
     payment = await moyasarChargeToken(secretKey, {
-      amount: amountForCheckout("pro", cadence, priceEnv()),
+      // Re-charge the plan the subscriber actually bought — a student subscription
+      // renews at the student rate, not the Pro price. Legacy subs without a stored
+      // `kind` predate student plans and are Pro.
+      amount: amountForCheckout(kind === "student" ? "student" : "pro", cadence, priceEnv()),
       currency: "SAR",
       description: `Fly GACA Pro — ${cadenceDays(cadence)}-day renewal`,
       token,
@@ -712,8 +727,8 @@ export const renewMoyasarSubscriptions = onSchedule(
 
     const secretKey = moyasarSecret.value();
     for (const doc of dueSnap.docs) {
-      const sub = doc.data() as { cadence: Cadence; failedAttempts?: number };
-      await renewOne(secretKey, doc.id, sub.cadence, sub.failedAttempts ?? 0).catch((e) => {
+      const sub = doc.data() as { cadence: Cadence; kind?: CheckoutKind; failedAttempts?: number };
+      await renewOne(secretKey, doc.id, sub.kind, sub.cadence, sub.failedAttempts ?? 0).catch((e) => {
         logger.error("moyasar_renewal_unhandled_error", { uid: doc.id, error: String(e) });
       });
     }

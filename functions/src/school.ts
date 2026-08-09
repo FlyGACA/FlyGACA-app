@@ -65,6 +65,18 @@ export const claimSchoolSeat = onCall(
     }
     if (!eligible) return { granted: false as const };
 
+    // Seat-limit guard: an invite naming an org must not unlock a seat beyond the
+    // org's paid seatLimit — the member would otherwise get a full school
+    // entitlement the org was never invoiced for.
+    if (orgId) {
+      const orgSnap = await db.collection("orgs").doc(orgId).get();
+      const seatLimit = orgSnap.data()?.seatLimit;
+      if (typeof seatLimit === "number") {
+        const memberSnap = await orgSnap.ref.collection("members").count().get();
+        if (memberSnap.data().count >= seatLimit) return { granted: false as const };
+      }
+    }
+
     const ref = db.collection("users").doc(uid);
     const snap = await ref.get();
     const current = snap.exists

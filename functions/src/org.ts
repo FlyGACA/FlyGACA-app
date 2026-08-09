@@ -137,11 +137,16 @@ export const provisionSeats = onCall(CALL_OPTS, async (request) => {
     throw new HttpsError("permission-denied", "not-an-owner");
   }
 
-  // Seat-limit check (only when the org has a limit — skip the count read otherwise).
+  // Seat-limit check (only when the org has a limit — skip the count reads otherwise).
+  // Seats used = claimed members AND outstanding invites, so an owner can't exceed
+  // the limit by firing off invites faster than members claim them.
   const seatLimit = org.seatLimit;
   if (typeof seatLimit === "number") {
-    const memberSnap = await orgSnap.ref.collection("members").count().get();
-    const seatsUsed = memberSnap.data().count;
+    const [memberSnap, inviteSnap] = await Promise.all([
+      orgSnap.ref.collection("members").count().get(),
+      db.collection("schoolInvites").where("orgId", "==", orgId).count().get(),
+    ]);
+    const seatsUsed = memberSnap.data().count + inviteSnap.data().count;
     const check = checkSeatLimit({ seatsUsed, seatLimit, requested: emails.length });
     if (!check.ok) throw new HttpsError("resource-exhausted", check.message);
   }
