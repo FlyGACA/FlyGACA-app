@@ -26,7 +26,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Run Swift tests
         run: cd apple/FlyGACAKit && swift test
@@ -38,10 +38,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: 'npm'
@@ -102,10 +102,10 @@ jobs:
         app: [ppl, elpt, aip, cpl, ir, atpl]
       fail-fast: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: 'npm'
@@ -121,7 +121,7 @@ jobs:
 
       - name: Upload build artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-build-${{ matrix.app }}-debug
           path: apple/.build/Build/Products/
@@ -141,10 +141,10 @@ jobs:
         app: [ppl, elpt, aip, cpl, ir, atpl]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: 'npm'
@@ -162,7 +162,7 @@ jobs:
 
       - name: Upload Release artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-build-${{ matrix.app }}-release-${{ github.sha }}
           path: |
@@ -173,7 +173,7 @@ jobs:
 
       - name: Upload dSYM symbols
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-dsyms-${{ matrix.app }}-${{ github.sha }}
           path: apple/.build/dSYMs/
@@ -203,10 +203,10 @@ jobs:
           - app: aip
             scheme: AIP
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: 'npm'
@@ -270,7 +270,7 @@ jobs:
 
       - name: Upload signed .ipa
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-ipa-${{ matrix.app }}-${{ github.sha }}
           path: apple/.build/export/${{ matrix.scheme }}/*.ipa
@@ -279,7 +279,7 @@ jobs:
 
       - name: Upload dSYM symbols (signed build)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-dsyms-signed-${{ matrix.app }}-${{ github.sha }}
           path: apple/.build/dSYMs/
