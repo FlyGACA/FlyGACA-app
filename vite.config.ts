@@ -196,8 +196,9 @@ export default defineConfig(({ mode }) => {
                 // Fall back to cache quickly when offline/slow instead of hanging.
                 networkTimeoutSeconds: 3,
                 expiration: { maxEntries: 350, maxAgeSeconds: 60 * 60 * 24 * 30 },
-                // Only cache successful (or opaque) responses, never errors.
-                cacheableResponse: { statuses: [0, 200] },
+                // Only cache successful responses — never errors, and never opaque
+                // (status 0) cross-origin bodies whose status can't be verified.
+                cacheableResponse: { statuses: [200] },
               },
             },
           ],

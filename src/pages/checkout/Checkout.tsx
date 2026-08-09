@@ -10,6 +10,12 @@ import styles from './Checkout.module.css';
 
 const MOYASAR_JS = 'https://cdn.moyasar.com/mpf/1.16.0/moyasar.js';
 const MOYASAR_CSS = 'https://cdn.moyasar.com/mpf/1.16.0/moyasar.css';
+// SRI pins for the pinned 1.16.0 widget assets — a compromised/rewritten CDN
+// payload fails integrity and never executes with card data in the page.
+const MOYASAR_JS_INTEGRITY =
+  'sha384-464kRf7qKZwwwkZHkhNjNWdPwx0yTYFpOndxh46T2nSMe1vPfYBndPpNhQV2sYXk';
+const MOYASAR_CSS_INTEGRITY =
+  'sha384-xi7T53rMqpdqL0IHHVRtmK8FTK07ngNwx8hHDl86cq+qHRy/tRcHezKNMJKYV/0J';
 const MOYASAR_APPLE_PAY_VALIDATE_URL = 'https://api.moyasar.com/v1/applepay/initiate';
 const FORM_ID = 'moyasar-checkout-form';
 
@@ -46,6 +52,8 @@ function loadWidgetAssets(): Promise<void> {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = MOYASAR_CSS;
+      link.integrity = MOYASAR_CSS_INTEGRITY;
+      link.crossOrigin = 'anonymous';
       document.head.appendChild(link);
     }
     if (window.Moyasar) {
@@ -61,6 +69,8 @@ function loadWidgetAssets(): Promise<void> {
     const script = document.createElement('script');
     script.src = MOYASAR_JS;
     script.async = true;
+    script.integrity = MOYASAR_JS_INTEGRITY;
+    script.crossOrigin = 'anonymous';
     script.onload = () => resolve();
     script.onerror = () => reject(new Error('widget-load-failed'));
     document.head.appendChild(script);
