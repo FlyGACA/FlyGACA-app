@@ -44,7 +44,7 @@ import {
 
 if (getApps().length === 0) initializeApp();
 
-const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: false });
+const ENFORCE_APP_CHECK = defineBoolean("ENFORCE_APP_CHECK", { default: true });
 
 // Free Captain Adel questions per day — a deploy-time param so the free-tier limit
 // can be tuned (A/B 3 vs 5/day) without a code change. The client counter stays a
@@ -108,14 +108,14 @@ export async function authenticate(req: Request): Promise<AuthContext> {
 const app = express();
 // Security middleware
 app.use(helmet());
-// req.ip = leftmost X-Forwarded-For. Without this the limiter below keys on the
-// proxy's address, collapsing every real user into ~one shared bucket (30/min
-// sitewide). The proxy-chain depth varies by front (direct function URL = 1 hop,
-// Firebase Hosting = 2, Cloudflare Worker → Hosting = 3+), so no fixed hop count
-// is right. Leftmost-XFF is client-forgeable, but a forger only shards their own
-// bucket — real browsers never send XFF — and the hard cost control is the per-turn
+// req.ip = the client address one hop back in the proxy chain. Without this the
+// limiter below keys on the proxy's address, collapsing every real user into ~one
+// shared bucket (30/min sitewide). Trusting only the LAST hop (Google edge /
+// Cloudflare) means a client-supplied X-Forwarded-For is ignored — leftmost-XFF
+// (trust proxy = true) would let a forger mint unlimited fresh per-IP buckets for
+// the anonymous quota and burst limiter. The hard cost control stays the per-turn
 // limiter on /chat below (keyed on uid, or on IP for anonymous callers).
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 // Rate limiting: 30 requests per minute per IP — a best-effort backstop in front of
 // everything, incl. the metered anonymous chat trial (per-IP daily quota below).
 app.use(
@@ -130,7 +130,7 @@ app.use(
     // share one IP).
     skip: (req) =>
       req.method === "OPTIONS" || req.path.startsWith("/v1") || req.path.startsWith("/api/v1"),
-    validate: { trustProxy: false }, // permissive trust proxy is deliberate (see above)
+    validate: { trustProxy: false }, // trust-proxy hop count is deliberate (see above)
   }),
 );
 
