@@ -10,16 +10,7 @@
          reading theme before any paint so the tokens are live for the critical-CSS
          hero and first React render. Keep the keys + hexes in sync with
          src/lib/theme.ts (THEME_COLOR). -->
-    <script>
-      try {
-        var t = localStorage.getItem('flygaca:theme');
-        if (t === 'cockpit' || t === 'day') {
-          document.documentElement.setAttribute('data-theme', t);
-          var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', t === 'day' ? '#F5F2ED' : '#121212');
-        }
-      } catch (e) {}
-    </script>
+    <script src="/boot-inline.js" defer></script>
     <meta
       name="description"
       content="Fly GACA — an independent educational reference library of Saudi civil-aviation regulations (GACAR), charts and study tools. Not affiliated with GACA."
@@ -209,17 +200,6 @@
           </div>
         </div>
       </div>
-      <script>
-        // The shell is the home hero; on any other route the SPA fallback still
-        // serves this file, so drop the shell there to avoid a wrong-page flash.
-        // `/ar` + `/ar/` are the Arabic home snapshot (main.tsx folds them onto
-        // `/?lang=ar`), so they keep the hero too.
-        var p = location.pathname;
-        if (p !== '/' && p !== '/index.html' && p !== '/ar' && p !== '/ar/') {
-          var s = document.getElementById('app-shell');
-          if (s) s.remove();
-        }
-      </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
