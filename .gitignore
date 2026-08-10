@@ -78,3 +78,6 @@ captain-art/
 # Python bytecode (skill helper scripts)
 __pycache__/
 *.py[cod]
+
+# iOS content-generation scratch output (native apps live in ay2m/FlyGACA)
+.ios-build/

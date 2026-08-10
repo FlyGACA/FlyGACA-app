@@ -198,10 +198,10 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 
 ## 🎓 Exam-Prep App Family
 
-Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused study apps** — *one GACA certificate = one app*. Each is a slice of the same shared corpus (quiz banks, flashcards, timed mock exam, mastery tracking) delivered two ways from **this one monorepo**:
+Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused study apps** — *one GACA certificate = one app*. Each is a slice of the same shared corpus (quiz banks, flashcards, timed mock exam, mastery tracking) delivered two ways:
 
-- 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`.
-- 📱 **Native iOS** — a SwiftUI target in [`apple/`](apple/ARCHITECTURE.md) (`com.flygaca.<id>`), paid one-time and sold together as an App Store bundle.
+- 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`, served from **this monorepo**.
+- 📱 **Native iOS** — a SwiftUI app (`com.flygaca.<id>`) whose code lives in the separate [`ay2m/FlyGACA`](https://github.com/ay2m/FlyGACA) repo. This monorepo stays the **source of truth for their content** — `scripts/build-ios-content.mjs` generates each app's `Content/` from the corpus + `src/lib/prepCatalog.ts`, and the iOS repo pulls it in.
 
 Every pack below is live on the **web**. The **iOS** column tracks the native app only.
 

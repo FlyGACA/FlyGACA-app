@@ -26,7 +26,7 @@ then stamp out Conversion / Medical.
 
 Note this flavor line (`com.flygaca.prep.*`, Capacitor, built by
 `scripts/build-flavor.mjs`) is a **different product line** from the native
-SwiftUI family in `apple/` (`com.flygaca.*`, `FlyGACAKit`). Don't conflate them.
+SwiftUI family in the `ay2m/FlyGACA` repo (`com.flygaca.*`, `FlyGACAKit`). Don't conflate them.
 
 ## Pricing
 
