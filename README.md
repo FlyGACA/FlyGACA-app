@@ -99,7 +99,7 @@ flowchart LR
 This repository is the modern rebuild — a strict-TypeScript **React 19 + Vite 8** frontend plus its **Firebase Cloud Functions** backend. Together they ship a blazing-fast, offline-capable Progressive Web App (and native iOS/Android shells via Capacitor) that puts the full regulatory corpus, **55+ aviation calculators**, and **Captain Adel** — a citation-first Retrieval-Augmented AI instructor — in the palm of your hand.
 
 > [!NOTE]
-> The backend gateway (`functions/`) is an Express + Genkit service running in **`me-central1`**. It proxies `/api/chat` to Captain Adel's RAG flow (Gemini) and handles Stripe billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/`, so the JS bundle stays feather-light.
+> The backend gateway (`functions/`) is an Express + Genkit service running in **`me-central1`**. It proxies `/api/chat` to Captain Adel's RAG flow (Gemini) and handles Moyasar billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/`, so the JS bundle stays feather-light.
 
 ---
 
@@ -273,7 +273,7 @@ flowchart LR
     subgraph API["🔥 Cloud Functions · me-central1"]
       GW["Express gateway<br/>/api/chat · /api/feedback"]
       RAG["🧠 Captain Adel<br/>Genkit + Gemini RAG"]
-      BILL["💳 Stripe billing<br/>+ entitlements"]
+      BILL["💳 Moyasar billing<br/>+ entitlements"]
     end
 
     DATA[("🗄️ Static JSON corpus<br/>public/data/ · network-first")]
@@ -304,7 +304,7 @@ flowchart LR
 **Backend & Native**
 - 🔥 Firebase Cloud Functions (Express) · `me-central1`
 - 🧠 Genkit + Gemini RAG (Captain Adel)
-- 💳 Stripe billing & entitlements
+- 💳 Moyasar billing & entitlements
 - 📱 Capacitor iOS / Android shells
 - 🗄️ Static JSON corpus streamed from `public/data/`
 
@@ -404,6 +404,14 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 ## 📖 The whole family, one book
 
 New to the Fly GACA ecosystem? [**The Book of Fly GACA**](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) maps all ten repositories — this monorepo, the Captain Adel service, the native iOS family, the six App Store repos and the Office — with the shared principles, the cross-platform data-parity contracts and the glossary in one place.
+
+| Repo | What it holds |
+| --- | --- |
+| **FlyGACA/FlyGACA-app** (this repo) | flygaca.com — the React/Vite web app, Firebase backend, regulatory corpus + content pipelines |
+| [FlyGACA/Captain-Adel](https://github.com/FlyGACA/Captain-Adel) | The AI flight-instructor service (captadel.com) + the shared brain behind chat |
+| [ay2m/FlyGACA](https://github.com/ay2m/FlyGACA) | The native iOS app family — FlyGACAKit + the ELPT and AIP App Store targets |
+| [FlyGACA/ELPT](https://github.com/FlyGACA/ELPT) · [AIP](https://github.com/FlyGACA/AIP) · [PPL](https://github.com/FlyGACA/PPL) · [CPL](https://github.com/FlyGACA/CPL) · [IR](https://github.com/FlyGACA/IR) · [ATPL](https://github.com/FlyGACA/ATPL) | Per-app App Store metadata repos — store listing copy, screenshots, per-app roadmap |
+| [FlyGACA/Office](https://github.com/FlyGACA/Office) | The business operating system — strategy, governance, legal, finance, GTM docs |
 
 ---
 
