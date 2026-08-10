@@ -104,8 +104,9 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
 
 ## Now — production hardening & go-live confidence
 
-The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/Cloudflare/Netlify
-mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
+The app auto-deploys to **Firebase Hosting** — the single serving front — on every merge to `main`
+(the Vercel/Cloudflare/Netlify mirrors were removed 2026-08). "Now" is about making that production
+footprint fully trustworthy.
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
   price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
@@ -119,10 +120,10 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   scope-minimization review (Aug 2026) found the current surface already minimal — every workflow's
   `GITHUB_TOKEN` is default-deny (`contents: read`, repo default confirmed `read`) with write escalated
   only per-job, and Google sign-in requests only default `openid/email/profile` (no `addScope`). It
-  also found **no third-party CI credentials exist yet** — Cloudflare/Supabase/OpenAI/App-Store-Connect
+  also found **no third-party CI credentials exist yet** — Supabase/OpenAI/App-Store-Connect
   secrets are all unset and their jobs no-op. When each is added, scope it minimally and keep it
-  confined to its one job: `CLOUDFLARE_API_TOKEN` → `Workers Scripts: Edit` only; `SUPABASE_SERVICE_ROLE_KEY`
-  - `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
+  confined to its one job: `SUPABASE_SERVICE_ROLE_KEY`
+  · `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
     Admin; the Firebase deploy SA stays **without** `datastore.indexAdmin` (see the note in `deploy.yml`).
     Separately, periodically review the operator-account **claude.ai MCP connector** consent grants
     (Airtable, Gmail, Drive, etc.) — third-party delegated grants that live outside this repo.
@@ -138,12 +139,6 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   and `functions` jobs required checks on `main`, and use descriptive squash-merge titles — recent
   history (`sd (#215)`, `j (#209)`, `,m (#208)`) doesn't self-describe, which matters for an open
   educational repo.
-- **[platform]** **Fix the Cloudflare Workers git integration.** The `Workers Builds: flygaca`
-  check fails on every commit: the Cloudflare dashboard integration targets a Worker named
-  `flygaca`, while the repo deploys `flygaca-app` (`wrangler.toml`, `deploy-cloudflare.yml`). This
-  is a **dashboard-side** fix — repoint the integration at `flygaca-app` or disconnect it (the
-  repo's deploy path is the `deploy-cloudflare.yml` Action, unaffected). Diagnosed in
-  [#253](https://github.com/FlyGACA/FlyGACA-app/pull/253).
 - **[platform]** **Dependency hygiene.** Clear the open Dependabot alerts on `main` (2 high, 4
   moderate at last check) and adopt a recurring update cadence (Dependabot config or a scheduled
   bump) so security debt doesn't accrue between feature work.
