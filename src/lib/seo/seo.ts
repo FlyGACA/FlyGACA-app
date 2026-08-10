@@ -149,13 +149,25 @@ export function canonicalRedirect(loc: {
 /**
  * Host suffixes of the *mirror* fronts that serve the same build for redundancy
  * (Firebase `*.web.app`, Vercel `*.vercel.app`, Netlify `*.netlify.app`,
- * Cloudflare `*.pages.dev`) plus their PR previews. They must stay live but must
- * NOT be indexed — otherwise Google treats them as duplicates of flygaca.com and
- * may pick one as canonical. `flygaca.com` and `localhost` (the prerender host)
- * are deliberately not matched, so neither the canonical site nor the baked
- * snapshots ever get a noindex.
+ * Cloudflare `*.pages.dev` / `*.workers.dev`) plus their PR previews. They must
+ * stay live but must NOT be indexed — otherwise Google treats them as duplicates
+ * of flygaca.com and may pick one as canonical. `flygaca.com` and `localhost`
+ * (the prerender host) are deliberately not matched, so neither the canonical
+ * site nor the baked snapshots ever get a noindex.
+ *
+ * This is a suffix test over hostnames, not a claim about which platform is
+ * canonical — `.web.app` stays correct after flygaca.com moves to the Cloudflare
+ * Worker, because `flygaca-app.web.app` remains a non-canonical Firebase host.
+ * `.workers.dev` is defence-in-depth: `wrangler.toml` sets `workers_dev = false`,
+ * so that hostname should not resolve at all.
  */
-const MIRROR_HOST_SUFFIXES = ['.web.app', '.vercel.app', '.netlify.app', '.pages.dev'];
+const MIRROR_HOST_SUFFIXES = [
+  '.web.app',
+  '.vercel.app',
+  '.netlify.app',
+  '.pages.dev',
+  '.workers.dev',
+];
 
 /** True if `hostname` is a non-canonical mirror/preview front that should noindex. */
 export function isMirrorHost(hostname: string): boolean {

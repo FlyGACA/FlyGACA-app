@@ -26,7 +26,7 @@ import { randomUUID } from "node:crypto";
 import { onCall, onRequest, HttpsError } from "firebase-functions/https";
 import { onSchedule } from "firebase-functions/scheduler";
 import { logger } from "firebase-functions";
-import { defineSecret, defineString } from "firebase-functions/params";
+import { defineBoolean, defineSecret, defineString } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue, type DocumentReference } from "firebase-admin/firestore";
 import {
@@ -70,6 +70,15 @@ if (getApps().length === 0) initializeApp();
 const moyasarSecret = defineSecret("MOYASAR_SECRET_KEY");
 const webhookSecret = defineSecret("MOYASAR_WEBHOOK_SECRET");
 const appOrigin = defineString("APP_ORIGIN");
+
+// Apple Pay is off until the merchant domain is registered. Moyasar's widget
+// validates the merchant against `public/.well-known/apple-developer-merchantid-
+// domain-association`, so offering the method before that file is served (and the
+// domain registered in the Moyasar dashboard) renders a button that fails
+// validation mid-payment — worse for the buyer than not showing it. Flip
+// MOYASAR_APPLE_PAY=true in functions/.env.flygaca-app and redeploy once the file
+// is live; it is a config change, not a code change. See docs/BILLING.md.
+const applePayEnabled = defineBoolean("MOYASAR_APPLE_PAY", { default: false });
 // SAR list prices (major units, e.g. "59" or "449.00") — see billing-core's PriceEnv.
 const priceProMonthly = defineString("MOYASAR_PRICE_PRO_MONTHLY_SAR");
 const priceProAnnual = defineString("MOYASAR_PRICE_PRO_ANNUAL_SAR");
@@ -504,8 +513,13 @@ export const createCheckoutConfig = onCall(
       callbackUrl: `${appOrigin.value()}/checkout/return`,
       // Only a saved card token can be re-charged off-session, so recurring plans
       // only offer cards/mada and force save_card; one-time purchases offer every
-      // configured method.
-      methods: recurring ? ["creditcard"] : ["creditcard", "applepay", "stcpay"],
+      // configured method — Apple Pay only once its merchant domain is registered
+      // (see `applePayEnabled`), since an unvalidated button fails mid-payment.
+      methods: recurring
+        ? ["creditcard"]
+        : applePayEnabled.value()
+          ? ["creditcard", "applepay", "stcpay"]
+          : ["creditcard", "stcpay"],
       saveCard: recurring,
       supportedNetworks: ["visa", "mastercard", "mada"],
     };

@@ -151,6 +151,7 @@ describe('isMirrorHost', () => {
       'flygaca-app-git-claude-x.vercel.app',
       'flygaca.netlify.app',
       'flygaca.pages.dev',
+      'flygaca-app.workers.dev',
     ]) {
       expect(isMirrorHost(hostname)).toBe(true);
     }

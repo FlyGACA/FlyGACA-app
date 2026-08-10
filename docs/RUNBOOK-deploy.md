@@ -63,11 +63,19 @@ Order:
 
 ## Build env vars (set in each platform's build settings)
 
-All `VITE_*` are public, non-secret (values in `.env.example`):
+All `VITE_*` are public, non-secret. **CI no longer copies `.env.example`** — it holds placeholders,
+and a placeholder is truthy enough to boot Firebase and then fail every Auth call. Both deploy
+workflows and the PR-preview workflow inject these from repo **Actions variables** (Settings →
+Secrets and variables → Actions → Variables) and hard-fail in a `Verify build env` step if a
+required one is empty. Required variables: `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`,
+`FIREBASE_DATABASE_URL`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`,
+`FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`, `FIREBASE_MEASUREMENT_ID`,
+`RECAPTCHA_ENTERPRISE_SITE_KEY`, `MOYASAR_PUBLISHABLE_KEY`, plus optional `DATA_BASE_URL` /
+`DATA_BUCKET`.
 
 | Var                                                      | Value                 | Notes                                                |
 | -------------------------------------------------------- | --------------------- | ---------------------------------------------------- |
-| `VITE_FIREBASE_API_KEY` … `VITE_FIREBASE_MEASUREMENT_ID` | from `.env.example`   | turns on Auth/Firestore/Analytics                    |
+| `VITE_FIREBASE_API_KEY` … `VITE_FIREBASE_MEASUREMENT_ID` | Actions variables     | turns on Auth/Firestore/Analytics                    |
 | `VITE_API_BASE`                                          | `/api` (default)      | leave as-is — each host proxies `/api/*` to Firebase |
 | `VITE_SITE_URL`                                          | `https://flygaca.com` | canonical origin for sitemap/SEO                     |
 | `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`                     | (optional)            | App Check; also enforce on the Functions             |
@@ -122,11 +130,19 @@ vercel deploy --prod   # uses vercel.json (build + rewrites + headers)
 
 Config: `vercel.json` (proxies `/api/(.*)` → Firebase, SPA fallback, mirrored headers/CSP).
 
-## Cloudflare Workers (mirror)
+## Cloudflare Workers — becoming canonical
+
+> **Status:** the repo is configured for Cloudflare to serve `flygaca.com`, but the
+> `flygaca-app` Worker **has never been deployed** — `CLOUDFLARE_API_TOKEN` /
+> `CLOUDFLARE_ACCOUNT_ID` are unset, so every run of `deploy-cloudflare.yml` since June has taken
+> the skip path and reported green. Until the console steps below are done, Firebase Hosting is
+> still what visitors get.
 
 **Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys the
 `flygaca-app` Worker (serving the `dist/` static assets) on every push to `main` (and on demand via
-Actions → **Deploy (Cloudflare Workers mirror)** → _Run workflow_). The deploy step is **gated on
+Actions → **Deploy (Cloudflare Workers — canonical)** → _Run workflow_). It runs the same gates as
+`deploy.yml` — `Verify build env`, `check:bundle`, `check:perf`, `prerender` + coverage — because
+once the custom domain is attached it *is* the production deploy. The deploy step is **gated on
 secrets**, so it builds but skips publishing until you add both in repo Settings → Secrets → Actions:
 
 - **`CLOUDFLARE_API_TOKEN`** — a token with the _Workers Scripts: Edit_ permission (plus account-level
@@ -138,13 +154,63 @@ secrets**, so it builds but skips publishing until you add both in repo Settings
 ```bash
 npm i -g wrangler
 npm run build
-npx wrangler deploy            # reads name, main and dist/ assets from wrangler.toml
+npx wrangler deploy --dry-run  # validate wrangler.toml + worker/index.ts, inspect the asset manifest
+npx wrangler deploy            # reads name, main, [[routes]] and dist/ assets from wrangler.toml
 ```
 
-Config: `wrangler.toml` (Workers + `[assets]` binding, `run_worker_first = ["/api/*"]`),
-`worker/index.ts` (proxies `/api/*` → Firebase, preserves SSE; serves assets otherwise),
-`public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) — both copied into `dist/`
-and honored by Workers static assets.
+Config: `wrangler.toml` (Workers + `[assets]` binding, `run_worker_first = ["/api/*"]`, the
+`flygaca.com` custom domain, and `workers_dev = false` / `preview_urls = false`), `worker/index.ts`
+(proxies `/api/*` → Firebase, preserves SSE and the raw webhook body, stamps `X-Forwarded-For`;
+serves assets otherwise), `public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) —
+both copied into `dist/` and honored natively by Workers static assets.
+
+**Why `public/_headers` owns the security headers, not the Worker.** `run_worker_first` is scoped to
+`/api/*`, so `worker/index.ts` never runs for a static path and cannot set headers there — the asset
+layer does, from `_headers`. Widening `run_worker_first` to `true` would bill a Worker invocation on
+every image and JS chunk just to restate a CSP that already has three other copies.
+`tests/csp-parity.test.ts` keeps those four copies byte-identical.
+
+**Why there is no `X-Robots-Tag` in `_headers` any more.** It would deindex the canonical
+`flygaca.com`, and `_headers` has no host-conditional syntax to exempt one host. Instead: the Worker
+publishes no second hostname (`workers_dev = false`), and the genuine mirrors carry their own rule —
+`netlify.toml` unconditionally, `vercel.json` via a `missing: host` rule.
+
+**Console steps (once, by hand):**
+
+1. Create the API token and note the account ID; add both as repo secrets.
+2. Point `flygaca.com` DNS at Cloudflare. **Keep the Firebase Hosting site alive** at
+   `flygaca-app.web.app` — the Worker proxies `/api/*` to it and Phase 1 depends on it.
+3. After the first deploy with `[[routes]]`, confirm the `flygaca.com` Custom Domain provisioned
+   (Cloudflare creates the DNS record and certificate).
+4. Add a **proxied** DNS record for `www`, then a **Redirect Rule**:
+   `http.host eq "www.flygaca.com"` → `concat("https://flygaca.com", http.request.uri)`, 301,
+   preserve query. Redirect Rules, not Bulk Redirects — this is one dynamic pattern, and it runs at
+   the edge before any Worker.
+5. **WAF:** add a skip rule for `/api/moyasar-webhook` (ideally all of `/api/*`) and make sure Bot
+   Fight Mode does not challenge it. A server-to-server POST from Moyasar with no browser
+   fingerprint is exactly what the bot heuristics challenge, and a challenged webhook fails
+   silently. `confirmPayment` is the primary fulfilment path, so this degrades the backstop rather
+   than breaking purchases — but you lose the backstop.
+6. **Fix the dashboard git integration** (ROADMAP.md): it targets a Worker named `flygaca` while the
+   repo deploys `flygaca-app`, so the `Workers Builds: flygaca` check fails on every commit. Repoint
+   it or disconnect it — if both it and `deploy-cloudflare.yml` stay live you get two competing
+   deploys of the canonical site.
+7. Confirm `workers.dev` and Preview URLs show as **Disabled** after the deploy.
+8. Promote `deploy-cloudflare.yml`'s "Note when skipped" step from `::notice::` to `::error::` +
+   `exit 1` once the custom domain resolves.
+
+**Post-deploy assertions:**
+
+```bash
+curl -sI https://flygaca.com/ | grep -i x-robots-tag        # expect NOTHING
+curl -sI https://flygaca.com/ | grep -i content-security    # expect cdn.moyasar.com + cloudfunctions.net
+curl -sI https://www.flygaca.com/library                    # expect 301 → https://flygaca.com/library
+curl -s  https://flygaca.com/library | grep -c '<footer'    # expect ≥1 (prerendered body, not the shell)
+```
+
+Then hit `/api/chat` from two different source IPs and confirm `RateLimit-Remaining` decrements
+**independently** — if they share a counter, the Worker's `X-Forwarded-For` stamp isn't landing and
+the gateway's `trust proxy` hop count needs revisiting.
 
 ## Netlify (mirror) — `netlify login` first
 

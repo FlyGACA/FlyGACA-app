@@ -199,8 +199,12 @@ capability to read data):
 VITE_MOYASAR_PUBLISHABLE_KEY=pk_test_…
 ```
 
-For **production**, don't rely on the `.env.example` placeholder — the deploy workflow copies
-`.env.example` to `.env.local` and then overrides this var from a repo **Actions variable**. Set
+For **production**, don't rely on the `.env.example` placeholder — the deploy workflows no longer
+copy `.env.example` at all. They inject every `VITE_*` from repo **Actions variables** and hard-fail
+in a `Verify build env` step if a required one is empty. (They *did* copy it, until placeholder-ising
+`.env.example` turned that into a silent outage: `isFirebaseConfigured()` is a truthiness check, so
+`your-firebase-web-api-key` booted Firebase and then failed every Auth call with
+`auth/api-key-not-valid`.) Set
 `MOYASAR_PUBLISHABLE_KEY` = `pk_live_…` under *Settings → Secrets and variables → Actions →
 Variables*; `deploy.yml`'s Build step injects it as `VITE_MOYASAR_PUBLISHABLE_KEY` (fails closed to
 "billing-unavailable" if the variable is unset). It's public and rotatable, so it lives as a
@@ -218,7 +222,11 @@ which fetches the payment server-to-server with the secret key) is the primary, 
 path, so a wrong recipe here makes the webhook inert rather than insecure — purchases still
 fulfil on the redirect back through `/checkout`.
 
-**2. Apple Pay** (only needed if you keep `applepay` in the one-time-purchase methods list):
+**2. Apple Pay** — **off by default.** `MOYASAR_APPLE_PAY` (a `defineBoolean` in `billing.ts`,
+set to `false` in `functions/.env.flygaca-app`) keeps `applepay` out of the one-time-purchase
+methods list until the steps below are done. Offering the method before the merchant domain is
+registered renders a button that fails validation mid-payment, which is worse for the buyer than
+not showing it. Work through 1–4, then flip the param to `true` and redeploy the functions:
    1. Moyasar dashboard → *Apple Pay* → add your domain (`flygaca.com`) and download the
       **Merchant Domain Association** file.
    2. Serve it, byte-for-byte, at
