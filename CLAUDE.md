@@ -181,39 +181,29 @@ source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS
 
 ## Hosting & deploy
 
-The single Vite build (`dist/`) is served from several fronts, all pointing at the **same** Firebase
-Cloud Functions gateway for `/api/*`:
+**Firebase Hosting is the single serving front.** The Vite build (`dist/`) is served only from
+Firebase, which also fronts the Cloud Functions gateway for `/api/*` — one platform for hosting +
+backend. (The Vercel / Cloudflare / Netlify mirror fronts were removed 2026-08 to consolidate; see
+`docs/RUNBOOK-deploy.md` for the history. If a CDN is ever wanted, use DNS-only pass-through, not a
+second build-and-serve front.)
 
-- **Firebase Hosting** is the **canonical origin**: it fronts the Cloud Functions (`chat`,
-  `moyasarWebhook`) and — since the DNS cutover completed 2026-07-31 — serves the `flygaca.com`
-  apex and `www` directly (with `flygaca-app.web.app` as the underlying site). `npm run deploy`
-  builds → `prerender` → coverage check → `firebase deploy`, but the **production deploy path is
-  the `deploy.yml` workflow**, which additionally offloads the corpus to the bucket.
-- **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) is **becoming the canonical front**
-  (migration in progress): `wrangler.toml` declares the `flygaca.com` custom domain and
-  `workers_dev = false`, and `deploy-cloudflare.yml` runs the same gates as `deploy.yml`. It has
-  **not been deployed yet** — the Cloudflare secrets are unset, so the workflow takes its skip path
-  and reports green. **Netlify** / **Vercel** remain mirrors. All three serve `dist/` and **proxy
-  `/api/*` back to the Firebase origin** as a same-origin rewrite — so chat/content keep working and
-  the strict CSP (`connect-src 'self'`) never changes. Keep any new API surface under `/api/*` for
-  this to hold. The Worker also stamps `X-Forwarded-For` from `CF-Connecting-IP`, because
-  `gateway.ts` sets `trust proxy: 1` and the extra hop would otherwise collapse every visitor into
-  one rate-limit bucket.
-- **The CSP lives in four hand-maintained copies** — `firebase.json`, `vercel.json`, `netlify.toml`
-  and `public/_headers` — because no front can read another's config. `tests/csp-parity.test.ts`
-  fails the build if they drift, and asserts the origins the money path needs
-  (`cdn.moyasar.com`, `api.moyasar.com`, and the `*.cloudfunctions.net` host the `httpsCallable`
-  billing endpoints resolve to — *not* covered by `*.googleapis.com`). `public/_headers` is
-  authoritative for the Cloudflare front's static responses; `run_worker_first` is scoped to
-  `/api/*`, so the Worker never runs for a static path and cannot set headers there. It carries no
-  `X-Robots-Tag` — that would deindex canonical flygaca.com — so the mirrors noindex in their own
-  config instead (`netlify.toml` unconditionally, `vercel.json` via a `missing: host` rule).
+- **Firebase Hosting** serves the `flygaca.com` apex + `www` (DNS cutover completed 2026-07-31, with
+  `flygaca-app.web.app` as the underlying site) and fronts the Cloud Functions (`chat`,
+  `moyasarWebhook`). `npm run deploy` builds → `prerender` → coverage check → `firebase deploy`, but
+  the **production deploy path is the `deploy.yml` workflow**, which additionally offloads the corpus
+  to the bucket. Keep any new API surface under `/api/*` so it resolves through the same rewrites.
+- **The CSP lives in one place** — `firebase.json` — now that there's a single front.
+  `tests/csp-parity.test.ts` asserts it keeps allowing the money-path origins (`cdn.moyasar.com`,
+  `api.moyasar.com`, and `me-central1-flygaca-app.cloudfunctions.net` — the `httpsCallable` billing
+  host, *not* covered by `*.googleapis.com`). `firebase.json` carries no `X-Robots-Tag` (it serves
+  canonical flygaca.com); the `flygaca-app.web.app` duplicate is kept out of the index by the
+  canonical tag + a runtime `.web.app` noindex in `src/main.tsx` (`isMirrorHost`, `seo.ts`).
 - **Prices are two files.** `src/pages/pricing/Pricing.tsx` quotes; `functions/.env.flygaca-app`'s
   `MOYASAR_PRICE_*_SAR` params charge (the client never sends an amount).
   `tests/pricing-server-parity.test.ts` is the drift guard — note the founding-offer case, where the
   server param must equal the *offer* price, not the struck-through list price.
-- Redirects consolidate the marketing domains onto `flygaca.com` (e.g. `captadel.com` → `flygaca.com`
-  in `vercel.json` — that rule only fires for traffic still hitting Vercel).
+- `captadel.com` / `www.captadel.com` fold to `flygaca.com` at **runtime** (`seo.ts` `DUPLICATE_HOSTS`
+  + `main.tsx`); `www.flygaca.com` → apex is a Firebase-console redirect-domain setting.
 
 See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
 cutover and the in-progress `me-central1` → `me-central2` functions cutover — config switched, the
@@ -243,11 +233,11 @@ for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
   **functions** (`lint · test:coverage · build` inside `functions/`), **Firestore rules**
   (`npm run test:rules`, emulator-backed — `firestore.rules` + `tests/rules/`), and **e2e · a11y**
   (`npm run test:e2e`, Playwright — `e2e/smoke.spec.ts`, `flows.spec.ts`, `a11y.spec.ts`).
-  `.github/workflows/` holds six workflows in all: `ci.yml`, **`deploy.yml`** (the only production
+  `.github/workflows/` holds five workflows in all: `ci.yml`, **`deploy.yml`** (the only production
   deploy — build, budgets, prerender, corpus-bucket offload, `firebase deploy`),
-  `deploy-cloudflare.yml` (mirror, secret-gated), `firebase-hosting-pull-request.yml` (PR
-  previews), `ios.yml` (Swift tests + per-app builds), and **docs-parser** — which lints the
-  regulatory Markdown (`lint:md`), runs `parse:regulations`, and upserts embeddings.
+  `firebase-hosting-pull-request.yml` (PR previews), `ios.yml` (Swift tests + per-app builds), and
+  **docs-parser** — which lints the regulatory Markdown (`lint:md`), runs `parse:regulations`, and
+  upserts embeddings.
 
 ## Adding a new tool
 

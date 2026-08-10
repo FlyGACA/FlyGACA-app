@@ -57,5 +57,5 @@ Already in place, no action needed:
 ## Alternative host
 
 Any public object store works — point `DATA_BASE_URL` at it and adjust the `Offload data corpus`
-step (e.g. Cloudflare R2 via `wrangler r2`, since the app already deploys a Cloudflare mirror). Add
-its origin to the CSP `img-src`/`connect-src` if it isn't a `*.googleapis.com` host.
+step. Add its origin to the CSP `img-src`/`connect-src` in `firebase.json` if it isn't a
+`*.googleapis.com` host.

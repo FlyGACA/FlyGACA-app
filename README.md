@@ -348,31 +348,20 @@ npm run cap:open    # open ios/App in Xcode → set signing team → run
 
 ## 🌍 Deploy
 
-Firebase Hosting is **canonical**; Vercel, Cloudflare, and Netlify run as mirror fronts that proxy `/api/*`.
+**Firebase Hosting is the single serving front** — it hosts the SPA, fronts the Cloud Functions
+gateway (`/api/*`), and owns Auth/Firestore. One platform, one CSP (`firebase.json`), one deploy.
 
 <div align="center">
 
-**Deployment Platforms**
+**Deployment Platform**
 
-[![Firebase](https://img.shields.io/badge/🔥_Firebase-canonical-c8a04a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](firebase.json)
-&nbsp;
-[![Vercel](https://img.shields.io/badge/▲_Vercel-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](vercel.json)
-&nbsp;
-[![Cloudflare](https://img.shields.io/badge/⚡_Cloudflare-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](wrangler.toml)
-&nbsp;
-[![Netlify](https://img.shields.io/badge/◆_Netlify-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](netlify.toml)
+[![Firebase](https://img.shields.io/badge/🔥_Firebase-hosting_+_functions-c8a04a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](firebase.json)
 
 </div>
 
 ```bash
-# Firebase (canonical)
 npm run deploy        # Build, prerender, and deploy to Hosting
 npm run deploy:all    # Deploy Hosting, Functions, and Firestore rules
-
-# Mirror fronts
-# Vercel       vercel deploy --prod
-# Cloudflare   npx wrangler deploy            # Worker + dist/ assets (wrangler.toml)
-# Netlify      netlify deploy --build --prod
 ```
 
 > [!NOTE]
