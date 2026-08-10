@@ -2,6 +2,12 @@
 
 Marketing and promotional screenshots for the FlyGACA iOS app family (ELPT, AIP).
 
+> **The screenshot pipeline moved.** The native apps and their capture/render scripts now live in
+> [`ay2m/FlyGACA`](https://github.com/ay2m/FlyGACA) (the `apple/` tree was retired here 2026-08),
+> so the `cd apple && …` commands below no longer run from this repo — use them in an
+> `ay2m/FlyGACA` checkout, or see [`../SCREENSHOTS.md`](../SCREENSHOTS.md). The images under this
+> folder are a point-in-time snapshot kept for reference.
+
 ## Directory Structure
 
 ```

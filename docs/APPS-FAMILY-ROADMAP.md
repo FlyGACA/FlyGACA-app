@@ -2,17 +2,18 @@
 
 The plan for Fly GACA's **ASA-Prepware-style family of exam-prep apps**: one focused study
 product per Saudi GACA certificate or rating, each shipped on **web** (a pack page on
-flygaca.com) and **native iOS** (an App Store app), all built from **one monorepo and one
-shared corpus**. This document is the single source of truth for the app lineup; the native
-architecture lives in [`../apple/ARCHITECTURE.md`](../apple/ARCHITECTURE.md), the pack model in
+flygaca.com) and **native iOS** (an App Store app), both drawing on **one shared corpus**. This
+document is the single source of truth for the app lineup; the native app code + architecture
+live in the separate [`ay2m/FlyGACA`](https://github.com/ay2m/FlyGACA) repo (this monorepo
+generates their content), the pack model in
 [`../src/lib/prepCatalog.ts`](../src/lib/prepCatalog.ts), and billing in [`BILLING.md`](./BILLING.md).
 
 ## Principles (do not drift)
 
 - **One pack = one app.** A "product" is a `Pack` entry in `prepCatalog.ts` — a manifest of
   quiz banks, ground-school modules, reading paths and study sheets. The web pack page
-  (`/study/packs/:id`) and the native app (`apple/Apps/<App>/`) are two shells over that same
-  manifest. Adding an app is a **data + config** change, not new feature code.
+  (`/study/packs/:id`) and the native app (`ay2m/FlyGACA`'s `apple/Apps/<App>/`) are two shells
+  over that same manifest. Adding an app is a **data + config** change, not new feature code.
 - **Sources: GACA, SANS, Fly GACA — only.** Content is grounded in GACA (GACAR regulations,
   GACA Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP, `aimss.sans.com.sa`), and
   Fly-GACA-authored practice material. Bundled reference documents (`librarySlugs`) and study
@@ -31,12 +32,14 @@ architecture lives in [`../apple/ARCHITECTURE.md`](../apple/ARCHITECTURE.md), th
 ## The lineup
 
 Each app maps to a GACA certificate/rating and the GACAR Part(s) that govern it. `pack id` is the
-`prepCatalog.ts` id; the native app directory is `apple/Apps/<Dir>/`.
+`prepCatalog.ts` id; the native app directory is `apple/Apps/<Dir>/` **in the `ay2m/FlyGACA`
+repo** (the native code no longer lives in this monorepo — the `apple/` mirror was retired
+2026-08; this repo generates the apps' `Content/`).
 
 > **⏸ The licence-exam iOS apps are paused (2026-08-10).** PPL, CPL, IR and ATPL were removed
-> from `apple/` — targets, `Content/`, icons, npm scripts and CI matrices — pending a strategic
-> decision. **Their web packs are unaffected**: still live in `prepCatalog.ts`, still sold at
-> `flygaca.com/study/packs/*`, still in `SELLABLE_PACK_IDS`. Only the native apps stopped.
+> from the native family — targets, `Content/`, icons, npm scripts and CI matrices — pending a
+> strategic decision. **Their web packs are unaffected**: still live in `prepCatalog.ts`, still
+> sold at `flygaca.com/study/packs/*`, still in `SELLABLE_PACK_IDS`. Only the native apps stopped.
 > Restoring one is a revert of that commit plus its Apple-portal steps.
 
 | App | Certificate / rating | Primary GACAR / source | pack id | Web | iOS | Status |
@@ -99,20 +102,22 @@ The gating constraint for every app is **authored, cited question banks**, not c
    `src/lib/prepCatalog.ts` and set `status: 'live'`.
 3. **Sell it:** add the pack id to `SELLABLE_PACK_IDS` in `functions/src/billing-core.ts` (+ tests)
    and deploy functions. The web pack page, mock exam and Stripe checkout then work automatically.
-4. **Native:** add the app to `APPS` in `scripts/build-ios-content.mjs`, add a 6-line
-   `apple/Apps/<Dir>/<Dir>.xcconfig` (module id, bundle id, display name), and run
-   `npm run build:apps-content` to emit `apple/Apps/<Dir>/Content/`.
+4. **Native (content):** add the app to `APPS` in `scripts/build-ios-content.mjs` and
+   `scripts/native/gen-app-icons.mjs`, then `npm run build:apps-content` / `npm run ios:icons`
+   emit its `Content/` + icon (into `.ios-build/` here; the iOS repo's `sync-content.sh` pulls
+   them). The 6-line `apple/Apps/<Dir>/<Dir>.xcconfig` and the Xcode target live in `ay2m/FlyGACA`.
 5. **Mac step (out of band):** create the Xcode target and App Store Connect listing per
-   [`../apple/README.md`](../apple/README.md).
+   `ay2m/FlyGACA`'s `apple/README.md`.
 
 ## Platforms
 
 - **Web — day one.** Every pack is already a live surface at `/study/packs/:id` with combined
   quiz, flashcards, timed mock exam and mastery tracking; the marketing/SEO for each certificate
   rides the existing pack routes and sitemap.
-- **iOS — native SwiftUI.** The `apple/FlyGACAKit` shared package + one thin app target per pack
-  (paid-up-front, App Store bundle). ELPT and AIP targets are scaffolded with generated
-  `Content/`; the licence-exam targets are paused. Target creation + submission are Mac-side.
+- **iOS — native SwiftUI.** In `ay2m/FlyGACA`: the `apple/FlyGACAKit` shared package + one thin
+  app target per pack (paid-up-front, App Store bundle). ELPT and AIP targets are scaffolded with
+  generated `Content/`; the licence-exam targets are paused. Target creation + submission are
+  Mac-side. This monorepo feeds them content only.
 - **Android — later.** Once the iOS family validates, each app ships on Android by wrapping
   its web pack with **Capacitor** (or a Trusted Web Activity) — the same corpus, the same pack
   manifest, minimal new code. Google Play billing (paid app or one-time IAP) mirrors the iOS model.
