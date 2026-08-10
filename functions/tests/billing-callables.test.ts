@@ -255,11 +255,25 @@ describe("createCheckoutConfig — pricing & intent persistence", () => {
 });
 
 describe("createCheckoutConfig — accepted kinds", () => {
-  it("offers every method and no saved card for a one-time pass", async () => {
+  it("omits Apple Pay until its merchant domain is registered", async () => {
+    // MOYASAR_APPLE_PAY defaults to false: the widget validates the merchant
+    // against /.well-known/apple-developer-merchantid-domain-association, so
+    // advertising the method before that file is served renders a button that
+    // fails mid-payment.
     const cfg = await createCheckoutConfig(req({ uid: "u1" }, { kind: "pass" }));
     expect(cfg.saveCard).toBe(false);
-    expect(cfg.methods).toEqual(["creditcard", "applepay", "stcpay"]);
+    expect(cfg.methods).toEqual(["creditcard", "stcpay"]);
     expect(cfg.description).toBe("Fly GACA Exam Season Pass");
+  });
+
+  it("offers every method for a one-time purchase once Apple Pay is enabled", async () => {
+    process.env.MOYASAR_APPLE_PAY = "true";
+    try {
+      const cfg = await createCheckoutConfig(req({ uid: "u1" }, { kind: "pass" }));
+      expect(cfg.methods).toEqual(["creditcard", "applepay", "stcpay"]);
+    } finally {
+      delete process.env.MOYASAR_APPLE_PAY;
+    }
   });
 
   it("prices the discounted student rate for a verified academic email", async () => {

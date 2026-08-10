@@ -1,11 +1,16 @@
-name: Deploy (Cloudflare Workers mirror)
+name: Deploy (Cloudflare Workers — canonical)
 
-# Secondary mirror deploy. Firebase Hosting is canonical (see deploy.yml and
-# docs/RUNBOOK-deploy.md); this publishes the same dist/ to a Cloudflare Worker
-# (static assets), which serves the SPA and runs worker/index.ts to proxy /api/*
-# back to the Firebase-hosted gateway. The deploy step is gated on the Cloudflare
-# secrets, so it no-ops cleanly until they are added in
-# repo Settings → Secrets → Actions:
+# Production deploy for flygaca.com. Publishes the same dist/ as deploy.yml to the
+# `flygaca-app` Worker (static assets), which serves the SPA and runs
+# worker/index.ts to proxy /api/* back to the Firebase-hosted gateway. The Cloud
+# Functions themselves still deploy from deploy.yml / `npm run deploy:functions`.
+#
+# This is no longer a mirror: once wrangler.toml's [[routes]] custom domain is
+# attached, this workflow IS what visitors get. It therefore runs the same gates as
+# deploy.yml — build-env verification, bundle/perf budgets, prerender + coverage.
+#
+# The deploy step is gated on the Cloudflare secrets, so it no-ops cleanly until
+# they are added in repo Settings → Secrets → Actions:
 #   CLOUDFLARE_API_TOKEN  — token with "Workers Scripts: Edit" (+ account Workers access)
 #   CLOUDFLARE_ACCOUNT_ID — the account that owns the "flygaca-app" Worker
 
@@ -25,6 +30,7 @@ jobs:
   deploy:
     name: build · deploy Cloudflare Worker
     runs-on: ubuntu-latest
+    environment: production
     # The secrets context is not available in if: expressions — referencing it
     # there is a parse error that voids the whole workflow (every push logged an
     # instant failure run). Mirror the secrets into env, and gate on env instead.
@@ -41,16 +47,80 @@ jobs:
 
       - run: npm ci
 
-      # Real public web config for flygaca-app (mirrors .env.example / deploy.yml).
-      - name: Provide build env
-        run: cp .env.example .env.local
+      # Fail loudly rather than shipping a build that looks fine and is dead. See
+      # the same step in deploy.yml: `.env.example` placeholders are truthy, so a
+      # missing variable used to bake `your-firebase-web-api-key` / the literal
+      # `pk_test_replace_me` into the bundle — Firebase booted, then every Auth call
+      # failed and the Moyasar widget mounted against a dead key.
+      - name: Verify build env
+        env:
+          REQUIRED: >-
+            ${{ vars.FIREBASE_API_KEY }}|${{ vars.FIREBASE_PROJECT_ID }}|${{
+            vars.FIREBASE_APP_ID }}|${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}|${{
+            vars.MOYASAR_PUBLISHABLE_KEY }}
+        run: |
+          case "$REQUIRED" in
+            *"||"*|"|"*|*"|")
+              echo "::error::A required Actions variable is empty — see docs/RUNBOOK-deploy.md."
+              exit 1 ;;
+          esac
 
       - name: Build
         run: npm run build
         env:
           # Canonical URL stays flygaca.com on every host so SEO/sitemap agree.
           VITE_SITE_URL: https://flygaca.com
-          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY }}
+          # Real public web config for flygaca-app — public client identifiers, but
+          # rotatable, so they live in Actions variables (mirrors deploy.yml).
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
+          # App Check. Public (it ships in the page), so a variable — a *secret* is
+          # unreadable from fork/Dependabot contexts, which is how this workflow
+          # silently shipped an empty one while every billing callable enforces it.
+          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}
+          # Serve the ~130 MB /data corpus off the bucket deploy.yml mirrors it to,
+          # so it isn't re-uploaded as Worker assets on every deploy.
+          VITE_DATA_BASE_URL: ${{ vars.DATA_BASE_URL }}
+          # Moyasar publishable key. Empty → checkout shows "billing-unavailable"
+          # (fails closed), which is the correct failure. Leaving it UNSET is what
+          # fails open, because `.env.example`'s pk_test_replace_me survives.
+          VITE_MOYASAR_PUBLISHABLE_KEY: ${{ vars.MOYASAR_PUBLISHABLE_KEY }}
+
+      - name: Bundle budget
+        run: npm run check:bundle
+
+      - name: Per-chunk perf budget
+        run: npm run check:perf
+
+      # Snapshot the high-value routes into dist/<route>/index.html so the canonical
+      # front serves prerendered HTML, not just the SPA shell. The prerender itself
+      # stays non-fatal (a Chromium hiccup shouldn't crash the job mid-flight) — the
+      # coverage gate below is the fatal part.
+      - name: Prerender static routes
+        run: |
+          npx playwright install --with-deps chromium
+          npm run prerender
+
+      - name: Verify prerender coverage
+        run: |
+          npm run check:prerender
+          npm run check:prerender:coverage
+
+      # The corpus is mirrored to the bucket by deploy.yml; drop it from the Worker
+      # payload so each deploy uploads ~12 MB instead of ~141 MB across 333 files.
+      # Gated on the same variable deploy.yml uses, so the two can't disagree about
+      # where the corpus lives.
+      - name: Strip data corpus from the Worker payload
+        if: ${{ vars.DATA_BUCKET != '' }}
+        run: |
+          rm -rf dist/data
+          echo "Stripped dist/data — served from ${{ vars.DATA_BASE_URL }}."
 
       - name: Deploy to Cloudflare Workers
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
@@ -58,9 +128,14 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Reads name, main (worker/index.ts) and the dist/ assets from wrangler.toml.
+          # Reads name, main (worker/index.ts), the [[routes]] custom domain and the
+          # dist/ assets from wrangler.toml.
           command: deploy
 
+      # Still a notice, not an error, because the custom domain is not attached yet
+      # (see docs/RUNBOOK-deploy.md). Promote this to `::error::` + `exit 1` once
+      # flygaca.com resolves to this Worker — a silent no-op on the canonical front
+      # is how you serve a stale site for a week without noticing.
       - name: Note when skipped
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
         run: echo "::notice::Cloudflare secrets not set — built dist/ but skipped deploy. Add CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID to enable."

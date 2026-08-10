@@ -11,7 +11,8 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "postinstall": "node scripts/link-lint-typescript.mjs"
   },
   "engines": {
     "node": "24"
@@ -35,10 +36,9 @@
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.8.0",
     "eslint-plugin-import": "^2.25.4",
-    "globals": "^17.9.0",
-    "typescript": "^5.7.2",
     "globals": "^17.8.0",
     "typescript": "^7.0.2",
+    "typescript-6": "npm:typescript@6.0.3",
     "typescript-eslint": "^8.66.0",
     "vitest": "^4.1.10"
   },

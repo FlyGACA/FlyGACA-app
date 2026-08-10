@@ -42,16 +42,51 @@ jobs:
 
       - run: npm ci
 
-      # Real public web config for flygaca-app (Auth/Firestore/Analytics/App Check).
-      - name: Provide build env
-        run: cp .env.example .env.local
+      # Fail loudly rather than shipping a build that looks fine and is dead.
+      # `.env.example` holds placeholders, so a missing Actions variable used to
+      # bake `your-firebase-web-api-key` into the bundle: `isFirebaseConfigured()`
+      # is a truthiness check, so it stayed TRUE and the app booted Firebase with a
+      # bogus key — every Auth call then failed `auth/api-key-not-valid` and every
+      # billing callable threw `sign-in-required`. Silent, and site-wide.
+      # RECAPTCHA_ENTERPRISE_SITE_KEY is required for the same reason: the client
+      # only initializes App Check when the key is present (firebase.ts), so an
+      # empty one silently disables it — and if App Check enforcement is ON for
+      # Firebase Auth, sign-in is then rejected even with a valid API key. This
+      # used to be hard-coded here, so it could never go missing; now that it comes
+      # from a variable, the guard has to require it.
+      - name: Verify build env
+        env:
+          REQUIRED: >-
+            ${{ vars.FIREBASE_API_KEY }}|${{ vars.FIREBASE_PROJECT_ID }}|${{
+            vars.FIREBASE_APP_ID }}|${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}|${{
+            vars.MOYASAR_PUBLISHABLE_KEY }}
+        run: |
+          case "$REQUIRED" in
+            *"||"*|"|"*|*"|")
+              echo "::error::A required Actions variable is empty — see docs/RUNBOOK-deploy.md."
+              exit 1 ;;
+          esac
 
       - name: Build
         run: npm run build
         env:
           VITE_SITE_URL: https://flygaca.com
-          # Optional: set to enable App Check (see docs/APP-CHECK-BACKEND.md).
-          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: 6Lc84VgtAAAAABLBpU8ji5afO223aFYjwrCorFIT
+          # Real public web config for flygaca-app (Auth/Firestore/Analytics). These
+          # are public client identifiers, not secrets, but they are rotatable — so
+          # they live in Actions *variables* and are injected here rather than being
+          # copied out of `.env.example`, which ships placeholders.
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
+          # App Check (see docs/APP-CHECK-BACKEND.md). Public — it ships in the page
+          # — so a variable, not a secret; secrets are unreadable from fork and
+          # Dependabot contexts, which is how the mirror workflow shipped an empty one.
+          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}
           # Optional: serve the ~130 MB /data corpus off a bucket to keep each
           # Hosting release small (see the "Offload data corpus" step + docs/
           # DATA-HOSTING.md). Empty → the app fetches /data same-origin as before.

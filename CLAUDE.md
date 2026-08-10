@@ -63,15 +63,13 @@ daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authe
 org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/src/index.ts` is the
 single deploy manifest — only triggers exported there are deployed. It is its own npm package with
 its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
-it (root `npm run verify` does not cover it). Deploy region is `me-central2` (Dammam, in-Kingdom /
-PDPL; the single source of truth is `functions/src/region.ts`, mirrored client-side by
-`FUNCTIONS_REGION` in `src/lib/services/firebase.ts`). firebase.json's rewrite regions must match —
-`functions/tests/region.test.ts` guards and pins that pairing. The `me-central1` → `me-central2`
-cutover is **switched in code/config** (Firestore already sits in `me-central2`), but the production
-Cloud Functions have **not been redeployed** to `me-central2` yet — they still run in `me-central1`,
-so a Firebase Hosting deploy currently errors ("functions … present but in the wrong region") until
-the next functions deploy lands. (`docs/RUNBOOK-deploy.md` still calls the cutover "planned" and is
-itself stale.)
+it (root `npm run verify` does not cover it). Deploy region is **`me-central1`** (Doha) — the single
+source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS_REGION` in
+`src/lib/services/firebase.ts` and by firebase.json's rewrite regions;
+`functions/tests/region.test.ts` guards and pins that pairing, and all three currently agree. The
+`me-central1` → `me-central2` cutover (Dammam, in-Kingdom / PDPL — where Firestore already sits) is
+**not started in code**: it is a deliberate ordered migration (deploy the functions to
+`me-central2` first, flip the config last), documented in `docs/RUNBOOK-deploy.md`.
 
 ## Architecture
 
@@ -191,11 +189,29 @@ Cloud Functions gateway for `/api/*`:
   apex and `www` directly (with `flygaca-app.web.app` as the underlying site). `npm run deploy`
   builds → `prerender` → coverage check → `firebase deploy`, but the **production deploy path is
   the `deploy.yml` workflow**, which additionally offloads the corpus to the bucket.
-- **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) and the **Netlify** / **Vercel**
-  mirrors each serve `dist/` and **proxy `/api/*` back to the Firebase origin** as a same-origin
-  rewrite — so chat/content keep working and the strict CSP (`connect-src 'self'`) never changes.
-  Keep any new API surface under `/api/*` for this to hold. The mirrors `X-Robots-Tag: noindex`
-  any host that isn't `flygaca.com`.
+- **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) is **becoming the canonical front**
+  (migration in progress): `wrangler.toml` declares the `flygaca.com` custom domain and
+  `workers_dev = false`, and `deploy-cloudflare.yml` runs the same gates as `deploy.yml`. It has
+  **not been deployed yet** — the Cloudflare secrets are unset, so the workflow takes its skip path
+  and reports green. **Netlify** / **Vercel** remain mirrors. All three serve `dist/` and **proxy
+  `/api/*` back to the Firebase origin** as a same-origin rewrite — so chat/content keep working and
+  the strict CSP (`connect-src 'self'`) never changes. Keep any new API surface under `/api/*` for
+  this to hold. The Worker also stamps `X-Forwarded-For` from `CF-Connecting-IP`, because
+  `gateway.ts` sets `trust proxy: 1` and the extra hop would otherwise collapse every visitor into
+  one rate-limit bucket.
+- **The CSP lives in four hand-maintained copies** — `firebase.json`, `vercel.json`, `netlify.toml`
+  and `public/_headers` — because no front can read another's config. `tests/csp-parity.test.ts`
+  fails the build if they drift, and asserts the origins the money path needs
+  (`cdn.moyasar.com`, `api.moyasar.com`, and the `*.cloudfunctions.net` host the `httpsCallable`
+  billing endpoints resolve to — *not* covered by `*.googleapis.com`). `public/_headers` is
+  authoritative for the Cloudflare front's static responses; `run_worker_first` is scoped to
+  `/api/*`, so the Worker never runs for a static path and cannot set headers there. It carries no
+  `X-Robots-Tag` — that would deindex canonical flygaca.com — so the mirrors noindex in their own
+  config instead (`netlify.toml` unconditionally, `vercel.json` via a `missing: host` rule).
+- **Prices are two files.** `src/pages/pricing/Pricing.tsx` quotes; `functions/.env.flygaca-app`'s
+  `MOYASAR_PRICE_*_SAR` params charge (the client never sends an amount).
+  `tests/pricing-server-parity.test.ts` is the drift guard — note the founding-offer case, where the
+  server param must equal the *offer* price, not the struck-through list price.
 - Redirects consolidate the marketing domains onto `flygaca.com` (e.g. `captadel.com` → `flygaca.com`
   in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 

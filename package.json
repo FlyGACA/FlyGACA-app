@@ -53,7 +53,8 @@
     "deploy": "npm run build && npm run prerender && npm run check:prerender:coverage && firebase deploy --only hosting",
     "deploy:rules": "firebase deploy --only firestore:rules",
     "deploy:functions": "firebase deploy --only functions",
-    "deploy:all": "npm run build && npm run prerender && npm run check:prerender:coverage && firebase deploy --only hosting,functions,firestore:rules"
+    "deploy:all": "npm run build && npm run prerender && npm run check:prerender:coverage && firebase deploy --only hosting,functions,firestore:rules",
+    "postinstall": "node scripts/link-lint-typescript.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
@@ -113,6 +114,7 @@
     "remark-parse": "^11.0.0",
     "sharp": "^0.35.3",
     "typescript": "^7.0.2",
+    "typescript-6": "npm:typescript@6.0.3",
     "typescript-eslint": "^8.66.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",

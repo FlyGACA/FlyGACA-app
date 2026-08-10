@@ -5,15 +5,38 @@ name = "flygaca-app"
 main = "worker/index.ts"
 compatibility_date = "2025-06-01"
 
+# No workers.dev host and no preview URLs. This Worker IS flygaca.com, so a second
+# hostname would be a crawlable duplicate of the canonical site — and public/_headers
+# has no host-conditional syntax to noindex one host but not the other (vercel.json
+# does that with a `missing: host` rule; the Workers assets layer has no equivalent).
+# Removing the second hostname removes the problem. Declaring [[routes]] already
+# infers workers_dev = false, but state it so a dashboard toggle cannot silently
+# re-enable it. Both keys are top-level and must precede the first table below.
+workers_dev = false
+preview_urls = false
+
+# Canonical production hostname. `custom_domain = true` makes Cloudflare create the
+# DNS record and manage the certificate. `www` is deliberately absent: it is folded
+# onto the apex by a Cloudflare Redirect Rule (see docs/RUNBOOK-deploy.md), which
+# runs at the edge before any Worker — cheaper than forcing `run_worker_first = true`
+# just to 301 a hostname that should never serve content.
+[[routes]]
+pattern = "flygaca.com"
+custom_domain = true
+
 # Serve the built SPA from dist/. `run_worker_first = ["/api/*"]` makes the Worker
 # run before the asset layer for /api/* (so the SPA fallback can't swallow an API
 # call); everything else is served straight from assets, with the SPA fallback
-# returning index.html for client-side routes.
+# returning index.html for client-side routes and public/_headers supplying the
+# security headers, CSP and cache-control.
 [assets]
 directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 run_worker_first = ["/api/*"]
 
+# Request metadata is logged outside the Kingdom. Kept on for the cutover — revisit
+# deliberately (not by default) when Phase 2 moves request handling onto Workers and
+# the logs would start carrying user question text. See docs/RUNBOOK-deploy.md.
 [observability]
 enabled = true

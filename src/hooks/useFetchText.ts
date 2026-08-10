@@ -39,10 +39,41 @@ export function useFetchText(path: string): FetchState {
  * (mutation XSS); parsing first removes that whole class. Defense-in-depth.
  */
 const ALLOWED_TAGS = new Set([
-  'a','p','br','strong','em','b','i','u','s','ul','ol','li','blockquote','code','pre',
-  'h1','h2','h3','h4','h5','h6','table','thead','tbody','tr','th','td','span','div','hr','img','figure','figcaption'
+  'a',
+  'p',
+  'br',
+  'strong',
+  'em',
+  'b',
+  'i',
+  'u',
+  's',
+  'ul',
+  'ol',
+  'li',
+  'blockquote',
+  'code',
+  'pre',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'table',
+  'thead',
+  'tbody',
+  'tr',
+  'th',
+  'td',
+  'span',
+  'div',
+  'hr',
+  'img',
+  'figure',
+  'figcaption',
 ]);
-const ALLOWED_ATTRS = new Set(['href','src','alt','title','class','id','colspan','rowspan']);
+const ALLOWED_ATTRS = new Set(['href', 'src', 'alt', 'title', 'class', 'id', 'colspan', 'rowspan']);
 
 export function sanitizeHtml(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -51,11 +82,17 @@ export function sanitizeHtml(html: string): string {
       if (child.nodeType === Node.ELEMENT_NODE) {
         const el = child as Element;
         const tag = el.tagName.toLowerCase();
-        if (!ALLOWED_TAGS.has(tag)) { el.remove(); continue; }
+        if (!ALLOWED_TAGS.has(tag)) {
+          el.remove();
+          continue;
+        }
         for (const attr of Array.from(el.attributes)) {
           const name = attr.name.toLowerCase();
-          if (!ALLOWED_ATTRS.has(name) || name.startsWith('on')) { el.removeAttribute(attr.name); continue; }
-          if ((name === 'href' || name === 'src')) {
+          if (!ALLOWED_ATTRS.has(name) || name.startsWith('on')) {
+            el.removeAttribute(attr.name);
+            continue;
+          }
+          if (name === 'href' || name === 'src') {
             const v = attr.value.trim().toLowerCase();
             if (v.startsWith('javascript:') || v.startsWith('data:') || v.startsWith('vbscript:')) {
               el.removeAttribute(attr.name);
