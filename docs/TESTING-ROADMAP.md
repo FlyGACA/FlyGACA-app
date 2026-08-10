@@ -259,7 +259,7 @@ the gaps:
 - [ ] `src/billing/routes.js` (66% branch) — the uncovered lines are all Moyasar/Firestore error
       paths.
 
-**App Store metadata repos (PPL · CPL · IR · ATPL · ELPT · AIP)**
+**App Store metadata repos (ELPT · AIP shipping; PPL · CPL · IR · ATPL parked)**
 
 - [ ] A fixture self-test for `scripts/check-metadata.mjs` (feed it a deliberately broken locale
       tree, assert it fails). The script is byte-identical across all six repos and is each repo's

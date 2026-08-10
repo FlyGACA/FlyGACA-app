@@ -11,8 +11,8 @@
  * brand mark in its own colourway and a user with several installed can tell them
  * apart at a glance.
  *
- *   node scripts/native/gen-app-icons.mjs           # all six apps
- *   node scripts/native/gen-app-icons.mjs --app cpl # one app
+ *   node scripts/native/gen-app-icons.mjs            # every app
+ *   node scripts/native/gen-app-icons.mjs --app aip  # one app
  *
  * Background colour comes from the Falcon design tokens (src/styles/tokens.css).
  * Output is a FLATTENED (no alpha channel) 1024×1024 PNG — the App Store rejects
@@ -38,15 +38,14 @@ const DEEP = '#101a24';
 const MARK = join(root, 'public', 'brand', 'flygaca-mark.png');
 
 // App Store product → { Xcode target dir, duotone highlight (top) + shadow (bottom) }.
-// Mirrors the APPS registry in scripts/build-ios-content.mjs (same six apps).
+// Mirrors the APPS registry in scripts/build-ios-content.mjs (keep them in step).
 // "Desert & sky" heritage palette — one coherent family, one colourway per app.
+// Paused modules kept their colourways in git history: ppl #5fb585/#1f5537 (palm
+// green), cpl #e0946f/#8a4529 (terracotta), ir #4fa2a6/#124447 (deep teal),
+// atpl #e08c66/#8a3a25 (sunset clay) — reuse them if a module is restored.
 const APPS = {
-  ppl: { dir: 'PPL', hi: '#5fb585', sh: '#1f5537' }, // palm green
   elpt: { dir: 'ELPT', hi: '#6fb8e6', sh: '#245f86' }, // sky blue
   aip: { dir: 'AIP', hi: '#e6c98a', sh: '#8f6f34' }, // sand gold
-  cpl: { dir: 'CPL', hi: '#e0946f', sh: '#8a4529' }, // terracotta
-  ir: { dir: 'IR', hi: '#4fa2a6', sh: '#124447' }, // deep teal
-  atpl: { dir: 'ATPL', hi: '#e08c66', sh: '#8a3a25' }, // sunset clay
 };
 
 const SIZE = 1024;
@@ -101,7 +100,7 @@ async function generate(appId) {
   mkdirSync(iconSetDir, { recursive: true });
 
   // Ensure the asset-catalog scaffolding exists (idempotent — matches the shape
-  // Xcode/XcodeGen expects; PPL/ELPT/AIP already have these, CPL/IR/ATPL don't).
+  // Xcode/XcodeGen expects; the shipping apps already have these).
   writeFileSync(join(assetsDir, 'Contents.json'), `${catalogContentsJson}\n`);
   writeFileSync(join(iconSetDir, 'Contents.json'), `${contentsJson}\n`);
 

@@ -18,10 +18,12 @@ interface Faq {
 /**
  * The App Store `support_url` for every Fly GACA exam-prep app points here,
  * deep-linked with `?app=<pack-id>` so the page can greet the exact app the
- * reader arrived from. The pack ids mirror the monorepo's prepCatalog / the six
- * metadata repos' `marketing_url` (mind `ppl-exam` and `elp`).
+ * reader arrived from. The pack ids mirror prepCatalog / each shipping app's
+ * metadata repo `marketing_url` (mind that ELPT's pack id is `elp`). The
+ * licence-exam apps (ppl-exam, cpl, ir, atpl) are paused, so their deep links
+ * are gone — an unknown `?app=` value just renders the generic greeting.
  */
-const APP_PACK_IDS = new Set(['ppl-exam', 'elp', 'aip', 'cpl', 'ir', 'atpl']);
+const APP_PACK_IDS = new Set(['elp', 'aip']);
 
 /** The three legal docs a support reader most often needs next. */
 const RELATED = [

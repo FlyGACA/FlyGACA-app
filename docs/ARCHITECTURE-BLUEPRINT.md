@@ -36,8 +36,8 @@ linked doc disagree, **the linked doc wins**; open a PR to fix this one.
    ┌──────────────────┐     ┌────────────────────────┐     ┌───────────────────┐
    │  WEB APP (React) │     │  BACKEND (functions/)  │     │  iOS FAMILY        │
    │  Vite + TS SPA   │◄───►│  Firebase Functions    │◄───►│  FlyGACAKit (Swift)│
-   │  library, tools, │ /api│  · chat gateway (SSE)  │ /api│  PPL·ELPT·AIP·CPL· │
-   │  study, chat,    │     │  · Captain Adel (Genkit│     │  IR·ATPL App Store │
+   │  library, tools, │ /api│  · chat gateway (SSE)  │ /api│  ELPT · AIP        │
+   │  study, chat,    │     │  · Captain Adel (Genkit│     │  App Store apps    │
    │  account, B2B    │     │    + Gemini RAG brain) │     │  apps (paid, offline)│
    └──────────────────┘     │  · Stripe · B2B org    │     └───────────────────┘
                             │  · Firestore (KSA)     │
@@ -330,10 +330,10 @@ grounds each one in the product that actually exists.
 - **Now:** web app shipped and live (all tools, library+search, chat, study, account,
   B2B); Captain Adel Genkit+Gemini brain in `functions/`.
 - **Next:** iOS Phases 1–3 — `FlyGACAKit` engines + shared UI, durable SRS/streaks,
-  the content bundler in CI, and Wave-1 targets (PPL, ELPT, AIP) reaching TestFlight.
+  the content bundler in CI, and the ELPT + AIP targets reaching TestFlight.
 - **Later:** iOS Phase 4 (`PlatformLive`: Firebase Auth + App Check, progress upload,
-  Captain Adel SSE, remote content refresh + SRS reconcile), the App Store bundle,
-  and Wave-2 apps (CPL, IR, ATPL — packs already live).
+  Captain Adel SSE, remote content refresh + SRS reconcile) and the App Store bundle.
+  The licence-exam apps (PPL, CPL, IR, ATPL) are paused — their packs stay live on the web.
 
 **Success metrics that gate quality** (measured, not aspirational):
 

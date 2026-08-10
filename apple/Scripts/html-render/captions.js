@@ -6,10 +6,10 @@
 // first (hero -> scored exam -> results -> the study loop). render-store.js
 // consumes this; the original render.js (raw screens) is left untouched.
 //
-// Captions localize per storefront locale (`en`, `ar`). The base screens do NOT
-// localize — the shipping iOS UI is English-only (FlyGACAKit has no Arabic
-// localization), so the Arabic set is Arabic/RTL *captions* over the real
-// English app screens, never a fabricated Arabic UI.
+// Captions localize per storefront locale (`en`, `ar`). The base screens (screens.js)
+// localize too — the shipping FlyGACAKit UI is bilingual (EN + AR, RTL), so the
+// Arabic set is a genuine Arabic/RTL app UI, not captions over English screens.
+// Bundled content (questions, bank titles, citations) stays English in every locale.
 
 const C = { night: '#0A0E12', sage: '#8FC9A8', white: '#FFFFFF', sec: 'rgba(235,240,245,0.55)', mist: '#1A2A38' };
 
@@ -55,31 +55,36 @@ function compose(screenDoc, head, sub, W, H, opts = {}) {
 // The hero (01) is per-app; the rest are shared across apps.
 const SHOTS = {
   '01-home':            { screen: '01-home',            hero: true },
-  '02-timed-exam':      { screen: '08-timed-exam-timer',
+  // Scenario check-ride — optional: only renders for modules shipping scenario
+  // content (screens.js adds '11-scenario-sim' only then; today that's ELPT).
+  '02-scenario-sim':    { screen: '11-scenario-sim', optional: true,
+    en: { head: 'You’re on frequency', sub: 'Real-style radio exchanges — read the transmission, respond as you would in the cockpit, debrief at the end.' },
+    ar: { head: 'أنت على التردد', sub: 'تبادلات لاسلكية واقعية — اقرأ الإرسال وردّ كما في قمرة القيادة، والمراجعة في النهاية.' } },
+  '03-timed-exam':      { screen: '08-timed-exam-timer',
     en: { head: 'Sit the real exam', sub: 'A timed mock under exam conditions — 30 minutes, 75% to pass.' },
     ar: { head: 'اختبر في ظروفٍ حقيقية', sub: 'محاكاة اختبار مؤقّتة — ٣٠ دقيقة، ونسبة النجاح ٧٥٪.' } },
-  '03-results':         { screen: '09-mock-results',
+  '04-results':         { screen: '09-mock-results',
     en: { head: 'Know when you’re ready', sub: 'Per-topic analytics and a pass score after every mock exam.' },
     ar: { head: 'اعرف متى تصبح جاهزاً', sub: 'تحليلات لكل موضوع ونتيجة نجاح بعد كل محاكاة اختبار.' } },
-  '04-quiz-topics':     { screen: '02-quiz-banks',
+  '05-quiz-topics':     { screen: '02-quiz-banks',
     en: { head: 'Study by topic', sub: 'Focused question banks across the whole syllabus.' },
     ar: { head: 'ادرس حسب الموضوع', sub: 'بنوك أسئلة مركّزة تغطّي المنهج كاملاً.' } },
-  '05-quiz-question':   { screen: '03-quiz-question',
+  '06-quiz-question':   { screen: '03-quiz-question',
     en: { head: 'Practice anywhere', sub: 'Work the bank fully offline — no signal needed.' },
     ar: { head: 'تدرّب في أي مكان', sub: 'استخدم البنك بالكامل ودون إنترنت.' } },
-  '06-quiz-explained':  { screen: '04-quiz-answered',
+  '07-quiz-explained':  { screen: '04-quiz-answered',
     en: { head: 'Every answer, cited', sub: 'The correct choice, the why, and the exact GACAR Part and section.' },
     ar: { head: 'كل إجابة موثّقة', sub: 'الخيار الصحيح، والسبب، ومادة GACAR بالضبط.' } },
-  '07-flashcard':       { screen: '05-flashcard-front',
+  '08-flashcard':       { screen: '05-flashcard-front',
     en: { head: 'Flashcards that stick', sub: 'Spaced repetition brings back what you’re about to forget.' },
     ar: { head: 'بطاقات تثبّت المعلومة', sub: 'التكرار المتباعد يعيد ما أوشكت على نسيانه.' } },
-  '08-flashcard-answer': { screen: '06-flashcard-back',
+  '09-flashcard-answer': { screen: '06-flashcard-back',
     en: { head: 'Learn the reasoning', sub: 'Front and back — the rule and the reference, together.' },
     ar: { head: 'افهم السبب', sub: 'الوجه والظهر — القاعدة ومرجعها معاً.' } },
-  '09-exam-start':      { screen: '07-timed-exam-start',
+  '10-exam-start':      { screen: '07-timed-exam-start',
     en: { head: 'Exam conditions', sub: '25 questions, 30 minutes — one pass through, just like the day.' },
     ar: { head: 'ظروف اختبار حقيقية', sub: '٢٥ سؤالاً في ٣٠ دقيقة — محاولة واحدة، كما في يوم الاختبار.' } },
-  '10-lessons':         { screen: '10-lessons-list', optional: true,
+  '11-lessons':         { screen: '10-lessons-list', optional: true,
     en: { head: 'Ground school built in', sub: 'Structured lessons with an objective for every topic.' },
     ar: { head: 'دورة أرضية مدمجة', sub: 'دروس منظّمة بهدفٍ لكل موضوع.' } },
 };
@@ -88,18 +93,10 @@ const ORDER = Object.keys(SHOTS);
 // Per-app hero copy, per locale.
 const HERO = {
   en: {
-    PPL:  { head: 'The Saudi PPL exam,<br>in your pocket',  sub: 'The full question bank, offline — every answer cites the exact GACAR.' },
-    CPL:  { head: 'The Saudi CPL exam,<br>in your pocket',  sub: 'Commercial-pilot theory, offline — every answer cites the exact GACAR.' },
-    IR:   { head: 'The Saudi Instrument<br>Rating, mastered', sub: 'IFR rules and procedures, offline — every answer cites the exact GACAR.' },
-    ATPL: { head: 'The Saudi ATPL exam,<br>in your pocket', sub: 'Airline-transport theory, offline — every answer cites the exact GACAR.' },
     ELPT: { head: 'Aviation English,<br>exam-ready',        sub: 'ICAO Level 4 prep — phraseology and comprehension, fully offline.' },
     AIP:  { head: 'The Saudi AIP,<br>made studyable',       sub: 'Aerodromes, airspace and charts — offline, and always cited.' },
   },
   ar: {
-    PPL:  { head: 'رخصة الطيار الخاص السعودية،<br>في جيبك', sub: 'بنك الأسئلة كاملاً وبدون إنترنت — كل إجابة تستند إلى مادة GACAR بدقّة.' },
-    CPL:  { head: 'رخصة الطيار التجاري السعودية،<br>في جيبك', sub: 'النظري التجاري كاملاً وبدون إنترنت — كل إجابة تستند إلى مادة GACAR.' },
-    IR:   { head: 'تقدير الطيران الآلي السعودي،<br>بين يديك', sub: 'قواعد وإجراءات الطيران الآلي بدون إنترنت — كل إجابة تستند إلى مادة GACAR.' },
-    ATPL: { head: 'رخصة طيار النقل الجوي السعودية،<br>في جيبك', sub: 'نظري النقل الجوي كاملاً وبدون إنترنت — كل إجابة تستند إلى مادة GACAR.' },
     ELPT: { head: 'الإنجليزية للطيران،<br>جاهزٌ للاختبار', sub: 'تحضير مستوى الإيكاو الرابع — المصطلحات والاستيعاب، بدون إنترنت.' },
     AIP:  { head: 'دليل الطيران السعودي (AIP)،<br>سهل الدراسة', sub: 'المطارات والمجال الجوي والخرائط — بدون إنترنت، وموثّقة دائماً.' },
   },
@@ -110,7 +107,7 @@ function captionsFor(dir, lang = 'en') {
   const L = HERO[lang] ? lang : 'en';
   return ORDER.map((name) => {
     const shot = SHOTS[name];
-    const copy = shot.hero ? (HERO[L][dir] || HERO[L].PPL) : shot[L];
+    const copy = shot.hero ? (HERO[L][dir] || HERO[L].ELPT) : shot[L];
     return { name, screen: shot.screen, optional: !!shot.optional, head: copy.head, sub: copy.sub };
   });
 }

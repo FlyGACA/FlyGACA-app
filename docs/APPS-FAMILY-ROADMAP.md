@@ -33,14 +33,20 @@ architecture lives in [`../apple/ARCHITECTURE.md`](../apple/ARCHITECTURE.md), th
 Each app maps to a GACA certificate/rating and the GACAR Part(s) that govern it. `pack id` is the
 `prepCatalog.ts` id; the native app directory is `apple/Apps/<Dir>/`.
 
+> **⏸ The licence-exam iOS apps are paused (2026-08-10).** PPL, CPL, IR and ATPL were removed
+> from `apple/` — targets, `Content/`, icons, npm scripts and CI matrices — pending a strategic
+> decision. **Their web packs are unaffected**: still live in `prepCatalog.ts`, still sold at
+> `flygaca.com/study/packs/*`, still in `SELLABLE_PACK_IDS`. Only the native apps stopped.
+> Restoring one is a revert of that commit plus its Apple-portal steps.
+
 | App | Certificate / rating | Primary GACAR / source | pack id | Web | iOS | Status |
 |---|---|---|---|---|---|---|
-| **PPL** | Private Pilot Licence | Parts 61, 91, 71, 67 + Saudi AIP | `ppl-exam` | ✅ | ✅ scaffold | **Wave 1 — live** |
-| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR / Annex 1 (Fly GACA authored) | `elp` | ✅ | ✅ scaffold | **Wave 1 — live** |
-| **AIP** | Aeronautical Information (Saudi AIP) | SANS eAIP (GEN/ENR) | `aip` | ✅ | ✅ scaffold | **Wave 1 — live** |
-| **CPL** | Commercial Pilot Licence | Part 61 (Subpart F), 91, 119, 135 | `cpl` | ✅ | ✅ scaffold | **Wave 2 — draft content** |
-| **IR** | Instrument Rating | Part 61 (§61.89), 91 (IFR), 97 + AIP ENR | `ir` | ✅ | ✅ scaffold | **Wave 2 — draft content** |
-| **ATPL** | Airline Transport Pilot Licence | Part 61 (Subpart G), 121 | `atpl` | ✅ | ✅ scaffold | **Wave 2 — draft content** |
+| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR / Annex 1 (Fly GACA authored) | `elp` | ✅ | ✅ scaffold | **live** |
+| **AIP** | Aeronautical Information (Saudi AIP) | SANS eAIP (GEN/ENR) | `aip` | ✅ | ✅ scaffold | **live** |
+| PPL | Private Pilot Licence | Parts 61, 91, 71, 67 + Saudi AIP | `ppl-exam` | ✅ | ⏸ paused | live (web) |
+| CPL | Commercial Pilot Licence | Part 61 (Subpart F), 91, 119, 135 | `cpl` | ✅ | ⏸ paused | live (web) |
+| IR | Instrument Rating | Part 61 (§61.89), 91 (IFR), 97 + AIP ENR | `ir` | ✅ | ⏸ paused | live (web) |
+| ATPL | Airline Transport Pilot Licence | Part 61 (Subpart G), 121 | `atpl` | ✅ | ⏸ paused | live (web) |
 | Conversion | Foreign-licence conversion | Parts 61, 91 + guidance | `conversion` | ✅ | — | live (web) |
 | Medical | Class 1/2/3 medical | Part 67 | `medical` | ✅ | — | live (web, subject) |
 | Airspace & VFR | Free sampler | Parts 71, 91 | `airspace-vfr` | ✅ | — | live (free) |
@@ -77,9 +83,10 @@ The gating constraint for every app is **authored, cited question banks**, not c
 `explain`, and a `cite` (+ `citeRef` to the GACAR Part) — validated by
 [`tests/quiz-citations.test.ts`](../tests/quiz-citations.test.ts).
 
-- **Wave 2 (this change):** CPL/IR/ATPL each ship with new GACAR-cited **draft** banks plus reused
-  subject banks. Drafts are marked in each bank's `source` field and must clear the
-  `STUDY-CONTENT-REVIEW.md` checklist before production sale.
+- **CPL/IR/ATPL** each ship with GACAR-cited **draft** banks plus reused subject banks. Drafts
+  are marked in each bank's `source` field and must clear the `STUDY-CONTENT-REVIEW.md`
+  checklist before production sale. This applies to the **web** packs, which are still selling;
+  their iOS apps are paused.
 - **Depth over time:** ASA banks run to hundreds of questions. Fly GACA banks start at the
   house-standard depth and grow — new questions append to the same banks, so every surface (web +
   native) and every app sharing a bank benefits at once.
@@ -104,9 +111,9 @@ The gating constraint for every app is **authored, cited question banks**, not c
   quiz, flashcards, timed mock exam and mastery tracking; the marketing/SEO for each certificate
   rides the existing pack routes and sitemap.
 - **iOS — native SwiftUI.** The `apple/FlyGACAKit` shared package + one thin app target per pack
-  (paid-up-front, App Store bundle). Wave 1 targets are scaffolded; Wave 2 `Content/` slices are
-  generated. Target creation + submission are Mac-side.
-- **Android — Wave 2.5 / 3.** Once the iOS family validates, each app ships on Android by wrapping
+  (paid-up-front, App Store bundle). ELPT and AIP targets are scaffolded with generated
+  `Content/`; the licence-exam targets are paused. Target creation + submission are Mac-side.
+- **Android — later.** Once the iOS family validates, each app ships on Android by wrapping
   its web pack with **Capacitor** (or a Trusted Web Activity) — the same corpus, the same pack
   manifest, minimal new code. Google Play billing (paid app or one-time IAP) mirrors the iOS model.
   No Android project exists in the repo yet; this is deliberately deferred.
@@ -114,9 +121,12 @@ The gating constraint for every app is **authored, cited question banks**, not c
 ## Open items
 
 - [ ] Human review of the CPL/IR/ATPL draft banks against the official GACAR (see
-      `STUDY-CONTENT-REVIEW.md`) before production sale.
+      `STUDY-CONTENT-REVIEW.md`) before production sale. Still applies — these packs sell on the
+      web regardless of the iOS pause.
+- [ ] Decide whether the iOS pause on PPL/CPL/IR/ATPL should extend to the web packs, or stays
+      native-only.
 - [x] CPL/IR/ATPL are already in `SELLABLE_PACK_IDS` (`functions/src/billing-core.ts`); still
       needs a functions deploy to take effect in production.
 - [ ] Grow CPL/IR/ATPL banks toward ASA-scale depth; author Wave 3 packs (FI, dispatcher, UAS…).
-- [ ] Mac: create Xcode targets + App Store Connect listings + the "Saudi Pilot Study Pack" bundle.
-- [ ] Android wrapping strategy spike (Capacitor vs TWA) once iOS Wave 1 is on the store.
+- [ ] Mac: create Xcode targets + App Store Connect listings for ELPT + AIP, and decide whether the "Saudi Pilot Study Pack" bundle is still worth doing for a two-app family.
+- [ ] Android wrapping strategy spike (Capacitor vs TWA) once the iOS apps are on the store.

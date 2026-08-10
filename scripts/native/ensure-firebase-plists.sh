@@ -24,12 +24,8 @@ APPS_DIR="$PROJECT_ROOT/apple/Apps"
 
 # target dir : bundle id
 TARGETS=(
-  "PPL:com.flygaca.ppl"
   "ELPT:com.flygaca.elpt"
   "AIP:com.flygaca.aip"
-  "CPL:com.flygaca.cpl"
-  "IR:com.flygaca.ir"
-  "ATPL:com.flygaca.atpl"
 )
 
 created=0

@@ -9,8 +9,8 @@
  * corpus can never fork. A `module.json` manifest (the pack serialized, web field
  * names kept) tells the app shell which module it is.
  *
- *   node scripts/build-ios-content.mjs            # every app (ppl, elpt, aip, cpl, ir, atpl)
- *   node scripts/build-ios-content.mjs --app ppl  # one app
+ *   node scripts/build-ios-content.mjs            # every app (elpt, aip)
+ *   node scripts/build-ios-content.mjs --app elpt # one app
  *   npm run build:apps-content                    # same, as the CI-gated npm script
  *
  * Validates every emitted bank (answer index in range, non-empty prompt/explain)
@@ -25,15 +25,12 @@ const read = (p) => readFileSync(join(root, p), 'utf8');
 const readJson = (p) => JSON.parse(read(p));
 
 // App Store product → prep-pack id. Directory name is the Xcode target name.
-// Wave 1: ppl/elpt/aip. Wave 2: cpl/ir/atpl (added once their packs went live with
-// real content). Future packs (foi/agi/dispatcher…) join here as their content lands.
+// The licence-exam apps (ppl/cpl/ir/atpl) are PAUSED — removed 2026-08-10, see
+// docs/APPS-FAMILY-ROADMAP.md. Their PACKS entries stay live for the web; only the
+// native apps stopped. Future packs (foi/agi/dispatcher…) join here as content lands.
 const APPS = {
-  ppl: { dir: 'PPL', packId: 'ppl-exam' },
   elpt: { dir: 'ELPT', packId: 'elp' },
   aip: { dir: 'AIP', packId: 'aip' },
-  cpl: { dir: 'CPL', packId: 'cpl' },
-  ir: { dir: 'IR', packId: 'ir' },
-  atpl: { dir: 'ATPL', packId: 'atpl' },
 };
 
 // The PACKS array literal is plain data (no TS syntax inside), so evaluate it

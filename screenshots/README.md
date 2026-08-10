@@ -1,6 +1,6 @@
 # FlyGACA iOS App Screenshots
 
-Marketing and promotional screenshots for the FlyGACA iOS app family (PPL, ELPT, AIP, CPL, IR, ATPL).
+Marketing and promotional screenshots for the FlyGACA iOS app family (ELPT, AIP).
 
 ## Directory Structure
 
@@ -58,7 +58,7 @@ This script:
 ```bash
 cd apple
 xcodebuild test \
-  -scheme PPL \
+  -scheme ELPT \
   -configuration Debug \
   -testPlan Screenshots \
   -derivedDataPath build/
@@ -74,10 +74,10 @@ xcrun simctl boot "iPhone 15 Pro"
 sleep 2
 
 # Install and run app
-xcodebuild build-for-testing -scheme PPL
-APP_PATH="build/Build/Products/Debug-iphonesimulator/PPL.app"
+xcodebuild build-for-testing -scheme ELPT
+APP_PATH="build/Build/Products/Debug-iphonesimulator/ELPT.app"
 xcrun simctl install booted "$APP_PATH"
-xcrun simctl launch booted com.flygaca.ppl
+xcrun simctl launch booted com.flygaca.elpt
 
 # Capture screenshot
 sleep 3
@@ -246,8 +246,8 @@ screenshots: update iPhone/iPad screenshots for {feature}
 - Alternatively, manually navigate using Simulator's gesture support
 
 ### App crashes on launch
-- Verify PPL.app built successfully: check `build/` directory
-- Check app entitlements in `Apps/PPL/PPL.xcconfig`
+- Verify ELPT.app built successfully: check `build/` directory
+- Check app entitlements in `Apps/ELPT/ELPT.xcconfig`
 - Clear simulator state: `xcrun simctl erase all`
 
 ### Device simulator won't boot
