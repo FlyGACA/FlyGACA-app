@@ -48,11 +48,18 @@ jobs:
       # is a truthiness check, so it stayed TRUE and the app booted Firebase with a
       # bogus key — every Auth call then failed `auth/api-key-not-valid` and every
       # billing callable threw `sign-in-required`. Silent, and site-wide.
+      # RECAPTCHA_ENTERPRISE_SITE_KEY is required for the same reason: the client
+      # only initializes App Check when the key is present (firebase.ts), so an
+      # empty one silently disables it — and if App Check enforcement is ON for
+      # Firebase Auth, sign-in is then rejected even with a valid API key. This
+      # used to be hard-coded here, so it could never go missing; now that it comes
+      # from a variable, the guard has to require it.
       - name: Verify build env
         env:
           REQUIRED: >-
             ${{ vars.FIREBASE_API_KEY }}|${{ vars.FIREBASE_PROJECT_ID }}|${{
-            vars.FIREBASE_APP_ID }}|${{ vars.MOYASAR_PUBLISHABLE_KEY }}
+            vars.FIREBASE_APP_ID }}|${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}|${{
+            vars.MOYASAR_PUBLISHABLE_KEY }}
         run: |
           case "$REQUIRED" in
             *"||"*|"|"*|*"|")
