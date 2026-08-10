@@ -18,7 +18,7 @@
  * `docs/STORE-SUITE.md`.
  */
 
-export type FlavorId = 'main' | 'elp' | 'ppl-exam' | 'conversion' | 'medical' | 'aip';
+export type FlavorId = 'main' | 'elp' | 'conversion' | 'medical' | 'aip';
 
 export interface FlavorManifest {
   name: string;
@@ -76,21 +76,6 @@ export const FLAVORS: Record<FlavorId, Flavor> = {
       shortName: 'ELPT Prep',
       description:
         'Prepare for the Saudi aviation English Language Proficiency Test: radio-phraseology question bank, flashcards, timed mock exam and the SAELPT study sheet — fully offline.',
-      themeColor: FALCON_DARK,
-    },
-    crossPromoUrl: CROSS_PROMO,
-  },
-  'ppl-exam': {
-    id: 'ppl-exam',
-    packId: 'ppl-exam',
-    appId: 'com.flygaca.prep.ppl',
-    appName: 'Saudi PPL Prep',
-    wordmark: { primary: 'PPL', secondary: 'Prep' },
-    manifest: {
-      name: 'Saudi PPL Exam Prep by Fly GACA',
-      shortName: 'PPL Prep',
-      description:
-        'The complete Saudi PPL written-exam prep: every topic question bank, the full ground school, reading path, study sheet and a timed mock exam — fully offline.',
       themeColor: FALCON_DARK,
     },
     crossPromoUrl: CROSS_PROMO,

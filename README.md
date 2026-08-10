@@ -203,20 +203,25 @@ Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused st
 - 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`.
 - 📱 **Native iOS** — a SwiftUI target in [`apple/`](apple/ARCHITECTURE.md) (`com.flygaca.<id>`), paid one-time and sold together as an App Store bundle.
 
-| App | Certificate / rating | Primary GACAR source | Status |
-| :--- | :--- | :--- | :--- |
-| **PPL** | Private Pilot Licence | Parts 61 · 91 · 71 · 67 + Saudi AIP | ✅ Live |
-| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR (Fly GACA authored) | ✅ Live |
-| **AIP** | Aeronautical Information | SANS Saudi AIP (GEN/ENR) | ✅ Live |
-| **CPL** | Commercial Pilot Licence | Parts 61 · 91 · 119 · 135 | 🆕 New — draft content |
-| **IR** | Instrument Rating | Parts 61 · 91 · 97 + AIP ENR | 🆕 New — draft content |
-| **ATPL** | Airline Transport Pilot Licence | Parts 61 · 121 | 🆕 New — draft content |
-| **Wave 3** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap |
+Every pack below is live on the **web**. The **iOS** column tracks the native app only.
+
+| App | Certificate / rating | Primary GACAR source | Web | iOS |
+| :--- | :--- | :--- | :--- | :--- |
+| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR (Fly GACA authored) | ✅ Live | ✅ Live |
+| **AIP** | Aeronautical Information | SANS Saudi AIP (GEN/ENR) | ✅ Live | ✅ Live |
+| **PPL** | Private Pilot Licence | Parts 61 · 91 · 71 · 67 + Saudi AIP | ✅ Live | ⏸ Paused |
+| **CPL** | Commercial Pilot Licence | Parts 61 · 91 · 119 · 135 | ✅ Live | ⏸ Paused |
+| **IR** | Instrument Rating | Parts 61 · 91 · 97 + AIP ENR | ✅ Live | ⏸ Paused |
+| **ATPL** | Airline Transport Pilot Licence | Parts 61 · 121 | ✅ Live | ⏸ Paused |
+| **Later** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap | 🔜 Roadmap |
+
+> The licence-exam **iOS apps** are paused pending a strategic decision; their web packs are
+> unaffected and still selling. See [`docs/APPS-FAMILY-ROADMAP.md`](docs/APPS-FAMILY-ROADMAP.md).
 
 > [!IMPORTANT]
 > **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/pack-sources.test.ts`](tests/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`docs/STUDY-CONTENT-REVIEW.md`](docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
 
-<div align="center"><sub style="color: #666;">The full lineup, waves, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
+<div align="center"><sub style="color: #666;">The full lineup, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
 
 ---
 

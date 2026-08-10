@@ -3,7 +3,7 @@
  * Build a standalone prep-app (flavor) bundle: one pack, one branded app,
  * fully offline. Usage:
  *
- *   npm run build:flavor -- elp        # or ppl-exam · conversion · medical · aip
+ *   npm run build:flavor -- elp        # or conversion · medical · aip
  *
  * What it does (see docs/RUNBOOK-native.md → "Per-flavor app pipeline"):
  *   1. Slices public/data/* down to the pack's content (scripts/lib/flavor-slice.mjs)
