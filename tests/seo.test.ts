@@ -136,7 +136,7 @@ describe('canonicalRedirect', () => {
     for (const hostname of [
       'flygaca.com',
       'flygaca-app.web.app',
-      'flygaca-app-git-x.vercel.app',
+      'www.flygaca.com',
       'localhost',
     ]) {
       expect(canonicalRedirect({ hostname, pathname: '/tools', search: '', hash: '' })).toBeNull();
@@ -145,20 +145,23 @@ describe('canonicalRedirect', () => {
 });
 
 describe('isMirrorHost', () => {
-  it('matches the mirror/preview fronts that must noindex', () => {
+  it("matches Firebase's own .web.app alias (the one remaining duplicate host)", () => {
+    expect(isMirrorHost('flygaca-app.web.app')).toBe(true);
+  });
+
+  it('does NOT match the canonical host, the prerender host, or the retired mirror fronts', () => {
     for (const hostname of [
-      'flygaca-app.web.app',
+      'flygaca.com',
+      'www.flygaca.com',
+      'localhost',
+      '127.0.0.1',
+      // Vercel/Netlify/Cloudflare are no longer serving fronts — Firebase is the
+      // single front — so these must NOT noindex (nothing serves them any more).
       'flygaca-app-git-claude-x.vercel.app',
       'flygaca.netlify.app',
       'flygaca.pages.dev',
       'flygaca-app.workers.dev',
     ]) {
-      expect(isMirrorHost(hostname)).toBe(true);
-    }
-  });
-
-  it('does NOT match the canonical host or the prerender host', () => {
-    for (const hostname of ['flygaca.com', 'www.flygaca.com', 'localhost', '127.0.0.1']) {
       expect(isMirrorHost(hostname)).toBe(false);
     }
   });

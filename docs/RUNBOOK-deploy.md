@@ -1,18 +1,19 @@
-# RUNBOOK — Deploy (Firebase canonical + Vercel · Cloudflare · Netlify mirrors)
+# RUNBOOK — Deploy (Firebase — the single front)
 
-The app is one Vite build (`npm run build` → `dist/`) deployable to four static fronts.
+The app is one Vite build (`npm run build` → `dist/`) served from **one** front: **Firebase Hosting**.
 
-- **Firebase Hosting** is the **canonical/production** front (decided 2026-07-06, closing
-  SEO-PLAN P0.a): the `/api/chat` and `/api/feedback` Cloud Functions (the Captain Adel gateway,
-  region `me-central1` — must match `functions/src/region.ts` and the `firebase.json` rewrites) are
-  co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
-  `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The `flygaca.com` DNS
-  cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed 2026-07-31: the apex and
-  `www` both resolve to Firebase Hosting now.
-- **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
-  `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
-  working. The proxy is same-origin to the browser, so the strict CSP (`connect-src 'self'`) is
-  unchanged and no CORS is needed. They depend on the Firebase Functions being live.
+- **Firebase Hosting** hosts the SPA and co-locates the `/api/*` Cloud Functions gateway (the Captain
+  Adel `chat` + the `moyasarWebhook`), region `me-central1` — must match `functions/src/region.ts`
+  and the `firebase.json` rewrites. The backend lives in this repo's `functions/` workspace, deployed
+  separately via `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The
+  `flygaca.com` DNS cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed
+  2026-07-31: the apex and `www` both resolve to Firebase Hosting.
+- **One front, one CSP.** The security headers + CSP live only in `firebase.json`; there are no
+  mirror configs to keep in sync. `tests/csp-parity.test.ts` guards that the single policy keeps
+  allowing the money-path origins (`cdn.moyasar.com`, `api.moyasar.com`,
+  `me-central1-flygaca-app.cloudfunctions.net`).
+- **The Vercel / Cloudflare / Netlify mirror fronts were removed** (2026-08) to consolidate on one
+  platform — see the note at the end of this file for the history.
 
 > **Incident note (2026-07-05 → 06):** an accidental `firebase init` commit (`c1897f0`) flipped
 > `firebase.json` `hosting.public` from `dist` to `y` and deleted the hosting `headers` block, so
@@ -117,123 +118,37 @@ high-value routes (home + hubs + every tool/guide) into `dist/<route>/index.html
 real HTML, not just the SPA shell (static files win over the `**` → `/index.html` rewrite). It's
 **non-fatal** (a failure never blocks the deploy). For a **manual** `npm run deploy`, install the
 browser once first: `npx playwright install chromium` (otherwise prerender silently no-ops and you
-ship the shell-only build). Mirror fronts (Vercel already wired; Cloudflare/Netlify) get the same by
-adding `&& npm run prerender` to their build.
+ship the shell-only build).
 
-## Vercel (mirror) — `vercel login` first
+## `www` → apex, and captadel.com
 
-```bash
-npm i -g vercel
-vercel link            # link to the Vercel project (first time)
-vercel deploy --prod   # uses vercel.json (build + rewrites + headers)
-```
+`www.flygaca.com` → apex is a **Firebase console** concern: add `www.flygaca.com` to the Hosting site
+as a **redirect** domain (it 301s to the apex). This is where the old `vercel.json` `www → apex`
+redirect went when the mirror configs were removed. `captadel.com` / `www.captadel.com` are
+Captain-Adel's own domains (Cloud Run), not custom domains on this Firebase site, so they can't be
+redirected in `firebase.json`; the app folds them to `flygaca.com` at runtime (`src/lib/seo/seo.ts`
+`DUPLICATE_HOSTS` + `src/main.tsx`) — a client-side 302 after JS boot, which is enough for the
+low-traffic legacy domain.
 
-Config: `vercel.json` (proxies `/api/(.*)` → Firebase, SPA fallback, mirrored headers/CSP).
-
-## Cloudflare Workers — becoming canonical
-
-> **Status:** the repo is configured for Cloudflare to serve `flygaca.com`, but the
-> `flygaca-app` Worker **has never been deployed** — `CLOUDFLARE_API_TOKEN` /
-> `CLOUDFLARE_ACCOUNT_ID` are unset, so every run of `deploy-cloudflare.yml` since June has taken
-> the skip path and reported green. Until the console steps below are done, Firebase Hosting is
-> still what visitors get.
-
-**Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys the
-`flygaca-app` Worker (serving the `dist/` static assets) on every push to `main` (and on demand via
-Actions → **Deploy (Cloudflare Workers — canonical)** → _Run workflow_). It runs the same gates as
-`deploy.yml` — `Verify build env`, `check:bundle`, `check:perf`, `prerender` + coverage — because
-once the custom domain is attached it *is* the production deploy. The deploy step is **gated on
-secrets**, so it builds but skips publishing until you add both in repo Settings → Secrets → Actions:
-
-- **`CLOUDFLARE_API_TOKEN`** — a token with the _Workers Scripts: Edit_ permission (plus account-level
-  Workers access for uploading the static assets).
-- **`CLOUDFLARE_ACCOUNT_ID`** — the account that owns the `flygaca-app` Worker.
-
-**Manual (`wrangler login` first):**
-
-```bash
-npm i -g wrangler
-npm run build
-npx wrangler deploy --dry-run  # validate wrangler.toml + worker/index.ts, inspect the asset manifest
-npx wrangler deploy            # reads name, main, [[routes]] and dist/ assets from wrangler.toml
-```
-
-Config: `wrangler.toml` (Workers + `[assets]` binding, `run_worker_first = ["/api/*"]`, the
-`flygaca.com` custom domain, and `workers_dev = false` / `preview_urls = false`), `worker/index.ts`
-(proxies `/api/*` → Firebase, preserves SSE and the raw webhook body, stamps `X-Forwarded-For`;
-serves assets otherwise), `public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) —
-both copied into `dist/` and honored natively by Workers static assets.
-
-**Why `public/_headers` owns the security headers, not the Worker.** `run_worker_first` is scoped to
-`/api/*`, so `worker/index.ts` never runs for a static path and cannot set headers there — the asset
-layer does, from `_headers`. Widening `run_worker_first` to `true` would bill a Worker invocation on
-every image and JS chunk just to restate a CSP that already has three other copies.
-`tests/csp-parity.test.ts` keeps those four copies byte-identical.
-
-**Why there is no `X-Robots-Tag` in `_headers` any more.** It would deindex the canonical
-`flygaca.com`, and `_headers` has no host-conditional syntax to exempt one host. Instead: the Worker
-publishes no second hostname (`workers_dev = false`), and the genuine mirrors carry their own rule —
-`netlify.toml` unconditionally, `vercel.json` via a `missing: host` rule.
-
-**Console steps (once, by hand):**
-
-1. Create the API token and note the account ID; add both as repo secrets.
-2. Point `flygaca.com` DNS at Cloudflare. **Keep the Firebase Hosting site alive** at
-   `flygaca-app.web.app` — the Worker proxies `/api/*` to it and Phase 1 depends on it.
-3. After the first deploy with `[[routes]]`, confirm the `flygaca.com` Custom Domain provisioned
-   (Cloudflare creates the DNS record and certificate).
-4. Add a **proxied** DNS record for `www`, then a **Redirect Rule**:
-   `http.host eq "www.flygaca.com"` → `concat("https://flygaca.com", http.request.uri)`, 301,
-   preserve query. Redirect Rules, not Bulk Redirects — this is one dynamic pattern, and it runs at
-   the edge before any Worker.
-5. **WAF:** add a skip rule for `/api/moyasar-webhook` (ideally all of `/api/*`) and make sure Bot
-   Fight Mode does not challenge it. A server-to-server POST from Moyasar with no browser
-   fingerprint is exactly what the bot heuristics challenge, and a challenged webhook fails
-   silently. `confirmPayment` is the primary fulfilment path, so this degrades the backstop rather
-   than breaking purchases — but you lose the backstop.
-6. **Fix the dashboard git integration** (ROADMAP.md): it targets a Worker named `flygaca` while the
-   repo deploys `flygaca-app`, so the `Workers Builds: flygaca` check fails on every commit. Repoint
-   it or disconnect it — if both it and `deploy-cloudflare.yml` stay live you get two competing
-   deploys of the canonical site.
-7. Confirm `workers.dev` and Preview URLs show as **Disabled** after the deploy.
-8. Promote `deploy-cloudflare.yml`'s "Note when skipped" step from `::notice::` to `::error::` +
-   `exit 1` once the custom domain resolves.
-
-**Post-deploy assertions:**
-
-```bash
-curl -sI https://flygaca.com/ | grep -i x-robots-tag        # expect NOTHING
-curl -sI https://flygaca.com/ | grep -i content-security    # expect cdn.moyasar.com + cloudfunctions.net
-curl -sI https://www.flygaca.com/library                    # expect 301 → https://flygaca.com/library
-curl -s  https://flygaca.com/library | grep -c '<footer'    # expect ≥1 (prerendered body, not the shell)
-```
-
-Then hit `/api/chat` from two different source IPs and confirm `RateLimit-Remaining` decrements
-**independently** — if they share a counter, the Worker's `X-Forwarded-For` stamp isn't landing and
-the gateway's `trust proxy` hop count needs revisiting.
-
-## Netlify (mirror) — `netlify login` first
-
-```bash
-npm i -g netlify-cli
-netlify deploy --build --prod   # uses netlify.toml
-```
-
-Config: `netlify.toml` (build, `/api/*` proxy → Firebase, SPA fallback, mirrored headers/CSP).
-(Netlify also honors the `_redirects`/`_headers` files — identical values, harmless overlap.)
-
-## Post-deploy smoke (run on each deployed URL)
+## Post-deploy smoke (run on flygaca.com)
 
 1. Home `/` loads; service worker registers (PWA).
 2. A calculator route computes (e.g. crosswind) and copy-link works.
 3. `/library` search → opens a reader.
-4. **Chat streams** — confirms the `/api/*` proxy + SSE path end-to-end on that host.
+4. **Chat streams** — confirms the `/api/*` gateway + SSE path end-to-end.
 5. EN ⇄ AR toggles and the layout flips RTL.
 6. Security headers present (DevTools → Network → response headers: CSP, HSTS, etc.).
+7. `flygaca-app.web.app` carries `<meta name="robots" content="noindex">` (the canonical
+   flygaca.com must NOT) — confirms the duplicate-host protection.
 
-## Note — cross-origin alternative (not recommended)
+## History — the Vercel / Cloudflare / Netlify mirrors (removed 2026-08)
 
-Instead of the same-origin proxy, you could set `VITE_API_BASE=https://flygaca-app.web.app/api` on the
-mirror hosts. That makes the browser call Firebase cross-origin, which then requires (a) adding that
-origin to every host's CSP `connect-src` and (b) enabling CORS on the Cloud Functions (in the backend
-repo). The proxy approach avoids both; prefer it.
+The app briefly ran behind three extra static fronts (Vercel, Netlify, and a Cloudflare Worker) that
+served the same `dist/` and proxied `/api/*` back to Firebase. A planned move to make the Cloudflare
+Worker the canonical front was configured but **never deployed** (its secrets were never set). The
+project consolidated onto **Firebase as the single front** (2026-08) to cut the operational surface —
+four copies of the CSP, four deploy paths, four DNS/SSL setups — down to one. The mirror configs
+(`vercel.json`, `netlify.toml`, `wrangler.toml`, `worker/index.ts`, `public/_headers`,
+`public/_redirects`, `deploy-cloudflare.yml`) were deleted. If a CDN in front of Firebase is ever
+wanted again, prefer a **DNS-only / pass-through** setup (e.g. Cloudflare grey-cloud) over a second
+build-and-serve front, so there's still one source of truth for the build and headers.

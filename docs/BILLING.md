@@ -248,9 +248,8 @@ not showing it. Work through 1–4, then flip the param to `true` and redeploy t
 > the same-region hosting fetch — it does not use the callable region.
 
 > CSP note: the hosted widget is cross-origin by design (the browser talks to Moyasar directly), so
-> `connect-src`/`script-src`/`style-src`/`frame-src` in `firebase.json` (and the mirrored
-> `vercel.json`/`netlify.toml`) allowlist `cdn.moyasar.com` and `api.moyasar.com` — the one
-> deliberate exception to this app's otherwise same-origin-only CSP.
+> `connect-src`/`script-src`/`style-src`/`frame-src` in `firebase.json` allowlist `cdn.moyasar.com`
+> and `api.moyasar.com` — the one deliberate exception to this app's otherwise same-origin-only CSP.
 
 ## Deploy
 
