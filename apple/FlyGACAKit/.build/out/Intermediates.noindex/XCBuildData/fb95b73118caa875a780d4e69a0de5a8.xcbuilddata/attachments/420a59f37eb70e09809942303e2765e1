@@ -1,0 +1,4 @@
+module StudyEngines {
+header "StudyEngines-Swift.h"
+export *
+}

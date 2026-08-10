@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/PersistenceKitTests-primary.dia",
+    "emit-module-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/PersistenceKitTests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/PersistenceKitTests-primary-emit-module.dia",
+    "pch" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/PersistenceKitTests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/PersistenceKitTests-primary.swiftdeps"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/DerivedSources/test_entry_point.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/test_entry_point~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Tests/PersistenceKitTests/StudyStoreTests.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/PersistenceKitTests-p.build/Objects-normal/arm64/StudyStoreTests~partial.swiftmodule"
+  }
+}

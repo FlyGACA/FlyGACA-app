@@ -1,0 +1,381 @@
+[
+  {
+    "isFramework" : true,
+    "moduleName" : "Combine",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Combine-YOG12EZ3V56K.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "CoreFoundation",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/CoreFoundation-2FWYT6M0MZG0I.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "CoreModels",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/Products\/Debug\/CoreModels.swiftmodule\/arm64-apple-macos.swiftmodule"
+  },
+  {
+    "isFramework" : true,
+    "moduleName" : "CryptoKit",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/CryptoKit-VL03TUJH895G.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Darwin",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Darwin-1ODK3P1WPBKRN.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Dispatch",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Dispatch-1PJ9ZRZ8JVLFR.swiftmodule"
+  },
+  {
+    "isFramework" : true,
+    "moduleName" : "Foundation",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Foundation-1VI5P4RUDMA5N.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "IOKit",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/IOKit-1JGVXSHGNJEW.swiftmodule"
+  },
+  {
+    "isFramework" : true,
+    "moduleName" : "LocalAuthentication",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/LocalAuthentication-1QHVXW7HBWKFE.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "ObjectiveC",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/ObjectiveC-2K1H34ZC8HPFB.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Observation",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Observation-2NQ8JZO5H35LD.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "StudyEngines",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/Products\/Debug\/StudyEngines.swiftmodule\/arm64-apple-macos.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "Swift",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Swift-3TTN8DOGCU01T.swiftmodule"
+  },
+  {
+    "isFramework" : true,
+    "moduleName" : "SwiftData",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/SwiftData-9NWNO8RA62T1.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "SwiftOnoneSupport",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/SwiftOnoneSupport-37ETK9HSJCEKZ.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "System",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/System-2ZPGPOMKYYSF3.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "XPC",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/XPC-3W399HQFMDLPX.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_Builtin_float",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_float-13R9C2HZIK6P1.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_Concurrency",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Concurrency-FTE0VQLE94TA.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation1",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation1-32IBWDA7YW98.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation2",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation2-1TJ3GXTT729D6.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation3",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation3-18PZF2MD74T27.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_StringProcessing",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_StringProcessing-3NYO45LRY8M4Y.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "os",
+    "modulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/os-2ODYFB73DUA8X.swiftmodule"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/CFNetwork.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/CFNetwork-CMIX26GW0K0ZCVUB3NG15LVME.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "CFNetwork"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/CoreFoundation.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/CoreFoundation-46OTLBZCDVBN5QRZ2DZ71I5AP.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "CoreFoundation"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/CoreServices.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/CoreServices-3GE63HOAJWOV5VK0ESM2ZATQ1.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "CoreServices"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/Darwin.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Darwin-CDZDNN3JPYOOP8U3NU73GSWDI.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Darwin"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/DiskArbitration.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/DiskArbitration-E0XDATON48N391SRC1T3D9GWI.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "DiskArbitration"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/dispatch.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Dispatch-AGKJG34MH8WWS0O6IXKQ5UAA5.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Dispatch"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/Foundation.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Foundation-2GTLPQFGU292SKPQ15VF9T9FQ.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Foundation"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/IOKit.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/IOKit-DVJLJ85PL8SRUNG2A2DY5TTUS.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "IOKit"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/LocalAuthentication.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/LocalAuthentication-41WMD36LGLUMRQ30SR1DWP1F6.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "LocalAuthentication"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinBasic.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/MachO-3EHMOL8Y4CJGRL67VJF4LL6FS.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "MachO"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/ObjectiveC.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/ObjectiveC-2GF6J8GNUHMST0JVQWJWTDGP5.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ObjectiveC"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/System\/Library\/Frameworks\/Security.framework\/Modules\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/Security-CHC8IUYA3BTQQOR7OAATLJXTO.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "Security"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/lib\/swift\/shims\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/SwiftShims-8KQF474K28BQP47TVFJH2XVBS.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "SwiftShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/xpc.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/XPC-B35V7GB7R9IILUAOU7PCZN1KJ.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "XPC"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation1.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_AvailabilityInternal-8J66UZ2R2EUS94JA5XV4OQ4W4.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_AvailabilityInternal"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_float-906BTECAWRC8RBUBJ5VVA2WMU.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_float"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_inttypes-4Q4UCWBOVGAG1PHYSZBDWX5D8.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_inttypes"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_limits-ET5BNHCLCH76K4WKBMMY97LN0.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_limits"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdarg-5BT3KJECZ1013VOYE2VXQ5EWH.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdarg"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdatomic-6PEE6NYP9D4HFTXQ42RG3MPY4.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdatomic"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdbool-BS3N468JS7DKYUB3S22RS3Z5Z.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdbool"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_stddef-DHMAVDQK5BBU5JCSG7M2XQ65D.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stddef"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdint-EY4O6T4TRH7FIH0VYAF8BYG0B.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdint"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation1.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation1-3BG2IB1J07IJXYGDTB0T9EQAO.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation1"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation2.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation2-8PGH10WZXZ67PYIHNKYD66UKK.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation2"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation3.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation3-1XV78OS2NV12XPQBVWWUKFJ4G.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation3"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/lib\/swift\/shims\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/_SwiftConcurrencyShims-5D7SZOE0BW3SNLE4SKBVY7DSE.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_SwiftConcurrencyShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/launch.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/launch-9QIKT5ZX0XR1K0ODPYZ2MLS5F.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "launch"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/libDER\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/libDER-4551RG9RAUXOAZ40GWGYK586G.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "libDER"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/libkern.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/libkern-28EIS2KVQ3BEXK8TR3UULL9RQ.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "libkern"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/os.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/os-4V6461O6D5BEHVBWNUG0YD535.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "os"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/os.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/os_object-BX5PM585DRVSE2S6NI3OZZKXH.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "os_object"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/os.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/os_workgroup-EZPIO4P5O2GQ7167SEXCW15HE.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "os_workgroup"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/ptrauth-59KDH2LL6OGMIBQGT6HRGVQEB.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ptrauth"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/ptrcheck-B65KPFAAEXH04RKWEPZOYJYB5.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ptrcheck"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/c_standard_library.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/string_h-2A73TYMIRJRVJVBOG72C9KZCO.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "string_h"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation2.modulemap",
+    "clangModulePath" : "\/Users\/ad\/Documents\/GitHub\/FlyGACA-app\/apple\/FlyGACAKit\/.build\/out\/SDKExplicitPrecompiledModules\/sys_types-ARP71VDU5CM8HF7C9JAXC5BG.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "sys_types"
+  }
+]

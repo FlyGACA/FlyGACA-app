@@ -1,0 +1,89 @@
+{
+  "" : {
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/CoreModels-primary.dia",
+    "emit-module-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/CoreModels-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/CoreModels-primary-emit-module.dia",
+    "pch" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/CoreModels-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/CoreModels-primary.swiftdeps"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/ExamConfig.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ExamConfig~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/GroundSchool.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/GroundSchool~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/ModuleManifest.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ModuleManifest~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/Question.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/Question~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/QuizFile.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/QuizFile~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/ReadingPaths.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/ReadingPaths~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/SrsEntry.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/SrsEntry~partial.swiftmodule"
+  },
+  "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/Sources/CoreModels/StableID.swift" : {
+    "const-values" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.swiftconstvalues",
+    "dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.d",
+    "diagnostics" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.dia",
+    "index-unit-output-path" : "/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.o",
+    "llvm-bc" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.bc",
+    "object" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.o",
+    "swift-dependencies" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID.swiftdeps",
+    "swiftmodule" : "/Users/ad/Documents/GitHub/FlyGACA-app/apple/FlyGACAKit/.build/out/Intermediates.noindex/FlyGACAKit.build/Debug/CoreModels-t.build/Objects-normal/arm64/StableID~partial.swiftmodule"
+  }
+}
