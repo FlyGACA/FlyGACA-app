@@ -19,3 +19,9 @@ public/data/**              linguist-generated=true -diff
 *.pdf  binary
 *.woff  binary
 *.woff2 binary
+
+# Apple Pay merchant domain-association file — a third-party-signed verification
+# blob served verbatim at /.well-known/ for Moyasar/Apple Pay domain validation.
+# Keep its exact bytes (no eol rewriting) so the deployed file matches the file
+# issued by the dashboard.
+public/.well-known/apple-developer-merchantid-domain-association -text
