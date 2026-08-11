@@ -93,6 +93,23 @@ by tests). It's a **project/Console setting** that gates every auth call at once
 appends the raw Firebase code to the on-screen error (e.g. `(code: auth/…)`); read it and match it to
 the step below. Work top-down — these are ordered by how often they cause a total outage.
 
+0. **Did the fix ever ship?** Before touching any Console setting, confirm production is actually
+   running the code you think it is. A merged fix that never deployed looks exactly like a fix that
+   didn't work, and this project has hit that: in Aug 2026 every GitHub Actions run began failing
+   instantly (no runner assigned, no logs) across repos, so `deploy.yml` stopped running and
+   production sat on a build that was days old while auth fix after auth fix landed on `main`.
+   - Check the Actions tab: is the latest **Deploy (Firebase Hosting + rules)** run on `main` green?
+     If runs fail in seconds with **no logs**, that's an account-level Actions problem (billing /
+     org Actions policy), not a code bug — no amount of Console tuning will help until it's cleared.
+   - Check what's live: `firebase hosting:releases:list --project flygaca-app` (or Console →
+     Hosting → Release history) and compare the release timestamp to your merge.
+   - Confirm the live bundle carries real config — open the site, DevTools → Network → the
+     `assets/index-*.js` chunk, and search it for `AIzaSy`. No match means `VITE_FIREBASE_*` never
+     reached the build (see step 5); a match that isn't the current key means a stale deploy.
+   - **Beware manual deploys.** A local `firebase deploy` bakes in whatever `.env.local` is on that
+     machine, bypassing `deploy.yml`'s "Verify build env" guard entirely. If production was last
+     shipped by hand, that is the first thing to re-check.
+
 1. **Providers enabled** — Console → Authentication → **Sign-in method**: confirm **Email/Password**
    _and_ **Google** are both _Enabled_. A disabled provider returns `auth/operation-not-allowed`
    (shown as "this sign-in method is turned off").
@@ -114,8 +131,19 @@ the step below. Work top-down — these are ordered by how often they cause a to
    `requests-from-referer-…-are-blocked` for _all_ auth.
 5. **Config actually shipped** — if the Account page shows the "temporarily unavailable" card with
    **no form or Google button at all**, the deployed bundle is missing `VITE_FIREBASE_*`
-   (`isFirebaseConfigured()` is false). Confirm the host build injects them (all fronts run
-   `cp .env.example .env.local`; a host with its own env settings could override/omit them).
+   (`isFirebaseConfigured()` is false). Production gets them from the **Actions variables** injected
+   by `deploy.yml`'s Build step (`FIREBASE_API_KEY`, `FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID`, …) —
+   `.env.example` is never read by Vite, so it cannot rescue a build that's missing them. Check
+   Settings → Secrets and variables → Actions → **Variables**, and note that `deploy.yml` only grew
+   the `VITE_FIREBASE_*` injection in Aug 2026: any release built before that has **no** Firebase
+   config at all.
+
+   `isFirebaseConfigured()` also rejects unfilled placeholders (`your-…`, `…replace_me`), so this
+   same card — not a dead-but-complete form — is what a placeholder build now shows. If instead you
+   see a **full sign-in form where every attempt fails**, the config shipped but is *wrong*
+   (`auth/api-key-not-valid`) or is being rejected by steps 1–4.
 
 Serving origins to register in steps 2–4: `flygaca.com`, `www.flygaca.com`, `flygaca-app.web.app`,
-`flygaca-app.firebaseapp.com`, plus any active `*.vercel.app` / `*.netlify.app` alias.
+`flygaca-app.firebaseapp.com`. (The Vercel/Netlify/Cloudflare mirror fronts were removed in Aug 2026
+— Firebase Hosting is the only serving front, so there are no `*.vercel.app` / `*.netlify.app`
+aliases left to authorize.)

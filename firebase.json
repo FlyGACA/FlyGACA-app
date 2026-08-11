@@ -19,6 +19,11 @@
         "region": "me-central1"
       },
       {
+        "source": "/api/auth/**",
+        "function": "chat",
+        "region": "me-central1"
+      },
+      {
         "source": "/api/moyasar-webhook",
         "function": "moyasarWebhook",
         "region": "me-central1"
