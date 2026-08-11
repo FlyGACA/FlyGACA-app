@@ -17,5 +17,5 @@ To capture or regenerate App Store screenshots, work in `ay2m/FlyGACA`:
   (`FlyGACA/ELPT`, `FlyGACA/AIP`, plus the parked `FlyGACA/PPL` · `CPL` · `IR` · `ATPL`), under
   `appstore/screenshots/`.
 
-The committed images under [`screenshots/`](./screenshots/) here are a point-in-time snapshot from
-before the split; see [`screenshots/README.md`](./screenshots/README.md).
+The committed images under [`archive/screenshots/`](./archive/screenshots/) here are a point-in-time
+snapshot from before the split; see [`archive/screenshots/README.md`](./archive/screenshots/README.md).
