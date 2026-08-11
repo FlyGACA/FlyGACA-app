@@ -1,4 +1,0 @@
-module AppServices {
-header "AppServices-Swift.h"
-export *
-}

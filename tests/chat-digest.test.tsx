@@ -8,8 +8,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { screen, fireEvent, cleanup, within } from '@testing-library/react';
 import { renderWithRouter } from './helpers/render';
-import type { DigestPart } from '@/calc/chatSources';
-import type { CrossRef } from '@/calc/chatCrossRefs';
+import type { DigestPart } from '@/calc/chat/chatSources';
+import type { CrossRef } from '@/calc/chat/chatCrossRefs';
 import { SourcesDigest } from '@/components/chat/SourcesDigest';
 import { CrossRefChips } from '@/components/chat/CrossRefChips';
 import { ExportActions } from '@/components/chat/ExportActions';

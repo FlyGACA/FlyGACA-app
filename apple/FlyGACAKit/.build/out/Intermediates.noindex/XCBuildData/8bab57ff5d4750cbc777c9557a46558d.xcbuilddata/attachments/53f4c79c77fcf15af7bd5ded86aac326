@@ -1,4 +1,0 @@
-module FeatureUI {
-header "FeatureUI-Swift.h"
-export *
-}
