@@ -22,9 +22,6 @@ on this React/Vite/Firebase/Capacitor PWA.
 
 | Vendored skill | Maps to in this repo |
 | --- | --- |
-| `performing-security-headers-audit` | `index.html` CSP, headers in `vercel.json` / `netlify.toml` |
-| `analyzing-sbom-for-supply-chain-vulnerabilities` | `package.json` / `package-lock.json` |
-| `implementing-github-advanced-security-for-code-scanning` | `.github/` CI |
 | `detecting-typosquatting-packages-in-npm-pypi` | npm dependencies |
 | `implementing-secret-scanning-with-gitleaks` | `.env.example`, Firebase config, `firestore.rules` |
 | `testing-api-security-with-owasp-top-10` | `src/lib/api.ts`, `/api/chat` + `/api/content` |
