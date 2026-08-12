@@ -42,6 +42,14 @@ jobs:
 
       - run: npm ci
 
+      # `functions/` is its own npm package — the root `npm ci` does not touch it.
+      # firebase.json's functions `predeploy` runs lint + build inside it, so those
+      # deps must exist before the "Deploy functions" step below. Same gate, so an
+      # unconfigured repo pays nothing.
+      - name: Install functions deps
+        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
+        run: npm ci --prefix functions
+
       # Fail loudly rather than shipping a build that looks fine and is dead.
       # `.env.example` holds placeholders, so a missing Actions variable used to
       # bake `your-firebase-web-api-key` into the bundle: `isFirebaseConfigured()`
@@ -150,6 +158,35 @@ jobs:
           echo "GOOGLE_APPLICATION_CREDENTIALS=${RUNNER_TEMP}/firebase-sa.json" >> "${GITHUB_ENV}"
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      # Publish the gateway BEFORE hosting. `firebase.json` rewrites /api/chat,
+      # /api/feedback and /api/auth/** at the `chat` function, so a hosting release
+      # that lands first points live traffic at endpoints the deployed function may
+      # not carry yet — which is exactly how the session-cookie endpoints sat dead:
+      # the routes existed in gateway.ts from 2026-08-03 and no workflow had ever
+      # deployed functions/.
+      #
+      # A separate invocation (not `--only functions,hosting`) so the ordering is
+      # explicit and a functions failure stops the run before the hosting release
+      # goes live.
+      #
+      # OFF by default, and deliberately so: publishing functions needs the deploy
+      # service account to hold roles/cloudfunctions.admin, roles/iam.serviceAccountUser,
+      # roles/cloudbuild.builds.editor and roles/artifactregistry.writer. Asking the
+      # CLI for a target the SA can't perform fails the WHOLE deploy — that is how
+      # firestore:indexes broke every run (see the Deploy step). Grant the roles
+      # first, then set the DEPLOY_FUNCTIONS repo variable to 'true'
+      # (Settings → Secrets and variables → Actions → Variables).
+      - name: Deploy functions
+        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
+        run: npx --yes firebase-tools@13 deploy --only functions --project flygaca-app --non-interactive
+
+      # Never let a skipped functions deploy be silent — a stale gateway behind a
+      # fresh hosting release is invisible from the outside until an /api/* call 404s.
+      - name: Warn that functions were not deployed
+        if: ${{ vars.DEPLOY_FUNCTIONS != 'true' }}
+        run: |
+          echo "::warning::functions/ was NOT deployed (DEPLOY_FUNCTIONS is not 'true'). If this release changes the gateway or adds an /api/* rewrite, run 'npm run deploy:functions' or those routes will resolve against a stale function. See docs/RUNBOOK-deploy.md."
 
       - name: Deploy
         run: |

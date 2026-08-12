@@ -5,7 +5,10 @@ The app is one Vite build (`npm run build` → `dist/`) served from **one** fron
 - **Firebase Hosting** hosts the SPA and co-locates the `/api/*` Cloud Functions gateway (the Captain
   Adel `chat` + the `moyasarWebhook`), region `me-central1` — must match `functions/src/region.ts`
   and the `firebase.json` rewrites. The backend lives in this repo's `functions/` workspace, deployed
-  separately via `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The
+  separately via `npm run deploy:functions` — the frontend `npm run build` never rebuilds it.
+  `deploy.yml` can now do it for you, **ordered before hosting** — see
+  [Deploying functions from CI](#deploying-functions-from-ci) — but it is off until the deploy
+  service account has the IAM to publish functions. The
   `flygaca.com` DNS cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed
   2026-07-31: the apex and `www` both resolve to Firebase Hosting.
 - **One front, one CSP.** The security headers + CSP live only in `firebase.json`; there are no
@@ -119,6 +122,37 @@ real HTML, not just the SPA shell (static files win over the `**` → `/index.ht
 **non-fatal** (a failure never blocks the deploy). For a **manual** `npm run deploy`, install the
 browser once first: `npx playwright install chromium` (otherwise prerender silently no-ops and you
 ship the shell-only build).
+
+## Deploying functions from CI
+
+`deploy.yml` deploys `hosting` + `firestore:rules`. It can also deploy `functions/`, but that is
+**off by default** and gated on the `DEPLOY_FUNCTIONS` repo variable.
+
+**Why it matters.** `firebase.json` rewrites `/api/chat`, `/api/feedback` and `/api/auth/**` at the
+`chat` function. A hosting release that lands *before* the function carries those routes points live
+traffic at endpoints that don't exist yet. That is not hypothetical: the session-cookie endpoints
+(`/api/auth/session-login`, `/api/auth/session-logout`) were added to `gateway.ts` on 2026-08-03 and
+no workflow had ever deployed `functions/`, so they were unreachable — and the client swallows the
+response, so nothing surfaced. The workflow therefore deploys functions in its **own step, ordered
+before hosting**; a functions failure stops the run before the hosting release goes live.
+
+**Why it's off by default.** Publishing functions needs the deploy service account
+(`FIREBASE_SERVICE_ACCOUNT`) to hold:
+
+| Role | Why |
+| --- | --- |
+| `roles/cloudfunctions.admin` | create/update the functions |
+| `roles/iam.serviceAccountUser` | act as the runtime service account |
+| `roles/cloudbuild.builds.editor` | the source build |
+| `roles/artifactregistry.writer` | push the built image |
+
+Asking the CLI for a target the SA can't perform fails the **whole** deploy, hosting included — that
+is exactly how `firestore:indexes` broke every run (see the comment in `deploy.yml`'s Deploy step).
+So grant the roles first, confirm one manual `npm run deploy:functions` works, then set
+`DEPLOY_FUNCTIONS` to `true` in Settings → Secrets and variables → Actions → **Variables**.
+
+While it's off, every run emits a `::warning::` saying functions weren't deployed — a skipped
+functions deploy must never be silent.
 
 ## `www` → apex, and captadel.com
 

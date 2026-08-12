@@ -191,7 +191,11 @@ second build-and-serve front.)
   `flygaca-app.web.app` as the underlying site) and fronts the Cloud Functions (`chat`,
   `moyasarWebhook`). `npm run deploy` builds → `prerender` → coverage check → `firebase deploy`, but
   the **production deploy path is the `deploy.yml` workflow**, which additionally offloads the corpus
-  to the bucket. Keep any new API surface under `/api/*` so it resolves through the same rewrites.
+  to the bucket. Keep any new API surface under `/api/*` so it resolves through the same rewrites —
+  and remember the rewrite is only half of it: the `chat` function must be deployed with the route or
+  the path resolves against a stale gateway. `deploy.yml` deploys `functions/` **before** hosting for
+  exactly that reason, gated on the `DEPLOY_FUNCTIONS` repo variable (off until the deploy service
+  account has the functions IAM; it warns loudly while off). See `docs/RUNBOOK-deploy.md`.
 - **The CSP lives in one place** — `firebase.json` — now that there's a single front.
   `tests/csp-parity.test.ts` asserts it keeps allowing the money-path origins (`cdn.moyasar.com`,
   `api.moyasar.com`, and `me-central1-flygaca-app.cloudfunctions.net` — the `httpsCallable` billing
