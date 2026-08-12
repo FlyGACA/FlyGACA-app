@@ -271,7 +271,12 @@ merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 `MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
 `GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
 `SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility; vendored skills live under
-`.claude/skills/`, pinned by `skills-lock.json`), `docs/ARCHITECTURE-BLUEPRINT.md`
+`.claude/skills/`, pinned by `skills-lock.json` for the `firebase/agent-skills` set and by
+`.claude/skills/THIRD_PARTY_NOTICES.md` for everything vendored by hand — including
+**`diagram-design`**, the editorial-diagram skill, pre-skinned to the Falcon palette and reachable
+via `/export-diagram`, `/import-drawio`, `/import-mermaid`; its diagrams are documentation
+artifacts and never enter the bundle, so the size budgets don't see them),
+`docs/ARCHITECTURE-BLUEPRINT.md`
 (platform-wide technical blueprint), root `SECURITY.md`, and `docs/` generally (design, billing,
 `RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `RUNBOOK-firebase.md`, the `RUNBOOK-ios-*.md` set,
 `LICENSED-API.md`, `PRICING-REVENUE-STRATEGY.md`, `RUNBOOK-native.md` /
