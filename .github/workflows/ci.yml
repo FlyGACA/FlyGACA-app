@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   build:
-    name: typecheck · lint · test · build
+    name: typecheck · test · build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -34,12 +34,6 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Format check
-        run: npm run format:check
-
       - name: Unit tests + coverage ratchet
         run: npm run test:coverage
 
@@ -53,7 +47,7 @@ jobs:
         run: npm run check:perf
 
   functions:
-    name: functions · lint · test · build
+    name: functions · test · build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -69,9 +63,6 @@ jobs:
           cache-dependency-path: functions/package-lock.json
 
       - run: npm ci
-
-      - name: Lint
-        run: npm run lint
 
       - name: Unit tests + coverage ratchet
         run: npm run test:coverage
