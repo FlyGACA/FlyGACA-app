@@ -20,7 +20,7 @@ concurrency:
 jobs:
   build:
     name: typecheck · test · build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
@@ -48,7 +48,7 @@ jobs:
 
   functions:
     name: functions · test · build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: functions
@@ -72,7 +72,7 @@ jobs:
 
   rules:
     name: firestore rules (emulator)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
@@ -97,7 +97,7 @@ jobs:
 
   e2e:
     name: e2e · a11y (Playwright)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
