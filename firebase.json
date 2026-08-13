@@ -3,8 +3,7 @@
     "public": "dist",
     "ignore": [
       "firebase.json",
-      "**/node_modules/**",
-      "**/rag-chunks.json"
+      "**/node_modules/**"
     ],
     "rewrites": [
       {

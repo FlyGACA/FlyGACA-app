@@ -153,13 +153,32 @@ footprint fully trustworthy.
 - **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
   initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (188 kB gzip today —
   the script is the source of truth).
-- **[platform]** **Shard the heavy data payloads.** `airports-extra.json` (21 MB) and
-  `library-search.json` (19 MB) are each fetched as a single blob today; shard them (by
-  region/ICAO prefix and by corpus/Part or term-prefix buckets) so the first search on a mobile
-  connection doesn't wait on the whole index. Confirm `rag-chunks.json` (14 MB) is only consumed
-  server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
-  (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
-  cache split in `vite.config.ts` when shard names change.
+- **[platform]** **Shard the heavy data payloads — aerodromes done, library search still open.**
+  Note the sizes above were raw: on the wire (Hosting gzips) `airports-extra` was 2.8 MB and
+  `library-search.json` is 3.7 MB, not 21/19 MB. Parse cost on a phone is the other half of the
+  problem and scales with the raw figure.
+  - ~~`airports-extra.json`~~ **Done.** Now `public/data/airports-extra/<REGION>.json` + a
+    `_manifest.json` carrying an ident-prefix hint (`scripts/lib/airport-shards.mjs`,
+    `src/lib/airportShards.ts`). A region filter reads only its own shards — **GCC goes 2.8 MB →
+    17 KB gz** — and a detail-page ICAO lookup resolves one shard from the prefix hint instead of
+    all 66k rows. Region is the only shard axis on purpose: adding an ident-prefix axis would
+    serve the detail page more evenly but duplicate all 20 MB, and the 3 KB hint buys the same
+    lookup. Total bucket bytes are unchanged. `tests/airport-shards.test.ts` pins the invariant
+    that matters — shard selection is a **superset** of what `inRegion` matches, so a mapping bug
+    can never silently drop aerodromes from the directory.
+  - ~~`rag-chunks.json`~~ **Done.** Confirmed server-only (no `src/` reader; the gateway's
+    `CORPUS_URL` defaults to `library-search.json` and is set nowhere) and moved out of
+    `public/data/` to `data/` at the repo root, so it is neither Hosting-served nor bucket-mirrored.
+    Its vestigial `firebase.json` hosting-ignore entry is gone; `tests/data-shape.test.ts` pins
+    the split and its legacy-`u` backend contract.
+  - **Still open: `library-search.json` (3.7 MB gz).** Sharding it is **blocked on a coordinated
+    functions deploy**, not on effort: it is also the gateway's own corpus, fetched whole over HTTP
+    by `functions/src/corpus.ts` (`CORPUS_URL`). Shipping shards while a stale gateway still
+    requests the monolith breaks `/api/chat`, and functions deploys are gated off today
+    (`DEPLOY_FUNCTIONS`). Ordered fix: teach `corpus.ts` to read a manifest + shards → deploy
+    functions → then emit shards and drop the monolith. Keep `src/lib/content.ts` (`loadJson`
+    promise cache) as the single client fetch path and update the two-tier NetworkFirst split in
+    `vite.config.ts` with the new names.
 - **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
   `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
   files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync

@@ -12,7 +12,8 @@ import { readFile } from "node:fs/promises";
 import { defineString } from "firebase-functions/params";
 import type { ChatSource } from "./contract.js";
 
-/** Full legal lineage emitted by the hierarchical splitter (rag-chunks.json). */
+/** Full legal lineage emitted by the hierarchical splitter (data/rag-chunks.json —
+ *  a backend input at the repo root, deliberately not served from public/data). */
 export interface Lineage {
   document: string;
   subpart?: string | null;
@@ -25,7 +26,9 @@ export interface Lineage {
 
 /**
  * Raw entry shape. `library-search.json` ships `{d,b,u,x}`; `rag-chunks.json`
- * adds an optional `lineage` block. Both flow through the same index.
+ * adds an optional `lineage` block. Both flow through the same index. Only
+ * library-search.json is web-served today (the CORPUS_URL default); pointing
+ * CORPUS_URL at rag-chunks means uploading `data/rag-chunks.json` deliberately.
  */
 interface SearchEntry {
   d: string;

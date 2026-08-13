@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -11,14 +11,17 @@ import { join } from 'node:path';
  * `npm run data:normalize` to heal it (and land the builder patch upstream so it
  * stops recurring).
  *
- * One file legitimately still carries legacy URLs; it's allow-listed with a
- * reason, and anything else with a `document.html?` URL fails. The allow-list is
- * self-checking: a file that no longer needs the exemption must be removed from
- * it (otherwise the "still needs exemption" test fails).
+ * Any file under public/data carrying a `document.html?` URL fails. The
+ * allow-list is self-checking: a file that no longer needs its exemption must be
+ * removed from it (otherwise the "still needs exemption" test fails).
+ *
+ * It is empty today. `rag-chunks.json` used to be the one exemption — it keeps
+ * legacy `u` values on purpose as the backend BM25 contract — but it is a
+ * retriever input rather than a web asset and now lives at `data/` outside
+ * `public/`, so it is out of this scan's scope entirely. See the separate
+ * relocation guard below.
  */
-const LEGACY_URL_ALLOWED = new Map<string, string>([
-  ['rag-chunks.json', 'backend BM25 retriever contract (functions/src/corpus.ts) reads `u`'],
-]);
+const LEGACY_URL_ALLOWED = new Map<string, string>();
 
 const DATA_DIR = join(process.cwd(), 'public/data');
 const read = (name: string) => readFileSync(join(DATA_DIR, name), 'utf8');
@@ -92,5 +95,26 @@ describe('corpus data shape', { timeout: 30_000 }, () => {
     // `cite` is the human-readable label; the semantic link lives in `citeRef`.
     // Guards against a migration clobbering the label with a ref object.
     expect(qs.every((q) => q.cite === undefined || typeof q.cite === 'string')).toBe(true);
+  });
+  /**
+   * rag-chunks.json is a backend retriever input, not a web asset: no client code
+   * reads it, and the gateway's CORPUS_URL points at library-search.json. Serving
+   * it from Hosting and mirroring it into the public data bucket cost 14 MB raw /
+   * 1.7 MB gz for nothing, so it lives at `data/` outside `public/`. This pins
+   * that split — and pins the legacy `u` field it keeps on purpose, which is the
+   * shape functions/src/corpus.ts ingests.
+   */
+  it('rag-chunks.json stays out of public/ and keeps its backend `u` contract', () => {
+    expect(
+      jsonFiles.includes('rag-chunks.json'),
+      'rag-chunks.json is a backend input — it must not be served from public/data',
+    ).toBe(false);
+    const backendPath = join(process.cwd(), 'data/rag-chunks.json');
+    expect(existsSync(backendPath), 'expected data/rag-chunks.json').toBe(true);
+    const idx = JSON.parse(readFileSync(backendPath, 'utf8')) as {
+      entries: Array<{ u?: string; x?: string }>;
+    };
+    expect(idx.entries.length).toBeGreaterThan(0);
+    expect(idx.entries.every((e) => typeof e.u === 'string')).toBe(true);
   });
 });

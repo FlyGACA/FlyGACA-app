@@ -6,7 +6,7 @@ import { TextField } from '@/components/calc/TextField';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useUrlState } from '@/hooks/useUrlState';
-import { fetchJson, type Airport, type AirportsIndex } from '@/lib/content';
+import { type Airport, type AirportsIndex } from '@/lib/content';
 import {
   REGION_FILTERS,
   inRegion,
@@ -14,6 +14,7 @@ import {
   compareAirports,
   type RegionFilter,
 } from '@/lib/aerodromes';
+import { loadAirportsForFilter } from '@/lib/airportShards';
 import { AerodromesHero } from '@/components/aerodrome/AerodromesHero';
 import { AirportTypeIcon } from '@/components/aerodrome/AirportTypeIcon';
 import styles from './Aerodromes.module.css';
@@ -31,21 +32,40 @@ export function Aerodromes() {
   const [visible, setVisible] = useState(PAGE);
   const query = useDebouncedValue(urlState.q.trim(), 200);
 
-  // The long tail (small strips, heliports — ~66k airfields) ships in a separate
-  // file fetched lazily the first time a search or a region filter is active, so
-  // the default "All" view only pays for the ~6k rich core. Mirrors the Library's
-  // lazy search-index pattern.
+  // The long tail (small strips, heliports — ~66k airfields) ships region-sharded
+  // and is fetched lazily the first time a search or a region filter is active, so
+  // the default "All" view only pays for the ~6k rich core. A region filter now
+  // pulls only that region's shards: "GCC" costs 17 KB gz instead of the 2.8 MB
+  // whole tier. Only a worldwide free-text search still needs every shard.
   const needExtra = region !== 'all' || query.length > 0;
   const [extra, setExtra] = useState<Airport[] | null>(null);
+  // Which filter the loaded rows cover, so switching region refetches the shards
+  // it needs. Repeats are free — loadJson caches each shard for the tab's life.
+  const [extraFor, setExtraFor] = useState<RegionFilter | null>(null);
   const [extraLoading, setExtraLoading] = useState(false);
   useEffect(() => {
-    if (!needExtra || extra || extraLoading) return;
+    if (!needExtra || extraLoading || extraFor === region) return;
+    let cancelled = false;
+    const forRegion = region;
     setExtraLoading(true);
-    fetchJson<AirportsIndex>('/data/airports-extra.json')
-      .then((d) => setExtra(d.airports))
-      .catch(() => setExtra([]))
-      .finally(() => setExtraLoading(false));
-  }, [needExtra, extra, extraLoading]);
+    loadAirportsForFilter(forRegion)
+      .then((rows) => {
+        if (cancelled) return;
+        setExtra(rows);
+        setExtraFor(forRegion);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setExtra([]);
+        setExtraFor(forRegion);
+      })
+      .finally(() => {
+        if (!cancelled) setExtraLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [needExtra, region, extraFor, extraLoading]);
 
   const pool = useMemo(() => {
     const base = data?.airports ?? [];

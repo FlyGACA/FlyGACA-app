@@ -1,5 +1,5 @@
 /**
- * build-rag-chunks — generate public/data/rag-chunks.json.
+ * build-rag-chunks — generate data/rag-chunks.json.
  *
  * Runs the hierarchical splitter (scripts/lib/markdown-splitter.mjs) over every
  * GACAR Part HTML in public/data/parts/, joins per-document metadata from
@@ -8,9 +8,15 @@
  * functions/src/corpus.ts ingests it with zero structural change) plus an
  * additive `lineage` block the new code reads when present.
  *
+ * It writes to `data/` at the repo root, NOT `public/data/` — this is a backend
+ * retriever input, never a web asset. No client code reads it, and the gateway's
+ * CORPUS_URL points at library-search.json, so shipping it to Hosting and
+ * mirroring it into the public data bucket only cost bytes (14 MB raw / 1.7 MB
+ * gz). To serve it deliberately, upload it and point CORPUS_URL at it.
+ *
  *   npm run build:chunks
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -19,7 +25,7 @@ import { splitPartHtml } from './lib/markdown-splitter.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const INDEX_PATH = resolve(ROOT, 'public/data/gacar-index.json');
 const PARTS_DIR = resolve(ROOT, 'public/data/parts');
-const OUT_PATH = resolve(ROOT, 'public/data/rag-chunks.json');
+const OUT_PATH = resolve(ROOT, 'data/rag-chunks.json');
 
 /** "2026-06-13" → "2026-06" (corpus-wide effective-date fallback). */
 function toMonth(generated) {
@@ -74,6 +80,7 @@ async function main() {
     count: entries.length,
     entries,
   };
+  await mkdir(dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(out), 'utf8');
   console.log(
     `build-rag-chunks: ${entries.length} chunks from ${docs} parts ` +
