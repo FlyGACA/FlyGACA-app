@@ -12,7 +12,7 @@
  *
  * Runs inside `npm run build` after check:prerender, so every build + deploy is
  * gated. Node-only, no browser, no deps. The pure helpers are exported for
- * tests/validate-jsonld.test.ts.
+ * tests/scripts/validate-jsonld.test.ts.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
