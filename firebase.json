@@ -50,7 +50,7 @@
           },
           {
             "key": "Permissions-Policy",
-            "value": "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
+            "value": "geolocation=(), camera=(), microphone=(), payment=(self \"https://api.moyasar.com\"), usb=()"
           },
           {
             "key": "Strict-Transport-Security",
