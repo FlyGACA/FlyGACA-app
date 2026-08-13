@@ -150,9 +150,13 @@ footprint fully trustworthy.
   and app icons/splash. See `docs/RUNBOOK-native.md`. Includes **passkeys / biometric unlock** for
   the persistent "active flight line" session — deferred from the sign-in redesign because it needs
   the native shell.
-- **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
-  initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (188 kB gzip today —
-  the script is the source of truth).
+- **[platform]** **Performance budget — the static half shipped; the runtime half is what's left.**
+  `scripts/check-perf-budget.mjs` (`npm run check:perf`) already gates **every** emitted chunk on a
+  per-chunk gz ceiling plus a total-footprint ceiling, alongside the initial-JS budget in
+  `scripts/check-bundle.mjs` (**189 kB** gz, 186.9 used today — the script is the source of truth).
+  Both are in `verify` and in `ci.yml` as their own steps. What is still missing is a **runtime**
+  gate: nothing measures LCP/INP, so a change can hold every byte budget and still regress the
+  field metrics. Add Lighthouse CI (or equivalent) against the built preview.
 - **[platform]** **Shard the heavy data payloads — aerodromes done, library search still open.**
   Note the sizes above were raw: on the wire (Hosting gzips) `airports-extra` was 2.8 MB and
   `library-search.json` is 3.7 MB, not 21/19 MB. Parse cost on a phone is the other half of the
