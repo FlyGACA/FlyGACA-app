@@ -168,6 +168,25 @@ export function getFirebaseAuth(): Promise<Auth | null> {
   return authPromise;
 }
 
+/**
+ * `getFirebaseAuth()`, but resolved only once Auth has finished restoring any
+ * persisted session — so `.currentUser` is trustworthy the moment this resolves.
+ *
+ * Use this, not `getFirebaseAuth()`, anywhere a null `currentUser` changes what the
+ * user sees. `getAuth()` resolves immediately while the session is still being read
+ * back from IndexedDB, so `currentUser` is `null` for the first few ms of every cold
+ * page load. That is not an edge case on the money path: `billing.ts` starts checkout
+ * with `window.location.assign`, a full document load, so checkout *always* reads auth
+ * cold — a signed-in buyer got "sign in to check out", and the post-payment return leg
+ * called `confirmPayment` with no ID token and showed an error after a real charge.
+ */
+export async function getReadyAuth(): Promise<Auth | null> {
+  const auth = await getFirebaseAuth();
+  if (!auth) return null;
+  await auth.authStateReady();
+  return auth;
+}
+
 let dbPromise: Promise<Firestore | null> | null = null;
 export function getDb(): Promise<Firestore | null> {
   if (!isFirebaseConfigured()) return Promise.resolve(null);

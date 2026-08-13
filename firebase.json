@@ -49,7 +49,7 @@
           },
           {
             "key": "Permissions-Policy",
-            "value": "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
+            "value": "geolocation=(), camera=(), microphone=(), payment=(self \"https://api.moyasar.com\"), usb=()"
           },
           {
             "key": "Strict-Transport-Security",
@@ -196,7 +196,6 @@
   "remoteconfig": {
     "template": "remoteconfig.template.json"
   },
-  "extensions": {},
   "database": {
     "rules": "database.rules.json"
   },

@@ -104,6 +104,31 @@ test('exam-prep storefront lists certificate & subject packs with prices', async
   await expect(medical).toContainText(/SAR\s*\d+\s*·\s*one-time/);
 });
 
+test('the checkout route mounts and fails closed when billing is not configured', async ({
+  page,
+}) => {
+  // Firebase/Moyasar are unconfigured in the preview build, so getReadyAuth resolves
+  // null and checkout must say so rather than render a dead form or throw. The point
+  // of the assertion is that /checkout is reachable and self-explanatory at all: this
+  // route had no test of any kind while both of its auth reads were racing the SDK.
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+
+  await page.goto('/checkout?kind=pass');
+  await expect(page.getByRole('heading', { name: 'Checkout' })).toBeVisible();
+  await expect(page.getByRole('alert')).toContainText("Billing isn't connected in this build.");
+  expect(errors).toEqual([]);
+});
+
+test('the checkout return leg reports rather than silently failing', async ({ page }) => {
+  // The post-payment leg with no backend: it must still resolve to a message, never
+  // sit on "Confirming your payment…" forever — that spinner in front of a real buyer
+  // is the worst state this page can be in.
+  await page.goto('/checkout/return?id=pay_test');
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByText('Confirming your payment…')).toBeHidden();
+});
+
 test('a paid pack page offers Buy but disables it when billing is off', async ({ page }) => {
   await page.goto('/study/packs/medical');
   // Firebase/Moyasar unconfigured in the preview → the buy button is the disabled placeholder.

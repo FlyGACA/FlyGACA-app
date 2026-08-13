@@ -44,7 +44,7 @@ import {
   renewalBaseDate,
   renewalFailureOutcome,
   sellablePackId,
-  verifyMoyasarSignature,
+  verifyMoyasarWebhook,
   webhookPaymentId,
   SELLABLE_PACK_IDS,
   type Cadence,
@@ -134,9 +134,11 @@ async function moyasarGetPayment(secretKey: string, id: string): Promise<Moyasar
   const res = await fetch(`${MOYASAR_API}/payments/${encodeURIComponent(id)}`, {
     headers: { Authorization: moyasarAuthHeader(secretKey) },
   });
-  const body = (await res.json()) as MoyasarPayment;
+  // Status first: a 5xx from Moyasar's edge is often HTML, and parsing that would
+  // throw an opaque JSON error instead of the retryable `moyasar-get-failed:502`
+  // that fulfillPayment's retry path depends on being able to recognise.
   if (!res.ok) throw new Error(`moyasar-get-failed:${res.status}`);
-  return body;
+  return (await res.json()) as MoyasarPayment;
 }
 
 /** Charge a previously-saved card token off-session (the renewal engine). */
@@ -381,11 +383,6 @@ async function fulfillPayment(
   paymentId: string,
 ): Promise<{ uid: string | null; redirectTo: string }> {
   const db = getFirestore();
-  const marker = db.collection("moyasarPayments").doc(paymentId);
-  const claimed = await marker
-    .create({ receivedAt: FieldValue.serverTimestamp() })
-    .then(() => true)
-    .catch(() => false);
 
   const payment = await moyasarGetPayment(secretKey, paymentId);
   const checkoutId = payment.metadata?.checkoutId as string | undefined;
@@ -417,10 +414,38 @@ async function fulfillPayment(
   }
 
   const redirectTo = redirectForIntent(intent, true);
+
+  // Claim the payment ONLY once it is known-good and we are committed to granting.
+  // Order matters and is the whole point: this create() used to run first, before the
+  // payment was even fetched, so any throw in between (Moyasar 5xx, a rotated secret
+  // key, a network blip) left the marker written with nothing granted — and the retry,
+  // seeing the payment already claimed, returned the SUCCESS redirect. The buyer was
+  // charged, told it worked, and got nothing. Claiming here means a transient failure
+  // leaves the payment unclaimed and genuinely retryable, while still claiming strictly
+  // before grantForIntent so a confirmPayment/webhook race can never grant twice.
+  const marker = db.collection("moyasarPayments").doc(paymentId);
+  const claimed = await marker
+    .create({ receivedAt: FieldValue.serverTimestamp() })
+    .then(() => true)
+    .catch(() => false);
   if (!claimed) return { uid: intent.uid, redirectTo }; // already fulfilled by a prior call
 
-  await grantForIntent(intent, payment);
-  await intentRef.set({ status: "fulfilled" }, { merge: true });
+  try {
+    await grantForIntent(intent, payment);
+    await intentRef.set({ status: "fulfilled" }, { merge: true });
+  } catch (e) {
+    // The grant failed after we claimed the payment. Release the claim so the next
+    // call (webhook retry, or the buyer reloading /checkout/return) can try again —
+    // otherwise this is the silent charge-without-grant the ordering above prevents.
+    await marker.delete().catch(() => {}); // best-effort; the error below is what matters
+    logger.error("moyasar_grant_failed", {
+      paymentId,
+      checkoutId,
+      uid: intent.uid,
+      error: e instanceof Error ? e.message : String(e),
+    });
+    throw e;
+  }
   return { uid: intent.uid, redirectTo };
 }
 
@@ -543,6 +568,15 @@ export const confirmPayment = onCall(
       throw new HttpsError("invalid-argument", "missing-payment-id");
     }
     const result = await fulfillPayment(moyasarSecret.value(), paymentId);
+    // A null uid is NOT an ownership failure — it means fulfillPayment couldn't resolve
+    // the payment to an intent at all (no checkoutId in the metadata, or the intent doc
+    // is gone). Reporting that as `payment-not-yours` sent buyers a permission error for
+    // what is actually a lookup failure on our side, and made the logs read as abuse.
+    // Hand back the cancel redirect instead and let the operator find the real cause in
+    // the moyasar_payment_no_checkout_id / moyasar_checkout_intent_missing logs.
+    if (result.uid === null) {
+      throw new HttpsError("failed-precondition", "payment-not-recognized");
+    }
     // The confirming caller must be the same user the checkout was started for —
     // never fulfil (or reveal anything about) a payment that isn't theirs.
     if (result.uid !== uid) throw new HttpsError("permission-denied", "payment-not-yours");
@@ -600,13 +634,33 @@ export const moyasarWebhook = onRequest(
   async (req, res) => {
     const raw = (req as unknown as { rawBody?: Buffer }).rawBody?.toString("utf8") ?? "";
     const sig = req.headers["x-moyasar-signature"] as string | string[] | undefined;
-    if (!verifyMoyasarSignature(raw, sig, webhookSecret.value())) {
-      res.status(400).send("Webhook signature verification failed");
+    const body = req.body as
+      | { id?: string; data?: { id?: string }; secret_token?: unknown }
+      | undefined;
+
+    const mechanism = verifyMoyasarWebhook(body, raw, sig, webhookSecret.value());
+    if (!mechanism) {
+      // A rejection here is invisible from the outside — it looks exactly like
+      // "Moyasar isn't calling us" — and that is how the wrong HMAC recipe went
+      // unnoticed. Log the SHAPE of what arrived so a rejection stays diagnosable:
+      // names only, never values. `secret_token` is the shared secret in plaintext
+      // and headers can carry signatures, so neither may ever be logged.
+      logger.error("moyasar_webhook_auth_failed", {
+        headerNames: Object.keys(req.headers).sort(),
+        bodyKeys: body && typeof body === "object" ? Object.keys(body).sort() : [],
+        hasSignatureHeader: sig !== undefined,
+        hasSecretTokenField: body?.secret_token !== undefined,
+        rawBodyBytes: raw.length,
+      });
+      res.status(400).send("Webhook authentication failed");
       return;
     }
+    // Which credential actually authenticated this delivery. `secret_token` is the
+    // documented mechanism; `signature` is the provisional HMAC fallback kept in
+    // billing-core. Once real traffic shows only one branch firing, delete the other.
+    logger.info("moyasar_webhook_authenticated", { mechanism });
 
     // Payload shape per Moyasar's payment-webhooks docs: `{ id, type, data: <payment> }`.
-    const body = req.body as { id?: string; data?: { id?: string } } | undefined;
     const paymentId = webhookPaymentId(body);
     if (!paymentId) {
       res.status(400).send("Missing payment id");
