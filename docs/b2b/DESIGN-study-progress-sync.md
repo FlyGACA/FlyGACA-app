@@ -6,7 +6,7 @@ Unblocks: `PLAN.md` §8.2 (readiness report) and §8.3 (admin dashboard).
 **Sign-off decisions (§9):** store **scores + completion only** (no answers); sync for **all
 signed-in users** (doubles as backup; the report only reads a roster's own uids); consent via a
 **`/settings` notice + the proposal/DPA clause** (no per-member toggle); ship **dark** behind
-`SYNC_STUDY_PROGRESS` (in `src/lib/studyProgressSync.ts`), flip to `true` once the rules are
+`SYNC_STUDY_PROGRESS` (in `src/lib/services/studyProgressSync.ts`), flip to `true` once the rules are
 deployed. Implemented per this doc: the `users/{uid}/progress/summary` rules + tests, the pure
 `toProgressSummary` projection + tests, and the debounced best-effort writer wired into
 `account.ts` (lazy-loaded, so it stays out of the initial bundle). `SYNC_STUDY_PROGRESS` is now
@@ -91,7 +91,7 @@ deny test.)
 
 ## 5. Client sync (where it writes)
 
-- A thin `src/lib/studyProgressSync.ts` subscribes to the `studyProgress` store
+- A thin `src/lib/services/studyProgressSync.ts` subscribes to the `studyProgress` store
   (`useSyncExternalStore` source) and, **debounced** (~5 s) and only when signed in + Firebase
   configured, writes the projection with `setDoc(..., { merge: true })`. Best-effort and swallowed
   on failure — identical to the existing `sync.ts` posture (offline just retries later).

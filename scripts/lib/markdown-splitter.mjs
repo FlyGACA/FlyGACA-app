@@ -2,7 +2,7 @@
  * markdown-splitter — a HIERARCHICAL splitter for the GACAR regulatory corpus.
  *
  * Intentionally side-effect free (no top-level I/O) so it is unit-tested
- * directly (tests/markdown-splitter.test.ts) and reused by the build driver
+ * directly (tests/scripts/markdown-splitter.test.ts) and reused by the build driver
  * scripts/build-rag-chunks.mjs — mirroring the pure-lib convention of
  * scripts/lib/sync-merge.mjs (root has no `tsx`, so a `.mjs` build script can
  * only import another `.mjs` without a build step).

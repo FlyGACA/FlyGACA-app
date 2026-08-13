@@ -26,7 +26,7 @@ export const FREE_DAILY_LIMIT = 5;
  * being nudged to sign in. Deliberately smaller than FREE_DAILY_LIMIT: it's a
  * low-friction "taste" of Captain Adel that still caps the per-question Gemini
  * cost, and creating an account is the reward for more. Must match
- * src/calc/chat/chatQuota.ts (pinned by tests/client-server-mirrors.test.ts).
+ * src/calc/chat/chatQuota.ts (pinned by the root tests/integrity/client-server-mirrors.test.ts).
  *
  * Like FREE_DAILY_LIMIT this is the DEFAULT, not the last word: gateway.ts wraps it
  * as `defineInt("ANON_DAILY_LIMIT", { default: ANON_DAILY_LIMIT })` and enforces the
@@ -39,7 +39,7 @@ export const ANON_DAILY_LIMIT = 3;
  * Questions granted by one purchased credit pack (a one-time top-up for free users
  * who hit the daily limit but won't subscribe). Credits are spent only after the
  * day's free allowance is used and never expire. Mirrored in
- * src/lib/services/billing.ts (pinned by tests/client-server-mirrors.test.ts).
+ * src/lib/services/billing.ts (pinned by the root tests/integrity/client-server-mirrors.test.ts).
  */
 export const CREDIT_PACK_SIZE = 50;
 

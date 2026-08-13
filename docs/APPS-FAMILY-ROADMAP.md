@@ -18,7 +18,7 @@ generates their content), the pack model in
   GACA Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP, `aimss.sans.com.sa`), and
   Fly-GACA-authored practice material. Bundled reference documents (`librarySlugs`) and study
   sheets must be GACA/SANS/Fly-GACA — enforced mechanically by
-  [`tests/pack-sources.test.ts`](../tests/pack-sources.test.ts). Universal-knowledge practice
+  [`tests/lib/pack-sources.test.ts`](../tests/lib/pack-sources.test.ts). Universal-knowledge practice
   questions (weather, navigation, aerodynamics, human factors) may cite Fly-GACA-reproduced
   FAA/ICAO handbooks as *study pointers*, as the shipping PPL app already does.
 - **Paid one-time.** Each app is a one-time purchase (App Store paid-up-front; web = the
@@ -84,7 +84,7 @@ reuses the same corpus and would ship as a mode inside each certificate app (or 
 The gating constraint for every app is **authored, cited question banks**, not code. House style
 (see [`STUDY-CONTENT-REVIEW.md`](./STUDY-CONTENT-REVIEW.md)): ~18–24 questions/bank, 4 options,
 `explain`, and a `cite` (+ `citeRef` to the GACAR Part) — validated by
-[`tests/quiz-citations.test.ts`](../tests/quiz-citations.test.ts).
+[`tests/integrity/quiz-citations.test.ts`](../tests/integrity/quiz-citations.test.ts).
 
 - **CPL/IR/ATPL** each ship with GACAR-cited **draft** banks plus reused subject banks. Drafts
   are marked in each bank's `source` field and must clear the `STUDY-CONTENT-REVIEW.md`

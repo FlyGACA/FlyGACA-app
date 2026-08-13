@@ -3,13 +3,13 @@
 Fly GACA ships the same Vite build as a native app via Capacitor. **iOS is the primary target**;
 Android is a supported scaffold. The web payload in `dist/` is the WebView content — there is no
 separate native codebase, only the platform projects Capacitor generates plus the thin
-`src/lib/native-bridge.ts` adapter.
+`src/lib/native/nativeBridge.ts` adapter.
 
 ## What lives where
 
 - `capacitor.config.ts` — appId `com.flygaca.app`, `webDir: dist`, dark background, manual splash
   hide, keyboard resize. **Edit this, not the generated platform files.**
-- `src/lib/native-bridge.ts` — the runtime adapter. `isNative()`/`platform()`/`billingChannel()`
+- `src/lib/native/nativeBridge.ts` — the runtime adapter. `isNative()`/`platform()`/`billingChannel()`
   are safe on the web; `initNative()` (called from `main.tsx`) configures the status bar, hides the
   splash, marks `<html class="is-native platform-…">`, and wires the Android back button + deep
   links. `nativeStore`, `share()`, `openExternal()` fall back to web APIs in a browser. Plugins are

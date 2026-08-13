@@ -7,15 +7,15 @@ first; injecting real keys is the only remaining production step.
 
 ## What's wired
 
-- `src/lib/firebase.ts` — config-gated, lazy bootstrap of App/Auth/Firestore (+ App Check + GA4
+- `src/lib/services/firebase.ts` — config-gated, lazy bootstrap of App/Auth/Firestore (+ App Check + GA4
   Analytics). The SDK is dynamic-`import()`ed, so `firebase/*` never enters the main bundle. The
   full public web config for `flygaca-app` ships as real values in `.env.example`;
   `cp .env.example .env.local` initializes Firebase against the live project. Analytics is
   browser-only and opt-in via `measurementId` (off under SSR, tests, and the emulator).
-- `src/lib/auth.ts` — `getIdToken` (sent to `/api/chat`), `onAuthChange`, Google/email sign-in,
+- `src/lib/services/auth.ts` — `getIdToken` (sent to `/api/chat`), `onAuthChange`, Google/email sign-in,
   register, `signOutUser`.
-- `src/lib/account.ts` — on Firebase sign-in, adopts the uid and hydrates profile/logbook/entitlement
-  from Firestore (`src/lib/sync.ts`), then write-throughs profile/logbook mutations. Local cache is
+- `src/lib/services/account.ts` — on Firebase sign-in, adopts the uid and hydrates profile/logbook/entitlement
+  from Firestore (`src/lib/services/sync.ts`), then write-throughs profile/logbook mutations. Local cache is
   the offline fallback. The `entitlement` field is **read-only** here (server-written; the client
   never serializes it — enforced by `firestore.rules` and `profileToDoc`).
 - The Account page shows real sign-in (Google + email/password) when configured, the local form
@@ -59,7 +59,7 @@ Then check:
    `docs/APP-CHECK-BACKEND.md` for the backend (`FlyGACA/flygaca`) changes and rollout order.
 3. Deploy `firestore.rules` (`npm run deploy:rules`). Leave `VITE_FIREBASE_EMULATOR` unset.
 
-Stripe/RevenueCat billing is Batch 3c (`src/lib/billing.ts`).
+Stripe/RevenueCat billing is Batch 3c (`src/lib/services/billing.ts`).
 
 ## Authorizing a domain (preview deploys & new hosts)
 

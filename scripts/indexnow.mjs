@@ -14,7 +14,7 @@
  *
  * FAIL-OPEN: a network/API error is logged and swallowed (exit 0). A search-ping
  * must never fail a production deploy. Node-only, no deps. Pure helpers exported
- * for tests/indexnow.test.ts.
+ * for tests/scripts/indexnow.test.ts.
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
