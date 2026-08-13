@@ -25,8 +25,8 @@ on this React/Vite/Firebase/Capacitor PWA.
 | `detecting-typosquatting-packages-in-npm-pypi` | npm dependencies |
 | `implementing-secret-scanning-with-gitleaks` | `.env.example`, Firebase config, `firestore.rules` |
 | `testing-api-security-with-owasp-top-10` | `src/lib/api.ts`, `/api/chat` + `/api/content` |
-| `performing-oauth-scope-minimization-review` | `src/lib/auth.ts`, `entitlements.ts` |
-| `implementing-jwt-signing-and-verification` | `src/lib/auth.ts` |
+| `performing-oauth-scope-minimization-review` | `src/lib/services/auth.ts`, `entitlements.ts` |
+| `implementing-jwt-signing-and-verification` | `src/lib/services/auth.ts` |
 
 ### What was intentionally omitted
 

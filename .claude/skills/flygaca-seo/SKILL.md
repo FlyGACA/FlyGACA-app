@@ -26,8 +26,8 @@ Not worth further investment: llms.txt (measurement across hundreds of millions 
 
 | Concern | Location |
 |---|---|
-| Per-route title/description/canonical/hreflang/OG/JSON-LD | `src/lib/usePageMeta.ts` (+ `src/lib/seo.ts` for SITE_ORIGIN & alternates, `src/lib/jsonld.ts` for schema builders) |
-| Baseline head for no-JS crawlers | `index.html` (kept in sync with `src/lib/seo.ts` — comments in both mark the pairing) |
+| Per-route title/description/canonical/hreflang/OG/JSON-LD | `src/hooks/usePageMeta.ts` (+ `src/lib/seo/seo.ts` for SITE_ORIGIN & alternates, `src/lib/seo/jsonld.ts` for schema builders) |
+| Baseline head for no-JS crawlers | `index.html` (kept in sync with `src/lib/seo/seo.ts` — comments in both mark the pairing) |
 | Guaranteed head snapshots per route | `scripts/prerender-head.mjs` — runs inside `npm run build`, no browser needed |
 | Full-body prerender (the AI-visibility layer) | `scripts/prerender.mjs` (Playwright) — runs inside `npm run deploy` before `firebase deploy` |
 | Sitemap (≈530 URLs with hreflang) | `scripts/build-sitemap.mjs` → `public/sitemap.xml` |

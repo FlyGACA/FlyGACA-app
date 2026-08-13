@@ -21,14 +21,14 @@ technical remediation** (see `strategy.md`).
 
 | Area | Where | Notes |
 | --- | --- | --- |
-| Per-route `<title>` / meta description / OG / Twitter / canonical / hreflang / JSON-LD | `src/lib/usePageMeta.ts` | Single runtime head manager; re-applies on language change so `og:locale` + hreflang stay correct. |
-| Canonical + hreflang URL helpers | `src/lib/seo.ts` | Clean param-free canonical; `?lang=en|ar` alternates + `x-default`. |
-| Duplicate-host consolidation | `src/lib/seo.ts` (`canonicalRedirect`, `DUPLICATE_HOSTS`) + `main.tsx` + `vercel.json` | Folds `captadel.com` onto the canonical origin (edge 301 + runtime fallback). |
-| Mirror/preview-host `noindex` | `src/lib/seo.ts` (`isMirrorHost`) | `*.vercel.app`, `*.web.app`, `*.netlify.app`, `*.pages.dev` get `noindex, follow`; the canonical host and the localhost prerender host are deliberately excluded. |
-| JSON-LD builders | `src/lib/jsonld.ts` | `Organization`, `WebSite` (with `SearchAction`), `BreadcrumbList`, `TechArticle`, `Article`, `Course`, `FAQPage`, `SoftwareApplication`, and now `ItemList`. |
+| Per-route `<title>` / meta description / OG / Twitter / canonical / hreflang / JSON-LD | `src/hooks/usePageMeta.ts` | Single runtime head manager; re-applies on language change so `og:locale` + hreflang stay correct. |
+| Canonical + hreflang URL helpers | `src/lib/seo/seo.ts` | Clean param-free canonical; `?lang=en|ar` alternates + `x-default`. |
+| Duplicate-host consolidation | `src/lib/seo/seo.ts` (`canonicalRedirect`, `DUPLICATE_HOSTS`) + `main.tsx` | Folds `captadel.com` / `www.captadel.com` onto the canonical origin at runtime. |
+| Mirror-host `noindex` | `src/lib/seo/seo.ts` (`isMirrorHost`) | Only `*.web.app` (the `flygaca-app.web.app` Firebase alias) gets `noindex, follow`; the canonical host and the localhost prerender host are deliberately excluded. The Vercel / Netlify / Cloudflare mirrors were removed in 2026-08. |
+| JSON-LD builders | `src/lib/seo/jsonld.ts` | `Organization`, `WebSite` (with `SearchAction`), `BreadcrumbList`, `TechArticle`, `Article`, `Course`, `FAQPage`, `SoftwareApplication`, and now `ItemList`. |
 | Static Organization + WebSite graph | `index.html` | Present in initial HTML (no JS needed); per-route builders describe the current document. |
 | Sitemap + robots | `scripts/build-sitemap.mjs` (runs pre-`vite build`) | ~400+ URLs from the router table + content indexes; per-URL `xhtml:link` hreflang; priority tiers; `lastmod` from content dates. Private/session-gated routes excluded. |
-| Optional static prerender | `scripts/prerender.mjs` | Playwright renders public non-library routes + guide slugs to static HTML on Vercel; non-fatal so it can't break a deploy. |
+| Optional static prerender | `scripts/prerender.mjs` | Playwright renders public non-library routes + guide slugs to static HTML in the Firebase deploy pipeline; non-fatal so it can't break a deploy. |
 | PWA manifest (EN + AR) + service worker | `vite.config.ts` (`vite-plugin-pwa`) | App-shell precache, `/data/*` network-first; per-language manifest swapped at runtime. |
 | Search Console / Bing verification | `vite.config.ts` (`verificationMeta`) | Injected from `VITE_GSC_TOKEN` / `VITE_BING_TOKEN` env vars. |
 | Per-route structured data wired in | Home (`FAQPage`), Library/Document (`TechArticle` + breadcrumb), Guides (`Article`), Study (`Course`), Tools (`SoftwareApplication` via `CalcShell`) | See `usePageMeta(...)` calls across `src/pages/**`. |
@@ -53,7 +53,7 @@ Two findings circulated earlier that are **false** and should be disregarded:
 ## Changes made
 
 - **`ItemList` structured data on the catalog hubs.** New `itemListLd()` builder in
-  `src/lib/jsonld.ts` (unit-tested in `tests/jsonld.test.ts`), wired into the Tools, Guides
+  `src/lib/seo/jsonld.ts` (unit-tested in `tests/jsonld.test.ts`), wired into the Tools, Guides
   and Study indexes. The catalog pages previously exposed no list schema, so crawlers could
   not read them as ordered lists of their leaf pages.
 - **Visible breadcrumb nav** (`src/components/Breadcrumbs.tsx`) on guide and library-document
@@ -61,7 +61,7 @@ Two findings circulated earlier that are **false** and should be disregarded:
   structured data never drift.
 - **Per-section Open Graph cards** for `/tools`, `/guides`, `/library`, `/study`, `/pricing`,
   generated from a branded SVG with `sharp` (`scripts/build-og-images.mjs`, `npm run gen:og`);
-  `ogImageFor()` in `src/lib/seo.ts` selects the card per path and `usePageMeta` applies it.
+  `ogImageFor()` in `src/lib/seo/seo.ts` selects the card per path and `usePageMeta` applies it.
 - **Two new content guides** (`how-to-become-a-pilot-in-saudi-arabia`, `gacar-explained`),
   bilingual, interlinking the licensing cluster, library Parts and tools — executing the
   highest-priority gaps from `strategy.md`.

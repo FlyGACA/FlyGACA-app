@@ -69,7 +69,7 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   deployed Firestore rules unchanged — drives per-role widget ordering through the pure layout
   engine `src/calc/app/dashboardLayout.ts`. Five new widgets surface existing local-first data (study
   progress, tool favourites, library/guide bookmarks, Captain Adel threads, regulatory watch), and
-  show/hide widget customization persists via `src/lib/dashboardPrefs.ts`. Signed-out `/account`
+  show/hide widget customization persists via `src/lib/prefs/dashboardPrefs.ts`. Signed-out `/account`
   became a split-panel sign-in with per-audience value props and a password show/hide toggle.
 - **Backend hardening** ([#253](https://github.com/FlyGACA/FlyGACA-app/pull/253)): `/api/feedback`
   routing fix, region drift resolved to `me-central1`, per-uid + per-IP rate limiting, input size
@@ -82,9 +82,9 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   (`src/components/CommandPalette/CommandPalette.tsx`) that jumps to any live tool, guide,
   regulatory Part, or aerodrome, driven off the `tools`/guides registries so it can't drift.
 - **Dashboard follow-ups** (on the role-aware redesign): per-role widget reordering persisted via
-  the `order` list in `src/lib/dashboardPrefs.ts`, an offline / cache-status widget, and an
+  the `order` list in `src/lib/prefs/dashboardPrefs.ts`, an offline / cache-status widget, and an
   ask-Captain-Adel entry point — all wired through `src/pages/account/Dashboard.tsx`.
-- **Offline page.** A graceful PWA offline fallback route (`src/pages/Offline.tsx`), backing the
+- **Offline page.** A graceful PWA offline fallback route (`src/pages/offline/Offline.tsx`), backing the
   app-shell precache + network-first `/data/*` caching already configured in `vite.config.ts`.
 - **`usePageMeta` positional filler removed.** Added `useNoindexMeta(title)`
   (`src/hooks/usePageMeta.ts`) and switched the ten noindex-only call sites (`FlavorSettings`,
@@ -254,7 +254,7 @@ Carried over from the rebuild — these gates still apply to everything above.
 ## Conventions (reuse — do not reinvent)
 
 - **Tools** = pure math in `src/calc/<tool>.ts` (+ Vitest spec) rendered via `CalcShell` +
-  `useUrlState`. Reference: `src/calc/crosswind.ts` + `src/pages/tools/Crosswind.tsx`.
+  `useUrlState`. Reference: `src/calc/crosswind.ts` + `src/pages/tools/performance/Crosswind.tsx`.
 - **Data pages** fetch JSON via `useFetchJson` → typed shapes in `src/lib/content.ts`; heavy assets
   stay lazy.
 - **Routing** is the single table in `src/router.tsx`; pages live one-per-folder under `src/pages/`.

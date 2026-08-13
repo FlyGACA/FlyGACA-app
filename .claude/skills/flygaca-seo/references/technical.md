@@ -10,7 +10,7 @@ Two layers, both must stay healthy:
 Invariants to enforce when touching either:
 - Coverage: every indexable URL in `public/sitemap.xml` should have a body-prerendered file. Add/keep a coverage check that diffs sitemap routes vs `dist/` output and **fails the deploy** on gaps (a silent prerender skip = invisible content).
 - The SPA fallback trick in `index.html` (home hero removed on non-home routes) must not leak into prerendered pages.
-- Per-route head values come from `usePageMeta`; `index.html` holds only homepage/x-default baselines. Keep `index.html` ↔ `src/lib/seo.ts` in sync (both carry comments marking the pairing).
+- Per-route head values come from `usePageMeta`; `index.html` holds only homepage/x-default baselines. Keep `index.html` ↔ `src/lib/seo/seo.ts` in sync (both carry comments marking the pairing).
 - Mirrors (Vercel/Netlify) stay `noindex` with 301s / canonicals to `https://flygaca.com` — one canonical host, always.
 
 ## hreflang & the bilingual URL model

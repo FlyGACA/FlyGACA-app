@@ -11,8 +11,10 @@ Cloudflare Worker**, points at **flygaca.com**, and we wire its MCP server into 
 SEO is essentially complete.
 
 > **Why this exists separately from `RUNBOOK-deploy.md`:** that runbook deploys the Fly GACA SPA to
-> Firebase/Vercel/Cloudflare/Netlify. OpenSEO is an unrelated third-party app on its **own** Worker —
-> keep it out of this repo's `wrangler.toml`, `worker/index.ts` and `deploy-cloudflare.yml`.
+> **Firebase Hosting**, the single serving front (the Vercel / Cloudflare / Netlify mirrors were
+> removed in 2026-08). OpenSEO is an unrelated third-party app on its **own** Cloudflare Worker, in
+> your own Cloudflare account — keep it out of this repo's `firebase.json` and `deploy.yml`, and do
+> not let it become a reason to reintroduce a second build-and-serve front here.
 
 ## Cost & prerequisites
 
@@ -20,11 +22,11 @@ SEO is essentially complete.
 | --- | --- | --- |
 | OpenSEO app | $0 | MIT, self-hosted on the Cloudflare Workers **free** plan |
 | `DATAFORSEO_API_KEY` | **paid** | OpenSEO fetches all live data via [DataForSEO](https://dataforseo.com) — $1 free credit, $50 min top-up. **Deferred** (see Phase 4). |
-| Cloudflare account | $0 | The org already uses Cloudflare for the SPA mirror, so the account exists |
+| Cloudflare account | $0 | Needed only to host OpenSEO itself; this repo no longer deploys anything to Cloudflare |
 
 **Secrets never enter this repo.** The DataForSEO key and the OpenSEO MCP auth token live only in the
-Cloudflare Worker env and in local/session Claude settings — exactly like the `VITE_*` and Cloudflare
-secrets in `RUNBOOK-deploy.md`. `.mcp.json` references the token by env var, never a literal.
+Cloudflare Worker env and in local/session Claude settings — exactly like the `VITE_*` build secrets
+in `RUNBOOK-deploy.md`. `.mcp.json` references the token by env var, never a literal.
 
 ---
 
@@ -121,7 +123,7 @@ are the free baseline. File any concrete defect as a small follow-up fix and re-
 4. Write findings into `docs/seo/keyword-research.md` and `docs/seo/strategy.md`, then translate the
    top clusters into app changes:
    - Refined target-keyword titles/descriptions through the existing `usePageMeta(...)` calls
-     (`src/lib/usePageMeta.ts`; copy lives in `src/i18n/{en,ar}.json` under `meta.*` / `metaDesc.*`).
+     (`src/hooks/usePageMeta.ts`; copy lives in `src/i18n/{en,ar}.json` under `meta.*` / `metaDesc.*`).
    - New **bilingual** content guides via the repo's existing flow (`GUIDE_AUTHORING.md` +
      `scripts/new-guide.mjs`), interlinking the library Parts and tools.
    - Keep `npm run verify` green and i18n parity intact (`tests/i18n-parity.test.ts`).
@@ -140,6 +142,6 @@ are the free baseline. File any concrete defect as a small follow-up fix and re-
 ## Guardrails (recap)
 
 - Secrets only in Cloudflare env / local Claude settings — `.mcp.json` uses `${OPENSEO_MCP_TOKEN}`.
-- OpenSEO is a separate Worker; never entangle it with this repo's `wrangler.toml` /
-  `deploy-cloudflare.yml` / `worker/index.ts`.
+- OpenSEO is a separate Worker in your own Cloudflare account; never entangle it with this repo's
+  Firebase-only deploy path (`firebase.json`, `.github/workflows/deploy.yml`).
 - Don't ship a placeholder `open-seo` entry in `.mcp.json` — add it only with the real URL + token.
