@@ -179,11 +179,20 @@ footprint fully trustworthy.
     functions → then emit shards and drop the monolith. Keep `src/lib/content.ts` (`loadJson`
     promise cache) as the single client fetch path and update the two-tier NetworkFirst split in
     `vite.config.ts` with the new names.
-- **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
-  `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
-  files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync
-  meanwhile. Patch the builder to emit the semantic shape natively, then retire the normalize step
-  — exact diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
+- **[platform]** **Emit semantic corpus links upstream — blocked outside this org.** The offline
+  pipeline that builds `library-search.json` / `definitions-index.json` / the curated
+  `paths`·`groundschool`·`quiz` files still emits legacy `document.html?…` URLs;
+  `npm run data:normalize` heals them on each sync meanwhile. The builder patch **cannot be
+  applied from any FlyGACA GitHub repo** — that pipeline lives outside `FlyGACA-app`,
+  `Captain-Adel`, `Office` and `ay2m/FlyGACA` — so this item is waiting on a change wherever it
+  runs, not on effort here. The committed corpus is meanwhile fully semantic
+  (`npm run data:normalize:check` reports 0 migrated across all five files), and the back-compat
+  parsing in `src/lib/contentLinks.ts` must stay until the upstream stops emitting legacy shapes:
+  deleting it first would mean the next sync silently ships unroutable links.
+  **`npm run data:normalize:check`** is the gate that answers "is upstream fixed yet?" — `--dry`
+  that exits non-zero when anything would migrate. Run it on a fresh `sync:gaca` (before the
+  healing `sync:gaca:apply`); a clean exit is the green light to retire the legacy path. Exact
+  diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +

@@ -16,14 +16,30 @@
  * (and is reported) so nothing is silently dropped. Re-run after a corpus sync
  * (wired into `sync:gaca:apply`) until the upstream builders emit these shapes.
  *
- *   node scripts/normalize-corpus-data.mjs [--dry]
+ *   node scripts/normalize-corpus-data.mjs [--dry|--check]
+ *
+ * `--check` is `--dry` that EXITS NON-ZERO when anything would be migrated. That
+ * is the retirement gate in docs/corpus-link-shape.md: the whole legacy path —
+ * this script, plus the `u`-string branches in src/lib/contentLinks.ts — can only
+ * be deleted once the upstream pipeline emits semantic shapes itself. Run
+ * `npm run data:normalize:check` on a freshly synced corpus; a clean exit is the
+ * green light, a non-zero exit names the files upstream is still emitting legacy
+ * links for. On the committed corpus it is expected to pass (0 migrated) — the
+ * healing already happened, so it only tells you something new after a sync.
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const DRY = process.argv.includes('--dry');
+const CHECK = process.argv.includes('--check');
+const DRY = CHECK || process.argv.includes('--dry');
+
+/* Files that still needed healing this run — the `--check` gate's verdict. */
+const wouldMigrate = [];
+function note(file, n) {
+  if (n > 0) wouldMigrate.push(`${file} (${n})`);
+}
 const kb = (n) => `${(n / 1024).toFixed(0)} kB`;
 
 /** Legacy `type=` token → corpus kind (mirrors src/lib/content.ts). */
@@ -75,7 +91,8 @@ async function writeJson(path, data, indent, raw) {
   return { before: raw.length, after: out.length };
 }
 
-const tag = (before, after) => `${kb(before)} → ${kb(after)}${DRY ? ' [dry-run]' : ''}`;
+const tag = (before, after) =>
+  `${kb(before)} → ${kb(after)}${CHECK ? ' [check]' : DRY ? ' [dry-run]' : ''}`;
 
 async function librarySearch() {
   const { path, raw, indent, data } = await readJson('library-search.json');
@@ -91,6 +108,7 @@ async function librarySearch() {
     return { ...rest, ...ref };
   });
   const { before, after } = await writeJson(path, data, indent, raw);
+  note('library-search.json', migrated);
   console.log(`library-search.json: ${migrated} migrated, ${already} kept, ${skipped} unparsable · ${tag(before, after)}`);
 }
 
@@ -104,6 +122,7 @@ async function definitions() {
     return rest;
   });
   const { before, after } = await writeJson(path, data, indent, raw);
+  note('definitions-index.json', stripped);
   console.log(`definitions-index.json: ${stripped} dead url dropped · ${tag(before, after)}`);
 }
 
@@ -123,6 +142,7 @@ async function paths() {
     });
   }
   const { before, after } = await writeJson(path, data, indent, raw);
+  note('paths-index.json', migrated);
   console.log(`paths-index.json: ${migrated} steps migrated, ${already} kept, ${skipped} unroutable · ${tag(before, after)}`);
 }
 
@@ -148,6 +168,7 @@ async function groundschool() {
     }
   }
   const { before, after } = await writeJson(path, data, indent, raw);
+  note('groundschool.json', migrated);
   console.log(`groundschool.json: ${migrated} read links migrated, ${already} kept, ${skipped} unroutable · ${tag(before, after)}`);
 }
 
@@ -169,6 +190,7 @@ async function quiz() {
     }
   }
   const { before, after } = await writeJson(path, data, indent, raw);
+  note('quiz.json', migrated + dropped);
   console.log(`quiz.json: ${migrated} citations migrated, ${dropped} non-corpus dropped · ${tag(before, after)}`);
 }
 
@@ -177,3 +199,19 @@ await definitions();
 await paths();
 await groundschool();
 await quiz();
+
+if (CHECK) {
+  if (wouldMigrate.length > 0) {
+    console.error(
+      `\ndata:normalize:check FAILED — upstream is still emitting legacy links in: ` +
+        `${wouldMigrate.join(', ')}.\nRun \`npm run data:normalize\` to heal the committed ` +
+        `corpus, and patch the upstream builder (docs/corpus-link-shape.md) so it stops recurring.`,
+    );
+    process.exit(1);
+  }
+  console.log(
+    '\ndata:normalize:check OK — nothing needed healing. If this ran against a FRESH sync, the ' +
+      'upstream pipeline now emits semantic shapes and the legacy path can be retired ' +
+      '(docs/corpus-link-shape.md § Retiring the legacy path).',
+  );
+}
