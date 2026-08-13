@@ -6,6 +6,7 @@ import {
   getIdToken,
   onAuthChange,
   signInWithGoogle,
+  signInWithApple,
 } from '@/lib/services/auth';
 
 // With no VITE_FIREBASE_* env (the test/CI/preview case), Firebase is off and
@@ -30,6 +31,7 @@ describe('auth without Firebase config', () => {
 
   it('sign-in throws auth-unavailable rather than calling a missing backend', async () => {
     await expect(signInWithGoogle()).rejects.toThrow('auth-unavailable');
+    await expect(signInWithApple()).rejects.toThrow('auth-unavailable');
   });
 
   it('reports the web auth channel under jsdom', () => {

@@ -7,6 +7,7 @@ import { signIn } from '@/lib/services/account';
 import { looksLikeEmail } from '@/calc/app/emailShape';
 import { useSignInForm } from '@/hooks/useSignInForm';
 import { GoogleMark } from './GoogleMark';
+import { AppleMark } from './AppleMark';
 import { SignInFormBody } from './SignInFormBody';
 import { SignUpFormBody } from './SignUpFormBody';
 import styles from './AccountPage.module.css';
@@ -25,6 +26,7 @@ export function FirebaseSignIn() {
     loginForm,
     signupForm,
     runGoogle,
+    runApple,
   } = useSignInForm();
 
   const containerClass = `${styles.fadeTransition} ${animating ? styles.animating : ''}`;
@@ -48,16 +50,53 @@ export function FirebaseSignIn() {
 
   return (
     <>
-      <Button
-        type="button"
-        variant="clayPrimary"
-        icon={<GoogleMark />}
-        className={styles.fullWidth}
-        disabled={busy}
-        onClick={runGoogle}
-      >
-        {t('account.continueGoogle')}
-      </Button>
+      <div role="tablist" aria-label={t('account.signInTitle')} className={styles.modeTabs}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'in'}
+          className={`${styles.modeTab} ${mode === 'in' ? styles.modeTabActive : ''}`}
+          onClick={() => {
+            if (mode !== 'in') toggleMode();
+          }}
+        >
+          {t('account.signIn')}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'up'}
+          className={`${styles.modeTab} ${mode === 'up' ? styles.modeTabActive : ''}`}
+          onClick={() => {
+            if (mode !== 'up') toggleMode();
+          }}
+        >
+          {t('account.register')}
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <Button
+          type="button"
+          variant="clayPrimary"
+          icon={<GoogleMark />}
+          className={styles.fullWidth}
+          disabled={busy}
+          onClick={runGoogle}
+        >
+          {t('account.continueGoogle')}
+        </Button>
+        <Button
+          type="button"
+          variant="clay"
+          icon={<AppleMark />}
+          className={styles.fullWidth}
+          disabled={busy}
+          onClick={runApple}
+        >
+          {t('account.continueApple')}
+        </Button>
+      </div>
       <p className={styles.divider}>{t('account.or')}</p>
 
       <div className={containerClass}>
