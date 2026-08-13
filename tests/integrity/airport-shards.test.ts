@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { shardsForFilter, shardsForIdent, type AirportShardManifest } from '@/lib/airportShards';
 import { inRegion, REGION_FILTERS, type RegionFilter } from '@/lib/aerodromes';
 import type { Airport } from '@/lib/content';
-import { shardByRegion, prefixKey, shardName } from '../scripts/lib/airport-shards.mjs';
+import { shardByRegion, prefixKey, shardName } from '../../scripts/lib/airport-shards.mjs';
 
 /**
  * The long-tail aerodrome tier ships region-sharded so a region filter or an

@@ -167,13 +167,13 @@ footprint fully trustworthy.
     17 KB gz** — and a detail-page ICAO lookup resolves one shard from the prefix hint instead of
     all 66k rows. Region is the only shard axis on purpose: adding an ident-prefix axis would
     serve the detail page more evenly but duplicate all 20 MB, and the 3 KB hint buys the same
-    lookup. Total bucket bytes are unchanged. `tests/airport-shards.test.ts` pins the invariant
+    lookup. Total bucket bytes are unchanged. `tests/integrity/airport-shards.test.ts` pins the invariant
     that matters — shard selection is a **superset** of what `inRegion` matches, so a mapping bug
     can never silently drop aerodromes from the directory.
   - ~~`rag-chunks.json`~~ **Done.** Confirmed server-only (no `src/` reader; the gateway's
     `CORPUS_URL` defaults to `library-search.json` and is set nowhere) and moved out of
     `public/data/` to `data/` at the repo root, so it is neither Hosting-served nor bucket-mirrored.
-    Its vestigial `firebase.json` hosting-ignore entry is gone; `tests/data-shape.test.ts` pins
+    Its vestigial `firebase.json` hosting-ignore entry is gone; `tests/integrity/data-shape.test.ts` pins
     the split and its legacy-`u` backend contract.
   - **Still open: `library-search.json` (3.7 MB gz).** Sharding it is **blocked on a coordinated
     functions deploy**, not on effort: it is also the gateway's own corpus, fetched whole over HTTP

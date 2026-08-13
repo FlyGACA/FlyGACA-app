@@ -37,6 +37,9 @@ conventions in `CLAUDE.md` are described as "enforced" rather than "preferred":
 - `csp-parity` — the single CSP in `firebase.json` still allows the money-path origins.
 - `bento-motion-parity` — `framer-motion` values match the CSS motion tokens.
 - `data-shape` / `quiz-citations` / `guides-content` — corpus and authored-content invariants.
+- `airport-shards` — the committed long-tail aerodrome shards agree with their `_manifest.json`,
+  and shard selection stays a **superset** of what `inRegion` matches (picking one shard too few
+  would silently drop aerodromes from the directory rather than fail loudly).
 
 ## Conventions
 

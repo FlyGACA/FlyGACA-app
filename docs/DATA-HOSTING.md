@@ -11,7 +11,7 @@ Two notes on what is *not* here:
 - **`rag-chunks.json` lives at `data/` in the repo root, not under `public/`.** It is a backend
   retriever input (`functions/src/corpus.ts`), no client code reads it, and the gateway's
   `CORPUS_URL` points at `library-search.json` — so serving it and mirroring it into the bucket
-  cost 14 MB raw / 1.7 MB gz for nothing. `tests/data-shape.test.ts` pins the split.
+  cost 14 MB raw / 1.7 MB gz for nothing. `tests/integrity/data-shape.test.ts` pins the split.
 - **The long-tail aerodrome tier is region-sharded** (`public/data/airports-extra/<REGION>.json`
   + `_manifest.json`) so a page fetches one shard instead of the whole 20.8 MB / 2.8 MB gz tier.
   Same total bytes in the bucket, far fewer per visit. See `scripts/lib/airport-shards.mjs`.
