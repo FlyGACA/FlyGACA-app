@@ -53,7 +53,7 @@ Two findings circulated earlier that are **false** and should be disregarded:
 ## Changes made
 
 - **`ItemList` structured data on the catalog hubs.** New `itemListLd()` builder in
-  `src/lib/seo/jsonld.ts` (unit-tested in `tests/jsonld.test.ts`), wired into the Tools, Guides
+  `src/lib/seo/jsonld.ts` (unit-tested in `tests/lib/jsonld.test.ts`), wired into the Tools, Guides
   and Study indexes. The catalog pages previously exposed no list schema, so crawlers could
   not read them as ordered lists of their leaf pages.
 - **Visible breadcrumb nav** (`src/components/Breadcrumbs.tsx`) on guide and library-document

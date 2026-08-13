@@ -124,7 +124,7 @@ All tokens are CSS Custom Properties on `:root`. There are no token transformati
 
 `--ease-entry` / `--dur-entry` / `--dur-stagger` / `--lift-hover` are mirrored by
 `src/components/bento/motion.ts` (framer-motion can't read CSS custom properties);
-`tests/bento-motion-parity.test.ts` fails on any drift between the two.
+`tests/integrity/bento-motion-parity.test.ts` fails on any drift between the two.
 
 ### Bento / Neon Tokens (dashboard only)
 ```css
@@ -509,7 +509,7 @@ The Figma 4px grid maps exactly to the spacing tokens. Round to the nearest `--s
 - Reduced motion: the `@media (prefers-reduced-motion: reduce)` block in `global.css` covers all animations; make sure new animations also respect it
 
 ### Bilingual Copy
-Every piece of user-visible text must have a key in **both** `src/i18n/en.json` and `src/i18n/ar.json`. The CI i18n parity test (`tests/i18n-parity.test.ts`) fails on any mismatch. Arabic text uses Cairo (the `--font-sans` stack) and RTL layout flips automatically.
+Every piece of user-visible text must have a key in **both** `src/i18n/en.json` and `src/i18n/ar.json`. The CI i18n parity test (`tests/integrity/i18n-parity.test.ts`) fails on any mismatch. Arabic text uses Cairo (the `--font-sans` stack) and RTL layout flips automatically.
 
 ### Disclaimer
 Never implement the legal disclaimer as inline text. Always render:

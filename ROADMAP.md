@@ -243,7 +243,7 @@ Carried over from the rebuild — these gates still apply to everything above.
 
 - Local gate before every commit: `npm run typecheck && npm run lint && npm run test && npm run build`.
 - Every surface is **routed + bilingual + disclaimered**: a key in **both** `src/i18n/{en,ar}.json`
-  (`tests/i18n-parity.test.ts` is the gate), and the not-affiliated **`<Disclaimer />`** is used,
+  (`tests/integrity/i18n-parity.test.ts` is the gate), and the not-affiliated **`<Disclaimer />`** is used,
   never inlined or reworded.
 - **Tokens + CSS Modules + logical properties only** — no hard-coded colours, no physical
   `left`/`right`.

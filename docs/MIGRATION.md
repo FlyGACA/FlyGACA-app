@@ -123,7 +123,7 @@ native Capacitor (Stage 8), CI + hosting/CSP + Playwright E2E (Stage 0/9), and `
   `@revenuecat/purchases-capacitor` plugin is added to the iOS shell.
 
   > Fixed in-repo: the client's `FUNCTIONS_REGION` had drifted to `me-central1`; it now matches the billing
-  > callables' `me-central2` so checkout resolves in production (guarded by a test in `tests/billing.test.ts`).
+  > callables' `me-central2` so checkout resolves in production (guarded by a test in `tests/lib/billing.test.ts`).
 
 ## ✅ Stage 9 — Hardening & cutover
 

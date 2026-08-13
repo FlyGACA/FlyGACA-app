@@ -14,7 +14,7 @@
  * have a browser (Vercel buildCommand, `npm run deploy`).
  *
  * Route set + URL/JSON-LD shapes mirror scripts/build-sitemap.mjs and
- * src/lib/{seo,jsonld}.ts. Keep them in sync (guarded by tests/jsonld.test.ts).
+ * src/lib/{seo,jsonld}.ts. Keep them in sync (guarded by tests/lib/jsonld.test.ts).
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

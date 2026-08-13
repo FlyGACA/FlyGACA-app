@@ -137,8 +137,8 @@ Legend: **P0** do first · effort S <½ day, M ~1 day, L multi-day · every item
 - [~] **2.4 Organization entity hygiene (S).** `organizationLd` with stable `@id` ships site-wide; verify
       `sameAs` real profiles + `contactPoint` (i@flygaca.com), consistent name/logo. No accreditation
       claims.
-- [~] **2.5 JSON-LD validation in CI (M).** `tests/jsonld.test.ts` + `tests/seo.test.ts` +
-      `tests/page-meta.test.tsx` cover the builders in `npm run test`. *Missing:* a
+- [~] **2.5 JSON-LD validation in CI (M).** `tests/lib/jsonld.test.ts` + `tests/lib/seo.test.ts` +
+      `tests/hooks/page-meta.test.tsx` cover the builders in `npm run test`. *Missing:* a
       `scripts/validate-jsonld.mjs` that walks the prerendered `dist/` and fails CI on invalid emitted
       schema (as opposed to unit-testing the builders).
 

@@ -61,7 +61,7 @@ These are checked mechanically — a PR that breaks one fails CI:
 
 1. **Bilingual + RTL is first-class.** New copy → a key in **both**
    `src/i18n/en.json` **and** `src/i18n/ar.json`. `npm run test` fails on any key
-   present in one language but not the other (`tests/i18n-parity.test.ts`). Arrays
+   present in one language but not the other (`tests/integrity/i18n-parity.test.ts`). Arrays
    must be element-for-element parallel across locales.
 2. **The disclaimer never drifts.** Use the `<Disclaimer />` component; do not
    inline or reword the not-affiliated / verify-against-GACA text.

@@ -83,7 +83,7 @@ GSAP, or physical-axis CSS. Where any of their guidance conflicts with this repo
   hard-coded values.
 - **Logical properties only** — no physical `left`/`right`; RTL must mirror automatically.
 - **Bilingual + RTL parity** — new copy needs a key in **both** `src/i18n/en.json` and `ar.json`
-  (`tests/i18n-parity.test.ts` fails otherwise).
+  (`tests/integrity/i18n-parity.test.ts` fails otherwise).
 - **The `<Disclaimer />` never drifts** — never inline or reword the not-affiliated / verify-against-
   GACA text.
 

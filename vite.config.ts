@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
   // Standalone prep-app (flavor) builds — set by scripts/build-flavor.mjs. The
   // default web build resolves to `main`, whose registry entry mirrors the
-  // manifest literals this file used to inline (tests/flavors.test.ts pins
+  // manifest literals this file used to inline (tests/app/flavors.test.ts pins
   // that), so the shipped main manifest is unchanged.
   const flavor = FLAVORS[toFlavorId(env.VITE_APP_FLAVOR) ?? 'main'];
   const isFlavorApp = flavor.id !== 'main';

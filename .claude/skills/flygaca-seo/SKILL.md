@@ -35,7 +35,7 @@ Not worth further investment: llms.txt (measurement across hundreds of millions 
 | llms.txt | `public/llms.txt` |
 | OG images | `scripts/build-og-images.mjs` → `public/img/og-*.png` (1200×630) |
 | Content corpus | `public/data/` (fetched at runtime — never bundled); guide scaffold: `npm run new:guide` |
-| i18n copy | `src/i18n/en.json` + `ar.json` — parity enforced by `tests/i18n-parity.test.ts` |
+| i18n copy | `src/i18n/en.json` + `ar.json` — parity enforced by `tests/integrity/i18n-parity.test.ts` |
 
 Language model: one URL per page, `?lang=en` / `?lang=ar` variants declared via hreflang. Primary host is Firebase; Vercel/Netlify mirrors are `noindex`. Deploys must go through `npm run deploy` (or `deploy:all`) or the body prerender is skipped.
 
