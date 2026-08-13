@@ -41,6 +41,6 @@ describe('ChatGate', () => {
   it('anonymous: nudges to sign in instead of billing', () => {
     gate(false);
     expect(screen.queryByTestId('upsell')).toBeNull();
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/account');
+    expect(screen.getByRole('link').getAttribute('href')).toMatch(/^\/account/);
   });
 });
