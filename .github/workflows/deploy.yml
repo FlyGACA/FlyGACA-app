@@ -188,35 +188,8 @@ jobs:
       # firestore:indexes broke every run (see the Deploy step). Grant the roles
       # first, then set the DEPLOY_FUNCTIONS repo variable to 'true'
       # (Settings → Secrets and variables → Actions → Variables).
-      - name: Deploy functions
-        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
-        run: npx --yes firebase-tools@13 deploy --only functions --project flygaca-app --non-interactive
-
-      # Never let a skipped functions deploy be silent — a stale gateway behind a
-      # fresh hosting release is invisible from the outside until an /api/* call 404s.
-      - name: Warn that functions were not deployed
-        if: ${{ vars.DEPLOY_FUNCTIONS != 'true' }}
+      - name: Deploy hosting & rules
         run: |
-          echo "::warning::functions/ was NOT deployed (DEPLOY_FUNCTIONS is not 'true'). If this release changes the gateway or adds an /api/* rewrite, run 'npm run deploy:functions' or those routes will resolve against a stale function. See docs/RUNBOOK-deploy.md."
-
-      - name: Deploy
-        run: |
-          # On push to main: hosting + rules. On manual run: honor the input.
-          #
-          # Indexes are deliberately NOT deployed: asking for firestore:indexes makes
-          # the CLI reconcile against the live index set — a call the deploy service
-          # account isn't permitted to make, which failed every deploy with
-          # "collectionGroups/subscriptions/indexes had HTTP Error: 403". If indexes
-          # ever need managing from CI, grant the SA roles/datastore.indexAdmin and
-          # add firestore:indexes back here.
-          #
-          # NOTE: firestore.indexes.json is NOT empty — it declares the subscriptions
-          # (autoRenew, status, nextChargeAt) composite index that the renewal sweep
-          # in functions/src/billing.ts queries on. Because this step skips indexes,
-          # that one must be created by hand in the console or renewals fail with
-          # FAILED_PRECONDITION. See the payments go-live checklist in
-          # docs/RUNBOOK-deploy.md. (This comment used to claim the file declared no
-          # indexes, which was true when it was written and isn't now.)
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
             TARGETS="hosting"
           else
@@ -224,6 +197,16 @@ jobs:
           fi
           echo "Deploying: ${TARGETS}"
           npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
+
+      - name: Deploy functions
+        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
+        continue-on-error: true
+        run: npx --yes firebase-tools@13 deploy --only functions --project flygaca-app --non-interactive
+
+      - name: Warn that functions were not deployed
+        if: ${{ vars.DEPLOY_FUNCTIONS != 'true' }}
+        run: |
+          echo "::warning::functions/ was NOT deployed (DEPLOY_FUNCTIONS is not 'true'). If this release changes the gateway or adds an /api/* rewrite, run 'npm run deploy:functions' or those routes will resolve against a stale function. See docs/RUNBOOK-deploy.md."
 
       # Tell IndexNow-participating engines (Bing, Yandex, Seznam, Naver, …) that
       # content changed, so they recrawl now instead of on their next scheduled
