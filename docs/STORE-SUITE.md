@@ -83,7 +83,7 @@ If the fleet model underperforms or 4.3 forces consolidation:
 1. Ship one app (or flip a flavor) with `FLAVOR_GRANTED_PACK_IDS` empty, so
    packs render their locked storefront state.
 2. Add `@revenuecat/purchases-capacitor`; one non-consumable product per pack
-   (`billingChannel()` in `src/lib/native-bridge.ts` already answers
+   (`billingChannel()` in `src/lib/native/nativeBridge.ts` already answers
    `'revenuecat'` on iOS and the web checkout already refuses native).
 3. Fulfil into the existing seam: RevenueCat webhook → Cloud Function →
    `packEntitlements/{uid}.packs.<id>` (exactly how the Stripe webhook grants

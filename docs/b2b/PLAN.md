@@ -174,7 +174,7 @@ mechanism. The remaining gaps are the self-serve/admin surfaces on top of it.
 - **Study-progress sync** *(built + enabled; design in `DESIGN-study-progress-sync.md`).*
   `users/{uid}/progress/summary` — a per-user readiness projection (quiz best + Mock Exam history +
   ground-school completion, **scores/completion only, no answers**) written by a debounced,
-  best-effort client sync (`src/lib/studyProgressSync.ts`); local store stays source of truth.
+  best-effort client sync (`src/lib/services/studyProgressSync.ts`); local store stays source of truth.
   Owner-scoped + key-allowlisted + size-capped rules (with tests). `SYNC_STUDY_PROGRESS` is now
   `true` — **deploy the `firestore.rules` change with/before hosting** (until then writes 403 and
   are swallowed). A `/settings` consent notice shows to school-seat members.

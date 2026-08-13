@@ -15,8 +15,8 @@ get set up, the conventions the CI gate enforces, and how to land a change.
 `CLAUDE.md` is the fullest map of the codebase (architecture, routing, i18n,
 calculators, the `functions/` backend, deploy). Skim it before a non-trivial
 change. Also useful: [`README.md`](README.md) (getting started),
-[`ROADMAP.md`](ROADMAP.md) (what's planned), [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md)
-(learn content), and [`FIGMA_DESIGN_SYSTEM.md`](FIGMA_DESIGN_SYSTEM.md) (design tokens).
+[`ROADMAP.md`](ROADMAP.md) (what's planned), [`GUIDE_AUTHORING.md`](docs/GUIDE_AUTHORING.md)
+(learn content), and [`FIGMA_DESIGN_SYSTEM.md`](docs/FIGMA_DESIGN_SYSTEM.md) (design tokens).
 
 ## Prerequisites
 
@@ -61,7 +61,7 @@ These are checked mechanically — a PR that breaks one fails CI:
 
 1. **Bilingual + RTL is first-class.** New copy → a key in **both**
    `src/i18n/en.json` **and** `src/i18n/ar.json`. `npm run test` fails on any key
-   present in one language but not the other (`tests/i18n-parity.test.ts`). Arrays
+   present in one language but not the other (`tests/integrity/i18n-parity.test.ts`). Arrays
    must be element-for-element parallel across locales.
 2. **The disclaimer never drifts.** Use the `<Disclaimer />` component; do not
    inline or reword the not-affiliated / verify-against-GACA text.
@@ -82,7 +82,7 @@ and add a Vitest spec for it, and match the surrounding code's style.
   and register the route in `src/router.tsx`. Crosswind is the reference
   implementation. See the "Adding a new tool" section of `CLAUDE.md`.
 - **A guide:** run `npm run new:guide` and follow
-  [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md).
+  [`GUIDE_AUTHORING.md`](docs/GUIDE_AUTHORING.md).
 
 ## Branch, commit, PR
 

@@ -1,6 +1,6 @@
 # Structured data reference — JSON-LD patterns for this repo
 
-All JSON-LD flows through `src/lib/jsonld.ts` (builders) and is injected per-route by `usePageMeta` — never hand-roll `<script type="application/ld+json">` in components. Site-wide constants (`Organization`, `WebSite` + SearchAction) live in `index.html`.
+All JSON-LD flows through `src/lib/seo/jsonld.ts` (builders) and is injected per-route by `usePageMeta` — never hand-roll `<script type="application/ld+json">` in components. Site-wide constants (`Organization`, `WebSite` + SearchAction) live in `index.html`.
 
 ## Already in place (extend, don't duplicate)
 
