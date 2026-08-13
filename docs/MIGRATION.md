@@ -237,6 +237,6 @@ chat (SSE streaming + grounding), study/guides, account/billing (emulator-first)
 and hardening/SEO/E2E stages are all done.
 
 Open work — production secret flip, native IAP wiring, the Lighthouse perf budget and broader
-E2E coverage, and the rest — is tracked in [`ROADMAP.md`](./ROADMAP.md), the single source of
+E2E coverage, and the rest — is tracked in [`ROADMAP.md`](../ROADMAP.md), the single source of
 truth for what's next. This file stays the historical log of the rebuild and no longer carries a
 parallel to-do list.

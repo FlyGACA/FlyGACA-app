@@ -4,7 +4,7 @@ What's coming next for the Fly GACA frontend app. The legacy→TypeScript/React/
 complete and live** — all 55 tools, the full regulatory library + search, Captain Adel chat, the
 study hub, account/commerce, and guides are shipped and deploying to production on every merge to
 `main`. This file looks **forward** and is the **single source of truth for open work**; the
-stage-by-stage rebuild history lives in [`MIGRATION.md`](./MIGRATION.md) (history only — no open
+stage-by-stage rebuild history lives in [`MIGRATION.md`](./docs/MIGRATION.md) (history only — no open
 items are tracked there).
 
 Scope note: this repo now carries the **backend too** — the Firebase Functions gateway and the

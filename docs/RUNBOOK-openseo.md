@@ -124,7 +124,7 @@ are the free baseline. File any concrete defect as a small follow-up fix and re-
    top clusters into app changes:
    - Refined target-keyword titles/descriptions through the existing `usePageMeta(...)` calls
      (`src/hooks/usePageMeta.ts`; copy lives in `src/i18n/{en,ar}.json` under `meta.*` / `metaDesc.*`).
-   - New **bilingual** content guides via the repo's existing flow (`GUIDE_AUTHORING.md` +
+   - New **bilingual** content guides via the repo's existing flow (`docs/GUIDE_AUTHORING.md` +
      `scripts/new-guide.mjs`), interlinking the library Parts and tools.
    - Keep `npm run verify` green and i18n parity intact (`tests/i18n-parity.test.ts`).
 

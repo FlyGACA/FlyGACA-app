@@ -87,7 +87,7 @@ source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS
   choice onto `<html lang/dir>` so RTL flips document-wide. `LangToggle` switches languages.
 - **Styling:** `src/styles/tokens.css` is the design-token source of truth (the Falcon palette);
   components use CSS Modules with **logical properties** so RTL mirrors automatically. See
-  `FIGMA_DESIGN_SYSTEM.md` for the design system. Motion is tokenized too: `framer-motion` mirrors
+  `docs/FIGMA_DESIGN_SYSTEM.md` for the design system. Motion is tokenized too: `framer-motion` mirrors
   the CSS motion tokens in `src/components/bento/motion.ts`, and
   `tests/bento-motion-parity.test.ts` **fails the build if the two drift**; respect
   `usePrefersReducedMotion`.
@@ -262,7 +262,7 @@ is the apply-and-normalise variant), `parse:regulations` (compile the cross-ref 
 `content/regulations/*.md`), `build:airports` / `build:chunks` / `embeddings:upsert` (Supabase
 pgvector), `build:sitemap`, `gen:og`, `gen:aip-sheet` (build the AIP study sheet), `gen:captain`
 (Captain Adel imagery), `audit:ai` (the AI-search visibility audit behind `SEO-PLAN.md`),
-`optimize:img`, and `new:guide` (scaffold a guide — see `GUIDE_AUTHORING.md`). Shared script
+`optimize:img`, and `new:guide` (scaffold a guide — see `docs/GUIDE_AUTHORING.md`). Shared script
 helpers live in `scripts/lib/` (flavor slicing, markdown splitting, regulations parsing, sync
 merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 `deploy:rules` / `deploy:functions` / `deploy:all` — `npm run deploy` alone does **not** deploy
@@ -272,8 +272,8 @@ merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 
 > 📖 **Family context:** [The Book of Fly GACA](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) is the whole-family reference — all ten repos, the shared tenets, and the glossary in one place.
 
-`MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
-`GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
+`ROADMAP.md` (what's next), `README.md` (getting started), `docs/MIGRATION.md` (rebuild log),
+`docs/GUIDE_AUTHORING.md` (learn content), `docs/FIGMA_DESIGN_SYSTEM.md` (design system),
 `SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility; vendored skills live under
 `.claude/skills/`, pinned by `skills-lock.json` for the `firebase/agent-skills` set and by
 `.claude/skills/THIRD_PARTY_NOTICES.md` for everything vendored by hand),

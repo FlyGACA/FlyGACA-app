@@ -15,8 +15,8 @@ get set up, the conventions the CI gate enforces, and how to land a change.
 `CLAUDE.md` is the fullest map of the codebase (architecture, routing, i18n,
 calculators, the `functions/` backend, deploy). Skim it before a non-trivial
 change. Also useful: [`README.md`](README.md) (getting started),
-[`ROADMAP.md`](ROADMAP.md) (what's planned), [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md)
-(learn content), and [`FIGMA_DESIGN_SYSTEM.md`](FIGMA_DESIGN_SYSTEM.md) (design tokens).
+[`ROADMAP.md`](ROADMAP.md) (what's planned), [`GUIDE_AUTHORING.md`](docs/GUIDE_AUTHORING.md)
+(learn content), and [`FIGMA_DESIGN_SYSTEM.md`](docs/FIGMA_DESIGN_SYSTEM.md) (design tokens).
 
 ## Prerequisites
 
@@ -82,7 +82,7 @@ and add a Vitest spec for it, and match the surrounding code's style.
   and register the route in `src/router.tsx`. Crosswind is the reference
   implementation. See the "Adding a new tool" section of `CLAUDE.md`.
 - **A guide:** run `npm run new:guide` and follow
-  [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md).
+  [`GUIDE_AUTHORING.md`](docs/GUIDE_AUTHORING.md).
 
 ## Branch, commit, PR
 

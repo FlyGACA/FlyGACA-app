@@ -85,7 +85,7 @@ describe('guide content completeness (EN + AR)', () => {
 
   // `new-guide.mjs` seeds every field with a `TODO (...)` placeholder and the
   // guide as a draft; the author replaces them before flipping it to 'live'
-  // (GUIDE_AUTHORING.md §8). Nothing else catches a publish that skipped that
+  // (docs/GUIDE_AUTHORING.md §8). Nothing else catches a publish that skipped that
   // step — placeholders are non-empty strings, so the completeness check above
   // passes — so a 'live' guide must carry no leftover scaffold placeholder or
   // stray TODO/FIXME note left behind while authoring.
