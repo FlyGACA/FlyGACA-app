@@ -188,6 +188,25 @@ jobs:
       # firestore:indexes broke every run (see the Deploy step). Grant the roles
       # first, then set the DEPLOY_FUNCTIONS repo variable to 'true'
       # (Settings → Secrets and variables → Actions → Variables).
+      # The CLI major must track the firebase-tools devDependency in package.json.
+      # It drifted: the pin sat at 13 while the repo moved to ^15, and 13 predates
+      # the nodejs24 Functions runtime — so once DEPLOY_FUNCTIONS was switched on,
+      # every deploy died here with "Detected node engine 24 in package.json, which
+      # is not a supported version. Valid versions are 20, 22", taking hosting down
+      # with it (this step runs first). functions/package.json's engines and the CI
+      # functions job both pin Node 24 deliberately; the CLI is what was stale.
+      - name: Deploy functions
+        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
+        run: npx --yes firebase-tools@15 deploy --only functions --project flygaca-app --non-interactive
+
+      # Never let a skipped functions deploy be silent — a stale gateway behind a
+      # fresh hosting release is invisible from the outside until an /api/* call 404s.
+      - name: Warn that functions were not deployed
+        if: ${{ vars.DEPLOY_FUNCTIONS != 'true' }}
+        run: |
+          echo "::warning::functions/ was NOT deployed (DEPLOY_FUNCTIONS is not 'true'). If this release changes the gateway or adds an /api/* rewrite, run 'npm run deploy:functions' or those routes will resolve against a stale function. See docs/RUNBOOK-deploy.md."
+
+      - name: Deploy
       - name: Deploy hosting & rules
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
@@ -196,7 +215,9 @@ jobs:
             TARGETS="hosting,firestore:rules"
           fi
           echo "Deploying: ${TARGETS}"
-          npx --yes firebase-tools@13 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
+          # Keep this major in step with the Deploy-functions step above and the
+          # firebase-tools devDependency in package.json.
+          npx --yes firebase-tools@15 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
 
       - name: Deploy functions
         if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
