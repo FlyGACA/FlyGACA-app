@@ -26,7 +26,7 @@ Two things in the repo now point in different directions:
 | Artifact | What it implies |
 |---|---|
 | `firebase.json` rewrites (`/api/*` → the `chat` function) | Firebase Hosting fronts the deployed Firebase gateway directly — it treats Captain Adel's brain as an **already-hosted origin**, not something rebuilt at deploy time. (Historically a Cloudflare Worker proxied `/api/*` here; that mirror front was removed 2026-08 — Firebase is now the single front.) |
-| [`functions/src/genkit-sample.ts`](../functions/src/genkit-sample.ts) | A **fresh Firebase Cloud Functions + Genkit** scaffold (Gemini via `@genkit-ai/google-genai`, `onCallGenkit`, Firebase telemetry, `defineSecret("GOOGLE_GENAI_API_KEY")`, Node 24, functions v7). |
+| `functions/src/genkit-sample.ts` _(removed)_ | The original **Firebase Cloud Functions + Genkit** scaffold (Gemini via `@genkit-ai/google-genai`, `onCallGenkit`, Firebase telemetry, `defineSecret("GOOGLE_GENAI_API_KEY")`, Node 24, functions v7). Deleted in 295db1c when the functions package was repaired; the shipped flow lives in `captain-adel.ts` + `gateway.ts`. |
 
 **The decision this design resolves:** *if* Captain Adel's brain is to be (re)built in this repo on
 Genkit, how does it satisfy the **existing** `/api/chat` contract with **zero frontend change** — and
@@ -103,8 +103,8 @@ in `onCallGenkit` would force a frontend rewrite and break `drainSse()`.
 3. **translates** the flow's stream/result into the legacy SSE frames (or buffered JSON).
 
 Genkit still powers retrieval, generation, tracing, and structured output internally — we just keep
-its wire protocol *off the public edge*. `genkit-sample.ts` stays as a reference example and is not
-exported from `index.ts`.
+its wire protocol *off the public edge*. The original `genkit-sample.ts` scaffold has since been
+deleted (295db1c) — it was never exported from `index.ts`, and the live flow is `captain-adel.ts`.
 
 ### D2 — Retrieval source ✅ (OQ-4 resolved: static lexical index for v1)
 Three candidates; pick by corpus size and freshness needs:
@@ -355,7 +355,7 @@ flowchart LR
    no contract change.
 3. **Cut over.** Point the Hosting `/api/chat` rewrite at the Gemini function; keep the legacy brain
    as instant rollback (the `firebase.json` rewrite target is a one-line change). Retire it once stable.
-4. **Docs.** Update `CLAUDE.md`, `MIGRATION.md`, and `docs/RUNBOOK-deploy.md` to reflect the
+4. **Docs.** Update `CLAUDE.md`, `docs/MIGRATION.md`, and `docs/RUNBOOK-deploy.md` to reflect the
    Gemini-powered co-located brain; remove the "backend is in another repo / unchanged" note.
 
 ---

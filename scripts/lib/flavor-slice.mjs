@@ -3,7 +3,7 @@
  * (src/lib/prepCatalog.ts) and the shared /data indexes, compute exactly the
  * slice of content that pack's app ships — filtered indexes plus the list of
  * corpus HTML / study-sheet PDF files to copy. No fs/process here so the rules
- * are unit-testable (tests/flavor-slice.test.ts); scripts/build-flavor.mjs does
+ * are unit-testable (tests/scripts/flavor-slice.test.ts); scripts/build-flavor.mjs does
  * the I/O.
  *
  * The corpus-pointer resolution mirrors src/lib/content.ts (toSearchRef /
