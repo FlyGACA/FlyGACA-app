@@ -19,7 +19,7 @@ export * from './content.types';
  */
 /**
  * Resolve the corpus data origin from the (possibly empty) build-env value.
- * Exported for unit tests (see tests/content-dataurl.test.ts).
+ * Exported for unit tests (see tests/lib/content-dataurl.test.ts).
  *
  * `||` not `??`: the deploy workflow sets `VITE_DATA_BASE_URL` to
  * `${{ vars.DATA_BASE_URL }}`, which expands to an EMPTY STRING when that repo var is

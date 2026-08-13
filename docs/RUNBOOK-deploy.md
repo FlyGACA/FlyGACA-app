@@ -12,7 +12,7 @@ The app is one Vite build (`npm run build` → `dist/`) served from **one** fron
   `flygaca.com` DNS cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed
   2026-07-31: the apex and `www` both resolve to Firebase Hosting.
 - **One front, one CSP.** The security headers + CSP live only in `firebase.json`; there are no
-  mirror configs to keep in sync. `tests/csp-parity.test.ts` guards that the single policy keeps
+  mirror configs to keep in sync. `tests/integrity/csp-parity.test.ts` guards that the single policy keeps
   allowing the money-path origins (`cdn.moyasar.com`, `api.moyasar.com`,
   `me-central1-flygaca-app.cloudfunctions.net`).
 - **The Vercel / Cloudflare / Netlify mirror fronts were removed** (2026-08) to consolidate on one

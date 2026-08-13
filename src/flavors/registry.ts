@@ -11,7 +11,7 @@
  *
  * `main` is the full Fly GACA app (the default when `VITE_APP_FLAVOR` is unset)
  * and its `manifest` MUST mirror the PWA manifest literals in `vite.config.ts`
- * verbatim — `tests/flavors.test.ts` guards that. Every other flavor is a
+ * verbatim — `tests/app/flavors.test.ts` guards that. Every other flavor is a
  * paid-upfront App Store product whose pack unlocks by construction (owning the
  * app IS owning the pack — see `FLAVOR_GRANTED_PACK_IDS` in `current.ts`).
  * Store-listing strategy (names, pricing, App Bundle) lives in

@@ -29,7 +29,7 @@ By the end, a candidate can:
 
 ## Module map (→ in-app assets)
 
-The `aip` prep pack (`src/pages/study/packCatalog.ts`) already bundles these; the curriculum
+The `aip` prep pack (`src/lib/prepCatalog.ts`) already bundles these; the curriculum
 just sequences them.
 
 ### Module 0 — Orientation (0.5 h)

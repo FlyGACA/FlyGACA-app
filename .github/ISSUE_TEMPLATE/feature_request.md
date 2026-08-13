@@ -9,7 +9,7 @@ assignees: ''
 <!--
 Check ROADMAP.md and open issues first — the idea may already be planned or
 in flight. Adding a flight tool or a guide? See the "Adding a new tool"
-section of CLAUDE.md and GUIDE_AUTHORING.md.
+section of CLAUDE.md and docs/GUIDE_AUTHORING.md.
 -->
 
 ## The problem / motivation

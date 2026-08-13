@@ -2,7 +2,7 @@
  * regulations-parse — pure AST-extraction helpers for the regulatory Markdown corpus.
  *
  * No filesystem, no process exit: takes raw Markdown in, returns plain records out, so it is
- * unit-testable (tests/regulations-parse.test.ts). The CLI wrapper that reads files, writes the
+ * unit-testable (tests/scripts/regulations-parse.test.ts). The CLI wrapper that reads files, writes the
  * lookup JSON and gates the build lives in scripts/parse-regulations.mjs.
  *
  * "AST-style" means we parse each file to an mdast tree (unified + remark-parse) and walk it with

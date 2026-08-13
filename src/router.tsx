@@ -258,7 +258,7 @@ const flavorRoutes = [
 
 /**
  * Route table for the app. Each page lives under src/pages/. As more pages are
- * ported from the legacy site they slot in here (see MIGRATION.md).
+ * ported from the legacy site they slot in here (see docs/MIGRATION.md).
  */
 const mainRoutes = [
   {

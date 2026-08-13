@@ -44,27 +44,27 @@ Reuse the existing patterns — don't invent new scaffolding:
 - Global `tests/setup.ts` already boots i18next (en/ar), installs a `MockStorage`, clears the
   content cache, and stubs `scrollIntoView` — assert against real English strings.
 - Mock Firebase callables with the `vi.hoisted` holder + `vi.mock('@/lib/services/firebase')` +
-  `vi.mock('firebase/functions')` idiom — see `tests/org-client.test.ts`.
+  `vi.mock('firebase/functions')` idiom — see `tests/lib/org-client.test.ts`.
 - Mock Firestore with `vi.mock('firebase/firestore')` recording into a holder — see
-  `tests/sync-io.test.ts`.
-- Hooks: `renderHook` + `waitFor` + `act` — see `tests/fetch-hooks.test.tsx`,
-  `tests/pwa-hooks.test.ts`.
+  `tests/lib/sync-io.test.ts`.
+- Hooks: `renderHook` + `waitFor` + `act` — see `tests/hooks/fetch-hooks.test.tsx`,
+  `tests/lib/pwa-hooks.test.ts`.
 - Widgets: seed `localStorage`, then **dynamic** `await import(...)` — see
-  `tests/dashboard-widgets.test.tsx`.
-- `useSyncExternalStore` stores: see `tests/library-prefs-store.test.ts`.
+  `tests/components/dashboard-widgets.test.tsx`.
+- `useSyncExternalStore` stores: see `tests/lib/library-prefs-store.test.ts`.
 
 ## Phase 1 — Account / billing / entitlement services + backend gate  *(highest risk)*
 
 This is the code that gates money and access. `CLAUDE.md` requires the client mirrors to match the
 server core.
 
-- [x] `tests/staff.test.ts` — `src/lib/services/staff.ts`: pure `looksLikeStaff()` matching + all
+- [x] `tests/lib/staff.test.ts` — `src/lib/services/staff.ts`: pure `looksLikeStaff()` matching + all
       `claimStaffAccessIfEligible` no-op/happy paths (callable `claimStaffAccess`).
-- [x] `tests/school.test.ts` — `src/lib/services/school.ts` (0%): `claimSchoolSeatIfEligible`
+- [x] `tests/lib/school.test.ts` — `src/lib/services/school.ts` (0%): `claimSchoolSeatIfEligible`
       (callable `claimSchoolSeat`).
-- [x] `tests/waitlist.test.ts` — `src/lib/services/waitlist.ts` (0%): `addDoc` payload shape +
+- [x] `tests/lib/waitlist.test.ts` — `src/lib/services/waitlist.ts` (0%): `addDoc` payload shape +
       the `'unavailable'` throw when the db is null.
-- [x] `tests/study-progress-sync.test.ts` — `src/lib/services/studyProgressSync.ts` (16%):
+- [x] `tests/lib/study-progress-sync.test.ts` — `src/lib/services/studyProgressSync.ts` (16%):
       local-first no-op paths + the initial upload payload/path. (Now ~88% lines.)
 - [x] Broaden existing suites to lift the uncovered branches in `services/account.ts` (~66%),
       `services/billing.ts` (~62%), `services/auth.ts` (~72%). *Partially:* `billing.ts` lifted to
@@ -90,13 +90,13 @@ server core.
 
 ## Phase 3 — Widget / peripheral-chat render smoke  *(lower risk)*
 
-- [x] Hub controls `ViewToggle` / `SortSelect` (both 0%) — `tests/hub-controls.test.tsx`.
+- [x] Hub controls `ViewToggle` / `SortSelect` (both 0%) — `tests/components/hub-controls.test.tsx`.
 - [x] Peripheral chat UI `SourcesDigest`, `CrossRefChips`, `ExportActions` (all 0%) —
-      `tests/chat-digest.test.tsx`. Ratchet raised again to 76/73/79/77.
+      `tests/components/chat-digest.test.tsx`. Ratchet raised again to 76/73/79/77.
 - [x] Bento widgets `StatValue` / `ToolsWidget` / `LearnWidget` (all 0%) —
-      `tests/bento-widgets.test.tsx`.
-- [x] Library `SelectionPopover` (0%) — `tests/selection-popover.test.tsx`.
-- [x] `SpeakButton` (24%) — `tests/speak-button.test.tsx` with a `speechSynthesis` stub.
+      `tests/components/bento-widgets.test.tsx`.
+- [x] Library `SelectionPopover` (0%) — `tests/components/selection-popover.test.tsx`.
+- [x] `SpeakButton` (24%) — `tests/components/speak-button.test.tsx` with a `speechSynthesis` stub.
 
 Final app coverage after Phases 1–3: **78.9 / 74.5 / 81.6 / 79.9** (from 72.2 / 70.6 / 74.2 / 72.8).
 The ratchet sits at 76/73/79/77 with headroom.
@@ -110,8 +110,8 @@ page unit tests. Two complementary tracks:
 **Done — widen the cheap render-smoke net** (guards against render-time crashes, no architectural
 change):
 
-- [x] `tests/tool-pages-smoke.test.tsx` — the ~45 self-contained CalcShell tool pages (pre-existing).
-- [x] `tests/static-pages-smoke.test.tsx` — the static i18n-driven pages (`About`, `NotFound`,
+- [x] `tests/pages/tool-pages-smoke.test.tsx` — the ~45 self-contained CalcShell tool pages (pre-existing).
+- [x] `tests/pages/static-pages-smoke.test.tsx` — the static i18n-driven pages (`About`, `NotFound`,
       `Offline`, and the four legal docs). Same parameterized-loop pattern.
 
 **Open — the structural decision (team call):** whether to fold `src/pages/**` into the coverage
@@ -180,7 +180,7 @@ whole shortfall lives in three Firebase wrappers — exactly the code that charg
 Local-first means the null-Firebase path is well tested; the configured path largely isn't.
 
 - [ ] A shared "configured Firebase" fixture (extend the `vi.hoisted` holder idiom from
-      `tests/account-firebase.test.ts`) so suites can exercise the non-null path without an
+      `tests/lib/account-firebase.test.ts`) so suites can exercise the non-null path without an
       emulator.
 - [ ] `src/lib/services/firebase.ts` (~18% lines — the real init/emulator wiring),
       `services/auth.ts` (~71% — error-mapping branches), `services/account.ts` (~71% — profile
@@ -226,7 +226,7 @@ coverage** item in `ROADMAP.md`.
 - [ ] Study flows beyond the free sampler's timed exam: quiz, flashcards, ground school, paths —
       today these pages rely on unit tests only.
 - [ ] Flavor route-tree smoke: boot with `IS_FLAVOR_APP` and assert the reduced single-pack tree —
-      unit-tested in `tests/flavor-router.test.ts`, never driven in a browser.
+      unit-tested in `tests/app/flavor-router.test.ts`, never driven in a browser.
 - [ ] Arabic/RTL passes: run the axe sweep on key routes in `ar` (today only the toggle flow
       asserts RTL flips).
 
@@ -273,8 +273,8 @@ Verified in the August 2026 audit; future coverage passes should skip them:
 - `tests/rules/firestore-rules.test.ts` — every collection in `firestore.rules` has allow **and**
   deny/self-grant/forgery cases.
 - The backend `*-core.ts` policy modules — all ≈100%.
-- `tests/client-server-mirrors.test.ts` (client mirrors ↔ server cores) and
-  `tests/i18n-parity.test.ts`.
+- `tests/integrity/client-server-mirrors.test.ts` (client mirrors ↔ server cores) and
+  `tests/integrity/i18n-parity.test.ts`.
 - Every `src/calc` module is imported by at least one spec — calc gaps are branch-level only
   (`recency`, `callsigns` above), not missing files.
 - Captain-Adel's brain + eval harness (`evals/cases.json`, 73 cases, EN+AR, plus the parity gate).

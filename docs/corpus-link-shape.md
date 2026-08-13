@@ -11,7 +11,7 @@ either a corpus pointer or an app route:
 The legacy no-build shape — `document.html?type=<t>&id=<slug>#<anchor>` for corpus
 docs and `../tools/x.html` / `../guides/x.html` for pages — is **deprecated**.
 `src/lib/content.ts` (`toSearchRef`, `linkHref`) still parses it for back-compat,
-and `tests/data-shape.test.ts` fails CI if it reappears in a migrated file.
+and `tests/integrity/data-shape.test.ts` fails CI if it reappears in a migrated file.
 
 Files and their link fields:
 
@@ -66,4 +66,4 @@ Once the pipeline emits the semantic shape and a sync confirms it:
    fields from `SearchEntry` / `ContentLink`.
 2. Remove `data:normalize` from `sync:gaca:apply` and delete
    `scripts/normalize-corpus-data.mjs`.
-3. Keep `tests/data-shape.test.ts` — it's the standing guard.
+3. Keep `tests/integrity/data-shape.test.ts` — it's the standing guard.
