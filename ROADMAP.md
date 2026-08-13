@@ -150,21 +150,53 @@ footprint fully trustworthy.
   and app icons/splash. See `docs/RUNBOOK-native.md`. Includes **passkeys / biometric unlock** for
   the persistent "active flight line" session — deferred from the sign-in redesign because it needs
   the native shell.
-- **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
-  initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (188 kB gzip today —
-  the script is the source of truth).
-- **[platform]** **Shard the heavy data payloads.** `airports-extra.json` (21 MB) and
-  `library-search.json` (19 MB) are each fetched as a single blob today; shard them (by
-  region/ICAO prefix and by corpus/Part or term-prefix buckets) so the first search on a mobile
-  connection doesn't wait on the whole index. Confirm `rag-chunks.json` (14 MB) is only consumed
-  server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
-  (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
-  cache split in `vite.config.ts` when shard names change.
-- **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
-  `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
-  files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync
-  meanwhile. Patch the builder to emit the semantic shape natively, then retire the normalize step
-  — exact diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
+- **[platform]** **Performance budget — the static half shipped; the runtime half is what's left.**
+  `scripts/check-perf-budget.mjs` (`npm run check:perf`) already gates **every** emitted chunk on a
+  per-chunk gz ceiling plus a total-footprint ceiling, alongside the initial-JS budget in
+  `scripts/check-bundle.mjs` (**189 kB** gz, 186.9 used today — the script is the source of truth).
+  Both are in `verify` and in `ci.yml` as their own steps. What is still missing is a **runtime**
+  gate: nothing measures LCP/INP, so a change can hold every byte budget and still regress the
+  field metrics. Add Lighthouse CI (or equivalent) against the built preview.
+- **[platform]** **Shard the heavy data payloads — aerodromes done, library search still open.**
+  Note the sizes above were raw: on the wire (Hosting gzips) `airports-extra` was 2.8 MB and
+  `library-search.json` is 3.7 MB, not 21/19 MB. Parse cost on a phone is the other half of the
+  problem and scales with the raw figure.
+  - ~~`airports-extra.json`~~ **Done.** Now `public/data/airports-extra/<REGION>.json` + a
+    `_manifest.json` carrying an ident-prefix hint (`scripts/lib/airport-shards.mjs`,
+    `src/lib/airportShards.ts`). A region filter reads only its own shards — **GCC goes 2.8 MB →
+    17 KB gz** — and a detail-page ICAO lookup resolves one shard from the prefix hint instead of
+    all 66k rows. Region is the only shard axis on purpose: adding an ident-prefix axis would
+    serve the detail page more evenly but duplicate all 20 MB, and the 3 KB hint buys the same
+    lookup. Total bucket bytes are unchanged. `tests/integrity/airport-shards.test.ts` pins the invariant
+    that matters — shard selection is a **superset** of what `inRegion` matches, so a mapping bug
+    can never silently drop aerodromes from the directory.
+  - ~~`rag-chunks.json`~~ **Done.** Confirmed server-only (no `src/` reader; the gateway's
+    `CORPUS_URL` defaults to `library-search.json` and is set nowhere) and moved out of
+    `public/data/` to `data/` at the repo root, so it is neither Hosting-served nor bucket-mirrored.
+    Its vestigial `firebase.json` hosting-ignore entry is gone; `tests/integrity/data-shape.test.ts` pins
+    the split and its legacy-`u` backend contract.
+  - **Still open: `library-search.json` (3.7 MB gz).** Sharding it is **blocked on a coordinated
+    functions deploy**, not on effort: it is also the gateway's own corpus, fetched whole over HTTP
+    by `functions/src/corpus.ts` (`CORPUS_URL`). Shipping shards while a stale gateway still
+    requests the monolith breaks `/api/chat`, and functions deploys are gated off today
+    (`DEPLOY_FUNCTIONS`). Ordered fix: teach `corpus.ts` to read a manifest + shards → deploy
+    functions → then emit shards and drop the monolith. Keep `src/lib/content.ts` (`loadJson`
+    promise cache) as the single client fetch path and update the two-tier NetworkFirst split in
+    `vite.config.ts` with the new names.
+- **[platform]** **Emit semantic corpus links upstream — blocked outside this org.** The offline
+  pipeline that builds `library-search.json` / `definitions-index.json` / the curated
+  `paths`·`groundschool`·`quiz` files still emits legacy `document.html?…` URLs;
+  `npm run data:normalize` heals them on each sync meanwhile. The builder patch **cannot be
+  applied from any FlyGACA GitHub repo** — that pipeline lives outside `FlyGACA-app`,
+  `Captain-Adel`, `Office` and `ay2m/FlyGACA` — so this item is waiting on a change wherever it
+  runs, not on effort here. The committed corpus is meanwhile fully semantic
+  (`npm run data:normalize:check` reports 0 migrated across all five files), and the back-compat
+  parsing in `src/lib/contentLinks.ts` must stay until the upstream stops emitting legacy shapes:
+  deleting it first would mean the next sync silently ships unroutable links.
+  **`npm run data:normalize:check`** is the gate that answers "is upstream fixed yet?" — `--dry`
+  that exits non-zero when anything would migrate. Run it on a fresh `sync:gaca` (before the
+  healing `sync:gaca:apply`); a clean exit is the green light to retire the legacy path. Exact
+  diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +

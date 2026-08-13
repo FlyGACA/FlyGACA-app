@@ -22,6 +22,7 @@
     "sync:gaca": "node scripts/sync-gaca.mjs",
     "sync:gaca:apply": "node scripts/sync-gaca.mjs --apply && npm run data:normalize",
     "data:normalize": "node scripts/normalize-corpus-data.mjs",
+    "data:normalize:check": "node scripts/normalize-corpus-data.mjs --check",
     "lint:md": "markdownlint-cli2 \"content/regulations/**/*.md\"",
     "parse:regulations": "node scripts/parse-regulations.mjs",
     "embeddings:upsert": "node scripts/upsert-embeddings.mjs",

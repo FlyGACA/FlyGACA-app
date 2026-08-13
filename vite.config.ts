@@ -159,9 +159,10 @@ export default defineConfig(({ mode }) => {
           cleanupOutdatedCaches: true,
           // Two-tier network-first data cache (first match wins). Both stay
           // network-first so online reads are always freshest; the split keeps the
-          // few very large/volatile files (the ~19 MB search index, the ~21 MB
-          // worldwide airports set, chart JPGs) in their own bounded cache so they
-          // can't evict the regulatory docs a pilot explicitly saved for offline.
+          // few very large/volatile files (the ~19 MB search index, the worldwide
+          // airports set — now region shards under /data/airports-extra/ — and
+          // chart JPGs) in their own bounded cache so they can't evict the
+          // regulatory docs a pilot explicitly saved for offline.
           runtimeCaching: [
             {
               // Rule A — heavy/volatile assets, isolated so they don't crowd out
@@ -170,13 +171,15 @@ export default defineConfig(({ mode }) => {
               // same-origin `/data/…` and an off-host data bucket
               // (`https://…/data/…`, see VITE_DATA_BASE_URL).
               urlPattern: ({ url }) =>
-                /\/data\/(library-search\.json|airports(-extra)?\.json|charts\/)/.test(
+                /\/data\/(library-search\.json|airports\.json|airports-extra\/|charts\/)/.test(
                   url.pathname,
                 ),
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'flygaca-data-heavy',
                 networkTimeoutSeconds: 3,
+                // Budget: 13 chart JPGs + 9 airport region shards + their manifest
+                // + library-search + airports.json = ~25 of the 40 entries.
                 expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 },
                 cacheableResponse: { statuses: [0, 200] },
               },

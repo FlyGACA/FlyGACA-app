@@ -1,10 +1,20 @@
 # Serving the `/data` corpus off Firebase Hosting
 
-The regulatory corpus under `public/data` is ~130 MB (`airports-extra.json` 21 MB,
-`library-search.json` 19 MB, the `library/` reference HTML 40 MB, `charts/` 15 MB,
+The regulatory corpus under `public/data` is ~115 MB (`airports-extra/` 21 MB across 9 region
+shards, `library-search.json` 19 MB, the `library/` reference HTML 40 MB, `charts/` 15 MB,
 `ebooks/` 11 MB, `parts/` 7 MB, …). Firebase Hosting stores this in **every release**, so a
 burst of deploys can exhaust the Hosting storage quota (`HTTP 429 … exceeded the Hosting storage
 quota`). Serving the corpus from a bucket keeps each Hosting release ~12 MB.
+
+Two notes on what is *not* here:
+
+- **`rag-chunks.json` lives at `data/` in the repo root, not under `public/`.** It is a backend
+  retriever input (`functions/src/corpus.ts`), no client code reads it, and the gateway's
+  `CORPUS_URL` points at `library-search.json` — so serving it and mirroring it into the bucket
+  cost 14 MB raw / 1.7 MB gz for nothing. `tests/integrity/data-shape.test.ts` pins the split.
+- **The long-tail aerodrome tier is region-sharded** (`public/data/airports-extra/<REGION>.json`
+  + `_manifest.json`) so a page fetches one shard instead of the whole 20.8 MB / 2.8 MB gz tier.
+  Same total bytes in the bucket, far fewer per visit. See `scripts/lib/airport-shards.mjs`.
 
 ## How the app finds the corpus
 
