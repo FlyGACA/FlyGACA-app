@@ -11,10 +11,10 @@
  *
  * It is the floor; scripts/prerender.mjs (Playwright, full-body) is an optional
  * enhancement that overwrites these files with hydrated snapshots on hosts that
- * have a browser (Vercel buildCommand, `npm run deploy`).
+ * have a browser (the deploy.yml pipeline, `npm run deploy`).
  *
  * Route set + URL/JSON-LD shapes mirror scripts/build-sitemap.mjs and
- * src/lib/{seo,jsonld}.ts. Keep them in sync (guarded by tests/lib/jsonld.test.ts).
+ * src/lib/seo/{seo,jsonld}.ts. Keep them in sync (guarded by tests/lib/jsonld.test.ts).
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
