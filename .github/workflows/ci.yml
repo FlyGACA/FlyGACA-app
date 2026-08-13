@@ -24,9 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Node 24, not 20: on Node 20 the v8 coverage provider reports 0% for every
+      # file — the whole table, not a regression in any one of them — and the
+      # ratchet then fails a suite that is actually at ~83%. The same commands on
+      # Node 22/24 report real numbers and pass. Node 20 also went EOL in April
+      # 2026, and the functions job below already runs 24.
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - run: npm ci
