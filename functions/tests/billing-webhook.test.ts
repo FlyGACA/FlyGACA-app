@@ -16,6 +16,8 @@ const h = vi.hoisted(() => ({
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
   payment: undefined as unknown,
   getThrows: false,
+  /** Collection whose writes should reject — used to simulate a grant failing mid-way. */
+  failWritesTo: null as string | null,
 }));
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
@@ -52,6 +54,7 @@ function makeDoc(coll: string, id: string) {
         data: () => h.stores[coll]?.[id],
       }),
     set: (val: Record<string, unknown>, opts?: { merge?: boolean }) => {
+      if (h.failWritesTo === coll) return Promise.reject(new Error(`write-failed:${coll}`));
       writeDoc(coll, id, val, opts);
       return Promise.resolve();
     },
@@ -123,6 +126,7 @@ async function invoke(req: ReturnType<typeof signedReq>, res: ReturnType<typeof 
 beforeEach(() => {
   h.stores = {};
   h.getThrows = false;
+  h.failWritesTo = null;
   h.payment = { id: "pay_1", status: "paid", amount: 4900, currency: "SAR", metadata: { checkoutId: "co_1" } };
   vi.stubGlobal(
     "fetch",
@@ -268,5 +272,53 @@ describe("moyasarWebhook — idempotency, mismatches & errors", () => {
     const res = mockRes();
     await invoke(signedReq("pay_1"), res);
     expect(res.status).toHaveBeenCalledWith(500);
+  });
+
+  // Regression: fulfillPayment used to claim moyasarPayments/{id} BEFORE fetching the
+  // payment, so a transient Moyasar failure wrote the marker and granted nothing — and
+  // the retry, seeing the payment "already fulfilled", returned success. The buyer was
+  // charged and got nothing, silently. The retry must grant.
+  it("grants on retry after a transient Moyasar failure, and leaves no claim behind", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
+    };
+
+    h.getThrows = true;
+    const first = mockRes();
+    await invoke(signedReq("pay_1"), first);
+    expect(first.status).toHaveBeenCalledWith(500);
+    // The failed attempt must not have claimed the payment.
+    expect(h.stores.moyasarPayments?.pay_1).toBeUndefined();
+    expect(h.stores.users).toBeUndefined();
+
+    h.getThrows = false;
+    const second = mockRes();
+    await invoke(signedReq("pay_1"), second);
+    expect(second.json).toHaveBeenCalledWith({ received: true });
+    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
+    expect(h.stores.checkoutIntents?.co_1?.status).toBe("fulfilled");
+  });
+
+  // Same failure mode one step later: the payment is good and claimed, but the grant
+  // itself throws. The claim must be released so a retry can still fulfil it.
+  it("releases the claim when the grant fails, so a retry still grants", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
+    };
+    h.failWritesTo = "users"; // the entitlement write blows up on the first attempt
+
+    const first = mockRes();
+    await invoke(signedReq("pay_1"), first);
+    expect(first.status).toHaveBeenCalledWith(500);
+    expect(h.stores.users).toBeUndefined();
+    // The claim must have been released, or the charge can never be fulfilled.
+    expect(h.stores.moyasarPayments?.pay_1).toBeUndefined();
+
+    h.failWritesTo = null;
+    const second = mockRes();
+    await invoke(signedReq("pay_1"), second);
+    expect(second.json).toHaveBeenCalledWith({ received: true });
+    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
+    expect(h.stores.checkoutIntents?.co_1?.status).toBe("fulfilled");
   });
 });

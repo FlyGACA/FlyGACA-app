@@ -2319,6 +2319,7 @@
     "preparing": "Preparing your checkout…",
     "confirming": "Confirming your payment…",
     "promoApplied": "Promo {{code}} applied — you save SAR {{save}}.",
+    "goToAccount": "Go to my account",
     "errors": {
       "generic": "Couldn't open checkout just now. Please try again.",
       "sign-in-required": "Sign in to check out.",
@@ -2328,7 +2329,9 @@
       "unknown-pack": "That pack isn't available for purchase.",
       "org-name-required": "Enter your organisation or school name to continue.",
       "student-verification-required": "Verify your student email to use the student rate.",
-      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again."
+      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again.",
+      "signed-out-after-payment": "Your payment was received. Sign in with the same account to activate it.",
+      "payment-not-recognized": "We couldn't match this payment to your order. If you were charged it will activate automatically — contact us if it doesn't."
     }
   },
   "account": {

@@ -85,6 +85,52 @@ required one is empty. Required variables: `FIREBASE_API_KEY`, `FIREBASE_AUTH_DO
 | `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`                     | (optional)            | App Check; also enforce on the Functions             |
 | `VITE_FIREBASE_EMULATOR`                                 | **unset**             | never set in production                              |
 
+## Payments go-live checklist
+
+Merging the billing code does **not** turn payments on. Every item below is a console step, and
+the deploy stays red until step 1 is done. This list exists because it was skipped once: from
+2026-08-10 every `deploy.yml` run failed at `Verify build env` with four empty variables, so the
+checkout fix in PR #501 sat in `main` undeployed while production served a build whose Firebase
+config was placeholders — auth broken, and with it every billing callable.
+
+1. **Actions variables** (Settings → Secrets and variables → Actions → **Variables**). Set all of
+   `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_DATABASE_URL`, `FIREBASE_PROJECT_ID`,
+   `FIREBASE_STORAGE_BUCKET`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`,
+   `FIREBASE_MEASUREMENT_ID`, `RECAPTCHA_ENTERPRISE_SITE_KEY`, `MOYASAR_PUBLISHABLE_KEY`.
+   Values: Firebase console → Project settings → Your apps → Web. `Verify build env` only checks
+   five of them, so an empty one of the rest ships a half-configured bundle silently.
+2. **Moyasar secrets in Secret Manager** — `MOYASAR_SECRET_KEY` and `MOYASAR_WEBHOOK_SECRET`
+   (`defineSecret`, deliberately absent from `functions/.env.flygaca-app`). They must be the
+   **live** pair matching the `pk_live_…` publishable key — a test secret against a live
+   publishable key fails at charge time, not at deploy time.
+3. **Functions deploy** — grant the deploy service account `roles/cloudfunctions.admin`,
+   `roles/iam.serviceAccountUser`, `roles/cloudbuild.builds.editor` and
+   `roles/artifactregistry.writer`, **then** set `DEPLOY_FUNCTIONS=true`. In that order: asking
+   the CLI for a target the SA can't perform fails the whole deploy. Until this is done no
+   billing callable has ever been published from CI.
+4. **The `subscriptions` composite index** — `firestore.indexes.json` declares
+   `(autoRenew, status, nextChargeAt)`, but this workflow deploys only `hosting,firestore:rules`.
+   Create it by hand (or run `firebase deploy --only firestore:indexes` with an SA holding
+   `roles/datastore.indexAdmin`), or `renewMoyasarSubscriptions` throws `FAILED_PRECONDITION`
+   every run and nothing ever renews.
+5. **Register the webhook** in the Moyasar dashboard → `https://flygaca.com/api/moyasar-webhook`.
+   Note which verification scheme the dashboard offers: `verifyMoyasarSignature`
+   (`functions/src/billing-core.ts`) assumes a hex HMAC-SHA256 in `x-moyasar-signature`, and that
+   assumption has never been confirmed against a real delivery. If it is wrong, every delivery
+   400s and the async backstop is silently inert. `moyasarWebhook` logs
+   `moyasar_webhook_signature_failed` with the header/body **key names** on each rejection —
+   check that log after the first real delivery and correct the recipe if it disagrees.
+6. **App Check** — `createCheckoutConfig` and `confirmPayment` set `enforceAppCheck: true`.
+   Confirm `flygaca.com` is registered on the reCAPTCHA Enterprise key in
+   `RECAPTCHA_ENTERPRISE_SITE_KEY`; a valid key for the wrong domain passes the build guard and
+   rejects every checkout at runtime.
+7. **Smoke-test with the test key pair first** — `/pricing` → checkout → Moyasar test card →
+   `/checkout/return` → entitlement written and visible on `/account`. Then swap to live.
+
+If a deploy still doesn't run after all of this, check that GitHub Actions runners are actually
+being allocated — runs have sat `queued` for hours in this repo before, which looks exactly like
+"my fix didn't work".
+
 ## Verify before deploying (any host)
 
 ```bash
@@ -101,9 +147,11 @@ npx playwright install --with-deps chromium && npm run test:e2e
 `firestore.rules` on every push to `main`, and on demand via Actions → **Deploy** → _Run
 workflow_. It authenticates with a service account — add the JSON key as the repo secret
 **`FIREBASE_SERVICE_ACCOUNT`** (Firebase console → Project Settings → Service accounts →
-_Generate new private key_). Optionally add **`VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`** to enable
-App Check at build time (see `APP-CHECK-BACKEND.md`). The `VITE_FIREBASE_*` web config is public
-and comes from `.env.example` at build time.
+_Generate new private key_). The `VITE_FIREBASE_*` web config and
+`RECAPTCHA_ENTERPRISE_SITE_KEY` are public but come from **Actions variables**, not from
+`.env.example` — see "Build env vars" above and the go-live checklist below. (This paragraph
+used to say the config "comes from `.env.example` at build time"; that stopped being true in
+PR #501, and believing it is how an all-placeholder bundle shipped unnoticed.)
 
 **Manual (`firebase login` first):**
 
