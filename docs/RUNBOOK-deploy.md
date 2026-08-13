@@ -113,13 +113,13 @@ config was placeholders — auth broken, and with it every billing callable.
    Create it by hand (or run `firebase deploy --only firestore:indexes` with an SA holding
    `roles/datastore.indexAdmin`), or `renewMoyasarSubscriptions` throws `FAILED_PRECONDITION`
    every run and nothing ever renews.
-5. **Register the webhook** in the Moyasar dashboard → `https://flygaca.com/api/moyasar-webhook`.
-   Note which verification scheme the dashboard offers: `verifyMoyasarSignature`
-   (`functions/src/billing-core.ts`) assumes a hex HMAC-SHA256 in `x-moyasar-signature`, and that
-   assumption has never been confirmed against a real delivery. If it is wrong, every delivery
-   400s and the async backstop is silently inert. `moyasarWebhook` logs
-   `moyasar_webhook_signature_failed` with the header/body **key names** on each rejection —
-   check that log after the first real delivery and correct the recipe if it disagrees.
+5. **Register the webhook** in the Moyasar dashboard → `https://flygaca.com/api/moyasar-webhook`,
+   and set its `shared_secret` to the same value as `MOYASAR_WEBHOOK_SECRET`. Moyasar posts that
+   secret back as a **`secret_token` field in the body**, which is what `verifyMoyasarWebhook`
+   (`functions/src/billing-core.ts`) checks. After the first real delivery, confirm the
+   `moyasar_webhook_authenticated` log names `secret_token`; if `moyasar_webhook_auth_failed`
+   appears instead, its **key names** (never values) show what actually arrived. See
+   `docs/BILLING.md` for the provisional HMAC fallback and when to delete it.
 6. **App Check** — `createCheckoutConfig` and `confirmPayment` set `enforceAppCheck: true`.
    Confirm `flygaca.com` is registered on the reCAPTCHA Enterprise key in
    `RECAPTCHA_ENTERPRISE_SITE_KEY`; a valid key for the wrong domain passes the build guard and

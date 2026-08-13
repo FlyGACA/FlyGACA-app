@@ -109,7 +109,23 @@ function mockRes() {
   return res;
 }
 
+/**
+ * A delivery shaped the way Moyasar actually sends one: the shared secret comes back
+ * as a `secret_token` field in the JSON body. Every test below routes through this, so
+ * the suite exercises the real-world payload rather than the HMAC recipe the handler
+ * used to assume (and which rejected every genuine delivery).
+ */
 function signedReq(paymentId: string) {
+  const payload = { type: "payment_paid", data: { id: paymentId }, secret_token: WEBHOOK_SECRET };
+  return {
+    headers: {},
+    rawBody: Buffer.from(JSON.stringify(payload)),
+    body: payload,
+  };
+}
+
+/** The provisional HMAC-header fallback, kept until production logs confirm which fires. */
+function hmacSignedReq(paymentId: string) {
   const body = JSON.stringify({ type: "payment_paid", data: { id: paymentId } });
   const sig = createHmac("sha256", WEBHOOK_SECRET).update(body).digest("hex");
   return {
@@ -139,8 +155,8 @@ beforeEach(() => {
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe("moyasarWebhook — signature verification", () => {
-  it("400s when the signature is missing or wrong", async () => {
+describe("moyasarWebhook — authentication", () => {
+  it("400s when neither a secret_token nor a valid signature is present", async () => {
     const res = mockRes();
     await invoke({ headers: {}, rawBody: Buffer.from("{}"), body: {} }, res);
     expect(res.status).toHaveBeenCalledWith(400);
@@ -151,6 +167,27 @@ describe("moyasarWebhook — signature verification", () => {
       res2,
     );
     expect(res2.status).toHaveBeenCalledWith(400);
+  });
+
+  it("400s on a wrong secret_token", async () => {
+    const payload = { type: "payment_paid", data: { id: "pay_1" }, secret_token: "not-the-secret" };
+    const res = mockRes();
+    await invoke(
+      { headers: {}, rawBody: Buffer.from(JSON.stringify(payload)), body: payload },
+      res,
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(h.stores.users).toBeUndefined();
+  });
+
+  it("accepts the HMAC-header fallback and fulfils normally", async () => {
+    h.stores.checkoutIntents = {
+      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
+    };
+    const res = mockRes();
+    await invoke(hmacSignedReq("pay_1"), res);
+    expect(res.json).toHaveBeenCalledWith({ received: true });
+    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
   });
 });
 

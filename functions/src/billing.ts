@@ -44,7 +44,7 @@ import {
   renewalBaseDate,
   renewalFailureOutcome,
   sellablePackId,
-  verifyMoyasarSignature,
+  verifyMoyasarWebhook,
   webhookPaymentId,
   SELLABLE_PACK_IDS,
   type Cadence,
@@ -634,27 +634,33 @@ export const moyasarWebhook = onRequest(
   async (req, res) => {
     const raw = (req as unknown as { rawBody?: Buffer }).rawBody?.toString("utf8") ?? "";
     const sig = req.headers["x-moyasar-signature"] as string | string[] | undefined;
-    if (!verifyMoyasarSignature(raw, sig, webhookSecret.value())) {
-      // The hex-HMAC-in-x-moyasar-signature recipe in billing-core was written without
-      // access to Moyasar's webhook docs and has never been confirmed against a real
-      // delivery — see the note on verifyMoyasarSignature and docs/BILLING.md. If the
-      // recipe is wrong, EVERY delivery 400s here and the async backstop is silently
-      // inert, which looks identical to "Moyasar isn't calling us". Log the shape of
-      // what actually arrived so one real delivery settles it: names only — no header
-      // values, no body values, nothing that could carry a signature or card data.
-      logger.error("moyasar_webhook_signature_failed", {
+    const body = req.body as
+      | { id?: string; data?: { id?: string }; secret_token?: unknown }
+      | undefined;
+
+    const mechanism = verifyMoyasarWebhook(body, raw, sig, webhookSecret.value());
+    if (!mechanism) {
+      // A rejection here is invisible from the outside — it looks exactly like
+      // "Moyasar isn't calling us" — and that is how the wrong HMAC recipe went
+      // unnoticed. Log the SHAPE of what arrived so a rejection stays diagnosable:
+      // names only, never values. `secret_token` is the shared secret in plaintext
+      // and headers can carry signatures, so neither may ever be logged.
+      logger.error("moyasar_webhook_auth_failed", {
         headerNames: Object.keys(req.headers).sort(),
-        bodyKeys:
-          req.body && typeof req.body === "object" ? Object.keys(req.body as object).sort() : [],
+        bodyKeys: body && typeof body === "object" ? Object.keys(body).sort() : [],
         hasSignatureHeader: sig !== undefined,
+        hasSecretTokenField: body?.secret_token !== undefined,
         rawBodyBytes: raw.length,
       });
-      res.status(400).send("Webhook signature verification failed");
+      res.status(400).send("Webhook authentication failed");
       return;
     }
+    // Which credential actually authenticated this delivery. `secret_token` is the
+    // documented mechanism; `signature` is the provisional HMAC fallback kept in
+    // billing-core. Once real traffic shows only one branch firing, delete the other.
+    logger.info("moyasar_webhook_authenticated", { mechanism });
 
     // Payload shape per Moyasar's payment-webhooks docs: `{ id, type, data: <payment> }`.
-    const body = req.body as { id?: string; data?: { id?: string } } | undefined;
     const paymentId = webhookPaymentId(body);
     if (!paymentId) {
       res.status(400).send("Missing payment id");

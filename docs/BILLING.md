@@ -212,15 +212,27 @@ variable, not a Secret-Manager secret (that's only `MOYASAR_SECRET_KEY` / `MOYAS
 
 **1. Create the webhook** — Moyasar dashboard → *Webhooks* → add `https://<host>/api/moyasar-webhook`,
 subscribed to `payment_paid` (and, if you want faster renewal-failure visibility, `payment_failed`).
-Set a `shared_secret` and copy it into `MOYASAR_WEBHOOK_SECRET`. **Verify the exact signature
-recipe against Moyasar's current webhook docs before relying on the webhook alone** —
-`verifyMoyasarSignature` in `functions/src/billing-core.ts` implements HMAC‑SHA256 over the raw
-body against the `x-moyasar-signature` header per the SDK docs available at authoring time, but
-`docs.moyasar.com` blocked automated fetches during this integration so it hasn't been checked
-against the live reference page. This is defense-in-depth only: `confirmPayment` (the callable,
-which fetches the payment server-to-server with the secret key) is the primary, trusted fulfilment
-path, so a wrong recipe here makes the webhook inert rather than insecure — purchases still
-fulfil on the redirect back through `/checkout`.
+Set a `shared_secret` and copy it into `MOYASAR_WEBHOOK_SECRET`.
+
+**How deliveries authenticate:** Moyasar posts the shared secret back as a **`secret_token` field
+in the JSON body**. `verifyMoyasarWebhook` in `functions/src/billing-core.ts` constant-time
+compares it against `MOYASAR_WEBHOOK_SECRET`.
+
+> This was wrong until 2026-08-13. The function previously implemented HMAC‑SHA256 over the raw
+> body against an `x-moyasar-signature` header — an assumption made while `docs.moyasar.com` was
+> unreachable — so **every genuine delivery was rejected with a 400 and the async backstop was
+> silently inert**. The HMAC check is retained as a *provisional* fallback so the endpoint does
+> not depend on the corrected reading being right a second time. Each accepted delivery logs
+> `moyasar_webhook_authenticated` with the mechanism that matched (`secret_token` or `signature`);
+> once real traffic shows only one branch firing, delete the other. A rejected delivery logs
+> `moyasar_webhook_auth_failed` with the header and body **key names only** — never values,
+> because `secret_token` is the shared secret in plaintext.
+
+This layer is defense-in-depth: `confirmPayment` (the callable, which fetches the payment
+server-to-server with the secret key) is the primary, trusted fulfilment path, so a rejection here
+costs the backstop rather than correctness — purchases still fulfil on the redirect back through
+`/checkout`. The backstop is what covers the buyer who closes the tab or loses connectivity
+mid-redirect, so leaving it broken means a slow trickle of paid-but-ungranted accounts.
 
 **2. Apple Pay** — **off by default.** `MOYASAR_APPLE_PAY` (a `defineBoolean` in `billing.ts`,
 set to `false` in `functions/.env.flygaca-app`) keeps `applepay` out of the one-time-purchase
@@ -314,8 +326,8 @@ exhausting `MAX_RENEWAL_ATTEMPTS` (simulate with an expired/invalid token) flips
 ## Tests
 
 `cd functions && npm test` runs the pure `billing-core` unit tests (SAR→halalas pricing,
-cadence/renewal math, signature verification, entitlement derivation) and the `moyasarWebhook`
-wiring tests (signature check, idempotency, fulfilment-by-kind, the amount/currency cross-check
+cadence/renewal math, webhook authentication, entitlement derivation) and the `moyasarWebhook`
+wiring tests (auth check, idempotency, fulfilment-by-kind, the amount/currency cross-check
 against the stored `checkoutIntent`). `createCheckoutConfig`/`confirmPayment`/`cancelAutoRenew`
 (thin `onCall` wrappers over the same tested logic) and the live Moyasar flow can only be
 exercised against a configured project (not in CI / the sandbox) — see the checklists above.
