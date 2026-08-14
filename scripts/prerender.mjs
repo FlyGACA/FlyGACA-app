@@ -18,14 +18,14 @@
  * Route set mirrors scripts/build-sitemap.mjs: static router paths + guide slugs
  * (always), plus every enumerable dynamic route the sitemap indexes — the library
  * reader corpus (GACAR parts / reference / handbook), aerodrome detail pages and
- * prep-pack pages — up to PRERENDER_MAX snapshots (default 560, sized to the full
+ * prep-pack pages — up to PRERENDER_MAX snapshots (default 850, sized to the full
  * sitemap plus headroom; 0 = everything). If the cap ever trims routes, the
  * deploy-time gate (scripts/check-prerender-coverage.mjs) fails the deploy —
  * a sitemap URL without body content is invisible to non-JS AI crawlers.
  * (always), Arabic twins of those finite routes under /ar, plus every enumerable
  * dynamic route the sitemap indexes — the library reader corpus (GACAR parts /
  * reference / handbook), aerodrome detail pages and prep-pack pages — up to
- * PRERENDER_MAX snapshots (default 560, sized to the current sitemap plus
+ * PRERENDER_MAX snapshots (default 850, sized to the current sitemap plus
  * headroom; 0 = everything). Any coverage gap stays non-fatal here but warns
  * loudly; the deploy-time gate (scripts/check-prerender-coverage.mjs) is what
  * turns head-only or missing sitemap URLs into a failed deploy.
@@ -97,7 +97,9 @@ for (const [seg, file] of [
 for (const d of readJson('public/data/aerodromes-index.json').documents)
   corpus.push(`/tools/aerodromes/${d.icao}`);
 // LIVE packs only — `soon` packs have no detail route (see build-sitemap.mjs).
-for (const m of read('src/lib/prepCatalog.ts').matchAll(/\bid:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'/g))
+for (const m of read('src/lib/prepCatalog.ts').matchAll(
+  /\bid:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'/g,
+))
   if (m[2] === 'live') corpus.push(`/study/packs/${m[1]}`);
 
 // Cap total snapshots so the build stays bounded; base routes are never dropped,
@@ -107,7 +109,7 @@ for (const m of read('src/lib/prepCatalog.ts').matchAll(/\bid:\s*'([^']+)'[\s\S]
 // the cap only trims the corpus tail. A trim warns loudly here (and becomes a
 // fatal deploy failure once check-prerender-coverage runs), so raise
 // PRERENDER_MAX or set it to 0 to prerender the whole corpus.
-const MAX = Number(process.env.PRERENDER_MAX ?? 560);
+const MAX = Number(process.env.PRERENDER_MAX ?? 850);
 const baseList = [...baseRoutes];
 const budget = MAX === 0 ? corpus.length : Math.max(0, MAX - baseList.length);
 const corpusIncluded = corpus.slice(0, budget);
@@ -207,17 +209,33 @@ try {
   // *different* route each run (ar/tools/vfr-minima, ar/library/part-138), the
   // signature of a race rather than a broken page. Waiting for the language to
   // land removes the race at its source.
+  // Heavy corpus pages (a large block of injected regulation HTML — e.g.
+  // /ar/library/part-77) can miss the readiness waits on a slow CI runner, which
+  // would leave the route head-only and — with the deploy coverage gate now strict
+  // again — fail the deploy. Two defences: generous ceilings (they only elapse on a
+  // genuinely stuck page; a healthy page resolves the moment its <footer> + lang
+  // land, so a higher ceiling costs fast pages nothing), and a single fresh
+  // re-navigation, which clears the occasional transient networkidle/hydration
+  // stall that a reload fixes.
   async function snapshot(url, file, lang = 'en') {
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-    await page.waitForSelector('footer', { timeout: 15000 });
-    await page.waitForFunction(
-      (want) => {
-        const el = document.documentElement;
-        return el.lang === want && (want !== 'ar' || el.dir === 'rtl');
-      },
-      lang,
-      { timeout: 15000 },
-    );
+    for (let attempt = 1; ; attempt++) {
+      try {
+        await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
+        await page.waitForSelector('footer', { timeout: 30000 });
+        await page.waitForFunction(
+          (want) => {
+            const el = document.documentElement;
+            return el.lang === want && (want !== 'ar' || el.dir === 'rtl');
+          },
+          lang,
+          { timeout: 30000 },
+        );
+        break;
+      } catch (err) {
+        if (attempt >= 2) throw err;
+        console.warn(`  prerender: retry ${url} — ${err.message}`);
+      }
+    }
     const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, html);
