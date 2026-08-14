@@ -89,12 +89,10 @@ export function useSignInForm(): SignInForm {
 
   const toggleMode = () => {
     setAnimating(true);
+    const nextMode: 'in' | 'up' = mode === 'in' ? 'up' : 'in';
     setTimeout(() => {
-      setMode((m) => {
-        const nextMode = m === 'in' ? 'up' : 'in';
-        updateModeInUrl(nextMode);
-        return nextMode;
-      });
+      setMode(nextMode);
+      updateModeInUrl(nextMode);
       setErrors({});
       setNotice('');
       loginForm.resetForm();
