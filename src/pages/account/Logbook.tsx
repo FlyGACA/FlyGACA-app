@@ -49,6 +49,7 @@ function Inner() {
   const isPro = uiIsPro(entitlement);
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showImportHelp, setShowImportHelp] = useState(false);
   const [params, setParams] = useSearchParams();
   const printMode = params.get('print') === '1';
 
@@ -242,6 +243,9 @@ function Inner() {
         <button type="button" className={styles.btn} onClick={() => fileRef.current?.click()}>
           {t('account.importCsv')}
         </button>
+        <button type="button" className={styles.btn} onClick={() => setShowImportHelp(true)}>
+          {t('account.importHelp')}
+        </button>
         <input
           ref={fileRef}
           type="file"
@@ -274,6 +278,23 @@ function Inner() {
         </p>
       )}
       {flights.length > 0 && !isPro && <p className={styles.note}>{t('account.csvProNote')}</p>}
+
+      {showImportHelp && (
+        <div className={styles.modalOverlay} onClick={() => setShowImportHelp(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <h2>{t('account.importHelpTitle')}</h2>
+            <p>{t('account.importHelpText')}</p>
+            <div className={styles.modalActions}>
+              <a href="/flygaca-logbook-template.csv" download className={`${styles.btn} ${styles.btnPrimary}`}>
+                {t('account.downloadSampleCsv')}
+              </a>
+              <button type="button" className={styles.btn} onClick={() => setShowImportHelp(false)}>
+                {t('common.close')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {adding && (
         <FlightForm

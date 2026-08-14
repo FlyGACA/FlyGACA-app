@@ -1909,6 +1909,11 @@
     "classChip": "Class {{c}}"
   },
   "metBrief": {
+    "vfrRoute": "VFR route",
+    "mvfrRoute": "MVFR conditions along route",
+    "ifrRoute": "IFR conditions along route",
+    "lifrRoute": "LIFR conditions along route",
+    "fetching": "Fetching route weather...",
     "routeLabel": "Route (ICAO codes)",
     "routeHint": "Space-separated aerodromes, e.g. OERK OEJN OEDF",
     "empty": "Enter a route to build the briefing.",
@@ -2240,7 +2245,14 @@
     "title": "The GACAR, as a constellation",
     "subtitle": "Every Part is a star in its domain's sector, sized by how often other Parts cite it — and the lines are the corpus's real cross-references. Hover to name a Part, click to open it.",
     "hint": "Hover to explore · click a star to open the Part",
-    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list."
+    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list.",
+    "filters": {
+      "all": "All Parts / جميع اللوائح",
+      "licensing": "Licensing & Medical (Part 61, 67)",
+      "operations": "Operations & VFR/IFR (Part 91, 107)",
+      "commercial": "Commercial & Airlines (Part 119, 121, 135)",
+      "schools": "Approved Schools & ATOs (Part 141, 142)"
+    }
   },
   "hud": {
     "badge": "Training scenario · SIM data",
@@ -2650,6 +2662,10 @@
     "totalHours": "Total hours",
     "flightsLogged": "{{n}} flights logged",
     "logbook": "Logbook",
+    "downloadSampleCsv": "Download Sample CSV",
+    "importHelp": "Import Help",
+    "importHelpTitle": "Logbook Import Guide",
+    "importHelpText": "Your CSV file should include standard columns like Date, Aircraft, Flight Time, Landings, and Remarks. For pilots migrating from ForeFlight, Garmin Pilot, or paper logbooks, downloading the sample CSV and matching its format is recommended.",
     "addFlight": "Add flight",
     "flightDetails": "Flight details",
     "date": "Date",
