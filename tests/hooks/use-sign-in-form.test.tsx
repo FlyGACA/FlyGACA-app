@@ -131,6 +131,11 @@ describe('useSignInForm', () => {
     vi.useRealTimers();
   });
 
+  it('initializes in sign-up mode from the URL query', () => {
+    const { result } = renderFormHook(['/account?mode=up']);
+    expect(result.current.mode).toBe('up');
+  });
+
   it('forgotPassword needs an email first, then sends the reset', async () => {
     const { result } = renderFormHook();
 

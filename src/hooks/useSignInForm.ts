@@ -7,7 +7,7 @@
  * (`authError`, `emailShape`, `passwordPolicy`); the auth side effects stay in
  * `@/lib/services/auth`.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
 import {
@@ -54,11 +54,15 @@ export interface SignInForm {
   runApple: () => void;
 }
 
+function modeFromSearchParams(searchParams: URLSearchParams): 'in' | 'up' {
+  return searchParams.get('mode') === 'up' ? 'up' : 'in';
+}
+
 export function useSignInForm(): SignInForm {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [mode, setMode] = useState<'in' | 'up'>(() => modeFromSearchParams(searchParams));
   const [animating, setAnimating] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
@@ -68,10 +72,29 @@ export function useSignInForm(): SignInForm {
   // site, so we surface a real click-through link on the error alert.
   const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
+  useEffect(() => {
+    const urlMode = modeFromSearchParams(searchParams);
+    setMode((current) => (current === urlMode ? current : urlMode));
+  }, [searchParams]);
+
+  function updateModeInUrl(nextMode: 'in' | 'up') {
+    const nextParams = new URLSearchParams(searchParams);
+    if (nextMode === 'up') {
+      nextParams.set('mode', 'up');
+    } else {
+      nextParams.delete('mode');
+    }
+    setSearchParams(nextParams, { replace: true });
+  }
+
   const toggleMode = () => {
     setAnimating(true);
     setTimeout(() => {
-      setMode((m) => (m === 'in' ? 'up' : 'in'));
+      setMode((m) => {
+        const nextMode = m === 'in' ? 'up' : 'in';
+        updateModeInUrl(nextMode);
+        return nextMode;
+      });
       setErrors({});
       setNotice('');
       loginForm.resetForm();
