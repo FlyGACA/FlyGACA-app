@@ -131,7 +131,7 @@ describe('useSignInForm', () => {
     vi.useRealTimers();
   });
 
-  it('initializes mode=up from URL search params', () => {
+  it('initializes in sign-up mode from the URL query', () => {
     const { result } = renderFormHook(['/account?mode=up']);
     expect(result.current.mode).toBe('up');
   });
