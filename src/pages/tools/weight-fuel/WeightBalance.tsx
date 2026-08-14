@@ -6,6 +6,7 @@ import { fmtInt } from '@/components/calc/format';
 import { OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { cgEnvelopeStatus, percentMac, weightBalance } from '@/calc/weightBalance';
+import { calculateFuelWeightPoints } from '@/calc/pilot/fuel-weight';
 import { CgEnvelope } from './CgEnvelope';
 import styles from './WeightBalance.module.css';
 
@@ -24,6 +25,8 @@ export function WeightBalance() {
     ba: '',
     uw: '',
     ua: '',
+    taxiFuel: '',
+    tripFuel: '',
     lemac: '',
     mac: '',
     cgFwd: '',
@@ -46,6 +49,18 @@ export function WeightBalance() {
   const limits = { cgFwd: nums.cgFwd, cgAft: nums.cgAft, mtow: nums.mtow };
   const status = r != null ? cgEnvelopeStatus(r.weight, r.cg, limits) : 'unknown';
 
+  const fuelPoints = calculateFuelWeightPoints({
+    zeroFuelStations: stations.slice(0, 4), // exclude fuelStation
+    fuelArm: nums.ua,
+    totalFuel: nums.uw,
+    taxiFuel: nums.taxiFuel,
+    tripFuel: nums.tripFuel,
+  });
+
+  const getStatus = (weight: number, cg: number) => cgEnvelopeStatus(weight, cg, limits);
+  const allIn = [fuelPoints.zfw, fuelPoints.ramp, fuelPoints.tow, fuelPoints.ldw].every(p => !p || getStatus(p.weight, p.cg) !== 'out');
+  const overallStatus = allIn ? (status === 'in' ? 'in' : 'unknown') : 'out';
+
   return (
     <CalcShell
       title={t('tools.items.weight-balance.name')}
@@ -61,6 +76,8 @@ export function WeightBalance() {
         set('ba', '48');
         set('uw', '160');
         set('ua', '48');
+        set('taxiFuel', '10');
+        set('tripFuel', '50');
         set('lemac', '35');
         set('mac', '5');
         set('cgFwd', '35');
@@ -90,6 +107,22 @@ export function WeightBalance() {
             />
           </div>
         ))}
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>{t('weightBalance.taxiFuel')}</span>
+          <NumberField
+            label={t('weightBalance.weight')}
+            value={inputs.taxiFuel}
+            onChange={(v) => set('taxiFuel', v)}
+          />
+        </div>
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>{t('weightBalance.tripFuel')}</span>
+          <NumberField
+            label={t('weightBalance.weight')}
+            value={inputs.tripFuel}
+            onChange={(v) => set('tripFuel', v)}
+          />
+        </div>
         <div className={styles.row}>
           <span className={styles.rowLabel} />
           <NumberField
@@ -139,19 +172,18 @@ export function WeightBalance() {
         />
         <ResultStat
           label={t('weightBalance.envelopeStatus')}
-          value={t(`weightBalance.envelope.${status}`)}
-          tone={status === 'in' ? 'good' : status === 'out' ? 'bad' : undefined}
+          value={t(`weightBalance.envelope.${overallStatus}`)}
+          tone={overallStatus === 'in' ? 'good' : overallStatus === 'out' ? 'bad' : undefined}
         />
       </OutputGrid>
 
       {r != null && (
         <CgEnvelope
-          weight={r.weight}
-          cg={r.cg}
+          points={fuelPoints}
           cgFwd={nums.cgFwd}
           cgAft={nums.cgAft}
           mtow={nums.mtow}
-          status={status}
+          limits={limits}
         />
       )}
     </CalcShell>

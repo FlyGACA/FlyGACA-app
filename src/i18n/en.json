@@ -1339,6 +1339,12 @@
     "rear": "Rear seats",
     "baggage": "Baggage",
     "fuelStation": "Fuel",
+    "taxiFuel": "Taxi fuel",
+    "tripFuel": "Trip fuel",
+    "zfw": "Zero Fuel Weight",
+    "rampWeight": "Ramp Weight",
+    "tow": "Takeoff Weight",
+    "ldw": "Landing Weight",
     "limits": "Envelope limits",
     "cgFwd": "Fwd CG limit",
     "cgAft": "Aft CG limit",
@@ -1843,6 +1849,14 @@
       "gcc": "GCC",
       "mena": "MENA",
       "world": "World"
+    },
+    "filterFuelAll": "All Fuel",
+    "filterFuelJetA1": "JET A-1",
+    "filterFuelAvgas": "AVGAS 100LL",
+    "facilityType": {
+      "International": "International 🌐",
+      "Domestic": "Domestic ✈️",
+      "Military": "Military 🎖️"
     },
     "viewMap": "View on map",
     "loadMore": "Load more",

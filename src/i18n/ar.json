@@ -1352,6 +1352,12 @@
     "rear": "المقاعد الخلفية",
     "baggage": "الأمتعة",
     "fuelStation": "الوقود",
+    "taxiFuel": "وقود التدرج",
+    "tripFuel": "وقود الرحلة",
+    "zfw": "الوزن بدون وقود (ZFW)",
+    "rampWeight": "وزن المواقف (Ramp)",
+    "tow": "وزن الإقلاع (TOW)",
+    "ldw": "وزن الهبوط (LDW)",
     "limits": "حدود المظروف",
     "cgFwd": "الحد الأمامي لمركز الثقل",
     "cgAft": "الحد الخلفي لمركز الثقل",
@@ -1856,6 +1862,14 @@
       "gcc": "الخليج",
       "mena": "الشرق الأوسط",
       "world": "العالم"
+    },
+    "filterFuelAll": "جميع أنواع الوقود",
+    "filterFuelJetA1": "JET A-1",
+    "filterFuelAvgas": "AVGAS 100LL",
+    "facilityType": {
+      "International": "دولي 🌐",
+      "Domestic": "محلي ✈️",
+      "Military": "عسكري 🎖️"
     },
     "viewMap": "عرض على الخريطة",
     "loadMore": "تحميل المزيد",
