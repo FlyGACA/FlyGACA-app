@@ -44,7 +44,7 @@ export interface SignInForm {
   notice: string;
   /** Set when auth fails because this (mirror/preview) host isn't authorized. */
   mainSiteHref: string | null;
-  toggleMode: () => void;
+  toggleMode: (targetMode?: 'in' | 'up') => void;
   forgotPassword: () => void;
   loginForm: LoginForm;
   signupForm: SignupForm;
@@ -57,8 +57,9 @@ export interface SignInForm {
 export function useSignInForm(): SignInForm {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlMode = searchParams.get('mode') === 'up' ? 'up' : 'in';
+  const [mode, setMode] = useState<'in' | 'up'>(urlMode);
   const [animating, setAnimating] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
@@ -68,10 +69,18 @@ export function useSignInForm(): SignInForm {
   // site, so we surface a real click-through link on the error alert.
   const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
-  const toggleMode = () => {
+  const toggleMode = (targetMode?: 'in' | 'up') => {
+    const next = targetMode ?? (mode === 'in' ? 'up' : 'in');
     setAnimating(true);
     setTimeout(() => {
-      setMode((m) => (m === 'in' ? 'up' : 'in'));
+      setMode(next);
+      const nextParams = new URLSearchParams(searchParams);
+      if (next === 'up') {
+        nextParams.set('mode', 'up');
+      } else {
+        nextParams.delete('mode');
+      }
+      setSearchParams(nextParams, { replace: false });
       setErrors({});
       setNotice('');
       loginForm.resetForm();
