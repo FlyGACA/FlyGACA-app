@@ -4020,7 +4020,12 @@
       "oejnPrompt": "Act as Jeddah Tower (OEJN). I am Flynas 456, an A320, holding short of Runway 34L. Clear me for takeoff with realistic wind and departure instructions. Evaluate my readback.",
       "oedfTitle": "Dammam Radar (OEDF)",
       "oedfPrompt": "Act as Dammam Radar (OEDF). I am Aramco 789, a B737, level at FL240. Give me a realistic reroute due to weather ahead. I will read back."
-    }
+    },
+    "filterAll": "All Decks",
+    "filterPart61": "Part 61 (Licensing)",
+    "filterPart91": "Part 91 (Operating Rules)",
+    "filterPart121_135": "Part 121 / 135 (Commercial)",
+    "filterSaelpt": "SAELPT (Aviation English)"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
