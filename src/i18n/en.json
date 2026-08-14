@@ -2391,7 +2391,8 @@
     "roles": {
       "pilot": "Pilot",
       "student": "Student pilot",
-      "instructor": "Flight instructor"
+      "instructor": "Flight instructor",
+      "dispatcher": "Flight Dispatcher"
     },
     "errors": {
       "invalidEmail": "Enter a valid email address.",
@@ -4304,7 +4305,8 @@
       "dismiss": "Dismiss",
       "pilotDesc": "Hours, currency and operational lookups up front.",
       "studentDesc": "Study streaks, practice exams and reading first.",
-      "instructorDesc": "Your records, references and teaching material first."
+      "instructorDesc": "Your records, references and teaching material first.",
+      "dispatcherDesc": "Weather briefings and GACAR 121/135 regulations first."
     },
     "actions": {
       "addFlight": "Log a flight",

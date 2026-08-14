@@ -9,7 +9,7 @@ import {
 
 describe('dashboardOrder', () => {
   it('covers every widget exactly once for every role', () => {
-    for (const role of ['pilot', 'student', 'instructor', '', 'legacy-value']) {
+    for (const role of ['pilot', 'student', 'instructor', 'dispatcher', '', 'legacy-value']) {
       const order = dashboardOrder(role);
       expect([...order].sort()).toEqual([...ALL_WIDGETS].sort());
       expect(new Set(order).size).toBe(order.length);
@@ -20,6 +20,7 @@ describe('dashboardOrder', () => {
     expect(dashboardOrder('student')[0]).toBe('study');
     expect(dashboardOrder('pilot')[0]).toBe('numbers');
     expect(dashboardOrder('instructor')[0]).toBe('currency');
+    expect(dashboardOrder('dispatcher')[0]).toBe('tools');
   });
 
   it('falls back to the pilot order for unset or unknown roles', () => {
@@ -28,7 +29,7 @@ describe('dashboardOrder', () => {
   });
 
   it('never buries currency below engagement widgets (risk hierarchy)', () => {
-    for (const role of ['pilot', 'student', 'instructor', '']) {
+    for (const role of ['pilot', 'student', 'instructor', 'dispatcher', '']) {
       const order = dashboardOrder(role);
       expect(order.indexOf('currency')).toBeLessThan(order.indexOf('achievements'));
       expect(order.indexOf('currency')).toBeLessThan(order.indexOf('adel'));
