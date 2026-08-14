@@ -345,6 +345,7 @@ const mainRoutes = [
       { path: 'study/packs', element: <Packs /> },
       { path: 'study/packs/:id', element: <PackDetail /> },
       { path: 'study/sheets', element: <StudySheets /> },
+      { path: 'signup', element: <Navigate to="/account?mode=up" replace /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'currency', element: <Currency /> },
