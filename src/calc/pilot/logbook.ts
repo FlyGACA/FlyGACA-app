@@ -18,7 +18,7 @@ export interface LogbookSummary {
   landings: number;
   flightCount: number;
   /** Rolling totals over the trailing 90 days. */
-  last90: { hours: number; landings: number; flightCount: number };
+  last90: { hours: number; landings: number; nightLandings: number; flightCount: number };
   /** The `recentN` most recent flights (input is already newest-first). */
   recent: Flight[];
 }
@@ -43,6 +43,7 @@ export function summarizeLogbook(
     last90: {
       hours: sum(within, 'total'),
       landings: sum(within, 'ldg'),
+      nightLandings: sum(within, 'nightLdg'),
       flightCount: within.length,
     },
     recent: flights.slice(0, recentN),

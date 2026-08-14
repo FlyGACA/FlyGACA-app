@@ -233,7 +233,7 @@ describe('account store — role', () => {
 
   it('isUserRole accepts known roles and rejects everything else', async () => {
     const acct = await freshStore();
-    expect(acct.USER_ROLES).toEqual(['pilot', 'student', 'instructor']);
+    expect(acct.USER_ROLES).toEqual(['pilot', 'student', 'instructor', 'dispatcher']);
     expect(acct.isUserRole('pilot')).toBe(true);
     expect(acct.isUserRole('')).toBe(false);
     expect(acct.isUserRole('captain')).toBe(false);

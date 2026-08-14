@@ -35,9 +35,7 @@ describe('<Flashcards /> interaction', () => {
     const user = userEvent.setup();
     renderWithRouter(<Flashcards />);
 
-    await user.click(await screen.findByRole('button', { name: /Card Bank/ }));
-
-    // The card front shows the prompt; the answer is hidden until flipped.
+    // The card front shows the prompt immediately because the filtered deck runs right away.
     expect(await screen.findByText('What is 2+2?')).toBeInTheDocument();
     const flip = screen.getByRole('button', { name: 'Reveal answer' });
     await user.click(flip);

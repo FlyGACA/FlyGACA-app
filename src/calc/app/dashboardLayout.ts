@@ -68,6 +68,21 @@ export function dashboardOrder(role: string): WidgetId[] {
         'offline',
         'achievements',
       ];
+    case 'dispatcher':
+      // Flight dispatch & weather briefing tools first, then regulations and updates.
+      return [
+        'tools',
+        'bookmarks',
+        'updates',
+        'currency',
+        'adel',
+        'numbers',
+        'logbook',
+        'trend',
+        'study',
+        'offline',
+        'achievements',
+      ];
     default:
       // Pilot (and legacy/unset roles): operational numbers and currency lead.
       return [
@@ -131,6 +146,13 @@ export function quickActionsFor(role: string): QuickAction[] {
         { labelKey: 'dashboard.actions.records', to: '/records' },
         { labelKey: 'dashboard.actions.study', to: '/study' },
         { labelKey: 'dashboard.actions.tools', to: '/tools' },
+      ];
+    case 'dispatcher':
+      return [
+        ...base,
+        { labelKey: 'dashboard.actions.tools', to: '/tools' },
+        { labelKey: 'dashboard.actions.library', to: '/library' },
+        { labelKey: 'dashboard.actions.updates', to: '/updates' },
       ];
     default:
       return [

@@ -1,5 +1,5 @@
 import { lazy, type ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router';
 import { Layout } from './app/Layout';
 import { FlavorRoot } from './app/flavor/FlavorRoot';
 import { Home } from './pages/Home/Home';
@@ -217,6 +217,14 @@ const FlavorSettings = lazyNamed(() => import('./app/flavor/FlavorSettings'), 'F
 const basename =
   typeof window !== 'undefined' && isArabicPath(window.location.pathname) ? AR_PREFIX : undefined;
 
+/** Redirect /signup to /account?mode=up, preserving any other search params. */
+function SignupRedirect() {
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  params.set('mode', 'up');
+  return <Navigate to={`/account?${params.toString()}`} replace />;
+}
+
 /**
  * Route table for a standalone prep app: the pack dashboard is home, plus the
  * shared study runners (their data is already sliced to the pack by
@@ -345,7 +353,7 @@ const mainRoutes = [
       { path: 'study/packs', element: <Packs /> },
       { path: 'study/packs/:id', element: <PackDetail /> },
       { path: 'study/sheets', element: <StudySheets /> },
-      { path: 'signup', element: <Navigate to="/account?mode=up" replace /> },
+      { path: 'signup', element: <SignupRedirect /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'currency', element: <Currency /> },

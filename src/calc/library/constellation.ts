@@ -39,6 +39,31 @@ export interface ConstellationLayout {
   edges: ConstellationEdge[];
 }
 
+export type ConstellationFilter = 'all' | 'licensing' | 'operations' | 'commercial' | 'schools';
+
+export const CONSTELLATION_FILTERS: Record<Exclude<ConstellationFilter, 'all'>, Set<number>> = {
+  licensing: new Set([61, 67]),
+  operations: new Set([91, 107]),
+  commercial: new Set([119, 121, 135]),
+  schools: new Set([141, 142]),
+};
+
+export function filterConstellation(
+  layout: ConstellationLayout,
+  filter: ConstellationFilter
+): ConstellationLayout {
+  if (filter === 'all') return layout;
+  const allowedParts = CONSTELLATION_FILTERS[filter];
+  const allowedSlugs = new Set(
+    layout.nodes.filter((n) => allowedParts.has(parseInt(n.part, 10))).map((n) => n.slug)
+  );
+
+  return {
+    nodes: layout.nodes.filter((n) => allowedSlugs.has(n.slug)),
+    edges: layout.edges.filter((e) => allowedSlugs.has(e.from) && allowedSlugs.has(e.to)),
+  };
+}
+
 const GOLDEN = 0.61803;
 
 export function buildConstellation(parts: readonly ConstellationPart[]): ConstellationLayout {

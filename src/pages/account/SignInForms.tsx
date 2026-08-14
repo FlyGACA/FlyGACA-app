@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link, useSearchParams } from 'react-router';
 import { TextField } from '@/components/calc/TextField';
 import { Alert } from '@/components/Alert';
 import { Button } from '@/components/ui/Button';
@@ -12,8 +13,20 @@ import { SignInFormBody } from './SignInFormBody';
 import { SignUpFormBody } from './SignUpFormBody';
 import styles from './AccountPage.module.css';
 
+function buildModeUrl(searchParams: URLSearchParams, targetMode: 'in' | 'up'): string {
+  const p = new URLSearchParams(searchParams);
+  if (targetMode === 'up') {
+    p.set('mode', 'up');
+  } else {
+    p.delete('mode');
+  }
+  const str = p.toString();
+  return str ? `/account?${str}` : '/account';
+}
+
 export function FirebaseSignIn() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const {
     mode,
     animating,
@@ -48,31 +61,40 @@ export function FirebaseSignIn() {
     </Alert>
   ) : null;
 
+  const targetMode = mode === 'in' ? 'up' : 'in';
+  const targetUrl = buildModeUrl(searchParams, targetMode);
+
   return (
     <>
       <div role="tablist" aria-label={t('account.signInTitle')} className={styles.modeTabs}>
-        <button
-          type="button"
+        <Link
+          to={buildModeUrl(searchParams, 'in')}
           role="tab"
           aria-selected={mode === 'in'}
           className={`${styles.modeTab} ${mode === 'in' ? styles.modeTabActive : ''}`}
-          onClick={() => {
-            if (mode !== 'in') toggleMode();
+          onClick={(e) => {
+            if (mode !== 'in') {
+              e.preventDefault();
+              toggleMode('in');
+            }
           }}
         >
           {t('account.signIn')}
-        </button>
-        <button
-          type="button"
+        </Link>
+        <Link
+          to={buildModeUrl(searchParams, 'up')}
           role="tab"
           aria-selected={mode === 'up'}
           className={`${styles.modeTab} ${mode === 'up' ? styles.modeTabActive : ''}`}
-          onClick={() => {
-            if (mode !== 'up') toggleMode();
+          onClick={(e) => {
+            if (mode !== 'up') {
+              e.preventDefault();
+              toggleMode('up');
+            }
           }}
         >
           {t('account.register')}
-        </button>
+        </Link>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -108,9 +130,16 @@ export function FirebaseSignIn() {
       </div>
 
       <div className={styles.signInLinks}>
-        <button type="button" className={styles.linkBtn} onClick={toggleMode}>
+        <Link
+          to={targetUrl}
+          className={styles.linkBtn}
+          onClick={(e) => {
+            e.preventDefault();
+            toggleMode();
+          }}
+        >
           {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
-        </button>
+        </Link>
         {mode === 'in' && (
           <button type="button" className={styles.linkBtn} disabled={busy} onClick={forgotPassword}>
             {t('account.forgotPassword')}

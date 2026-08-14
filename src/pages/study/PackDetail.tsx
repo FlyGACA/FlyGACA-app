@@ -235,6 +235,7 @@ export function PackDetail({ fixedId, standalone = false }: PackDetailProps) {
         modules={modules}
         readingPaths={readingPaths}
         sheets={sheets}
+        scenarios={pack2.scenarios}
       />
 
       <div className={styles.footnote}>
