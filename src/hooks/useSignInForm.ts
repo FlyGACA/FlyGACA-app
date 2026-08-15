@@ -7,7 +7,7 @@
  * (`authError`, `emailShape`, `passwordPolicy`); the auth side effects stay in
  * `@/lib/services/auth`.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
 import {
@@ -54,19 +54,11 @@ export interface SignInForm {
   runApple: () => void;
 }
 
-function modeFromSearchParams(searchParams: URLSearchParams): 'in' | 'up' {
-  return searchParams.get('mode') === 'up' ? 'up' : 'in';
-}
-
 export function useSignInForm(): SignInForm {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchParamsRef = useRef(searchParams);
-  useEffect(() => {
-    searchParamsRef.current = searchParams;
-  });
-  const [mode, setMode] = useState<'in' | 'up'>(() => modeFromSearchParams(searchParams));
+  const mode: 'in' | 'up' = searchParams.get('mode') === 'up' ? 'up' : 'in';
   const [animating, setAnimating] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
@@ -76,39 +68,21 @@ export function useSignInForm(): SignInForm {
   // site, so we surface a real click-through link on the error alert.
   const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
-  useEffect(() => {
-    const urlMode = modeFromSearchParams(searchParams);
-    setMode((current) => (current === urlMode ? current : urlMode));
-  }, [searchParams]);
-
-  function updateModeInUrl(nextMode: 'in' | 'up') {
-    const nextParams = new URLSearchParams(searchParamsRef.current);
+  const toggleMode = (targetMode?: 'in' | 'up') => {
+    setAnimating(true);
+    const nextMode = targetMode ?? (mode === 'in' ? 'up' : 'in');
+    const nextParams = new URLSearchParams(searchParams);
     if (nextMode === 'up') {
       nextParams.set('mode', 'up');
     } else {
       nextParams.delete('mode');
     }
     setSearchParams(nextParams, { replace: true });
-  }
-
-  const toggleMode = (targetMode?: 'in' | 'up') => {
-    setAnimating(true);
-    setTimeout(() => {
-      // Use the ref (always current) rather than the captured `searchParams`
-      // to avoid stale values when toggleMode is called multiple times quickly.
-      const latestParams = searchParamsRef.current;
-      const currentMode = modeFromSearchParams(latestParams);
-      const nextMode = targetMode ?? (currentMode === 'in' ? 'up' : 'in');
-      setMode(nextMode);
-      updateModeInUrl(nextMode);
-      setErrors({});
-      setNotice('');
-      loginForm.resetForm();
-      signupForm.resetForm();
-    }, 200);
-    setTimeout(() => {
-      setAnimating(false);
-    }, 400);
+    setErrors({});
+    setNotice('');
+    loginForm.resetForm();
+    signupForm.resetForm();
+    setTimeout(() => setAnimating(false), 200);
   };
 
   async function run(
