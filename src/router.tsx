@@ -170,6 +170,7 @@ const Flashcards = lazyNamed(() => import('./pages/study/Flashcards'), 'Flashcar
 const GroundSchool = lazyNamed(() => import('./pages/study/GroundSchool'), 'GroundSchool');
 const MockExam = lazyNamed(() => import('./pages/study/MockExam'), 'MockExam');
 const Paths = lazyNamed(() => import('./pages/study/Paths'), 'Paths');
+const Pathways = lazyNamed(() => import('./pages/study/Pathways'), 'Pathways');
 const Packs = lazyNamed(() => import('./pages/study/Packs'), 'Packs');
 const PackDetail = lazyNamed(
   () => import('./pages/study/PackDetail'),
@@ -244,6 +245,7 @@ const flavorRoutes = [
       { path: 'study/groundschool', element: <GroundSchool /> },
       { path: 'study/exam', element: <MockExam /> },
       { path: 'study/paths', element: <Paths /> },
+      { path: 'study/pathways', element: <Pathways /> },
       { path: 'study/sheets', element: <StudySheets /> },
       // In-app links from the shared runners point at the pack's storefront
       // routes; in a single-pack app both collapse onto the dashboard.
@@ -350,6 +352,7 @@ const mainRoutes = [
       { path: 'study/groundschool', element: <GroundSchool /> },
       { path: 'study/exam', element: <MockExam /> },
       { path: 'study/paths', element: <Paths /> },
+      { path: 'study/pathways', element: <Pathways /> },
       { path: 'study/packs', element: <Packs /> },
       { path: 'study/packs/:id', element: <PackDetail /> },
       { path: 'study/sheets', element: <StudySheets /> },

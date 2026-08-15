@@ -133,6 +133,13 @@ export function E6b() {
               unit="kt"
               placeholder="25"
             />
+            <NumberField
+              label={t('windTriangle.distance')}
+              value={inputs.dist}
+              onChange={(v) => set('dist', v)}
+              unit="NM"
+              placeholder="50"
+            />
           </FieldGrid>
           <OutputGrid>
             <ResultStat
@@ -141,12 +148,18 @@ export function E6b() {
               tone="headline"
             />
             <ResultStat
-              label={t('windTriangle.wca')}
-              value={wind ? `${wind.wca >= 0 ? '+' : ''}${wind.wca.toFixed(0)}°` : '—'}
+              label={t('windTriangle.ete')}
+              value={wind && nums.dist ? `${Math.round((nums.dist / wind.groundSpeed) * 60)} min` : '—'}
+              tone="headline"
             />
             <ResultStat
               label={t('windTriangle.gs')}
               value={wind ? `${Math.round(wind.groundSpeed)} kt` : '—'}
+              tone="headline"
+            />
+            <ResultStat
+              label={t('windTriangle.wca')}
+              value={wind ? `${wind.wca >= 0 ? '+' : ''}${wind.wca.toFixed(0)}°` : '—'}
             />
           </OutputGrid>
           {wind != null && (

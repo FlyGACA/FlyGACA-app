@@ -1236,10 +1236,16 @@
     "formula": "Each runway is resolved against the reported wind: crosswind = speed × sin(angle), headwind = speed × cos(angle)."
   },
   "hydroplaning": {
+    "preset": "Aircraft preset",
+    "custom_preset": "Custom...",
+    "landingSpeed": "Landing speed (kt)",
     "pressure": "Tyre pressure (psi)",
+    "dynamic_speed": "Dynamic hydroplaning",
+    "viscous_speed": "Viscous hydroplaning",
+    "alert_risk": "⚠️ High risk at landing speed",
     "speed": "Hydroplaning speed",
     "kmh": "{{kmh}} km/h",
-    "formula": "Dynamic hydroplaning speed ≈ 9 × √(tyre pressure) kt for a rotating tyre. Onset also depends on water depth, tyre wear and surface texture."
+    "formula": "Dynamic hydroplaning speed ≈ 9 × √(tyre pressure) kt for a rotating tyre. Viscous hydroplaning ≈ 7.6 × √(tyre pressure). Onset also depends on water depth, tyre wear and surface texture."
   },
   "runwayPerf": {
     "book": "Book distance (m)",
@@ -1264,7 +1270,11 @@
     "gs": "Groundspeed",
     "legendWind": "Wind",
     "diagramLabel": "Wind triangle diagram: heading {{hdg}}° with wind from {{wdir}}° at {{wspd}} kt gives {{gs}} kt groundspeed.",
-    "formula": "WCA = asin(wind × sin(wind − course) ÷ TAS). Heading = course + WCA; groundspeed = TAS·cos(WCA) − wind·cos(wind − course)."
+    "formula": "WCA = asin(wind × sin(wind − course) ÷ TAS). Heading = course + WCA; groundspeed = TAS·cos(WCA) − wind·cos(wind − course).",
+    "distance": "Distance",
+    "ete": "Estimated time enroute",
+    "tasLabel": "True Airspeed (TAS)",
+    "wcaLabel": "Wind Correction Angle (WCA)"
   },
   "greatCircle": {
     "lat1": "From latitude (°)",
@@ -4810,6 +4820,49 @@
     "hazards": {
       "shamal_dust": "Shamal Dust Storm",
       "haboob": "Haboob (Low Visibility/Ceiling)"
+    }
+  },
+  "pathways": {
+    "title": "Licensing Pathways",
+    "desc": "Track your progress towards GACAR Part 61 pilot licenses.",
+    "ppl": {
+      "title": "Private Pilot License (PPL - GACAR 61 Subpart C)",
+      "ppl_age": "Minimum age of 17",
+      "ppl_med": "Hold at least a Class 2 Medical Certificate",
+      "ppl_lang": "GACA English Language Proficiency (Level 4+)",
+      "ppl_ground": "Complete PPL Ground School & pass knowledge test",
+      "ppl_flight": "40 hours total flight time (35h minimum in approved Part 141)",
+      "ppl_xc": "5 hours solo cross-country flight",
+      "ppl_check": "Pass the PPL Practical Test (Checkride)"
+    },
+    "ir": {
+      "title": "Instrument Rating (IR - GACAR 61 Subpart G)",
+      "ir_med": "Hold PPL and Class 1 or 2 Medical",
+      "ir_ground": "Complete IR Ground School & pass knowledge test",
+      "ir_xc": "50 hours of Cross-Country (XC) PIC time",
+      "ir_inst": "40 hours of actual or simulated instrument time",
+      "ir_check": "Pass the IR Practical Test"
+    },
+    "cpl": {
+      "title": "Commercial Pilot License (CPL - GACAR 61 Subpart E)",
+      "cpl_age": "Minimum age of 18",
+      "cpl_med": "Hold a Class 1 Medical Certificate",
+      "cpl_ground": "Complete CPL Ground School & pass knowledge test",
+      "cpl_flight": "250 hours total flight time (190h minimum in approved Part 141)",
+      "cpl_pic": "100 hours Pilot-in-Command (PIC) time",
+      "cpl_xc": "50 hours PIC cross-country",
+      "cpl_check": "Pass the CPL Practical Test"
+    },
+    "atpl": {
+      "title": "Airline Transport Pilot (ATPL - GACAR 61 Subpart F)",
+      "atpl_age": "Minimum age of 21",
+      "atpl_med": "Hold a Class 1 Medical Certificate",
+      "atpl_ground": "Pass ATPL knowledge test (ATP CTP usually required)",
+      "atpl_flight": "1,500 hours total flight time",
+      "atpl_xc": "500 hours cross-country flight time",
+      "atpl_night": "100 hours night flight time",
+      "atpl_inst": "75 hours instrument time",
+      "atpl_check": "Pass the ATPL Practical Test"
     }
   }
 }
