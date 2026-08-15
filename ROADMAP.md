@@ -22,6 +22,14 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
 
 ## Recently shipped (post-rebuild)
 
+- **Saudi Aviation & GACA CBT Platform Suite (August 2026)**:
+  - **GACA Official CBT Exam Simulator**: Realistic test-center exam interface with 75% GACAR pass mark, fuel-gauge timer, question bookmarking, explicit GACAR Part citations, and official practice exam transcript certificate cards.
+  - **Part 61 Logbook & PDF Exporter**: 90-day passenger recency warning badges, RFC 4180 multiline CSV parser, one-click ForeFlight/Garmin Pilot import template (`flygaca-logbook-template.csv`), and printable A4 Landscape logbook PDF exporter (`/logbook?print=1`).
+  - **Saudi Weather & High-Temp Physics**: Extreme desert heat alerts (> 45°C) with engine/takeoff distance degradation penalties, Saudi weather hazard decoders (*Shamal* dust storms & *Haboob* low visibility), and high-elevation aerodrome advisories (Abha OEAB @ 6,857 ft, Taif OETF @ 4,769 ft).
+  - **SAELPT Audio Phraseology Trainer**: Interactive ICAO Level 4+ radiotelephony scenarios for Riyadh Approach (OERK), Jeddah Tower (OEJN), and Dammam Radar (OEDF) with Captain Adel ATC readback integration.
+  - **Persona-Based Dashboards**: 4 operational roles (*Student Pilot*, *Commercial Pilot*, *Flight Instructor*, *Flight Dispatcher*) with role-aware onboarding & widget grid persistence.
+  - **Flight Tools Enhancements**: SVG Weight & Balance envelope plot (`CgEnvelopePlot.tsx`), preset aircraft crosswind limits (C172S, DA40, PA28, SR22), GACAR Constellation Map category filters (`/library/map`), route weather flight category color timeline (`/tools/met-brief`), and Saudi aerodromes fuel & facility badges (`/tools/aerodromes`).
+
 - **Interactive features round 7 — chat motion**
   ([#444](https://github.com/FlyGACA/FlyGACA-app/pull/444)): Captain Adel's source citations
   stagger in as an answer lands (`SourceList`, shared `--dur-stagger` cadence), and a small shared
