@@ -124,7 +124,6 @@
   margin: 0;
   font-size: var(--fs-h2);
   font-weight: var(--fw-bold);
-  color: var(--text);
   background: var(--grad-brand);
   -webkit-background-clip: text;
   background-clip: text;
@@ -588,11 +587,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-  gap: var(--space-8);
-  align-items: start;
-}
 /* Below 720px the grid collapses; the sign-in card is first in source order so
    it stacks on top on mobile. */
 @media (max-width: 720px) {
