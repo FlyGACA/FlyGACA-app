@@ -211,7 +211,14 @@
       "emailPassword": true,
       "googleSignIn": {
         "oAuthBrandDisplayName": "Fly GACA",
-        "supportEmail": "flygaca@gmail.com"
+        "supportEmail": "flygaca@gmail.com",
+        "authorizedRedirectUris": [
+          "https://flygaca.com",
+          "https://www.flygaca.com",
+          "https://flygaca-sa.web.app",
+          "https://flygaca-sa.firebaseapp.com",
+          "http://localhost"
+        ]
       }
     }
   }
