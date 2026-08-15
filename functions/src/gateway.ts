@@ -59,6 +59,21 @@ const ANON_DAILY_LIMIT_PARAM = defineInt("ANON_DAILY_LIMIT", { default: ANON_DAI
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 export class AuthError extends Error {}
 
+function appCheckIsEnforced(): boolean {
+  return ENFORCE_APP_CHECK.value();
+}
+
+async function verifyAppCheckTokenOrThrow(req: Request): Promise<void> {
+  if (!appCheckIsEnforced()) return;
+  const appCheckToken = req.header("X-Firebase-AppCheck");
+  if (!appCheckToken) throw new AuthError("missing App Check token");
+  try {
+    await getAppCheck().verifyToken(appCheckToken);
+  } catch {
+    throw new AuthError("invalid App Check token");
+  }
+}
+
 /**
  * Verify the Firebase Session Cookie or ID token (optional → anonymous) and App
  * Check token (enforced in prod). Returns the caller's auth context — `uid` plus
@@ -70,15 +85,7 @@ export class AuthError extends Error {}
  * Exported for unit testing; the route handlers below are the only callers.
  */
 export async function authenticate(req: Request): Promise<AuthContext> {
-  const appCheckToken = req.header("X-Firebase-AppCheck");
-  if (ENFORCE_APP_CHECK.value()) {
-    if (!appCheckToken) throw new AuthError("missing App Check token");
-    try {
-      await getAppCheck().verifyToken(appCheckToken);
-    } catch {
-      throw new AuthError("invalid App Check token");
-    }
-  }
+  await verifyAppCheckTokenOrThrow(req);
 
   // 1. First check HttpOnly Session Cookie (preferred for web clients)
   const cookies = parseCookies(req.headers?.cookie);
@@ -106,6 +113,11 @@ export async function authenticate(req: Request): Promise<AuthContext> {
 }
 
 const app = express();
+// App Check rollout guardrail: log when the enforcement state is left implicit.
+if (process.env.ENFORCE_APP_CHECK === undefined) {
+  logger.warn("ENFORCE_APP_CHECK is unset; falling back to default false");
+}
+logger.info("App Check enforcement state", { enforced: appCheckIsEnforced() });
 // Security middleware
 app.use(helmet());
 // req.ip = the client address one hop back in the proxy chain. Without this the
@@ -179,15 +191,15 @@ function anonQuotaKey(ip: string | undefined): string {
  * Atomically consume one daily question for `key` in a Firestore transaction on
  * `chatUsage/{key}` — durable across instances, unlike the in-memory burst limiter,
  * so the daily allowance can't be reset by clearing localStorage or spreading load
- * across function instances. `key` is the caller's `uid` (signed-in) or an
- * `anon:<ipHash>` bucket (anonymous). On a transaction error it fails open (allowed);
- * the per-uid/per-IP burst limiter is the hard backstop. `chatUsage` is server-only
- * (deny-all in firestore.rules).
+ * across function instances. `key` is the caller's `uid` (signed-in) or an `anon:<ipHash>`
+ * bucket (anonymous). On a transaction error it fails closed (not allowed) and marks
+ * the verdict as an internal error so callers can avoid spending purchased credits on
+ * a backend fault. `chatUsage` is server-only (deny-all in firestore.rules).
  */
 async function consumeDailyQuota(
   key: string,
   limit: number,
-): Promise<{ allowed: boolean; retryAfterSec: number }> {
+): Promise<{ allowed: boolean; retryAfterSec: number; reason: "ok" | "exhausted" | "error" }> {
   const db = getFirestore();
   const ref = db.collection("chatUsage").doc(key);
   try {
@@ -196,11 +208,15 @@ async function consumeDailyQuota(
       const raw = snap.exists ? (snap.data() as Partial<DailyUsage>) : null;
       const verdict = checkDailyQuota(raw, new Date(), limit);
       if (verdict.allowed) tx.set(ref, verdict.usage);
-      return { allowed: verdict.allowed, retryAfterSec: verdict.retryAfterSec };
+      return {
+        allowed: verdict.allowed,
+        retryAfterSec: verdict.retryAfterSec,
+        reason: verdict.allowed ? "ok" : "exhausted",
+      };
     });
   } catch (err) {
     logger.error("chat quota transaction failed", { key, err });
-    return { allowed: true, retryAfterSec: 0 };
+    return { allowed: false, retryAfterSec: 60, reason: "error" };
   }
 }
 
@@ -304,6 +320,11 @@ app.post(["/chat", "/api/chat"], async (req: Request, res: Response): Promise<vo
       // Past the daily free allowance a purchased credit (if any) covers the turn;
       // only 429 when neither free questions nor credits remain.
       if (!quota.allowed) {
+        if (quota.reason === "error") {
+          res.setHeader("Retry-After", String(quota.retryAfterSec));
+          res.status(429).json({ error: "quota_exceeded" });
+          return;
+        }
         const credit = await consumeCredit(uid);
         // Structured funnel events (Cloud Logging → offline conversion analysis):
         // hitting the wall is the upsell moment; a spent credit is micro-revenue.
@@ -471,6 +492,16 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
 
 // Session Login Endpoint: exchanges a client-validated Firebase ID token for an HttpOnly session cookie
 app.post(["/auth/session-login", "/api/auth/session-login"], async (req: Request, res: Response): Promise<void> => {
+  try {
+    await verifyAppCheckTokenOrThrow(req);
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(403).json({ error: err.message });
+      return;
+    }
+    throw err;
+  }
+
   const { idToken } = req.body;
   if (!idToken || typeof idToken !== "string") {
     res.status(400).json({ error: "idToken is required" });
