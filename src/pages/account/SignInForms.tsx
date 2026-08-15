@@ -72,9 +72,8 @@ export function FirebaseSignIn() {
           role="tab"
           aria-selected={mode === 'in'}
           className={`${styles.modeTab} ${mode === 'in' ? styles.modeTabActive : ''}`}
-          onClick={(e) => {
+          onClick={() => {
             if (mode !== 'in') {
-              e.preventDefault();
               toggleMode('in');
             }
           }}
@@ -86,9 +85,8 @@ export function FirebaseSignIn() {
           role="tab"
           aria-selected={mode === 'up'}
           className={`${styles.modeTab} ${mode === 'up' ? styles.modeTabActive : ''}`}
-          onClick={(e) => {
+          onClick={() => {
             if (mode !== 'up') {
-              e.preventDefault();
               toggleMode('up');
             }
           }}
@@ -133,8 +131,7 @@ export function FirebaseSignIn() {
         <Link
           to={targetUrl}
           className={styles.linkBtn}
-          onClick={(e) => {
-            e.preventDefault();
+          onClick={() => {
             toggleMode();
           }}
         >
