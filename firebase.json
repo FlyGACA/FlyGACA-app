@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "flygaca-app",
     "public": "dist",
     "ignore": [
       "firebase.json",
@@ -94,6 +95,10 @@
           {
             "key": "Content-Type",
             "value": "text/plain; charset=utf-8"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
           }
         ]
       },

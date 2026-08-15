@@ -26,6 +26,7 @@ export interface MetarReport {
   cavok: boolean;
   visibilityM: number | null;
   weather: string[];
+  saudiHazards: string[];
   clouds: Cloud[];
   tempC: number | null;
   dewC: number | null;
@@ -73,6 +74,7 @@ export function parseMetar(raw: string): MetarReport {
     cavok: false,
     visibilityM: null,
     weather: [],
+    saudiHazards: [],
     clouds: [],
     tempC: null,
     dewC: null,
@@ -138,7 +140,17 @@ export function parseMetar(raw: string): MetarReport {
       r.altimInHg = +a[1] / 100;
       continue;
     }
-    if (isWeather(tok)) r.weather.push(tok);
+    if (isWeather(tok)) {
+      r.weather.push(tok);
+      if (/DS|SS|SA|DU|BLDU|BLSA|PO/.test(tok)) {
+        if (!r.saudiHazards.includes('shamal_dust')) r.saudiHazards.push('shamal_dust');
+      }
+    }
   }
+
+  if (r.visibilityM !== null && r.visibilityM < 1500 && r.saudiHazards.includes('shamal_dust')) {
+    r.saudiHazards.push('haboob');
+  }
+
   return r;
 }

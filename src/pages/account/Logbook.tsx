@@ -49,7 +49,9 @@ function Inner() {
   const isPro = uiIsPro(entitlement);
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showImportHelp, setShowImportHelp] = useState(false);
   const [params, setParams] = useSearchParams();
+  const printMode = params.get('print') === '1';
 
   // ── Filter + sort state (pure client-side; nothing persisted) ──
   const [q, setQ] = useState('');
@@ -112,6 +114,67 @@ function Inner() {
     window.setTimeout(() => setImportNote(''), 4000);
   }
 
+  if (printMode) {
+    return (
+      <div className={styles.printContainer}>
+        <h2>{t('account.logbook')}</h2>
+        <table className={styles.printTable}>
+          <thead>
+            <tr>
+              <th>{t('account.date')}</th>
+              <th>{t('account.type')}</th>
+              <th>{t('account.reg')}</th>
+              <th>{t('account.from')}</th>
+              <th>{t('account.to')}</th>
+              <th>{t('account.total')}</th>
+              <th>{t('account.pic')}</th>
+              <th>{t('account.dual', 'Dual')}</th>
+              <th>{t('account.ifr')}</th>
+              <th>{t('account.night')}</th>
+              <th>{t('account.xc', 'XC')}</th>
+              <th>{t('account.ldg')}</th>
+              <th>{t('account.remarks')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...view].reverse().map(f => (
+              <tr key={f.id}>
+                <td>{f.date}</td>
+                <td>{f.type}</td>
+                <td>{f.reg}</td>
+                <td>{f.from}</td>
+                <td>{f.to}</td>
+                <td>{f.total}</td>
+                <td>{f.pic}</td>
+                <td></td>
+                <td>{f.ifr}</td>
+                <td>{f.night}</td>
+                <td></td>
+                <td>{f.ldg}</td>
+                <td>{f.remarks}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className={styles.printTotals}>
+              <td colSpan={5}>{t('account.totals')}</td>
+              <td>{summary.totalHours.toFixed(1)}</td>
+              <td>{summary.picHours.toFixed(1)}</td>
+              <td></td>
+              <td>{summary.ifrHours.toFixed(1)}</td>
+              <td>{summary.nightHours.toFixed(1)}</td>
+              <td></td>
+              <td>{summary.landings}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    );
+  }
+
+  const dayLandingsLast90 = summary.last90.landings - summary.last90.nightLandings;
+
   return (
     <section className={`container ${styles.page}`}>
       <header className={styles.head}>
@@ -149,6 +212,20 @@ function Inner() {
             value={<CountUp to={summary.last90.hours} decimals={1} />}
             sub={t('account.flightsLogged', { n: summary.last90.flightCount })}
           />
+          <ResultStat
+            label={t('account.recency')}
+            value={
+              <div className={styles.recencyBadge}>
+                <span className={dayLandingsLast90 >= 3 ? styles.current : styles.expired}>
+                  Day: {dayLandingsLast90}/3
+                </span>
+                <span className={summary.last90.nightLandings >= 3 ? styles.current : styles.expired}>
+                  Night: {summary.last90.nightLandings}/3
+                </span>
+              </div>
+            }
+            sub={t('account.recencyDesc')}
+          />
         </OutputGrid>
       )}
 
@@ -165,6 +242,9 @@ function Inner() {
         </button>
         <button type="button" className={styles.btn} onClick={() => fileRef.current?.click()}>
           {t('account.importCsv')}
+        </button>
+        <button type="button" className={styles.btn} onClick={() => setShowImportHelp(true)}>
+          {t('account.importHelp')}
         </button>
         <input
           ref={fileRef}
@@ -186,6 +266,9 @@ function Inner() {
               {t('account.exportCsv')}
               {!isPro && <span className={styles.proTag}>{t('upsell.proOnly')}</span>}
             </button>
+            <button type="button" className={styles.btn} onClick={() => window.open('?print=1', '_blank')}>
+              {t('account.printLogbook', 'Print PDF')}
+            </button>
           </>
         )}
       </div>
@@ -195,6 +278,23 @@ function Inner() {
         </p>
       )}
       {flights.length > 0 && !isPro && <p className={styles.note}>{t('account.csvProNote')}</p>}
+
+      {showImportHelp && (
+        <div className={styles.modalOverlay} onClick={() => setShowImportHelp(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <h2>{t('account.importHelpTitle')}</h2>
+            <p>{t('account.importHelpText')}</p>
+            <div className={styles.modalActions}>
+              <a href="/flygaca-logbook-template.csv" download className={`${styles.btn} ${styles.btnPrimary}`}>
+                {t('account.downloadSampleCsv')}
+              </a>
+              <button type="button" className={styles.btn} onClick={() => setShowImportHelp(false)}>
+                {t('common.close')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {adding && (
         <FlightForm

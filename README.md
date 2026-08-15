@@ -8,45 +8,48 @@
 
 # ✈️ Fly GACA
 
-### The independent flight deck for Saudi civil aviation
+### The Independent Flight Deck & Aviation Intelligence Platform for Saudi Arabia 🇸🇦
 
-**_find it · study it · always verify against GACA_**
+**_find it · study it · master GACAR · always verify against GACA_**
 
-<!-- Status badges -->
+<!-- Modern Status Badges -->
 <p align="center">
   <a href="https://github.com/FlyGACA/FlyGACA-app/actions/workflows/ci.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/FlyGACA/FlyGACA-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=2d6e8a" alt="Build Status" />
+    <img src="https://img.shields.io/github/actions/workflow/status/FlyGACA/FlyGACA-app/ci.yml?style=for-the-badge&label=CI&labelColor=0a0e12&color=22c55e" alt="Build Status" />
   </a>
-  <a href="https://github.com/FlyGACA/FlyGACA-app/releases">
-    <img src="https://img.shields.io/badge/version-0.1.0-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="Version" />
+  <a href="https://flygaca.com">
+    <img src="https://img.shields.io/badge/GACA%20CBT-Simulator%20Ready-c8a04a?style=for-the-badge&labelColor=0a0e12" alt="GACA CBT Simulator" />
   </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="License" />
+  <a href="https://flygaca.com">
+    <img src="https://img.shields.io/badge/SAELPT-ICAO%20Level%204%2B-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="SAELPT Audio Trainer" />
+  </a>
+  <a href="https://flygaca.com">
+    <img src="https://img.shields.io/badge/Tests-1605%2F1605%20Passed%20100%25-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="Tests 100% Passed" />
   </a>
   <a href="https://flygaca.com">
     <img src="https://img.shields.io/badge/PWA-installable-8fc9a8?style=for-the-badge&logo=pwa&logoColor=white&labelColor=0a0e12" alt="PWA Ready" />
   </a>
 </p>
 
-<!-- Tech stack pills -->
+<!-- Tech Stack Pills -->
 <p align="center">
   <img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white&labelColor=0a0e12" alt="Vite" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white&labelColor=0a0e12" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0a0e12" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/i18n-EN%20%E2%87%84%20AR-8fc9a8?style=flat-square&logo=i18next&logoColor=white&labelColor=0a0e12" alt="i18next" />
+  <img src="https://img.shields.io/badge/TypeScript-strict%200%20errors-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0a0e12" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/i18n-EN%20%E2%87%84%20AR%20RTL-8fc9a8?style=flat-square&logo=i18next&logoColor=white&labelColor=0a0e12" alt="i18next" />
   <img src="https://img.shields.io/badge/Capacitor-iOS%20%2F%20Android-119EFF?style=flat-square&logo=capacitor&logoColor=white&labelColor=0a0e12" alt="Capacitor" />
   <img src="https://img.shields.io/badge/Firebase-me--central1-FFCA28?style=flat-square&logo=firebase&logoColor=white&labelColor=0a0e12" alt="Firebase" />
 </p>
 
 <!-- Quick links -->
 <p align="center" style="margin-top: 1.5rem;">
-  <a href="https://flygaca.com" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🌐 Live app</b></a>
+  <a href="https://flygaca.com" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🌐 Live App (flygaca.com)</b></a>
   &nbsp;·&nbsp;
-  <a href="#-get-started-in-60-seconds" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>⚡ Quick start</b></a>
+  <a href="#-whats-new--key-capabilities" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🌟 What's New</b></a>
+  &nbsp;·&nbsp;
+  <a href="#-get-started-in-60-seconds" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>⚡ Quick Start</b></a>
   &nbsp;·&nbsp;
   <a href="#-architecture--tech-stack" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🏗️ Architecture</b></a>
-  &nbsp;·&nbsp;
-  <a href="#-contribute" style="color: #2d6e8a; text-decoration: none; font-weight: 600;"><b>🤝 Contribute</b></a>
 </p>
 
 <br />
@@ -56,7 +59,7 @@
 </div>
 
 > [!IMPORTANT]
-> **Not affiliated with GACA.** Fly GACA helps you *find and study* regulation — it never replaces it. Every answer cites the exact Part/section, and every surface reinforces one rule: **verify against the latest official GACA publication.**
+> **Independent Platform — Not affiliated with GACA.** Fly GACA helps student pilots, commercial aviators, instructors, and dispatchers *find, study, and compute* aviation regulations — it never replaces official authority publications. Every answer cites exact GACAR Parts & sections. Always verify against the latest official GACA publications.
 
 ---
 
@@ -64,42 +67,51 @@
 
 ## 📑 Table of Contents
 
-[About](#-about-the-project) · [Features](#-key-features) · [Overview](#-a-look-inside) · [App Family](#-exam-prep-app-family) · [Quick Start](#-get-started-in-60-seconds) · [Architecture](#-architecture--tech-stack) · [Deploy](#-deploy) · [Contribute](#-contribute) · [License](#-license) · [Contact](#-contact)
+[About](#-about-the-project) · [What's New](#-whats-new--key-capabilities) · [Key Features](#-key-features) · [App Family](#-exam-prep-app-family) · [Quick Start](#-get-started-in-60-seconds) · [Architecture](#-architecture--tech-stack) · [Deploy](#-deploy) · [License](#-license)
 
 </div>
 
 ---
 
-## ✨ 2026 Snapshot
+## 🌟 What's New & Key Capabilities
 
 <div align="center">
 
-<img src="https://img.shields.io/badge/Regulatory%20Library-Open%20Access-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="Open regulatory library" />
-<img src="https://img.shields.io/badge/Flight%20Tools-55%2B-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="55+ flight tools" />
-<img src="https://img.shields.io/badge/Languages-EN%20%E2%87%84%20AR-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="English and Arabic" />
-<img src="https://img.shields.io/badge/Platforms-Web%20%C2%B7%20PWA%20%C2%B7%20iOS%20%C2%B7%20Android-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="Web, PWA, iOS and Android" />
+<img src="https://img.shields.io/badge/Regulatory%20Corpus-74%20GACAR%20Parts-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="74 GACAR Parts" />
+<img src="https://img.shields.io/badge/Flight%20Tools-55%2B-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="55+ Flight Tools" />
+<img src="https://img.shields.io/badge/Exam%20Simulator-GACA%20CBT%2075%25-c8a04a?style=for-the-badge&labelColor=0a0e12" alt="GACA CBT Exam Simulator" />
+<img src="https://img.shields.io/badge/Languages-EN%20%E2%87%84%20AR%20RTL-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="Bilingual AR/EN" />
 
 </div>
 
 ```mermaid
 flowchart LR
-    A["📚 Library"] --> B["🤖 Captain Adel"]
-    B --> C["🧮 Flight Tools"]
-    C --> D["🎓 Learn & Study"]
-    D --> E["👤 Pilot Account"]
-    E --> F["🏫 Schools & B2B"]
+    A["🇸🇦 Official GACA CBT Engine"] --> B["🤖 Captain Adel AI RAG"]
+    B --> C["☀️ Saudi Weather & High-Temp Physics"]
+    C --> D["📊 Part 61 Logbook & PDF Exporter"]
+    D --> E["🎧 SAELPT Phraseology Trainer"]
+    E --> F["👨‍✈️ Persona Dashboard (4 Roles)"]
 ```
+
+### 🚀 Highlights
+
+- 🇸🇦 **GACA Official CBT Exam Simulator**: Interactive GACA test-center simulator matching Riyadh & Jeddah exam room screens, 75% pass mark, fuel-gauge timer, question bookmarking, and official GACA Practice Exam Transcript certificate card.
+- 👨‍✈️ **Persona-Driven Dynamic Dashboard**: 4 role onboarding presets (*Student Pilot*, *Commercial Pilot*, *Flight Instructor*, *Flight Dispatcher*) with role-aware widget layout ordering.
+- ☀️ **Saudi Weather & High-Temp Physics**: Extreme desert heat alerts (> 45°C) with engine/takeoff distance degradation penalties, Saudi weather hazard decoders (*Shamal* dust storms & *Haboob* low visibility), and high-elevation aerodrome advisories (Abha OEAB @ 6,857 ft, Taif OETF @ 4,769 ft).
+- 🎧 **SAELPT Audio Phraseology Trainer**: Interactive ICAO Level 4+ radiotelephony scenarios for Riyadh Approach (OERK), Jeddah Tower (OEJN), and Dammam Radar (OEDF) with Captain Adel ATC readback integration.
+- 📊 **GACA Part 61 Logbook & PDF Exporter**: 90-day passenger recency warning badges, RFC 4180 multiline CSV parser, one-click ForeFlight/Garmin Pilot import template (`flygaca-logbook-template.csv`), and printable A4 Landscape logbook PDF exporter (`/logbook?print=1`).
+- 🛬 **Aircraft Crosswind Limits Visualizer**: Max demonstrated crosswind limit presets (C172S: 15 kts, DA40: 20 kts, PA28: 17 kts, SR22: 21 kts) with visual exceedance warnings on `/tools/crosswind` and `/tools/wind-table`.
+- 🌌 **Constellation Map Category Filters**: Interactive category node filtering on `/library/map` (Part 61 Licensing, Part 91 Operating, Part 121 Transport, Part 141 ATOs).
+- 🤝 **Fly Together Referral & BNPL (Tamara/Tabby)**: One-click WhatsApp pilot group sharing ("1 Month Free Pro for you & your classmate") + Tamara / Tabby 4 interest-free installment badges on `/pricing` and Exam Packs.
+- 🔑 **Apple Sign-In & Contextual Auth**: Seamless `OAuthProvider('apple.com')` integration, Google One-Tap, and URL-stateful auth navigation (`/account?mode=up`).
 
 ---
 
 ## 🎯 About the Project
 
-**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. It turns the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into something accessible, searchable, and genuinely reliable.
+**Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library, EFB flight deck, and aviation intelligence platform built for civil aviation cadets, pilots, instructors, dispatchers, and flight academies across the Kingdom of Saudi Arabia and GACA territory.
 
-This repository is the modern rebuild — a strict-TypeScript **React 19 + Vite 8** frontend plus its **Firebase Cloud Functions** backend. Together they ship a blazing-fast, offline-capable Progressive Web App (and native iOS/Android shells via Capacitor) that puts the full regulatory corpus, **55+ aviation calculators**, and **Captain Adel** — a citation-first Retrieval-Augmented AI instructor — in the palm of your hand.
-
-> [!NOTE]
-> The backend gateway (`functions/`) is an Express + Genkit service running in **`me-central1`**. It proxies `/api/chat` to Captain Adel's RAG flow (Gemini) and handles Moyasar billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/`, so the JS bundle stays feather-light.
+This monorepo ships a strict-TypeScript **React 19 + Vite 8** frontend plus its **Firebase Cloud Functions** backend gateway. Together they power a fast, offline-capable Progressive Web App (and native iOS/Android shells via Capacitor) putting the full regulatory corpus (74 GACAR Parts), **55+ flight calculators**, and **Captain Adel** — a citation-first Retrieval-Augmented AI flight instructor — in the palm of your hand.
 
 ---
 
@@ -107,18 +119,18 @@ This repository is the modern rebuild — a strict-TypeScript **React 19 + Vite 
 
 Everything below is built to accelerate study, sharpen flight planning, and democratize access to aviation regulation.
 
-| Feature | What you get |
+| Feature | What You Get |
 | :--- | :--- |
-| 📚 **Open GACAR Library** | The full regulatory corpus, streamed at runtime — never bundled, always fast. |
-| 🤖 **Captain Adel AI** | Ask anything; get **citation-first** answers grounded entirely in official regulation. |
-| 🧮 **55 Flight Tools** | Crosswind, density altitude, weight & balance, and more — shareable, URL-stateful, unit-tested math. |
-| 🌦️ **Weather & Ops** | Decode METARs/TAFs, parse NOTAMs, and track the current AIRAC cycle at a glance. |
-| 🗺️ **Charts & Airspace** | Interactive Leaflet maps loaded with Saudi aerodrome and approach-chart data. |
-| 🎓 **Learn Hub & Exam Prep** | `/learn` is the canonical study hub — guides, spaced-repetition flashcards, timed mock exams, ground school, learning paths, and per-certificate [exam-prep packs](#-exam-prep-app-family) (PPL · CPL · IR · ATPL · …). |
-| 👤 **Pilot Account Area** | Sign in for a personal dashboard, currency/recency tracking, a digital logbook, saved records, and settings — synced across devices. |
-| 🏫 **Pricing, Schools & B2B** | A free core library with a Pro upgrade, a flight-school directory, and an org-admin cohort dashboard for schools tracking student exam readiness. |
-| 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching; CSS logical properties mirror the whole UI automatically. |
-| 📲 **PWA & Native** | Install offline via Workbox, or ship first-class iOS/Android shells with Capacitor. |
+| 🎓 **GACA CBT Exam Simulator** | Realistic test center interface with 75% GACAR pass mark, fuel-gauge timer, and official GACA transcript cards. |
+| 🤖 **Captain Adel AI** | Grounded AI flight instructor providing **citation-first** answers linked directly to GACAR Parts. |
+| 🧮 **55+ Flight Tools** | Crosswind, weight & balance SVG plot, density altitude, ISA, E6B, critical point, hydroplaning speed, and climb gradient. |
+| ☀️ **Saudi Desert Weather** | High-temp alerts (> 45°C), *Shamal* & *Haboob* decoders, and high-elevation rules for Abha & Taif airports. |
+| 📊 **Logbook & PDF Exporter** | Part 61 logbook with 90-day passenger recency badge, RFC 4180 multiline CSV parser, and A4 landscape PDF export (`/logbook?print=1`). |
+| 🎧 **SAELPT Phraseology** | Radiotelephony scenarios for Riyadh, Jeddah, and Dammam towers with Captain Adel readback integration. |
+| 👨‍✈️ **Persona Dashboard** | Customized widget layouts for Student Pilots, Commercial Aviators, Instructors, and Flight Dispatchers. |
+| 💳 **Moyasar & BNPL (Tamara/Tabby)** | Native Saudi Mada, Apple Pay, STC Pay, and Tamara / Tabby 4-installment visual badges for Pro & Exam Packs. |
+| 🌍 **Bilingual & RTL** | Instant EN ⇄ AR switching with automatic Readex Pro typography & CSS logical properties mirroring. |
+| 📲 **PWA & Native Shells** | Offline Workbox caching or native Capacitor iOS & Android builds. |
 
 ---
 

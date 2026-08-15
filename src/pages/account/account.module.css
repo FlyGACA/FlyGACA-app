@@ -293,3 +293,81 @@
 .last {
   white-space: nowrap;
 }
+
+/* ── Logbook Print View ── */
+.printContainer {
+  padding: var(--space-4);
+  background: white;
+  color: black;
+  font-family: serif;
+}
+.printContainer h2 {
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+.printTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.printTable th,
+.printTable td {
+  border: 1px solid black;
+  padding: 4px 8px;
+  text-align: center;
+}
+.printTable th {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+.printTotals td {
+  font-weight: bold;
+}
+
+/* ── Recency Badge ── */
+.recencyBadge {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+}
+.current {
+  color: var(--color-success);
+}
+.expired {
+  color: var(--color-error);
+}
+
+/* ── Modal ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-4);
+}
+.modalContent {
+  background: var(--surface);
+  padding: var(--space-6);
+  border-radius: var(--clay-radius);
+  max-width: 500px;
+  width: 100%;
+  box-shadow: var(--clay-shadow);
+}
+.modalContent h2 {
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-h3);
+}
+.modalContent p {
+  margin-bottom: var(--space-5);
+  color: var(--text-muted);
+}
+.modalActions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}

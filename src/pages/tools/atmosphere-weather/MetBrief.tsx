@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
@@ -34,6 +34,59 @@ export function MetBrief() {
   const tafUrl = (icao: string) =>
     `https://aviationweather.gov/api/data/taf?ids=${icao}&format=raw`;
 
+  const [flightCats, setFlightCats] = useState<Record<string, string>>({});
+  const [loadingCats, setLoadingCats] = useState(false);
+
+  useEffect(() => {
+    if (icaos.length === 0) {
+      setFlightCats({});
+      return;
+    }
+    let active = true;
+    setLoadingCats(true);
+    fetch(`https://aviationweather.gov/api/data/metar?ids=${icaos.join(',')}&format=json`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        const cats: Record<string, string> = {};
+        if (Array.isArray(data)) {
+          data.forEach((metar) => {
+             if (metar.icaoId && metar.fltCat) {
+               cats[metar.icaoId] = metar.fltCat;
+             }
+          });
+        }
+        setFlightCats(cats);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch METARs', err);
+      })
+      .finally(() => {
+        if (active) setLoadingCats(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [icaos.join(',')]);
+
+  const catRank: Record<string, number> = { VFR: 0, MVFR: 1, IFR: 2, LIFR: 3 };
+  let worstCat = 'VFR';
+  icaos.forEach((icao) => {
+    const cat = flightCats[icao];
+    if (cat && (catRank[cat] ?? -1) > (catRank[worstCat] ?? -1)) {
+      worstCat = cat;
+    }
+  });
+
+  const getSummaryText = () => {
+    if (loadingCats) return t('metBrief.fetching');
+    if (worstCat === 'LIFR') return t('metBrief.lifrRoute');
+    if (worstCat === 'IFR') return t('metBrief.ifrRoute');
+    if (worstCat === 'MVFR') return t('metBrief.mvfrRoute');
+    return t('metBrief.vfrRoute');
+  };
+
+
   return (
     <CalcShell
       title={t('tools.items.met-brief.name')}
@@ -59,6 +112,24 @@ export function MetBrief() {
           hint={t('metBrief.routeHint')}
         />
       </FieldGrid>
+
+      {icaos.length > 0 && (
+        <div className={styles.timeline}>
+          <div className={styles.timelineBanner} data-cat={worstCat}>
+            {getSummaryText()}
+          </div>
+          <div className={styles.timelineStrip}>
+            {icaos.map((icao) => (
+              <div key={icao} className={styles.timelineNode}>
+                <span className={styles.timelineCat} data-cat={flightCats[icao] || 'UNK'}>
+                  {flightCats[icao] || '?'}
+                </span>
+                <span className={styles.timelineIcao}>{icao}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {unknown.length > 0 && (
         <p className={styles.warn}>

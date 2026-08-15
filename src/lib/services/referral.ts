@@ -56,3 +56,10 @@ export function referralLink(code: string): string {
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://flygaca.com';
   return `${origin}/pricing?ref=${code}`;
 }
+
+/** Build a WhatsApp share link for the referral code. */
+export function whatsappShareLink(code: string, message: string): string {
+  const link = referralLink(code);
+  const text = `${message}\n${link}`;
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizData, QuizQuestion } from '@/lib/content';
+import { linkHref } from '@/lib/contentLinks';
 import { setExamResult, useStudyProgress } from '@/lib/studyProgress';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/seo/jsonld';
@@ -95,6 +96,24 @@ export function MockExam() {
     return (
       <section className={`container-narrow ${styles.page}`}>
         <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.4rem 0.8rem',
+            borderRadius: 'var(--radius-md)',
+            background: 'rgba(34, 197, 94, 0.12)',
+            border: '1px solid rgba(34, 197, 94, 0.3)',
+            fontSize: 'var(--fs-sm)',
+            fontWeight: 700,
+            color: 'var(--text-main)',
+            marginBlockEnd: 'var(--space-2)',
+            width: 'fit-content',
+          }}
+        >
+          {t('study.cbtBadge')}
+        </div>
         <h1>{title}</h1>
         <p className={styles.subtitle}>{t('study.examDesc')}</p>
         <p className={styles.qProgress}>{t('study.examPassMark', { n: cfg.passMark })}</p>
@@ -168,6 +187,35 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
   if (done) {
     return (
       <section className={`container-narrow ${styles.page}`}>
+        <div
+          style={{
+            padding: 'var(--space-4)',
+            borderRadius: 'var(--clay-radius)',
+            border: '1px solid var(--border)',
+            background: 'var(--surface-overlay)',
+            boxShadow: 'var(--clay-shadow)',
+            textAlign: 'center',
+            marginBlockEnd: 'var(--space-3)',
+          }}
+        >
+          <span
+            style={{
+              fontSize: '0.85rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              opacity: 0.85,
+              fontWeight: 700,
+            }}
+          >
+            {t('study.cbtCertTitle')}
+          </span>
+          <p
+            style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBlockStart: '0.2rem' }}
+          >
+            {t('study.cbtPassBadge')}
+          </p>
+        </div>
+
         <div className={styles.result} role="status">
           {/* Decorative — the pass/fail line below carries the announcement. */}
           <span
@@ -201,6 +249,7 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
             {questions.map((item, idx) => {
               const a = answers[idx];
               const ok = a === item.answer;
+              const citeHref = item.citeRef ? linkHref(item.citeRef) : null;
               return (
                 <li
                   key={idx}
@@ -213,6 +262,23 @@ function Runner({ data, pack }: { data: QuizData; pack?: Pack }) {
                   {!ok && (
                     <p className={styles.reviewYours}>
                       {a == null ? t('study.noAnswer') : `✗ ${item.options[a]}`}
+                    </p>
+                  )}
+                  {item.explain && (
+                    <p className={styles.reviewExplain}>
+                      <strong>{t('study.explanation')}:</strong> {item.explain}
+                    </p>
+                  )}
+                  {item.cite && (
+                    <p className={styles.reviewCite}>
+                      <span className={styles.reviewCiteLabel}>{t('study.source')}:</span>{' '}
+                      {citeHref ? (
+                        <Link to={citeHref} className={styles.citeLink}>
+                          {item.cite}
+                        </Link>
+                      ) : (
+                        <span>{item.cite}</span>
+                      )}
                     </p>
                   )}
                 </li>

@@ -7,17 +7,20 @@
  * (`authError`, `emailShape`, `passwordPolicy`); the auth side effects stay in
  * `@/lib/services/auth`.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router';
 import {
   registerWithEmail,
   sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
+  signInWithApple,
 } from '@/lib/services/auth';
 import { authErrorInfo, isAuthDismiss, isDomainAuthError } from '@/calc/app/authError';
 import { looksLikeEmail } from '@/calc/app/emailShape';
 import { meetsPasswordPolicy } from '@/calc/app/passwordPolicy';
+import { getSafeRedirectUrl } from '@/calc/app/redirectUrl';
 import { SITE_ORIGIN, isMirrorHost } from '@/lib/seo/seo';
 import { useForm } from '@/hooks/useForm';
 
@@ -41,18 +44,21 @@ export interface SignInForm {
   notice: string;
   /** Set when auth fails because this (mirror/preview) host isn't authorized. */
   mainSiteHref: string | null;
-  toggleMode: () => void;
+  toggleMode: (targetMode?: 'in' | 'up') => void;
   forgotPassword: () => void;
   loginForm: LoginForm;
   signupForm: SignupForm;
   /** Continue-with-Google, wrapped in the shared runner. */
   runGoogle: () => void;
+  /** Continue-with-Apple, wrapped in the shared runner. */
+  runApple: () => void;
 }
 
 export function useSignInForm(): SignInForm {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<'in' | 'up'>('in');
-  const [animating, setAnimating] = useState(false);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const mode: 'in' | 'up' = searchParams.get('mode') === 'up' ? 'up' : 'in';
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
@@ -61,18 +67,20 @@ export function useSignInForm(): SignInForm {
   // site, so we surface a real click-through link on the error alert.
   const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
-  const toggleMode = () => {
-    setAnimating(true);
-    setTimeout(() => {
-      setMode((m) => (m === 'in' ? 'up' : 'in'));
-      setErrors({});
-      setNotice('');
-      loginForm.resetForm();
-      signupForm.resetForm();
-    }, 200);
-    setTimeout(() => {
-      setAnimating(false);
-    }, 400);
+  useEffect(() => {
+    setErrors({});
+    setNotice('');
+  }, [mode]);
+
+  const toggleMode = (targetMode?: 'in' | 'up') => {
+    const nextMode = targetMode ?? (mode === 'in' ? 'up' : 'in');
+    const nextParams = new URLSearchParams(searchParams);
+    if (nextMode === 'up') {
+      nextParams.set('mode', 'up');
+    } else {
+      nextParams.delete('mode');
+    }
+    setSearchParams(nextParams, { replace: true });
   };
 
   async function run(
@@ -84,7 +92,14 @@ export function useSignInForm(): SignInForm {
     setNotice('');
     setMainSiteHref(null);
     try {
-      await fn();
+      const res = await fn();
+      const redirectParam = searchParams.get('redirect');
+      if (redirectParam && res !== null) {
+        const safeTarget = getSafeRedirectUrl(redirectParam, '');
+        if (safeTarget) {
+          navigate(safeTarget, { replace: true });
+        }
+      }
     } catch (e) {
       const code = (e as { code?: string }).code;
       // Closing the Google popup (or opening a second one) isn't a failure — the
@@ -193,7 +208,7 @@ export function useSignInForm(): SignInForm {
 
   return {
     mode,
-    animating,
+    animating: false,
     busy,
     errors,
     notice,
@@ -203,5 +218,6 @@ export function useSignInForm(): SignInForm {
     loginForm,
     signupForm,
     runGoogle: () => void run(signInWithGoogle),
+    runApple: () => void run(signInWithApple),
   };
 }

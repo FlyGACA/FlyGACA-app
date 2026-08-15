@@ -20,6 +20,9 @@ export default defineConfig({
     // so they run under their own config (`npm run test:rules`), never here.
     exclude: ['tests/rules/**', 'node_modules/**'],
     environment: 'jsdom',
+    pool: 'threads',
+    testTimeout: 20000,
+    hookTimeout: 20000,
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     css: false,

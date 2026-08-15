@@ -21,12 +21,19 @@ const DIR = join(process.cwd(), 'public/data/airports-extra');
 const manifest = JSON.parse(
   readFileSync(join(DIR, '_manifest.json'), 'utf8'),
 ) as AirportShardManifest;
-const shardFile = (region: string) =>
-  JSON.parse(readFileSync(join(DIR, `${region}.json`), 'utf8')) as {
-    region: string;
-    count: number;
-    airports: Airport[];
-  };
+const shardCache = new Map<string, { region: string; count: number; airports: Airport[] }>();
+const shardFile = (region: string) => {
+  let cached = shardCache.get(region);
+  if (!cached) {
+    cached = JSON.parse(readFileSync(join(DIR, `${region}.json`), 'utf8')) as {
+      region: string;
+      count: number;
+      airports: Airport[];
+    };
+    shardCache.set(region, cached);
+  }
+  return cached;
+};
 
 describe('committed airport shards', () => {
   it('the manifest agrees with the files on disk', () => {

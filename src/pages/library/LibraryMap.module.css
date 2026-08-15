@@ -2,6 +2,42 @@
   padding-block-end: var(--space-8);
 }
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-block-start: var(--space-5);
+  margin-block-end: var(--space-4);
+}
+
+.filterBtn {
+  background: var(--bento-surface);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-full);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  transition: all 0.2s ease-in-out;
+}
+
+.filterBtn:hover,
+.filterBtn:focus-visible {
+  border-color: var(--neon-cyan);
+  color: var(--text);
+  outline: none;
+}
+
+.filterBtn.active {
+  background: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  color: var(--app-bg);
+  font-weight: 500;
+}
+
 .mapWrap {
   position: relative;
   inline-size: 100%;

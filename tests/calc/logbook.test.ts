@@ -4,6 +4,8 @@ import {
   flightsToCsv,
   monthlyHours,
   csvToFlights,
+  parseCsv,
+  parseCsvLine,
   filterFlights,
   sortFlights,
   aircraftTotals,
@@ -106,6 +108,52 @@ describe('flightsToCsv', () => {
   });
 });
 
+describe('parseCsv and parseCsvLine', () => {
+  it('parses empty string to empty rows', () => {
+    expect(parseCsv('')).toEqual([]);
+    expect(parseCsvLine('')).toEqual([]);
+  });
+
+  it('parses single row with plain cells', () => {
+    expect(parseCsv('a,b,c')).toEqual([['a', 'b', 'c']]);
+    expect(parseCsvLine('a,b,c')).toEqual(['a', 'b', 'c']);
+  });
+
+  it('handles empty fields and consecutive commas', () => {
+    expect(parseCsv('a,,c,')).toEqual([['a', '', 'c', '']]);
+    expect(parseCsv(',,')).toEqual([['', '', '']]);
+  });
+
+  it('handles empty quoted fields', () => {
+    expect(parseCsv('"","a",""')).toEqual([['', 'a', '']]);
+  });
+
+  it('parses escaped quotes inside quoted fields', () => {
+    expect(parseCsv('"He said ""Hello, World!"""')).toEqual([['He said "Hello, World!"']]);
+    expect(parseCsv('a,"b ""inner"" quote",c')).toEqual([['a', 'b "inner" quote', 'c']]);
+  });
+
+  it('parses multiline quoted fields with literal newlines (LF and CRLF)', () => {
+    const multilineCsv = 'col1,col2\n"line 1\nline 2","normal"\n"win 1\r\nwin 2","second"';
+    const rows = parseCsv(multilineCsv);
+    expect(rows).toEqual([
+      ['col1', 'col2'],
+      ['line 1\nline 2', 'normal'],
+      ['win 1\nwin 2', 'second'],
+    ]);
+  });
+
+  it('parses complex mixed RFC 4180 inputs', () => {
+    const input =
+      '"Field 1, with comma","Field 2 with ""quotes""\nand newline",Field 3\r\n"Row 2, col 1",,\r\n';
+    const rows = parseCsv(input);
+    expect(rows).toEqual([
+      ['Field 1, with comma', 'Field 2 with "quotes"\nand newline', 'Field 3'],
+      ['Row 2, col 1', '', ''],
+    ]);
+  });
+});
+
 describe('csvToFlights', () => {
   const flights: Flight[] = [
     flight('2024-05-20', { reg: 'HZ-AAA', remarks: 'a, b "quote"', total: '2.0', ldg: '2' }),
@@ -121,12 +169,58 @@ describe('csvToFlights', () => {
     expect(parsed[0].total).toBe('2.0');
   });
 
+  it('round-trips flights with multiline remarks containing newlines, quotes, and commas', () => {
+    const multilineFlight: Flight = flight('2024-06-15', {
+      reg: 'HZ-ML1',
+      type: 'DA40',
+      from: 'OERK',
+      to: 'OEJN',
+      total: '3.2',
+      pic: '3.2',
+      night: '1.0',
+      ifr: '1.5',
+      ldg: '1',
+      nightLdg: '1',
+      appr: 'ILS 34L',
+      remarks:
+        'Preflight notes:\n- Checked oil & fuel\n- Weather: "CAVOK"\nEnroute diverts: none, smooth flight.\r\nLanding debrief: greaser.',
+    });
+
+    const csv = flightsToCsv([multilineFlight]);
+    const { flights: parsed, skipped } = csvToFlights(csv);
+
+    expect(skipped).toBe(0);
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0].reg).toBe('HZ-ML1');
+    expect(parsed[0].remarks).toBe(
+      'Preflight notes:\n- Checked oil & fuel\n- Weather: "CAVOK"\nEnroute diverts: none, smooth flight.\nLanding debrief: greaser.',
+    );
+    expect(parsed[0].total).toBe('3.2');
+    expect(parsed[0].appr).toBe('ILS 34L');
+  });
+
   it('maps columns by header name (order-independent) and skips empty rows', () => {
     const csv = 'reg,date,total\r\nHZ-XYZ,2024-01-02,3.0\r\n,,\r\n';
     const { flights: parsed, skipped } = csvToFlights(csv);
     expect(parsed).toHaveLength(1);
     expect(parsed[0]).toMatchObject({ reg: 'HZ-XYZ', date: '2024-01-02', total: '3.0' });
     expect(skipped).toBe(1);
+  });
+
+  it('handles quoted fields with literal newlines in csvToFlights directly', () => {
+    const rawCsv = [
+      'date,type,reg,from,to,total,pic,night,ifr,ldg,nightLdg,appr,remarks',
+      '2024-07-01,C172,HZ-GAC,OERK,OERK,1.5,1.5,0,0,3,0,,"Circuit training\nTouch and goes\nRunway 15L"',
+      '2024-07-02,PA28,HZ-GAB,OERK,OEGS,2.0,2.0,0,0,1,0,,"Cross-country navigation\nEnroute VOR check: ""OK"""',
+    ].join('\r\n');
+
+    const { flights: parsed, skipped } = csvToFlights(rawCsv);
+    expect(skipped).toBe(0);
+    expect(parsed).toHaveLength(2);
+    expect(parsed[0].reg).toBe('HZ-GAC');
+    expect(parsed[0].remarks).toBe('Circuit training\nTouch and goes\nRunway 15L');
+    expect(parsed[1].reg).toBe('HZ-GAB');
+    expect(parsed[1].remarks).toBe('Cross-country navigation\nEnroute VOR check: "OK"');
   });
 
   it('returns nothing for a header-only or empty file', () => {

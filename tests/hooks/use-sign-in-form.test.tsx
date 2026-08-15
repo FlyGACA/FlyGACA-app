@@ -1,11 +1,14 @@
+import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { useSignInForm } from '@/hooks/useSignInForm';
 import {
   registerWithEmail,
   sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
+  signInWithApple,
 } from '@/lib/services/auth';
 import { isMirrorHost } from '@/lib/seo/seo';
 
@@ -13,12 +16,21 @@ vi.mock('@/lib/services/auth', () => ({
   signInWithEmail: vi.fn(),
   registerWithEmail: vi.fn(),
   signInWithGoogle: vi.fn(),
+  signInWithApple: vi.fn(),
   sendPasswordReset: vi.fn(),
 }));
 vi.mock('@/lib/seo/seo', () => ({
   SITE_ORIGIN: 'https://flygaca.com',
   isMirrorHost: vi.fn(() => false),
 }));
+
+function renderFormHook(initialEntries = ['/account']) {
+  return renderHook(() => useSignInForm(), {
+    wrapper: ({ children }: { children: ReactNode }) => (
+      <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+    ),
+  });
+}
 
 /** Reject the mocked Google sign-in with a Firebase-shaped error code. */
 function rejectGoogle(code: string) {
@@ -34,7 +46,7 @@ afterEach(cleanup);
 describe('useSignInForm', () => {
   it('runs Google sign-in and clears busy with no error on success', async () => {
     vi.mocked(signInWithGoogle).mockResolvedValueOnce(undefined as never);
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     await act(async () => {
       result.current.runGoogle();
     });
@@ -43,9 +55,20 @@ describe('useSignInForm', () => {
     expect(result.current.errors.general).toBeUndefined();
   });
 
+  it('runs Apple sign-in and clears busy with no error on success', async () => {
+    vi.mocked(signInWithApple).mockResolvedValueOnce(undefined as never);
+    const { result } = renderFormHook();
+    await act(async () => {
+      result.current.runApple();
+    });
+    expect(signInWithApple).toHaveBeenCalled();
+    expect(result.current.busy).toBe(false);
+    expect(result.current.errors.general).toBeUndefined();
+  });
+
   it('bails silently when the user dismisses the popup', async () => {
     rejectGoogle('auth/popup-closed-by-user');
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     await act(async () => {
       result.current.runGoogle();
     });
@@ -56,7 +79,7 @@ describe('useSignInForm', () => {
   it('surfaces a general error (and logs) for an unknown code', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     rejectGoogle('auth/something-unmapped');
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     await act(async () => {
       result.current.runGoogle();
     });
@@ -67,7 +90,7 @@ describe('useSignInForm', () => {
 
   it('routes a field-mapped code to that field, not the general band', async () => {
     rejectGoogle('auth/user-not-found'); // maps to the email field
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     await act(async () => {
       result.current.runGoogle();
     });
@@ -78,7 +101,7 @@ describe('useSignInForm', () => {
   it('offers the main-site link only on a domain error from a mirror host', async () => {
     vi.mocked(isMirrorHost).mockReturnValue(true);
     rejectGoogle('auth/unauthorized-domain');
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     await act(async () => {
       result.current.runGoogle();
     });
@@ -89,7 +112,7 @@ describe('useSignInForm', () => {
   it('does not offer the main-site link on a non-mirror host', async () => {
     vi.mocked(isMirrorHost).mockReturnValue(false);
     rejectGoogle('auth/unauthorized-domain');
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     await act(async () => {
       result.current.runGoogle();
     });
@@ -98,7 +121,7 @@ describe('useSignInForm', () => {
 
   it('toggles between sign-in and sign-up after the animation delay', () => {
     vi.useFakeTimers();
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     expect(result.current.mode).toBe('in');
     act(() => result.current.toggleMode());
     act(() => vi.advanceTimersByTime(200));
@@ -108,8 +131,13 @@ describe('useSignInForm', () => {
     vi.useRealTimers();
   });
 
+  it('initializes in sign-up mode from the URL query', () => {
+    const { result } = renderFormHook(['/account?mode=up']);
+    expect(result.current.mode).toBe('up');
+  });
+
   it('forgotPassword needs an email first, then sends the reset', async () => {
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
 
     // No email entered → a field error, no reset call.
     act(() => result.current.forgotPassword());
@@ -128,7 +156,7 @@ describe('useSignInForm', () => {
 
   it('submits a valid sign-in to signInWithEmail', async () => {
     vi.mocked(signInWithEmail).mockResolvedValueOnce(undefined as never);
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     act(() => {
       result.current.loginForm.setFieldValue('email', 'you@example.com');
       result.current.loginForm.setFieldValue('password', 'secret');
@@ -141,7 +169,7 @@ describe('useSignInForm', () => {
 
   it('submits a valid sign-up to registerWithEmail (trimmed name)', async () => {
     vi.mocked(registerWithEmail).mockResolvedValueOnce(undefined as never);
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     act(() => {
       result.current.signupForm.setFieldValue('name', ' Sam ');
       result.current.signupForm.setFieldValue('email', 'sam@example.com');
@@ -155,7 +183,7 @@ describe('useSignInForm', () => {
   });
 
   it('blocks a weak-password sign-up and a mismatched confirm before submitting', async () => {
-    const { result } = renderHook(() => useSignInForm());
+    const { result } = renderFormHook();
     act(() => {
       result.current.signupForm.setFieldValue('name', 'Sam');
       result.current.signupForm.setFieldValue('email', 'sam@example.com');
@@ -168,5 +196,19 @@ describe('useSignInForm', () => {
     expect(result.current.signupForm.errors.password).toBeTruthy();
     expect(result.current.signupForm.errors.confirmPassword).toBeTruthy();
     expect(registerWithEmail).not.toHaveBeenCalled();
+  });
+
+  it('handles redirect parameter smoothly on successful submit', async () => {
+    vi.mocked(signInWithEmail).mockResolvedValueOnce(undefined as never);
+    const { result } = renderFormHook(['/account?redirect=%2Fcaptain-adel']);
+    act(() => {
+      result.current.loginForm.setFieldValue('email', 'pilot@flygaca.com');
+      result.current.loginForm.setFieldValue('password', 'ValidPass123!');
+    });
+    await act(async () => {
+      await result.current.loginForm.handleSubmit();
+    });
+    expect(signInWithEmail).toHaveBeenCalledWith('pilot@flygaca.com', 'ValidPass123!');
+    expect(result.current.busy).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
 import { lazy, type ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router';
 import { Layout } from './app/Layout';
 import { FlavorRoot } from './app/flavor/FlavorRoot';
 import { Home } from './pages/Home/Home';
@@ -170,6 +170,7 @@ const Flashcards = lazyNamed(() => import('./pages/study/Flashcards'), 'Flashcar
 const GroundSchool = lazyNamed(() => import('./pages/study/GroundSchool'), 'GroundSchool');
 const MockExam = lazyNamed(() => import('./pages/study/MockExam'), 'MockExam');
 const Paths = lazyNamed(() => import('./pages/study/Paths'), 'Paths');
+const Pathways = lazyNamed(() => import('./pages/study/Pathways'), 'Pathways');
 const Packs = lazyNamed(() => import('./pages/study/Packs'), 'Packs');
 const PackDetail = lazyNamed(
   () => import('./pages/study/PackDetail'),
@@ -217,6 +218,14 @@ const FlavorSettings = lazyNamed(() => import('./app/flavor/FlavorSettings'), 'F
 const basename =
   typeof window !== 'undefined' && isArabicPath(window.location.pathname) ? AR_PREFIX : undefined;
 
+/** Redirect /signup to /account?mode=up, preserving any other search params. */
+function SignupRedirect() {
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  params.set('mode', 'up');
+  return <Navigate to={`/account?${params.toString()}`} replace />;
+}
+
 /**
  * Route table for a standalone prep app: the pack dashboard is home, plus the
  * shared study runners (their data is already sliced to the pack by
@@ -236,6 +245,7 @@ const flavorRoutes = [
       { path: 'study/groundschool', element: <GroundSchool /> },
       { path: 'study/exam', element: <MockExam /> },
       { path: 'study/paths', element: <Paths /> },
+      { path: 'study/pathways', element: <Pathways /> },
       { path: 'study/sheets', element: <StudySheets /> },
       // In-app links from the shared runners point at the pack's storefront
       // routes; in a single-pack app both collapse onto the dashboard.
@@ -342,9 +352,11 @@ const mainRoutes = [
       { path: 'study/groundschool', element: <GroundSchool /> },
       { path: 'study/exam', element: <MockExam /> },
       { path: 'study/paths', element: <Paths /> },
+      { path: 'study/pathways', element: <Pathways /> },
       { path: 'study/packs', element: <Packs /> },
       { path: 'study/packs/:id', element: <PackDetail /> },
       { path: 'study/sheets', element: <StudySheets /> },
+      { path: 'signup', element: <SignupRedirect /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'currency', element: <Currency /> },

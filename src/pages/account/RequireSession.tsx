@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '@/lib/services/account';
 
@@ -7,7 +7,10 @@ import { useAccount } from '@/lib/services/account';
 export function RequireSession({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const { session } = useAccount();
+  const location = useLocation();
+
   if (!session) {
+    const redirectUrl = `/account?redirect=${encodeURIComponent(location.pathname + location.search)}`;
     return (
       <section
         className="container-narrow"
@@ -16,7 +19,7 @@ export function RequireSession({ children }: { children: ReactNode }) {
         <p style={{ color: 'var(--text-muted)', marginBlockEnd: 'var(--space-4)' }}>
           {t('account.needSignIn')}
         </p>
-        <Link className="btn btn-primary" to="/account">
+        <Link className="btn btn-primary" to={redirectUrl}>
           {t('account.goSignIn')}
         </Link>
       </section>

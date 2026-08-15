@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link, useSearchParams } from 'react-router';
 import { TextField } from '@/components/calc/TextField';
 import { Alert } from '@/components/Alert';
 import { Button } from '@/components/ui/Button';
@@ -7,12 +8,25 @@ import { signIn } from '@/lib/services/account';
 import { looksLikeEmail } from '@/calc/app/emailShape';
 import { useSignInForm } from '@/hooks/useSignInForm';
 import { GoogleMark } from './GoogleMark';
+import { AppleMark } from './AppleMark';
 import { SignInFormBody } from './SignInFormBody';
 import { SignUpFormBody } from './SignUpFormBody';
 import styles from './AccountPage.module.css';
 
+function buildModeUrl(searchParams: URLSearchParams, targetMode: 'in' | 'up'): string {
+  const p = new URLSearchParams(searchParams);
+  if (targetMode === 'up') {
+    p.set('mode', 'up');
+  } else {
+    p.delete('mode');
+  }
+  const str = p.toString();
+  return str ? `/account?${str}` : '/account';
+}
+
 export function FirebaseSignIn() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const {
     mode,
     animating,
@@ -20,11 +34,11 @@ export function FirebaseSignIn() {
     errors,
     notice,
     mainSiteHref,
-    toggleMode,
     forgotPassword,
     loginForm,
     signupForm,
     runGoogle,
+    runApple,
   } = useSignInForm();
 
   const containerClass = `${styles.fadeTransition} ${animating ? styles.animating : ''}`;
@@ -46,18 +60,52 @@ export function FirebaseSignIn() {
     </Alert>
   ) : null;
 
+  const targetMode = mode === 'in' ? 'up' : 'in';
+  const targetUrl = buildModeUrl(searchParams, targetMode);
+
   return (
     <>
-      <Button
-        type="button"
-        variant="clayPrimary"
-        icon={<GoogleMark />}
-        className={styles.fullWidth}
-        disabled={busy}
-        onClick={runGoogle}
-      >
-        {t('account.continueGoogle')}
-      </Button>
+      <div role="tablist" aria-label={t('account.signInTitle')} className={styles.modeTabs}>
+        <Link
+          to={buildModeUrl(searchParams, 'in')}
+          role="tab"
+          aria-selected={mode === 'in'}
+          className={`${styles.modeTab} ${mode === 'in' ? styles.modeTabActive : ''}`}
+        >
+          {t('account.signIn')}
+        </Link>
+        <Link
+          to={buildModeUrl(searchParams, 'up')}
+          role="tab"
+          aria-selected={mode === 'up'}
+          className={`${styles.modeTab} ${mode === 'up' ? styles.modeTabActive : ''}`}
+        >
+          {t('account.register')}
+        </Link>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <Button
+          type="button"
+          variant="clayPrimary"
+          icon={<GoogleMark />}
+          className={styles.fullWidth}
+          disabled={busy}
+          onClick={runGoogle}
+        >
+          {t('account.continueGoogle')}
+        </Button>
+        <Button
+          type="button"
+          variant="clay"
+          icon={<AppleMark />}
+          className={styles.fullWidth}
+          disabled={busy}
+          onClick={runApple}
+        >
+          {t('account.continueApple')}
+        </Button>
+      </div>
       <p className={styles.divider}>{t('account.or')}</p>
 
       <div className={containerClass}>
@@ -69,9 +117,12 @@ export function FirebaseSignIn() {
       </div>
 
       <div className={styles.signInLinks}>
-        <button type="button" className={styles.linkBtn} onClick={toggleMode}>
+        <Link
+          to={targetUrl}
+          className={styles.linkBtn}
+        >
           {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
-        </button>
+        </Link>
         {mode === 'in' && (
           <button type="button" className={styles.linkBtn} disabled={busy} onClick={forgotPassword}>
             {t('account.forgotPassword')}

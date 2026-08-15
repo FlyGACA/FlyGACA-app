@@ -112,3 +112,28 @@ Enforcing before clients send tokens will lock out existing users.
    enable enforcement for the HTTP functions / set the App Check enforcement state in the console.
 5. Keep an eye on error rates immediately after; be ready to roll back enforcement if a wave of
    older clients (without tokens) is still active.
+
+## 5. Explicit environment control (`ENFORCE_APP_CHECK`)
+
+The HTTP gateway (`functions/src/gateway.ts`) reads `ENFORCE_APP_CHECK` as a Firebase param.
+Set it intentionally per environment (instead of relying on defaults):
+
+```bash
+# Production
+firebase functions:params:set ENFORCE_APP_CHECK=true
+
+# Staging/preview (example)
+firebase functions:params:set ENFORCE_APP_CHECK=false
+```
+
+The gateway logs the resolved state at startup (`App Check enforcement state`) and warns when the
+param is unset. Treat an unset param as a rollout misconfiguration.
+
+## 6. Post-rollout monitoring checklist
+
+- Watch 403 spikes with `missing App Check token` / `invalid App Check token`.
+- Track 401 vs 403 mix on `/api/chat` and `/api/feedback` to catch auth-vs-App-Check regressions.
+- Watch 429 spikes (`rate_limited`, `quota_exceeded`, `monthly_quota_exceeded`) for abuse bursts.
+- Watch payment webhook failures (`Webhook signature verification failed`, `moyasar_webhook_error`).
+- Keep rollback ready: set `ENFORCE_APP_CHECK=false`, redeploy, and investigate client token
+  coverage before re-enabling.
