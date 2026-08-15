@@ -14,7 +14,7 @@ export const SIGNED_IN: NavItem[] = [
 ];
 
 // Primary top-level destinations. Every route here is live (the legacy→React
-// rebuild is complete — see docs/MIGRATION.md); when signed in, /account renders as a
+// rebuild is complete — see MIGRATION.md); when signed in, /account renders as a
 // dropdown (AccountMenu) surfacing the daily pages.
 export const NAV: NavItem[] = [
   { to: '/library', key: 'nav.library' },

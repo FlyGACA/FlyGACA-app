@@ -5,8 +5,7 @@ import { CalcShell } from '@/components/CalcShell';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { airportLd } from '@/lib/seo/jsonld';
 import { regionBadge } from '@/lib/aerodromes';
-import { type Airport, type AirportsIndex, type AirspacesIndex } from '@/lib/content';
-import { findLongTailAirport } from '@/lib/airportShards';
+import { fetchJson, type Airport, type AirportsIndex, type AirspacesIndex } from '@/lib/content';
 import { AerodromeScope } from '@/components/aerodrome/AerodromeScope';
 import { AirportTypeIcon } from '@/components/aerodrome/AirportTypeIcon';
 import { RunwayDiagram } from '@/components/aerodrome/RunwayDiagram';
@@ -23,40 +22,22 @@ export function AerodromeDetail() {
   const { data: airspaces } = useFetchJson<AirspacesIndex>('/data/airspaces-index.json');
 
   const inCore = useMemo(() => data?.airports.find((a) => a.icao === code), [data, code]);
-  // Long-tail airfields aren't in the eager core file. The tail is region-sharded,
-  // so this resolves the one shard the ident's prefix points at instead of pulling
-  // all 66k rows — a Gulf lookup costs 17 KB rather than 2.8 MB.
-  //
-  // The result is stamped with the ident it belongs to, so navigating to another
-  // :icao re-runs the lookup instead of reusing the last answer (and needs no
-  // reset effect). `hit: null` means the sweep finished and the ident is not in
-  // the tail; `tailHit === undefined` means "not resolved yet".
-  const [found, setFound] = useState<{ code: string; hit: Airport | null } | null>(null);
+  // Long-tail airfields aren't in the eager core file; fetch the lazy tier and
+  // look there only when the core misses (so most lookups stay on the core file).
+  const [extra, setExtra] = useState<Airport[] | null>(null);
   const [extraLoading, setExtraLoading] = useState(false);
-  const tailHit = found?.code === code ? found.hit : undefined;
   useEffect(() => {
-    if (!data || inCore || tailHit !== undefined || extraLoading) return;
-    let cancelled = false;
-    const forCode = code;
+    if (!data || inCore || extra || extraLoading) return;
     setExtraLoading(true);
-    findLongTailAirport(forCode)
-      .then((hit) => {
-        if (!cancelled) setFound({ code: forCode, hit });
-      })
-      .catch(() => {
-        if (!cancelled) setFound({ code: forCode, hit: null });
-      })
-      .finally(() => {
-        if (!cancelled) setExtraLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [data, inCore, tailHit, extraLoading, code]);
+    fetchJson<AirportsIndex>('/data/airports-extra.json')
+      .then((d) => setExtra(d.airports))
+      .catch(() => setExtra([]))
+      .finally(() => setExtraLoading(false));
+  }, [data, inCore, extra, extraLoading]);
 
-  const airport = inCore ?? tailHit ?? undefined;
+  const airport = inCore ?? extra?.find((a) => a.icao === code);
 
-  if (loading || (!inCore && (extraLoading || (data && tailHit === undefined)))) {
+  if (loading || (!inCore && (extraLoading || (data && !extra)))) {
     return (
       <CalcShell title={code} category={t('tools.categories.procedures')}>
         <p>{t('common.loading')}</p>

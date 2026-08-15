@@ -261,57 +261,26 @@ export function entitlementFromCheckout(cadence: Cadence, from: Date): Entitleme
   return { plan: "pro", source: "moyasar", expiresAt: extendExpiry(from, cadence).toISOString() };
 }
 
-/** Which credential authenticated a webhook delivery, or null if none did. */
-export type WebhookAuthMechanism = "secret_token" | "signature";
-
-/** Constant-time string compare that tolerates unequal lengths (timingSafeEqual throws). */
-function secretEquals(a: string, b: string): boolean {
-  const left = Buffer.from(a, "utf8");
-  const right = Buffer.from(b, "utf8");
-  return left.length === right.length && timingSafeEqual(left, right);
-}
-
 /**
- * Authenticate a Moyasar webhook delivery against the shared secret configured for
- * the endpoint (Moyasar dashboard → Webhooks → `shared_secret`, mirrored into the
- * MOYASAR_WEBHOOK_SECRET secret).
- *
- * Moyasar sends the shared secret back as a **`secret_token` field in the JSON body**;
- * that is the documented mechanism and the primary check here. This module previously
- * implemented an HMAC-SHA256-over-raw-body check against an `x-moyasar-signature`
- * header — an assumption made without access to the webhook docs, and wrong, which
- * meant every real delivery was rejected and the async backstop was silently inert.
- *
- * The HMAC branch is kept as a PROVISIONAL fallback so the endpoint does not depend on
- * that reading being right a second time. It is deletable: the caller logs which branch
- * authenticated each delivery, so a few real deliveries settle which one is live.
- *
- * Accepting either is not a security downgrade — both prove knowledge of the same
- * shared secret, and `secret_token` transmits that secret in the body regardless.
- * Defense-in-depth either way: `confirmPayment` (the callable, which fetches the
- * payment server-to-server by id with the secret key) is the primary trusted
- * fulfilment path, so a rejection here costs the backstop, not correctness.
- *
- * Returns the mechanism that matched, or `null` for an unauthenticated delivery.
- * NOTE: `secret_token` IS the secret in plaintext — never log the body's values.
+ * Verify the `x-moyasar-signature` header against the raw webhook body using the
+ * shared secret configured for the endpoint (Moyasar dashboard → Webhooks →
+ * `shared_secret`). Defense-in-depth only: `confirmPayment` (the callable, which
+ * fetches the payment server-to-server by id with the secret key) is the PRIMARY,
+ * trusted fulfilment path, so an incorrect signature recipe here would make the
+ * webhook path inert rather than insecure. Re-verify this against Moyasar's current
+ * webhook docs before depending on the webhook alone (docs.moyasar.com blocked
+ * automated fetches during authoring of this integration).
  */
-export function verifyMoyasarWebhook(
-  body: { secret_token?: unknown } | undefined,
+export function verifyMoyasarSignature(
   rawBody: string,
   signature: string | string[] | undefined,
   secret: string,
-): WebhookAuthMechanism | null {
-  if (!secret) return null;
-
-  const token = body?.secret_token;
-  if (typeof token === "string" && secretEquals(token, secret)) return "secret_token";
-
-  if (signature && !Array.isArray(signature)) {
-    const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
-    if (secretEquals(expected, signature)) return "signature";
-  }
-
-  return null;
+): boolean {
+  if (!signature || Array.isArray(signature)) return false;
+  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
+  const a = Buffer.from(expected, "utf8");
+  const b = Buffer.from(signature, "utf8");
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 // ---- Checkout intent + fulfilment (pure) ----------------------------------------

@@ -26,31 +26,12 @@ grid, card glow, and a widgets/ family — lazy-loaded off the hero's critical p
 **command palette** (`src/components/CommandPalette/`) jumps between all of these. `/learn` is the
 canonical hub — `/study` and `/guides` redirect into it (`/study` → `/learn?tab=practice`); don't
 relink them to the old paths.
-Beyond the web app there are **two separate native product lines — don't conflate them**:
-
-1. **The native SwiftUI family** — one App Store app per study module, bundle ids
-   `com.flygaca.<module>`. **Its code lives in the separate `ay2m/FlyGACA` repo**, not here (the
-   old `apple/` mirror was retired 2026-08). This monorepo stays the **source of truth for their
-   content**: `scripts/build-ios-content.mjs` generates each app's `Content/` from the corpus +
-   `src/lib/prepCatalog.ts`, and `scripts/native/gen-app-icons.mjs` generates their icons. Both
-   take `--out <appsDir>` (or `$FG_APPLE_APPS_DIR`) — the iOS repo's `sync-content.sh` passes its
-   own `apple/Apps`; with no `--out` they write to the gitignored `.ios-build/` scratch dir, which
-   is all the `content-validation` CI job needs. See `docs/APPS-FAMILY-ROADMAP.md`.
-2. **The Capacitor white-label "flavors"** (`src/flavors/`, `src/app/flavor/`) — the same web
-   bundle rebuilt per pack, bundle ids `com.flygaca.prep.<flavor>`; `IS_FLAVOR_APP` is defined in
-   `src/flavors/current.ts` and consumed by `src/router.tsx` to swap in a reduced, single-pack
-   route tree, and `scripts/build-flavor.mjs` slices content per flavor. See
-   `docs/RUNBOOK-native.md` and `docs/STORE-SUITE.md`.
-
-The two have different bundle ids, different pipelines and different memberships — a pack can
-have a native app but no flavor (`cpl`, `ir`, `atpl`) or a flavor but no native app
-(`conversion`, `medical`).
-
-> **The licence-exam native apps are paused** (2026-08-10). PPL, CPL, IR and ATPL are dropped
-> from the `APPS` maps in `build-ios-content.mjs` and `gen-app-icons.mjs`, and the `ppl-exam`
-> **flavor** went with them. **The web packs are untouched**: still in `prepCatalog.ts`, still
-> sold at `/study/packs/*`, still in `SELLABLE_PACK_IDS`. Don't re-add the apps, and don't "fix" a
-> doc by restoring a six-app list. See `docs/APPS-FAMILY-ROADMAP.md`.
+Beyond the web app, `apple/` is a native iOS app family (one shared Swift package,
+`apple/FlyGACAKit`, one App Store app per exam-prep pack) built from a **flavor** switch
+(`src/flavors/`, `src/app/flavor/`; `IS_FLAVOR_APP` is defined in `src/flavors/current.ts` and
+consumed by `src/router.tsx`) that swaps in a reduced, single-pack route tree;
+`scripts/build-flavor.mjs` slices content per flavor. See
+`apple/ARCHITECTURE.md`, `docs/RUNBOOK-native.md`, and `docs/STORE-SUITE.md`.
 
 The repo also contains the **backend**: `functions/` holds the Firebase Cloud Functions — the
 Express gateway (`chat`) serving `/api/chat` + `/api/feedback` (auth, App Check, rate limiting, free
@@ -63,13 +44,15 @@ daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authe
 org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/src/index.ts` is the
 single deploy manifest — only triggers exported there are deployed. It is its own npm package with
 its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
-it (root `npm run verify` does not cover it). Deploy region is **`me-central1`** (Doha) — the single
-source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS_REGION` in
-`src/lib/services/firebase.ts` and by firebase.json's rewrite regions;
-`functions/tests/region.test.ts` guards and pins that pairing, and all three currently agree. The
-`me-central1` → `me-central2` cutover (Dammam, in-Kingdom / PDPL — where Firestore already sits) is
-**not started in code**: it is a deliberate ordered migration (deploy the functions to
-`me-central2` first, flip the config last), documented in `docs/RUNBOOK-deploy.md`.
+it (root `npm run verify` does not cover it). Deploy region is `me-central2` (Dammam, in-Kingdom /
+PDPL; the single source of truth is `functions/src/region.ts`, mirrored client-side by
+`FUNCTIONS_REGION` in `src/lib/services/firebase.ts`). firebase.json's rewrite regions must match —
+`functions/tests/region.test.ts` guards and pins that pairing. The `me-central1` → `me-central2`
+cutover is **switched in code/config** (Firestore already sits in `me-central2`), but the production
+Cloud Functions have **not been redeployed** to `me-central2` yet — they still run in `me-central1`,
+so a Firebase Hosting deploy currently errors ("functions … present but in the wrong region") until
+the next functions deploy lands. (`docs/RUNBOOK-deploy.md` still calls the cutover "planned" and is
+itself stale.)
 
 ## Architecture
 
@@ -87,9 +70,9 @@ source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS
   choice onto `<html lang/dir>` so RTL flips document-wide. `LangToggle` switches languages.
 - **Styling:** `src/styles/tokens.css` is the design-token source of truth (the Falcon palette);
   components use CSS Modules with **logical properties** so RTL mirrors automatically. See
-  `docs/FIGMA_DESIGN_SYSTEM.md` for the design system. Motion is tokenized too: `framer-motion` mirrors
+  `FIGMA_DESIGN_SYSTEM.md` for the design system. Motion is tokenized too: `framer-motion` mirrors
   the CSS motion tokens in `src/components/bento/motion.ts`, and
-  `tests/integrity/bento-motion-parity.test.ts` **fails the build if the two drift**; respect
+  `tests/bento-motion-parity.test.ts` **fails the build if the two drift**; respect
   `usePrefersReducedMotion`.
 - **Data:** the regulatory JSON corpus + indexes ship under `public/data/` and are fetched at
   runtime via `src/lib/content.ts` (`fetchJson`; corpus shapes in `src/lib/content.types.ts`,
@@ -105,7 +88,7 @@ source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS
   `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`, plus the shared
   `flightFields` readers for the free-text `Flight` columns), `calc/library/`
   (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`, `constellation`),
-  `calc/study/` (`srs` — the cross-platform contract the `ay2m/FlyGACA` Swift port mirrors — `shuffle`, and
+  `calc/study/` (`srs` — the cross-platform contract the apple/ Swift port mirrors — `shuffle`, and
   `glidePath`), `calc/hud/` (the airspace-sim engine: `scenario`, `kinematics`, `projection`,
   `sectors`, `geoKsa`, `callsigns`, `simMetar`, seeded `rng`), and `calc/app/`
   (`authError`, `dashboardLayout`, `emailShape`, `passwordPolicy`, `pricingView`, `toolPresets`).
@@ -162,7 +145,7 @@ source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS
   (`gateway.ts`, `billing.ts`, `staff.ts`, `school.ts`, `founding.ts`, `org.ts`) stay thin.
   Client-side mirrors (`src/calc/chat/chatQuota.ts`, `src/lib/services/entitlements.ts`,
   `src/lib/services/features.ts`) must match their server core —
-  `tests/integrity/client-server-mirrors.test.ts` enforces this, it is not just convention.
+  `tests/client-server-mirrors.test.ts` enforces this, it is not just convention.
 - **Entitlement is server-owned.** `users/{uid}.entitlement` is written **only** by Cloud Functions
   through the Admin SDK (which bypasses `firestore.rules`): the **Moyasar** billing callables
   (`billing.ts` — `createCheckoutConfig`/`confirmPayment`/`moyasarWebhook`), `claimStaffAccess`
@@ -181,33 +164,21 @@ source of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS
 
 ## Hosting & deploy
 
-**Firebase Hosting is the single serving front.** The Vite build (`dist/`) is served only from
-Firebase, which also fronts the Cloud Functions gateway for `/api/*` — one platform for hosting +
-backend. (The Vercel / Cloudflare / Netlify mirror fronts were removed 2026-08 to consolidate; see
-`docs/RUNBOOK-deploy.md` for the history. If a CDN is ever wanted, use DNS-only pass-through, not a
-second build-and-serve front.)
+The single Vite build (`dist/`) is served from several fronts, all pointing at the **same** Firebase
+Cloud Functions gateway for `/api/*`:
 
-- **Firebase Hosting** serves the `flygaca.com` apex + `www` (DNS cutover completed 2026-07-31, with
-  `flygaca-app.web.app` as the underlying site) and fronts the Cloud Functions (`chat`,
-  `moyasarWebhook`). `npm run deploy` builds → `prerender` → coverage check → `firebase deploy`, but
-  the **production deploy path is the `deploy.yml` workflow**, which additionally offloads the corpus
-  to the bucket. Keep any new API surface under `/api/*` so it resolves through the same rewrites —
-  and remember the rewrite is only half of it: the `chat` function must be deployed with the route or
-  the path resolves against a stale gateway. `deploy.yml` deploys `functions/` **before** hosting for
-  exactly that reason, gated on the `DEPLOY_FUNCTIONS` repo variable (off until the deploy service
-  account has the functions IAM; it warns loudly while off). See `docs/RUNBOOK-deploy.md`.
-- **The CSP lives in one place** — `firebase.json` — now that there's a single front.
-  `tests/integrity/csp-parity.test.ts` asserts it keeps allowing the money-path origins (`cdn.moyasar.com`,
-  `api.moyasar.com`, and `me-central1-flygaca-app.cloudfunctions.net` — the `httpsCallable` billing
-  host, *not* covered by `*.googleapis.com`). `firebase.json` carries no `X-Robots-Tag` (it serves
-  canonical flygaca.com); the `flygaca-app.web.app` duplicate is kept out of the index by the
-  canonical tag + a runtime `.web.app` noindex in `src/main.tsx` (`isMirrorHost`, `seo.ts`).
-- **Prices are two files.** `src/pages/pricing/Pricing.tsx` quotes; `functions/.env.flygaca-app`'s
-  `MOYASAR_PRICE_*_SAR` params charge (the client never sends an amount).
-  `tests/integrity/pricing-server-parity.test.ts` is the drift guard — note the founding-offer case, where the
-  server param must equal the *offer* price, not the struck-through list price.
-- `captadel.com` / `www.captadel.com` fold to `flygaca.com` at **runtime** (`seo.ts` `DUPLICATE_HOSTS`
-  + `main.tsx`); `www.flygaca.com` → apex is a Firebase-console redirect-domain setting.
+- **Firebase Hosting** is the **canonical origin**: it fronts the Cloud Functions (`chat`,
+  `moyasarWebhook`) and — since the DNS cutover completed 2026-07-31 — serves the `flygaca.com`
+  apex and `www` directly (with `flygaca-app.web.app` as the underlying site). `npm run deploy`
+  builds → `prerender` → coverage check → `firebase deploy`, but the **production deploy path is
+  the `deploy.yml` workflow**, which additionally offloads the corpus to the bucket.
+- **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) and the **Netlify** / **Vercel**
+  mirrors each serve `dist/` and **proxy `/api/*` back to the Firebase origin** as a same-origin
+  rewrite — so chat/content keep working and the strict CSP (`connect-src 'self'`) never changes.
+  Keep any new API surface under `/api/*` for this to hold. The mirrors `X-Robots-Tag: noindex`
+  any host that isn't `flygaca.com`.
+- Redirects consolidate the marketing domains onto `flygaca.com` (e.g. `captadel.com` → `flygaca.com`
+  in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 
 See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
 cutover and the in-progress `me-central1` → `me-central2` functions cutover — config switched, the
@@ -219,19 +190,13 @@ for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
 
 - **Bilingual + RTL is first-class.** New copy → a key in **both** `src/i18n/en.json` and
   `ar.json`. `npm run test` fails on any key present in one language but not the other
-  (`tests/integrity/i18n-parity.test.ts`).
+  (`tests/i18n-parity.test.ts`).
 - **The disclaimer never drifts.** Use `<Disclaimer />`; do not inline or reword the
   not-affiliated / verify-against-GACA text.
 - **Tokens only / logical properties only.** No hard-coded colours; no physical `left`/`right`.
 - **Never commit build output.** `public/sitemap.xml` / `public/robots.txt` are regenerated by
   `build:sitemap` and git-ignored. Keep branches synced with `main`; see `docs/MERGE-CONFLICTS.md`
   for prevention + how to resolve lockfile / i18n conflicts.
-- **Tests are grouped by the layer under test** — `tests/{calc,hud,lib,components,hooks,pages,app,scripts}/`
-  plus `tests/integrity/` for the cross-cutting drift guards (i18n parity, client↔server mirrors,
-  pricing parity, CSP parity, bento-motion parity, corpus/content shape). `tests/helpers/` holds
-  shared utilities and `tests/rules/` the emulator-backed rules suite; `setup.ts` stays at the
-  `tests/` root because `vitest.config.ts` names it directly. Import source through the `@/` alias
-  so a spec keeps working wherever it sits. See `tests/README.md`.
 - Run `npm run verify` before committing. It chains the frontend gate —
   `typecheck → lint → format:check → test → build → check:bundle → check:perf` (`check:bundle` fails
   if the initial gzipped JS exceeds its budget — 189 kB today; route chunks excluded by design.
@@ -243,11 +208,11 @@ for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
   **functions** (`lint · test:coverage · build` inside `functions/`), **Firestore rules**
   (`npm run test:rules`, emulator-backed — `firestore.rules` + `tests/rules/`), and **e2e · a11y**
   (`npm run test:e2e`, Playwright — `e2e/smoke.spec.ts`, `flows.spec.ts`, `a11y.spec.ts`).
-  `.github/workflows/` holds five workflows in all: `ci.yml`, **`deploy.yml`** (the only production
+  `.github/workflows/` holds six workflows in all: `ci.yml`, **`deploy.yml`** (the only production
   deploy — build, budgets, prerender, corpus-bucket offload, `firebase deploy`),
-  `firebase-hosting-pull-request.yml` (PR previews), `ios.yml` (Swift tests + per-app builds), and
-  **docs-parser** — which lints the regulatory Markdown (`lint:md`), runs `parse:regulations`, and
-  upserts embeddings.
+  `deploy-cloudflare.yml` (mirror, secret-gated), `firebase-hosting-pull-request.yml` (PR
+  previews), `ios.yml` (Swift tests + per-app builds), and **docs-parser** — which lints the
+  regulatory Markdown (`lint:md`), runs `parse:regulations`, and upserts embeddings.
 
 ## Adding a new tool
 
@@ -268,7 +233,7 @@ is the apply-and-normalise variant), `parse:regulations` (compile the cross-ref 
 `content/regulations/*.md`), `build:airports` / `build:chunks` / `embeddings:upsert` (Supabase
 pgvector), `build:sitemap`, `gen:og`, `gen:aip-sheet` (build the AIP study sheet), `gen:captain`
 (Captain Adel imagery), `audit:ai` (the AI-search visibility audit behind `SEO-PLAN.md`),
-`optimize:img`, and `new:guide` (scaffold a guide — see `docs/GUIDE_AUTHORING.md`). Shared script
+`optimize:img`, and `new:guide` (scaffold a guide — see `GUIDE_AUTHORING.md`). Shared script
 helpers live in `scripts/lib/` (flavor slicing, markdown splitting, regulations parsing, sync
 merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 `deploy:rules` / `deploy:functions` / `deploy:all` — `npm run deploy` alone does **not** deploy
@@ -278,12 +243,10 @@ merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
 
 > 📖 **Family context:** [The Book of Fly GACA](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) is the whole-family reference — all ten repos, the shared tenets, and the glossary in one place.
 
-`ROADMAP.md` (what's next), `README.md` (getting started), `docs/MIGRATION.md` (rebuild log),
-`docs/GUIDE_AUTHORING.md` (learn content), `docs/FIGMA_DESIGN_SYSTEM.md` (design system),
+`MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
+`GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
 `SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility; vendored skills live under
-`.claude/skills/`, pinned by `skills-lock.json` for the `firebase/agent-skills` set and by
-`.claude/skills/THIRD_PARTY_NOTICES.md` for everything vendored by hand),
-`docs/ARCHITECTURE-BLUEPRINT.md`
+`.claude/skills/`, pinned by `skills-lock.json`), `docs/ARCHITECTURE-BLUEPRINT.md`
 (platform-wide technical blueprint), root `SECURITY.md`, and `docs/` generally (design, billing,
 `RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `RUNBOOK-firebase.md`, the `RUNBOOK-ios-*.md` set,
 `LICENSED-API.md`, `PRICING-REVENUE-STRATEGY.md`, `RUNBOOK-native.md` /

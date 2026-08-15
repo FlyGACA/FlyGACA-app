@@ -2,7 +2,7 @@
  * The bento motion constants, in framer-motion's units (seconds / bezier array).
  * Each mirrors a design token in `src/styles/tokens.css` — framer animates via
  * inline styles, so it cannot read the CSS custom properties directly;
- * `tests/integrity/bento-motion-parity.test.ts` fails the build if the two drift.
+ * `tests/bento-motion-parity.test.ts` fails the build if the two drift.
  */
 
 /** Mirrors `--ease-entry` — ultra-premium dampened deceleration. */

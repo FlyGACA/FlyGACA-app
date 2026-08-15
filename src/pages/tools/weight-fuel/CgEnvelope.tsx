@@ -1,59 +1,67 @@
 import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fin } from '@/calc/guards';
-import { cgEnvelopeStatus, type CgLimits } from '@/calc/weightBalance';
-import type { FuelWeightPoints } from '@/calc/pilot/fuel-weight';
+import type { EnvelopeStatus } from '@/calc/weightBalance';
 import styles from './CgEnvelope.module.css';
 
 interface CgEnvelopeProps {
-  points: FuelWeightPoints;
+  weight: number;
+  cg: number;
   cgFwd: number;
   cgAft: number;
   mtow: number;
-  limits: CgLimits;
+  status: EnvelopeStatus;
 }
 
 const VW = 240;
 const VH = 200;
-const M = { l: 12, r: 30, t: 14, b: 22 };
+const M = { l: 12, r: 12, t: 14, b: 22 };
 const PLOT = { x: M.l, y: M.t, w: VW - M.l - M.r, h: VH - M.t - M.b };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-export function CgEnvelope({ points, cgFwd, cgAft, mtow, limits }: CgEnvelopeProps) {
+/**
+ * A centre-of-gravity envelope plot: max-weight × forward/aft CG limits drawn
+ * as the safe box, with the loaded point riding inside (or outside) it. The
+ * point glides to its new spot as the load changes; the envelope box is fixed
+ * so that motion reads as "where am I in the envelope". Decorative — the
+ * in/out verdict is a ResultStat on the page; a caption carries the summary.
+ * Falls back to a bare point + axis when no CG limits are entered.
+ */
+export function CgEnvelope({ weight, cg, cgFwd, cgAft, mtow, status }: CgEnvelopeProps) {
   const { t } = useTranslation();
   const hasBox = fin(cgFwd) && fin(cgAft) && cgAft > cgFwd;
 
-  const pts = [
-    { id: 'zfw', p: points.zfw, label: 'ZFW' },
-    { id: 'ramp', p: points.ramp, label: 'Ramp' },
-    { id: 'tow', p: points.tow, label: 'TOW' },
-    { id: 'ldw', p: points.ldw, label: 'LDW' },
-  ].filter(x => x.p != null) as { id: string, p: { weight: number, cg: number }, label: string }[];
-
-  if (pts.length === 0) return null;
-
-  const minCg = Math.min(...pts.map(x => x.p.cg));
-  const maxCg = Math.max(...pts.map(x => x.p.cg));
-  
-  const widthSpan = hasBox ? Math.max(cgAft, maxCg) - Math.min(cgFwd, minCg) : maxCg - minCg;
-  const padding = widthSpan * 0.3 || 3;
-
+  // X domain (CG arm): stable around the envelope so the point moves, not the
+  // box; without limits, span a small window around the loaded CG.
   const [xLo, xHi] = hasBox
-    ? [Math.min(cgFwd, minCg) - padding, Math.max(cgAft, maxCg) + padding]
-    : [minCg - padding, maxCg + padding];
-
-  const maxWt = Math.max(...pts.map(x => x.p.weight));
-  const yHi = (fin(mtow) ? Math.max(mtow, maxWt) : maxWt) * 1.08 || 1;
+    ? [cgFwd - (cgAft - cgFwd) * 0.3, cgAft + (cgAft - cgFwd) * 0.3]
+    : [cg - Math.max(3, Math.abs(cg) * 0.08), cg + Math.max(3, Math.abs(cg) * 0.08)];
+  const yHi = (fin(mtow) ? Math.max(mtow, weight) : weight) * 1.08 || 1;
 
   const px = (v: number) => PLOT.x + ((v - xLo) / (xHi - xLo || 1)) * PLOT.w;
   const py = (v: number) => PLOT.y + PLOT.h - (v / yHi) * PLOT.h;
 
   const boxTop = fin(mtow) ? py(mtow) : PLOT.y;
+  const markX = clamp(px(cg), PLOT.x, PLOT.x + PLOT.w);
+  const markY = clamp(py(weight), PLOT.y, PLOT.y + PLOT.h);
+
+  const label = t('weightBalance.envelopeSummary', {
+    weight: Math.round(weight),
+    cg: cg.toFixed(1),
+    status: t(`weightBalance.envelope.${status}`),
+  });
+
+  const markClass =
+    status === 'out'
+      ? `${styles.mark} ${styles.markOut}`
+      : status === 'in'
+        ? `${styles.mark} ${styles.markIn}`
+        : styles.mark;
 
   return (
     <figure className={styles.wrap}>
-      <svg viewBox={`0 0 ${VW} ${VH}`} className={styles.svg} role="img">
+      <svg viewBox={`0 0 ${VW} ${VH}`} className={styles.svg} role="img" aria-label={label}>
         {/* plot frame */}
         <line
           x1={PLOT.x}
@@ -78,41 +86,14 @@ export function CgEnvelope({ points, cgFwd, cgAft, mtow, limits }: CgEnvelopePro
           <line x1={PLOT.x} y1={boxTop} x2={PLOT.x + PLOT.w} y2={boxTop} className={styles.limit} />
         )}
 
-        {pts.length > 1 && (
-          <path
-            d={`M ${pts.map(x => `${px(x.p.cg)} ${py(x.p.weight)}`).join(' L ')}`}
-            fill="none"
-            stroke="var(--border-bright, #888)"
-            strokeWidth="1.5"
-            strokeDasharray="4 2"
-          />
-        )}
-
-        {pts.map((pt) => {
-          const status = cgEnvelopeStatus(pt.p.weight, pt.p.cg, limits);
-          const markX = clamp(px(pt.p.cg), PLOT.x, PLOT.x + PLOT.w);
-          const markY = clamp(py(pt.p.weight), PLOT.y, PLOT.y + PLOT.h);
-          const markClass =
-            status === 'out'
-              ? `${styles.mark} ${styles.markOut}`
-              : status === 'in'
-                ? `${styles.mark} ${styles.markIn}`
-                : styles.mark;
-
-          return (
-            <g
-              key={pt.id}
-              className={markClass}
-              style={{ '--px': `${markX}px`, '--py': `${markY}px` } as CSSProperties}
-            >
-              <circle r="4" className={styles.dot} />
-              {status === 'out' && <circle r="7.5" className={styles.ring} />}
-              <text x="8" y="3" fontSize="10" fill="currentColor" fontWeight="bold">
-                {pt.label}
-              </text>
-            </g>
-          );
-        })}
+        {/* loaded point — glides to its mapped position */}
+        <g
+          className={markClass}
+          style={{ '--px': `${markX}px`, '--py': `${markY}px` } as CSSProperties}
+        >
+          <circle r="5" className={styles.dot} />
+          {status === 'out' && <circle r="8.5" className={styles.ring} />}
+        </g>
       </svg>
       <figcaption className={styles.caption}>
         <span className={styles.axisLabel}>{t('weightBalance.envelopeCgAxis')}</span>

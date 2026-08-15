@@ -42,30 +42,6 @@ const firebaseConfig = {
   measurementId: env.VITE_FIREBASE_MEASUREMENT_ID as string | undefined,
 };
 
-/**
- * Placeholder values that must NOT count as configuration. `.env.example` ships
- * `your-firebase-web-api-key`-style stand-ins, and a build that misses its real
- * env (a local `firebase deploy` with a stale `.env.local`, a CI job that skipped
- * the "Verify build env" guard) bakes those in verbatim. Because the check below
- * is a truthiness test, such a build used to look *configured*: the SDK booted
- * against a bogus key, the /account page rendered a complete sign-in form, and
- * then every single call — Google popup and email/password alike — failed with
- * `auth/api-key-not-valid`. Treating a placeholder as "unconfigured" turns that
- * silent dead end into the honest "sign-in unavailable" notice.
- *
- * `mock-api-key` is deliberately NOT listed: `auth.ts` keys its offline mock
- * sign-in off that exact value, so it has to stay "configured".
- */
-const PLACEHOLDER_PATTERNS = [/^your-/i, /replace[-_]?me/i, /^changeme$/i, /^xxx+$/i];
-
-/** Whether a `VITE_FIREBASE_*` value is an unfilled `.env.example` placeholder. */
-export function isPlaceholderConfigValue(value: string | undefined): boolean {
-  if (!value) return true;
-  const trimmed = value.trim();
-  if (!trimmed) return true;
-  return PLACEHOLDER_PATTERNS.some((re) => re.test(trimmed));
-}
-
 /** True once the minimal web config (apiKey + projectId + appId) is present. */
 export function isFirebaseConfigured(): boolean {
   const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
@@ -76,11 +52,7 @@ export function isFirebaseConfigured(): boolean {
   if (import.meta.env?.VITEST) {
     return false;
   }
-  return (
-    !isPlaceholderConfigValue(firebaseConfig.apiKey) &&
-    !isPlaceholderConfigValue(firebaseConfig.projectId) &&
-    !isPlaceholderConfigValue(firebaseConfig.appId)
-  );
+  return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId);
 }
 
 /** Whether to wire Auth/Firestore to the local emulator (dev + opt-in flag). */
@@ -166,25 +138,6 @@ export function getFirebaseAuth(): Promise<Auth | null> {
     return auth;
   })();
   return authPromise;
-}
-
-/**
- * `getFirebaseAuth()`, but resolved only once Auth has finished restoring any
- * persisted session — so `.currentUser` is trustworthy the moment this resolves.
- *
- * Use this, not `getFirebaseAuth()`, anywhere a null `currentUser` changes what the
- * user sees. `getAuth()` resolves immediately while the session is still being read
- * back from IndexedDB, so `currentUser` is `null` for the first few ms of every cold
- * page load. That is not an edge case on the money path: `billing.ts` starts checkout
- * with `window.location.assign`, a full document load, so checkout *always* reads auth
- * cold — a signed-in buyer got "sign in to check out", and the post-payment return leg
- * called `confirmPayment` with no ID token and showed an error after a real charge.
- */
-export async function getReadyAuth(): Promise<Auth | null> {
-  const auth = await getFirebaseAuth();
-  if (!auth) return null;
-  await auth.authStateReady();
-  return auth;
 }
 
 let dbPromise: Promise<Firestore | null> | null = null;

@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
-import { dueKeys, type SrsEntry } from '@/calc/study/srs';
+import { dueKeys, masteredCount } from '@/calc/study/srs';
 import { glidePathBins } from '@/calc/study/glidePath';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { GlidePathStrip } from '@/components/study/GlidePathStrip';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { courseLd } from '@/lib/seo/jsonld';
 import { ProgressBar } from '@/components/ProgressBar';
+import { Disclaimer } from '@/components/Disclaimer';
 import { HubBackLink } from '@/components/HubBackLink';
 import styles from './Study.module.css';
 import { shuffle } from '@/calc/study/shuffle';
@@ -29,41 +30,23 @@ export function Flashcards() {
   );
   const [reload, setReload] = useState(0);
   const { data, error, loading } = useFetchJson<QuizData>('/data/quiz.json', reload);
+  const { fcSrs } = useStudyProgress();
+  const [bank, setBank] = useState<QuizBank | null>(null);
   const [params, setParams] = useSearchParams();
 
-  const [category, setCategory] = useState<string>('all');
-
-  const categories = [
-    { id: 'all', label: t('study.filterAll') },
-    { id: 'part61', label: t('study.filterPart61') },
-    { id: 'part91', label: t('study.filterPart91') },
-    { id: 'part121_135', label: t('study.filterPart121_135') },
-    { id: 'saelpt', label: t('study.filterSaelpt') },
-  ];
-
-  const filteredBanks = useMemo(() => {
-    if (!data) return [];
-    if (category === 'all') return data.banks;
-    if (category === 'part61') return data.banks.filter((b) => b.source.includes('Part 61'));
-    if (category === 'part91') return data.banks.filter((b) => b.source.includes('Part 91'));
-    if (category === 'part121_135')
-      return data.banks.filter(
-        (b) => b.source.includes('Part 121') || b.source.includes('Part 135'),
-      );
-    if (category === 'saelpt')
-      return data.banks.filter(
-        (b) =>
-          b.id.includes('saelpt') || b.source.includes('Doc 9835') || b.source.includes('Annex 1'),
-      );
-    return data.banks;
-  }, [data, category]);
-
-  // Deep-link straight into one bank's deck via ?bank=<id>
-  const deepLinkedBank = useMemo(() => {
-    if (!data) return null;
+  // Deep-link straight into one bank's deck via ?bank=<id> (e.g. from a pack or
+  // the hub's weak-topics list). Decks stay per-bank so SRS attribution is exact.
+  useEffect(() => {
+    if (!data || bank) return;
     const id = params.get('bank');
-    return id ? data.banks.find((b) => b.id === id) : null;
-  }, [data, params]);
+    const found = id ? data.banks.find((b) => b.id === id) : null;
+    if (found) setBank(found);
+  }, [data, params, bank]);
+
+  const backToBanks = () => {
+    setBank(null);
+    if ([...params.keys()].length) setParams({}, { replace: true });
+  };
 
   if (loading)
     return <section className={`container-narrow ${styles.page}`}>{t('common.loading')}</section>;
@@ -79,87 +62,83 @@ export function Flashcards() {
       </section>
     );
 
-  if (deepLinkedBank) {
+  if (!bank) {
     return (
-      <Deck
-        banks={[deepLinkedBank]}
-        onBack={() => {
-          setParams({}, { replace: true });
-        }}
-      />
+      <section className={`container-narrow ${styles.page}`}>
+        <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
+        <h1>{t('study.flashcards')}</h1>
+        <p className={styles.subtitle}>{t('study.pickBank')}</p>
+        <ul className={styles.banks}>
+          {data.banks.map((b) => {
+            const srs = fcSrs[b.id] ?? {};
+            const keys = b.questions.map((_, i) => String(i));
+            const due = dueKeys(srs, keys, new Date()).length;
+            const mastered = masteredCount(srs);
+            return (
+              <li key={b.id}>
+                <button type="button" className={styles.bank} onClick={() => setBank(b)}>
+                  <span className={styles.bankTitle}>{b.title}</span>
+                  <span className={styles.bankMeta}>
+                    {t('study.questions', { n: b.questions.length })}
+                    {due > 0 ? ` · ${t('study.dueCount', { n: due })}` : ''}
+                    {mastered > 0 ? ` · ${t('study.masteredCount', { n: mastered })}` : ''}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <Disclaimer compact />
+      </section>
     );
   }
 
-  return (
-    <section className={`container-narrow ${styles.page}`}>
-      <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
-      <h1>{t('study.flashcards')}</h1>
-
-      <div className={styles.categoryFilters}>
-        {categories.map((c) => (
-          <button
-            key={c.id}
-            className={`${styles.categoryBtn} ${category === c.id ? styles.categoryBtnActive : ''}`}
-            onClick={() => setCategory(c.id)}
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
-
-      {filteredBanks.length > 0 ? (
-        <Deck banks={filteredBanks} onBack={() => {}} hideBack />
-      ) : (
-        <p>No cards found for this category.</p>
-      )}
-    </section>
-  );
+  return <Deck bank={bank} onBack={backToBanks} />;
 }
 
-type Card = QuizQuestion & { key: string; bankId: string };
+type Card = QuizQuestion & { key: string };
 
-function Deck({
-  banks,
-  onBack,
-  hideBack,
-}: {
-  banks: QuizBank[];
-  onBack: () => void;
-  hideBack?: boolean;
-}) {
+function Deck({ bank, onBack }: { bank: QuizBank; onBack: () => void }) {
   const { t } = useTranslation();
   const { fcSrs } = useStudyProgress();
   const reduce = usePrefersReducedMotion();
 
   const allCards: Card[] = useMemo(
-    () =>
-      banks.flatMap((b) => b.questions.map((c, idx) => ({ ...c, key: String(idx), bankId: b.id }))),
-    [banks],
+    () => bank.questions.map((c, idx) => ({ ...c, key: String(idx) })),
+    [bank],
   );
 
+  // Build the session from the cards due now (fall back to the whole deck).
   const initial = useMemo(() => {
-    const due = allCards.filter((c) => {
-      const srs = fcSrs[c.bankId] ?? {};
-      const keys = dueKeys(srs, [c.key], new Date());
-      return keys.length > 0;
-    });
+    const srs = fcSrs[bank.id] ?? {};
+    const keys = dueKeys(
+      srs,
+      allCards.map((c) => c.key),
+      new Date(),
+    );
+    const due = allCards.filter((c) => keys.includes(c.key));
     return shuffle(due.length ? due : allCards);
+    // Snapshot once on mount — grading mutates the store but shouldn't reshuffle mid-session.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [banks]);
+  }, [bank]);
 
+  // One runner serves the initial due-based session and every follow-up
+  // (reset / review-missed) session — restart() swaps the queue in place.
   const [queue, setQueue] = useState<Card[]>(initial);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [got, setGot] = useState(0);
   const [again, setAgain] = useState<Card[]>([]);
+  // The graded card's fly-out stage; advance() runs when its animation lands.
   const [leaving, setLeaving] = useState<'known' | 'again' | null>(null);
-
   const card = queue[i];
   const done = i >= queue.length;
 
+  // Persist the grade immediately — the fly-out is purely cosmetic, so under
+  // reduced motion the same step just runs without the leaving stage.
   function grade(correct: boolean) {
     if (leaving) return;
-    gradeCard(card.bankId, card.key, correct);
+    gradeCard(bank.id, card.key, correct);
     if (correct) setGot((n) => n + 1);
     else setAgain((r) => [...r, card]);
     if (reduce) advance();
@@ -172,6 +151,7 @@ function Deck({
     setI((n) => n + 1);
   }
 
+  // Keyboard: Space/Enter flips; once flipped ←/→ grade again/got-it.
   useEffect(() => {
     if (done) return;
     const onKey = (e: KeyboardEvent) => {
@@ -201,24 +181,11 @@ function Deck({
     setLeaving(null);
   }
 
-  const mergedSrs = useMemo(() => {
-    const merged: Record<string, SrsEntry> = {};
-    for (const c of allCards) {
-      const srs = fcSrs[c.bankId] ?? {};
-      if (srs[c.key]) {
-        merged[`${c.bankId}:${c.key}`] = srs[c.key];
-      }
-    }
-    return merged;
-  }, [allCards, fcSrs]);
-
   return (
-    <>
-      {!hideBack && (
-        <button type="button" className={styles.back} onClick={onBack}>
-          ← {t('study.back')}
-        </button>
-      )}
+    <section className={`container-narrow ${styles.page}`}>
+      <button type="button" className={styles.back} onClick={onBack}>
+        ← {t('study.back')}
+      </button>
       {done ? (
         <div className={styles.result} role="status">
           <p>{t('study.deckDone', { known: got, review: again.length })}</p>
@@ -235,7 +202,7 @@ function Deck({
         </div>
       ) : (
         <CardView
-          key={`${card.bankId}:${card.key}`}
+          key={card.key}
           card={card}
           flipped={flipped}
           leaving={leaving}
@@ -249,11 +216,11 @@ function Deck({
       )}
       <GlidePathStrip
         bins={glidePathBins(
-          mergedSrs,
-          allCards.map((c) => `${c.bankId}:${c.key}`),
+          fcSrs[bank.id] ?? {},
+          allCards.map((c) => c.key),
         )}
       />
-    </>
+    </section>
   );
 }
 
@@ -276,6 +243,10 @@ function CardView({
 }) {
   const { t } = useTranslation();
   const wrapRef = useRef<HTMLDivElement>(null);
+  // Native listener rather than React's onAnimationEnd: React only registers
+  // the unprefixed event when the environment advertises CSS animation
+  // support, which jsdom doesn't — the DOM event itself is dependable.
+  // Attached only during the fly-out, so the enter animation never advances.
   useEffect(() => {
     if (!leaving) return;
     const el = wrapRef.current;

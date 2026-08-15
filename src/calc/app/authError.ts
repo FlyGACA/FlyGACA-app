@@ -7,6 +7,14 @@
 
 export type AuthField = 'email' | 'password' | 'general';
 
+/**
+ * Synthetic code for "the auth call never settled" — the Firebase SDK can hang
+ * forever when the App Check / reCAPTCHA Enterprise token can't be minted, so the
+ * sign-in form wraps every auth call in a timeout and rejects with this code.
+ * Not a Firebase code, but shaped like one so it flows through the same mapping.
+ */
+export const AUTH_TIMEOUT_CODE = 'auth/timeout';
+
 export interface AuthErrorInfo {
   field: AuthField;
   key: string;
@@ -41,6 +49,12 @@ const MAP: Record<string, AuthErrorInfo> = {
   'auth/user-disabled': { field: 'email', key: 'account.errors.userDisabled' },
   'auth/too-many-requests': { field: 'general', key: 'account.errors.tooManyRequests' },
   'auth/network-request-failed': { field: 'general', key: 'account.errors.network' },
+  // Client-side watchdog fired — the SDK promise (usually stuck waiting on an
+  // App Check / reCAPTCHA token) never settled. See AUTH_TIMEOUT_CODE above.
+  // Maps to the existing network message: from the user's seat a hung security
+  // check is a connectivity problem, and reusing the key keeps the 4,500-line
+  // locale files untouched.
+  [AUTH_TIMEOUT_CODE]: { field: 'general', key: 'account.errors.network' },
   // Deployment/config failures — these have nothing to do with the user's
   // credentials, so they must NOT read as "check your details". They typically
   // surface on an unauthorized origin (e.g. a preview domain not registered in

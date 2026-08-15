@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useStudyProgress } from '@/lib/studyProgress';
 import { ProgressBar } from '@/components/ProgressBar';
 import type { CorpusIndex, GroundSchoolData, PathsIndex, PdfsIndex, QuizBank } from '@/lib/content';
-import { adelLink } from '@/lib/adel';
-import type { Pack } from '@/lib/prepCatalog';
 import styles from './Study.module.css';
 
 /** The unlocked pack's five content sections: banks, reading, modules, paths, sheets. */
@@ -14,14 +12,12 @@ export function PackContents({
   modules,
   readingPaths,
   sheets,
-  scenarios,
 }: {
   banks: QuizBank[];
   reading: CorpusIndex['documents'];
   modules: GroundSchoolData['modules'];
   readingPaths: PathsIndex['paths'];
   sheets: PdfsIndex['documents'];
-  scenarios?: Pack['scenarios'];
 }) {
   const { t } = useTranslation();
   const { quizBest, flagged } = useStudyProgress();
@@ -142,27 +138,6 @@ export function PackContents({
                 </Link>
               </li>
             ))}
-          </ul>
-        </section>
-      )}
-
-      {scenarios && scenarios.length > 0 && (
-        <section className={styles.packSection}>
-          <h2 className={styles.packSectionHead}>{t('study.radiotelephony')}</h2>
-          <p className={styles.subtitle}>{t('study.radiotelephonyDesc')}</p>
-          <ul className={styles.banks}>
-            {scenarios.map((s) => {
-              const link = adelLink(t(s.promptKey));
-              if (!link) return null;
-              return (
-                <li key={s.id}>
-                  <Link to={link} className={styles.bank}>
-                    <span className={styles.bankTitle}>{t(s.titleKey)}</span>
-                    <span className={styles.bankDesc}>{t('study.practiceWithAdel')}</span>
-                  </Link>
-                </li>
-              );
-            })}
           </ul>
         </section>
       )}

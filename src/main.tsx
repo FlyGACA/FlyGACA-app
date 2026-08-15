@@ -36,11 +36,11 @@ import { applyTheme, readTheme } from '@/lib/theme';
 // is the canonical, belt-and-suspenders application (and restores Falcon cleanly).
 applyTheme(readTheme());
 
-// Firebase serves the SPA on its own `flygaca-app.web.app` alias as well as the
-// canonical flygaca.com; the alias must not be indexed as a duplicate. Emit noindex
-// (still follow links so equity flows to the canonical), host-conditional at runtime
-// so flygaca.com and the prerender host stay indexable. Belt-and-suspenders to the
-// canonical <link> tag that every page already points at flygaca.com.
+// Mirror/preview fronts (*.web.app, *.vercel.app, *.netlify.app, *.pages.dev)
+// serve the same build for redundancy but must not be indexed as duplicates of
+// flygaca.com. Emit noindex (still follow links so equity flows to the canonical).
+// Host-conditional at runtime, so flygaca.com and the prerender host stay
+// indexable. Belt-and-suspenders to the static X-Robots-Tag headers on the mirrors.
 if (isMirrorHost(window.location.hostname)) {
   const robots = document.createElement('meta');
   robots.name = 'robots';

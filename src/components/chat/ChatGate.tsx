@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { UpsellCard } from '@/components/UpsellCard';
 import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '@/lib/services/billing';
@@ -12,7 +12,6 @@ import styles from './ChatGate.module.css';
  */
 export function ChatGate({ signedIn }: { signedIn: boolean }) {
   const { t } = useTranslation();
-  const location = useLocation();
 
   // Buy a one-time question pack (checkout redirects on success; a signed-in chat
   // user won't hit 'sign-in-required', and offline/unconfigured errors are inert).
@@ -23,8 +22,6 @@ export function ChatGate({ signedIn }: { signedIn: boolean }) {
       /* redirected on success; ignore */
     }
   }
-
-  const redirectUrl = `/account?redirect=${encodeURIComponent(location.pathname + location.search)}`;
 
   return signedIn ? (
     <div className={styles.gate}>
@@ -40,7 +37,7 @@ export function ChatGate({ signedIn }: { signedIn: boolean }) {
     // Anonymous trial spent — nudge to sign in for more (no account to bill).
     <div className={styles.gate}>
       <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
-      <Link className="btn btn-primary" to={redirectUrl}>
+      <Link className="btn btn-primary" to="/account">
         {t('account.goSignIn')}
       </Link>
     </div>

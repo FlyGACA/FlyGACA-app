@@ -94,10 +94,9 @@ export function WindTriangleDiagram({
         <circle cx={C} cy={C} r={3.5} fill="var(--text)" />
       </svg>
       <figcaption className={styles.caption}>
-        <span className={styles.kHdg}>{t('windTriangle.tasLabel')}</span>
+        <span className={styles.kHdg}>{t('windTriangle.heading')}</span>
         <span className={styles.kWind}>{t('windTriangle.legendWind')}</span>
         <span className={styles.kGs}>{t('windTriangle.gs')}</span>
-        <span>{t('windTriangle.wcaLabel')}</span>
       </figcaption>
     </figure>
   );

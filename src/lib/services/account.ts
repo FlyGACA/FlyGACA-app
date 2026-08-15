@@ -24,9 +24,9 @@ import {
 } from '@/lib/services/sync';
 
 /** Operational role driving dashboard personalization. */
-export type UserRole = 'pilot' | 'student' | 'instructor' | 'dispatcher';
+export type UserRole = 'pilot' | 'student' | 'instructor';
 
-export const USER_ROLES: UserRole[] = ['pilot', 'student', 'instructor', 'dispatcher'];
+export const USER_ROLES: UserRole[] = ['pilot', 'student', 'instructor'];
 
 /** Narrow an arbitrary profile string to a known role; '' or legacy values fail. */
 export function isUserRole(v: string): v is UserRole {

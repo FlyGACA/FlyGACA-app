@@ -5,32 +5,20 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { resolveCrosswind } from '@/calc/crosswind';
 import { NumberField } from '@/components/calc/NumberField';
-import { SelectField } from '@/components/calc/SelectField';
 import { WindDiagram } from './WindDiagram';
 import styles from './Crosswind.module.css';
 
-const EXAMPLE = { rwy: '34', wdir: '290', wspd: '18', aircraft: 'C172S' };
-
-const AIRCRAFT_LIMITS = [
-  { id: 'C172S', label: 'Cessna 172S (15 kt)', limit: 15 },
-  { id: 'PA28', label: 'Piper Archer PA28 (17 kt)', limit: 17 },
-  { id: 'DA40', label: 'Diamond DA40 (20 kt)', limit: 20 },
-  { id: 'SR22', label: 'Cirrus SR22 (21 kt)', limit: 21 },
-];
+const EXAMPLE = { rwy: '34', wdir: '290', wspd: '18' };
 
 export function Crosswind() {
   const { t } = useTranslation();
-  const { inputs, set, nums } = useNumericInputs({ rwy: '', wdir: '', wspd: '', aircraft: '' });
+  const { inputs, set, nums } = useNumericInputs({ rwy: '', wdir: '', wspd: '' });
 
   const result = resolveCrosswind({
     runway: nums.rwy,
     windDir: nums.wdir,
     windSpeed: nums.wspd,
   });
-
-  const selectedAc = AIRCRAFT_LIMITS.find(a => a.id === inputs.aircraft);
-  const limit = selectedAc ? selectedAc.limit : 0;
-  const exceedsLimit = limit > 0 && result ? Math.abs(result.crosswind) > limit : false;
 
   const side = result
     ? Math.abs(result.crosswind) < 0.5
@@ -87,7 +75,6 @@ export function Crosswind() {
         set('rwy', EXAMPLE.rwy);
         set('wdir', EXAMPLE.wdir);
         set('wspd', EXAMPLE.wspd);
-        set('aircraft', EXAMPLE.aircraft);
       }}
       adelPrompt={adelPrompt}
       related={[
@@ -116,13 +103,6 @@ export function Crosswind() {
             onChange={(v) => set('wspd', v)}
             placeholder="18"
           />
-          <SelectField
-            label={t('crosswind.aircraft')}
-            value={inputs.aircraft}
-            onChange={(v) => set('aircraft', v)}
-            placeholder={t('crosswind.aircraftNone')}
-            options={AIRCRAFT_LIMITS.map(ac => ({ value: ac.id, label: ac.label }))}
-          />
         </div>
 
         <div className={styles.diagram}>
@@ -148,17 +128,8 @@ export function Crosswind() {
         <ResultStat
           label={t('crosswind.crosswind')}
           value={result ? `${Math.abs(result.crosswind).toFixed(1)} kt` : '—'}
-          sub={
-            <>
-              {result ? side : undefined}
-              {exceedsLimit && (
-                <span className={styles.bad} style={{ display: 'block', marginTop: '4px', fontWeight: 'bold' }}>
-                  {t('crosswind.limitBadge', { limit })}
-                </span>
-              )}
-            </>
-          }
-          tone={exceedsLimit ? 'bad' : 'headline'}
+          sub={result ? side : undefined}
+          tone="headline"
         />
         <ResultStat
           label={result && result.headwind < 0 ? t('crosswind.tailwind') : t('crosswind.headwind')}

@@ -18,17 +18,10 @@
  * Route set mirrors scripts/build-sitemap.mjs: static router paths + guide slugs
  * (always), plus every enumerable dynamic route the sitemap indexes — the library
  * reader corpus (GACAR parts / reference / handbook), aerodrome detail pages and
- * prep-pack pages — up to PRERENDER_MAX snapshots (default 850, sized to the full
- * sitemap plus headroom; 0 = everything). If the cap ever trims routes, the
- * deploy-time gate (scripts/check-prerender-coverage.mjs) fails the deploy —
- * a sitemap URL without body content is invisible to non-JS AI crawlers.
- * (always), Arabic twins of those finite routes under /ar, plus every enumerable
- * dynamic route the sitemap indexes — the library reader corpus (GACAR parts /
- * reference / handbook), aerodrome detail pages and prep-pack pages — up to
- * PRERENDER_MAX snapshots (default 850, sized to the current sitemap plus
- * headroom; 0 = everything). Any coverage gap stays non-fatal here but warns
- * loudly; the deploy-time gate (scripts/check-prerender-coverage.mjs) is what
- * turns head-only or missing sitemap URLs into a failed deploy.
+ * prep-pack pages — up to PRERENDER_MAX snapshots (default 560, sized to the full
+ * sitemap plus headroom; 0 = everything). Any coverage gap stays non-fatal here
+ * but warns loudly; the deploy-time gate (scripts/check-prerender-coverage.mjs)
+ * is what turns head-only or missing sitemap URLs into a failed deploy.
  */
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -58,6 +51,10 @@ function warn(msg) {
 // --- Route list (same source of truth as the sitemap) --------------------------
 const PRIVATE = new Set([
   '/account',
+  // /signin and /signup redirect to /account — snapshotting them just captures
+  // the redirect target, so skip them like the other auth pages.
+  '/signin',
+  '/signup',
   '/dashboard',
   '/currency',
   '/logbook',
@@ -97,9 +94,7 @@ for (const [seg, file] of [
 for (const d of readJson('public/data/aerodromes-index.json').documents)
   corpus.push(`/tools/aerodromes/${d.icao}`);
 // LIVE packs only — `soon` packs have no detail route (see build-sitemap.mjs).
-for (const m of read('src/lib/prepCatalog.ts').matchAll(
-  /\bid:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'/g,
-))
+for (const m of read('src/lib/prepCatalog.ts').matchAll(/\bid:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'/g))
   if (m[2] === 'live') corpus.push(`/study/packs/${m[1]}`);
 
 // Cap total snapshots so the build stays bounded; base routes are never dropped,
@@ -109,7 +104,7 @@ for (const m of read('src/lib/prepCatalog.ts').matchAll(
 // the cap only trims the corpus tail. A trim warns loudly here (and becomes a
 // fatal deploy failure once check-prerender-coverage runs), so raise
 // PRERENDER_MAX or set it to 0 to prerender the whole corpus.
-const MAX = Number(process.env.PRERENDER_MAX ?? 850);
+const MAX = Number(process.env.PRERENDER_MAX ?? 560);
 const baseList = [...baseRoutes];
 const budget = MAX === 0 ? corpus.length : Math.max(0, MAX - baseList.length);
 const corpusIncluded = corpus.slice(0, budget);
@@ -161,6 +156,35 @@ function outPathAr(route) {
     : join(root, 'dist/ar', route.replace(/^\//, ''), 'index.html');
 }
 
+// --- Output sanitization -------------------------------------------------------
+// The snapshot is serialized AFTER the app hydrated, so it carries markup the
+// app (or Firebase) injected at runtime that is useless — or actively harmful —
+// when the file is served statically in production:
+//   * the parser-blocking reCAPTCHA Enterprise loader (App Check) — on a network
+//     where google.com is slow/blocked it stalls HTML parsing before the app boots;
+//   * Vercel Analytics / Speed Insights and Firebase's gtag loader — dead
+//     third-party requests (and CSP violations) on non-Vercel hosting;
+//   * href/src attributes the DOM resolved against the preview origin
+//     (`http://localhost:4181/…` / `http://127.0.0.1:4181/…`) — CSP-blocked dead
+//     links on the real host.
+// Strip the third-party script tags first, then rewrite every preview-origin URL
+// back to root-relative (so the bundle script, modulepreloads and in-body links
+// keep working on any host), and finally drop any link/script still pointing at
+// the preview origin (safety net — the rewrite should have caught them all).
+function sanitizeSnapshot(html) {
+  return html
+    .replace(
+      /<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:recaptcha|_vercel|vercel-scripts|googletagmanager|gtag)[^"']*["'][^>]*>\s*<\/script>/gi,
+      '',
+    )
+    .replace(/(?:https?:)?\/\/(?:localhost|127\.0\.0\.1)(?![\w.-])(?::\d+)?/gi, '')
+    .replace(
+      /<script\b[^>]*\bsrc\s*=\s*["']\s*(?:localhost|127\.0\.0\.1)[^"']*["'][^>]*>\s*<\/script>/gi,
+      '',
+    )
+    .replace(/<link\b[^>]*\bhref\s*=\s*["']\s*(?:localhost|127\.0\.0\.1)[^"']*["'][^>]*>/gi, '');
+}
+
 // Launch Chromium; on a fresh CI image the browser binary may be absent, so try
 // a one-off `playwright install chromium` and retry once. A still-failing launch
 // throws up to the non-fatal catch, which ships the SPA/shell HTML as before.
@@ -209,34 +233,20 @@ try {
   // *different* route each run (ar/tools/vfr-minima, ar/library/part-138), the
   // signature of a race rather than a broken page. Waiting for the language to
   // land removes the race at its source.
-  // Heavy corpus pages (a large block of injected regulation HTML — e.g.
-  // /ar/library/part-77) can miss the readiness waits on a slow CI runner, which
-  // would leave the route head-only and — with the deploy coverage gate now strict
-  // again — fail the deploy. Two defences: generous ceilings (they only elapse on a
-  // genuinely stuck page; a healthy page resolves the moment its <footer> + lang
-  // land, so a higher ceiling costs fast pages nothing), and a single fresh
-  // re-navigation, which clears the occasional transient networkidle/hydration
-  // stall that a reload fixes.
   async function snapshot(url, file, lang = 'en') {
-    for (let attempt = 1; ; attempt++) {
-      try {
-        await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
-        await page.waitForSelector('footer', { timeout: 30000 });
-        await page.waitForFunction(
-          (want) => {
-            const el = document.documentElement;
-            return el.lang === want && (want !== 'ar' || el.dir === 'rtl');
-          },
-          lang,
-          { timeout: 30000 },
-        );
-        break;
-      } catch (err) {
-        if (attempt >= 2) throw err;
-        console.warn(`  prerender: retry ${url} — ${err.message}`);
-      }
-    }
-    const html = `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`;
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForSelector('footer', { timeout: 15000 });
+    await page.waitForFunction(
+      (want) => {
+        const el = document.documentElement;
+        return el.lang === want && (want !== 'ar' || el.dir === 'rtl');
+      },
+      lang,
+      { timeout: 15000 },
+    );
+    const html = sanitizeSnapshot(
+      `<!doctype html>\n${await page.evaluate(() => document.documentElement.outerHTML)}`,
+    );
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, html);
   }

@@ -10,14 +10,11 @@
  *       scheduled passenger service. Runways (len/surface) and frequencies are
  *       joined from runways.csv / airport-frequencies.csv. The curated overlays
  *       win on merge — they add Arabic names, magnetic variation and services.
- *   • public/data/airports-extra/<REGION>.json — LONG TAIL, sharded by region and
- *       fetched lazily, one shard at a time. Every other non-closed airfield
- *       worldwide (small strips, heliports, seaplane bases …), keyed by the
- *       OurAirports `ident` (which may be a local/GPS code rather than an ICAO
- *       code). Same shape + enrichment where the join has it.
- *       `airports-extra/_manifest.json` lists the shards and carries the
- *       ident-prefix hint the detail page uses to fetch exactly one of them.
- *       See scripts/lib/airport-shards.mjs for why region is the shard axis.
+ *   • public/data/airports-extra.json — LONG TAIL, fetched lazily on demand.
+ *       Every other non-closed airfield worldwide (small strips, heliports,
+ *       seaplane bases …), keyed by the OurAirports `ident` (which may be a
+ *       local/GPS code rather than an ICAO code). Same shape + enrichment where
+ *       the join has it.
  *
  * Region tags: GCC countries → 'GCC', other MENA countries → 'MENA', otherwise
  * the OurAirports continent code. The curated rows keep their own 'KSA'.
@@ -28,10 +25,9 @@
  *
  *   node scripts/build-airports.mjs   (or: npm run build:airports)
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { shardByRegion, buildManifest, shardPayload } from './lib/airport-shards.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const RAW = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main';
@@ -39,7 +35,7 @@ const CSV_URL = `${RAW}/airports.csv`;
 const RWY_URL = `${RAW}/runways.csv`;
 const FREQ_URL = `${RAW}/airport-frequencies.csv`;
 const OUT_CORE = join(root, 'public/data/airports.json');
-const OUT_EXTRA_DIR = join(root, 'public/data/airports-extra');
+const OUT_EXTRA = join(root, 'public/data/airports-extra.json');
 const OVERLAYS = [join(root, 'scripts/airports-ksa.json'), join(root, 'scripts/airports-hubs.json')];
 
 // Gulf Cooperation Council (ISO-3166 alpha-2) — tagged 'GCC' for the region filter.
@@ -165,48 +161,18 @@ function shortType(type) {
   return (type || '').replace(/_airport$/, '').replace(/_base$/, '');
 }
 
-const SOURCE_URL = 'https://ourairports.com/data/';
-const today = () => new Date().toISOString().slice(0, 10);
-
 function writeArtifact(path, airports, source) {
   airports.sort((a, b) => a.icao.localeCompare(b.icao));
   const out = {
-    generated: today(),
+    generated: new Date().toISOString().slice(0, 10),
     source,
-    sourceUrl: SOURCE_URL,
+    sourceUrl: 'https://ourairports.com/data/',
     count: airports.length,
     airports,
   };
   const json = JSON.stringify(out);
   writeFileSync(path, json + '\n');
   return Buffer.byteLength(json);
-}
-
-/**
- * Write the long-tail tier as per-region shards plus the manifest the client
- * reads first. Stale shards from an earlier run are removed, so a region that
- * empties out does not leave a file behind for the manifest to disagree with.
- * Exported shape and rationale live in scripts/lib/airport-shards.mjs.
- */
-function writeExtraShards(airports, source, generated = today()) {
-  const { shards, prefixes } = shardByRegion(airports);
-  mkdirSync(OUT_EXTRA_DIR, { recursive: true });
-  const keep = new Set(['_manifest.json', ...[...shards.keys()].map((r) => `${r}.json`)]);
-  for (const f of readdirSync(OUT_EXTRA_DIR)) {
-    if (f.endsWith('.json') && !keep.has(f)) rmSync(join(OUT_EXTRA_DIR, f));
-  }
-  let bytes = 0;
-  for (const [region, rows] of shards) {
-    const json = JSON.stringify(
-      shardPayload({ region, airports: rows, generated, source, sourceUrl: SOURCE_URL }),
-    );
-    writeFileSync(join(OUT_EXTRA_DIR, `${region}.json`), json + '\n');
-    bytes += Buffer.byteLength(json);
-  }
-  const manifest = buildManifest({ shards, prefixes, generated, source, sourceUrl: SOURCE_URL });
-  const mJson = JSON.stringify(manifest);
-  writeFileSync(join(OUT_EXTRA_DIR, '_manifest.json'), mJson + '\n');
-  return { bytes: bytes + Buffer.byteLength(mJson), shards: shards.size, manifest };
 }
 
 async function main() {
@@ -288,16 +254,16 @@ async function main() {
     [...core.values()],
     'OurAirports (raw mirror) + curated Saudi/hub records — core tier',
   );
-  const extraOut = writeExtraShards(
+  const extraBytes = writeArtifact(
+    OUT_EXTRA,
     [...extra.values()],
-    'OurAirports (raw mirror) — long-tail tier (lazy, region-sharded)',
+    'OurAirports (raw mirror) — long-tail tier (lazy)',
   );
 
   const mb = (n) => (n / 1e6).toFixed(2);
   process.stdout.write(
     `Wrote core ${core.size} airports (${mb(coreBytes)} MB) → public/data/airports.json\n` +
-      `Wrote extra ${extra.size} airports (${mb(extraOut.bytes)} MB) across ` +
-      `${extraOut.shards} region shards → public/data/airports-extra/\n` +
+      `Wrote extra ${extra.size} airports (${mb(extraBytes)} MB) → public/data/airports-extra.json\n` +
       `  total ${core.size + extra.size}, enriched ${enriched}, curated overlays ${curatedCount}\n`,
   );
   if (coreBytes > 4e6) {

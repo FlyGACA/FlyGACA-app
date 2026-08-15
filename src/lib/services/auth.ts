@@ -6,7 +6,6 @@
 import type { User } from 'firebase/auth';
 import { isNative } from '@/lib/native/nativeBridge';
 import { isFirebaseConfigured, getFirebaseAuth } from '@/lib/services/firebase';
-import { getSafeRedirectUrl } from '@/calc/app/redirectUrl';
 
 export interface AuthUser {
   uid: string;
@@ -60,35 +59,6 @@ function requireAuth(auth: Awaited<ReturnType<typeof getFirebaseAuth>>): NonNull
   return auth;
 }
 
-function getSessionUrl(path: string): string {
-  const base = typeof window !== 'undefined' ? window.location.origin : '';
-  if (base && base.startsWith('http')) {
-    return new URL(path, base).toString();
-  }
-  return path;
-}
-
-async function syncSession(user: User): Promise<void> {
-  const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
-  const isTest = typeof proc !== 'undefined' && proc.env?.NODE_ENV === 'test';
-  if (isTest) {
-    return;
-  }
-  if (import.meta.env?.VITEST) {
-    return;
-  }
-  try {
-    const idToken = await user.getIdToken();
-    await fetch(getSessionUrl('/api/auth/session-login'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken }),
-    });
-  } catch (err) {
-    console.error('Failed to sync session cookie with gateway:', err);
-  }
-}
-
 /**
  * Popup failures that mean "this environment can't do a popup" — a blocked/closed
  * popup or a webview that doesn't support one. We retry these as a full-page
@@ -105,29 +75,16 @@ const POPUP_FALLBACK_CODES = new Set([
 
 /**
  * When a Google sign-in returns via `signInWithRedirect`, this resolves the
- * pending result on the next page load and syncs the session cookie. Best-effort:
- * no pending redirect (the common case) resolves to `null` and no-ops, and any
- * error is swallowed so bootstrap never breaks. Invoked once from `onAuthChange`.
+ * pending result on the next page load. Best-effort: no pending redirect (the
+ * common case) resolves to `null` and no-ops, and any error is swallowed so
+ * bootstrap never breaks. Invoked once from `onAuthChange`.
  */
 async function completeRedirectSignIn(
   auth: NonNullable<Awaited<ReturnType<typeof getFirebaseAuth>>>,
 ) {
   try {
     const { getRedirectResult } = await import('firebase/auth');
-    const cred = await getRedirectResult(auth);
-    if (cred?.user) {
-      await syncSession(cred.user);
-      if (typeof window !== 'undefined') {
-        const storedRedirect = sessionStorage.getItem('flygaca_auth_redirect');
-        if (storedRedirect) {
-          sessionStorage.removeItem('flygaca_auth_redirect');
-          const safeTarget = getSafeRedirectUrl(storedRedirect, '');
-          if (safeTarget && window.location.pathname !== safeTarget) {
-            window.location.replace(safeTarget);
-          }
-        }
-      }
-    }
+    await getRedirectResult(auth);
   } catch (err) {
     console.error('Failed to complete Google redirect sign-in:', err);
   }
@@ -151,16 +108,6 @@ export async function signInWithGoogle(): Promise<AuthUser | null> {
   const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth');
   const provider = new GoogleAuthProvider();
 
-  // Save return redirect parameter to sessionStorage before performing full-page redirect
-  if (typeof window !== 'undefined') {
-    const searchParams = new URLSearchParams(window.location.search);
-    const redirectParam = searchParams.get('redirect');
-    if (redirectParam) {
-      const safe = getSafeRedirectUrl(redirectParam, '');
-      if (safe) sessionStorage.setItem('flygaca_auth_redirect', safe);
-    }
-  }
-
   // Native webviews (Capacitor) can't host the popup at all — go straight to the
   // redirect flow. The page navigates away and `completeRedirectSignIn` finishes
   // the sign-in on return, so this resolves to `null` here (no user to map yet).
@@ -171,51 +118,11 @@ export async function signInWithGoogle(): Promise<AuthUser | null> {
 
   try {
     const cred = await signInWithPopup(auth, provider);
-    await syncSession(cred.user);
     return mapUser(cred.user);
   } catch (err) {
     const code = (err as { code?: string }).code;
     if (code && POPUP_FALLBACK_CODES.has(code)) {
       // Popup unavailable in this browser — fall back to a full-page redirect.
-      await signInWithRedirect(auth, provider);
-      return null;
-    }
-    throw err;
-  }
-}
-
-export async function signInWithApple(): Promise<AuthUser | null> {
-  const isMock =
-    import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
-  if (isMock) {
-    const mockUser: AuthUser = {
-      uid: 'mock-apple-uid',
-      email: 'apple-user@flygaca.com',
-      displayName: 'Mock Apple Pilot',
-      emailVerified: true,
-    };
-    const { signIn } = await import('@/lib/services/account');
-    signIn(mockUser.email || '', mockUser.displayName || '');
-    return mockUser;
-  }
-  const auth = requireAuth(await getFirebaseAuth());
-  const { OAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth');
-  const provider = new OAuthProvider('apple.com');
-  provider.addScope('email');
-  provider.addScope('name');
-
-  if (isNative()) {
-    await signInWithRedirect(auth, provider);
-    return null;
-  }
-
-  try {
-    const cred = await signInWithPopup(auth, provider);
-    await syncSession(cred.user);
-    return mapUser(cred.user);
-  } catch (err) {
-    const code = (err as { code?: string }).code;
-    if (code && POPUP_FALLBACK_CODES.has(code)) {
       await signInWithRedirect(auth, provider);
       return null;
     }
@@ -240,7 +147,6 @@ export async function signInWithEmail(email: string, password: string): Promise<
   const auth = requireAuth(await getFirebaseAuth());
   const { signInWithEmailAndPassword } = await import('firebase/auth');
   const cred = await signInWithEmailAndPassword(auth, email, password);
-  await syncSession(cred.user);
   return mapUser(cred.user);
 }
 
@@ -266,26 +172,12 @@ export async function registerWithEmail(
   const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth');
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   if (displayName) await updateProfile(cred.user, { displayName });
-  await syncSession(cred.user);
   return mapUser(cred.user);
 }
 
 export async function signOutUser(): Promise<void> {
   const auth = await getFirebaseAuth();
   if (auth) await auth.signOut();
-  const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
-  const isTest = typeof proc !== 'undefined' && proc.env?.NODE_ENV === 'test';
-  if (isTest) {
-    return;
-  }
-  if (import.meta.env?.VITEST) {
-    return;
-  }
-  try {
-    await fetch(getSessionUrl('/api/auth/session-logout'), { method: 'POST' });
-  } catch (err) {
-    console.error('Failed to clear session cookie:', err);
-  }
 }
 
 /** Email the user a password-reset link. Throws `auth-unavailable` when unconfigured. */

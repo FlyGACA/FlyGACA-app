@@ -32,7 +32,8 @@ const PRIVATE = new Set([
 ]);
 // The former Guides + Study hubs now redirect to /learn — don't index the redirects
 // (their content + leaf pages live on, and `/learn` carries the hub priority).
-const REDIRECTS = new Set(['/guides', '/study']);
+// /signin and /signup redirect to /account — the same treatment.
+const REDIRECTS = new Set(['/guides', '/study', '/signin', '/signup']);
 const norm = (p) => (p === '/' ? '/' : `/${p.replace(/^\//, '')}`);
 
 const today = new Date().toISOString().slice(0, 10);

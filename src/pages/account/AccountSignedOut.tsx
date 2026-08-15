@@ -5,7 +5,7 @@ import { CaptainAvatar } from '@/components/CaptainAvatar';
 import { BrandMark } from '@/components/BrandMark';
 import { Disclaimer } from '@/components/Disclaimer';
 import { isAuthAvailable } from '@/lib/services/auth';
-import { FirebaseSignIn, LocalSignIn } from './SignInForms';
+import { AuthUnavailable, FirebaseSignIn, LocalSignIn } from './SignInForms';
 import account from './account.module.css';
 import styles from './AccountPage.module.css';
 
@@ -28,7 +28,13 @@ export function AccountSignedOut() {
       />
       <div className={styles.authLayout}>
         <Card variant="raised" className={styles.authCard}>
-          {isAuthAvailable() ? <FirebaseSignIn /> : <LocalSignIn />}
+          {isAuthAvailable() ? (
+            <FirebaseSignIn />
+          ) : import.meta.env.DEV ? (
+            <LocalSignIn />
+          ) : (
+            <AuthUnavailable />
+          )}
         </Card>
         <Card as="aside" variant="accent" accent="var(--gold)" className={styles.benefitsCard}>
           <BrandMark />

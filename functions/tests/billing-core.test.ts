@@ -25,7 +25,7 @@ import {
   renewalFailureOutcome,
   sarToHalalas,
   sellablePackId,
-  verifyMoyasarWebhook,
+  verifyMoyasarSignature,
   webhookPaymentId,
   type PriceEnv,
 } from "../src/billing-core.js";
@@ -390,64 +390,27 @@ describe("renewalBaseDate", () => {
   });
 });
 
-describe("verifyMoyasarWebhook", () => {
+describe("verifyMoyasarSignature", () => {
   const secret = "whsec_test";
-  const raw = JSON.stringify({ id: "evt_1", type: "payment_paid" });
-  const validSig = createHmac("sha256", secret).update(raw).digest("hex");
+  const body = JSON.stringify({ id: "evt_1", type: "payment_paid" });
+  const validSig = createHmac("sha256", secret).update(body).digest("hex");
 
-  // The documented mechanism: Moyasar posts the shared secret back as a body field.
-  // The old implementation only understood the HMAC header below, so every real
-  // delivery was rejected and the async backstop was inert.
-  describe("secret_token (documented, primary)", () => {
-    it("accepts a body whose secret_token matches the shared secret", () => {
-      expect(verifyMoyasarWebhook({ secret_token: secret }, "", undefined, secret)).toBe(
-        "secret_token",
-      );
-    });
-
-    it("rejects a wrong, absent, empty, or non-string secret_token", () => {
-      expect(verifyMoyasarWebhook({ secret_token: "nope" }, "", undefined, secret)).toBeNull();
-      expect(verifyMoyasarWebhook({}, "", undefined, secret)).toBeNull();
-      expect(verifyMoyasarWebhook(undefined, "", undefined, secret)).toBeNull();
-      expect(verifyMoyasarWebhook({ secret_token: "" }, "", undefined, secret)).toBeNull();
-      expect(verifyMoyasarWebhook({ secret_token: 42 }, "", undefined, secret)).toBeNull();
-    });
-
-    // timingSafeEqual throws on unequal-length buffers, so the length guard is
-    // load-bearing: without it a short token crashes the handler instead of 400ing.
-    it("rejects a length-mismatched token without throwing", () => {
-      expect(() =>
-        verifyMoyasarWebhook({ secret_token: "short" }, "", undefined, secret),
-      ).not.toThrow();
-      expect(verifyMoyasarWebhook({ secret_token: `${secret}x` }, "", undefined, secret)).toBeNull();
-    });
+  it("accepts a correctly-signed body", () => {
+    expect(verifyMoyasarSignature(body, validSig, secret)).toBe(true);
   });
 
-  // Provisional fallback — deletable once production logs show which branch fires.
-  describe("x-moyasar-signature HMAC (provisional fallback)", () => {
-    it("accepts a correctly-signed body when no secret_token is present", () => {
-      expect(verifyMoyasarWebhook({}, raw, validSig, secret)).toBe("signature");
-    });
-
-    it("rejects a missing, wrong, or malformed signature", () => {
-      expect(verifyMoyasarWebhook({}, raw, undefined, secret)).toBeNull();
-      expect(verifyMoyasarWebhook({}, raw, "deadbeef", secret)).toBeNull();
-      expect(verifyMoyasarWebhook({}, raw, [validSig], secret)).toBeNull();
-    });
-
-    it("rejects a valid signature for a different body (tamper detection)", () => {
-      expect(verifyMoyasarWebhook({}, `${raw}x`, validSig, secret)).toBeNull();
-    });
-
-    it("rejects a signature computed with the wrong secret", () => {
-      const wrongSig = createHmac("sha256", "other-secret").update(raw).digest("hex");
-      expect(verifyMoyasarWebhook({}, raw, wrongSig, secret)).toBeNull();
-    });
+  it("rejects a missing, wrong, or malformed signature", () => {
+    expect(verifyMoyasarSignature(body, undefined, secret)).toBe(false);
+    expect(verifyMoyasarSignature(body, "deadbeef", secret)).toBe(false);
+    expect(verifyMoyasarSignature(body, [validSig], secret)).toBe(false);
   });
 
-  it("rejects everything when the configured secret is empty", () => {
-    // An unset MOYASAR_WEBHOOK_SECRET must fail closed, not authenticate a body
-    // that happens to carry an empty secret_token.
-    expect(verifyMoyasarWebhook({ secret_token: "" }, "", undefined, "")).toBeNull();
+  it("rejects a valid signature for a different body (tamper detection)", () => {
+    expect(verifyMoyasarSignature(body + "x", validSig, secret)).toBe(false);
+  });
+
+  it("rejects a signature computed with the wrong secret", () => {
+    const wrongSig = createHmac("sha256", "other-secret").update(body).digest("hex");
+    expect(verifyMoyasarSignature(body, wrongSig, secret)).toBe(false);
   });
 });

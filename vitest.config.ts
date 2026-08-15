@@ -11,18 +11,13 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   test: {
-    // Unit tests live in tests/, grouped by the layer under test — calc/, lib/,
-    // components/, hooks/, pages/, app/, hud/, scripts/ and integrity/ (the
-    // cross-cutting drift guards). See tests/README.md. The Playwright E2E specs
-    // in e2e/ run under a separate runner, so keep Vitest from executing them.
+    // Unit tests live in tests/; the Playwright E2E specs in e2e/ run under a
+    // separate runner, so keep Vitest from trying to execute them.
     include: ['tests/**/*.{test,spec}.{ts,tsx}'],
     // The Firestore security-rules tests need the emulator + a node environment,
     // so they run under their own config (`npm run test:rules`), never here.
     exclude: ['tests/rules/**', 'node_modules/**'],
     environment: 'jsdom',
-    pool: 'threads',
-    testTimeout: 20000,
-    hookTimeout: 20000,
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     css: false,

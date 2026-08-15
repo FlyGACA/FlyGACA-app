@@ -99,9 +99,6 @@ export function SubscriptionPanel() {
           <Link to="/pricing" className={styles.upgrade}>
             {t('common.goPro')}
           </Link>
-          <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
-            {t('pricing.bnplBadge')}
-          </p>
         </>
       )}
 

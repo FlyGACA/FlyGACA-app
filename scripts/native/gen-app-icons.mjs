@@ -1,7 +1,6 @@
 /**
  * Generate the per-app App Store icons for the native iOS app family
- * (<App>/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png). The native apps
- * live in ay2m/FlyGACA; this repo generates their icons and hands them over.
+ * (apple/Apps/<App>/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png).
  *
  * Each app in the family is its own App Store product, so each needs its OWN
  * recognizable icon — before this script every app shipped the same placeholder.
@@ -12,16 +11,13 @@
  * brand mark in its own colourway and a user with several installed can tell them
  * apart at a glance.
  *
- *   node scripts/native/gen-app-icons.mjs                 # every app → scratch
- *   node scripts/native/gen-app-icons.mjs --app aip       # one app
- *   node scripts/native/gen-app-icons.mjs --out <appsDir> # write into ay2m/FlyGACA's apple/Apps
- *
- * Output dir: --out <appsDir> or $FG_APPLE_APPS_DIR; defaults to .ios-build/Apps.
+ *   node scripts/native/gen-app-icons.mjs           # all six apps
+ *   node scripts/native/gen-app-icons.mjs --app cpl # one app
  *
  * Background colour comes from the Falcon design tokens (src/styles/tokens.css).
  * Output is a FLATTENED (no alpha channel) 1024×1024 PNG — the App Store rejects
- * marketing icons with an alpha channel (see ay2m/FlyGACA's docs/RUNBOOK-ios-signing.md,
- * "altool error 1091"). Rendered with `sharp` (already a devDependency), so there's no
+ * marketing icons with an alpha channel (see docs/RUNBOOK-ios-signing.md, "altool
+ * error 1091"). Rendered with `sharp` (already a devDependency), so there's no
  * browser, network or Xcode dependency — it runs anywhere `npm ci` ran.
  *
  * These are brand-system placeholders (the real mark, recoloured), not final
@@ -34,15 +30,6 @@ import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-// Where the per-app <dir>/Assets.xcassets folders are written. The native apps
-// live in ay2m/FlyGACA (no local apple/ tree here); default to a gitignored scratch
-// dir, the iOS repo's sync-content.sh passes its own apple/Apps via --out.
-const outArgIdx = process.argv.indexOf('--out');
-const appsDir =
-  outArgIdx !== -1
-    ? process.argv[outArgIdx + 1]
-    : process.env.FG_APPLE_APPS_DIR || join(root, '.ios-build', 'Apps');
-
 // Falcon palette (src/styles/tokens.css). The night gradient is the shared canvas.
 const NIGHT = '#0a0e12';
 const DEEP = '#101a24';
@@ -51,14 +38,15 @@ const DEEP = '#101a24';
 const MARK = join(root, 'public', 'brand', 'flygaca-mark.png');
 
 // App Store product → { Xcode target dir, duotone highlight (top) + shadow (bottom) }.
-// Mirrors the APPS registry in scripts/build-ios-content.mjs (keep them in step).
+// Mirrors the APPS registry in scripts/build-ios-content.mjs (same six apps).
 // "Desert & sky" heritage palette — one coherent family, one colourway per app.
-// Paused modules kept their colourways in git history: ppl #5fb585/#1f5537 (palm
-// green), cpl #e0946f/#8a4529 (terracotta), ir #4fa2a6/#124447 (deep teal),
-// atpl #e08c66/#8a3a25 (sunset clay) — reuse them if a module is restored.
 const APPS = {
+  ppl: { dir: 'PPL', hi: '#5fb585', sh: '#1f5537' }, // palm green
   elpt: { dir: 'ELPT', hi: '#6fb8e6', sh: '#245f86' }, // sky blue
   aip: { dir: 'AIP', hi: '#e6c98a', sh: '#8f6f34' }, // sand gold
+  cpl: { dir: 'CPL', hi: '#e0946f', sh: '#8a4529' }, // terracotta
+  ir: { dir: 'IR', hi: '#4fa2a6', sh: '#124447' }, // deep teal
+  atpl: { dir: 'ATPL', hi: '#e08c66', sh: '#8a3a25' }, // sunset clay
 };
 
 const SIZE = 1024;
@@ -108,12 +96,12 @@ async function generate(appId) {
       `gen-app-icons: unknown app "${appId}" (known: ${Object.keys(APPS).join(', ')})`,
     );
 
-  const assetsDir = join(appsDir, app.dir, 'Assets.xcassets');
+  const assetsDir = join(root, 'apple', 'Apps', app.dir, 'Assets.xcassets');
   const iconSetDir = join(assetsDir, 'AppIcon.appiconset');
   mkdirSync(iconSetDir, { recursive: true });
 
   // Ensure the asset-catalog scaffolding exists (idempotent — matches the shape
-  // Xcode/XcodeGen expects; the shipping apps already have these).
+  // Xcode/XcodeGen expects; PPL/ELPT/AIP already have these, CPL/IR/ATPL don't).
   writeFileSync(join(assetsDir, 'Contents.json'), `${catalogContentsJson}\n`);
   writeFileSync(join(iconSetDir, 'Contents.json'), `${contentsJson}\n`);
 

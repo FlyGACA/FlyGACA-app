@@ -6,7 +6,7 @@ import { TextField } from '@/components/calc/TextField';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useUrlState } from '@/hooks/useUrlState';
-import { type Airport, type AirportsIndex } from '@/lib/content';
+import { fetchJson, type Airport, type AirportsIndex } from '@/lib/content';
 import {
   REGION_FILTERS,
   inRegion,
@@ -14,8 +14,6 @@ import {
   compareAirports,
   type RegionFilter,
 } from '@/lib/aerodromes';
-import { getAirportType, getFacilities, type FuelType } from '@/calc/pilot/aerodromes';
-import { loadAirportsForFilter } from '@/lib/airportShards';
 import { AerodromesHero } from '@/components/aerodrome/AerodromesHero';
 import { AirportTypeIcon } from '@/components/aerodrome/AirportTypeIcon';
 import styles from './Aerodromes.module.css';
@@ -28,46 +26,26 @@ export function Aerodromes() {
   const { data, error, loading } = useFetchJson<AirportsIndex>('/data/airports.json');
   // Search and region live in the URL so a filtered view is shareable; an empty
   // region means "all" (kept out of the query string to keep links clean).
-  const [urlState, setUrl] = useUrlState({ q: '', region: '', fuel: '' });
+  const [urlState, setUrl] = useUrlState({ q: '', region: '' });
   const region = (urlState.region || 'all') as RegionFilter;
-  const fuelFilter = (urlState.fuel || 'all') as FuelType | 'all';
   const [visible, setVisible] = useState(PAGE);
   const query = useDebouncedValue(urlState.q.trim(), 200);
 
-  // The long tail (small strips, heliports — ~66k airfields) ships region-sharded
-  // and is fetched lazily the first time a search or a region filter is active, so
-  // the default "All" view only pays for the ~6k rich core. A region filter now
-  // pulls only that region's shards: "GCC" costs 17 KB gz instead of the 2.8 MB
-  // whole tier. Only a worldwide free-text search still needs every shard.
+  // The long tail (small strips, heliports — ~66k airfields) ships in a separate
+  // file fetched lazily the first time a search or a region filter is active, so
+  // the default "All" view only pays for the ~6k rich core. Mirrors the Library's
+  // lazy search-index pattern.
   const needExtra = region !== 'all' || query.length > 0;
   const [extra, setExtra] = useState<Airport[] | null>(null);
-  // Which filter the loaded rows cover, so switching region refetches the shards
-  // it needs. Repeats are free — loadJson caches each shard for the tab's life.
-  const [extraFor, setExtraFor] = useState<RegionFilter | null>(null);
   const [extraLoading, setExtraLoading] = useState(false);
   useEffect(() => {
-    if (!needExtra || extraLoading || extraFor === region) return;
-    let cancelled = false;
-    const forRegion = region;
+    if (!needExtra || extra || extraLoading) return;
     setExtraLoading(true);
-    loadAirportsForFilter(forRegion)
-      .then((rows) => {
-        if (cancelled) return;
-        setExtra(rows);
-        setExtraFor(forRegion);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setExtra([]);
-        setExtraFor(forRegion);
-      })
-      .finally(() => {
-        if (!cancelled) setExtraLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [needExtra, region, extraFor, extraLoading]);
+    fetchJson<AirportsIndex>('/data/airports-extra.json')
+      .then((d) => setExtra(d.airports))
+      .catch(() => setExtra([]))
+      .finally(() => setExtraLoading(false));
+  }, [needExtra, extra, extraLoading]);
 
   const pool = useMemo(() => {
     const base = data?.airports ?? [];
@@ -79,11 +57,6 @@ export function Aerodromes() {
     const needle = query.toLowerCase();
     return pool
       .filter((a) => inRegion(a, region))
-      .filter((a) => {
-        if (fuelFilter === 'all') return true;
-        const fac = getFacilities(a.icao);
-        return fac?.fuel.includes(fuelFilter as FuelType);
-      })
       .filter(
         (a) =>
           !needle ||
@@ -101,10 +74,6 @@ export function Aerodromes() {
 
   function pickRegion(next: RegionFilter) {
     setUrl('region', next === 'all' ? '' : next);
-    setVisible(PAGE);
-  }
-  function pickFuel(next: string) {
-    setUrl('fuel', next === 'all' ? '' : next);
     setVisible(PAGE);
   }
   function onSearch(next: string) {
@@ -139,20 +108,6 @@ export function Aerodromes() {
             onClick={() => pickRegion(r)}
           >
             {t(`aerodromesTool.regions.${r}`)}
-          </button>
-        ))}
-      </div>
-
-      <div className={styles.regions} role="group" aria-label="Fuel Filter">
-        {(['all', 'JET A-1', 'AVGAS 100LL'] as const).map((f) => (
-          <button
-            key={f}
-            type="button"
-            className={`${styles.region} ${fuelFilter === f ? styles.regionActive : ''}`}
-            aria-pressed={fuelFilter === f}
-            onClick={() => pickFuel(f)}
-          >
-            {f === 'all' ? t('aerodromesTool.filterFuelAll') : f === 'JET A-1' ? t('aerodromesTool.filterJetA1') : t('aerodromesTool.filterAvgas')}
           </button>
         ))}
       </div>
@@ -200,29 +155,6 @@ export function Aerodromes() {
                           >
                             {t(`aerodromesTool.regions.${badge}`)}
                           </span>
-                          {(() => {
-                            const fac = getFacilities(a.icao);
-                            const atype = getAirportType(a);
-                            return (
-                              <>
-                                {atype && (
-                                  <span className={`${styles.badge} ${styles.badge_saudi}`} title={t(`aerodromesTool.facilityType.${atype}`)}>
-                                    {t(`aerodromesTool.facilityType.${atype}`)}
-                                  </span>
-                                )}
-                                {fac?.fuel.map(f => (
-                                  <span key={f} className={`${styles.badge} ${styles.badge_mena}`} title={f}>
-                                    {f} ⛽
-                                  </span>
-                                ))}
-                                {fac?.lighting.map(l => (
-                                  <span key={l} className={`${styles.badge} ${styles.badge_mena}`} title={l}>
-                                    {l} 💡
-                                  </span>
-                                ))}
-                              </>
-                            );
-                          })()}
                         </span>
                         <span className={styles.name}>{ar ? a.name_ar : a.name_en}</span>
                         <span className={styles.meta}>

@@ -141,9 +141,6 @@ export function Pricing() {
           belowCta={
             !isPaid && (
               <>
-                <p style={{ marginTop: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
-                  {t('pricing.bnplBadge')}
-                </p>
                 {FOUNDING_OFFER && (
                   <p className={styles.foundingNote}>{t('pricing.foundingNote')}</p>
                 )}
@@ -205,26 +202,21 @@ export function Pricing() {
         lead={t('pricing.passLead')}
         price={t('pricing.pass', { n: PASS_PRICE })}
         action={
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {canCheckout() ? (
-              <button
-                type="button"
-                className={styles.passCta}
-                disabled={busy}
-                onClick={() => void checkout('pass')}
-              >
-                {t('pricing.passCta')}
-              </button>
-            ) : (
-              // Native shells buy through store IAP, not Moyasar web checkout.
-              <button type="button" className={styles.passCta} disabled aria-disabled="true">
-                {t('pricing.passComingSoon')}
-              </button>
-            )}
-            <span style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
-              {t('pricing.bnplBadge')}
-            </span>
-          </div>
+          canCheckout() ? (
+            <button
+              type="button"
+              className={styles.passCta}
+              disabled={busy}
+              onClick={() => void checkout('pass')}
+            >
+              {t('pricing.passCta')}
+            </button>
+          ) : (
+            // Native shells buy through store IAP, not Moyasar web checkout.
+            <button type="button" className={styles.passCta} disabled aria-disabled="true">
+              {t('pricing.passComingSoon')}
+            </button>
+          )
         }
       />
 
@@ -235,14 +227,9 @@ export function Pricing() {
         lead={t('pricing.prepLead', { cert: PREP_CERT, subject: PREP_FROM })}
         price={t('pricing.prepPer', { n: PREP_FROM })}
         action={
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Link to="/study/packs" className={styles.passCta}>
-              {t('pricing.prepCta')}
-            </Link>
-            <span style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
-              {t('pricing.bnplBadge')}
-            </span>
-          </div>
+          <Link to="/study/packs" className={styles.passCta}>
+            {t('pricing.prepCta')}
+          </Link>
         }
       />
 
@@ -254,25 +241,20 @@ export function Pricing() {
         lead={t('pricing.bundleLead')}
         price={t('pricing.bundlePrice', { n: BUNDLE_PRICE })}
         action={
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {canCheckout() ? (
-              <button
-                type="button"
-                className={styles.passCta}
-                disabled={busy}
-                onClick={() => void buyBundle()}
-              >
-                {t('pricing.bundleCta')}
-              </button>
-            ) : (
-              <button type="button" className={styles.passCta} disabled aria-disabled="true">
-                {t('pricing.passComingSoon')}
-              </button>
-            )}
-            <span style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
-              {t('pricing.bnplBadge')}
-            </span>
-          </div>
+          canCheckout() ? (
+            <button
+              type="button"
+              className={styles.passCta}
+              disabled={busy}
+              onClick={() => void buyBundle()}
+            >
+              {t('pricing.bundleCta')}
+            </button>
+          ) : (
+            <button type="button" className={styles.passCta} disabled aria-disabled="true">
+              {t('pricing.passComingSoon')}
+            </button>
+          )
         }
       />
 

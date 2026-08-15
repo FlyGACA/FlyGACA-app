@@ -14,7 +14,6 @@ export interface TafGroup {
   visibilityM: number | null;
   clouds: Cloud[];
   weather: string[];
-  saudiHazards: string[];
 }
 
 export interface TafReport {
@@ -34,7 +33,6 @@ const emptyGroup = (type: GroupType, period: string | null, prob?: number): TafG
   visibilityM: null,
   clouds: [],
   weather: [],
-  saudiHazards: [],
 });
 
 function fill(g: TafGroup, tok: string): void {
@@ -56,18 +54,7 @@ function fill(g: TafGroup, tok: string): void {
     g.clouds.push(c);
     return;
   }
-  if (isWeather(tok)) {
-    g.weather.push(tok);
-    if (/DS|SS|SA|DU|BLDU|BLSA|PO/.test(tok)) {
-      if (!g.saudiHazards.includes('shamal_dust')) g.saudiHazards.push('shamal_dust');
-    }
-  }
-}
-
-function processHazards(g: TafGroup) {
-  if (g.visibilityM !== null && g.visibilityM < 1500 && g.saudiHazards.includes('shamal_dust')) {
-    if (!g.saudiHazards.includes('haboob')) g.saudiHazards.push('haboob');
-  }
+  if (isWeather(tok)) g.weather.push(tok);
 }
 
 export function parseTaf(raw: string): TafReport {
@@ -114,10 +101,5 @@ export function parseTaf(raw: string): TafReport {
     }
     if (group) fill(group, tok);
   }
-  
-  for (const g of r.groups) {
-    processHazards(g);
-  }
-
   return r;
 }

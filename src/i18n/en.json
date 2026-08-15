@@ -638,9 +638,6 @@
     "runway": "Runway (designator or heading)",
     "windDir": "Wind direction (°true)",
     "windSpeed": "Wind speed (kt)",
-    "aircraft": "Aircraft limit",
-    "aircraftNone": "None",
-    "limitBadge": "Exceeds {{limit}} kt limit",
     "runwayHeading": "Runway heading",
     "crosswind": "Crosswind",
     "headwind": "Headwind",
@@ -668,11 +665,7 @@
     "pressureAltitude": "Pressure altitude",
     "isaDev": "ISA deviation",
     "densityAltitude": "Density altitude",
-    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it, and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative.",
-    "highTempWarningTitle": "High Temperature Warning",
-    "highTempWarning": "Temperatures exceeding 45°C significantly degrade take-off and climb performance. Consult the POH/AFM for exact penalty estimates.",
-    "highElevationTitle": "High Elevation Alert",
-    "highElevationNotes": "High-elevation Saudi airports like Abha (OEAB, 6,857 ft) and Taif (OETF, 4,769 ft) require careful performance planning. Expect longer takeoff rolls and reduced climb rates."
+    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it, and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative."
   },
   "tas": {
     "title": "True airspeed",
@@ -833,19 +826,6 @@
     "noFullMatches": "No passages match “{{q}}”.",
     "browse": "Browse by collection",
     "docsCount": "{{count}} document(s)",
-    "suggestions": {
-      "part61": "GACAR Part 61 (Licensing)",
-      "part91": "GACAR Part 91 (General Operating Rules)",
-      "part121": "GACAR Part 121 (Commercial Air Transport)",
-      "part135": "GACAR Part 135 (Charter Operations)",
-      "part141": "GACAR Part 141 (Training Centres)",
-      "weather": "weather",
-      "navigation": "navigation",
-      "safety": "safety",
-      "airspace": "airspace",
-      "aerodrome": "aerodrome",
-      "systems": "systems"
-    },
     "kind": {
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
@@ -899,230 +879,62 @@
     "searchPlaceholder": "Search a term or abbreviation…",
     "empty": "No terms match that search.",
     "terms": [
-      {
-        "term": "GACAR",
-        "def": "The General Authority of Civil Aviation Regulations: the body of Saudi civil-aviation rules, organized into numbered Parts."
-      },
-      {
-        "term": "GACA",
-        "def": "The General Authority of Civil Aviation: Saudi Arabia's civil-aviation regulator, and the authority Fly GACA cites and defers to."
-      },
-      {
-        "term": "AIP",
-        "def": "Aeronautical Information Publication: the official manual of a state's aeronautical information — aerodromes, airspace and procedures — issued by GACA for Saudi Arabia."
-      },
-      {
-        "term": "NOTAM",
-        "def": "Notice to Air Missions: a time-critical notice of a hazard or change (a closed runway, an unserviceable navaid) that crews must check before flight."
-      },
-      {
-        "term": "METAR",
-        "def": "A routine, coded observation of the actual weather at an aerodrome, issued at regular intervals."
-      },
-      {
-        "term": "TAF",
-        "def": "Terminal Aerodrome Forecast: a coded forecast of the expected weather at an aerodrome over a set period."
-      },
-      {
-        "term": "ATIS",
-        "def": "Automatic Terminal Information Service: a continuous recorded broadcast of essential aerodrome and weather information."
-      },
-      {
-        "term": "VFR",
-        "def": "Visual Flight Rules: the rules for flying by outside visual reference, permitted only in visual meteorological conditions."
-      },
-      {
-        "term": "IFR",
-        "def": "Instrument Flight Rules: the rules for flying by reference to instruments, required in instrument meteorological conditions."
-      },
-      {
-        "term": "VMC",
-        "def": "Visual Meteorological Conditions: weather — visibility and distance from cloud — good enough to fly under Visual Flight Rules."
-      },
-      {
-        "term": "IMC",
-        "def": "Instrument Meteorological Conditions: weather below the VMC minima, requiring Instrument Flight Rules."
-      },
-      {
-        "term": "QNH",
-        "def": "The altimeter pressure setting that makes the altimeter read altitude above mean sea level, so it shows aerodrome elevation on the ground."
-      },
-      {
-        "term": "QFE",
-        "def": "The altimeter pressure setting that makes the altimeter read height above a chosen datum, typically the aerodrome — zero on the runway."
-      },
-      {
-        "term": "QNE",
-        "def": "The standard altimeter setting of 1013.25 hPa (29.92 inHg), used at and above the transition altitude so every aircraft shares one datum."
-      },
-      {
-        "term": "Transition altitude",
-        "def": "The altitude at or below which vertical position is expressed as an altitude referenced to QNH."
-      },
-      {
-        "term": "Transition level",
-        "def": "The lowest flight level available above the transition altitude; above it, level is expressed as a flight level on the standard setting."
-      },
-      {
-        "term": "Flight level (FL)",
-        "def": "An altitude referenced to the standard pressure setting (1013.25 hPa), expressed in hundreds of feet — FL350 is 35,000 ft."
-      },
-      {
-        "term": "TAS",
-        "def": "True Airspeed: the aircraft's speed through the air mass, corrected for air density (altitude and temperature)."
-      },
-      {
-        "term": "IAS",
-        "def": "Indicated Airspeed: the speed read directly from the airspeed indicator, uncorrected."
-      },
-      {
-        "term": "Ground speed",
-        "def": "The aircraft's speed relative to the ground: true airspeed adjusted for the wind."
-      },
-      {
-        "term": "Mach number",
-        "def": "The ratio of true airspeed to the local speed of sound; Mach 1 is the speed of sound."
-      },
-      {
-        "term": "ISA",
-        "def": "International Standard Atmosphere: an agreed model atmosphere (15 °C and 1013.25 hPa at sea level) used to calibrate instruments and compare performance."
-      },
-      {
-        "term": "Density altitude",
-        "def": "Pressure altitude corrected for temperature — the altitude the air 'feels' like to the aircraft. High density altitude degrades performance."
-      },
-      {
-        "term": "Pressure altitude",
-        "def": "The altitude indicated when the altimeter is set to the standard pressure of 1013.25 hPa."
-      },
-      {
-        "term": "MSL",
-        "def": "Mean Sea Level: the reference datum for altitude and elevation."
-      },
-      {
-        "term": "AGL",
-        "def": "Above Ground Level: height measured from the surface directly below the aircraft."
-      },
-      {
-        "term": "Aerodrome",
-        "def": "Any defined area of land or water used for the arrival, departure and surface movement of aircraft; 'airport' usually implies added facilities."
-      },
-      {
-        "term": "Crosswind component",
-        "def": "The part of the wind blowing across the runway, at right angles to the direction of travel — the part that pushes the aircraft sideways."
-      },
-      {
-        "term": "Headwind component",
-        "def": "The part of the wind blowing straight down the runway against the direction of travel, which shortens the ground run."
-      },
-      {
-        "term": "Ceiling",
-        "def": "The height above the ground of the lowest cloud layer reported as broken or overcast."
-      },
-      {
-        "term": "Visibility",
-        "def": "The greatest horizontal distance at which prominent objects can be seen and identified."
-      },
-      {
-        "term": "Controlled airspace",
-        "def": "Airspace of defined dimensions within which an air traffic control service is provided."
-      },
-      {
-        "term": "Airspace class",
-        "def": "The ICAO classification (A to G) that sets which flight rules, services and clearances apply within a block of airspace."
-      },
-      {
-        "term": "TMA",
-        "def": "Terminal Control Area: controlled airspace established at the confluence of routes around one or more major aerodromes."
-      },
-      {
-        "term": "CTR",
-        "def": "Control Zone: controlled airspace extending upward from the surface around an aerodrome."
-      },
-      {
-        "term": "FIR",
-        "def": "Flight Information Region: an area within which flight information and alerting services are provided."
-      },
-      {
-        "term": "MSA",
-        "def": "Minimum Sector Altitude: the lowest altitude that gives a safe obstacle clearance within a specified sector around a navigation aid or aerodrome."
-      },
-      {
-        "term": "Squawk",
-        "def": "The four-digit transponder code assigned by air traffic control to identify an aircraft on radar."
-      },
-      {
-        "term": "Runway designator",
-        "def": "The number painted on a runway: its magnetic alignment rounded to the nearest ten degrees, with the final zero dropped — 340° becomes 34."
-      },
-      {
-        "term": "Threshold",
-        "def": "The beginning of the portion of a runway usable for landing."
-      },
-      {
-        "term": "Displaced threshold",
-        "def": "A landing threshold set back from the physical start of the runway; the paved area before it is not available for landing."
-      },
-      {
-        "term": "Taxiway",
-        "def": "A defined path on an aerodrome connecting runways with aprons, hangars and other facilities."
-      },
-      {
-        "term": "Apron",
-        "def": "The paved area where aircraft park for boarding, loading, refuelling or maintenance."
-      },
-      {
-        "term": "PIC",
-        "def": "Pilot in Command: the pilot responsible for the operation and safety of the aircraft during flight time."
-      },
-      {
-        "term": "PPL",
-        "def": "Private Pilot Licence: permits flight as pilot in command for non-commercial purposes."
-      },
-      {
-        "term": "CPL",
-        "def": "Commercial Pilot Licence: permits flight for hire or reward, subject to its ratings and limitations."
-      },
-      {
-        "term": "ATPL",
-        "def": "Airline Transport Pilot Licence: the highest pilot licence, required to command large multi-crew aircraft in airline operations."
-      },
-      {
-        "term": "IR",
-        "def": "Instrument Rating: an added qualification permitting flight under Instrument Flight Rules in instrument conditions."
-      },
-      {
-        "term": "Medical certificate",
-        "def": "An aeromedical fitness certificate, issued by class, that a pilot must hold; the class required depends on the licence exercised."
-      },
-      {
-        "term": "Logbook",
-        "def": "The pilot's personal record of flights, hours and experience, used to prove currency and meet licensing requirements."
-      },
-      {
-        "term": "Recency",
-        "def": "The recent-experience requirements — such as a number of take-offs and landings in a period — a pilot must meet to carry passengers or act as pilot in command."
-      },
-      {
-        "term": "SAELPT",
-        "def": "Saudi Aviation English Language Proficiency Test: the assessment of aviation-English proficiency against the ICAO language rating scale."
-      },
-      {
-        "term": "DME",
-        "def": "Distance Measuring Equipment: a system that shows the aircraft's slant distance from a ground station."
-      },
-      {
-        "term": "VOR",
-        "def": "VHF Omnidirectional Range: a ground navigation aid that defines radials an aircraft can track to or from the station."
-      },
-      {
-        "term": "ILS",
-        "def": "Instrument Landing System: a precision approach aid giving lateral (localizer) and vertical (glideslope) guidance to a runway."
-      },
-      {
-        "term": "RNAV",
-        "def": "Area Navigation: a method that lets an aircraft fly any chosen path within the coverage of navigation aids or self-contained systems, not just station to station."
-      }
+      { "term": "GACAR", "def": "The General Authority of Civil Aviation Regulations: the body of Saudi civil-aviation rules, organized into numbered Parts." },
+      { "term": "GACA", "def": "The General Authority of Civil Aviation: Saudi Arabia's civil-aviation regulator, and the authority Fly GACA cites and defers to." },
+      { "term": "AIP", "def": "Aeronautical Information Publication: the official manual of a state's aeronautical information — aerodromes, airspace and procedures — issued by GACA for Saudi Arabia." },
+      { "term": "NOTAM", "def": "Notice to Air Missions: a time-critical notice of a hazard or change (a closed runway, an unserviceable navaid) that crews must check before flight." },
+      { "term": "METAR", "def": "A routine, coded observation of the actual weather at an aerodrome, issued at regular intervals." },
+      { "term": "TAF", "def": "Terminal Aerodrome Forecast: a coded forecast of the expected weather at an aerodrome over a set period." },
+      { "term": "ATIS", "def": "Automatic Terminal Information Service: a continuous recorded broadcast of essential aerodrome and weather information." },
+      { "term": "VFR", "def": "Visual Flight Rules: the rules for flying by outside visual reference, permitted only in visual meteorological conditions." },
+      { "term": "IFR", "def": "Instrument Flight Rules: the rules for flying by reference to instruments, required in instrument meteorological conditions." },
+      { "term": "VMC", "def": "Visual Meteorological Conditions: weather — visibility and distance from cloud — good enough to fly under Visual Flight Rules." },
+      { "term": "IMC", "def": "Instrument Meteorological Conditions: weather below the VMC minima, requiring Instrument Flight Rules." },
+      { "term": "QNH", "def": "The altimeter pressure setting that makes the altimeter read altitude above mean sea level, so it shows aerodrome elevation on the ground." },
+      { "term": "QFE", "def": "The altimeter pressure setting that makes the altimeter read height above a chosen datum, typically the aerodrome — zero on the runway." },
+      { "term": "QNE", "def": "The standard altimeter setting of 1013.25 hPa (29.92 inHg), used at and above the transition altitude so every aircraft shares one datum." },
+      { "term": "Transition altitude", "def": "The altitude at or below which vertical position is expressed as an altitude referenced to QNH." },
+      { "term": "Transition level", "def": "The lowest flight level available above the transition altitude; above it, level is expressed as a flight level on the standard setting." },
+      { "term": "Flight level (FL)", "def": "An altitude referenced to the standard pressure setting (1013.25 hPa), expressed in hundreds of feet — FL350 is 35,000 ft." },
+      { "term": "TAS", "def": "True Airspeed: the aircraft's speed through the air mass, corrected for air density (altitude and temperature)." },
+      { "term": "IAS", "def": "Indicated Airspeed: the speed read directly from the airspeed indicator, uncorrected." },
+      { "term": "Ground speed", "def": "The aircraft's speed relative to the ground: true airspeed adjusted for the wind." },
+      { "term": "Mach number", "def": "The ratio of true airspeed to the local speed of sound; Mach 1 is the speed of sound." },
+      { "term": "ISA", "def": "International Standard Atmosphere: an agreed model atmosphere (15 °C and 1013.25 hPa at sea level) used to calibrate instruments and compare performance." },
+      { "term": "Density altitude", "def": "Pressure altitude corrected for temperature — the altitude the air 'feels' like to the aircraft. High density altitude degrades performance." },
+      { "term": "Pressure altitude", "def": "The altitude indicated when the altimeter is set to the standard pressure of 1013.25 hPa." },
+      { "term": "MSL", "def": "Mean Sea Level: the reference datum for altitude and elevation." },
+      { "term": "AGL", "def": "Above Ground Level: height measured from the surface directly below the aircraft." },
+      { "term": "Aerodrome", "def": "Any defined area of land or water used for the arrival, departure and surface movement of aircraft; 'airport' usually implies added facilities." },
+      { "term": "Crosswind component", "def": "The part of the wind blowing across the runway, at right angles to the direction of travel — the part that pushes the aircraft sideways." },
+      { "term": "Headwind component", "def": "The part of the wind blowing straight down the runway against the direction of travel, which shortens the ground run." },
+      { "term": "Ceiling", "def": "The height above the ground of the lowest cloud layer reported as broken or overcast." },
+      { "term": "Visibility", "def": "The greatest horizontal distance at which prominent objects can be seen and identified." },
+      { "term": "Controlled airspace", "def": "Airspace of defined dimensions within which an air traffic control service is provided." },
+      { "term": "Airspace class", "def": "The ICAO classification (A to G) that sets which flight rules, services and clearances apply within a block of airspace." },
+      { "term": "TMA", "def": "Terminal Control Area: controlled airspace established at the confluence of routes around one or more major aerodromes." },
+      { "term": "CTR", "def": "Control Zone: controlled airspace extending upward from the surface around an aerodrome." },
+      { "term": "FIR", "def": "Flight Information Region: an area within which flight information and alerting services are provided." },
+      { "term": "MSA", "def": "Minimum Sector Altitude: the lowest altitude that gives a safe obstacle clearance within a specified sector around a navigation aid or aerodrome." },
+      { "term": "Squawk", "def": "The four-digit transponder code assigned by air traffic control to identify an aircraft on radar." },
+      { "term": "Runway designator", "def": "The number painted on a runway: its magnetic alignment rounded to the nearest ten degrees, with the final zero dropped — 340° becomes 34." },
+      { "term": "Threshold", "def": "The beginning of the portion of a runway usable for landing." },
+      { "term": "Displaced threshold", "def": "A landing threshold set back from the physical start of the runway; the paved area before it is not available for landing." },
+      { "term": "Taxiway", "def": "A defined path on an aerodrome connecting runways with aprons, hangars and other facilities." },
+      { "term": "Apron", "def": "The paved area where aircraft park for boarding, loading, refuelling or maintenance." },
+      { "term": "PIC", "def": "Pilot in Command: the pilot responsible for the operation and safety of the aircraft during flight time." },
+      { "term": "PPL", "def": "Private Pilot Licence: permits flight as pilot in command for non-commercial purposes." },
+      { "term": "CPL", "def": "Commercial Pilot Licence: permits flight for hire or reward, subject to its ratings and limitations." },
+      { "term": "ATPL", "def": "Airline Transport Pilot Licence: the highest pilot licence, required to command large multi-crew aircraft in airline operations." },
+      { "term": "IR", "def": "Instrument Rating: an added qualification permitting flight under Instrument Flight Rules in instrument conditions." },
+      { "term": "Medical certificate", "def": "An aeromedical fitness certificate, issued by class, that a pilot must hold; the class required depends on the licence exercised." },
+      { "term": "Logbook", "def": "The pilot's personal record of flights, hours and experience, used to prove currency and meet licensing requirements." },
+      { "term": "Recency", "def": "The recent-experience requirements — such as a number of take-offs and landings in a period — a pilot must meet to carry passengers or act as pilot in command." },
+      { "term": "SAELPT", "def": "Saudi Aviation English Language Proficiency Test: the assessment of aviation-English proficiency against the ICAO language rating scale." },
+      { "term": "DME", "def": "Distance Measuring Equipment: a system that shows the aircraft's slant distance from a ground station." },
+      { "term": "VOR", "def": "VHF Omnidirectional Range: a ground navigation aid that defines radials an aircraft can track to or from the station." },
+      { "term": "ILS", "def": "Instrument Landing System: a precision approach aid giving lateral (localizer) and vertical (glideslope) guidance to a runway." },
+      { "term": "RNAV", "def": "Area Navigation: a method that lets an aircraft fly any chosen path within the coverage of navigation aids or self-contained systems, not just station to station." }
     ]
   },
   "document": {
@@ -1236,16 +1048,10 @@
     "formula": "Each runway is resolved against the reported wind: crosswind = speed × sin(angle), headwind = speed × cos(angle)."
   },
   "hydroplaning": {
-    "preset": "Aircraft preset",
-    "custom_preset": "Custom...",
-    "landingSpeed": "Landing speed (kt)",
     "pressure": "Tyre pressure (psi)",
-    "dynamic_speed": "Dynamic hydroplaning",
-    "viscous_speed": "Viscous hydroplaning",
-    "alert_risk": "⚠️ High risk at landing speed",
     "speed": "Hydroplaning speed",
     "kmh": "{{kmh}} km/h",
-    "formula": "Dynamic hydroplaning speed ≈ 9 × √(tyre pressure) kt for a rotating tyre. Viscous hydroplaning ≈ 7.6 × √(tyre pressure). Onset also depends on water depth, tyre wear and surface texture."
+    "formula": "Dynamic hydroplaning speed ≈ 9 × √(tyre pressure) kt for a rotating tyre. Onset also depends on water depth, tyre wear and surface texture."
   },
   "runwayPerf": {
     "book": "Book distance (m)",
@@ -1270,11 +1076,7 @@
     "gs": "Groundspeed",
     "legendWind": "Wind",
     "diagramLabel": "Wind triangle diagram: heading {{hdg}}° with wind from {{wdir}}° at {{wspd}} kt gives {{gs}} kt groundspeed.",
-    "formula": "WCA = asin(wind × sin(wind − course) ÷ TAS). Heading = course + WCA; groundspeed = TAS·cos(WCA) − wind·cos(wind − course).",
-    "distance": "Distance",
-    "ete": "Estimated time enroute",
-    "tasLabel": "True Airspeed (TAS)",
-    "wcaLabel": "Wind Correction Angle (WCA)"
+    "formula": "WCA = asin(wind × sin(wind − course) ÷ TAS). Heading = course + WCA; groundspeed = TAS·cos(WCA) − wind·cos(wind − course)."
   },
   "greatCircle": {
     "lat1": "From latitude (°)",
@@ -1349,12 +1151,6 @@
     "rear": "Rear seats",
     "baggage": "Baggage",
     "fuelStation": "Fuel",
-    "taxiFuel": "Taxi fuel",
-    "tripFuel": "Trip fuel",
-    "zfw": "Zero Fuel Weight",
-    "rampWeight": "Ramp Weight",
-    "tow": "Takeoff Weight",
-    "ldw": "Landing Weight",
     "limits": "Envelope limits",
     "cgFwd": "Fwd CG limit",
     "cgAft": "Aft CG limit",
@@ -1860,14 +1656,6 @@
       "mena": "MENA",
       "world": "World"
     },
-    "filterFuelAll": "All Fuel",
-    "filterFuelJetA1": "JET A-1",
-    "filterFuelAvgas": "AVGAS 100LL",
-    "facilityType": {
-      "International": "International 🌐",
-      "Domestic": "Domestic ✈️",
-      "Military": "Military 🎖️"
-    },
     "viewMap": "View on map",
     "loadMore": "Load more",
     "searchingWorldwide": "Searching worldwide…",
@@ -1933,11 +1721,6 @@
     "classChip": "Class {{c}}"
   },
   "metBrief": {
-    "vfrRoute": "VFR route",
-    "mvfrRoute": "MVFR conditions along route",
-    "ifrRoute": "IFR conditions along route",
-    "lifrRoute": "LIFR conditions along route",
-    "fetching": "Fetching route weather...",
     "routeLabel": "Route (ICAO codes)",
     "routeHint": "Space-separated aerodromes, e.g. OERK OEJN OEDF",
     "empty": "Enter a route to build the briefing.",
@@ -1982,7 +1765,6 @@
     "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel, this does not file a flight plan."
   },
   "pricing": {
-    "bnplBadge": "4 interest-free installments with Tamara / Tabby 💳",
     "title": "Pricing",
     "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
     "monthly": "Monthly",
@@ -2126,11 +1908,7 @@
       "pro": "You're on Pro, thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": [
-      "Bulk seat licences",
-      "Admin dashboard & usage",
-      "Syllabus-aligned study"
-    ],
+    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
@@ -2269,14 +2047,7 @@
     "title": "The GACAR, as a constellation",
     "subtitle": "Every Part is a star in its domain's sector, sized by how often other Parts cite it — and the lines are the corpus's real cross-references. Hover to name a Part, click to open it.",
     "hint": "Hover to explore · click a star to open the Part",
-    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list.",
-    "filters": {
-      "all": "All Parts / جميع اللوائح",
-      "licensing": "Licensing & Medical (Part 61, 67)",
-      "operations": "Operations & VFR/IFR (Part 91, 107)",
-      "commercial": "Commercial & Airlines (Part 119, 121, 135)",
-      "schools": "Approved Schools & ATOs (Part 141, 142)"
-    }
+    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list."
   },
   "hud": {
     "badge": "Training scenario · SIM data",
@@ -2548,7 +2319,6 @@
     "preparing": "Preparing your checkout…",
     "confirming": "Confirming your payment…",
     "promoApplied": "Promo {{code}} applied — you save SAR {{save}}.",
-    "goToAccount": "Go to my account",
     "errors": {
       "generic": "Couldn't open checkout just now. Please try again.",
       "sign-in-required": "Sign in to check out.",
@@ -2558,9 +2328,7 @@
       "unknown-pack": "That pack isn't available for purchase.",
       "org-name-required": "Enter your organisation or school name to continue.",
       "student-verification-required": "Verify your student email to use the student rate.",
-      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again.",
-      "signed-out-after-payment": "Your payment was received. Sign in with the same account to activate it.",
-      "payment-not-recognized": "We couldn't match this payment to your order. If you were charged it will activate automatically — contact us if it doesn't."
+      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again."
     }
   },
   "account": {
@@ -2596,7 +2364,6 @@
     "signIn": "Sign in",
     "register": "Create account",
     "continueGoogle": "Continue with Google",
-    "continueApple": "Continue with Apple",
     "or": "or",
     "needAccount": "Need an account? Create one",
     "haveAccount": "Already have an account? Sign in",
@@ -2620,8 +2387,7 @@
     "roles": {
       "pilot": "Pilot",
       "student": "Student pilot",
-      "instructor": "Flight instructor",
-      "dispatcher": "Flight Dispatcher"
+      "instructor": "Flight instructor"
     },
     "errors": {
       "invalidEmail": "Enter a valid email address.",
@@ -2686,10 +2452,6 @@
     "totalHours": "Total hours",
     "flightsLogged": "{{n}} flights logged",
     "logbook": "Logbook",
-    "downloadSampleCsv": "Download Sample CSV",
-    "importHelp": "Import Help",
-    "importHelpTitle": "Logbook Import Guide",
-    "importHelpText": "Your CSV file should include standard columns like Date, Aircraft, Flight Time, Landings, and Remarks. For pilots migrating from ForeFlight, Garmin Pilot, or paper logbooks, downloading the sample CSV and matching its format is recommended.",
     "addFlight": "Add flight",
     "flightDetails": "Flight details",
     "date": "Date",
@@ -2726,11 +2488,6 @@
     "appr": "Appr",
     "summary": "Logbook summary",
     "exportCsv": "Export CSV",
-    "printLogbook": "Print PDF",
-    "dual": "Dual",
-    "xc": "Cross-Country",
-    "recency": "Passenger Recency",
-    "recencyDesc": "Last 90 days",
     "last90": "Last 90 days",
     "csvProNote": "CSV & PDF export are part of Pro",
     "edit": "Edit",
@@ -3894,12 +3651,6 @@
     "gsProgress": "{{done}} of {{total}} done",
     "exam": "Mock exam",
     "examDesc": "A timed 25-question test drawn from every topic.",
-    "cbtMode": "GACA Official CBT Simulator Mode",
-    "cbtTitle": "Official GACA CBT Exam Simulator",
-    "cbtDesc": "Interactive exam environment mirroring official GACA test center screens and timers.",
-    "cbtBadge": "🇸🇦 Official GACA Practice CBT Mode",
-    "cbtPassBadge": "GACAR Official Passing Mark: 75%",
-    "cbtCertTitle": "Official GACA Practice CBT Exam Transcript",
     "examStart": "Start exam",
     "examTimeLeft": "Time left",
     "examPassed": "Passed",
@@ -4019,23 +3770,7 @@
     "statSheets": "Sheets",
     "statBestExam": "Best exam",
     "askAdel": "Ask Captain Adel",
-    "askAdelPrompt": "Give me a focused study briefing on {{topic}} for the Saudi GACA written exam, and cite the exact GACAR Part or AIP section.",
-    "radiotelephony": "Radiotelephony Practice",
-    "radiotelephonyDesc": "Practice standard ICAO/GACA phraseology readbacks interactively with Captain Adel.",
-    "practiceWithAdel": "Practice scenario with Captain Adel",
-    "scenarios": {
-      "oerkTitle": "Riyadh Approach (OERK)",
-      "oerkPrompt": "Act as Riyadh Approach (OERK). I am Saudia 123, a B777, descending through FL150. Give me realistic vectors for an ILS approach to Runway 33R. Wait for my readback before continuing.",
-      "oejnTitle": "Jeddah Tower (OEJN)",
-      "oejnPrompt": "Act as Jeddah Tower (OEJN). I am Flynas 456, an A320, holding short of Runway 34L. Clear me for takeoff with realistic wind and departure instructions. Evaluate my readback.",
-      "oedfTitle": "Dammam Radar (OEDF)",
-      "oedfPrompt": "Act as Dammam Radar (OEDF). I am Aramco 789, a B737, level at FL240. Give me a realistic reroute due to weather ahead. I will read back."
-    },
-    "filterAll": "All Decks",
-    "filterPart61": "Part 61 (Licensing)",
-    "filterPart91": "Part 91 (Operating Rules)",
-    "filterPart121_135": "Part 121 / 135 (Commercial)",
-    "filterSaelpt": "SAELPT (Aviation English)"
+    "askAdelPrompt": "Give me a focused study briefing on {{topic}} for the Saudi GACA written exam, and cite the exact GACAR Part or AIP section."
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
@@ -4565,8 +4300,7 @@
       "dismiss": "Dismiss",
       "pilotDesc": "Hours, currency and operational lookups up front.",
       "studentDesc": "Study streaks, practice exams and reading first.",
-      "instructorDesc": "Your records, references and teaching material first.",
-      "dispatcherDesc": "Weather briefings and GACAR 121/135 regulations first."
+      "instructorDesc": "Your records, references and teaching material first."
     },
     "actions": {
       "addFlight": "Log a flight",
@@ -4713,10 +4447,8 @@
     }
   },
   "referral": {
-    "title": "Fly Together",
-    "subtitle": "Share your link — you both get a free Pro month when they subscribe.",
-    "whatsappShare": "Invite a fellow pilot to get a free Pro month for you and your colleague",
-    "whatsapp": "Share via WhatsApp",
+    "title": "Invite a fellow pilot",
+    "subtitle": "Share your link — you both get 30 free Captain Adel questions when they subscribe.",
     "copy": "Copy link",
     "copied": "Copied!"
   },
@@ -4815,54 +4547,5 @@
     "correction": "Temperature correction",
     "isaDev": "ISA deviation",
     "formula": "Correction (ft) ≈ 4 × ISA deviation × (height above the altimeter-setting source ÷ 1,000); true altitude = indicated + correction. Warmer than ISA → you are higher than indicated; colder → lower. An approximation; for terrain-critical cold-weather operations use the AIP/ICAO tables."
-  },
-  "metar": {
-    "hazards": {
-      "shamal_dust": "Shamal Dust Storm",
-      "haboob": "Haboob (Low Visibility/Ceiling)"
-    }
-  },
-  "pathways": {
-    "title": "Licensing Pathways",
-    "desc": "Track your progress towards GACAR Part 61 pilot licenses.",
-    "ppl": {
-      "title": "Private Pilot License (PPL - GACAR 61 Subpart C)",
-      "ppl_age": "Minimum age of 17",
-      "ppl_med": "Hold at least a Class 2 Medical Certificate",
-      "ppl_lang": "GACA English Language Proficiency (Level 4+)",
-      "ppl_ground": "Complete PPL Ground School & pass knowledge test",
-      "ppl_flight": "40 hours total flight time (35h minimum in approved Part 141)",
-      "ppl_xc": "5 hours solo cross-country flight",
-      "ppl_check": "Pass the PPL Practical Test (Checkride)"
-    },
-    "ir": {
-      "title": "Instrument Rating (IR - GACAR 61 Subpart G)",
-      "ir_med": "Hold PPL and Class 1 or 2 Medical",
-      "ir_ground": "Complete IR Ground School & pass knowledge test",
-      "ir_xc": "50 hours of Cross-Country (XC) PIC time",
-      "ir_inst": "40 hours of actual or simulated instrument time",
-      "ir_check": "Pass the IR Practical Test"
-    },
-    "cpl": {
-      "title": "Commercial Pilot License (CPL - GACAR 61 Subpart E)",
-      "cpl_age": "Minimum age of 18",
-      "cpl_med": "Hold a Class 1 Medical Certificate",
-      "cpl_ground": "Complete CPL Ground School & pass knowledge test",
-      "cpl_flight": "250 hours total flight time (190h minimum in approved Part 141)",
-      "cpl_pic": "100 hours Pilot-in-Command (PIC) time",
-      "cpl_xc": "50 hours PIC cross-country",
-      "cpl_check": "Pass the CPL Practical Test"
-    },
-    "atpl": {
-      "title": "Airline Transport Pilot (ATPL - GACAR 61 Subpart F)",
-      "atpl_age": "Minimum age of 21",
-      "atpl_med": "Hold a Class 1 Medical Certificate",
-      "atpl_ground": "Pass ATPL knowledge test (ATP CTP usually required)",
-      "atpl_flight": "1,500 hours total flight time",
-      "atpl_xc": "500 hours cross-country flight time",
-      "atpl_night": "100 hours night flight time",
-      "atpl_inst": "75 hours instrument time",
-      "atpl_check": "Pass the ATPL Practical Test"
-    }
   }
 }

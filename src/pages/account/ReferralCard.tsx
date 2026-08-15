@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchReferralCode, referralLink, whatsappShareLink } from '@/lib/services/referral';
+import { fetchReferralCode, referralLink } from '@/lib/services/referral';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import styles from './ReferralCard.module.css';
 
@@ -43,17 +43,6 @@ export function ReferralCard() {
         <button type="button" className="btn" onClick={() => void copy(link)}>
           {copied ? t('referral.copied') : t('referral.copy')}
         </button>
-      </div>
-      <div className={styles.row} style={{ marginTop: '0.75rem' }}>
-        <a
-          href={whatsappShareLink(code, t('referral.whatsappShare'))}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn"
-          style={{ width: '100%', backgroundColor: '#25D366', color: '#fff', borderColor: '#25D366' }}
-        >
-          {t('referral.whatsapp')}
-        </a>
       </div>
     </div>
   );

@@ -2,10 +2,25 @@ import { track } from '@vercel/analytics';
 import type { Metric } from 'web-vitals';
 import { isNative } from '@/lib/native/nativeBridge';
 
+/**
+ * True only where the Vercel beacon endpoints (`/_vercel/insights/*`,
+ * `/_vercel/speed-insights/*`) actually exist: a `*.vercel.app` host, or any
+ * host when explicitly opted in via `VITE_VERCEL_ANALYTICS=1` (e.g. a custom
+ * domain served by Vercel). On Firebase/Netlify/etc. those endpoints are the
+ * SPA fallback — the scripts would 404 with MIME-type console errors and every
+ * `track()` call would fire a dead request.
+ */
+export function isVercelHost(): boolean {
+  if (import.meta.env.VITE_VERCEL_ANALYTICS === '1') return true;
+  if (typeof window === 'undefined') return false;
+  return window.location.hostname.endsWith('.vercel.app');
+}
+
 /** Whether analytics should run at all: web only (the native App Store builds
- *  stay free of web beacons) and production only (dev/test never emit). */
+ *  stay free of web beacons), production only (dev/test never emit), and only
+ *  on a host that serves the Vercel analytics endpoints. */
 export function enabled(): boolean {
-  return !isNative() && import.meta.env.PROD;
+  return !isNative() && import.meta.env.PROD && isVercelHost();
 }
 
 /**

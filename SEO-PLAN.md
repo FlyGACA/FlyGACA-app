@@ -57,7 +57,7 @@ rest of the plan: **fix host + indexability first, or every downstream SEO item 
       `scripts/prerender.mjs` output. If Vercel: add the prerender step to its build (needs Chromium in
       the Vercel build) or a prerender/ISR equivalent. Re-run `npm run audit:ai` until green.
 - [~] **P0.c — Reconcile the redirect & canonical (P0, S).** apex↔www redirect direction must point at
-      the indexable canonical host and match `src/lib/seo/seo.ts` `SITE` + the sitemap. No
+      the indexable canonical host and match `src/lib/seo.ts` `SITE` + the sitemap. No
       canonical→redirect→noindex chains. *Partial — 2026-07-06:* the `vercel.json` noindex rule now
       matches "any host except exactly `flygaca.com`", but nothing folded `www.flygaca.com` onto the
       apex, so `www` served a live **noindexed duplicate**. Added a `www.flygaca.com →
@@ -137,8 +137,8 @@ Legend: **P0** do first · effort S <½ day, M ~1 day, L multi-day · every item
 - [~] **2.4 Organization entity hygiene (S).** `organizationLd` with stable `@id` ships site-wide; verify
       `sameAs` real profiles + `contactPoint` (i@flygaca.com), consistent name/logo. No accreditation
       claims.
-- [~] **2.5 JSON-LD validation in CI (M).** `tests/lib/jsonld.test.ts` + `tests/lib/seo.test.ts` +
-      `tests/hooks/page-meta.test.tsx` cover the builders in `npm run test`. *Missing:* a
+- [~] **2.5 JSON-LD validation in CI (M).** `tests/jsonld.test.ts` + `tests/seo.test.ts` +
+      `tests/page-meta.test.tsx` cover the builders in `npm run test`. *Missing:* a
       `scripts/validate-jsonld.mjs` that walks the prerendered `dist/` and fails CI on invalid emitted
       schema (as opposed to unit-testing the builders).
 
@@ -146,7 +146,7 @@ Legend: **P0** do first · effort S <½ day, M ~1 day, L multi-day · every item
 
 - [ ] **3.1 Arabic keyword & intent pass (M).** Research Arabic queries natively; adjust AR
       titles/descriptions in `ar.json` for the money pages; document query→URL map here.
-- [~] **3.2 hreflang refinement (S).** `src/lib/seo/seo.ts` emits `en` / `ar` / `x-default` via `?lang=`
+- [~] **3.2 hreflang refinement (S).** `src/lib/seo.ts` emits `en` / `ar` / `x-default` via `?lang=`
       (head + sitemap match). *Consider:* `ar-SA` alongside `ar` (Gulf targeting); `og:locale` already
       maps `ar → ar_SA`.
 - [ ] **3.3 Arabic answer-first content (L).** AR KeyFacts/FAQ/answer blocks in MSA with Gulf awareness
@@ -179,7 +179,7 @@ Legend: **P0** do first · effort S <½ day, M ~1 day, L multi-day · every item
 
 ## Phase 6 — E-E-A-T & off-site authority (P1–P2, largely non-code)
 
-- [~] **6.1 About/methodology page (M).** `src/pages/about/About.tsx` has methodology, FAQ, contact +
+- [~] **6.1 About/methodology page (M).** `src/pages/About.tsx` has methodology, FAQ, contact +
       org/article/faq/breadcrumb schema. *To add:* `AboutPage` type, an explicit corrections policy,
       update cadence.
 - [~] **6.2 Provenance component (S).** *Today:* an inline "verify against GACA" line in `Document.tsx`

@@ -12,7 +12,7 @@
  * The new guide is seeded as a DRAFT: it renders by URL (with a "Draft" badge)
  * but is unlisted (no index / catalog / sitemap entry) until you flip its
  * GUIDE_STATUS entry to 'live'. The author then replaces the `TODO (...)`
- * placeholders in both bundles with real bilingual prose. See docs/GUIDE_AUTHORING.md.
+ * placeholders in both bundles with real bilingual prose. See GUIDE_AUTHORING.md.
  *
  * Edits are insertion-only and targeted (the i18n bundles are NOT re-serialised,
  * so the diff is just the added block). Re-running with an existing slug is a
@@ -187,5 +187,5 @@ console.log(
     '     via GUIDE_TOOLS, GUIDE_REGS, GUIDE_QUIZ — and an `adel` question.\n' +
     '  3. Check your work:  npm run test  (parity + content completeness)\n' +
     `  4. Publish when ready: set GUIDE_STATUS['${slug}'] to 'live' in ${GUIDES_TS}.\n\n` +
-    'See docs/GUIDE_AUTHORING.md for the full walkthrough.',
+    'See GUIDE_AUTHORING.md for the full walkthrough.',
 );

@@ -7,22 +7,27 @@
  * (`authError`, `emailShape`, `passwordPolicy`); the auth side effects stay in
  * `@/lib/services/auth`.
  */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router';
 import {
   registerWithEmail,
   sendPasswordReset,
   signInWithEmail,
   signInWithGoogle,
-  signInWithApple,
 } from '@/lib/services/auth';
-import { authErrorInfo, isAuthDismiss, isDomainAuthError } from '@/calc/app/authError';
+import {
+  AUTH_TIMEOUT_CODE,
+  authErrorInfo,
+  isAuthDismiss,
+  isDomainAuthError,
+} from '@/calc/app/authError';
 import { looksLikeEmail } from '@/calc/app/emailShape';
 import { meetsPasswordPolicy } from '@/calc/app/passwordPolicy';
-import { getSafeRedirectUrl } from '@/calc/app/redirectUrl';
 import { SITE_ORIGIN, isMirrorHost } from '@/lib/seo/seo';
 import { useForm } from '@/hooks/useForm';
+
+/** How long an auth call may run before the watchdog reports a timeout. */
+export const AUTH_TIMEOUT_MS = 20_000;
 
 export interface FieldErrors {
   name?: string;
@@ -44,21 +49,18 @@ export interface SignInForm {
   notice: string;
   /** Set when auth fails because this (mirror/preview) host isn't authorized. */
   mainSiteHref: string | null;
-  toggleMode: (targetMode?: 'in' | 'up') => void;
+  toggleMode: () => void;
   forgotPassword: () => void;
   loginForm: LoginForm;
   signupForm: SignupForm;
   /** Continue-with-Google, wrapped in the shared runner. */
   runGoogle: () => void;
-  /** Continue-with-Apple, wrapped in the shared runner. */
-  runApple: () => void;
 }
 
 export function useSignInForm(): SignInForm {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const mode: 'in' | 'up' = searchParams.get('mode') === 'up' ? 'up' : 'in';
+  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const [animating, setAnimating] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
@@ -67,20 +69,18 @@ export function useSignInForm(): SignInForm {
   // site, so we surface a real click-through link on the error alert.
   const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
-  useEffect(() => {
-    setErrors({});
-    setNotice('');
-  }, [mode]);
-
-  const toggleMode = (targetMode?: 'in' | 'up') => {
-    const nextMode = targetMode ?? (mode === 'in' ? 'up' : 'in');
-    const nextParams = new URLSearchParams(searchParams);
-    if (nextMode === 'up') {
-      nextParams.set('mode', 'up');
-    } else {
-      nextParams.delete('mode');
-    }
-    setSearchParams(nextParams, { replace: true });
+  const toggleMode = () => {
+    setAnimating(true);
+    setTimeout(() => {
+      setMode((m) => (m === 'in' ? 'up' : 'in'));
+      setErrors({});
+      setNotice('');
+      loginForm.resetForm();
+      signupForm.resetForm();
+    }, 200);
+    setTimeout(() => {
+      setAnimating(false);
+    }, 400);
   };
 
   async function run(
@@ -91,15 +91,18 @@ export function useSignInForm(): SignInForm {
     setErrors({});
     setNotice('');
     setMainSiteHref(null);
+    // Watchdog: when the App Check / reCAPTCHA Enterprise token can't be minted,
+    // the Firebase SDK promise never settles — without this race the button spins
+    // forever with no feedback. Reject with a synthetic Firebase-shaped code so
+    // the standard mapping below surfaces the timeout message.
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     try {
-      const res = await fn();
-      const redirectParam = searchParams.get('redirect');
-      if (redirectParam && res !== null) {
-        const safeTarget = getSafeRedirectUrl(redirectParam, '');
-        if (safeTarget) {
-          navigate(safeTarget, { replace: true });
-        }
-      }
+      await Promise.race([
+        fn(),
+        new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => reject({ code: AUTH_TIMEOUT_CODE }), AUTH_TIMEOUT_MS);
+        }),
+      ]);
     } catch (e) {
       const code = (e as { code?: string }).code;
       // Closing the Google popup (or opening a second one) isn't a failure — the
@@ -135,6 +138,7 @@ export function useSignInForm(): SignInForm {
         setErrors({ [field]: errorMessage });
       }
     } finally {
+      if (timeoutId) clearTimeout(timeoutId);
       setBusy(false);
     }
   }
@@ -208,7 +212,7 @@ export function useSignInForm(): SignInForm {
 
   return {
     mode,
-    animating: false,
+    animating,
     busy,
     errors,
     notice,
@@ -218,6 +222,5 @@ export function useSignInForm(): SignInForm {
     loginForm,
     signupForm,
     runGoogle: () => void run(signInWithGoogle),
-    runApple: () => void run(signInWithApple),
   };
 }

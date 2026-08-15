@@ -22,7 +22,6 @@ export function Taf() {
       g.cavok ? t('wx.cavok') : describeVisibility(g.visibilityM, t),
       describeClouds(g.clouds, t),
       describeWeather(g.weather, t),
-      g.saudiHazards?.length > 0 ? g.saudiHazards.map((h) => t(`metar.hazards.${h}`)).join(' · ') : null,
     ].filter((s) => s && s !== t('wx.none'));
     return parts.join(' · ');
   }

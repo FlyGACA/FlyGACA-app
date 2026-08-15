@@ -16,8 +16,6 @@ const h = vi.hoisted(() => ({
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
   payment: undefined as unknown,
   getThrows: false,
-  /** Collection whose writes should reject — used to simulate a grant failing mid-way. */
-  failWritesTo: null as string | null,
 }));
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
@@ -54,7 +52,6 @@ function makeDoc(coll: string, id: string) {
         data: () => h.stores[coll]?.[id],
       }),
     set: (val: Record<string, unknown>, opts?: { merge?: boolean }) => {
-      if (h.failWritesTo === coll) return Promise.reject(new Error(`write-failed:${coll}`));
       writeDoc(coll, id, val, opts);
       return Promise.resolve();
     },
@@ -109,23 +106,7 @@ function mockRes() {
   return res;
 }
 
-/**
- * A delivery shaped the way Moyasar actually sends one: the shared secret comes back
- * as a `secret_token` field in the JSON body. Every test below routes through this, so
- * the suite exercises the real-world payload rather than the HMAC recipe the handler
- * used to assume (and which rejected every genuine delivery).
- */
 function signedReq(paymentId: string) {
-  const payload = { type: "payment_paid", data: { id: paymentId }, secret_token: WEBHOOK_SECRET };
-  return {
-    headers: {},
-    rawBody: Buffer.from(JSON.stringify(payload)),
-    body: payload,
-  };
-}
-
-/** The provisional HMAC-header fallback, kept until production logs confirm which fires. */
-function hmacSignedReq(paymentId: string) {
   const body = JSON.stringify({ type: "payment_paid", data: { id: paymentId } });
   const sig = createHmac("sha256", WEBHOOK_SECRET).update(body).digest("hex");
   return {
@@ -142,7 +123,6 @@ async function invoke(req: ReturnType<typeof signedReq>, res: ReturnType<typeof 
 beforeEach(() => {
   h.stores = {};
   h.getThrows = false;
-  h.failWritesTo = null;
   h.payment = { id: "pay_1", status: "paid", amount: 4900, currency: "SAR", metadata: { checkoutId: "co_1" } };
   vi.stubGlobal(
     "fetch",
@@ -155,8 +135,8 @@ beforeEach(() => {
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe("moyasarWebhook — authentication", () => {
-  it("400s when neither a secret_token nor a valid signature is present", async () => {
+describe("moyasarWebhook — signature verification", () => {
+  it("400s when the signature is missing or wrong", async () => {
     const res = mockRes();
     await invoke({ headers: {}, rawBody: Buffer.from("{}"), body: {} }, res);
     expect(res.status).toHaveBeenCalledWith(400);
@@ -167,27 +147,6 @@ describe("moyasarWebhook — authentication", () => {
       res2,
     );
     expect(res2.status).toHaveBeenCalledWith(400);
-  });
-
-  it("400s on a wrong secret_token", async () => {
-    const payload = { type: "payment_paid", data: { id: "pay_1" }, secret_token: "not-the-secret" };
-    const res = mockRes();
-    await invoke(
-      { headers: {}, rawBody: Buffer.from(JSON.stringify(payload)), body: payload },
-      res,
-    );
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(h.stores.users).toBeUndefined();
-  });
-
-  it("accepts the HMAC-header fallback and fulfils normally", async () => {
-    h.stores.checkoutIntents = {
-      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
-    };
-    const res = mockRes();
-    await invoke(hmacSignedReq("pay_1"), res);
-    expect(res.json).toHaveBeenCalledWith({ received: true });
-    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
   });
 });
 
@@ -309,53 +268,5 @@ describe("moyasarWebhook — idempotency, mismatches & errors", () => {
     const res = mockRes();
     await invoke(signedReq("pay_1"), res);
     expect(res.status).toHaveBeenCalledWith(500);
-  });
-
-  // Regression: fulfillPayment used to claim moyasarPayments/{id} BEFORE fetching the
-  // payment, so a transient Moyasar failure wrote the marker and granted nothing — and
-  // the retry, seeing the payment "already fulfilled", returned success. The buyer was
-  // charged and got nothing, silently. The retry must grant.
-  it("grants on retry after a transient Moyasar failure, and leaves no claim behind", async () => {
-    h.stores.checkoutIntents = {
-      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
-    };
-
-    h.getThrows = true;
-    const first = mockRes();
-    await invoke(signedReq("pay_1"), first);
-    expect(first.status).toHaveBeenCalledWith(500);
-    // The failed attempt must not have claimed the payment.
-    expect(h.stores.moyasarPayments?.pay_1).toBeUndefined();
-    expect(h.stores.users).toBeUndefined();
-
-    h.getThrows = false;
-    const second = mockRes();
-    await invoke(signedReq("pay_1"), second);
-    expect(second.json).toHaveBeenCalledWith({ received: true });
-    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
-    expect(h.stores.checkoutIntents?.co_1?.status).toBe("fulfilled");
-  });
-
-  // Same failure mode one step later: the payment is good and claimed, but the grant
-  // itself throws. The claim must be released so a retry can still fulfil it.
-  it("releases the claim when the grant fails, so a retry still grants", async () => {
-    h.stores.checkoutIntents = {
-      co_1: { uid: "u1", kind: "pass", amount: 4900, currency: "SAR", status: "pending" },
-    };
-    h.failWritesTo = "users"; // the entitlement write blows up on the first attempt
-
-    const first = mockRes();
-    await invoke(signedReq("pay_1"), first);
-    expect(first.status).toHaveBeenCalledWith(500);
-    expect(h.stores.users).toBeUndefined();
-    // The claim must have been released, or the charge can never be fulfilled.
-    expect(h.stores.moyasarPayments?.pay_1).toBeUndefined();
-
-    h.failWritesTo = null;
-    const second = mockRes();
-    await invoke(signedReq("pay_1"), second);
-    expect(second.json).toHaveBeenCalledWith({ received: true });
-    expect((h.stores.users?.u1?.entitlement as { plan: string }).plan).toBe("pro");
-    expect(h.stores.checkoutIntents?.co_1?.status).toBe("fulfilled");
   });
 });

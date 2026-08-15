@@ -60,29 +60,11 @@ const SIZE_LABEL: Record<LibraryKind, string> = {
   reference: 'library.sort.sections',
   handbook: 'library.sort.sections',
 };
-type Suggestion = { key: string; query: string };
-
 /** Quick-search seed terms shown as chips in the hero, per corpus. */
-const SUGGESTIONS: Record<LibraryKind, Suggestion[]> = {
-  regulations: [
-    { key: 'part61', query: 'Part 61' },
-    { key: 'part91', query: 'Part 91' },
-    { key: 'part121', query: 'Part 121' },
-    { key: 'part135', query: 'Part 135' },
-    { key: 'part141', query: 'Part 141' },
-  ],
-  reference: [
-    { key: 'weather', query: 'weather' },
-    { key: 'navigation', query: 'navigation' },
-    { key: 'safety', query: 'safety' },
-    { key: 'airspace', query: 'airspace' },
-  ],
-  handbook: [
-    { key: 'weather', query: 'weather' },
-    { key: 'aerodrome', query: 'aerodrome' },
-    { key: 'navigation', query: 'navigation' },
-    { key: 'systems', query: 'systems' },
-  ],
+const SUGGESTIONS: Record<LibraryKind, string[]> = {
+  regulations: ['Part 91', 'medical', 'licensing', 'airworthiness', 'operations'],
+  reference: ['weather', 'navigation', 'safety', 'airspace'],
+  handbook: ['weather', 'aerodrome', 'navigation', 'systems'],
 };
 
 export function Library() {
@@ -230,7 +212,7 @@ export function Library() {
         onQueryChange={setQuery}
         stats={stats}
         chipsLabel={t('library.popular')}
-        chips={SUGGESTIONS[kind].map((s) => ({ label: t(`library.suggestions.${s.key}`), onClick: () => setQuery(s.query) }))}
+        chips={SUGGESTIONS[kind].map((s) => ({ label: s, onClick: () => setQuery(s) }))}
         trailing={
           <>
             <Link to="/library/charts">{t('library.viewCharts')} →</Link>

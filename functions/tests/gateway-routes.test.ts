@@ -105,7 +105,7 @@ vi.mock("../src/captain-adel.js", () => ({
 }));
 vi.mock("firebase-functions", async (importOriginal) => ({
   ...(await importOriginal<typeof import("firebase-functions")>()),
-  logger: { error: vi.fn(), info: vi.fn(), warn: vi.fn() },
+  logger: { error: vi.fn(), info: vi.fn() },
 }));
 
 let server: Server;
@@ -282,14 +282,6 @@ describe("POST /chat — plan gating", () => {
     expect(r.status).toBe(429);
     expect(r.body).toEqual({ error: "quota_exceeded" });
     expect(r.headers.get("retry-after")).toBeTruthy();
-  });
-
-  it("fails closed on quota transaction errors", async () => {
-    h.failTxColl = "chatUsage";
-    const r = await call("/chat", { method: "POST", headers: auth("u-tx"), json: { message: "hi" } });
-    expect(r.status).toBe(429);
-    expect(r.body).toEqual({ error: "quota_exceeded" });
-    expect(r.headers.get("retry-after")).toBe("60");
   });
 
   it("500s (without leaking) when the RAG flow throws on the buffered path", async () => {
@@ -517,12 +509,11 @@ describe("POST /chat — Firestore faults fail toward the cheap path", () => {
     expect(h.stores.chatUsage?.["u-entfail"]).toEqual({ day: today, count: 1 });
   });
 
-  it("429s when the free-quota transaction fails (fail-closed)", async () => {
+  it("allows the turn when the free-quota transaction fails (fail-open)", async () => {
     h.failTxColl = "chatUsage";
     const r = await call("/chat", { method: "POST", headers: auth("u-qfail"), json: { message: "hi" } });
-    expect(r.status).toBe(429);
-    expect(r.body).toEqual({ error: "quota_exceeded" });
-    expect(h.stores.chatCredits?.["u-qfail"]).toBeUndefined();
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ answer: "A" });
   });
 
   it("429s when the credit transaction fails after the free allowance is spent (fail-closed)", async () => {

@@ -7,8 +7,8 @@ import { useFetchJson } from '@/hooks/useFetchJson';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { breadcrumbLd } from '@/lib/seo/jsonld';
-import { buildConstellation, filterConstellation } from '@/calc/library/constellation';
-import type { ConstellationNode, ConstellationFilter } from '@/calc/library/constellation';
+import { buildConstellation } from '@/calc/library/constellation';
+import type { ConstellationNode } from '@/calc/library/constellation';
 import type { RegulationsLookup } from '@/lib/content.types';
 import styles from './LibraryMap.module.css';
 
@@ -37,11 +37,9 @@ export function LibraryMap() {
   const [tip, setTip] = useState<{ text: string; left: number; top: number } | null>(null);
   const lastTip = useRef<string | null>(null);
   const hoverRef = useRef<string | null>(null);
-  const [filter, setFilter] = useState<ConstellationFilter>('all');
   const { data } = useFetchJson<RegulationsLookup>('/data/regulations-lookup.json');
 
-  const baseLayout = useMemo(() => buildConstellation(Object.values(data?.parts ?? {})), [data]);
-  const layout = useMemo(() => filterConstellation(baseLayout, filter), [baseLayout, filter]);
+  const layout = useMemo(() => buildConstellation(Object.values(data?.parts ?? {})), [data]);
 
   usePageMeta(t('meta.libraryMap'), t('metaDesc.libraryMap'), [
     breadcrumbLd([
@@ -236,19 +234,6 @@ export function LibraryMap() {
         title={t('libraryMap.title')}
         subtitle={t('libraryMap.subtitle')}
       />
-      <div className={styles.filters}>
-        {(['all', 'licensing', 'operations', 'commercial', 'schools'] as ConstellationFilter[]).map(
-          (f) => (
-            <button
-              key={f}
-              className={`${styles.filterBtn} ${filter === f ? styles.active : ''}`}
-              onClick={() => setFilter(f)}
-            >
-              {t(`libraryMap.filters.${f}`)}
-            </button>
-          )
-        )}
-      </div>
       <div className={styles.mapWrap}>
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
         {tip && (
