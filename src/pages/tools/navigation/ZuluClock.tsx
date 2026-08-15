@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
 import { formatHm, ksaToUtc, utcToKsa } from '@/calc/zulu';
+import { ZuluDial } from '@/components/ZuluDial';
 import seg from '@/components/calc/calc.module.css';
 
 export function ZuluClock() {
@@ -31,6 +32,7 @@ export function ZuluClock() {
       }}
       related={[{ to: '/tools/airac', label: t('tools.items.airac.name') }]}
     >
+      <ZuluDial />
       <div className={seg.seg} role="group" aria-label={t('zulu.convert')}>
         <button
           type="button"

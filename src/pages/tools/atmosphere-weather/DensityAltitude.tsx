@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { fmtInt } from '@/components/calc/format';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { densityAltitude } from '@/calc/isa';
+import { Alert } from '@/components/Alert';
 import { NumberField } from '@/components/calc/NumberField';
 import { GaugeDial } from '@/components/calc/GaugeDial';
 
@@ -81,6 +82,16 @@ export function DensityAltitude() {
           tone="headline"
         />
       </OutputGrid>
+      {r != null && nums.oat > 45 && (
+        <Alert tone="warning" className="mt-4">
+          <strong>{t('densityAltitude.highTempWarningTitle')}:</strong> {t('densityAltitude.highTempWarning')}
+        </Alert>
+      )}
+      {r != null && nums.elev >= 4000 && (
+        <Alert tone="warning" className="mt-4">
+          <strong>{t('densityAltitude.highElevationTitle')}:</strong> {t('densityAltitude.highElevationNotes')}
+        </Alert>
+      )}
       {r != null && (
         <GaugeDial
           label={t('densityAltitude.densityAltitude')}

@@ -30,6 +30,44 @@ function partNumber(s: SourceLike): string | undefined {
   return s.part?.trim() || /(\d+)/.exec(s.citation ?? s.section ?? '')?.[1];
 }
 
+/** Structural subset of the page's `Message` that follow-up gating reads. */
+export interface TurnLike {
+  role: 'user' | 'assistant';
+  pending?: boolean;
+  streaming?: boolean;
+  error?: boolean;
+  kind?: string;
+}
+
+/** Index of the newest assistant reply (−1 when there is none). */
+export function lastAssistantIndex(messages: readonly TurnLike[]): number {
+  let idx = -1;
+  for (let k = 0; k < messages.length; k++) {
+    if (messages[k].role === 'assistant') idx = k;
+  }
+  return idx;
+}
+
+/**
+ * Whether the follow-up chips should render under `last`: only after a settled,
+ * non-error, non-refusal assistant reply, and never while the composer is busy
+ * or the quota gate is up.
+ */
+export function showFollowups(
+  last: TurnLike | undefined,
+  state: { gated: boolean; busy: boolean },
+): boolean {
+  return (
+    !state.gated &&
+    !state.busy &&
+    last?.role === 'assistant' &&
+    !last.pending &&
+    !last.error &&
+    !last.streaming &&
+    last.kind !== 'refusal'
+  );
+}
+
 /**
  * Up to three follow-ups tailored to `msg`. Refusals get none. When the answer
  * cited a rule we offer "show the exact text" and "what else does Part N cover",

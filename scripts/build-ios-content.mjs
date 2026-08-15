@@ -1,17 +1,23 @@
 /**
- * Bundle per-app content folders for the native iOS app family (apple/Apps/<App>/Content).
+ * Bundle per-app content folders (<App>/Content) for the native iOS app family.
  *
- * Each App Store app is one prep pack (src/lib/prepCatalog.ts) shipped as its own
- * product, so every app bundles ONLY its module's slice of the shared corpus:
- * quiz banks, ground-school modules and reading paths are filtered by the pack's
- * id lists but the records themselves are copied VERBATIM — the iOS decoders
- * (apple/FlyGACAKit CoreModels) read the exact same schema as the web app, so the
- * corpus can never fork. A `module.json` manifest (the pack serialized, web field
- * names kept) tells the app shell which module it is.
+ * The native apps live in ay2m/FlyGACA; this repo stays the source of truth for
+ * their CONTENT (the corpus + src/lib/prepCatalog.ts) and generates it here. Each
+ * App Store app is one prep pack shipped as its own product, so every app bundles
+ * ONLY its module's slice of the shared corpus: quiz banks, ground-school modules
+ * and reading paths are filtered by the pack's id lists but the records themselves
+ * are copied VERBATIM — the iOS decoders (FlyGACAKit CoreModels) read the exact
+ * same schema as the web app, so the corpus can never fork. A `module.json`
+ * manifest (the pack serialized, web field names kept) tells the shell which module.
  *
- *   node scripts/build-ios-content.mjs            # every app (ppl, elpt, aip, cpl, ir, atpl)
- *   node scripts/build-ios-content.mjs --app ppl  # one app
- *   npm run build:apps-content                    # same, as the CI-gated npm script
+ *   node scripts/build-ios-content.mjs                 # every app (elpt, aip) → scratch
+ *   node scripts/build-ios-content.mjs --app elpt      # one app
+ *   node scripts/build-ios-content.mjs --out <appsDir> # write into ay2m/FlyGACA's apple/Apps
+ *   npm run build:apps-content                         # same, as the CI-gated npm script
+ *
+ * Output dir: --out <appsDir> or $FG_APPLE_APPS_DIR; defaults to the gitignored
+ * .ios-build/Apps scratch dir (there is no local apple/ tree in this repo anymore —
+ * the iOS repo's sync-content.sh passes its own apple/Apps).
  *
  * Validates every emitted bank (answer index in range, non-empty prompt/explain)
  * and exits non-zero on any inconsistency so CI can gate on it.
@@ -24,16 +30,24 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(root, p), 'utf8');
 const readJson = (p) => JSON.parse(read(p));
 
+// Where the per-app <dir>/Content folders are written. The native apps live in
+// ay2m/FlyGACA now (this repo generates their content, it doesn't build them), so
+// there is no local apple/ tree to write into. Default to a gitignored scratch dir
+// for local/CI validation; the iOS repo's sync-content.sh passes its own apple/Apps
+// via --out (or FG_APPLE_APPS_DIR) to have content written straight into it.
+const outArgIdx = process.argv.indexOf('--out');
+const appsDir =
+  outArgIdx !== -1
+    ? process.argv[outArgIdx + 1]
+    : process.env.FG_APPLE_APPS_DIR || join(root, '.ios-build', 'Apps');
+
 // App Store product → prep-pack id. Directory name is the Xcode target name.
-// Wave 1: ppl/elpt/aip. Wave 2: cpl/ir/atpl (added once their packs went live with
-// real content). Future packs (foi/agi/dispatcher…) join here as their content lands.
+// The licence-exam apps (ppl/cpl/ir/atpl) are PAUSED — removed 2026-08-10, see
+// docs/APPS-FAMILY-ROADMAP.md. Their PACKS entries stay live for the web; only the
+// native apps stopped. Future packs (foi/agi/dispatcher…) join here as content lands.
 const APPS = {
-  ppl: { dir: 'PPL', packId: 'ppl-exam' },
   elpt: { dir: 'ELPT', packId: 'elp' },
   aip: { dir: 'AIP', packId: 'aip' },
-  cpl: { dir: 'CPL', packId: 'cpl' },
-  ir: { dir: 'IR', packId: 'ir' },
-  atpl: { dir: 'ATPL', packId: 'atpl' },
 };
 
 // The PACKS array literal is plain data (no TS syntax inside), so evaluate it
@@ -88,7 +102,7 @@ function emit(appId) {
   const gsModules = pick(pack.moduleIds, gsById, 'ground-school module', appId);
   const paths = pick(pack.pathIds, pathById, 'path', appId);
 
-  const out = join(root, 'apple', 'Apps', app.dir, 'Content');
+  const out = join(appsDir, app.dir, 'Content');
   mkdirSync(out, { recursive: true });
   const write = (name, data) => writeFileSync(join(out, name), `${JSON.stringify(data, null, 1)}\n`);
 
@@ -100,7 +114,7 @@ function emit(appId) {
 
   const nq = banks.reduce((n, b) => n + b.questions.length, 0);
   console.log(
-    `✓ ${app.dir}: ${banks.length} banks / ${nq} questions, ${gsModules.length} gs modules, ${paths.length} paths → apple/Apps/${app.dir}/Content`
+    `✓ ${app.dir}: ${banks.length} banks / ${nq} questions, ${gsModules.length} gs modules, ${paths.length} paths → ${join(appsDir, app.dir, 'Content')}`
   );
 }
 

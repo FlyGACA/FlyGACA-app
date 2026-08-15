@@ -1,27 +1,24 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Disclaimer } from '@/components/Disclaimer';
 import { PageHero } from '@/components/PageHero';
-import { SectionHeader } from '@/components/SectionHeader';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { faqLd } from '@/lib/seo/jsonld';
-import {
-  canCheckout,
-  startBundleCheckout,
-  startProCheckout,
-  type ProPlan,
-} from '@/lib/services/billing';
-import { useAccount } from '@/lib/services/account';
-import { effectivePlan } from '@/lib/services/entitlements';
+import { canCheckout } from '@/lib/services/billing';
 import { COHORT_PRICE_SAR, annualSavingsPct, monthlyEquivalent } from '@/lib/services/pricing';
-import { captureRefFromUrl, getStoredRef } from '@/lib/services/referral';
-import { capturePromoFromUrl, getStoredPromo } from '@/lib/services/promo';
+import { foundingAnnualPrice, showFoundingStrike } from '@/calc/app/pricingView';
+import { usePricingCheckout } from '@/hooks/usePricingCheckout';
 import {
   EXAM_BUNDLE_PRICE,
   PREP_PACK_PRICE_CERT,
   PREP_PACK_PRICE_SUBJECT,
 } from '@/lib/prepCatalog';
+import { PricingPlanCard } from './PricingPlanCard';
+import { BillingToggle } from './BillingToggle';
+import { PriceBand } from './PriceBand';
+import { CompareTable } from './CompareTable';
+import { SchoolsBand } from './SchoolsBand';
+import { PricingFaq } from './PricingFaq';
 import styles from './Pricing.module.css';
 
 /**
@@ -47,12 +44,6 @@ const SCHOOL_TIERS = { cohort: COHORT_PRICE_SAR, academy: 22000, institution: 40
 const FOUNDING_OFFER = true;
 const FOUNDING_ANNUAL = 349;
 
-interface CompareRow {
-  feature: string;
-  free: string;
-  pro: string;
-  school: string;
-}
 interface Faq {
   q: string;
   a: string;
@@ -60,114 +51,43 @@ interface Faq {
 
 export function Pricing() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  // An abandoned/failed checkout returns to /pricing?checkout=cancel; acknowledge
-  // it so the user knows nothing was charged, and let them clear it.
-  const showCanceled = searchParams.get('checkout') === 'cancel';
-  function dismissCanceled() {
-    const next = new URLSearchParams(searchParams);
-    next.delete('checkout');
-    setSearchParams(next, { replace: true });
-  }
   usePageMeta(
     t('meta.pricing'),
     t('metaDesc.pricing'),
     faqLd(t('pricing.faq', { returnObjects: true }) as unknown as Faq[]),
   );
-  const { entitlement } = useAccount();
-  const plan = effectivePlan(entitlement);
-  // Annual is the default — it's the better LTV/cash outcome and the headline saving.
-  const [annual, setAnnual] = useState(true);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const {
+    annual,
+    setAnnual,
+    busy,
+    errorKind,
+    showCanceled,
+    dismissCanceled,
+    checkout,
+    buyBundle,
+    plan,
+    isPaid,
+  } = usePricingCheckout();
+
   const f = (base: string) => t(`${base}.features`, { returnObjects: true }) as unknown as string[];
   const savePct = annualSavingsPct(PRO_PRICE.monthly, PRO_PRICE.annual);
-  const compare = t('pricing.compare', { returnObjects: true }) as unknown as CompareRow[];
-  // Render the boolean comparison cells as a tinted check / muted cross with an
-  // sr-only label; value cells (e.g. "5 / day", "Unlimited") pass through as text.
-  const cmpCell = (v: string): ReactNode => {
-    if (v === '✓')
-      return (
-        <span className={styles.cmpYes}>
-          <span aria-hidden="true">✓</span>
-          <span className="sr-only">{t('pricing.cmpYes')}</span>
-        </span>
-      );
-    if (v === '✕')
-      return (
-        <span className={styles.cmpNo}>
-          <span aria-hidden="true">✕</span>
-          <span className="sr-only">{t('pricing.cmpNo')}</span>
-        </span>
-      );
-    return v;
-  };
-  const faqs = t('pricing.faq', { returnObjects: true }) as unknown as Faq[];
-  const schoolPoints = t('pricing.schoolsPoints', { returnObjects: true }) as unknown as string[];
 
   // During the founding launch the annual price is the intro figure; the list price is
   // shown struck-through so the discount is legible.
-  const proAnnual = FOUNDING_OFFER ? FOUNDING_ANNUAL : PRO_PRICE.annual;
+  const proAnnual = foundingAnnualPrice(FOUNDING_OFFER, FOUNDING_ANNUAL, PRO_PRICE.annual);
   const proPrice = annual
     ? t('pricing.perYr', { n: proAnnual, eq: monthlyEquivalent(proAnnual) })
     : t('pricing.perMo', { n: PRO_PRICE.monthly });
-  const proStrike =
-    FOUNDING_OFFER && annual ? t('pricing.wasYr', { n: PRO_PRICE.annual }) : undefined;
+  const proStrike = showFoundingStrike(FOUNDING_OFFER, annual)
+    ? t('pricing.wasYr', { n: PRO_PRICE.annual })
+    : undefined;
   const studentPrice = annual
     ? t('pricing.perYr', { n: STUDENT_PRICE.annual, eq: monthlyEquivalent(STUDENT_PRICE.annual) })
     : t('pricing.perMo', { n: STUDENT_PRICE.monthly });
 
-  // Persist an inbound ?ref=CODE / ?promo=CODE so each survives the sign-in / checkout
-  // round-trip.
-  useEffect(() => {
-    captureRefFromUrl();
-    capturePromoFromUrl();
-  }, []);
-
-  async function checkout(variant: ProPlan) {
-    setBusy(true);
-    setError('');
-    try {
-      await startProCheckout(variant, { annual, ref: getStoredRef(), promo: getStoredPromo() });
-    } catch (e) {
-      const code = e instanceof Error ? e.message : '';
-      if (code === 'sign-in-required') {
-        navigate('/account');
-        return;
-      }
-      setError(
-        code === 'student-verification-required'
-          ? t('pricing.studentVerifyNeeded')
-          : t('pricing.checkoutError'),
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  // The All-Access Exam Bundle is its own one-time checkout kind (not a ProPlan) — one
-  // payment permanently unlocks every exam-prep pack.
-  async function buyBundle() {
-    setBusy(true);
-    setError('');
-    try {
-      await startBundleCheckout({ ref: getStoredRef(), promo: getStoredPromo() });
-    } catch (e) {
-      const code = e instanceof Error ? e.message : '';
-      if (code === 'sign-in-required') {
-        navigate('/account');
-        return;
-      }
-      setError(t('pricing.checkoutError'));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  // A paid plan already covers Pro, so the Pro CTA routes to the account page's
-  // Subscription panel (renewal date, auto-renew toggle) instead of checkout.
-  const isPaid = plan !== 'free';
+  const errorText = errorKind
+    ? t(errorKind === 'student-verify' ? 'pricing.studentVerifyNeeded' : 'pricing.checkoutError')
+    : '';
 
   return (
     <section className={`container ${styles.page}`}>
@@ -177,32 +97,14 @@ export function Pricing() {
         title={t('pricing.title')}
         subtitle={t('pricing.subtitle')}
       >
-        <div className={styles.toggle} role="group" aria-label={t('pricing.billingCycle')}>
-          <button
-            type="button"
-            className={!annual ? styles.active : ''}
-            aria-pressed={!annual}
-            onClick={() => setAnnual(false)}
-          >
-            {t('pricing.monthly')}
-          </button>
-          <button
-            type="button"
-            className={annual ? styles.active : ''}
-            aria-pressed={annual}
-            onClick={() => setAnnual(true)}
-          >
-            {t('pricing.annual')}{' '}
-            <span className={styles.save}>{t('pricing.saveBadge', { pct: savePct })}</span>
-          </button>
-        </div>
+        <BillingToggle annual={annual} onChange={setAnnual} savePct={savePct} />
       </PageHero>
 
       <p className={styles.trustBanner}>{t('pricing.trustBanner')}</p>
       <p className={styles.planIntro}>{t(`pricing.planIntro.${plan}`)}</p>
 
       <div className={styles.plans}>
-        <Plan
+        <PricingPlanCard
           name={t('pricing.plans.free.name')}
           price={t('pricing.plans.free.price')}
           features={f('pricing.plans.free')}
@@ -211,7 +113,7 @@ export function Pricing() {
           current={plan === 'free'}
           currentLabel={t('pricing.yourPlan')}
         />
-        <Plan
+        <PricingPlanCard
           name={t('pricing.plans.pro.name')}
           price={proPrice}
           priceStrike={proStrike}
@@ -239,6 +141,9 @@ export function Pricing() {
           belowCta={
             !isPaid && (
               <>
+                <p style={{ marginTop: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
+                  {t('pricing.bnplBadge')}
+                </p>
                 {FOUNDING_OFFER && (
                   <p className={styles.foundingNote}>{t('pricing.foundingNote')}</p>
                 )}
@@ -266,7 +171,7 @@ export function Pricing() {
             )
           }
         />
-        <Plan
+        <PricingPlanCard
           name={t('pricing.plans.school.name')}
           price={t('pricing.perSeat', { n: SCHOOL_FROM })}
           priceNote={t('pricing.vatExcl')}
@@ -287,240 +192,97 @@ export function Pricing() {
         </p>
       )}
 
-      {error && (
+      {errorText && (
         <p role="alert" className={styles.error}>
-          {error}
+          {errorText}
         </p>
       )}
 
       {/* Exam Season Pass — serves "just need it until my checkride" buyers. */}
-      <section className={styles.passBand} aria-labelledby="pass-head">
-        <div>
-          <h2 id="pass-head" className={styles.passHead}>
-            {t('pricing.passHead')}
-          </h2>
-          <p className={styles.passLead}>{t('pricing.passLead')}</p>
-        </div>
-        <div className={styles.passAside}>
-          <span className={styles.passPrice}>
-            <bdi dir="ltr">{t('pricing.pass', { n: PASS_PRICE })}</bdi>
-          </span>
-          {canCheckout() ? (
-            <button
-              type="button"
-              className={styles.passCta}
-              disabled={busy}
-              onClick={() => void checkout('pass')}
-            >
-              {t('pricing.passCta')}
-            </button>
-          ) : (
-            // Native shells buy through store IAP, not Moyasar web checkout.
-            <button type="button" className={styles.passCta} disabled aria-disabled="true">
-              {t('pricing.passComingSoon')}
-            </button>
-          )}
-        </div>
-      </section>
+      <PriceBand
+        id="pass-head"
+        head={t('pricing.passHead')}
+        lead={t('pricing.passLead')}
+        price={t('pricing.pass', { n: PASS_PRICE })}
+        action={
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {canCheckout() ? (
+              <button
+                type="button"
+                className={styles.passCta}
+                disabled={busy}
+                onClick={() => void checkout('pass')}
+              >
+                {t('pricing.passCta')}
+              </button>
+            ) : (
+              // Native shells buy through store IAP, not Moyasar web checkout.
+              <button type="button" className={styles.passCta} disabled aria-disabled="true">
+                {t('pricing.passComingSoon')}
+              </button>
+            )}
+            <span style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
+              {t('pricing.bnplBadge')}
+            </span>
+          </div>
+        }
+      />
 
       {/* Exam Prep packs — the one-time, per-certificate path (ASA/Gleim-style). */}
-      <section className={styles.passBand} aria-labelledby="prep-head">
-        <div>
-          <h2 id="prep-head" className={styles.passHead}>
-            {t('pricing.prepHead')}
-          </h2>
-          <p className={styles.passLead}>
-            {t('pricing.prepLead', { cert: PREP_CERT, subject: PREP_FROM })}
-          </p>
-        </div>
-        <div className={styles.passAside}>
-          <span className={styles.passPrice}>
-            <bdi dir="ltr">{t('pricing.prepPer', { n: PREP_FROM })}</bdi>
-          </span>
-          <Link to="/study/packs" className={styles.passCta}>
-            {t('pricing.prepCta')}
-          </Link>
-        </div>
-      </section>
+      <PriceBand
+        id="prep-head"
+        head={t('pricing.prepHead')}
+        lead={t('pricing.prepLead', { cert: PREP_CERT, subject: PREP_FROM })}
+        price={t('pricing.prepPer', { n: PREP_FROM })}
+        action={
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Link to="/study/packs" className={styles.passCta}>
+              {t('pricing.prepCta')}
+            </Link>
+            <span style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
+              {t('pricing.bnplBadge')}
+            </span>
+          </div>
+        }
+      />
 
       {/* All-Access Exam Bundle — one payment unlocks every pack (the "pay once for
           everything" buyer who won't subscribe; still cheaper than annual Pro). */}
-      <section className={styles.passBand} aria-labelledby="bundle-head">
-        <div>
-          <h2 id="bundle-head" className={styles.passHead}>
-            {t('pricing.bundleHead')}
-          </h2>
-          <p className={styles.passLead}>{t('pricing.bundleLead')}</p>
-        </div>
-        <div className={styles.passAside}>
-          <span className={styles.passPrice}>
-            <bdi dir="ltr">{t('pricing.bundlePrice', { n: BUNDLE_PRICE })}</bdi>
-          </span>
-          {canCheckout() ? (
-            <button
-              type="button"
-              className={styles.passCta}
-              disabled={busy}
-              onClick={() => void buyBundle()}
-            >
-              {t('pricing.bundleCta')}
-            </button>
-          ) : (
-            <button type="button" className={styles.passCta} disabled aria-disabled="true">
-              {t('pricing.passComingSoon')}
-            </button>
-          )}
-        </div>
-      </section>
+      <PriceBand
+        id="bundle-head"
+        head={t('pricing.bundleHead')}
+        lead={t('pricing.bundleLead')}
+        price={t('pricing.bundlePrice', { n: BUNDLE_PRICE })}
+        action={
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {canCheckout() ? (
+              <button
+                type="button"
+                className={styles.passCta}
+                disabled={busy}
+                onClick={() => void buyBundle()}
+              >
+                {t('pricing.bundleCta')}
+              </button>
+            ) : (
+              <button type="button" className={styles.passCta} disabled aria-disabled="true">
+                {t('pricing.passComingSoon')}
+              </button>
+            )}
+            <span style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-data)', textAlign: 'center' }}>
+              {t('pricing.bnplBadge')}
+            </span>
+          </div>
+        }
+      />
 
-      <section className={styles.compareSection} aria-labelledby="compare-head">
-        <SectionHeader id="compare-head" title={t('pricing.compareHead')} tone="var(--cat-1)" />
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <caption className="sr-only">{t('pricing.compareHead')}</caption>
-            <thead>
-              <tr>
-                <th scope="col">{t('pricing.feature')}</th>
-                <th scope="col">{t('pricing.plans.free.name')}</th>
-                <th scope="col">{t('pricing.plans.pro.name')}</th>
-                <th scope="col">{t('pricing.plans.school.name')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {compare.map((row) => (
-                <tr key={row.feature}>
-                  <th scope="row">{row.feature}</th>
-                  <td>{cmpCell(row.free)}</td>
-                  <td>{cmpCell(row.pro)}</td>
-                  <td>{cmpCell(row.school)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <CompareTable />
 
-      {/* B2B band — route the highest-value buyer to the schools sales path. */}
-      <section className={styles.schoolsBand} aria-labelledby="schools-head">
-        <div className={styles.schoolsText}>
-          <p className={styles.eyebrow}>{t('pricing.schoolsEyebrow')}</p>
-          <h2 id="schools-head" className={styles.schoolsHead}>
-            {t('pricing.schoolsHead')}
-          </h2>
-          <ul className={styles.schoolsPoints}>
-            {schoolPoints.map((p) => (
-              <li key={p}>{p}</li>
-            ))}
-          </ul>
-          <p className={styles.eyebrow}>{t('pricing.tiersLabel')}</p>
-          <ul className={styles.schoolsPoints}>
-            <li>{t('pricing.tierCohort', { n: SCHOOL_TIERS.cohort.toLocaleString('en-US') })}</li>
-            <li>{t('pricing.tierAcademy', { n: SCHOOL_TIERS.academy.toLocaleString('en-US') })}</li>
-            <li>
-              {t('pricing.tierInstitution', {
-                n: SCHOOL_TIERS.institution.toLocaleString('en-US'),
-              })}
-            </li>
-          </ul>
-          <p className={styles.schoolsPrice}>
-            <bdi dir="ltr">{t('pricing.perSeat', { n: SCHOOL_FROM })}</bdi> ·{' '}
-            {t('pricing.schoolsMin')}
-          </p>
-        </div>
-        <Link to="/schools" className={styles.schoolsCta}>
-          {t('pricing.schoolsCta')}
-        </Link>
-      </section>
+      <SchoolsBand tiers={SCHOOL_TIERS} seatFrom={SCHOOL_FROM} />
 
-      <section className={styles.faqSection} aria-labelledby="faq-head">
-        <SectionHeader id="faq-head" title={t('pricing.faqHead')} tone="var(--cat-5)" />
-        <div className={styles.faqList}>
-          {faqs.map((item) => (
-            <details key={item.q} className={styles.faq}>
-              <summary>{item.q}</summary>
-              <p>{item.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <PricingFaq />
 
       <Disclaimer compact />
     </section>
-  );
-}
-
-interface PlanProps {
-  name: string;
-  price: string;
-  /** Optional struck-through former price shown above `price` (e.g. a launch discount). */
-  priceStrike?: string;
-  priceNote?: string;
-  features: string[];
-  cta: string;
-  highlight?: boolean;
-  badge?: string;
-  ctaDisabled?: boolean;
-  ctaHref?: string;
-  ctaOnClick?: () => void;
-  note?: string;
-  belowCta?: ReactNode;
-  current?: boolean;
-  currentLabel?: string;
-}
-
-function Plan({
-  name,
-  price,
-  priceStrike,
-  priceNote,
-  features,
-  cta,
-  highlight,
-  badge,
-  ctaDisabled,
-  ctaHref,
-  ctaOnClick,
-  note,
-  belowCta,
-  current,
-  currentLabel,
-}: PlanProps) {
-  return (
-    <div
-      className={`${styles.plan} ${highlight ? styles.highlight : ''} ${current ? styles.currentPlan : ''}`}
-    >
-      {badge && !current && <span className={styles.popularBadge}>{badge}</span>}
-      {current && currentLabel && <span className={styles.currentBadge}>{currentLabel}</span>}
-      <h2 className={styles.planName}>{name}</h2>
-      {/* Fixed-height block so every card's feature list starts at the same Y,
-          whether or not the plan carries a VAT note (Free has none). */}
-      <div className={styles.priceBlock}>
-        {priceStrike && (
-          <p className={styles.priceStrike}>
-            <bdi dir="ltr">{priceStrike}</bdi>
-          </p>
-        )}
-        <p className={styles.price}>
-          <bdi dir="ltr">{price}</bdi>
-        </p>
-        {priceNote && <p className={styles.priceNote}>{priceNote}</p>}
-      </div>
-      <ul className={styles.features}>
-        {features.map((x) => (
-          <li key={x}>{x}</li>
-        ))}
-      </ul>
-      {ctaHref ? (
-        <Link className={styles.cta} to={ctaHref}>
-          {cta}
-        </Link>
-      ) : (
-        <button type="button" className={styles.cta} disabled={ctaDisabled} onClick={ctaOnClick}>
-          {cta}
-        </button>
-      )}
-      {belowCta}
-      {note && <p className={styles.note}>{note}</p>}
-    </div>
   );
 }

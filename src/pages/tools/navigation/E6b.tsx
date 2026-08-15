@@ -7,6 +7,7 @@ import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { trueAirspeed } from '@/calc/tas';
 import { windTriangle } from '@/calc/navigation';
 import { solveTsd } from '@/calc/tsd';
+import { WindTriangleDiagram } from './WindTriangleDiagram';
 import seg from '@/components/calc/calc.module.css';
 
 const TABS = ['tas', 'wind', 'tsd'] as const;
@@ -148,6 +149,16 @@ export function E6b() {
               value={wind ? `${Math.round(wind.groundSpeed)} kt` : '—'}
             />
           </OutputGrid>
+          {wind != null && (
+            <WindTriangleDiagram
+              courseDeg={nums.crs}
+              tasKt={nums.wtas}
+              windDirDeg={nums.wdir}
+              windSpeedKt={nums.wspd}
+              headingDeg={wind.heading}
+              groundSpeedKt={wind.groundSpeed}
+            />
+          )}
         </>
       )}
 

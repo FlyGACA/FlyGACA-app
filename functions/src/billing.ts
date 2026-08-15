@@ -26,21 +26,29 @@ import { randomUUID } from "node:crypto";
 import { onCall, onRequest, HttpsError } from "firebase-functions/https";
 import { onSchedule } from "firebase-functions/scheduler";
 import { logger } from "firebase-functions";
-import { defineSecret, defineString } from "firebase-functions/params";
+import { defineBoolean, defineSecret, defineString } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue, type DocumentReference } from "firebase-admin/firestore";
 import {
   amountForCheckout,
   cadenceDays,
+  cadenceOf,
+  checkoutKind,
+  describeCheckout,
   entitlementFromCheckout,
   entitlementFromPass,
   isRecurringKind,
   nextChargeAt,
+  paymentMatchesIntent,
+  redirectForIntent,
+  renewalBaseDate,
+  renewalFailureOutcome,
   sellablePackId,
-  verifyMoyasarSignature,
-  MAX_RENEWAL_ATTEMPTS,
+  verifyMoyasarWebhook,
+  webhookPaymentId,
   SELLABLE_PACK_IDS,
   type Cadence,
+  type CheckoutIntent,
   type CheckoutKind,
   type Entitlement,
   type PriceEnv,
@@ -48,7 +56,7 @@ import {
 import { CREDIT_PACK_SIZE } from "./chat-quota-core.js";
 import { buildCohortOrg } from "./org-core.js";
 import { isStudentEmail } from "./student-core.js";
-import { applyPromo, normalizePromoCode, type PromoCode } from "./promo-core.js";
+import { normalizePromoCode, priceAfterPromo, type PromoCode } from "./promo-core.js";
 import {
   referralCode,
   normalizeCode,
@@ -62,6 +70,15 @@ if (getApps().length === 0) initializeApp();
 const moyasarSecret = defineSecret("MOYASAR_SECRET_KEY");
 const webhookSecret = defineSecret("MOYASAR_WEBHOOK_SECRET");
 const appOrigin = defineString("APP_ORIGIN");
+
+// Apple Pay is off until the merchant domain is registered. Moyasar's widget
+// validates the merchant against `public/.well-known/apple-developer-merchantid-
+// domain-association`, so offering the method before that file is served (and the
+// domain registered in the Moyasar dashboard) renders a button that fails
+// validation mid-payment — worse for the buyer than not showing it. Flip
+// MOYASAR_APPLE_PAY=true in functions/.env.flygaca-app and redeploy once the file
+// is live; it is a config change, not a code change. See docs/BILLING.md.
+const applePayEnabled = defineBoolean("MOYASAR_APPLE_PAY", { default: false });
 // SAR list prices (major units, e.g. "59" or "449.00") — see billing-core's PriceEnv.
 const priceProMonthly = defineString("MOYASAR_PRICE_PRO_MONTHLY_SAR");
 const priceProAnnual = defineString("MOYASAR_PRICE_PRO_ANNUAL_SAR");
@@ -91,40 +108,6 @@ function priceEnv(): PriceEnv {
   };
 }
 
-const CHECKOUT_KINDS = new Set<CheckoutKind>([
-  "pro",
-  "student",
-  "pass",
-  "credits",
-  "pack",
-  "bundle",
-  "cohort",
-]);
-function checkoutKind(v: unknown): CheckoutKind | null {
-  return typeof v === "string" && CHECKOUT_KINDS.has(v as CheckoutKind) ? (v as CheckoutKind) : null;
-}
-function cadenceOf(v: unknown): Cadence {
-  return v === "monthly" ? "monthly" : "annual";
-}
-function describeCheckout(kind: CheckoutKind, packId?: string): string {
-  switch (kind) {
-  case "pro":
-    return "Fly GACA Pro";
-  case "student":
-    return "Fly GACA Pro (Student)";
-  case "pass":
-    return "Fly GACA Exam Season Pass";
-  case "credits":
-    return "Fly GACA Captain Adel credit pack";
-  case "pack":
-    return `Fly GACA Exam Prep Pack — ${packId ?? ""}`;
-  case "bundle":
-    return "Fly GACA All-Access Exam Bundle";
-  case "cohort":
-    return "Fly GACA B2B Cohort (up to 25 seats, 90-day intake)";
-  }
-}
-
 // ---- Minimal Moyasar REST client (Node's global fetch; no SDK dependency) --------
 
 const MOYASAR_API = "https://api.moyasar.com/v1";
@@ -151,9 +134,11 @@ async function moyasarGetPayment(secretKey: string, id: string): Promise<Moyasar
   const res = await fetch(`${MOYASAR_API}/payments/${encodeURIComponent(id)}`, {
     headers: { Authorization: moyasarAuthHeader(secretKey) },
   });
-  const body = (await res.json()) as MoyasarPayment;
+  // Status first: a 5xx from Moyasar's edge is often HTML, and parsing that would
+  // throw an opaque JSON error instead of the retryable `moyasar-get-failed:502`
+  // that fulfillPayment's retry path depends on being able to recognise.
   if (!res.ok) throw new Error(`moyasar-get-failed:${res.status}`);
-  return body;
+  return (await res.json()) as MoyasarPayment;
 }
 
 /** Charge a previously-saved card token off-session (the renewal engine). */
@@ -310,12 +295,18 @@ async function saveCardToken(uid: string, payment: MoyasarPayment): Promise<void
     );
 }
 
-async function upsertSubscription(uid: string, cadence: Cadence, expiresAtIso: string): Promise<void> {
+async function upsertSubscription(
+  uid: string,
+  kind: CheckoutKind,
+  cadence: Cadence,
+  expiresAtIso: string,
+): Promise<void> {
   await getFirestore()
     .collection("subscriptions")
     .doc(uid)
     .set(
       {
+        kind,
         cadence,
         autoRenew: true,
         status: "active",
@@ -327,25 +318,10 @@ async function upsertSubscription(uid: string, cadence: Cadence, expiresAtIso: s
     );
 }
 
-interface CheckoutIntent {
-  uid: string;
-  kind: CheckoutKind;
-  cadence?: Cadence | null;
-  packId?: string | null;
-  /** The buyer-supplied org name, for a `cohort` checkout only. */
-  orgName?: string | null;
-  ref?: string | null;
-  /** The promo code applied to `amount`, if any — bumps its `redeemed` count on grant. */
-  promo?: string | null;
-  amount: number;
-  currency: string;
-  status: "pending" | "fulfilled";
-}
-
 /**
  * Resolve a promo code to the discounted checkout amount. Reads `promoCodes/{code}`
- * and applies the pure `applyPromo` policy server-side (the client never prices its
- * own discount). Returns the original amount + `promo: null` when no code applies.
+ * and applies the pure `priceAfterPromo` policy server-side (the client never prices
+ * its own discount). Returns the original amount + `promo: null` when no code applies.
  */
 async function priceWithPromo(
   rawAmount: number,
@@ -356,36 +332,17 @@ async function priceWithPromo(
   if (!code) return { amount: rawAmount, promo: null };
   const snap = await getFirestore().collection("promoCodes").doc(code).get();
   const promo = snap.exists ? (snap.data() as PromoCode) : null;
-  const discounted = applyPromo(rawAmount, promo, kind);
-  return discounted < rawAmount ? { amount: discounted, promo: code } : { amount: rawAmount, promo: null };
-}
-
-/**
- * Where the confirming client should navigate next — a RELATIVE path (never built
- * from APP_ORIGIN), so it resolves correctly on whichever host actually served the
- * app (prod, a preview deploy, localhost) rather than forcing a redirect to the
- * configured production origin. `callback_url` (Moyasar's own redirect target, which
- * DOES need to be absolute) is built separately in createCheckoutConfig.
- */
-function redirectForIntent(intent: Pick<CheckoutIntent, "kind" | "packId">, ok: boolean): string {
-  if (ok && intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=success`;
-  if (ok && intent.kind === "bundle") return "/study/packs?checkout=success";
-  if (ok && intent.kind === "cohort") return "/business/admin?checkout=success";
-  if (ok) return "/account?checkout=success";
-  if (intent.kind === "pack" && intent.packId) return `/study/packs/${intent.packId}?checkout=cancel`;
-  if (intent.kind === "bundle") return "/study/packs?checkout=cancel";
-  if (intent.kind === "cohort") return "/schools?checkout=cancel";
-  return "/pricing?checkout=cancel";
+  return priceAfterPromo(rawAmount, promo, kind, code);
 }
 
 async function grantForIntent(intent: CheckoutIntent, payment: MoyasarPayment): Promise<void> {
   const { uid, kind } = intent;
   if (kind === "pro" || kind === "student") {
-    const cadence: Cadence = intent.cadence === "monthly" ? "monthly" : "annual";
+    const cadence: Cadence = cadenceOf(intent.cadence);
     const entitlement = entitlementFromCheckout(cadence, new Date());
     await writeEntitlement(uid, entitlement);
     await saveCardToken(uid, payment);
-    await upsertSubscription(uid, cadence, entitlement.expiresAt!);
+    await upsertSubscription(uid, kind, cadence, entitlement.expiresAt!);
   } else if (kind === "pass") {
     await grantPass(uid);
   } else if (kind === "credits") {
@@ -426,11 +383,6 @@ async function fulfillPayment(
   paymentId: string,
 ): Promise<{ uid: string | null; redirectTo: string }> {
   const db = getFirestore();
-  const marker = db.collection("moyasarPayments").doc(paymentId);
-  const claimed = await marker
-    .create({ receivedAt: FieldValue.serverTimestamp() })
-    .then(() => true)
-    .catch(() => false);
 
   const payment = await moyasarGetPayment(secretKey, paymentId);
   const checkoutId = payment.metadata?.checkoutId as string | undefined;
@@ -448,7 +400,7 @@ async function fulfillPayment(
   const intent = intentSnap.data() as CheckoutIntent;
 
   const paid = payment.status === "paid";
-  const amountOk = payment.amount === intent.amount && payment.currency === intent.currency;
+  const amountOk = paymentMatchesIntent(payment, intent);
   if (!paid || !amountOk) {
     if (!amountOk) {
       logger.error("moyasar_amount_mismatch", {
@@ -462,10 +414,38 @@ async function fulfillPayment(
   }
 
   const redirectTo = redirectForIntent(intent, true);
+
+  // Claim the payment ONLY once it is known-good and we are committed to granting.
+  // Order matters and is the whole point: this create() used to run first, before the
+  // payment was even fetched, so any throw in between (Moyasar 5xx, a rotated secret
+  // key, a network blip) left the marker written with nothing granted — and the retry,
+  // seeing the payment already claimed, returned the SUCCESS redirect. The buyer was
+  // charged, told it worked, and got nothing. Claiming here means a transient failure
+  // leaves the payment unclaimed and genuinely retryable, while still claiming strictly
+  // before grantForIntent so a confirmPayment/webhook race can never grant twice.
+  const marker = db.collection("moyasarPayments").doc(paymentId);
+  const claimed = await marker
+    .create({ receivedAt: FieldValue.serverTimestamp() })
+    .then(() => true)
+    .catch(() => false);
   if (!claimed) return { uid: intent.uid, redirectTo }; // already fulfilled by a prior call
 
-  await grantForIntent(intent, payment);
-  await intentRef.set({ status: "fulfilled" }, { merge: true });
+  try {
+    await grantForIntent(intent, payment);
+    await intentRef.set({ status: "fulfilled" }, { merge: true });
+  } catch (e) {
+    // The grant failed after we claimed the payment. Release the claim so the next
+    // call (webhook retry, or the buyer reloading /checkout/return) can try again —
+    // otherwise this is the silent charge-without-grant the ordering above prevents.
+    await marker.delete().catch(() => {}); // best-effort; the error below is what matters
+    logger.error("moyasar_grant_failed", {
+      paymentId,
+      checkoutId,
+      uid: intent.uid,
+      error: e instanceof Error ? e.message : String(e),
+    });
+    throw e;
+  }
   return { uid: intent.uid, redirectTo };
 }
 
@@ -558,8 +538,13 @@ export const createCheckoutConfig = onCall(
       callbackUrl: `${appOrigin.value()}/checkout/return`,
       // Only a saved card token can be re-charged off-session, so recurring plans
       // only offer cards/mada and force save_card; one-time purchases offer every
-      // configured method.
-      methods: recurring ? ["creditcard"] : ["creditcard", "applepay", "stcpay"],
+      // configured method — Apple Pay only once its merchant domain is registered
+      // (see `applePayEnabled`), since an unvalidated button fails mid-payment.
+      methods: recurring
+        ? ["creditcard"]
+        : applePayEnabled.value()
+          ? ["creditcard", "applepay", "stcpay"]
+          : ["creditcard", "stcpay"],
       saveCard: recurring,
       supportedNetworks: ["visa", "mastercard", "mada"],
     };
@@ -583,6 +568,15 @@ export const confirmPayment = onCall(
       throw new HttpsError("invalid-argument", "missing-payment-id");
     }
     const result = await fulfillPayment(moyasarSecret.value(), paymentId);
+    // A null uid is NOT an ownership failure — it means fulfillPayment couldn't resolve
+    // the payment to an intent at all (no checkoutId in the metadata, or the intent doc
+    // is gone). Reporting that as `payment-not-yours` sent buyers a permission error for
+    // what is actually a lookup failure on our side, and made the logs read as abuse.
+    // Hand back the cancel redirect instead and let the operator find the real cause in
+    // the moyasar_payment_no_checkout_id / moyasar_checkout_intent_missing logs.
+    if (result.uid === null) {
+      throw new HttpsError("failed-precondition", "payment-not-recognized");
+    }
     // The confirming caller must be the same user the checkout was started for —
     // never fulfil (or reveal anything about) a payment that isn't theirs.
     if (result.uid !== uid) throw new HttpsError("permission-denied", "payment-not-yours");
@@ -640,15 +634,34 @@ export const moyasarWebhook = onRequest(
   async (req, res) => {
     const raw = (req as unknown as { rawBody?: Buffer }).rawBody?.toString("utf8") ?? "";
     const sig = req.headers["x-moyasar-signature"] as string | string[] | undefined;
-    if (!verifyMoyasarSignature(raw, sig, webhookSecret.value())) {
-      res.status(400).send("Webhook signature verification failed");
+    const body = req.body as
+      | { id?: string; data?: { id?: string }; secret_token?: unknown }
+      | undefined;
+
+    const mechanism = verifyMoyasarWebhook(body, raw, sig, webhookSecret.value());
+    if (!mechanism) {
+      // A rejection here is invisible from the outside — it looks exactly like
+      // "Moyasar isn't calling us" — and that is how the wrong HMAC recipe went
+      // unnoticed. Log the SHAPE of what arrived so a rejection stays diagnosable:
+      // names only, never values. `secret_token` is the shared secret in plaintext
+      // and headers can carry signatures, so neither may ever be logged.
+      logger.error("moyasar_webhook_auth_failed", {
+        headerNames: Object.keys(req.headers).sort(),
+        bodyKeys: body && typeof body === "object" ? Object.keys(body).sort() : [],
+        hasSignatureHeader: sig !== undefined,
+        hasSecretTokenField: body?.secret_token !== undefined,
+        rawBodyBytes: raw.length,
+      });
+      res.status(400).send("Webhook authentication failed");
       return;
     }
+    // Which credential actually authenticated this delivery. `secret_token` is the
+    // documented mechanism; `signature` is the provisional HMAC fallback kept in
+    // billing-core. Once real traffic shows only one branch firing, delete the other.
+    logger.info("moyasar_webhook_authenticated", { mechanism });
 
     // Payload shape per Moyasar's payment-webhooks docs: `{ id, type, data: <payment> }`.
-    // `data.id` is the payment id; fall back to a top-level `id` defensively.
-    const body = req.body as { id?: string; data?: { id?: string } } | undefined;
-    const paymentId = body?.data?.id ?? body?.id;
+    const paymentId = webhookPaymentId(body);
     if (!paymentId) {
       res.status(400).send("Missing payment id");
       return;
@@ -672,25 +685,36 @@ async function recordRenewalFailure(
   failedAttempts: number,
   uid: string,
 ): Promise<void> {
-  const attempts = failedAttempts + 1;
-  if (attempts >= MAX_RENEWAL_ATTEMPTS) {
+  const outcome = renewalFailureOutcome(failedAttempts);
+  if (outcome.gaveUp) {
     await subRef.set(
-      { status: "canceled", autoRenew: false, failedAttempts: attempts, updatedAt: FieldValue.serverTimestamp() },
+      {
+        status: outcome.status,
+        autoRenew: outcome.autoRenew,
+        failedAttempts: outcome.attempts,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
       { merge: true },
     );
-    logger.error("moyasar_renewal_gave_up", { uid, attempts });
+    logger.error("moyasar_renewal_gave_up", { uid, attempts: outcome.attempts });
   } else {
     // Retry on tomorrow's run — RENEWAL_LEAD_DAYS gives headroom before the
     // existing entitlement actually lapses.
     await subRef.set(
-      { status: "past_due", failedAttempts: attempts, updatedAt: FieldValue.serverTimestamp() },
+      { status: outcome.status, failedAttempts: outcome.attempts, updatedAt: FieldValue.serverTimestamp() },
       { merge: true },
     );
-    logger.info("funnel", { event: "renewal_retry_scheduled", uid, attempts });
+    logger.info("funnel", { event: "renewal_retry_scheduled", uid, attempts: outcome.attempts });
   }
 }
 
-async function renewOne(secretKey: string, uid: string, cadence: Cadence, failedAttempts: number): Promise<void> {
+async function renewOne(
+  secretKey: string,
+  uid: string,
+  kind: CheckoutKind | undefined,
+  cadence: Cadence,
+  failedAttempts: number,
+): Promise<void> {
   const db = getFirestore();
   const subRef = db.collection("subscriptions").doc(uid);
   const customerSnap = await db.collection("moyasarCustomers").doc(uid).get();
@@ -707,7 +731,10 @@ async function renewOne(secretKey: string, uid: string, cadence: Cadence, failed
   let payment: MoyasarPayment;
   try {
     payment = await moyasarChargeToken(secretKey, {
-      amount: amountForCheckout("pro", cadence, priceEnv()),
+      // Re-charge the plan the subscriber actually bought — a student subscription
+      // renews at the student rate, not the Pro price. Legacy subs without a stored
+      // `kind` predate student plans and are Pro.
+      amount: amountForCheckout(kind === "student" ? "student" : "pro", cadence, priceEnv()),
       currency: "SAR",
       description: `Fly GACA Pro — ${cadenceDays(cadence)}-day renewal`,
       token,
@@ -728,7 +755,7 @@ async function renewOne(secretKey: string, uid: string, cadence: Cadence, failed
 
   const userSnap = await db.collection("users").doc(uid).get();
   const current = userSnap.exists ? (userSnap.data()?.entitlement as Entitlement | undefined) : undefined;
-  const base = current?.expiresAt ? new Date(current.expiresAt) : new Date();
+  const base = renewalBaseDate(current?.expiresAt, new Date());
   const entitlement = entitlementFromCheckout(cadence, base);
   await writeEntitlement(uid, entitlement);
   await subRef.set(
@@ -768,8 +795,8 @@ export const renewMoyasarSubscriptions = onSchedule(
 
     const secretKey = moyasarSecret.value();
     for (const doc of dueSnap.docs) {
-      const sub = doc.data() as { cadence: Cadence; failedAttempts?: number };
-      await renewOne(secretKey, doc.id, sub.cadence, sub.failedAttempts ?? 0).catch((e) => {
+      const sub = doc.data() as { cadence: Cadence; kind?: CheckoutKind; failedAttempts?: number };
+      await renewOne(secretKey, doc.id, sub.kind, sub.cadence, sub.failedAttempts ?? 0).catch((e) => {
         logger.error("moyasar_renewal_unhandled_error", { uid: doc.id, error: String(e) });
       });
     }

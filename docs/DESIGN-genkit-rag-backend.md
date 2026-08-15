@@ -25,8 +25,8 @@ Two things in the repo now point in different directions:
 
 | Artifact | What it implies |
 |---|---|
-| [`worker/index.ts`](../worker/index.ts) | A **Cloudflare Worker** proxy that forwards `/api/*` to the deployed Firebase gateway at `https://flygaca-app.web.app` — it treats Captain Adel's brain as an **already-hosted origin**, not something rebuilt at deploy time. |
-| [`functions/src/genkit-sample.ts`](../functions/src/genkit-sample.ts) | A **fresh Firebase Cloud Functions + Genkit** scaffold (Gemini via `@genkit-ai/google-genai`, `onCallGenkit`, Firebase telemetry, `defineSecret("GOOGLE_GENAI_API_KEY")`, Node 24, functions v7). |
+| `firebase.json` rewrites (`/api/*` → the `chat` function) | Firebase Hosting fronts the deployed Firebase gateway directly — it treats Captain Adel's brain as an **already-hosted origin**, not something rebuilt at deploy time. (Historically a Cloudflare Worker proxied `/api/*` here; that mirror front was removed 2026-08 — Firebase is now the single front.) |
+| `functions/src/genkit-sample.ts` _(removed)_ | The original **Firebase Cloud Functions + Genkit** scaffold (Gemini via `@genkit-ai/google-genai`, `onCallGenkit`, Firebase telemetry, `defineSecret("GOOGLE_GENAI_API_KEY")`, Node 24, functions v7). Deleted in 295db1c when the functions package was repaired; the shipped flow lives in `captain-adel.ts` + `gateway.ts`. |
 
 **The decision this design resolves:** *if* Captain Adel's brain is to be (re)built in this repo on
 Genkit, how does it satisfy the **existing** `/api/chat` contract with **zero frontend change** — and
@@ -68,8 +68,8 @@ that the grounding verdict (`kind`) and `refusalClass` encode end-to-end.
   the client disconnects.
 - **N5 — Observability.** Genkit traces + Firebase telemetry for every flow run (latency, tokens,
   retrieval hits, verdict distribution).
-- **N6 — No new CSP origin / no CORS.** Responses stay same-origin behind `/api` (the Cloudflare
-  proxy and Hosting rewrite already make this true; `connect-src 'self'` must remain valid).
+- **N6 — No new CSP origin / no CORS.** Responses stay same-origin behind `/api` (the Firebase
+  Hosting rewrite already makes this true; `connect-src 'self'` must remain valid).
 - **N7 — Faithful degradation.** When retrieval is empty or the model is unavailable, return a
   **grounded refusal / "engine not connected"**, never a hallucinated regulatory figure.
 
@@ -103,8 +103,8 @@ in `onCallGenkit` would force a frontend rewrite and break `drainSse()`.
 3. **translates** the flow's stream/result into the legacy SSE frames (or buffered JSON).
 
 Genkit still powers retrieval, generation, tracing, and structured output internally — we just keep
-its wire protocol *off the public edge*. `genkit-sample.ts` stays as a reference example and is not
-exported from `index.ts`.
+its wire protocol *off the public edge*. The original `genkit-sample.ts` scaffold has since been
+deleted (295db1c) — it was never exported from `index.ts`, and the live flow is `captain-adel.ts`.
 
 ### D2 — Retrieval source ✅ (OQ-4 resolved: static lexical index for v1)
 Three candidates; pick by corpus size and freshness needs:
@@ -146,12 +146,10 @@ flowchart TD
   end
 
   subgraph Edge["Same-origin edge (no CORS / no CSP change)"]
-    CF["Cloudflare Worker proxy<br/>worker/index.ts"]
-    HOST["Firebase Hosting rewrite<br/>flygaca-app.web.app /api/**"]
+    HOST["Firebase Hosting rewrite<br/>flygaca.com /api/**"]
   end
 
-  API -- "POST /api/chat(?stream=1)<br/>Bearer ID token · X-Firebase-AppCheck" --> CF
-  CF --> HOST
+  API -- "POST /api/chat(?stream=1)<br/>Bearer ID token · X-Firebase-AppCheck" --> HOST
 
   subgraph GW["Cloud Function: chat (onRequest · Express · me-central2)"]
     MW["Auth + App Check middleware"]
@@ -356,8 +354,8 @@ flowchart LR
 2. **Model-tier flag.** Use the request's `provider` value (`flash`/`pro`) to A/B the Gemini tier —
    no contract change.
 3. **Cut over.** Point the Hosting `/api/chat` rewrite at the Gemini function; keep the legacy brain
-   as instant rollback (the Cloudflare proxy origin is a one-line change). Retire it once stable.
-4. **Docs.** Update `CLAUDE.md`, `MIGRATION.md`, and `docs/RUNBOOK-deploy.md` to reflect the
+   as instant rollback (the `firebase.json` rewrite target is a one-line change). Retire it once stable.
+4. **Docs.** Update `CLAUDE.md`, `docs/MIGRATION.md`, and `docs/RUNBOOK-deploy.md` to reflect the
    Gemini-powered co-located brain; remove the "backend is in another repo / unchanged" note.
 
 ---

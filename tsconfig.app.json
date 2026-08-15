@@ -21,9 +21,12 @@
     "noUncheckedSideEffectImports": true,
     "verbatimModuleSyntax": true,
 
-    "baseUrl": ".",
+    // TypeScript 7 removed `baseUrl` (TS5102) and requires relative `paths`
+    // targets (TS5090). The "." mapping preserves the old baseUrl behavior for
+    // the few config-file imports that resolved repo-root-relative.
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"],
+      "./*": ["./*"]
     },
 
     "types": ["vite/client", "vite-plugin-pwa/client", "vitest/globals"]

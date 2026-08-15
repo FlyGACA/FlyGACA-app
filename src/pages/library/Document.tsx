@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
-import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { sanitizeHtml, tocFromHtml, useFetchText } from '@/hooks/useFetchText';
 import { CORPUS } from '@/lib/content';
 import type { CorpusIndex, LibraryKind } from '@/lib/content';
-import { docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
+import { asDate, docNeighbors, relatedDocs } from '@/calc/library/corpusNav';
+import { toolsForPartSlug } from '@/lib/toolRegulations';
 import { adelLink } from '@/lib/adel';
 import { loadSaved, removeDoc, saveDoc } from '@/lib/native/offlineCache';
 import { shareCurrent } from '@/lib/share';
@@ -16,28 +16,24 @@ import { useCopyToClipboardKeyed } from '@/hooks/useCopyToClipboard';
 import {
   useLibraryPrefs,
   recordView,
-  addNote,
   removeNote,
   isBookmarked,
   docKey,
-  type LibNote,
 } from '@/lib/prefs/libraryPrefs';
-import {
-  clearAnnotations,
-  clearHighlights,
-  highlightMatches,
-  nearestSectionId,
-  wrapAnnotation,
-} from '@/lib/readerMarks';
+import { decorateHeadings } from '@/lib/readerMarks';
+import { useFindInPage } from '@/hooks/useFindInPage';
+import { useReaderAnnotations } from '@/hooks/useReaderAnnotations';
 import { useBookmarkGate } from '@/hooks/useBookmarkGate';
 import { useFeature } from '@/lib/services/features';
-import { SelectionPopover, type SelectionRect } from '@/components/library/SelectionPopover';
+import { SelectionPopover } from '@/components/library/SelectionPopover';
 import { breadcrumbLd, techArticleLd, type Crumb } from '@/lib/seo/jsonld';
 import { ReaderToolbar } from './ReaderToolbar';
 import { ReaderToc } from './ReaderToc';
 import { ReaderNotes } from './ReaderNotes';
+import { ReaderFooterNav } from './ReaderFooterNav';
 import { Disclaimer } from '@/components/Disclaimer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Provenance } from '@/components/Provenance';
 import styles from './Document.module.css';
 
 interface DocumentProps {
@@ -78,9 +74,9 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const docDesc = doc?.title ? `${doc.title} — ${t('document.verifyAtGaca')}` : undefined;
   // The corpus carries a real freshness signal (effectiveDate, or a date-shaped
-  // revision marker); fall back to the index's generated date. Mirrors the same
-  // resolution in scripts/build-sitemap.mjs + scripts/prerender-head.mjs.
-  const asDate = (v?: string) => (v && /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : undefined);
+  // revision marker); fall back to the index's generated date. `asDate`
+  // (calc/library/corpusNav) mirrors the same resolution in
+  // scripts/build-sitemap.mjs + scripts/prerender-head.mjs.
   const dateModified =
     asDate(doc?.effectiveDate) ?? asDate(doc?.revision) ?? asDate(index.data?.generated);
   // One crumb trail for both the JSON-LD and the visible <Breadcrumbs/>.
@@ -128,35 +124,7 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
   const step = (delta: number) =>
     setScale((s) => Math.min(SCALE_MAX, Math.max(SCALE_MIN, Math.round((s + delta) * 10) / 10)));
 
-  // ── Find-in-page ──
-  const [find, setFind] = useState(q);
-  const debouncedFind = useDebouncedValue(find, 200);
-  const [matchCount, setMatchCount] = useState(0);
-  const [activeMatch, setActiveMatch] = useState(0);
-  const marksRef = useRef<HTMLElement[]>([]);
-
-  // ── Text selection → highlight / note popover ──
-  const [sel, setSel] = useState<{ rect: SelectionRect; quote: string; sectionId: string } | null>(
-    null,
-  );
-  const closeSel = useCallback(() => {
-    setSel(null);
-    window.getSelection()?.removeAllRanges();
-  }, []);
-
-  // ── Reading progress + back-to-top ──
-  const onScroll = useCallback(() => {
-    const el = document.documentElement;
-    const total = el.scrollHeight - el.clientHeight;
-    setProgress(total > 0 ? Math.round((el.scrollTop / total) * 100) : 0);
-    setShowTop(el.scrollTop > 600);
-    setSel((s) => (s ? null : s)); // a moved selection rect would be stale
-  }, []);
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [onScroll]);
-
+  // ── Rendered content + table of contents ──
   const html = useMemo(() => (text ? sanitizeHtml(text) : ''), [text]);
   const toc = useMemo(() => (text ? tocFromHtml(text) : []), [text]);
   const filteredToc = useMemo(() => {
@@ -172,42 +140,35 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     [copy, pathname],
   );
 
-  // Re-highlight the content whenever the (debounced) find query changes.
-  useEffect(() => {
-    const root = contentRef.current;
-    if (!root || !html) return;
-    clearHighlights(root);
-    marksRef.current = [];
-    const needle = debouncedFind.trim();
-    if (!needle) {
-      setMatchCount(0);
-      setActiveMatch(0);
-      return;
-    }
-    highlightMatches(root, needle);
-    const marks = Array.from(root.querySelectorAll<HTMLElement>('mark[data-hit]'));
-    marksRef.current = marks;
-    setMatchCount(marks.length);
-    setActiveMatch(0);
-    if (marks[0]) {
-      marks[0].dataset.active = '1';
-      marks[0].scrollIntoView({ block: 'center' });
-    }
-  }, [debouncedFind, html]);
+  // ── Find-in-page ── (query state + highlight choreography live in the hook)
+  const { find, setFind, matchCount, activeMatch, cycle } = useFindInPage(contentRef, html, q);
 
-  function cycle(delta: number) {
-    const marks = marksRef.current;
-    if (!marks.length) return;
-    marks[activeMatch]?.removeAttribute('data-active');
-    const nextI = (activeMatch + delta + marks.length) % marks.length;
-    setActiveMatch(nextI);
-    marks[nextI].dataset.active = '1';
-    marks[nextI].scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }
+  // ── Text selection → highlight / note popover ── (selection state + effects in the hook)
+  const { sel, closeSel, dismissSelection, saveAnnotation } = useReaderAnnotations({
+    contentRef,
+    html,
+    notes: notesForDoc,
+    dk,
+    slug,
+    annotClass: styles.annot,
+  });
+
+  // ── Reading progress + back-to-top ──
+  const onScroll = useCallback(() => {
+    const el = document.documentElement;
+    const total = el.scrollHeight - el.clientHeight;
+    setProgress(total > 0 ? Math.round((el.scrollTop / total) * 100) : 0);
+    setShowTop(el.scrollTop > 600);
+    dismissSelection(); // a moved selection rect would be stale
+  }, [dismissSelection]);
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [onScroll]);
 
   // Scroll to the hash anchor on load (when not actively searching).
   useEffect(() => {
-    if (!html || debouncedFind.trim()) return;
+    if (!html || find.trim()) return;
     const id = hash.replace(/^#/, '');
     if (id) document.getElementById(id)?.scrollIntoView();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -232,21 +193,23 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     return () => obs.disconnect();
   }, [html]);
 
-  // Decorate each heading with a trailing copy-link anchor (added to sanitized DOM).
+  // Decorate each heading with a clean clause anchor + a trailing copy-link
+  // affordance (added to the sanitized DOM). See `decorateHeadings`
+  // (lib/readerMarks) — the clean `sec-<part>-<n>` ids are the citation deep
+  // links the sitemap's clause anchors depend on.
   useEffect(() => {
     const root = contentRef.current;
     if (!root || !html) return;
-    const heads = root.querySelectorAll<HTMLElement>('h2[id],h3[id]');
-    heads.forEach((h) => {
-      if (h.querySelector(`.${styles.anchor}`)) return;
-      const a = document.createElement('button');
-      a.type = 'button';
-      a.className = styles.anchor;
-      a.textContent = '#';
-      a.setAttribute('aria-label', t('document.copyLink'));
-      a.addEventListener('click', () => copyLink(h.id));
-      h.appendChild(a);
+    decorateHeadings(root, {
+      anchorTargetClass: styles.anchorTarget,
+      anchorClass: styles.anchor,
+      label: t('document.copyLink'),
+      onCopy: copyLink,
     });
+    // The load-time hash-scroll ran before these ids existed; honor a hash that
+    // points at a freshly-injected clean anchor.
+    const id = hash.replace(/^#/, '');
+    if (id) document.getElementById(id)?.scrollIntoView();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [html, copyLink]);
 
@@ -255,53 +218,11 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
     if (doc && slug) recordView({ kind, slug, title: doc.title });
   }, [doc, slug, kind]);
 
-  // Capture a text selection inside the reader to offer highlight / note.
-  useEffect(() => {
-    const onMouseUp = () => {
-      const root = contentRef.current;
-      const selection = window.getSelection();
-      if (!root || !selection || selection.isCollapsed || !selection.rangeCount) return;
-      const range = selection.getRangeAt(0);
-      if (!root.contains(range.commonAncestorContainer)) return;
-      const quote = selection.toString().trim();
-      if (quote.length < 3 || quote.length > 400) return;
-      const r = range.getBoundingClientRect();
-      setSel({
-        rect: { top: r.top, left: r.left, width: r.width, height: r.height },
-        quote,
-        sectionId: nearestSectionId(root, range.startContainer),
-      });
-    };
-    document.addEventListener('mouseup', onMouseUp);
-    return () => document.removeEventListener('mouseup', onMouseUp);
-  }, [html]);
-
-  // Re-anchor saved annotations into the rendered content (best-effort).
-  useEffect(() => {
-    const root = contentRef.current;
-    if (!root || !html) return;
-    clearAnnotations(root);
-    for (const n of notesForDoc ?? []) wrapAnnotation(root, n, styles.annot);
-  }, [html, notesForDoc]);
-
-  const saveAnnotation = useCallback(
-    (note: string) => {
-      if (!sel || !slug) return;
-      const entry: LibNote = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        sectionId: sel.sectionId,
-        quote: sel.quote,
-        note,
-        created: new Date().toISOString(),
-      };
-      addNote(dk, entry);
-      closeSel();
-    },
-    [sel, slug, dk, closeSel],
-  );
-
   const { prev, next } = docNeighbors(docs, slug);
   const related = relatedDocs(docs, slug);
+  // Reciprocal of the tools' "governing regulation" link: the flight tools that
+  // operate under this Part (regulations corpus only).
+  const partTools = kind === 'regulations' ? toolsForPartSlug(slug) : [];
   const adel = doc ? adelLink(t('document.adelPrompt', { title: doc.title })) : null;
 
   // "Save for offline": warm the SW data cache with this doc's HTML + its index.
@@ -371,6 +292,11 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             </div>
             {doc && <h1>{doc.title}</h1>}
             <p className={styles.verify}>{t('document.verifyLine')}</p>
+            <Provenance
+              date={dateModified}
+              revision={doc?.revision}
+              sourceUrl={doc?.sourceUrl ?? index.data?.sourceUrl}
+            />
           </header>
 
           <ReaderToolbar
@@ -452,47 +378,13 @@ export function Document({ kind = 'regulations' }: DocumentProps) {
             />
           )}
 
-          {related.length > 0 && (
-            <section className={styles.related}>
-              <h2 className={styles.relatedHead}>{t('document.related')}</h2>
-              <ul className={styles.relatedGrid}>
-                {related.map((r) => (
-                  <li key={r.slug}>
-                    <Link to={`${corpus.base}/${r.slug}`} className={styles.relatedCard}>
-                      {r.part && (
-                        <span className={styles.relatedBadge}>
-                          {t('library.part')} {r.part}
-                        </span>
-                      )}
-                      <span className={styles.relatedTitle}>{r.title}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <nav className={styles.prevNext} aria-label={t('library.title')}>
-            {prev ? (
-              <Link to={`${corpus.base}/${prev.slug}`} className={styles.prevNextLink}>
-                <span className={styles.prevNextDir}>← {t('document.prev')}</span>
-                <span className={styles.prevNextName}>{prev.title}</span>
-              </Link>
-            ) : (
-              <span />
-            )}
-            {next ? (
-              <Link
-                to={`${corpus.base}/${next.slug}`}
-                className={`${styles.prevNextLink} ${styles.prevNextEnd}`}
-              >
-                <span className={styles.prevNextDir}>{t('document.next')} →</span>
-                <span className={styles.prevNextName}>{next.title}</span>
-              </Link>
-            ) : (
-              <span />
-            )}
-          </nav>
+          <ReaderFooterNav
+            related={related}
+            partTools={partTools}
+            prev={prev}
+            next={next}
+            base={corpus.base}
+          />
 
           <Disclaimer />
         </>

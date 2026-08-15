@@ -87,3 +87,23 @@ export function applyPromo(
   const discounted = amountHalalas - off;
   return Math.max(MIN_CHARGE_HALALAS, Math.min(amountHalalas, discounted));
 }
+
+/**
+ * Price a checkout after a resolved promo, reporting the code back ONLY when it
+ * actually lowered the amount — so a present-but-inapplicable code (expired, wrong
+ * kind, spent) is treated as no promo (amount unchanged, `promo: null`) rather than
+ * stamped onto the intent. The checkout callable passes the `promoCodes/{code}` doc it
+ * read; pricing stays entirely server-side.
+ */
+export function priceAfterPromo(
+  rawAmountHalalas: number,
+  promo: PromoCode | null | undefined,
+  kind: CheckoutKind,
+  code: string,
+  now: Date = new Date(),
+): { amount: number; promo: string | null } {
+  const discounted = applyPromo(rawAmountHalalas, promo, kind, now);
+  return discounted < rawAmountHalalas
+    ? { amount: discounted, promo: code }
+    : { amount: rawAmountHalalas, promo: null };
+}

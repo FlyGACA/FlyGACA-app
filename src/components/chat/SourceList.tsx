@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import type { ChatSource } from '@/lib/api';
@@ -16,7 +17,11 @@ export function SourceList({ sources, valid }: { sources: ChatSource[]; valid: S
         {sources.map((s, j) => {
           const slug = partSlug(valid, s.part, s.section, s.citation);
           return (
-            <li key={j} className={`${styles.srcRow} ${s.verbatim ? styles.srcRowFull : ''}`}>
+            <li
+              key={j}
+              className={`${styles.srcRow} ${s.verbatim ? styles.srcRowFull : ''}`}
+              style={{ '--i': j } as CSSProperties}
+            >
               {s.verbatim ? (
                 <details className={styles.srcDetails} open={j === firstVerbatim}>
                   <summary className={styles.srcCite}>

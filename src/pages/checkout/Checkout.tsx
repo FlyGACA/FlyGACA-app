@@ -5,11 +5,17 @@ import { Card } from '@/components/ui/Card';
 import { Alert } from '@/components/Alert';
 import { Disclaimer } from '@/components/Disclaimer';
 import { useNoindexMeta } from '@/hooks/usePageMeta';
-import { getFns, getFirebaseAuth } from '@/lib/services/firebase';
+import { getFns, getReadyAuth } from '@/lib/services/firebase';
 import styles from './Checkout.module.css';
 
 const MOYASAR_JS = 'https://cdn.moyasar.com/mpf/1.16.0/moyasar.js';
 const MOYASAR_CSS = 'https://cdn.moyasar.com/mpf/1.16.0/moyasar.css';
+// SRI pins for the pinned 1.16.0 widget assets — a compromised/rewritten CDN
+// payload fails integrity and never executes with card data in the page.
+const MOYASAR_JS_INTEGRITY =
+  'sha384-464kRf7qKZwwwkZHkhNjNWdPwx0yTYFpOndxh46T2nSMe1vPfYBndPpNhQV2sYXk';
+const MOYASAR_CSS_INTEGRITY =
+  'sha384-xi7T53rMqpdqL0IHHVRtmK8FTK07ngNwx8hHDl86cq+qHRy/tRcHezKNMJKYV/0J';
 const MOYASAR_APPLE_PAY_VALIDATE_URL = 'https://api.moyasar.com/v1/applepay/initiate';
 const FORM_ID = 'moyasar-checkout-form';
 
@@ -46,6 +52,8 @@ function loadWidgetAssets(): Promise<void> {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = MOYASAR_CSS;
+      link.integrity = MOYASAR_CSS_INTEGRITY;
+      link.crossOrigin = 'anonymous';
       document.head.appendChild(link);
     }
     if (window.Moyasar) {
@@ -61,6 +69,8 @@ function loadWidgetAssets(): Promise<void> {
     const script = document.createElement('script');
     script.src = MOYASAR_JS;
     script.async = true;
+    script.integrity = MOYASAR_JS_INTEGRITY;
+    script.crossOrigin = 'anonymous';
     script.onload = () => resolve();
     script.onerror = () => reject(new Error('widget-load-failed'));
     document.head.appendChild(script);
@@ -85,6 +95,9 @@ export function Checkout() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [error, setError] = useState('');
   const [promoNote, setPromoNote] = useState('');
+  // Charged, but the session didn't come back with them — a "sign in to see it" state,
+  // not a payment failure, so it gets a softer tone and a way forward.
+  const [signedOutAfterPayment, setSignedOutAfterPayment] = useState(false);
 
   const paymentId = params.get('id');
   const kind = params.get('kind');
@@ -105,6 +118,21 @@ export function Checkout() {
     let cancelled = false;
     (async () => {
       try {
+        // Wait for the persisted session before confirming. This leg arrives via a
+        // cross-document redirect from Moyasar, so auth is always cold here; calling
+        // confirmPayment first meant an ID-token-less call, a server `unauthenticated`,
+        // and an error screen shown to someone who had just been charged.
+        const auth = await getReadyAuth();
+        if (cancelled) return;
+        if (auth && !auth.currentUser) {
+          // The charge is already done and fulfilment does not depend on this browser
+          // — moyasarWebhook funnels through the same fulfillPayment. So this is not a
+          // failure, it is "sign in to see what you bought".
+          setStatus('error');
+          setSignedOutAfterPayment(true);
+          setError(t('checkout.errors.signed-out-after-payment'));
+          return;
+        }
         const fns = await getFns();
         if (!fns) throw new Error('billing-unavailable');
         const { httpsCallable } = await import('firebase/functions');
@@ -136,8 +164,15 @@ export function Checkout() {
     let cancelled = false;
     (async () => {
       try {
-        const auth = await getFirebaseAuth();
-        if (!auth?.currentUser) throw new Error('sign-in-required');
+        // getReadyAuth, not getFirebaseAuth: checkout is always entered by a full
+        // document load (billing.ts uses window.location.assign), so the session is
+        // still being restored when this runs and currentUser would read as null.
+        const auth = await getReadyAuth();
+        // Null auth means Firebase isn't configured in this build at all — telling
+        // someone to "sign in" when there is no sign-in to reach is a dead end, so
+        // separate the two the way billing.ts's requireCheckoutReady already does.
+        if (!auth) throw new Error('billing-unavailable');
+        if (!auth.currentUser) throw new Error('sign-in-required');
         const publishableKey = import.meta.env.VITE_MOYASAR_PUBLISHABLE_KEY as string | undefined;
         if (!publishableKey) throw new Error('billing-unavailable');
         const fns = await getFns();
@@ -218,16 +253,32 @@ export function Checkout() {
         <h1 className={styles.title}>{t('checkout.title')}</h1>
 
         {error && (
-          <Alert tone="error" role="alert" icon="⚠">
+          <Alert
+            tone={signedOutAfterPayment ? 'warning' : 'error'}
+            role={signedOutAfterPayment ? 'status' : 'alert'}
+            icon={signedOutAfterPayment ? '🔑' : '⚠'}
+            action={
+              signedOutAfterPayment
+                ? {
+                    label: t('checkout.goToAccount'),
+                    onClick: () => navigate('/account'),
+                  }
+                : undefined
+            }
+          >
             {error}
           </Alert>
         )}
 
-        {paymentId ? (
+        {/* Return leg: "confirming…" only while it really is still in flight — it used
+            to keep showing underneath a failure message. */}
+        {paymentId && !error && (
           <p role="status" className={styles.note}>
             {t('checkout.confirming')}
           </p>
-        ) : (
+        )}
+
+        {!paymentId && (
           <>
             {status === 'loading' && (
               <p role="status" className={styles.note}>

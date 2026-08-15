@@ -28,6 +28,9 @@
   border-radius: var(--radius-sm);
   background: var(--surface);
   transition: var(--transition-color);
+  /* Citations settle in one after another as the answer's sources land. */
+  animation: srcReveal var(--dur) var(--ease-entry) both;
+  animation-delay: calc(var(--i, 0) * var(--dur-stagger));
 }
 .srcRow:hover {
   border-color: var(--brand-hover);
@@ -98,4 +101,21 @@
   font-size: var(--fs-xs);
   color: var(--link);
   white-space: nowrap;
+}
+
+@keyframes srcReveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .srcRow {
+    animation: none;
+  }
 }

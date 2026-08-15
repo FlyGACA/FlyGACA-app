@@ -11,22 +11,28 @@ discount.
 | Flavor id    | Pack         | Bundle id                     | Device name        | Suggested App Store name (≤30 chars) |
 | ------------ | ------------ | ----------------------------- | ------------------ | ------------------------------------ |
 | `elp`        | `elp`        | `com.flygaca.prep.elp`        | ELPT Prep          | ELPT Prep — Saudi Aviation           |
-| `ppl-exam`   | `ppl-exam`   | `com.flygaca.prep.ppl`        | Saudi PPL Prep     | Saudi PPL Written Exam Prep          |
 | `conversion` | `conversion` | `com.flygaca.prep.conversion` | Licence Conversion | Saudi Licence Conversion Prep        |
 | `medical`    | `medical`    | `com.flygaca.prep.medical`    | Aviation Medical   | Saudi Aviation Medical Prep          |
 | `aip`        | `aip`        | `com.flygaca.prep.aip`        | Saudi AIP Prep     | Saudi AIP Study Guide                |
 
-First wave: **ELPT + PPL** (prove the pipeline end-to-end, through review),
-then stamp out Conversion / Medical / AIP. **CPL / IR / ATPL** stay parked
-until their packs have question banks (`prepCatalog.ts` has them as empty
-`soon` placeholders); when content lands, add a registry entry + art and the
-pipeline does the rest (plus `SELLABLE_PACK_IDS` in
-`functions/src/billing-core.ts` for web-sales parity).
+First wave: **ELPT + AIP** (prove the pipeline end-to-end, through review),
+then stamp out Conversion / Medical.
+
+> **⏸ The licence-exam flavors are paused.** `ppl-exam` was removed from
+> `src/flavors/registry.ts` on 2026-08-10, alongside the native PPL/CPL/IR/ATPL
+> apps (`docs/APPS-FAMILY-ROADMAP.md`). `cpl` / `ir` / `atpl` never had flavor
+> entries. All four **packs remain live and selling on the web** — only the
+> standalone apps stopped. Restoring one means re-adding its registry entry + art.
+
+Note this flavor line (`com.flygaca.prep.*`, Capacitor, built by
+`scripts/build-flavor.mjs`) is a **different product line** from the native
+SwiftUI family in the `ay2m/FlyGACA` repo (`com.flygaca.*`, `FlyGACAKit`). Don't conflate them.
 
 ## Pricing
 
-One-time paid-upfront, matching the web pack price (`PREP_PACK_PRICE` = 39 SAR)
-at the nearest Saudi-storefront price tier. Keep web and App Store prices in
+One-time paid-upfront, matching the web pack price (`PREP_PACK_PRICE_CERT` = 79 SAR,
+`PREP_PACK_PRICE_SUBJECT` = 49 SAR — see `src/lib/prepCatalog.ts`) at the nearest
+Saudi-storefront price tier. Keep web and App Store prices in
 lockstep when either moves — divergence invites support pain and review
 questions. Paid-upfront is also what makes the App Bundle possible (bundles
 require paid apps) and keeps the apps IAP-free, offline, and account-free.
@@ -77,7 +83,7 @@ If the fleet model underperforms or 4.3 forces consolidation:
 1. Ship one app (or flip a flavor) with `FLAVOR_GRANTED_PACK_IDS` empty, so
    packs render their locked storefront state.
 2. Add `@revenuecat/purchases-capacitor`; one non-consumable product per pack
-   (`billingChannel()` in `src/lib/native-bridge.ts` already answers
+   (`billingChannel()` in `src/lib/native/nativeBridge.ts` already answers
    `'revenuecat'` on iOS and the web checkout already refuses native).
 3. Fulfil into the existing seam: RevenueCat webhook → Cloud Function →
    `packEntitlements/{uid}.packs.<id>` (exactly how the Stripe webhook grants

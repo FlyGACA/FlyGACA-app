@@ -4,7 +4,7 @@ What's coming next for the Fly GACA frontend app. The legacy→TypeScript/React/
 complete and live** — all 55 tools, the full regulatory library + search, Captain Adel chat, the
 study hub, account/commerce, and guides are shipped and deploying to production on every merge to
 `main`. This file looks **forward** and is the **single source of truth for open work**; the
-stage-by-stage rebuild history lives in [`MIGRATION.md`](./MIGRATION.md) (history only — no open
+stage-by-stage rebuild history lives in [`MIGRATION.md`](./docs/MIGRATION.md) (history only — no open
 items are tracked there).
 
 Scope note: this repo now carries the **backend too** — the Firebase Functions gateway and the
@@ -22,6 +22,33 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
 
 ## Recently shipped (post-rebuild)
 
+- **Interactive features round 7 — chat motion**
+  ([#444](https://github.com/FlyGACA/FlyGACA-app/pull/444)): Captain Adel's source citations
+  stagger in as an answer lands (`SourceList`, shared `--dur-stagger` cadence), and a small shared
+  `Waveform` equalizer plays on the voice controls — while the mic is listening (`VoiceButton`) and
+  while an answer is read aloud (`SpeakButton`). Decorative, reduced-motion safe.
+- **Interactive features round 6 — ambient & time**
+  ([#441](https://github.com/FlyGACA/FlyGACA-app/pull/441)): a sun-path arc on `sun-times`, a live
+  analog Zulu dial on `zulu-clock`, an AIRAC cycle progress ring on `airac`, and a today's-daylight
+  band on the aerodrome detail page. Backed by additive pure helpers — `daylight()` (`src/calc/sun.ts`),
+  `clockAngles()` (`src/calc/zulu.ts`), `cycleProgress()` (`src/calc/airac.ts`).
+- **Interactive features round 5 — account pack**
+  ([#438](https://github.com/FlyGACA/FlyGACA-app/pull/438)): radial currency rings on `CurrencyBoard`
+  (status by shape + hue, shared across `/currency` · `/records` · dashboard), a reusable
+  `ProgressRing` on the library offline-download button, and count-ups on the logbook summary tiles
+  (`CountUp` gained a `decimals` prop). Pure `currencyRingFraction` on the currency engine.
+- **Interactive features round 4 — instrument pack**
+  ([#437](https://github.com/FlyGACA/FlyGACA-app/pull/437)): a CG-envelope plot on `weight-balance`
+  (`cgEnvelopeStatus`), a shared climb/descent `ProfileRamp` across the four TOD/VDP/climb-gradient/
+  top-of-climb tools, `GaugeDial` on `mach` + `pivotal-altitude` (with a fractional-readout fix),
+  `E6b` reusing `WindTriangleDiagram`, an ISA thermometer, an altimeter dial, and an ETP/PNR route
+  diagram on `route-critical-points`.
+- **Interactive features round 3 — study motion**
+  ([#435](https://github.com/FlyGACA/FlyGACA-app/pull/435)): graded flashcards fly out with the next
+  card entering, an SRS "glide path" strip shows the deck's spread across Leitner boxes (pure
+  `src/calc/study/glidePath.ts` + `GlidePathStrip`), the mock exam gains a depleting fuel-gauge timer
+  and an animated PASS/FAIL stamp, and the dashboard gains achievement stamps. Visual layer only —
+  the `srs` engine and exam scoring stay untouched as cross-platform contracts.
 - **Interactive features round 2**
   ([#433](https://github.com/FlyGACA/FlyGACA-app/pull/433)): the holding tool's animated
   entry-procedure racetrack (CSS `offset-path`), a shared `GaugeDial` needle on the TAS and
@@ -42,7 +69,7 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   deployed Firestore rules unchanged — drives per-role widget ordering through the pure layout
   engine `src/calc/app/dashboardLayout.ts`. Five new widgets surface existing local-first data (study
   progress, tool favourites, library/guide bookmarks, Captain Adel threads, regulatory watch), and
-  show/hide widget customization persists via `src/lib/dashboardPrefs.ts`. Signed-out `/account`
+  show/hide widget customization persists via `src/lib/prefs/dashboardPrefs.ts`. Signed-out `/account`
   became a split-panel sign-in with per-audience value props and a password show/hide toggle.
 - **Backend hardening** ([#253](https://github.com/FlyGACA/FlyGACA-app/pull/253)): `/api/feedback`
   routing fix, region drift resolved to `me-central1`, per-uid + per-IP rate limiting, input size
@@ -55,9 +82,9 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   (`src/components/CommandPalette/CommandPalette.tsx`) that jumps to any live tool, guide,
   regulatory Part, or aerodrome, driven off the `tools`/guides registries so it can't drift.
 - **Dashboard follow-ups** (on the role-aware redesign): per-role widget reordering persisted via
-  the `order` list in `src/lib/dashboardPrefs.ts`, an offline / cache-status widget, and an
+  the `order` list in `src/lib/prefs/dashboardPrefs.ts`, an offline / cache-status widget, and an
   ask-Captain-Adel entry point — all wired through `src/pages/account/Dashboard.tsx`.
-- **Offline page.** A graceful PWA offline fallback route (`src/pages/Offline.tsx`), backing the
+- **Offline page.** A graceful PWA offline fallback route (`src/pages/offline/Offline.tsx`), backing the
   app-shell precache + network-first `/data/*` caching already configured in `vite.config.ts`.
 - **`usePageMeta` positional filler removed.** Added `useNoindexMeta(title)`
   (`src/hooks/usePageMeta.ts`) and switched the ten noindex-only call sites (`FlavorSettings`,
@@ -67,25 +94,39 @@ Captain Adel RAG brain live in `functions/` (deployed to `me-central1`; Firestor
   `src/lib/content.types.ts`; `content.ts` now holds only the runtime loader (`fetchJson`,
   `loadJson`, `CORPUS`, `loadRegulationsLookup`, …) and re-exports the types so existing
   `@/lib/content` imports are unaffected.
+- **Oversized file splits.** The five largest pages/modules were split along house seams with no
+  behavior change (Aug 2026): `Chat.tsx` (573→341), `Document.tsx` (553→405),
+  `functions/src/billing.ts` (777→721), `Pricing.tsx` (526→260), and `SignInForms.tsx` (416→146).
+  Each lifted pure logic into tested `calc/*` / `*-core` modules first (`calc/chat/chatStream`,
+  `lib/readerMarks`, `calc/app/{pricingView,passwordPolicy,emailShape}`, `billing-core` /
+  `promo-core`) before moving hooks and presentational page-folder components, so both the frontend
+  and `functions/` coverage ratchets rose across the run.
 
 ## Now — production hardening & go-live confidence
 
-The app already auto-deploys to **Firebase Hosting** (canonical) and the Vercel/Cloudflare/Netlify
-mirrors on every merge to `main`. "Now" is about making that production footprint fully trustworthy.
+The app auto-deploys to **Firebase Hosting** — the single serving front — on every merge to `main`
+(the Vercel/Cloudflare/Netlify mirrors were removed 2026-08). "Now" is about making that production
+footprint fully trustworthy.
 
 - **[platform]** Flip and verify the production secrets — Firebase config · App Check key · Stripe
   price IDs — and deploy `firestore.rules`. See `archive/docs/RUNBOOK-cutover.md` and `docs/BILLING.md`.
+- **[platform]** ~~Close the backend money-path test gap.~~ **Done.** The entitlement-granting
+  `claimFoundingAccess` callable, the Moyasar billing callables (`confirmPayment` /
+  `cancelAutoRenew` / `createCheckoutConfig` / `getReferralCode`), the scheduled auto-renewal charge
+  loop, and the gateway route/streaming/App-Check paths are now under test; `functions/` coverage is
+  98% lines / 90% branches with the ratchet raised to match. See `docs/TESTING-ROADMAP.md`
+  **Phase 5** (complete).
 - **[platform]** **Scope CI credentials least-privilege as they're provisioned.** An OAuth/token
   scope-minimization review (Aug 2026) found the current surface already minimal — every workflow's
   `GITHUB_TOKEN` is default-deny (`contents: read`, repo default confirmed `read`) with write escalated
   only per-job, and Google sign-in requests only default `openid/email/profile` (no `addScope`). It
-  also found **no third-party CI credentials exist yet** — Cloudflare/Supabase/OpenAI/App-Store-Connect
+  also found **no third-party CI credentials exist yet** — Supabase/OpenAI/App-Store-Connect
   secrets are all unset and their jobs no-op. When each is added, scope it minimally and keep it
-  confined to its one job: `CLOUDFLARE_API_TOKEN` → `Workers Scripts: Edit` only; `SUPABASE_SERVICE_ROLE_KEY`
-  + `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
-  Admin; the Firebase deploy SA stays **without** `datastore.indexAdmin` (see the note in `deploy.yml`).
-  Separately, periodically review the operator-account **claude.ai MCP connector** consent grants
-  (Airtable, Gmail, Drive, etc.) — third-party delegated grants that live outside this repo.
+  confined to its one job: `SUPABASE_SERVICE_ROLE_KEY`
+  · `OPENAI_API_KEY` → the `docs-parser` embeddings job only; App Store Connect key → App Manager, not
+    Admin; the Firebase deploy SA stays **without** `datastore.indexAdmin` (see the note in `deploy.yml`).
+    Separately, periodically review the operator-account **claude.ai MCP connector** consent grants
+    (Airtable, Gmail, Drive, etc.) — third-party delegated grants that live outside this repo.
 - **[platform]** Enable **App Check enforcement** on the backend Functions once real traffic is
   sending valid tokens. See `docs/APP-CHECK-BACKEND.md`.
 - **[product]** Regenerate the **social/OG card** PNG in the new typeface. The share-card template
@@ -98,12 +139,6 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   and `functions` jobs required checks on `main`, and use descriptive squash-merge titles — recent
   history (`sd (#215)`, `j (#209)`, `,m (#208)`) doesn't self-describe, which matters for an open
   educational repo.
-- **[platform]** **Fix the Cloudflare Workers git integration.** The `Workers Builds: flygaca`
-  check fails on every commit: the Cloudflare dashboard integration targets a Worker named
-  `flygaca`, while the repo deploys `flygaca-app` (`wrangler.toml`, `deploy-cloudflare.yml`). This
-  is a **dashboard-side** fix — repoint the integration at `flygaca-app` or disconnect it (the
-  repo's deploy path is the `deploy-cloudflare.yml` Action, unaffected). Diagnosed in
-  [#253](https://github.com/FlyGACA/FlyGACA-app/pull/253).
 - **[platform]** **Dependency hygiene.** Clear the open Dependabot alerts on `main` (2 high, 4
   moderate at last check) and adopt a recurring update cadence (Dependabot config or a scheduled
   bump) so security debt doesn't accrue between feature work.
@@ -115,42 +150,60 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
   and app icons/splash. See `docs/RUNBOOK-native.md`. Includes **passkeys / biometric unlock** for
   the persistent "active flight line" session — deferred from the sign-in redesign because it needs
   the native shell.
-- **[platform]** **Performance budget.** Add a Lighthouse/perf gate in CI to sit alongside the
-  initial-JS bundle budget already enforced by `scripts/check-bundle.mjs` (188 kB gzip today —
-  the script is the source of truth).
-- **[platform]** **Shard the heavy data payloads.** `airports-extra.json` (21 MB) and
-  `library-search.json` (19 MB) are each fetched as a single blob today; shard them (by
-  region/ICAO prefix and by corpus/Part or term-prefix buckets) so the first search on a mobile
-  connection doesn't wait on the whole index. Confirm `rag-chunks.json` (14 MB) is only consumed
-  server-side and stop shipping it under `public/data/` if so. Keep `src/lib/content.ts`
-  (`loadJson` promise cache) as the single fetch path and preserve the two-tier NetworkFirst
-  cache split in `vite.config.ts` when shard names change.
-- **[platform]** **Emit semantic corpus links upstream.** The offline pipeline that builds
-  `library-search.json` / `definitions-index.json` / the curated `paths`·`groundschool`·`quiz`
-  files still emits legacy `document.html?…` URLs; `npm run data:normalize` heals them on each sync
-  meanwhile. Patch the builder to emit the semantic shape natively, then retire the normalize step
-  — exact diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
+- **[platform]** **Performance budget — the static half shipped; the runtime half is what's left.**
+  `scripts/check-perf-budget.mjs` (`npm run check:perf`) already gates **every** emitted chunk on a
+  per-chunk gz ceiling plus a total-footprint ceiling, alongside the initial-JS budget in
+  `scripts/check-bundle.mjs` (**189 kB** gz, 186.9 used today — the script is the source of truth).
+  Both are in `verify` and in `ci.yml` as their own steps. What is still missing is a **runtime**
+  gate: nothing measures LCP/INP, so a change can hold every byte budget and still regress the
+  field metrics. Add Lighthouse CI (or equivalent) against the built preview.
+- **[platform]** **Shard the heavy data payloads — aerodromes done, library search still open.**
+  Note the sizes above were raw: on the wire (Hosting gzips) `airports-extra` was 2.8 MB and
+  `library-search.json` is 3.7 MB, not 21/19 MB. Parse cost on a phone is the other half of the
+  problem and scales with the raw figure.
+  - ~~`airports-extra.json`~~ **Done.** Now `public/data/airports-extra/<REGION>.json` + a
+    `_manifest.json` carrying an ident-prefix hint (`scripts/lib/airport-shards.mjs`,
+    `src/lib/airportShards.ts`). A region filter reads only its own shards — **GCC goes 2.8 MB →
+    17 KB gz** — and a detail-page ICAO lookup resolves one shard from the prefix hint instead of
+    all 66k rows. Region is the only shard axis on purpose: adding an ident-prefix axis would
+    serve the detail page more evenly but duplicate all 20 MB, and the 3 KB hint buys the same
+    lookup. Total bucket bytes are unchanged. `tests/integrity/airport-shards.test.ts` pins the invariant
+    that matters — shard selection is a **superset** of what `inRegion` matches, so a mapping bug
+    can never silently drop aerodromes from the directory.
+  - ~~`rag-chunks.json`~~ **Done.** Confirmed server-only (no `src/` reader; the gateway's
+    `CORPUS_URL` defaults to `library-search.json` and is set nowhere) and moved out of
+    `public/data/` to `data/` at the repo root, so it is neither Hosting-served nor bucket-mirrored.
+    Its vestigial `firebase.json` hosting-ignore entry is gone; `tests/integrity/data-shape.test.ts` pins
+    the split and its legacy-`u` backend contract.
+  - **Still open: `library-search.json` (3.7 MB gz).** Sharding it is **blocked on a coordinated
+    functions deploy**, not on effort: it is also the gateway's own corpus, fetched whole over HTTP
+    by `functions/src/corpus.ts` (`CORPUS_URL`). Shipping shards while a stale gateway still
+    requests the monolith breaks `/api/chat`, and functions deploys are gated off today
+    (`DEPLOY_FUNCTIONS`). Ordered fix: teach `corpus.ts` to read a manifest + shards → deploy
+    functions → then emit shards and drop the monolith. Keep `src/lib/content.ts` (`loadJson`
+    promise cache) as the single client fetch path and update the two-tier NetworkFirst split in
+    `vite.config.ts` with the new names.
+- **[platform]** **Emit semantic corpus links upstream — blocked outside this org.** The offline
+  pipeline that builds `library-search.json` / `definitions-index.json` / the curated
+  `paths`·`groundschool`·`quiz` files still emits legacy `document.html?…` URLs;
+  `npm run data:normalize` heals them on each sync meanwhile. The builder patch **cannot be
+  applied from any FlyGACA GitHub repo** — that pipeline lives outside `FlyGACA-app`,
+  `Captain-Adel`, `Office` and `ay2m/FlyGACA` — so this item is waiting on a change wherever it
+  runs, not on effort here. The committed corpus is meanwhile fully semantic
+  (`npm run data:normalize:check` reports 0 migrated across all five files), and the back-compat
+  parsing in `src/lib/contentLinks.ts` must stay until the upstream stops emitting legacy shapes:
+  deleting it first would mean the next sync silently ships unroutable links.
+  **`npm run data:normalize:check`** is the gate that answers "is upstream fixed yet?" — `--dry`
+  that exits non-zero when anything would migrate. Run it on a fresh `sync:gaca` (before the
+  healing `sync:gaca:apply`); a clean exit is the green light to retire the legacy path. Exact
+  diff and cleanup steps in [`docs/corpus-link-shape.md`](docs/corpus-link-shape.md).
 - **[platform]** **App Check on `/api/content`.** When the content endpoint goes live, attach the
   same `X-Firebase-AppCheck` header `sendChat` already sends (noted in `src/lib/api.ts`).
 - **[platform]** **E2E coverage.** Extend the Playwright suite (`e2e/`) beyond today's smoke +
-  axe a11y checks to cover more critical flows.
+  axe a11y checks to cover more critical flows — signed-in surfaces, mocked checkout, study flows,
+  the flavor route tree. Concrete flow list: `docs/TESTING-ROADMAP.md` **Phase 8**.
 - **[product]** **SEO phases 2–4.** Clause-level anchors, surfacing the highest-demand clauses in
   the sitemap, and tool↔library cross-links. See `SEO-PLAN.md`.
-- **[product]** **Interactive study pack (motions round 3).** Motion for the study surfaces,
-  visual layer only — the SRS engine (`src/calc/study/srs.ts`) and exam scoring stay untouched as
-  cross-platform contracts. Graded flashcards fly out and the next card enters (the CSS 3D flip
-  is already live), an SRS "glide path" strip shows the deck's spread across Leitner boxes (pure
-  `src/calc/study/glidePath.ts` + a shared `GlidePathStrip`), the mock exam gains a depleting
-  fuel-gauge timer on the existing warn/danger thresholds, an animated pass/fail result stamp and
-  summary-grid fill-in, and the dashboard gains achievement stamps + a streak-milestone entrance.
-- **[product]** **Instrument pack (motions round 4).** A CG-envelope plot on `weight-balance`
-  (the biggest unfilled visual in the catalog), one shared countdown ring for `part61-currency` ·
-  `medical-validity` · `flight-review`, `E6b.tsx` reusing `WindTriangleDiagram` (it re-implements
-  the math today with no diagram), motion for the crosswind `WindDiagram` (the reference diagram
-  is the only static one), and `GaugeDial` on `mach` + `pivotal-altitude`.
-- **[product]** **Account pack (motions round 5).** Currency rings on `CurrencyBoard` (today:
-  pills + linear bars only), logbook summary count-ups via the existing `StatValue`, records
-  expiry rings, and a mini glide-path in the dashboard `StudyWidget` (reuses round 3).
 
 ## Tech debt — found during the July 2026 cleanup, deliberately deferred
 
@@ -170,25 +223,30 @@ the findings are not re-derived.
   (`guides.items.**`, `wx.code.*`, `notam.abbr.*` via `returnObjects`, `tools.items.*`, the bare
   `account.${key}` in `LogbookTable.tsx`) and a literal-match pass will call all of them dead.
   Re-run against current `main` first — the Moyasar work added a live `checkout.*` namespace.
-- **[platform]** **`functions/src/gateway.ts` (578 lines) holds pure logic that belongs in a `*-core`.**
+- **[platform]** ~~**`functions/src/gateway.ts` (578 lines) holds pure logic that belongs in a `*-core`.**
   `parseCookies`, `parseRequest` + the message/history caps, and the security-sensitive
   `isAllowedOrigin` CORS policy have no Firebase deps; `functions/tests/gateway.test.ts` has to mock
   `firebase-admin` + genkit just to unit-test `parseRequest`. A `gateway-core.ts` would let those be
-  tested with a bare import, like every other core.
-- **[platform]** **Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
-  rewrite), `Chat.tsx` (572), `Document.tsx` (513).
+  tested with a bare import, like every other core.~~ **Done.** `functions/src/gateway-core.ts` now
+  holds `parseCookies`, `parseRequest` + the caps, and the `isAllowedOrigin` CORS allowlist — all
+  tested with a bare import in `functions/tests/gateway-core.test.ts` (no `firebase-admin`/genkit
+  mocks). The one pure helper still inline in `gateway.ts` is the ~7-line `anonQuotaKey` (a PDPL-safe
+  truncated SHA-256 IP hash), deliberately left: it's already covered via the `/chat` route and a
+  standalone lift buys little. See `docs/TESTING-ROADMAP.md` (records it as "now optional").
+- **[platform]** ~~**Files worth splitting:** `functions/src/billing.ts` (669, after the Moyasar
+  rewrite), `Chat.tsx` (572), `Document.tsx` (513).~~ **Done.** All five oversized pages/modules were
+  split along house seams with zero behavior change (Aug 2026) — see **Recently shipped**
+  ("Oversized file splits").
 
 ## Later — exploratory / post-launch
 
 - **[product]** Content & tools expansion — more guides, quiz banks, and reading paths, deeper
   ground school, and new calculators as the corpus grows.
-- **[product]** **Interactive features — further motion packs.** A shared climb/descent profile
-  ramp (`climb-gradient` / `top-of-climb` / `top-of-descent` / `descent-vdp`), a sun-arc for
-  `sun-times` plus a daylight section on aerodrome pages (pure `src/calc/sun.ts` import),
-  turn-circle diagrams (`standard-rate-turn` / `turn-performance`), an AIRAC cycle ring, a
-  `takeoff-landing` runway-margin bar, a wind-table compass rose, a library offline-download
-  progress ring (the counter is text-only today), a `/updates` change pulse, and restrained chat
-  motion (citation reveal, voice-listening waveform) preserving the one-focal-loop rule.
+- **[product]** **Interactive features — further motion packs.** What's left in the catalog after
+  rounds 3–7 shipped: turn-circle diagrams (`standard-rate-turn` / `turn-performance`), a
+  `takeoff-landing` runway-margin bar, a wind-table compass rose, motion for the crosswind
+  `WindDiagram` (the reference diagram is still the static one), and a `/updates` change pulse —
+  each preserving the one-focal-loop rule.
 - **[product]** Captain Adel enhancements — richer grounding and exam-mode ties. (Saved-chat UX,
   including archive search, is shipped — see **Recently shipped**.)
 - **[product]** **Study analytics — deeper insights.** `StudyDashboard` already surfaces
@@ -217,7 +275,7 @@ Carried over from the rebuild — these gates still apply to everything above.
 
 - Local gate before every commit: `npm run typecheck && npm run lint && npm run test && npm run build`.
 - Every surface is **routed + bilingual + disclaimered**: a key in **both** `src/i18n/{en,ar}.json`
-  (`tests/i18n-parity.test.ts` is the gate), and the not-affiliated **`<Disclaimer />`** is used,
+  (`tests/integrity/i18n-parity.test.ts` is the gate), and the not-affiliated **`<Disclaimer />`** is used,
   never inlined or reworded.
 - **Tokens + CSS Modules + logical properties only** — no hard-coded colours, no physical
   `left`/`right`.
@@ -228,7 +286,7 @@ Carried over from the rebuild — these gates still apply to everything above.
 ## Conventions (reuse — do not reinvent)
 
 - **Tools** = pure math in `src/calc/<tool>.ts` (+ Vitest spec) rendered via `CalcShell` +
-  `useUrlState`. Reference: `src/calc/crosswind.ts` + `src/pages/tools/Crosswind.tsx`.
+  `useUrlState`. Reference: `src/calc/crosswind.ts` + `src/pages/tools/performance/Crosswind.tsx`.
 - **Data pages** fetch JSON via `useFetchJson` → typed shapes in `src/lib/content.ts`; heavy assets
   stay lazy.
 - **Routing** is the single table in `src/router.tsx`; pages live one-per-folder under `src/pages/`.

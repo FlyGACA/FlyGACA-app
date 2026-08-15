@@ -7,6 +7,9 @@ import {
   RENEWAL_LEAD_DAYS,
   SELLABLE_PACK_IDS,
   amountForCheckout,
+  cadenceOf,
+  checkoutKind,
+  describeCheckout,
   isCertificatePack,
   cadenceDays,
   effectivePlan,
@@ -16,9 +19,14 @@ import {
   isPaidActive,
   isRecurringKind,
   nextChargeAt,
+  paymentMatchesIntent,
+  redirectForIntent,
+  renewalBaseDate,
+  renewalFailureOutcome,
   sarToHalalas,
   sellablePackId,
-  verifyMoyasarSignature,
+  verifyMoyasarWebhook,
+  webhookPaymentId,
   type PriceEnv,
 } from "../src/billing-core.js";
 
@@ -268,27 +276,178 @@ describe("cadence/renewal math", () => {
   });
 });
 
-describe("verifyMoyasarSignature", () => {
+describe("checkoutKind", () => {
+  it("narrows every known kind and rejects the rest", () => {
+    for (const k of ["pro", "student", "pass", "credits", "pack", "bundle", "cohort"]) {
+      expect(checkoutKind(k)).toBe(k);
+    }
+    expect(checkoutKind("gift")).toBeNull();
+    expect(checkoutKind("")).toBeNull();
+    expect(checkoutKind(undefined)).toBeNull();
+    expect(checkoutKind(7)).toBeNull();
+    expect(checkoutKind({ kind: "pro" })).toBeNull();
+  });
+});
+
+describe("cadenceOf", () => {
+  it("is monthly only for the exact string, annual otherwise", () => {
+    expect(cadenceOf("monthly")).toBe("monthly");
+    expect(cadenceOf("annual")).toBe("annual");
+    expect(cadenceOf("yearly")).toBe("annual");
+    expect(cadenceOf(undefined)).toBe("annual");
+    expect(cadenceOf(null)).toBe("annual");
+  });
+});
+
+describe("describeCheckout", () => {
+  it("names each product line; pack interpolates the packId", () => {
+    expect(describeCheckout("pro")).toBe("Fly GACA Pro");
+    expect(describeCheckout("student")).toBe("Fly GACA Pro (Student)");
+    expect(describeCheckout("pass")).toBe("Fly GACA Exam Season Pass");
+    expect(describeCheckout("credits")).toBe("Fly GACA Captain Adel credit pack");
+    expect(describeCheckout("pack", "ppl-exam")).toBe("Fly GACA Exam Prep Pack — ppl-exam");
+    expect(describeCheckout("pack")).toBe("Fly GACA Exam Prep Pack — ");
+    expect(describeCheckout("bundle")).toBe("Fly GACA All-Access Exam Bundle");
+    expect(describeCheckout("cohort")).toBe("Fly GACA B2B Cohort (up to 25 seats, 90-day intake)");
+  });
+});
+
+describe("redirectForIntent", () => {
+  it("routes each kind to its success destination", () => {
+    expect(redirectForIntent({ kind: "pack", packId: "ppl-exam" }, true)).toBe(
+      "/study/packs/ppl-exam?checkout=success",
+    );
+    expect(redirectForIntent({ kind: "bundle" }, true)).toBe("/study/packs?checkout=success");
+    expect(redirectForIntent({ kind: "cohort" }, true)).toBe("/business/admin?checkout=success");
+    expect(redirectForIntent({ kind: "pro" }, true)).toBe("/account?checkout=success");
+    // A pack success with no packId falls through to the generic account destination.
+    expect(redirectForIntent({ kind: "pack" }, true)).toBe("/account?checkout=success");
+  });
+
+  it("routes each kind to its cancel destination", () => {
+    expect(redirectForIntent({ kind: "pack", packId: "cpl" }, false)).toBe(
+      "/study/packs/cpl?checkout=cancel",
+    );
+    expect(redirectForIntent({ kind: "bundle" }, false)).toBe("/study/packs?checkout=cancel");
+    expect(redirectForIntent({ kind: "cohort" }, false)).toBe("/schools?checkout=cancel");
+    expect(redirectForIntent({ kind: "pro" }, false)).toBe("/pricing?checkout=cancel");
+  });
+});
+
+describe("paymentMatchesIntent", () => {
+  it("is true only when amount AND currency both match", () => {
+    const intent = { amount: 44900, currency: "SAR" };
+    expect(paymentMatchesIntent({ amount: 44900, currency: "SAR" }, intent)).toBe(true);
+    expect(paymentMatchesIntent({ amount: 100, currency: "SAR" }, intent)).toBe(false);
+    expect(paymentMatchesIntent({ amount: 44900, currency: "USD" }, intent)).toBe(false);
+  });
+});
+
+describe("webhookPaymentId", () => {
+  it("prefers data.id, falls back to a top-level id, else undefined", () => {
+    expect(webhookPaymentId({ data: { id: "pay_1" }, id: "evt_1" })).toBe("pay_1");
+    expect(webhookPaymentId({ id: "pay_2" })).toBe("pay_2");
+    expect(webhookPaymentId({ data: {} })).toBeUndefined();
+    expect(webhookPaymentId(undefined)).toBeUndefined();
+  });
+});
+
+describe("renewalFailureOutcome", () => {
+  it("marks past_due and schedules a retry below the attempt budget", () => {
+    expect(renewalFailureOutcome(0)).toEqual({ attempts: 1, gaveUp: false, status: "past_due" });
+    expect(renewalFailureOutcome(MAX_RENEWAL_ATTEMPTS - 2)).toMatchObject({
+      gaveUp: false,
+      status: "past_due",
+    });
+  });
+
+  it("gives up (cancel + auto-renew off) once the budget is spent", () => {
+    expect(renewalFailureOutcome(MAX_RENEWAL_ATTEMPTS - 1)).toEqual({
+      attempts: MAX_RENEWAL_ATTEMPTS,
+      gaveUp: true,
+      status: "canceled",
+      autoRenew: false,
+    });
+  });
+});
+
+describe("renewalBaseDate", () => {
+  const now = new Date("2026-07-12T10:00:00Z");
+
+  it("extends from the current expiry when present", () => {
+    expect(renewalBaseDate("2026-08-01T00:00:00Z", now).toISOString()).toBe(
+      "2026-08-01T00:00:00.000Z",
+    );
+  });
+
+  it("falls back to now when there is no current expiry", () => {
+    expect(renewalBaseDate(undefined, now)).toBe(now);
+  });
+
+  it("pins the from-past-expiry behavior (extends from the old expiry, not from now)", () => {
+    const past = "2026-01-01T00:00:00Z";
+    expect(renewalBaseDate(past, now).toISOString()).toBe("2026-01-01T00:00:00.000Z");
+  });
+});
+
+describe("verifyMoyasarWebhook", () => {
   const secret = "whsec_test";
-  const body = JSON.stringify({ id: "evt_1", type: "payment_paid" });
-  const validSig = createHmac("sha256", secret).update(body).digest("hex");
+  const raw = JSON.stringify({ id: "evt_1", type: "payment_paid" });
+  const validSig = createHmac("sha256", secret).update(raw).digest("hex");
 
-  it("accepts a correctly-signed body", () => {
-    expect(verifyMoyasarSignature(body, validSig, secret)).toBe(true);
+  // The documented mechanism: Moyasar posts the shared secret back as a body field.
+  // The old implementation only understood the HMAC header below, so every real
+  // delivery was rejected and the async backstop was inert.
+  describe("secret_token (documented, primary)", () => {
+    it("accepts a body whose secret_token matches the shared secret", () => {
+      expect(verifyMoyasarWebhook({ secret_token: secret }, "", undefined, secret)).toBe(
+        "secret_token",
+      );
+    });
+
+    it("rejects a wrong, absent, empty, or non-string secret_token", () => {
+      expect(verifyMoyasarWebhook({ secret_token: "nope" }, "", undefined, secret)).toBeNull();
+      expect(verifyMoyasarWebhook({}, "", undefined, secret)).toBeNull();
+      expect(verifyMoyasarWebhook(undefined, "", undefined, secret)).toBeNull();
+      expect(verifyMoyasarWebhook({ secret_token: "" }, "", undefined, secret)).toBeNull();
+      expect(verifyMoyasarWebhook({ secret_token: 42 }, "", undefined, secret)).toBeNull();
+    });
+
+    // timingSafeEqual throws on unequal-length buffers, so the length guard is
+    // load-bearing: without it a short token crashes the handler instead of 400ing.
+    it("rejects a length-mismatched token without throwing", () => {
+      expect(() =>
+        verifyMoyasarWebhook({ secret_token: "short" }, "", undefined, secret),
+      ).not.toThrow();
+      expect(verifyMoyasarWebhook({ secret_token: `${secret}x` }, "", undefined, secret)).toBeNull();
+    });
   });
 
-  it("rejects a missing, wrong, or malformed signature", () => {
-    expect(verifyMoyasarSignature(body, undefined, secret)).toBe(false);
-    expect(verifyMoyasarSignature(body, "deadbeef", secret)).toBe(false);
-    expect(verifyMoyasarSignature(body, [validSig], secret)).toBe(false);
+  // Provisional fallback — deletable once production logs show which branch fires.
+  describe("x-moyasar-signature HMAC (provisional fallback)", () => {
+    it("accepts a correctly-signed body when no secret_token is present", () => {
+      expect(verifyMoyasarWebhook({}, raw, validSig, secret)).toBe("signature");
+    });
+
+    it("rejects a missing, wrong, or malformed signature", () => {
+      expect(verifyMoyasarWebhook({}, raw, undefined, secret)).toBeNull();
+      expect(verifyMoyasarWebhook({}, raw, "deadbeef", secret)).toBeNull();
+      expect(verifyMoyasarWebhook({}, raw, [validSig], secret)).toBeNull();
+    });
+
+    it("rejects a valid signature for a different body (tamper detection)", () => {
+      expect(verifyMoyasarWebhook({}, `${raw}x`, validSig, secret)).toBeNull();
+    });
+
+    it("rejects a signature computed with the wrong secret", () => {
+      const wrongSig = createHmac("sha256", "other-secret").update(raw).digest("hex");
+      expect(verifyMoyasarWebhook({}, raw, wrongSig, secret)).toBeNull();
+    });
   });
 
-  it("rejects a valid signature for a different body (tamper detection)", () => {
-    expect(verifyMoyasarSignature(body + "x", validSig, secret)).toBe(false);
-  });
-
-  it("rejects a signature computed with the wrong secret", () => {
-    const wrongSig = createHmac("sha256", "other-secret").update(body).digest("hex");
-    expect(verifyMoyasarSignature(body, wrongSig, secret)).toBe(false);
+  it("rejects everything when the configured secret is empty", () => {
+    // An unset MOYASAR_WEBHOOK_SECRET must fail closed, not authenticate a body
+    // that happens to carry an empty secret_token.
+    expect(verifyMoyasarWebhook({ secret_token: "" }, "", undefined, "")).toBeNull();
   });
 });

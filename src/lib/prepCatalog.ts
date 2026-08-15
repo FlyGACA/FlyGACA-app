@@ -48,6 +48,8 @@ export interface Pack {
   librarySlugs?: string[];
   /** Per-pack timed-exam overrides; unset falls back to quiz.json's `exam` block. */
   exam?: { questions?: number; minutes?: number; passMark?: number };
+  /** Interactive radiotelephony scenarios for Captain Adel */
+  scenarios?: { id: string; titleKey: string; promptKey: string }[];
 }
 
 /**
@@ -121,6 +123,11 @@ export const PACKS: Pack[] = [
     access: 'paid',
     bankIds: ['radio-elpt', 'elpt-phraseology', 'elpt-comprehension', 'elpt-rating-scale'],
     sheetSlugs: ['saelpt-study-sheet'],
+    scenarios: [
+      { id: 'oerk', titleKey: 'study.scenarios.oerkTitle', promptKey: 'study.scenarios.oerkPrompt' },
+      { id: 'oejn', titleKey: 'study.scenarios.oejnTitle', promptKey: 'study.scenarios.oejnPrompt' },
+      { id: 'oedf', titleKey: 'study.scenarios.oedfTitle', promptKey: 'study.scenarios.oedfPrompt' },
+    ],
   },
   {
     id: 'conversion',

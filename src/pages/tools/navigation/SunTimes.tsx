@@ -5,7 +5,8 @@ import { TextField } from '@/components/calc/TextField';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
-import { sunTimes } from '@/calc/sun';
+import { sunTimes, daylight } from '@/calc/sun';
+import { SunArc } from '@/components/SunArc';
 import { formatHm, shiftTime, KSA_OFFSET_MIN } from '@/calc/zulu';
 import { parseISO } from '@/calc/recency';
 
@@ -17,6 +18,8 @@ export function SunTimes() {
   const dateStr = parseISO(inputs.date) ? inputs.date : todayIso();
   const when = new Date(`${dateStr}T12:00:00Z`);
   const r = sunTimes(when, nums.lat, nums.lon);
+  // A live sun marker only makes sense for today; other dates show a static arc.
+  const progress = dateStr === todayIso() && r ? daylight(r, new Date()).progress : null;
 
   function pair(d: Date | null): { utc: string; ksa: string } {
     if (!d) return { utc: t('sunTimes.noEvent'), ksa: '' };
@@ -94,6 +97,7 @@ export function SunTimes() {
           sub={r ? dusk.ksa : undefined}
         />
       </OutputGrid>
+      {r && <SunArc progress={progress} label={t('sunTimes.arcAria')} />}
     </CalcShell>
   );
 }

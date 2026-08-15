@@ -1,18 +1,22 @@
-# RUNBOOK — Deploy (Firebase canonical + Vercel · Cloudflare · Netlify mirrors)
+# RUNBOOK — Deploy (Firebase — the single front)
 
-The app is one Vite build (`npm run build` → `dist/`) deployable to four static fronts.
+The app is one Vite build (`npm run build` → `dist/`) served from **one** front: **Firebase Hosting**.
 
-- **Firebase Hosting** is the **canonical/production** front (decided 2026-07-06, closing
-  SEO-PLAN P0.a): the `/api/chat` and `/api/feedback` Cloud Functions (the Captain Adel gateway,
-  region `me-central1` — must match `functions/src/region.ts` and the `firebase.json` rewrites) are
-  co-located there. The backend lives in this repo's `functions/` workspace, deployed separately via
-  `npm run deploy:functions` — the frontend `npm run build` never rebuilds it. The `flygaca.com` DNS
-  cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed 2026-07-31: the apex and
-  `www` both resolve to Firebase Hosting now.
-- **Vercel / Cloudflare / Netlify** are **mirror fronts**. They serve the same `dist/` and **proxy
-  `/api/*` back to the Firebase gateway** (`https://flygaca-app.web.app/api/*`) so chat/content keep
-  working. The proxy is same-origin to the browser, so the strict CSP (`connect-src 'self'`) is
-  unchanged and no CORS is needed. They depend on the Firebase Functions being live.
+- **Firebase Hosting** hosts the SPA and co-locates the `/api/*` Cloud Functions gateway (the Captain
+  Adel `chat` + the `moyasarWebhook`), region `me-central1` — must match `functions/src/region.ts`
+  and the `firebase.json` rewrites. The backend lives in this repo's `functions/` workspace, deployed
+  separately via `npm run deploy:functions` — the frontend `npm run build` never rebuilds it.
+  `deploy.yml` can now do it for you, **ordered before hosting** — see
+  [Deploying functions from CI](#deploying-functions-from-ci) — but it is off until the deploy
+  service account has the IAM to publish functions. The
+  `flygaca.com` DNS cutover to Firebase (see `../archive/docs/RUNBOOK-cutover.md`) completed
+  2026-07-31: the apex and `www` both resolve to Firebase Hosting.
+- **One front, one CSP.** The security headers + CSP live only in `firebase.json`; there are no
+  mirror configs to keep in sync. `tests/integrity/csp-parity.test.ts` guards that the single policy keeps
+  allowing the money-path origins (`cdn.moyasar.com`, `api.moyasar.com`,
+  `me-central1-flygaca-app.cloudfunctions.net`).
+- **The Vercel / Cloudflare / Netlify mirror fronts were removed** (2026-08) to consolidate on one
+  platform — see the note at the end of this file for the history.
 
 > **Incident note (2026-07-05 → 06):** an accidental `firebase init` commit (`c1897f0`) flipped
 > `firebase.json` `hosting.public` from `dist` to `y` and deleted the hosting `headers` block, so
@@ -30,17 +34,102 @@ The app is one Vite build (`npm run build` → `dist/`) deployable to four stati
 > `www.flygaca.com` as custom domains on the Firebase Hosting site and repointing their DNS records
 > at Firebase — see the completed cutover in `../archive/docs/RUNBOOK-cutover.md`.
 
+## Planned: region cutover `me-central1` → `me-central2` (in-Kingdom / PDPL)
+
+The Functions deploy to **`me-central1`** (Doha, Qatar). For the PDPL the in-Kingdom region is
+**`me-central2`** (Dammam) — also where Firestore already lives (`firestore.location` in
+`firebase.json`), so co-locating the Functions there is the goal. This is **not a repo-only edit**:
+the Hosting deploy validates the `/api/*` rewrites against the *live* Functions and refuses to
+finalize a version whose rewrite points at a region where the function doesn't exist
+(`Error: Unable to find a valid endpoint for function … present but in the wrong region`). So the
+config flip is the **last** step, run only after the Functions already exist in `me-central2`.
+Order:
+
+1. **Pre-check availability** — confirm Cloud Functions (2nd gen / Cloud Run) is enabled for
+   `me-central2` on the `flygaca-app` project by deploying one function there as a canary. This is
+   the "pending Google access grant" item — don't start until it succeeds.
+2. **Deploy the Functions to `me-central2` first** — creates the `me-central2` functions (the
+   `me-central1` ones stay live for now). Verify the secrets (`GOOGLE_GENAI_API_KEY`, `MOYASAR_*`, …)
+   bind in the new region. Note: the live Functions currently lag `main` (Stripe/RevenueCat-era
+   names are still deployed) — bring prod current in the same deploy.
+3. **Flip the repo config** (a small, reviewable PR): `REGION` in `functions/src/region.ts`, the
+   three `/api/*` rewrites in `firebase.json`, and `FUNCTIONS_REGION` in
+   `src/lib/services/firebase.ts` → `me-central2` (the `functions/tests/region.test.ts` drift-guard
+   enforces the rewrite↔`REGION` match; the pinned `billing.test.ts` region assertion moves too).
+   Deploy hosting so the frontend ships `FUNCTIONS_REGION=me-central2` and the rewrites resolve.
+4. **Smoke-test in prod** — `/api/chat`, `/api/feedback`, `/api/moyasar-webhook`, and a callable
+   (checkout) must all resolve.
+5. **Delete the stranded region** — `firebase functions:delete <name> --region me-central1` for each.
+6. **Update the PDPL copy** — `src/i18n/{en,ar}.json` says chat is processed in `me-central1`; update
+   it to in-Kingdom (`me-central2`), reconciling with legal that the gateway being in-Kingdom is
+   distinct from where the Gemini model call itself runs (see `Captain-Adel`'s in-Kingdom-model note)
+   — don't overclaim.
+
 ## Build env vars (set in each platform's build settings)
 
-All `VITE_*` are public, non-secret (values in `.env.example`):
+All `VITE_*` are public, non-secret. **CI no longer copies `.env.example`** — it holds placeholders,
+and a placeholder is truthy enough to boot Firebase and then fail every Auth call. Both deploy
+workflows and the PR-preview workflow inject these from repo **Actions variables** (Settings →
+Secrets and variables → Actions → Variables) and hard-fail in a `Verify build env` step if a
+required one is empty. Required variables: `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`,
+`FIREBASE_DATABASE_URL`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`,
+`FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`, `FIREBASE_MEASUREMENT_ID`,
+`RECAPTCHA_ENTERPRISE_SITE_KEY`, `MOYASAR_PUBLISHABLE_KEY`, plus optional `DATA_BASE_URL` /
+`DATA_BUCKET`.
 
 | Var                                                      | Value                 | Notes                                                |
 | -------------------------------------------------------- | --------------------- | ---------------------------------------------------- |
-| `VITE_FIREBASE_API_KEY` … `VITE_FIREBASE_MEASUREMENT_ID` | from `.env.example`   | turns on Auth/Firestore/Analytics                    |
+| `VITE_FIREBASE_API_KEY` … `VITE_FIREBASE_MEASUREMENT_ID` | Actions variables     | turns on Auth/Firestore/Analytics                    |
 | `VITE_API_BASE`                                          | `/api` (default)      | leave as-is — each host proxies `/api/*` to Firebase |
 | `VITE_SITE_URL`                                          | `https://flygaca.com` | canonical origin for sitemap/SEO                     |
 | `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`                     | (optional)            | App Check; also enforce on the Functions             |
 | `VITE_FIREBASE_EMULATOR`                                 | **unset**             | never set in production                              |
+
+## Payments go-live checklist
+
+Merging the billing code does **not** turn payments on. Every item below is a console step, and
+the deploy stays red until step 1 is done. This list exists because it was skipped once: from
+2026-08-10 every `deploy.yml` run failed at `Verify build env` with four empty variables, so the
+checkout fix in PR #501 sat in `main` undeployed while production served a build whose Firebase
+config was placeholders — auth broken, and with it every billing callable.
+
+1. **Actions variables** (Settings → Secrets and variables → Actions → **Variables**). Set all of
+   `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_DATABASE_URL`, `FIREBASE_PROJECT_ID`,
+   `FIREBASE_STORAGE_BUCKET`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`,
+   `FIREBASE_MEASUREMENT_ID`, `RECAPTCHA_ENTERPRISE_SITE_KEY`, `MOYASAR_PUBLISHABLE_KEY`.
+   Values: Firebase console → Project settings → Your apps → Web. `Verify build env` only checks
+   five of them, so an empty one of the rest ships a half-configured bundle silently.
+2. **Moyasar secrets in Secret Manager** — `MOYASAR_SECRET_KEY` and `MOYASAR_WEBHOOK_SECRET`
+   (`defineSecret`, deliberately absent from `functions/.env.flygaca-app`). They must be the
+   **live** pair matching the `pk_live_…` publishable key — a test secret against a live
+   publishable key fails at charge time, not at deploy time.
+3. **Functions deploy** — grant the deploy service account `roles/cloudfunctions.admin`,
+   `roles/iam.serviceAccountUser`, `roles/cloudbuild.builds.editor` and
+   `roles/artifactregistry.writer`, **then** set `DEPLOY_FUNCTIONS=true`. In that order: asking
+   the CLI for a target the SA can't perform fails the whole deploy. Until this is done no
+   billing callable has ever been published from CI.
+4. **The `subscriptions` composite index** — `firestore.indexes.json` declares
+   `(autoRenew, status, nextChargeAt)`, but this workflow deploys only `hosting,firestore:rules`.
+   Create it by hand (or run `firebase deploy --only firestore:indexes` with an SA holding
+   `roles/datastore.indexAdmin`), or `renewMoyasarSubscriptions` throws `FAILED_PRECONDITION`
+   every run and nothing ever renews.
+5. **Register the webhook** in the Moyasar dashboard → `https://flygaca.com/api/moyasar-webhook`,
+   and set its `shared_secret` to the same value as `MOYASAR_WEBHOOK_SECRET`. Moyasar posts that
+   secret back as a **`secret_token` field in the body**, which is what `verifyMoyasarWebhook`
+   (`functions/src/billing-core.ts`) checks. After the first real delivery, confirm the
+   `moyasar_webhook_authenticated` log names `secret_token`; if `moyasar_webhook_auth_failed`
+   appears instead, its **key names** (never values) show what actually arrived. See
+   `docs/BILLING.md` for the provisional HMAC fallback and when to delete it.
+6. **App Check** — `createCheckoutConfig` and `confirmPayment` set `enforceAppCheck: true`.
+   Confirm `flygaca.com` is registered on the reCAPTCHA Enterprise key in
+   `RECAPTCHA_ENTERPRISE_SITE_KEY`; a valid key for the wrong domain passes the build guard and
+   rejects every checkout at runtime.
+7. **Smoke-test with the test key pair first** — `/pricing` → checkout → Moyasar test card →
+   `/checkout/return` → entitlement written and visible on `/account`. Then swap to live.
+
+If a deploy still doesn't run after all of this, check that GitHub Actions runners are actually
+being allocated — runs have sat `queued` for hours in this repo before, which looks exactly like
+"my fix didn't work".
 
 ## Verify before deploying (any host)
 
@@ -58,9 +147,11 @@ npx playwright install --with-deps chromium && npm run test:e2e
 `firestore.rules` on every push to `main`, and on demand via Actions → **Deploy** → _Run
 workflow_. It authenticates with a service account — add the JSON key as the repo secret
 **`FIREBASE_SERVICE_ACCOUNT`** (Firebase console → Project Settings → Service accounts →
-_Generate new private key_). Optionally add **`VITE_RECAPTCHA_ENTERPRISE_SITE_KEY`** to enable
-App Check at build time (see `APP-CHECK-BACKEND.md`). The `VITE_FIREBASE_*` web config is public
-and comes from `.env.example` at build time.
+_Generate new private key_). The `VITE_FIREBASE_*` web config and
+`RECAPTCHA_ENTERPRISE_SITE_KEY` are public but come from **Actions variables**, not from
+`.env.example` — see "Build env vars" above and the go-live checklist below. (This paragraph
+used to say the config "comes from `.env.example` at build time"; that stopped being true in
+PR #501, and believing it is how an all-placeholder bundle shipped unnoticed.)
 
 **Manual (`firebase login` first):**
 
@@ -78,65 +169,68 @@ high-value routes (home + hubs + every tool/guide) into `dist/<route>/index.html
 real HTML, not just the SPA shell (static files win over the `**` → `/index.html` rewrite). It's
 **non-fatal** (a failure never blocks the deploy). For a **manual** `npm run deploy`, install the
 browser once first: `npx playwright install chromium` (otherwise prerender silently no-ops and you
-ship the shell-only build). Mirror fronts (Vercel already wired; Cloudflare/Netlify) get the same by
-adding `&& npm run prerender` to their build.
+ship the shell-only build).
 
-## Vercel (mirror) — `vercel login` first
+## Deploying functions from CI
 
-```bash
-npm i -g vercel
-vercel link            # link to the Vercel project (first time)
-vercel deploy --prod   # uses vercel.json (build + rewrites + headers)
-```
+`deploy.yml` deploys `hosting` + `firestore:rules`. It can also deploy `functions/`, but that is
+**off by default** and gated on the `DEPLOY_FUNCTIONS` repo variable.
 
-Config: `vercel.json` (proxies `/api/(.*)` → Firebase, SPA fallback, mirrored headers/CSP).
+**Why it matters.** `firebase.json` rewrites `/api/chat`, `/api/feedback` and `/api/auth/**` at the
+`chat` function. A hosting release that lands *before* the function carries those routes points live
+traffic at endpoints that don't exist yet. That is not hypothetical: the session-cookie endpoints
+(`/api/auth/session-login`, `/api/auth/session-logout`) were added to `gateway.ts` on 2026-08-03 and
+no workflow had ever deployed `functions/`, so they were unreachable — and the client swallows the
+response, so nothing surfaced. The workflow therefore deploys functions in its **own step, ordered
+before hosting**; a functions failure stops the run before the hosting release goes live.
 
-## Cloudflare Workers (mirror)
+**Why it's off by default.** Publishing functions needs the deploy service account
+(`FIREBASE_SERVICE_ACCOUNT`) to hold:
 
-**Automated (preferred):** `.github/workflows/deploy-cloudflare.yml` builds and deploys the
-`flygaca-app` Worker (serving the `dist/` static assets) on every push to `main` (and on demand via
-Actions → **Deploy (Cloudflare Workers mirror)** → _Run workflow_). The deploy step is **gated on
-secrets**, so it builds but skips publishing until you add both in repo Settings → Secrets → Actions:
+| Role | Why |
+| --- | --- |
+| `roles/cloudfunctions.admin` | create/update the functions |
+| `roles/iam.serviceAccountUser` | act as the runtime service account |
+| `roles/cloudbuild.builds.editor` | the source build |
+| `roles/artifactregistry.writer` | push the built image |
 
-- **`CLOUDFLARE_API_TOKEN`** — a token with the _Workers Scripts: Edit_ permission (plus account-level
-  Workers access for uploading the static assets).
-- **`CLOUDFLARE_ACCOUNT_ID`** — the account that owns the `flygaca-app` Worker.
+Asking the CLI for a target the SA can't perform fails the **whole** deploy, hosting included — that
+is exactly how `firestore:indexes` broke every run (see the comment in `deploy.yml`'s Deploy step).
+So grant the roles first, confirm one manual `npm run deploy:functions` works, then set
+`DEPLOY_FUNCTIONS` to `true` in Settings → Secrets and variables → Actions → **Variables**.
 
-**Manual (`wrangler login` first):**
+While it's off, every run emits a `::warning::` saying functions weren't deployed — a skipped
+functions deploy must never be silent.
 
-```bash
-npm i -g wrangler
-npm run build
-npx wrangler deploy            # reads name, main and dist/ assets from wrangler.toml
-```
+## `www` → apex, and captadel.com
 
-Config: `wrangler.toml` (Workers + `[assets]` binding, `run_worker_first = ["/api/*"]`),
-`worker/index.ts` (proxies `/api/*` → Firebase, preserves SSE; serves assets otherwise),
-`public/_redirects` (SPA fallback) and `public/_headers` (headers/CSP) — both copied into `dist/`
-and honored by Workers static assets.
+`www.flygaca.com` → apex is a **Firebase console** concern: add `www.flygaca.com` to the Hosting site
+as a **redirect** domain (it 301s to the apex). This is where the old `vercel.json` `www → apex`
+redirect went when the mirror configs were removed. `captadel.com` / `www.captadel.com` are
+Captain-Adel's own domains (Cloud Run), not custom domains on this Firebase site, so they can't be
+redirected in `firebase.json`; the app folds them to `flygaca.com` at runtime (`src/lib/seo/seo.ts`
+`DUPLICATE_HOSTS` + `src/main.tsx`) — a client-side 302 after JS boot, which is enough for the
+low-traffic legacy domain.
 
-## Netlify (mirror) — `netlify login` first
-
-```bash
-npm i -g netlify-cli
-netlify deploy --build --prod   # uses netlify.toml
-```
-
-Config: `netlify.toml` (build, `/api/*` proxy → Firebase, SPA fallback, mirrored headers/CSP).
-(Netlify also honors the `_redirects`/`_headers` files — identical values, harmless overlap.)
-
-## Post-deploy smoke (run on each deployed URL)
+## Post-deploy smoke (run on flygaca.com)
 
 1. Home `/` loads; service worker registers (PWA).
 2. A calculator route computes (e.g. crosswind) and copy-link works.
 3. `/library` search → opens a reader.
-4. **Chat streams** — confirms the `/api/*` proxy + SSE path end-to-end on that host.
+4. **Chat streams** — confirms the `/api/*` gateway + SSE path end-to-end.
 5. EN ⇄ AR toggles and the layout flips RTL.
 6. Security headers present (DevTools → Network → response headers: CSP, HSTS, etc.).
+7. `flygaca-app.web.app` carries `<meta name="robots" content="noindex">` (the canonical
+   flygaca.com must NOT) — confirms the duplicate-host protection.
 
-## Note — cross-origin alternative (not recommended)
+## History — the Vercel / Cloudflare / Netlify mirrors (removed 2026-08)
 
-Instead of the same-origin proxy, you could set `VITE_API_BASE=https://flygaca-app.web.app/api` on the
-mirror hosts. That makes the browser call Firebase cross-origin, which then requires (a) adding that
-origin to every host's CSP `connect-src` and (b) enabling CORS on the Cloud Functions (in the backend
-repo). The proxy approach avoids both; prefer it.
+The app briefly ran behind three extra static fronts (Vercel, Netlify, and a Cloudflare Worker) that
+served the same `dist/` and proxied `/api/*` back to Firebase. A planned move to make the Cloudflare
+Worker the canonical front was configured but **never deployed** (its secrets were never set). The
+project consolidated onto **Firebase as the single front** (2026-08) to cut the operational surface —
+four copies of the CSP, four deploy paths, four DNS/SSL setups — down to one. The mirror configs
+(`vercel.json`, `netlify.toml`, `wrangler.toml`, `worker/index.ts`, `public/_headers`,
+`public/_redirects`, `deploy-cloudflare.yml`) were deleted. If a CDN in front of Firebase is ever
+wanted again, prefer a **DNS-only / pass-through** setup (e.g. Cloudflare grey-cloud) over a second
+build-and-serve front, so there's still one source of truth for the build and headers.

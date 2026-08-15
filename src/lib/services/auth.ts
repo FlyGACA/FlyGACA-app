@@ -6,6 +6,7 @@
 import type { User } from 'firebase/auth';
 import { isNative } from '@/lib/native/nativeBridge';
 import { isFirebaseConfigured, getFirebaseAuth } from '@/lib/services/firebase';
+import { getSafeRedirectUrl } from '@/calc/app/redirectUrl';
 
 export interface AuthUser {
   uid: string;
@@ -114,7 +115,19 @@ async function completeRedirectSignIn(
   try {
     const { getRedirectResult } = await import('firebase/auth');
     const cred = await getRedirectResult(auth);
-    if (cred?.user) await syncSession(cred.user);
+    if (cred?.user) {
+      await syncSession(cred.user);
+      if (typeof window !== 'undefined') {
+        const storedRedirect = sessionStorage.getItem('flygaca_auth_redirect');
+        if (storedRedirect) {
+          sessionStorage.removeItem('flygaca_auth_redirect');
+          const safeTarget = getSafeRedirectUrl(storedRedirect, '');
+          if (safeTarget && window.location.pathname !== safeTarget) {
+            window.location.replace(safeTarget);
+          }
+        }
+      }
+    }
   } catch (err) {
     console.error('Failed to complete Google redirect sign-in:', err);
   }
@@ -138,6 +151,16 @@ export async function signInWithGoogle(): Promise<AuthUser | null> {
   const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth');
   const provider = new GoogleAuthProvider();
 
+  // Save return redirect parameter to sessionStorage before performing full-page redirect
+  if (typeof window !== 'undefined') {
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectParam = searchParams.get('redirect');
+    if (redirectParam) {
+      const safe = getSafeRedirectUrl(redirectParam, '');
+      if (safe) sessionStorage.setItem('flygaca_auth_redirect', safe);
+    }
+  }
+
   // Native webviews (Capacitor) can't host the popup at all — go straight to the
   // redirect flow. The page navigates away and `completeRedirectSignIn` finishes
   // the sign-in on return, so this resolves to `null` here (no user to map yet).
@@ -154,6 +177,45 @@ export async function signInWithGoogle(): Promise<AuthUser | null> {
     const code = (err as { code?: string }).code;
     if (code && POPUP_FALLBACK_CODES.has(code)) {
       // Popup unavailable in this browser — fall back to a full-page redirect.
+      await signInWithRedirect(auth, provider);
+      return null;
+    }
+    throw err;
+  }
+}
+
+export async function signInWithApple(): Promise<AuthUser | null> {
+  const isMock =
+    import.meta.env.VITE_FIREBASE_API_KEY === 'mock-api-key' && !import.meta.env.VITEST;
+  if (isMock) {
+    const mockUser: AuthUser = {
+      uid: 'mock-apple-uid',
+      email: 'apple-user@flygaca.com',
+      displayName: 'Mock Apple Pilot',
+      emailVerified: true,
+    };
+    const { signIn } = await import('@/lib/services/account');
+    signIn(mockUser.email || '', mockUser.displayName || '');
+    return mockUser;
+  }
+  const auth = requireAuth(await getFirebaseAuth());
+  const { OAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth');
+  const provider = new OAuthProvider('apple.com');
+  provider.addScope('email');
+  provider.addScope('name');
+
+  if (isNative()) {
+    await signInWithRedirect(auth, provider);
+    return null;
+  }
+
+  try {
+    const cred = await signInWithPopup(auth, provider);
+    await syncSession(cred.user);
+    return mapUser(cred.user);
+  } catch (err) {
+    const code = (err as { code?: string }).code;
+    if (code && POPUP_FALLBACK_CODES.has(code)) {
       await signInWithRedirect(auth, provider);
       return null;
     }

@@ -22,14 +22,11 @@ on this React/Vite/Firebase/Capacitor PWA.
 
 | Vendored skill | Maps to in this repo |
 | --- | --- |
-| `performing-security-headers-audit` | `index.html` CSP, headers in `vercel.json` / `netlify.toml` |
-| `analyzing-sbom-for-supply-chain-vulnerabilities` | `package.json` / `package-lock.json` |
-| `implementing-github-advanced-security-for-code-scanning` | `.github/` CI |
 | `detecting-typosquatting-packages-in-npm-pypi` | npm dependencies |
 | `implementing-secret-scanning-with-gitleaks` | `.env.example`, Firebase config, `firestore.rules` |
 | `testing-api-security-with-owasp-top-10` | `src/lib/api.ts`, `/api/chat` + `/api/content` |
-| `performing-oauth-scope-minimization-review` | `src/lib/auth.ts`, `entitlements.ts` |
-| `implementing-jwt-signing-and-verification` | `src/lib/auth.ts` |
+| `performing-oauth-scope-minimization-review` | `src/lib/services/auth.ts`, `entitlements.ts` |
+| `implementing-jwt-signing-and-verification` | `src/lib/services/auth.ts` |
 
 ### What was intentionally omitted
 
@@ -86,7 +83,7 @@ GSAP, or physical-axis CSS. Where any of their guidance conflicts with this repo
   hard-coded values.
 - **Logical properties only** — no physical `left`/`right`; RTL must mirror automatically.
 - **Bilingual + RTL parity** — new copy needs a key in **both** `src/i18n/en.json` and `ar.json`
-  (`tests/i18n-parity.test.ts` fails otherwise).
+  (`tests/integrity/i18n-parity.test.ts` fails otherwise).
 - **The `<Disclaimer />` never drifts** — never inline or reword the not-affiliated / verify-against-
   GACA text.
 

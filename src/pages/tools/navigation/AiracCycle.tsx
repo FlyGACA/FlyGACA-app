@@ -4,7 +4,8 @@ import { TextField } from '@/components/calc/TextField';
 import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
-import { airacCycle } from '@/calc/airac';
+import { airacCycle, cycleProgress } from '@/calc/airac';
+import { AiracRing } from '@/components/AiracRing';
 import { parseISO } from '@/calc/recency';
 
 const fmtDate = (d: Date) => d.toISOString().slice(0, 10);
@@ -14,6 +15,7 @@ export function AiracCycle() {
   const [inputs, set] = useUrlState({ date: '' });
   const when = parseISO(inputs.date) ?? new Date();
   const c = airacCycle(when);
+  const prog = cycleProgress(when);
   const locale = i18n.language === 'ar' ? 'ar' : 'en-GB';
   const longDate = (d: Date) =>
     d.toLocaleDateString(locale, {
@@ -46,6 +48,12 @@ export function AiracCycle() {
         <ResultStat label={t('airac.next')} value={`${c.nextId} · ${longDate(c.next)}`} />
         <ResultStat label={t('airac.daysToNext')} value={`${c.daysToNext}`} />
       </OutputGrid>
+      <AiracRing
+        id={c.id}
+        dayInCycle={prog.dayInCycle}
+        fraction={prog.fraction}
+        label={t('airac.ringAria', { id: c.id, day: prog.dayInCycle })}
+      />
     </CalcShell>
   );
 }

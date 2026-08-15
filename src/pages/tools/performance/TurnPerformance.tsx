@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { turnPerformance } from '@/calc/turn';
+import { TurnCircle } from './TurnCircle';
 
 export function TurnPerformance() {
   const { t } = useTranslation();
@@ -59,6 +60,15 @@ export function TurnPerformance() {
           value={r != null ? `${r.radiusNm.toFixed(2)} NM` : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <TurnCircle
+          bankDeg={nums.bank}
+          label={t('turnCircle.label', {
+            bank: nums.bank.toFixed(0),
+            radius: r.radiusNm.toFixed(2),
+          })}
+        />
+      )}
     </CalcShell>
   );
 }

@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { timeToClimb } from '@/calc/climb';
+import { ProfileRamp } from './ProfileRamp';
 
 export function TopOfClimb() {
   const { t } = useTranslation();
@@ -79,6 +80,14 @@ export function TopOfClimb() {
           value={r != null && r.fuel != null ? r.fuel.toFixed(1) : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <ProfileRamp
+          mode="climb"
+          angleDeg={(Math.atan2(nums.gain, r.distNm * 6076) * 180) / Math.PI}
+          altLabel={`${Math.round(nums.gain)} ft`}
+          distLabel={`${Math.round(r.distNm)} NM`}
+        />
+      )}
     </CalcShell>
   );
 }

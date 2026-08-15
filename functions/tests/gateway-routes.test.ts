@@ -14,16 +14,26 @@ import express from "express";
 import type { AddressInfo } from "node:net";
 import type { Server } from "node:http";
 import { hashApiKey } from "../src/api-key-core.js";
+import { captainAdelFlow } from "../src/captain-adel.js";
 
 const today = new Date().toISOString().slice(0, 10);
 
 // In-memory Firestore, keyed by collection → docId → data. Reset per test.
 const h = vi.hoisted(() => ({
   verifyIdToken: vi.fn(),
+  verifySessionCookie: vi.fn(),
+  createSessionCookie: vi.fn(),
   verifyToken: vi.fn(),
   flowResult: undefined as unknown,
   flowError: false,
-  failTransactions: false,
+  // Streaming shape for captainAdelFlow.stream(); set per test.
+  streamImpl: (() => ({ stream: (async function* () {})(), output: Promise.resolve(undefined) })) as () => {
+    stream: AsyncGenerator<string>;
+    output: Promise<unknown>;
+  },
+  // Fault injection for the fail-open/-closed catch branches.
+  failGetColl: undefined as string | undefined, // doc.get() rejects for this collection
+  failTxColl: undefined as string | undefined, // a transaction's tx.get() rejects for this collection
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
 }));
 
@@ -32,12 +42,14 @@ function makeDoc(coll: string, id: string) {
     coll,
     id,
     get: () =>
-      Promise.resolve({
-        get exists() {
-          return h.stores[coll]?.[id] !== undefined;
-        },
-        data: () => h.stores[coll]?.[id],
-      }),
+      h.failGetColl === coll
+        ? Promise.reject(new Error(`firestore get boom: ${coll}`))
+        : Promise.resolve({
+          get exists() {
+            return h.stores[coll]?.[id] !== undefined;
+          },
+          data: () => h.stores[coll]?.[id],
+        }),
     set: (val: Record<string, unknown>, opts?: { merge?: boolean }) => {
       writeDoc(coll, id, val, opts);
       return Promise.resolve();
@@ -58,18 +70,25 @@ function writeDoc(
 
 const firestore = {
   collection: (name: string) => ({ doc: (id: string) => makeDoc(name, id) }),
-  runTransaction: async (cb: (tx: unknown) => Promise<unknown>) => {
-    if (h.failTransactions) throw new Error("tx failed");
-    return cb({
-      get: (ref: { get: () => Promise<unknown> }) => ref.get(),
+  runTransaction: async (cb: (tx: unknown) => Promise<unknown>) =>
+    cb({
+      get: (ref: { coll: string; get: () => Promise<unknown> }) =>
+        h.failTxColl === ref.coll
+          ? Promise.reject(new Error(`firestore tx get boom: ${ref.coll}`))
+          : ref.get(),
       set: (ref: { coll: string; id: string }, val: Record<string, unknown>, opts?: unknown) =>
         writeDoc(ref.coll, ref.id, val, opts as { merge?: boolean } | undefined),
-    });
-  },
+    }),
 };
 
 vi.mock("firebase-admin/app", () => ({ initializeApp: vi.fn(), getApps: () => [{}] }));
-vi.mock("firebase-admin/auth", () => ({ getAuth: () => ({ verifyIdToken: h.verifyIdToken }) }));
+vi.mock("firebase-admin/auth", () => ({
+  getAuth: () => ({
+    verifyIdToken: h.verifyIdToken,
+    verifySessionCookie: h.verifySessionCookie,
+    createSessionCookie: h.createSessionCookie,
+  }),
+}));
 vi.mock("firebase-admin/app-check", () => ({ getAppCheck: () => ({ verifyToken: h.verifyToken }) }));
 vi.mock("firebase-admin/firestore", () => ({
   getFirestore: () => firestore,
@@ -81,7 +100,7 @@ vi.mock("../src/captain-adel.js", () => ({
       if (h.flowError) throw new Error("flow boom");
       return h.flowResult;
     }),
-    { stream: vi.fn() },
+    { stream: vi.fn(() => h.streamImpl()) },
   ),
 }));
 vi.mock("firebase-functions", async (importOriginal) => ({
@@ -93,9 +112,10 @@ let server: Server;
 let base: string;
 
 beforeAll(async () => {
-  // Pin the free-tier limit so the quota tests don't depend on deploy-time param
+  // Pin the free-tier limits so the quota tests don't depend on deploy-time param
   // resolution (an unbound defineInt resolves to 0 outside a deployed function).
   process.env.FREE_DAILY_LIMIT = "5";
+  process.env.ANON_DAILY_LIMIT = "3";
   const app = (await import("../src/gateway.js")).default;
   const harness = express();
   harness.use(express.json());
@@ -113,12 +133,24 @@ afterAll(() => {
 beforeEach(() => {
   h.stores = {};
   h.flowError = false;
-  h.failTransactions = false;
   h.flowResult = { answer: "A", sources: [], kind: "grounded", meta: { provider: "flash" } };
+  h.failGetColl = undefined;
+  h.failTxColl = undefined;
   // Default: any bearer token resolves to a uid equal to the token; "bad" rejects.
   h.verifyIdToken.mockImplementation((t: string) =>
     t === "bad" ? Promise.reject(new Error("bad")) : Promise.resolve({ uid: t }),
   );
+  // No valid session cookie unless a test opts in; a fresh cookie mints a fixed value.
+  h.verifySessionCookie.mockRejectedValue(new Error("no session cookie"));
+  h.createSessionCookie.mockResolvedValue("sess_cookie_value");
+  // Default stream: two tokens then the buffered result as the final output.
+  h.streamImpl = () => ({
+    stream: (async function* () {
+      yield "Hel";
+      yield "lo";
+    })(),
+    output: Promise.resolve(h.flowResult),
+  });
 });
 
 afterEach(() => {
@@ -142,21 +174,81 @@ async function call(path: string, init: RequestInit & { json?: unknown } = {}): 
 
 const auth = (uid: string) => ({ Authorization: `Bearer ${uid}` });
 
+// Distinct client IPs for anonymous quota tests. `trust proxy` is on, so the
+// leftmost X-Forwarded-For becomes req.ip and thus the (hashed) quota bucket.
+const fromIp = (ip: string) => ({ "X-Forwarded-For": ip });
+
 describe("POST /chat — auth & validation", () => {
-  it("401s an anonymous (no bearer) request", async () => {
-    const r = await call("/chat", { method: "POST", json: { message: "hi" } });
-    expect(r.status).toBe(401);
-    expect(r.body).toEqual({ error: "sign-in required" });
+  it("answers an anonymous (no bearer) request within the free trial", async () => {
+    const r = await call("/chat", {
+      method: "POST",
+      headers: fromIp("203.0.113.10"),
+      json: { message: "hi" },
+    });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ answer: "A" });
+    // Metered on a hashed-IP bucket, never a raw IP or a real uid.
+    const keys = Object.keys(h.stores.chatUsage ?? {});
+    expect(keys).toHaveLength(1);
+    expect(keys[0]).toMatch(/^anon:[0-9a-f]{32}$/);
+    expect(h.stores.chatUsage?.[keys[0]]).toEqual({ day: today, count: 1 });
   });
 
-  it("401s when the ID token is invalid (treated as anonymous)", async () => {
-    const r = await call("/chat", { method: "POST", headers: auth("bad"), json: { message: "hi" } });
-    expect(r.status).toBe(401);
+  it("treats an invalid ID token as anonymous (answers, does not 401)", async () => {
+    const r = await call("/chat", {
+      method: "POST",
+      headers: { ...auth("bad"), ...fromIp("203.0.113.11") },
+      json: { message: "hi" },
+    });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ answer: "A" });
   });
 
   it("400s a signed-in request with a blank message", async () => {
     const r = await call("/chat", { method: "POST", headers: auth("u-blank"), json: { message: "  " } });
     expect(r.status).toBe(400);
+  });
+});
+
+describe("POST /chat — anonymous free trial", () => {
+  it("429s (quota_exceeded) once the anonymous daily allowance is spent", async () => {
+    const ip = fromIp("203.0.113.20");
+    for (let i = 0; i < 3; i++) {
+      const ok = await call("/chat", { method: "POST", headers: ip, json: { message: "hi" } });
+      expect(ok.status).toBe(200); // ANON_DAILY_LIMIT = 3
+    }
+    const r = await call("/chat", { method: "POST", headers: ip, json: { message: "hi" } });
+    expect(r.status).toBe(429);
+    expect(r.body).toEqual({ error: "quota_exceeded" });
+    expect(r.headers.get("retry-after")).toBeTruthy();
+  });
+
+  it("meters each client IP independently", async () => {
+    const a = fromIp("203.0.113.21");
+    for (let i = 0; i < 3; i++) {
+      await call("/chat", { method: "POST", headers: a, json: { message: "hi" } });
+    }
+    // A is exhausted; a different IP still gets its own allowance.
+    const exhausted = await call("/chat", { method: "POST", headers: a, json: { message: "hi" } });
+    expect(exhausted.status).toBe(429);
+    const fresh = await call("/chat", {
+      method: "POST",
+      headers: fromIp("203.0.113.22"),
+      json: { message: "hi" },
+    });
+    expect(fresh.status).toBe(200);
+  });
+
+  it("never serves the Pro model to an anonymous caller", async () => {
+    await call("/chat", {
+      method: "POST",
+      headers: fromIp("203.0.113.23"),
+      json: { message: "hi", provider: "pro" },
+    });
+    const lastArg = (captainAdelFlow as unknown as { mock: { calls: unknown[][] } }).mock.calls.at(
+      -1,
+    )?.[0] as { provider?: string };
+    expect(lastArg.provider).toBeUndefined();
   });
 });
 
@@ -193,7 +285,7 @@ describe("POST /chat — plan gating", () => {
   });
 
   it("fails closed on quota transaction errors", async () => {
-    h.failTransactions = true;
+    h.failTxColl = "chatUsage";
     const r = await call("/chat", { method: "POST", headers: auth("u-tx"), json: { message: "hi" } });
     expect(r.status).toBe(429);
     expect(r.body).toEqual({ error: "quota_exceeded" });
@@ -277,5 +369,168 @@ describe("POST /feedback", () => {
   it("400s an invalid rating", async () => {
     const r = await call("/feedback", { method: "POST", json: { rating: "sideways" } });
     expect(r.status).toBe(400);
+  });
+});
+
+describe("POST /chat?stream=1 — SSE streaming path", () => {
+  it("streams token frames then a final frame and closes with [DONE]", async () => {
+    h.stores.users = { "u-s": { entitlement: { plan: "pro" } } };
+    const res = await fetch(`${base}/chat?stream=1`, {
+      method: "POST",
+      headers: { "content-type": "application/json", ...auth("u-s") },
+      body: JSON.stringify({ message: "hi" }),
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("text/event-stream");
+    const body = await res.text();
+    // A ping opens the stream, token deltas carry the generated text, and a final
+    // frame carries the answer, ending with the [DONE] sentinel.
+    expect(body).toContain("\"type\":\"token\"");
+    expect(body).toContain("Hel");
+    expect(body).toContain("\"type\":\"final\"");
+    expect(body).toContain("\"answer\":\"A\"");
+    expect(body).toContain("[DONE]");
+  });
+
+  it("emits an error frame (not a 500) when the stream throws mid-flight", async () => {
+    h.stores.users = { "u-serr": { entitlement: { plan: "pro" } } };
+    h.streamImpl = () => ({
+      stream: (async function* () {
+        yield "partial";
+        throw new Error("stream boom");
+      })(),
+      output: Promise.resolve(h.flowResult),
+    });
+    const res = await fetch(`${base}/chat?stream=1`, {
+      method: "POST",
+      headers: { "content-type": "application/json", ...auth("u-serr") },
+      body: JSON.stringify({ message: "hi" }),
+    });
+    // Headers were already flushed (200 + SSE), so a mid-stream failure surfaces as
+    // an error frame within the stream rather than an HTTP error status.
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain("\"type\":\"error\"");
+    expect(body).toContain("stream_failed");
+    expect(body).toContain("[DONE]");
+  });
+});
+
+describe("POST /auth/session-login & /auth/session-logout", () => {
+  it("400s when no idToken is supplied", async () => {
+    const r = await call("/auth/session-login", { method: "POST", json: {} });
+    expect(r.status).toBe(400);
+    expect(r.body).toEqual({ error: "idToken is required" });
+  });
+
+  it("exchanges a valid idToken for an HttpOnly session cookie", async () => {
+    h.verifyIdToken.mockResolvedValue({ uid: "u-login" });
+    const r = await call("/auth/session-login", { method: "POST", json: { idToken: "good" } });
+    expect(r.status).toBe(200);
+    expect(r.body).toEqual({ success: true, uid: "u-login" });
+    const setCookie = r.headers.get("set-cookie");
+    expect(setCookie).toContain("session=sess_cookie_value");
+    expect(setCookie?.toLowerCase()).toContain("httponly");
+    expect(h.createSessionCookie).toHaveBeenCalledWith("good", expect.objectContaining({ expiresIn: expect.any(Number) }));
+  });
+
+  it("401s when the idToken fails verification", async () => {
+    h.verifyIdToken.mockRejectedValue(new Error("bad token"));
+    const r = await call("/auth/session-login", { method: "POST", json: { idToken: "nope" } });
+    expect(r.status).toBe(401);
+    expect(r.body).toEqual({ error: "unauthorized" });
+  });
+
+  it("clears the session cookie on logout", async () => {
+    const r = await call("/auth/session-logout", { method: "POST", json: {} });
+    expect(r.status).toBe(200);
+    expect(r.body).toEqual({ success: true });
+    expect(r.headers.get("set-cookie")?.toLowerCase()).toContain("session=;");
+  });
+});
+
+describe("POST /v1/ask — tiering, quota & errors", () => {
+  const keyed = (key: string) => ({ "x-api-key": key });
+
+  it("sets quota headers and 429s a key over its monthly tier quota", async () => {
+    const key = "fk_starter";
+    const hash = hashApiKey(key);
+    const month = new Date().toISOString().slice(0, 7);
+    h.stores.apiKeys = { [hash]: { active: true, tier: "starter" } };
+    h.stores.apiUsage = { [hash]: { months: { [month]: 100000 } } }; // way over any finite tier
+    const r = await call("/v1/ask", { method: "POST", headers: keyed(key), json: { message: "hi" } });
+    expect(r.status).toBe(429);
+    expect(r.body).toMatchObject({ error: "monthly_quota_exceeded", tier: "starter" });
+    expect(r.headers.get("x-quota-limit")).toBeTruthy();
+    expect(r.headers.get("x-quota-used")).toBe("100000");
+  });
+
+  it("400s a valid key sending a blank message", async () => {
+    const key = "fk_ok";
+    const hash = hashApiKey(key);
+    h.stores.apiKeys = { [hash]: { active: true } };
+    const r = await call("/v1/ask", { method: "POST", headers: keyed(key), json: { message: "  " } });
+    expect(r.status).toBe(400);
+  });
+
+  it("500s (without leaking) when the RAG flow throws", async () => {
+    const key = "fk_boom";
+    const hash = hashApiKey(key);
+    h.stores.apiKeys = { [hash]: { active: true } };
+    h.flowError = true;
+    const r = await call("/v1/ask", { method: "POST", headers: keyed(key), json: { message: "hi" } });
+    expect(r.status).toBe(500);
+    expect(r.body).toEqual({ error: "ask failed" });
+  });
+});
+
+describe("CORS — allowed non-preflight & localhost", () => {
+  it("reflects the Origin on an allowed non-preflight POST", async () => {
+    const r = await call("/feedback", {
+      method: "POST",
+      headers: { Origin: "https://flygaca.com" },
+      json: { rating: "up" },
+    });
+    expect(r.status).toBe(204);
+    expect(r.headers.get("access-control-allow-origin")).toBe("https://flygaca.com");
+    expect(r.headers.get("vary")).toBe("Origin");
+  });
+
+  it("allows a localhost dev Origin", async () => {
+    const r = await call("/chat", {
+      method: "OPTIONS",
+      headers: { Origin: "http://localhost:5173" },
+    });
+    expect(r.status).toBe(204);
+    expect(r.headers.get("access-control-allow-origin")).toBe("http://localhost:5173");
+  });
+});
+
+describe("POST /chat — Firestore faults fail toward the cheap path", () => {
+  it("treats an entitlement-read failure as free (fails open to the free tier)", async () => {
+    // readEntitlement swallows the error and returns null → the user is metered as
+    // free rather than being handed the Pro model on a transient blip.
+    h.failGetColl = "users";
+    const r = await call("/chat", { method: "POST", headers: auth("u-entfail"), json: { message: "hi" } });
+    expect(r.status).toBe(200);
+    // Still consumed a free question (the free path ran).
+    expect(h.stores.chatUsage?.["u-entfail"]).toEqual({ day: today, count: 1 });
+  });
+
+  it("429s when the free-quota transaction fails (fail-closed)", async () => {
+    h.failTxColl = "chatUsage";
+    const r = await call("/chat", { method: "POST", headers: auth("u-qfail"), json: { message: "hi" } });
+    expect(r.status).toBe(429);
+    expect(r.body).toEqual({ error: "quota_exceeded" });
+    expect(h.stores.chatCredits?.["u-qfail"]).toBeUndefined();
+  });
+
+  it("429s when the credit transaction fails after the free allowance is spent (fail-closed)", async () => {
+    h.stores.chatUsage = { "u-cfail": { day: today, count: 5 } }; // free allowance exhausted
+    h.stores.chatCredits = { "u-cfail": { balance: 3 } };
+    h.failTxColl = "chatCredits"; // the credit spend transaction throws
+    const r = await call("/chat", { method: "POST", headers: auth("u-cfail"), json: { message: "hi" } });
+    expect(r.status).toBe(429);
+    expect(r.body).toEqual({ error: "quota_exceeded" });
   });
 });

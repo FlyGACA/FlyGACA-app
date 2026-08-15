@@ -148,6 +148,22 @@
   margin-block-start: var(--space-8);
 }
 
+.corrections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-inline-size: 68ch;
+}
+.correctionsBody {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: var(--lh-body);
+}
+.correctionsCta {
+  align-self: start;
+  margin-block-start: var(--space-2);
+}
+
 /* Scroll-driven reveal — same progressive pattern as Home: animation exists
    only inside the guard, so unsupported browsers render fully opaque. */
 /* Local copy of the global fade-up — CSS modules scope keyframe names, so a

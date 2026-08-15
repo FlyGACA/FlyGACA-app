@@ -4,6 +4,11 @@
  * design — the pure logic lives in `@/calc/chatQuota` / `@/calc/chatFeedback`;
  * this file owns only the storage keys and the tolerant load/persist wrappers
  * (private mode and quota errors must never break the chat).
+ *
+ * If these stores ever grow reactive consumers, the `createPrefStore` factory
+ * in `src/lib/prefs/` is the house home for localStorage stores — today they
+ * are read once at mount and written imperatively, so the factory would add
+ * plumbing without a payoff.
  */
 import type { ChatSource, GroundingKind } from '@/lib/api';
 import { currentUsage, type Usage } from '@/calc/chat/chatQuota';

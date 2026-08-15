@@ -70,6 +70,28 @@
 
 ---
 
+## ✨ 2026 Snapshot
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/Regulatory%20Library-Open%20Access-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="Open regulatory library" />
+<img src="https://img.shields.io/badge/Flight%20Tools-55%2B-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="55+ flight tools" />
+<img src="https://img.shields.io/badge/Languages-EN%20%E2%87%84%20AR-2d6e8a?style=for-the-badge&labelColor=0a0e12" alt="English and Arabic" />
+<img src="https://img.shields.io/badge/Platforms-Web%20%C2%B7%20PWA%20%C2%B7%20iOS%20%C2%B7%20Android-8fc9a8?style=for-the-badge&labelColor=0a0e12" alt="Web, PWA, iOS and Android" />
+
+</div>
+
+```mermaid
+flowchart LR
+    A["📚 Library"] --> B["🤖 Captain Adel"]
+    B --> C["🧮 Flight Tools"]
+    C --> D["🎓 Learn & Study"]
+    D --> E["👤 Pilot Account"]
+    E --> F["🏫 Schools & B2B"]
+```
+
+---
+
 ## 🎯 About the Project
 
 **Fly GACA** is a bilingual (EN ⇄ AR), RTL-native open regulatory library and educational platform for the Saudi general-aviation community. It turns the dense world of **GACAR** (General Authority of Civil Aviation Regulations) into something accessible, searchable, and genuinely reliable.
@@ -77,7 +99,7 @@
 This repository is the modern rebuild — a strict-TypeScript **React 19 + Vite 8** frontend plus its **Firebase Cloud Functions** backend. Together they ship a blazing-fast, offline-capable Progressive Web App (and native iOS/Android shells via Capacitor) that puts the full regulatory corpus, **55+ aviation calculators**, and **Captain Adel** — a citation-first Retrieval-Augmented AI instructor — in the palm of your hand.
 
 > [!NOTE]
-> The backend gateway (`functions/`) is an Express + Genkit service running in **`me-central1`**. It proxies `/api/chat` to Captain Adel's RAG flow (Gemini) and handles Stripe billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/`, so the JS bundle stays feather-light.
+> The backend gateway (`functions/`) is an Express + Genkit service running in **`me-central1`**. It proxies `/api/chat` to Captain Adel's RAG flow (Gemini) and handles Moyasar billing. The heavy regulatory corpus streams at runtime as static JSON under `public/data/`, so the JS bundle stays feather-light.
 
 ---
 
@@ -147,27 +169,59 @@ Everything below is built to accelerate study, sharpen flight planning, and demo
 
 ---
 
+## 🧭 Experience Lanes
+
+<table style="border-collapse: collapse;">
+  <tr>
+    <td width="33.33%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/library" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/home-hero.png" alt="Regulatory library lane" width="100%" style="border-radius: 10px; border: 1px solid #2d6e8a20;" />
+      </a>
+      <br /><sub><b style="color: #2d6e8a;">📚 Library lane</b><br />find Parts, sections, and references fast</sub>
+    </td>
+    <td width="33.33%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/learn" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/home-first-visit-tour.png" alt="Learn and study lane" width="100%" style="border-radius: 10px; border: 1px solid #8fc9a820;" />
+      </a>
+      <br /><sub><b style="color: #8fc9a8;">🎓 Study lane</b><br />guides, packs, flashcards, mock exams</sub>
+    </td>
+    <td width="33.33%" align="center" style="padding: 1rem;">
+      <a href="https://flygaca.com/dashboard" style="text-decoration: none;">
+        <img src="docs/screenshots/review-2026-07/pricing.png" alt="Account and growth lane" width="100%" style="border-radius: 10px; border: 1px solid #2d6e8a20;" />
+      </a>
+      <br /><sub><b style="color: #2d6e8a;">🚀 Growth lane</b><br />account, pricing, schools, and progression</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## 🎓 Exam-Prep App Family
 
-Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused study apps** — *one GACA certificate = one app*. Each is a slice of the same shared corpus (quiz banks, flashcards, timed mock exam, mastery tracking) delivered two ways from **this one monorepo**:
+Beyond the main app, Fly GACA ships an **ASA-Prepware-style family of focused study apps** — *one GACA certificate = one app*. Each is a slice of the same shared corpus (quiz banks, flashcards, timed mock exam, mastery tracking) delivered two ways:
 
-- 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`.
-- 📱 **Native iOS** — a SwiftUI target in [`apple/`](apple/ARCHITECTURE.md) (`com.flygaca.<id>`), paid one-time and sold together as an App Store bundle.
+- 🌐 **Web** — a live pack page at `flygaca.com/study/packs/<id>`, served from **this monorepo**.
+- 📱 **Native iOS** — a SwiftUI app (`com.flygaca.<id>`) whose code lives in the separate [`ay2m/FlyGACA`](https://github.com/ay2m/FlyGACA) repo. This monorepo stays the **source of truth for their content** — `scripts/build-ios-content.mjs` generates each app's `Content/` from the corpus + `src/lib/prepCatalog.ts`, and the iOS repo pulls it in.
 
-| App | Certificate / rating | Primary GACAR source | Status |
-| :--- | :--- | :--- | :--- |
-| **PPL** | Private Pilot Licence | Parts 61 · 91 · 71 · 67 + Saudi AIP | ✅ Live |
-| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR (Fly GACA authored) | ✅ Live |
-| **AIP** | Aeronautical Information | SANS Saudi AIP (GEN/ENR) | ✅ Live |
-| **CPL** | Commercial Pilot Licence | Parts 61 · 91 · 119 · 135 | 🆕 New — draft content |
-| **IR** | Instrument Rating | Parts 61 · 91 · 97 + AIP ENR | 🆕 New — draft content |
-| **ATPL** | Airline Transport Pilot Licence | Parts 61 · 121 | 🆕 New — draft content |
-| **Wave 3** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap |
+Every pack below is live on the **web**. The **iOS** column tracks the native app only.
+
+| App | Certificate / rating | Primary GACAR source | Web | iOS |
+| :--- | :--- | :--- | :--- | :--- |
+| **ELPT** | English Language Proficiency (SAELPT) | ICAO LPR (Fly GACA authored) | ✅ Live | ✅ Live |
+| **AIP** | Aeronautical Information | SANS Saudi AIP (GEN/ENR) | ✅ Live | ✅ Live |
+| **PPL** | Private Pilot Licence | Parts 61 · 91 · 71 · 67 + Saudi AIP | ✅ Live | ⏸ Paused |
+| **CPL** | Commercial Pilot Licence | Parts 61 · 91 · 119 · 135 | ✅ Live | ⏸ Paused |
+| **IR** | Instrument Rating | Parts 61 · 91 · 97 + AIP ENR | ✅ Live | ⏸ Paused |
+| **ATPL** | Airline Transport Pilot Licence | Parts 61 · 121 | ✅ Live | ⏸ Paused |
+| **Later** | Flight Instructor · Dispatcher · AME · UAS · … | per-certificate GACAR | 🔜 Roadmap | 🔜 Roadmap |
+
+> The licence-exam **iOS apps** are paused pending a strategic decision; their web packs are
+> unaffected and still selling. See [`docs/APPS-FAMILY-ROADMAP.md`](docs/APPS-FAMILY-ROADMAP.md).
 
 > [!IMPORTANT]
-> **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/pack-sources.test.ts`](tests/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`docs/STUDY-CONTENT-REVIEW.md`](docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
+> **Sources: GACA · SANS · Fly GACA — only.** Every app is grounded in GACA (GACAR regulations, Advisory Circulars, the GACARs eBook), SANS (the Saudi AIP), and Fly-GACA-authored practice material — enforced mechanically by [`tests/lib/pack-sources.test.ts`](tests/lib/pack-sources.test.ts). The CPL/IR/ATPL question banks are **draft pending human review** (see [`docs/STUDY-CONTENT-REVIEW.md`](docs/STUDY-CONTENT-REVIEW.md)); practice questions are Fly-GACA authored and are **not** real GACA exam questions.
 
-<div align="center"><sub style="color: #666;">The full lineup, waves, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
+<div align="center"><sub style="color: #666;">The full lineup, App Store bundle and Android plan live in <a href="docs/APPS-FAMILY-ROADMAP.md" style="color: #2d6e8a;">docs/APPS-FAMILY-ROADMAP.md</a>.</sub></div>
 
 ---
 
@@ -219,7 +273,7 @@ flowchart LR
     subgraph API["🔥 Cloud Functions · me-central1"]
       GW["Express gateway<br/>/api/chat · /api/feedback"]
       RAG["🧠 Captain Adel<br/>Genkit + Gemini RAG"]
-      BILL["💳 Stripe billing<br/>+ entitlements"]
+      BILL["💳 Moyasar billing<br/>+ entitlements"]
     end
 
     DATA[("🗄️ Static JSON corpus<br/>public/data/ · network-first")]
@@ -250,7 +304,7 @@ flowchart LR
 **Backend & Native**
 - 🔥 Firebase Cloud Functions (Express) · `me-central1`
 - 🧠 Genkit + Gemini RAG (Captain Adel)
-- 💳 Stripe billing & entitlements
+- 💳 Moyasar billing & entitlements
 - 📱 Capacitor iOS / Android shells
 - 🗄️ Static JSON corpus streamed from `public/data/`
 
@@ -294,31 +348,20 @@ npm run cap:open    # open ios/App in Xcode → set signing team → run
 
 ## 🌍 Deploy
 
-Firebase Hosting is **canonical**; Vercel, Cloudflare, and Netlify run as mirror fronts that proxy `/api/*`.
+**Firebase Hosting is the single serving front** — it hosts the SPA, fronts the Cloud Functions
+gateway (`/api/*`), and owns Auth/Firestore. One platform, one CSP (`firebase.json`), one deploy.
 
 <div align="center">
 
-**Deployment Platforms**
+**Deployment Platform**
 
-[![Firebase](https://img.shields.io/badge/🔥_Firebase-canonical-c8a04a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](firebase.json)
-&nbsp;
-[![Vercel](https://img.shields.io/badge/▲_Vercel-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](vercel.json)
-&nbsp;
-[![Cloudflare](https://img.shields.io/badge/⚡_Cloudflare-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](wrangler.toml)
-&nbsp;
-[![Netlify](https://img.shields.io/badge/◆_Netlify-mirror-2d6e8a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](netlify.toml)
+[![Firebase](https://img.shields.io/badge/🔥_Firebase-hosting_+_functions-c8a04a?style=for-the-badge&logoColor=white&labelColor=0a0e12)](firebase.json)
 
 </div>
 
 ```bash
-# Firebase (canonical)
 npm run deploy        # Build, prerender, and deploy to Hosting
 npm run deploy:all    # Deploy Hosting, Functions, and Firestore rules
-
-# Mirror fronts
-# Vercel       vercel deploy --prod
-# Cloudflare   npx wrangler deploy            # Worker + dist/ assets (wrangler.toml)
-# Netlify      netlify deploy --build --prod
 ```
 
 > [!NOTE]
@@ -337,13 +380,27 @@ Join the mission to modernize Saudi general aviation. PRs welcome! 🛫
 5. **Push** and open a Pull Request.
 
 > [!TIP]
-> Adding a tool or a guide? Register tools in `src/lib/tools.ts` (the single source of truth) and lift the math into `src/calc/`. Authoring educational content? Run `npm run new:guide` and read [`GUIDE_AUTHORING.md`](GUIDE_AUTHORING.md). New contributors should skim [`CLAUDE.md`](CLAUDE.md) for the enforced conventions and [`ROADMAP.md`](ROADMAP.md) for what's next.
+> Adding a tool or a guide? Register tools in `src/lib/tools.ts` (the single source of truth) and lift the math into `src/calc/`. Authoring educational content? Run `npm run new:guide` and read [`GUIDE_AUTHORING.md`](docs/GUIDE_AUTHORING.md). New contributors should skim [`CLAUDE.md`](CLAUDE.md) for the enforced conventions and [`ROADMAP.md`](ROADMAP.md) for what's next.
 
 ---
 
 ## 📄 License
 
 Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
+
+---
+
+## 📖 The whole family, one book
+
+New to the Fly GACA ecosystem? [**The Book of Fly GACA**](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) maps all ten repositories — this monorepo, the Captain Adel service, the native iOS family, the six App Store repos and the Office — with the shared principles, the cross-platform data-parity contracts and the glossary in one place.
+
+| Repo | What it holds |
+| --- | --- |
+| **FlyGACA/FlyGACA-app** (this repo) | flygaca.com — the React/Vite web app, Firebase backend, regulatory corpus + content pipelines |
+| [FlyGACA/Captain-Adel](https://github.com/FlyGACA/Captain-Adel) | The AI flight-instructor service (captadel.com) + the shared brain behind chat |
+| [ay2m/FlyGACA](https://github.com/ay2m/FlyGACA) | The native iOS app family — FlyGACAKit + the ELPT and AIP App Store targets |
+| [FlyGACA/ELPT](https://github.com/FlyGACA/ELPT) · [AIP](https://github.com/FlyGACA/AIP) · [PPL](https://github.com/FlyGACA/PPL) · [CPL](https://github.com/FlyGACA/CPL) · [IR](https://github.com/FlyGACA/IR) · [ATPL](https://github.com/FlyGACA/ATPL) | Per-app App Store metadata repos — store listing copy, screenshots, per-app roadmap |
+| [FlyGACA/Office](https://github.com/FlyGACA/Office) | The business operating system — strategy, governance, legal, finance, GTM docs |
 
 ---
 
@@ -355,6 +412,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 | **Operator** | BDA Company International (شركة بدع الدولية) — CR 7030976893, Riyadh, Saudi Arabia |
 | **GitHub** | [@FlyGACA](https://github.com/FlyGACA) |
 | **Email** | [i@flygaca.com](mailto:i@flygaca.com) |
+| **Support** | [support@flygaca.com](mailto:support@flygaca.com) · [flygaca.com/support](https://flygaca.com/support) |
 | **Website** | [flygaca.com](https://flygaca.com) |
 | **Project** | [github.com/FlyGACA/FlyGACA-app](https://github.com/FlyGACA/FlyGACA-app) |
 

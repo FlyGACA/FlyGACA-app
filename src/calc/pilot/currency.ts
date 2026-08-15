@@ -285,3 +285,22 @@ export function recordCurrency(records: PilotRecord[], now: Date = new Date()): 
 export function actionNeeded(items: CurrencyItem[]): boolean {
   return items.some((i) => i.status === 'expired' || i.status === 'expiring');
 }
+
+/** Planning horizon (days) the currency ring fills against — a full ring means
+ *  at least this much runway remains before renewal is due. */
+export const CURRENCY_RING_HORIZON_DAYS = 90;
+
+/**
+ * How full the currency ring should draw for an item, 0…1 — a uniform "runway"
+ * fill from `daysLeft` over the planning horizon (so a far-off expiry reads
+ * nearly full and a near one drains). Items with no assessable date (unknown /
+ * not set / lapsed count recency) read empty. Pure — the ring is a view of the
+ * status the engine already asserts, it computes no new policy.
+ */
+export function currencyRingFraction(
+  item: Pick<CurrencyItem, 'daysLeft'>,
+  horizonDays = CURRENCY_RING_HORIZON_DAYS,
+): number {
+  if (item.daysLeft == null || horizonDays <= 0) return 0;
+  return Math.min(1, Math.max(0, item.daysLeft / horizonDays));
+}

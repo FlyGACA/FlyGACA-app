@@ -638,6 +638,9 @@
     "runway": "Runway (designator or heading)",
     "windDir": "Wind direction (°true)",
     "windSpeed": "Wind speed (kt)",
+    "aircraft": "Aircraft limit",
+    "aircraftNone": "None",
+    "limitBadge": "Exceeds {{limit}} kt limit",
     "runwayHeading": "Runway heading",
     "crosswind": "Crosswind",
     "headwind": "Headwind",
@@ -665,7 +668,11 @@
     "pressureAltitude": "Pressure altitude",
     "isaDev": "ISA deviation",
     "densityAltitude": "Density altitude",
-    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it, and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative."
+    "formula": "Pressure altitude = field elevation + (1013 − QNH) × 27.3 ft/hPa; density altitude = pressure altitude + 118.8 ft × ISA deviation. Hot, high and humid raise it, and with it the take-off run and the true airspeed for a given indicated speed. The POH/AFM is authoritative.",
+    "highTempWarningTitle": "High Temperature Warning",
+    "highTempWarning": "Temperatures exceeding 45°C significantly degrade take-off and climb performance. Consult the POH/AFM for exact penalty estimates.",
+    "highElevationTitle": "High Elevation Alert",
+    "highElevationNotes": "High-elevation Saudi airports like Abha (OEAB, 6,857 ft) and Taif (OETF, 4,769 ft) require careful performance planning. Expect longer takeoff rolls and reduced climb rates."
   },
   "tas": {
     "title": "True airspeed",
@@ -688,7 +695,7 @@
     "send": "Send",
     "thinking": "Captain Adel is checking the GACAR…",
     "notReady": "I couldn't reach my engine just now, Captain. The assistant backend isn't connected in this build. Verify any regulation against the official GACA source at gaca.gov.sa.",
-    "signInRequired": "Sign in to ask Captain Adel.",
+    "signInRequired": "Sign in to keep asking Captain Adel.",
     "disclaimer": "Captain Adel is an educational AI and can be wrong. Always verify against the official GACA source, not for operational use.",
     "clear": "Clear chat",
     "sourcesLabel": "Sources",
@@ -808,6 +815,7 @@
   },
   "library": {
     "viewCharts": "Browse VFR charts",
+    "viewGlossary": "Aviation glossary",
     "eyebrow": "Reference Library",
     "title": "The Saudi aviation reference, in one place.",
     "subtitle": "Every numbered GACAR Part, browsable and searchable. Our ingested copy, always verify against the official GACA publication.",
@@ -825,6 +833,19 @@
     "noFullMatches": "No passages match “{{q}}”.",
     "browse": "Browse by collection",
     "docsCount": "{{count}} document(s)",
+    "suggestions": {
+      "part61": "GACAR Part 61 (Licensing)",
+      "part91": "GACAR Part 91 (General Operating Rules)",
+      "part121": "GACAR Part 121 (Commercial Air Transport)",
+      "part135": "GACAR Part 135 (Charter Operations)",
+      "part141": "GACAR Part 141 (Training Centres)",
+      "weather": "weather",
+      "navigation": "navigation",
+      "safety": "safety",
+      "airspace": "airspace",
+      "aerodrome": "aerodrome",
+      "systems": "systems"
+    },
     "kind": {
       "regulations": "GACAR Regulations",
       "reference": "Reference Library",
@@ -862,6 +883,248 @@
       "categories": "Collections"
     }
   },
+  "provenance": {
+    "label": "Source & provenance",
+    "updated": "Updated {{date}}",
+    "revision": "Rev {{revision}}",
+    "officialSource": "Official source",
+    "officialSourceTitle": "Open the authoritative GACA publication (opens in a new tab)"
+  },
+  "glossary": {
+    "eyebrow": "Reference Library",
+    "title": "Aviation glossary",
+    "subtitle": "Plain-language definitions of the Saudi-aviation terms and abbreviations you meet across the GACAR library, the charts and the study tools. Independent and educational — always verify against the official GACA sources.",
+    "count": "{{count}} terms",
+    "searchLabel": "Search the glossary",
+    "searchPlaceholder": "Search a term or abbreviation…",
+    "empty": "No terms match that search.",
+    "terms": [
+      {
+        "term": "GACAR",
+        "def": "The General Authority of Civil Aviation Regulations: the body of Saudi civil-aviation rules, organized into numbered Parts."
+      },
+      {
+        "term": "GACA",
+        "def": "The General Authority of Civil Aviation: Saudi Arabia's civil-aviation regulator, and the authority Fly GACA cites and defers to."
+      },
+      {
+        "term": "AIP",
+        "def": "Aeronautical Information Publication: the official manual of a state's aeronautical information — aerodromes, airspace and procedures — issued by GACA for Saudi Arabia."
+      },
+      {
+        "term": "NOTAM",
+        "def": "Notice to Air Missions: a time-critical notice of a hazard or change (a closed runway, an unserviceable navaid) that crews must check before flight."
+      },
+      {
+        "term": "METAR",
+        "def": "A routine, coded observation of the actual weather at an aerodrome, issued at regular intervals."
+      },
+      {
+        "term": "TAF",
+        "def": "Terminal Aerodrome Forecast: a coded forecast of the expected weather at an aerodrome over a set period."
+      },
+      {
+        "term": "ATIS",
+        "def": "Automatic Terminal Information Service: a continuous recorded broadcast of essential aerodrome and weather information."
+      },
+      {
+        "term": "VFR",
+        "def": "Visual Flight Rules: the rules for flying by outside visual reference, permitted only in visual meteorological conditions."
+      },
+      {
+        "term": "IFR",
+        "def": "Instrument Flight Rules: the rules for flying by reference to instruments, required in instrument meteorological conditions."
+      },
+      {
+        "term": "VMC",
+        "def": "Visual Meteorological Conditions: weather — visibility and distance from cloud — good enough to fly under Visual Flight Rules."
+      },
+      {
+        "term": "IMC",
+        "def": "Instrument Meteorological Conditions: weather below the VMC minima, requiring Instrument Flight Rules."
+      },
+      {
+        "term": "QNH",
+        "def": "The altimeter pressure setting that makes the altimeter read altitude above mean sea level, so it shows aerodrome elevation on the ground."
+      },
+      {
+        "term": "QFE",
+        "def": "The altimeter pressure setting that makes the altimeter read height above a chosen datum, typically the aerodrome — zero on the runway."
+      },
+      {
+        "term": "QNE",
+        "def": "The standard altimeter setting of 1013.25 hPa (29.92 inHg), used at and above the transition altitude so every aircraft shares one datum."
+      },
+      {
+        "term": "Transition altitude",
+        "def": "The altitude at or below which vertical position is expressed as an altitude referenced to QNH."
+      },
+      {
+        "term": "Transition level",
+        "def": "The lowest flight level available above the transition altitude; above it, level is expressed as a flight level on the standard setting."
+      },
+      {
+        "term": "Flight level (FL)",
+        "def": "An altitude referenced to the standard pressure setting (1013.25 hPa), expressed in hundreds of feet — FL350 is 35,000 ft."
+      },
+      {
+        "term": "TAS",
+        "def": "True Airspeed: the aircraft's speed through the air mass, corrected for air density (altitude and temperature)."
+      },
+      {
+        "term": "IAS",
+        "def": "Indicated Airspeed: the speed read directly from the airspeed indicator, uncorrected."
+      },
+      {
+        "term": "Ground speed",
+        "def": "The aircraft's speed relative to the ground: true airspeed adjusted for the wind."
+      },
+      {
+        "term": "Mach number",
+        "def": "The ratio of true airspeed to the local speed of sound; Mach 1 is the speed of sound."
+      },
+      {
+        "term": "ISA",
+        "def": "International Standard Atmosphere: an agreed model atmosphere (15 °C and 1013.25 hPa at sea level) used to calibrate instruments and compare performance."
+      },
+      {
+        "term": "Density altitude",
+        "def": "Pressure altitude corrected for temperature — the altitude the air 'feels' like to the aircraft. High density altitude degrades performance."
+      },
+      {
+        "term": "Pressure altitude",
+        "def": "The altitude indicated when the altimeter is set to the standard pressure of 1013.25 hPa."
+      },
+      {
+        "term": "MSL",
+        "def": "Mean Sea Level: the reference datum for altitude and elevation."
+      },
+      {
+        "term": "AGL",
+        "def": "Above Ground Level: height measured from the surface directly below the aircraft."
+      },
+      {
+        "term": "Aerodrome",
+        "def": "Any defined area of land or water used for the arrival, departure and surface movement of aircraft; 'airport' usually implies added facilities."
+      },
+      {
+        "term": "Crosswind component",
+        "def": "The part of the wind blowing across the runway, at right angles to the direction of travel — the part that pushes the aircraft sideways."
+      },
+      {
+        "term": "Headwind component",
+        "def": "The part of the wind blowing straight down the runway against the direction of travel, which shortens the ground run."
+      },
+      {
+        "term": "Ceiling",
+        "def": "The height above the ground of the lowest cloud layer reported as broken or overcast."
+      },
+      {
+        "term": "Visibility",
+        "def": "The greatest horizontal distance at which prominent objects can be seen and identified."
+      },
+      {
+        "term": "Controlled airspace",
+        "def": "Airspace of defined dimensions within which an air traffic control service is provided."
+      },
+      {
+        "term": "Airspace class",
+        "def": "The ICAO classification (A to G) that sets which flight rules, services and clearances apply within a block of airspace."
+      },
+      {
+        "term": "TMA",
+        "def": "Terminal Control Area: controlled airspace established at the confluence of routes around one or more major aerodromes."
+      },
+      {
+        "term": "CTR",
+        "def": "Control Zone: controlled airspace extending upward from the surface around an aerodrome."
+      },
+      {
+        "term": "FIR",
+        "def": "Flight Information Region: an area within which flight information and alerting services are provided."
+      },
+      {
+        "term": "MSA",
+        "def": "Minimum Sector Altitude: the lowest altitude that gives a safe obstacle clearance within a specified sector around a navigation aid or aerodrome."
+      },
+      {
+        "term": "Squawk",
+        "def": "The four-digit transponder code assigned by air traffic control to identify an aircraft on radar."
+      },
+      {
+        "term": "Runway designator",
+        "def": "The number painted on a runway: its magnetic alignment rounded to the nearest ten degrees, with the final zero dropped — 340° becomes 34."
+      },
+      {
+        "term": "Threshold",
+        "def": "The beginning of the portion of a runway usable for landing."
+      },
+      {
+        "term": "Displaced threshold",
+        "def": "A landing threshold set back from the physical start of the runway; the paved area before it is not available for landing."
+      },
+      {
+        "term": "Taxiway",
+        "def": "A defined path on an aerodrome connecting runways with aprons, hangars and other facilities."
+      },
+      {
+        "term": "Apron",
+        "def": "The paved area where aircraft park for boarding, loading, refuelling or maintenance."
+      },
+      {
+        "term": "PIC",
+        "def": "Pilot in Command: the pilot responsible for the operation and safety of the aircraft during flight time."
+      },
+      {
+        "term": "PPL",
+        "def": "Private Pilot Licence: permits flight as pilot in command for non-commercial purposes."
+      },
+      {
+        "term": "CPL",
+        "def": "Commercial Pilot Licence: permits flight for hire or reward, subject to its ratings and limitations."
+      },
+      {
+        "term": "ATPL",
+        "def": "Airline Transport Pilot Licence: the highest pilot licence, required to command large multi-crew aircraft in airline operations."
+      },
+      {
+        "term": "IR",
+        "def": "Instrument Rating: an added qualification permitting flight under Instrument Flight Rules in instrument conditions."
+      },
+      {
+        "term": "Medical certificate",
+        "def": "An aeromedical fitness certificate, issued by class, that a pilot must hold; the class required depends on the licence exercised."
+      },
+      {
+        "term": "Logbook",
+        "def": "The pilot's personal record of flights, hours and experience, used to prove currency and meet licensing requirements."
+      },
+      {
+        "term": "Recency",
+        "def": "The recent-experience requirements — such as a number of take-offs and landings in a period — a pilot must meet to carry passengers or act as pilot in command."
+      },
+      {
+        "term": "SAELPT",
+        "def": "Saudi Aviation English Language Proficiency Test: the assessment of aviation-English proficiency against the ICAO language rating scale."
+      },
+      {
+        "term": "DME",
+        "def": "Distance Measuring Equipment: a system that shows the aircraft's slant distance from a ground station."
+      },
+      {
+        "term": "VOR",
+        "def": "VHF Omnidirectional Range: a ground navigation aid that defines radials an aircraft can track to or from the station."
+      },
+      {
+        "term": "ILS",
+        "def": "Instrument Landing System: a precision approach aid giving lateral (localizer) and vertical (glideslope) guidance to a runway."
+      },
+      {
+        "term": "RNAV",
+        "def": "Area Navigation: a method that lets an aircraft fly any chosen path within the coverage of navigation aids or self-contained systems, not just station to station."
+      }
+    ]
+  },
   "document": {
     "outline": "Outline",
     "toc": "Contents",
@@ -882,6 +1145,7 @@
     "askAdel": "Ask Captain Adel about this",
     "adelPrompt": "Explain {{title}} in simple terms and cite the exact GACAR Part and section.",
     "related": "Related documents",
+    "relatedTools": "Flight tools for this Part",
     "prev": "Previous",
     "next": "Next",
     "annotate": "Annotate",
@@ -904,6 +1168,7 @@
     "oat": "OAT (°C)",
     "temp": "ISA temperature",
     "dev": "ISA deviation",
+    "thermoLabel": "OAT {{oat}}°C, ISA {{isa}}°C",
     "formula": "ISA temperature = 15 °C − 1.98 °C per 1000 ft. The deviation is OAT minus that standard temperature."
   },
   "altimeter": {
@@ -946,6 +1211,17 @@
     "radius": "Turn radius",
     "rule": "Rule of thumb",
     "formula": "A rate-one turn is 3°/s. Bank = atan(V × 0.0524 ÷ g); radius = V ÷ 0.0524. Rule of thumb: bank ≈ TAS/10 + 7."
+  },
+  "turnCircle": {
+    "label": "Turn circle: {{bank}}° bank, {{radius}} NM radius"
+  },
+  "runwayBar": {
+    "required": "Required",
+    "available": "Available",
+    "aria": "Runway margin: {{required}} m required of {{available}} m available"
+  },
+  "compassRose": {
+    "aria": "Compass rose: wind {{dir}}° at {{spd}} kt against each runway"
   },
   "windTable": {
     "windDir": "Wind direction (°)",
@@ -1046,6 +1322,10 @@
     "sr": "Specific range",
     "formula": "Specific range = groundspeed ÷ fuel flow = distance per unit of fuel. Higher is more efficient."
   },
+  "profile": {
+    "climb": "Climb · {{angle}}°",
+    "descent": "Descent · {{angle}}°"
+  },
   "weightBalance": {
     "weight": "Weight",
     "arm": "Arm",
@@ -1059,6 +1339,24 @@
     "rear": "Rear seats",
     "baggage": "Baggage",
     "fuelStation": "Fuel",
+    "taxiFuel": "Taxi fuel",
+    "tripFuel": "Trip fuel",
+    "zfw": "Zero Fuel Weight",
+    "rampWeight": "Ramp Weight",
+    "tow": "Takeoff Weight",
+    "ldw": "Landing Weight",
+    "limits": "Envelope limits",
+    "cgFwd": "Fwd CG limit",
+    "cgAft": "Aft CG limit",
+    "mtow": "Max weight",
+    "envelopeStatus": "Envelope",
+    "envelope": {
+      "in": "Within limits",
+      "out": "Out of limits",
+      "unknown": "Limits not set"
+    },
+    "envelopeCgAxis": "Weight × CG",
+    "envelopeSummary": "Loaded {{weight}} at CG {{cg}} — {{status}}",
     "formula": "CG = Σ(weight × arm) ÷ Σweight. %MAC = (CG − LEMAC) ÷ MAC × 100. Load the real arms and limits from the AFM/POH."
   },
   "zulu": {
@@ -1070,6 +1368,8 @@
     "result": "Converted time",
     "nextDay": "(next day)",
     "prevDay": "(previous day)",
+    "dialAria": "Live Zulu (UTC) clock",
+    "ksaLabel": "KSA",
     "formula": "Saudi Arabia is UTC+3 (Arabia Standard Time), with no daylight saving."
   },
   "airac": {
@@ -1078,6 +1378,10 @@
     "effective": "Effective",
     "next": "Next cycle",
     "daysToNext": "Days to next",
+    "currencyLabel": "AIRAC cycle currency",
+    "badge": "AIRAC {{id}}",
+    "nextIn": "Next {{id}} in {{days}} d",
+    "ringAria": "AIRAC cycle {{id}}, day {{day}} of 28",
     "formula": "AIRAC cycles are 28 days. Effective dates are fixed worldwide; the identifier is the 2-digit year plus the cycle number within that year."
   },
   "sunTimes": {
@@ -1092,6 +1396,7 @@
     "utc": "UTC",
     "localKsa": "KSA",
     "noEvent": "The sun does not cross this angle on this date.",
+    "arcAria": "Sun path across the day, from sunrise to sunset.",
     "formula": "Computed from the sun's position for the date and place. Civil twilight is the sun 6° below the horizon. Shown in UTC and KSA local (UTC+3)."
   },
   "validity": {
@@ -1529,6 +1834,8 @@
     "scopeNote": "Training-scenario traffic from the Airspace HUD simulation, with the field's nearby control zones. Not real air traffic.",
     "search": "Search by ICAO, name, city or country",
     "runways": "Runways",
+    "daylight": "Daylight (UTC)",
+    "daylightAria": "Daylight band for today — sunrise {{rise}}Z, sunset {{set}}Z UTC.",
     "freqs": "Frequencies",
     "elevation": "Elevation",
     "empty": "No aerodromes match that search.",
@@ -1542,6 +1849,14 @@
       "gcc": "GCC",
       "mena": "MENA",
       "world": "World"
+    },
+    "filterFuelAll": "All Fuel",
+    "filterFuelJetA1": "JET A-1",
+    "filterFuelAvgas": "AVGAS 100LL",
+    "facilityType": {
+      "International": "International 🌐",
+      "Domestic": "Domestic ✈️",
+      "Military": "Military 🎖️"
     },
     "viewMap": "View on map",
     "loadMore": "Load more",
@@ -1608,6 +1923,11 @@
     "classChip": "Class {{c}}"
   },
   "metBrief": {
+    "vfrRoute": "VFR route",
+    "mvfrRoute": "MVFR conditions along route",
+    "ifrRoute": "IFR conditions along route",
+    "lifrRoute": "LIFR conditions along route",
+    "fetching": "Fetching route weather...",
     "routeLabel": "Route (ICAO codes)",
     "routeHint": "Space-separated aerodromes, e.g. OERK OEJN OEDF",
     "empty": "Enter a route to build the briefing.",
@@ -1652,6 +1972,7 @@
     "formula": "Assembles an ICAO flight-plan (FPL) message from your entries. Review and file it through the proper channel, this does not file a flight plan."
   },
   "pricing": {
+    "bnplBadge": "4 interest-free installments with Tamara / Tabby 💳",
     "title": "Pricing",
     "subtitle": "Start free. Upgrade for unlimited Captain Adel, ground school and offline access.",
     "monthly": "Monthly",
@@ -1795,7 +2116,11 @@
       "pro": "You're on Pro, thank you. Manage your subscription anytime.",
       "school": "Your school plan is active across your seats."
     },
-    "schoolsPoints": ["Bulk seat licences", "Admin dashboard & usage", "Syllabus-aligned study"],
+    "schoolsPoints": [
+      "Bulk seat licences",
+      "Admin dashboard & usage",
+      "Syllabus-aligned study"
+    ],
     "perMo": "SAR {{n}} / mo",
     "perYr": "SAR {{n}} / yr · ≈ {{eq}} / mo",
     "perSeat": "from SAR {{n}} / seat / yr",
@@ -1934,7 +2259,14 @@
     "title": "The GACAR, as a constellation",
     "subtitle": "Every Part is a star in its domain's sector, sized by how often other Parts cite it — and the lines are the corpus's real cross-references. Hover to name a Part, click to open it.",
     "hint": "Hover to explore · click a star to open the Part",
-    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list."
+    "summary": "A visual map of {{count}} GACAR Parts. Use the library index for the full accessible list.",
+    "filters": {
+      "all": "All Parts / جميع اللوائح",
+      "licensing": "Licensing & Medical (Part 61, 67)",
+      "operations": "Operations & VFR/IFR (Part 91, 107)",
+      "commercial": "Commercial & Airlines (Part 119, 121, 135)",
+      "schools": "Approved Schools & ATOs (Part 141, 142)"
+    }
   },
   "hud": {
     "badge": "Training scenario · SIM data",
@@ -2206,6 +2538,7 @@
     "preparing": "Preparing your checkout…",
     "confirming": "Confirming your payment…",
     "promoApplied": "Promo {{code}} applied — you save SAR {{save}}.",
+    "goToAccount": "Go to my account",
     "errors": {
       "generic": "Couldn't open checkout just now. Please try again.",
       "sign-in-required": "Sign in to check out.",
@@ -2215,7 +2548,9 @@
       "unknown-pack": "That pack isn't available for purchase.",
       "org-name-required": "Enter your organisation or school name to continue.",
       "student-verification-required": "Verify your student email to use the student rate.",
-      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again."
+      "widget-load-failed": "Couldn't load the payment form. Please check your connection and try again.",
+      "signed-out-after-payment": "Your payment was received. Sign in with the same account to activate it.",
+      "payment-not-recognized": "We couldn't match this payment to your order. If you were charged it will activate automatically — contact us if it doesn't."
     }
   },
   "account": {
@@ -2251,6 +2586,7 @@
     "signIn": "Sign in",
     "register": "Create account",
     "continueGoogle": "Continue with Google",
+    "continueApple": "Continue with Apple",
     "or": "or",
     "needAccount": "Need an account? Create one",
     "haveAccount": "Already have an account? Sign in",
@@ -2274,7 +2610,8 @@
     "roles": {
       "pilot": "Pilot",
       "student": "Student pilot",
-      "instructor": "Flight instructor"
+      "instructor": "Flight instructor",
+      "dispatcher": "Flight Dispatcher"
     },
     "errors": {
       "invalidEmail": "Enter a valid email address.",
@@ -2339,6 +2676,10 @@
     "totalHours": "Total hours",
     "flightsLogged": "{{n}} flights logged",
     "logbook": "Logbook",
+    "downloadSampleCsv": "Download Sample CSV",
+    "importHelp": "Import Help",
+    "importHelpTitle": "Logbook Import Guide",
+    "importHelpText": "Your CSV file should include standard columns like Date, Aircraft, Flight Time, Landings, and Remarks. For pilots migrating from ForeFlight, Garmin Pilot, or paper logbooks, downloading the sample CSV and matching its format is recommended.",
     "addFlight": "Add flight",
     "flightDetails": "Flight details",
     "date": "Date",
@@ -2375,6 +2716,11 @@
     "appr": "Appr",
     "summary": "Logbook summary",
     "exportCsv": "Export CSV",
+    "printLogbook": "Print PDF",
+    "dual": "Dual",
+    "xc": "Cross-Country",
+    "recency": "Passenger Recency",
+    "recencyDesc": "Last 90 days",
     "last90": "Last 90 days",
     "csvProNote": "CSV & PDF export are part of Pro",
     "edit": "Edit",
@@ -2446,6 +2792,277 @@
     "askAdel": "Learn more with Captain Adel",
     "tools": "Related tools",
     "items": {
+      "gaca-medical-class-2": {
+        "name": "GACA Class 2 medical",
+        "blurb": "The medical certificate a private pilot needs under GACAR Part 67, and how it differs from Class 1.",
+        "intro": "A Class 2 medical certificate is the aeromedical standard for private (PPL) flying in the Kingdom. It is issued under the GACAR Part 67 medical standards by a GACA-authorized examiner and sits a step below the Class 1 that commercial pilots need. This guide explains who needs a Class 2, what it covers, and where to confirm the current standards. It is an educational overview, not the regulation, so verify the requirements in GACAR Part 67 at gaca.gov.sa.",
+        "sections": [
+          {
+            "h": "Who needs a Class 2",
+            "p": "A Class 2 medical is the minimum for exercising Private Pilot Licence privileges, and a student pilot needs a valid medical before flying solo. If you intend to fly commercially you will need the higher Class 1 instead. GACAR Part 67 sets which class each privilege requires."
+          },
+          {
+            "h": "What is assessed",
+            "p": "Like the higher classes, a Class 2 examination covers vision, hearing, cardiovascular health, and general physical and mental fitness, judged against the Class 2 standard by a GACA-authorized aviation medical examiner. The Class 2 thresholds are generally less demanding than Class 1, but the current standards are set by GACA."
+          },
+          {
+            "h": "Validity",
+            "p": "A Class 2 certificate is valid for a set period that typically shortens as you get older. The exact validity periods are in GACAR Part 67 — track your expiry so you never fly on a lapsed medical."
+          },
+          {
+            "h": "Class 2 vs Class 1",
+            "p": "Class 1 is the higher standard for commercial and airline pilots; Class 2 is for private pilots. Holding a current Class 1 also satisfies the Class 2 requirement, but not the other way round. Match your medical class to the privileges you intend to exercise."
+          },
+          {
+            "h": "Getting and keeping one",
+            "p": "Book with a GACA-authorized aviation medical examiner, bring identification and any relevant medical history, and renew before it expires. The Fly GACA medical-validity tool estimates your expiry from the issue date, but the certificate and GACAR Part 67 are the authority."
+          }
+        ],
+        "adel": "What does a GACA Class 2 medical assess, who needs it, and how does it differ from Class 1 under GACAR Part 67?",
+        "takeaways": [
+          "Class 2 is the medical standard for private (PPL) flying, a step below Class 1.",
+          "A student pilot needs a valid medical before their first solo.",
+          "It assesses vision, hearing, cardiovascular and general fitness, to the Class 2 standard.",
+          "Validity is time-limited and shortens with age — confirm the period in GACAR Part 67.",
+          "A current Class 1 also covers Class 2, but not the reverse; match the class to your privileges."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 67 medical standards, administered by GACA-authorized examiners.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Who needs it",
+            "value": "Private pilots (PPL) and student pilots before solo.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "What it assesses",
+            "value": "Vision, hearing, cardiovascular health and general fitness, to the Class 2 standard.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Examiner",
+            "value": "A GACA-authorized aviation medical examiner (AME).",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Validity",
+            "value": "Time-limited and shorter with age — confirm the current period.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Vs Class 1",
+            "value": "Class 1 (commercial) is higher and also covers Class 2; the reverse is not true.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is a GACA Class 2 medical certificate?",
+            "a": "A GACA Class 2 medical is the aeromedical certificate required to exercise Private Pilot Licence (PPL) privileges, issued under the GACAR Part 67 medical standards by a GACA-authorized aviation medical examiner. It is a step below the Class 1 that commercial and airline pilots need. Confirm the current standards in GACAR Part 67."
+          },
+          {
+            "q": "Who needs a Class 2 medical in Saudi Arabia?",
+            "a": "Private pilots need a valid Class 2 medical to exercise their privileges, and student pilots need a valid medical before flying solo. If you intend to fly commercially you need the higher Class 1 instead. Check which class your intended privileges require in GACAR Part 67."
+          },
+          {
+            "q": "What does a Class 2 aviation medical examine?",
+            "a": "It assesses vision, hearing, cardiovascular health, and general physical and mental fitness against the GACAR Part 67 Class 2 standards, which are generally less demanding than Class 1. The exact tests are set by GACA — verify the current requirements with a GACA-authorized examiner."
+          },
+          {
+            "q": "How long is a GACA Class 2 medical valid?",
+            "a": "The validity is time-limited and generally shortens as you get older. The current periods are set in GACAR Part 67 — confirm your exact validity with GACA, as it depends on your age. Renew before it expires so you never fly on a lapsed medical."
+          },
+          {
+            "q": "Is a Class 2 medical enough to fly commercially?",
+            "a": "No. Commercial (CPL) and airline (ATPL) privileges require the higher Class 1 medical; a Class 2 only covers private flying. A current Class 1 also satisfies the Class 2 requirement, but a Class 2 does not meet the Class 1 standard. Confirm the class your privileges need in GACAR Part 67. Fly GACA is an independent study aid and does not conduct examinations or issue certificates; GACA is the authority."
+          }
+        ]
+      },
+      "vfr-weather-minimums": {
+        "name": "VFR weather minimums in Saudi Arabia",
+        "blurb": "The flight visibility and distance from cloud you need to fly VFR under GACAR Part 91, and how they change with airspace and altitude.",
+        "intro": "Flying under visual flight rules means staying clear of cloud and keeping enough visibility to see and avoid other traffic and terrain. GACAR Part 91 sets the minimum flight visibility and distance from cloud for VFR, and they change with the class of airspace and your altitude. This guide explains the shape of those minimums and where to confirm the exact figures. It is an educational overview, not the regulation, so always read the current numbers in GACAR Part 91 at gaca.gov.sa.",
+        "sections": [
+          {
+            "h": "What VFR minimums are",
+            "p": "Under visual flight rules you navigate by outside visual reference, so the rules require a minimum flight visibility and a minimum distance from cloud, measured below, above and horizontally, so you can see and avoid other aircraft. These basic VFR weather minimums live in GACAR Part 91 (§91.155). Meeting them is a condition of flying VFR, not a recommendation."
+          },
+          {
+            "h": "They change with airspace and altitude",
+            "p": "The required visibility and cloud clearance depend on the class of airspace you are in and whether you are above or below certain altitudes. Controlled airspace generally demands more; uncontrolled airspace (Class G) near the surface demands less. The airspace classes themselves are defined in GACAR Part 71. Identify your airspace first, then read the minimum that applies to it."
+          },
+          {
+            "h": "Special VFR",
+            "p": "When a control zone is below the basic VFR minimums, an air traffic control clearance for Special VFR may allow flight clear of cloud with a reduced visibility, at the controller's discretion. It is a clearance you request, not an entitlement, and it carries its own conditions in GACAR Part 91."
+          },
+          {
+            "h": "Night and other limits",
+            "p": "Additional limits can apply at night and in some airspace, and VFR flight is not permitted in Class A. Night VFR also interacts with the night-rating and recency rules. Treat the basic minimums as the floor and layer any stricter local or operational limit on top of them."
+          },
+          {
+            "h": "Before you go",
+            "p": "Get the current weather (METAR/TAF) and forecasts, compare them against the minimum for your route's airspace and altitude, and build a margin. If the numbers are close, the safe answer is often to wait. The Fly GACA VFR minimums and airspace tools help you check, but the regulation is the authority."
+          }
+        ],
+        "adel": "What are the GACAR Part 91 basic VFR weather minimums, and how do the visibility and cloud-clearance requirements change with airspace class?",
+        "takeaways": [
+          "VFR requires a minimum flight visibility and a set distance from cloud, from GACAR Part 91 (§91.155).",
+          "The exact figures change with airspace class (defined in Part 71) and your altitude.",
+          "Controlled airspace generally needs more; Class G near the surface needs less; VFR is barred in Class A.",
+          "Special VFR is an ATC clearance for reduced minimums in a control zone, not an entitlement.",
+          "Check current weather against the minimum for your airspace, and confirm the exact numbers in GACAR Part 91."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rule",
+            "value": "Basic VFR weather minimums are set in GACAR Part 91.",
+            "ref": "GACAR §91.155"
+          },
+          {
+            "label": "What is required",
+            "value": "A minimum flight visibility and a minimum distance from cloud (below, above, horizontal).",
+            "ref": "GACAR §91.155"
+          },
+          {
+            "label": "Varies by",
+            "value": "Airspace class and altitude — controlled airspace generally requires more.",
+            "ref": "GACAR Part 91"
+          },
+          {
+            "label": "Airspace classes",
+            "value": "The classes that drive the minimums are defined in GACAR Part 71.",
+            "ref": "GACAR Part 71"
+          },
+          {
+            "label": "Special VFR",
+            "value": "An ATC clearance for reduced minimums in a control zone, at the controller's discretion.",
+            "ref": "GACAR Part 91"
+          },
+          {
+            "label": "Class A",
+            "value": "VFR flight is not permitted in Class A airspace.",
+            "ref": "GACAR Part 91"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What are the VFR weather minimums in Saudi Arabia?",
+            "a": "Under GACAR Part 91 basic VFR weather minimums (§91.155), flying under visual flight rules requires a minimum flight visibility and a minimum distance from cloud, measured below, above and horizontally. The exact figures depend on the class of airspace and your altitude. Because the numbers can change, confirm the current values in GACAR Part 91 at gaca.gov.sa rather than relying on a summary."
+          },
+          {
+            "q": "How much visibility do I need to fly VFR?",
+            "a": "The minimum flight visibility for VFR is set by GACAR Part 91 and varies with airspace class and altitude; controlled airspace generally requires more visibility than uncontrolled airspace near the surface. Identify the airspace for your route and read the required visibility for it in GACAR Part 91."
+          },
+          {
+            "q": "How far from clouds do I have to stay under VFR?",
+            "a": "VFR requires a minimum distance from cloud, expressed as a distance below, above and horizontally from cloud, so you can see and avoid other traffic. The exact distances depend on the airspace class and altitude and are set in GACAR Part 91 (§91.155). Verify the current figures at source."
+          },
+          {
+            "q": "What is Special VFR?",
+            "a": "Special VFR is a clearance an air traffic controller may issue that allows flight within a control zone at less than the basic VFR minimums, typically remaining clear of cloud with a reduced visibility. It is granted at the controller's discretion and carries its own conditions in GACAR Part 91; it is something you request, not an automatic right."
+          },
+          {
+            "q": "Can I fly VFR at night in Saudi Arabia?",
+            "a": "Night VFR is subject to the basic weather minimums plus any additional night and airspace limits, and it interacts with the night-rating and recency rules. VFR is never permitted in Class A airspace. Confirm the current night and VFR requirements in GACAR Part 91 and Part 61, and treat the published minimums as a floor to build margin above."
+          }
+        ]
+      },
+      "pilot-currency-and-recency": {
+        "name": "Pilot currency and recency in Saudi Arabia",
+        "blurb": "The recent-experience, night, instrument and flight-review rules that keep you legal to fly under GACAR Part 61.",
+        "intro": "Holding a licence is not the same as being current. Under the GACA Civil Aviation Regulations you must keep recent flight experience and a satisfactory flight review to exercise your privileges, on top of a current medical. This guide explains the kinds of currency GACAR Part 61 tracks and how to stay ahead of them. It is an educational overview, not the regulation, so always confirm the exact figures and intervals in the current GACAR at gaca.gov.sa.",
+        "sections": [
+          {
+            "h": "Currency is not the same as a valid licence",
+            "p": "A pilot licence does not lapse the way currency does. To act as pilot in command you also need recent flight experience, a satisfactory flight review, and a current medical certificate under GACAR Part 67. You can hold a perfectly valid licence and still be unable to carry passengers or act as pilot in command until you regain the item you have lost. GACAR Part 61 sets these recency rules."
+          },
+          {
+            "h": "Recent experience to carry passengers",
+            "p": "Before carrying passengers you must have completed a set number of takeoffs and landings within a preceding period, in the same category and class of aircraft, under GACAR Part 61 recent flight experience (§61.57). The exact count and the length of the window are set by the regulation and can change, so read them at source rather than from a summary."
+          },
+          {
+            "h": "Night currency is separate",
+            "p": "Carrying passengers during the night period adds its own requirement: takeoffs and landings made to a full stop at night. Meeting the daytime requirement does not make you night-current. Check the current definition of the night period and the required count in GACAR Part 61."
+          },
+          {
+            "h": "Instrument recency",
+            "p": "To act as pilot in command under instrument flight rules you must have logged recent instrument experience, typically instrument approaches, holding, and intercepting and tracking courses, within a preceding period. If you fall outside it you regain currency by passing an instrument proficiency check with an authorized person. See GACAR Part 61 for the recency rule and Part 91 for the IFR operating rules."
+          },
+          {
+            "h": "The flight review",
+            "p": "On a recurring interval you must complete a flight review with a GACA-authorized instructor to keep acting as pilot in command. Certain proficiency or licence checks can count in its place. Confirm the current interval and the required content in GACAR Part 61."
+          },
+          {
+            "h": "Keeping track",
+            "p": "Currency is read from your logbook, so record each flight's date, its takeoffs and landings, and your instrument time and approaches. The Fly GACA Part 61 currency and flight-review tools estimate your status from those entries, but the regulation, not the tool, is the authority."
+          }
+        ],
+        "adel": "Explain the GACAR Part 61 recency requirements to carry passengers by day, at night, and under IFR, and how the flight review works.",
+        "takeaways": [
+          "A current licence is not enough; you also need recent experience, a flight review, and a current medical.",
+          "Carrying passengers needs recent takeoffs and landings; night adds a separate full-stop requirement.",
+          "Acting as pilot in command under IFR needs recent instrument experience or an instrument proficiency check.",
+          "A recurring flight review with an authorized instructor keeps your pilot-in-command privileges alive.",
+          "Read currency from your logbook, and confirm every figure and interval in the current GACAR."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 61 recent flight experience and flight review, with the Part 67 medical.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Passenger currency",
+            "value": "Recent takeoffs and landings in the same category and class before carrying passengers.",
+            "ref": "GACAR §61.57"
+          },
+          {
+            "label": "Night currency",
+            "value": "A separate set of night takeoffs and landings to a full stop to carry passengers at night.",
+            "ref": "GACAR §61.57"
+          },
+          {
+            "label": "Instrument recency",
+            "value": "Recent instrument experience, or an instrument proficiency check, to act as PIC under IFR.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Flight review",
+            "value": "A recurring flight review with an authorized instructor to keep acting as pilot in command.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Medical",
+            "value": "A current GACA medical certificate appropriate to your licence, separate from currency.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What does it mean to be a current pilot in Saudi Arabia?",
+            "a": "Being current means you have met the recent-experience and flight-review requirements of GACAR Part 61 and hold a current medical, so you may exercise your licence privileges. A licence itself does not lapse the way currency does: you can hold a valid licence yet be unable to carry passengers or act as pilot in command until you regain currency. Confirm the exact requirements in GACAR Part 61 and Part 67 at gaca.gov.sa."
+          },
+          {
+            "q": "How many takeoffs and landings do I need to carry passengers?",
+            "a": "GACAR Part 61 recent flight experience (§61.57) requires a set number of takeoffs and landings within a preceding period, in the same category and class of aircraft, before you may carry passengers, with a separate requirement for night. Because the exact figures and time window can change, verify them in the current GACAR Part 61 rather than relying on a summary."
+          },
+          {
+            "q": "What is night currency and how is it different?",
+            "a": "Night currency is a separate recent-experience requirement to carry passengers during the night period: takeoffs and landings made to a full stop at night. Meeting the daytime requirement does not make you night-current. Check the current definition of the night period and the required count in GACAR Part 61."
+          },
+          {
+            "q": "How do I stay current to fly IFR in Saudi Arabia?",
+            "a": "To act as pilot in command under instrument flight rules you must have logged recent instrument experience, typically instrument approaches, holding, and intercepting and tracking courses, within a preceding period. If you fall outside it, you regain currency by passing an instrument proficiency check with an authorized person. See GACAR Part 61 for the recency rule and Part 91 for the IFR operating rules."
+          },
+          {
+            "q": "What is a flight review and how often do I need one?",
+            "a": "A flight review is a recurring check with a GACA-authorized instructor that you must complete to keep acting as pilot in command; some proficiency or licence checks can satisfy it in place of a standalone review. Confirm the current interval and required content in GACAR Part 61. Fly GACA is an independent study aid and does not conduct reviews or issue licences; GACA is the authority."
+          }
+        ]
+      },
       "how-to-become-a-pilot-in-saudi-arabia": {
         "name": "How to become a pilot in Saudi Arabia",
         "blurb": "The full path to a Saudi pilot licence, medical, training, exams and the GACAR Parts that govern each step.",
@@ -2533,6 +3150,60 @@
           "Minimum age 17, a current Class 2 medical, and ICAO English Level 4.",
           "Train with an approved instructor or ATO, dual, solo, cross-country and night.",
           "Finish with the theory exams and a skill test with an authorized examiner."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 61 for licensing, with the Part 67 medical standards.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Minimum age",
+            "value": "17 years old to be issued a PPL.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Medical",
+            "value": "A current GACA Class 2 medical certificate.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "English",
+            "value": "ICAO English Level 4 (Operational) or above.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Training",
+            "value": "Dual, solo, cross-country and night with an approved instructor or ATO.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Tests",
+            "value": "Theoretical-knowledge examinations and a skill test with an authorized examiner.",
+            "ref": "GACAR Part 61"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What are the requirements for a private pilot licence in Saudi Arabia?",
+            "a": "Under GACAR Part 61 you must be at least 17 years old, hold a current GACA Class 2 medical certificate, and meet the ICAO English requirement (Level 4 or above). You complete dual, solo, cross-country and night training with a GACA-approved instructor or Approved Training Organization (ATO), then pass the theoretical-knowledge examinations and a skill test with an authorized examiner. Always confirm the current requirements against GACAR Part 61 and Part 67 at gaca.gov.sa."
+          },
+          {
+            "q": "How old do you have to be to get a PPL in Saudi Arabia?",
+            "a": "You must be at least 17 years old to be issued a Private Pilot Licence under GACAR Part 61. You can begin training earlier; the age applies to issue of the licence. Confirm the current minimum age in GACAR Part 61."
+          },
+          {
+            "q": "What medical certificate do I need for a Saudi PPL?",
+            "a": "A current GACA Class 2 medical certificate, issued under the GACAR Part 67 medical standards by a GACA-authorized aviation medical examiner. Check the current standards and validity period in GACAR Part 67."
+          },
+          {
+            "q": "Do I need English language proficiency for a Saudi PPL?",
+            "a": "Yes. You must demonstrate ICAO English language proficiency at Level 4 (Operational) or above through the Saudi aviation English assessment. Verify the current language requirement with GACA."
+          },
+          {
+            "q": "Where can I train for a PPL in Saudi Arabia?",
+            "a": "You train with a GACA-approved flight instructor or an Approved Training Organization (ATO). Fly GACA is an independent educational study aid — it does not provide flight training or issue licences; GACA is the authority. Confirm approved training providers with GACA."
+          }
         ]
       },
       "saudi-cpl-requirements": {
@@ -2608,6 +3279,60 @@
           "Required to exercise commercial and airline pilot privileges.",
           "Assesses vision, hearing, cardiovascular and general fitness.",
           "Validity shortens with age, confirm the period in GACAR Part 67."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 67 medical standards, administered by GACA-authorized examiners.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Who needs it",
+            "value": "Anyone exercising commercial (CPL) or airline (ATPL) pilot privileges.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "What it assesses",
+            "value": "Vision, hearing, cardiovascular health and general fitness.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Examiner",
+            "value": "A GACA-authorized aviation medical examiner (AME).",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Validity",
+            "value": "Time-limited and shorter with age — confirm the current period.",
+            "ref": "GACAR Part 67"
+          },
+          {
+            "label": "Lower classes",
+            "value": "Class 2 covers the PPL; Class 1 is the higher standard.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is a GACA Class 1 medical certificate?",
+            "a": "A GACA Class 1 medical is the higher-standard aeromedical certificate required to exercise commercial (CPL) and airline (ATPL) pilot privileges, issued under the GACAR Part 67 medical standards by a GACA-authorized aviation medical examiner. Confirm the current standards in GACAR Part 67."
+          },
+          {
+            "q": "Who needs a Class 1 medical in Saudi Arabia?",
+            "a": "Anyone exercising commercial or airline transport pilot privileges needs a valid Class 1 medical; a private pilot (PPL) only needs a Class 2. Check which class your intended privileges require in GACAR Part 67."
+          },
+          {
+            "q": "What does a Class 1 aviation medical examine?",
+            "a": "It assesses vision, hearing, cardiovascular health, neurological and mental fitness, and general physical condition against the GACAR Part 67 standards. The exact tests are set by GACA — verify the current requirements with a GACA-authorized examiner."
+          },
+          {
+            "q": "How long is a GACA Class 1 medical valid?",
+            "a": "The validity is time-limited and generally shortens as you get older. The current periods are set in GACAR Part 67 — confirm your exact validity with GACA, as it depends on your age and the privileges exercised."
+          },
+          {
+            "q": "Where do I get a GACA Class 1 medical?",
+            "a": "From a GACA-authorized aviation medical examiner (AME). Fly GACA is an independent educational study aid and does not conduct medical examinations or issue certificates — GACA is the authority. Find an authorized examiner through GACA."
+          }
         ]
       },
       "foreign-license-conversion-to-gaca": {
@@ -2633,6 +3358,60 @@
           "Bring a valid foreign licence, logbook, current medical and ID.",
           "Expect an air-law exam, English proficiency check and a skill test.",
           "Confirm the current GACA requirements before you apply."
+        ],
+        "keyFacts": [
+          {
+            "label": "Governing rules",
+            "value": "GACAR Part 61 — conversion or validation of a foreign licence.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Documents",
+            "value": "A valid foreign licence, logbook, a current medical and photo ID.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Air-law exam",
+            "value": "A GACA air-law examination on Saudi regulations.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "English",
+            "value": "ICAO English Level 4 or above.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Skill test",
+            "value": "A skill test with a GACA-authorized examiner may be required.",
+            "ref": "GACAR Part 61"
+          },
+          {
+            "label": "Medical",
+            "value": "A current GACA medical of the appropriate class.",
+            "ref": "GACAR Part 67"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "Can I convert a foreign pilot licence to a GACA licence?",
+            "a": "Yes. If you hold a valid licence from another ICAO authority you can apply to convert or validate it under GACAR Part 61. You typically provide the foreign licence, your logbook, a current medical and photo ID, pass a GACA air-law examination and the English proficiency check, and may sit a skill test. Confirm the current process and eligibility with GACA."
+          },
+          {
+            "q": "What do I need to convert my licence to GACA?",
+            "a": "A valid foreign licence, your logbook, a current GACA-accepted medical, photo ID, ICAO English Level 4, and a pass in the GACA air-law examination — with a skill test where required. Verify the exact document list and steps with GACA before applying."
+          },
+          {
+            "q": "Do I have to retake exams to convert my licence?",
+            "a": "You generally sit a GACA air-law examination covering Saudi regulations and demonstrate ICAO English proficiency; a skill test may also be required depending on your licence and ratings. The current requirements are set by GACA under Part 61 — confirm them before you apply."
+          },
+          {
+            "q": "Do I need a new medical to convert my licence?",
+            "a": "Yes — a current GACA medical of the class appropriate to your privileges (Class 1 for commercial/airline, Class 2 for private), under GACAR Part 67. Check the accepted medicals and validity with GACA."
+          },
+          {
+            "q": "Does Fly GACA convert or issue licences?",
+            "a": "No. Fly GACA is an independent educational study aid; it does not process conversions or issue licences. GACA is the authority — apply and confirm all requirements through GACA."
+          }
         ]
       },
       "icao-english-saelpt": {
@@ -2658,6 +3437,60 @@
           "ICAO Level 4 is the minimum to use English on the radio.",
           "Six skills are scored: pronunciation, structure, vocabulary, fluency, comprehension, interaction.",
           "Level 4 is re-tested periodically; higher levels last longer."
+        ],
+        "keyFacts": [
+          {
+            "label": "Standard",
+            "value": "ICAO language proficiency (Annex 1), assessed by the Saudi test (SAELPT).",
+            "ref": "ICAO Annex 1"
+          },
+          {
+            "label": "Minimum level",
+            "value": "Level 4 (Operational) to use English on the radio.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Skills scored",
+            "value": "Pronunciation, structure, vocabulary, fluency, comprehension, interaction.",
+            "ref": "ICAO Annex 1"
+          },
+          {
+            "label": "Scale",
+            "value": "Levels 1–6; Level 6 is Expert.",
+            "ref": "ICAO Annex 1"
+          },
+          {
+            "label": "Re-testing",
+            "value": "Level 4 is re-assessed periodically; higher levels last longer.",
+            "ref": "SAELPT"
+          },
+          {
+            "label": "Who needs it",
+            "value": "Any pilot using English on the radio for their licence.",
+            "ref": "SAELPT"
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What English level do pilots need in Saudi Arabia?",
+            "a": "Pilots must demonstrate ICAO English language proficiency at Level 4 (Operational) or above to use English on the radio, assessed through the Saudi Aviation English test (SAELPT) against the ICAO Annex 1 scale. Confirm the current requirement with GACA."
+          },
+          {
+            "q": "What is the SAELPT?",
+            "a": "The Saudi Aviation English Language Proficiency Test — the assessment used to rate a pilot's English against the ICAO Annex 1 language-proficiency scale. It scores six skill areas: pronunciation, structure, vocabulary, fluency, comprehension and interactions. Verify current test details with GACA."
+          },
+          {
+            "q": "What are the ICAO language proficiency levels?",
+            "a": "The ICAO scale runs from Level 1 to Level 6, with Level 4 (Operational) the minimum for radio use and Level 6 (Expert) the highest. Six skills are rated and your overall level is the lowest of the six. Confirm how the levels apply to your licence with GACA."
+          },
+          {
+            "q": "How often do I need to re-test my aviation English?",
+            "a": "Level 4 is re-assessed periodically, while higher levels are valid for longer (Level 6 is typically not re-tested). The exact intervals are set by GACA under the ICAO framework — confirm your re-test date with GACA."
+          },
+          {
+            "q": "How is aviation English scored?",
+            "a": "Across six skills — pronunciation, structure, vocabulary, fluency, comprehension and interactions — each rated 1–6; your overall proficiency level is the lowest score of the six. Check the current SAELPT scoring with GACA."
+          }
         ]
       },
       "airspace-explained": {
@@ -2997,6 +3830,8 @@
     "draft": "Draft",
     "readProgress": "{{done}} of {{total}} read",
     "keyTakeaways": "Key takeaways",
+    "keyFactsTitle": "Key facts",
+    "faqTitle": "Frequently asked questions",
     "copyLink": "Copy link to section",
     "copied": "Copied",
     "regsCited": "Regulations cited",
@@ -3049,6 +3884,12 @@
     "gsProgress": "{{done}} of {{total}} done",
     "exam": "Mock exam",
     "examDesc": "A timed 25-question test drawn from every topic.",
+    "cbtMode": "GACA Official CBT Simulator Mode",
+    "cbtTitle": "Official GACA CBT Exam Simulator",
+    "cbtDesc": "Interactive exam environment mirroring official GACA test center screens and timers.",
+    "cbtBadge": "🇸🇦 Official GACA Practice CBT Mode",
+    "cbtPassBadge": "GACAR Official Passing Mark: 75%",
+    "cbtCertTitle": "Official GACA Practice CBT Exam Transcript",
     "examStart": "Start exam",
     "examTimeLeft": "Time left",
     "examPassed": "Passed",
@@ -3168,7 +4009,23 @@
     "statSheets": "Sheets",
     "statBestExam": "Best exam",
     "askAdel": "Ask Captain Adel",
-    "askAdelPrompt": "Give me a focused study briefing on {{topic}} for the Saudi GACA written exam, and cite the exact GACAR Part or AIP section."
+    "askAdelPrompt": "Give me a focused study briefing on {{topic}} for the Saudi GACA written exam, and cite the exact GACAR Part or AIP section.",
+    "radiotelephony": "Radiotelephony Practice",
+    "radiotelephonyDesc": "Practice standard ICAO/GACA phraseology readbacks interactively with Captain Adel.",
+    "practiceWithAdel": "Practice scenario with Captain Adel",
+    "scenarios": {
+      "oerkTitle": "Riyadh Approach (OERK)",
+      "oerkPrompt": "Act as Riyadh Approach (OERK). I am Saudia 123, a B777, descending through FL150. Give me realistic vectors for an ILS approach to Runway 33R. Wait for my readback before continuing.",
+      "oejnTitle": "Jeddah Tower (OEJN)",
+      "oejnPrompt": "Act as Jeddah Tower (OEJN). I am Flynas 456, an A320, holding short of Runway 34L. Clear me for takeoff with realistic wind and departure instructions. Evaluate my readback.",
+      "oedfTitle": "Dammam Radar (OEDF)",
+      "oedfPrompt": "Act as Dammam Radar (OEDF). I am Aramco 789, a B737, level at FL240. Give me a realistic reroute due to weather ahead. I will read back."
+    },
+    "filterAll": "All Decks",
+    "filterPart61": "Part 61 (Licensing)",
+    "filterPart91": "Part 91 (Operating Rules)",
+    "filterPart121_135": "Part 121 / 135 (Commercial)",
+    "filterSaelpt": "SAELPT (Aviation English)"
   },
   "disclaimer": {
     "strong": "Fly GACA is an independent educational platform.",
@@ -3385,6 +4242,15 @@
       }
     ],
     "contactTitle": "Contact",
+    "corrections": {
+      "head": "Corrections & sourcing",
+      "body": [
+        "The regulations, charts and handbooks in the library are reproduced from the official Saudi civil-aviation sources — chiefly the GACAR and the Saudi AIP. We machine-extract, index and cross-reference the published text; we do not author, interpret or amend it.",
+        "We track the source documents and surface changes in the updates feed, but ingestion can lag an official revision. Treat a section's date as when we captured it, not a guarantee that it is the latest version.",
+        "Found an error, a stale section, or a mismatch with the official text? Tell us and we'll fix it — corrections are reviewed and, where confirmed, corrected in the corpus."
+      ],
+      "reportCta": "Report a correction"
+    },
     "stats": [
       {
         "value": "74",
@@ -3508,12 +4374,60 @@
     "theme": "Theme",
     "getFullApp": "Get the full Fly GACA app"
   },
+  "support": {
+    "eyebrow": "Help & support",
+    "title": "Support",
+    "intro": "Need a hand with Fly GACA or one of our exam-prep apps? Reach the team below, and check the common questions for the quickest answers.",
+    "appContext": "You're viewing support for {{name}}.",
+    "appPackLink": "Open the {{name}} study pack",
+    "contactHead": "Contact us",
+    "responseNote": "We read every message and reply within 2 business days. Email us in English or Arabic.",
+    "contacts": [
+      {
+        "label": "Support & help",
+        "email": "support@flygaca.com"
+      },
+      {
+        "label": "General & corrections",
+        "email": "i@flygaca.com"
+      }
+    ],
+    "faqHead": "Common questions",
+    "faq": [
+      {
+        "q": "Do the apps need an account or internet?",
+        "a": "No. Each exam-prep app is fully offline — no sign-in, no server, no account. Study mode, quizzes, flashcards, mock exams and your progress all work the moment you install."
+      },
+      {
+        "q": "How is my study progress saved?",
+        "a": "Your progress, streaks and spaced-repetition schedule are stored on your device and shared across the Fly GACA apps on that device. There is no cloud account to set up or sign in to."
+      },
+      {
+        "q": "How do refunds and cancellations work?",
+        "a": "Paid purchases follow our Refund & Cancellation Policy, including a 14-day window for content you haven't opened. See the policy linked below, or email support@flygaca.com with your order number."
+      },
+      {
+        "q": "Is Fly GACA official?",
+        "a": "No. Fly GACA is an independent educational platform and is not affiliated with, endorsed by, or operated by GACA. GACA (gaca.gov.sa) is always the authoritative source — we cite it and defer to it."
+      },
+      {
+        "q": "I found a mistake in a question or citation.",
+        "a": "Please tell us. Email i@flygaca.com with the app, the question bank and the question, and we'll review it. Practice questions are Fly-GACA-authored study material, not real exam questions."
+      },
+      {
+        "q": "Which app matches my exam?",
+        "a": "Each app covers one Saudi certificate or rating — PPL, ELPT, AIP, CPL, IR or ATPL. Open the matching study pack on flygaca.com to compare before you buy."
+      }
+    ],
+    "relatedHead": "More help"
+  },
   "footer": {
     "tagline": "Every Saudi reg. One captain on the answer. An independent educational reference for civil aviation in the Kingdom.",
     "explore": "Explore",
     "legal": "Legal",
     "verify": "Verify",
     "contact": "Contact",
+    "support": "Support",
     "flightTools": "Flight tools",
     "airspaceHud": "Airspace HUD (simulated)",
     "disclaimerLink": "Disclaimer",
@@ -3548,6 +4462,7 @@
     "shareNote": "The link carries your inputs, share it and the tool opens pre-filled.",
     "howItWorks": "How it works",
     "related": "Related tools",
+    "governingReg": "Governing regulation",
     "savePreset": "Save preset",
     "presets": "Saved presets",
     "presetName": "Preset name",
@@ -3575,7 +4490,9 @@
     "developers": "Captain Adel API",
     "hud": "Kingdom Airspace HUD — Simulated",
     "libraryMap": "GACAR Constellation Map",
+    "glossary": "Aviation Glossary",
     "about": "About",
+    "support": "Support",
     "account": "Account",
     "dashboard": "Dashboard",
     "logbook": "Logbook",
@@ -3606,7 +4523,9 @@
     "developers": "Add a source-citing Saudi GACAR assistant to your product — the Captain Adel API returns grounded answers with exact Part and section citations.",
     "hud": "A mission-control style, fully simulated view of Saudi airspace for education: animated training traffic, sector density and real AIP airspace zones. Not real air traffic, and not affiliated with GACA.",
     "libraryMap": "An interactive constellation of all GACAR Parts connected by their real cross-references — hover to identify a Part, click to read it. Part of Fly GACA's independent aviation library.",
+    "glossary": "A bilingual glossary of Saudi aviation: plain-language definitions of the GACAR, AIP, airspace, weather and licensing terms and abbreviations pilots meet — METAR, QNH, VFR, PPL and more. Independent; verify against GACA.",
     "about": "Fly GACA is an independent, educational platform and open regulatory library for Saudi civil aviation (GACAR). Not affiliated with GACA, it helps you find and study the rules.",
+    "support": "Get help with Fly GACA and the Saudi exam-prep apps — how to contact support, response times, refunds, offline study and saved progress. Independent; not affiliated with GACA.",
     "home": "Find and study every Saudi civil-aviation rule in one place. Search the GACAR library in English or Arabic and ask Captain Adel, an AI instructor that cites the exact Part and section. Independent and educational; not affiliated with GACA."
   },
   "dashboard": {
@@ -3636,7 +4555,8 @@
       "dismiss": "Dismiss",
       "pilotDesc": "Hours, currency and operational lookups up front.",
       "studentDesc": "Study streaks, practice exams and reading first.",
-      "instructorDesc": "Your records, references and teaching material first."
+      "instructorDesc": "Your records, references and teaching material first.",
+      "dispatcherDesc": "Weather briefings and GACAR 121/135 regulations first."
     },
     "actions": {
       "addFlight": "Log a flight",
@@ -3783,8 +4703,10 @@
     }
   },
   "referral": {
-    "title": "Invite a fellow pilot",
-    "subtitle": "Share your link — you both get 30 free Captain Adel questions when they subscribe.",
+    "title": "Fly Together",
+    "subtitle": "Share your link — you both get a free Pro month when they subscribe.",
+    "whatsappShare": "Invite a fellow pilot to get a free Pro month for you and your colleague",
+    "whatsapp": "Share via WhatsApp",
     "copy": "Copy link",
     "copied": "Copied!"
   },
@@ -3849,6 +4771,8 @@
     "etpTime": "ETP, time",
     "pnrDist": "PNR, distance",
     "pnrTime": "PNR, time",
+    "diagramEtpPnr": "ETP {{etp}} NM, PNR {{pnr}} NM of {{total}} NM",
+    "diagramEtp": "ETP {{etp}} NM of {{total}} NM",
     "formula": "The equal time point (ETP) is where continuing and returning take the same time: distance = D·GSh/(GSo+GSh). The point of no return (PNR) is the farthest you can go and still return within your usable endurance E: time = E·GSh/(GSo+GSh). A planning aid: use your operator’s fuel policy."
   },
   "topOfClimb": {
@@ -3881,5 +4805,11 @@
     "correction": "Temperature correction",
     "isaDev": "ISA deviation",
     "formula": "Correction (ft) ≈ 4 × ISA deviation × (height above the altimeter-setting source ÷ 1,000); true altitude = indicated + correction. Warmer than ISA → you are higher than indicated; colder → lower. An approximation; for terrain-critical cold-weather operations use the AIP/ICAO tables."
+  },
+  "metar": {
+    "hazards": {
+      "shamal_dust": "Shamal Dust Storm",
+      "haboob": "Haboob (Low Visibility/Ceiling)"
+    }
   }
 }

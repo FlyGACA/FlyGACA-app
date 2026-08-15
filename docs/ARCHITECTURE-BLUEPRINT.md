@@ -13,7 +13,7 @@ linked doc disagree, **the linked doc wins**; open a PR to fix this one.
 
 **Canonical deep docs (the sources of truth this summarizes):**
 
-- iOS family architecture → [`apple/ARCHITECTURE.md`](../apple/ARCHITECTURE.md)
+- iOS family architecture → `ay2m/FlyGACA`'s `apple/ARCHITECTURE.md` (separate repo)
 - Captain Adel RAG backend → [`docs/DESIGN-genkit-rag-backend.md`](./DESIGN-genkit-rag-backend.md)
 - App family lineup → [`docs/APPS-FAMILY-ROADMAP.md`](./APPS-FAMILY-ROADMAP.md)
 - App Store strategy & pricing → [`docs/STORE-SUITE.md`](./STORE-SUITE.md)
@@ -36,8 +36,8 @@ linked doc disagree, **the linked doc wins**; open a PR to fix this one.
    ┌──────────────────┐     ┌────────────────────────┐     ┌───────────────────┐
    │  WEB APP (React) │     │  BACKEND (functions/)  │     │  iOS FAMILY        │
    │  Vite + TS SPA   │◄───►│  Firebase Functions    │◄───►│  FlyGACAKit (Swift)│
-   │  library, tools, │ /api│  · chat gateway (SSE)  │ /api│  PPL·ELPT·AIP·CPL· │
-   │  study, chat,    │     │  · Captain Adel (Genkit│     │  IR·ATPL App Store │
+   │  library, tools, │ /api│  · chat gateway (SSE)  │ /api│  ELPT · AIP        │
+   │  study, chat,    │     │  · Captain Adel (Genkit│     │  App Store apps    │
    │  account, B2B    │     │    + Gemini RAG brain) │     │  apps (paid, offline)│
    └──────────────────┘     │  · Stripe · B2B org    │     └───────────────────┘
                             │  · Firestore (KSA)     │
@@ -78,7 +78,7 @@ flow, Stripe billing (`stripeWebhook`), and the B2B org callables. `entitlement`
 **server-owned** — written only by Cloud Functions via the Admin SDK, never by any
 client. See §2 and [`docs/DESIGN-genkit-rag-backend.md`](./DESIGN-genkit-rag-backend.md).
 
-### 1c. iOS family — one package, one app per certificate (`apple/`)
+### 1c. iOS family — one package, one app per certificate (`ay2m/FlyGACA`)
 
 Swift 5.9+, SwiftUI, **SwiftData**, iOS 17+. MVVM with light Clean layering,
 delivered as **one** local Swift package (`FlyGACAKit`) with six library targets in
@@ -92,8 +92,10 @@ Engines do no IO (they take `now: Date` as a parameter, so `swift test` needs no
 simulator and no SDK). Firebase/RevenueCat are quarantined in a future
 `PlatformLive` target and never leak upstream; until then, offline mocks are the
 shipping product. A new certificate app is **data, not code**: emit its content
-slice and duplicate a ~20-line shell — zero new views, zero new engine work. Full
-target graph, rules, and rationale in [`apple/ARCHITECTURE.md`](../apple/ARCHITECTURE.md).
+slice (here, via `build-ios-content.mjs`) and duplicate a ~20-line shell (there) — zero new
+views, zero new engine work. The native code lives in the separate `ay2m/FlyGACA` repo; this
+monorepo generates its content. Full target graph, rules, and rationale in that repo's
+`apple/ARCHITECTURE.md`.
 
 ---
 
@@ -324,16 +326,16 @@ grounds each one in the product that actually exists.
 ## 7. Roadmap & success metrics
 
 **Platform horizons** (see [`ROADMAP.md`](../ROADMAP.md) for web,
-[`apple/ARCHITECTURE.md`](../apple/ARCHITECTURE.md) §5 for iOS,
+`ay2m/FlyGACA`'s `apple/ARCHITECTURE.md` §5 for iOS,
 [`docs/APPS-FAMILY-ROADMAP.md`](./APPS-FAMILY-ROADMAP.md) for the app lineup):
 
 - **Now:** web app shipped and live (all tools, library+search, chat, study, account,
   B2B); Captain Adel Genkit+Gemini brain in `functions/`.
 - **Next:** iOS Phases 1–3 — `FlyGACAKit` engines + shared UI, durable SRS/streaks,
-  the content bundler in CI, and Wave-1 targets (PPL, ELPT, AIP) reaching TestFlight.
+  the content bundler in CI, and the ELPT + AIP targets reaching TestFlight.
 - **Later:** iOS Phase 4 (`PlatformLive`: Firebase Auth + App Check, progress upload,
-  Captain Adel SSE, remote content refresh + SRS reconcile), the App Store bundle,
-  and Wave-2 apps (CPL, IR, ATPL — packs already live).
+  Captain Adel SSE, remote content refresh + SRS reconcile) and the App Store bundle.
+  The licence-exam apps (PPL, CPL, IR, ATPL) are paused — their packs stay live on the web.
 
 **Success metrics that gate quality** (measured, not aspirational):
 

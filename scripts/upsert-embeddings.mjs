@@ -7,8 +7,7 @@
  * so the external Captain Adel RAG service retrieves fresh, citeable content.
  *
  * SECRET-GUARDED: if SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY or OPENAI_API_KEY are unset, it logs a
- * skip notice and exits 0 — forks and credential-less CI stay green, never fail (mirrors the
- * optional-secret handling in .github/workflows/deploy-cloudflare.yml).
+ * skip notice and exits 0 — forks and credential-less CI stay green, never fail.
  *
  * Idempotent: each chunk carries a content_hash; chunks whose hash already matches the stored row
  * are skipped, so re-running only embeds what actually changed.

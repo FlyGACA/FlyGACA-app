@@ -6,6 +6,7 @@ import { fmtInt } from '@/components/calc/format';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { altimeter } from '@/calc/altimetry';
+import { AltimeterDial } from './AltimeterDial';
 
 export function Altimeter() {
   const { t } = useTranslation();
@@ -59,6 +60,7 @@ export function Altimeter() {
           value={r != null ? `${fmtInt(r.pressureAltitude)} ft` : '—'}
         />
       </OutputGrid>
+      {r != null && <AltimeterDial pressureAltitude={r.pressureAltitude} />}
     </CalcShell>
   );
 }

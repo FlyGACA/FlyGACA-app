@@ -65,19 +65,34 @@ function collectionRef(path: string) {
           ref: docRef(p),
         })),
       }),
-    where: (field: string, op: string, value: unknown) => ({
-      get: () =>
-        Promise.resolve({
-          docs: children(path)
-            .filter(({ data }) => {
-              if (op === "array-contains") {
-                return Array.isArray(data[field]) && (data[field] as unknown[]).includes(value);
-              }
-              return data[field] === value;
-            })
-            .map(({ id, data, path: p }) => ({ id, data: () => data, ref: docRef(p) })),
+    where: (field: string, op: string, value: unknown) => {
+      const matches = () =>
+        children(path).filter(({ data }) => {
+          if (op === "array-contains") {
+            return Array.isArray(data[field]) && (data[field] as unknown[]).includes(value);
+          }
+          return data[field] === value;
+        });
+      return {
+        get: () =>
+          Promise.resolve({
+            docs: matches().map(({ id, data, path: p }) => ({
+              id,
+              data: () => data,
+              ref: docRef(p),
+            })),
+          }),
+        // provisionSeats counts outstanding invites with
+        // `db.collection("schoolInvites").where("orgId","==",id).count()`. Only the
+        // bare collection had count() — a filtered query didn't — so the seat-limit
+        // branch threw "count is not a function" instead of enforcing the limit.
+        // That branch IS the seat-limit-bypass fix from 0f3bce3, so leaving it
+        // unexercised is exactly what the test is there to prevent.
+        count: () => ({
+          get: () => Promise.resolve({ data: () => ({ count: matches().length }) }),
         }),
-    }),
+      };
+    },
     count: () => ({
       get: () => Promise.resolve({ data: () => ({ count: children(path).length }) }),
     }),

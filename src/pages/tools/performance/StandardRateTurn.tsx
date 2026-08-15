@@ -5,6 +5,7 @@ import { ResultStat } from '@/components/calc/ResultStat';
 import { FieldGrid, OutputGrid } from '@/components/calc/Grids';
 import { useNumericInputs } from '@/hooks/useNumericInputs';
 import { standardRateTurn } from '@/calc/turn';
+import { TurnCircle } from './TurnCircle';
 
 export function StandardRateTurn() {
   const { t } = useTranslation();
@@ -49,6 +50,15 @@ export function StandardRateTurn() {
           value={r != null ? `${r.ruleOfThumbDeg.toFixed(0)}°` : '—'}
         />
       </OutputGrid>
+      {r != null && (
+        <TurnCircle
+          bankDeg={r.bankDeg}
+          label={t('turnCircle.label', {
+            bank: r.bankDeg.toFixed(0),
+            radius: r.radiusNm.toFixed(2),
+          })}
+        />
+      )}
     </CalcShell>
   );
 }

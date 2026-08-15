@@ -26,6 +26,11 @@ describe("parseSearchIndex", () => {
     expect(() => parseSearchIndex({ generated: "x", scope: "y", count: 0 })).toThrow(/entries/);
   });
 
+  it("rejects an entry that is not an object", () => {
+    expect(() => parseSearchIndex({ ...valid, entries: [null] })).toThrow(/is not an object/);
+    expect(() => parseSearchIndex({ ...valid, entries: [42] })).toThrow(/is not an object/);
+  });
+
   it("rejects an entry with a non-string required field", () => {
     expect(() => parseSearchIndex({ ...valid, entries: [{ d: "h", b: "Part 1", u: 5 }] })).toThrow(
       /d\/b\/u/,

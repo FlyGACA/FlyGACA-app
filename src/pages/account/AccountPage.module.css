@@ -3,13 +3,590 @@
    sibling pages (Logbook/Settings/Currency/Records) also rely on stay in
    account.module.css; this module owns only the sign-in + identity surfaces. */
 
-/* ── Signed-out split: sign-in card beside the benefits card ── */
+/* ── Page wrapper ── */
+.accountPage {
+  padding-block: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO IDENTITY CARD
+   Full-width glass card with the Falcon brand gradient band
+   ══════════════════════════════════════════════════════════ */
+.heroCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl, 20px);
+  padding: var(--space-8) var(--space-7);
+  background: linear-gradient(135deg, var(--falcon-night) 0%, #1a3548 50%, #1f4c63 100%);
+  border: 1px solid var(--border-bright);
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, var(--brand) 30%, transparent) inset,
+    0 24px 64px color-mix(in srgb, var(--falcon-night) 80%, transparent);
+}
+
+/* Ambient radial glow behind the avatar — only visible when --plan hint is set */
+.heroGlow {
+  position: absolute;
+  inset-block-start: -40%;
+  inset-inline-start: -10%;
+  inline-size: 60%;
+  block-size: 200%;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    color-mix(in srgb, var(--brand) 22%, transparent) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.heroCard[data-plan='pro'] .heroGlow {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    color-mix(in srgb, var(--brand) 35%, transparent) 0%,
+    transparent 60%
+  );
+}
+.heroCard[data-plan='school'] .heroGlow {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    color-mix(in srgb, var(--gold) 28%, transparent) 0%,
+    transparent 60%
+  );
+}
+
+.heroInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+/* Avatar ring — teal for free, brand-hover for pro, gold for school */
+.avatarRing {
+  position: relative;
+  flex-shrink: 0;
+  inline-size: 80px;
+  block-size: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--brand) 18%, var(--surface));
+  border: 2px solid color-mix(in srgb, var(--brand) 50%, transparent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--brand) 12%, transparent),
+    var(--clay-shadow);
+}
+.avatarRing[data-plan='pro'] {
+  border-color: color-mix(in srgb, var(--brand-hover) 70%, transparent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--brand-hover) 15%, transparent),
+    0 0 24px color-mix(in srgb, var(--brand) 25%, transparent);
+}
+.avatarRing[data-plan='school'] {
+  border-color: color-mix(in srgb, var(--gold) 70%, transparent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--gold) 15%, transparent),
+    0 0 24px color-mix(in srgb, var(--gold) 20%, transparent);
+}
+
+.avatar {
+  inline-size: 52px;
+  block-size: 52px;
+}
+
+/* Monogram fallback — hidden when an avatar renders, shown as overlay if needed */
+.avatarInitials {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  color: var(--brand-hover);
+  pointer-events: none;
+  /* hidden behind the real avatar — only relevant if avatar fails to render */
+  opacity: 0;
+}
+
+.heroMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.heroName {
+  margin: 0;
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+  /* Truncate very long email-as-name strings */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-inline-size: 32ch;
+}
+
+.heroEmail {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-1);
+}
+
+.planBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--brand) 20%, var(--surface));
+  color: var(--brand-hover);
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
+}
+.planBadge[data-plan='pro'] {
+  background: color-mix(in srgb, var(--brand) 28%, var(--surface));
+  color: var(--brand-hover);
+  border-color: color-mix(in srgb, var(--brand-hover) 45%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--brand) 20%, transparent);
+}
+.planBadge[data-plan='school'] {
+  background: color-mix(in srgb, var(--gold) 22%, var(--surface));
+  color: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   QUICK-NAV TILE GRID
+   5-slot responsive grid of icon-bearing deep-link cards
+   ══════════════════════════════════════════════════════════ */
+.navGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.navTile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border-bright);
+  box-shadow: var(--clay-shadow);
+  text-decoration: none;
+  color: var(--text);
+  overflow: hidden;
+  transition:
+    transform 180ms var(--ease),
+    border-color 180ms var(--ease),
+    box-shadow 180ms var(--ease);
+}
+
+/* Accent-coloured top stripe */
+.navTile::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  border-radius: var(--radius-pill) var(--radius-pill) 0 0;
+  background: var(--brand);
+  opacity: 0.8;
+  transition: opacity 180ms var(--ease);
+}
+.navTile[data-accent='sage']::before { background: var(--falcon-sage); }
+.navTile[data-accent='gold']::before { background: var(--gold); }
+
+.navTile:hover,
+.navTile:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--brand-hover);
+  box-shadow: var(--clay-shadow-hover), 0 0 0 1px color-mix(in srgb, var(--brand) 25%, transparent);
+}
+.navTile[data-accent='sage']:hover,
+.navTile[data-accent='sage']:focus-visible {
+  border-color: var(--falcon-sage);
+}
+.navTile[data-accent='gold']:hover,
+.navTile[data-accent='gold']:focus-visible {
+  border-color: var(--gold);
+}
+.navTile:hover::before,
+.navTile:focus-visible::before {
+  opacity: 1;
+}
+.navTile:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.navTileIcon {
+  font-size: 1.6rem;
+  line-height: 1;
+  display: block;
+}
+
+.navTileLabel {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.navTileDesc {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  flex: 1;
+}
+
+.navTileArrow {
+  margin-block-start: auto;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  align-self: flex-end;
+  transition: transform 180ms var(--ease), color 180ms var(--ease);
+}
+.navTile:hover .navTileArrow,
+.navTile:focus-visible .navTileArrow {
+  transform: translateX(3px);
+  color: var(--brand-hover);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SUBSCRIPTION PANEL WRAPPER
+   ══════════════════════════════════════════════════════════ */
+.subsWrap {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER ROW
+   ══════════════════════════════════════════════════════════ */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--border);
+}
+
+.footerNote {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+.signOutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-bright);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    border-color 180ms var(--ease),
+    color 180ms var(--ease),
+    background 180ms var(--ease);
+}
+.signOutBtn:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+}
+.signOutBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STATUS / VERIFY BANNERS
+   ══════════════════════════════════════════════════════════ */
+.verifyBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  border: 1px solid var(--warning);
+}
+.verifyBanner[data-tone='success'] {
+  border-color: var(--color-success);
+}
+
+.verifySent {
+  font-size: var(--fs-sm);
+  color: var(--color-success);
+}
+
+/* Text link-button (resend · close · etc.) */
+.linkBtn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--link);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.linkBtn:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+}
+.linkBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.linkBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SIGNED-OUT split panel (AccountSignedOut.tsx)
+   ══════════════════════════════════════════════════════════ */
 .authLayout {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
   gap: var(--space-8);
   align-items: start;
 }
+@media (max-width: 720px) {
+  .authLayout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+.authCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+.benefitsCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.asideEyebrow {
+  margin: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--text-dim);
+}
+.asideTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  background: var(--grad-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.benefitList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.benefitList li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-4);
+  border-inline-start: 3px solid var(--brand);
+}
+.benefitList strong {
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.benefitList span {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.fullWidth {
+  inline-size: 100%;
+}
+
+.googleChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 20px;
+  block-size: 20px;
+  background: var(--pure-white);
+  border-radius: var(--radius-sm);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  block-size: 1px;
+  background: var(--border-bright);
+}
+
+.note {
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+  margin: 0;
+}
+
+.alertLink {
+  color: var(--link);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.alertLink:hover {
+  color: var(--brand-hover);
+}
+.signInLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+/* ── Sign-in identity header (kept for any external reference) ── */
+.identityCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+}
+.identityAvatar {
+  flex-shrink: 0;
+}
+.identityCard h1 {
+  font-size: var(--fs-h2);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+
+/* ── Sign-in/up form-switch transition ── */
+.fadeTransition {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fadeTransition {
+    transition:
+      opacity 0.2s ease-in-out,
+      transform 0.2s ease-in-out;
+  }
+}
+.animating {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+/* Mode Tabs (Sign In / Register segmented toggle) */
+.modeTabs {
+  display: flex;
+  background: var(--surface-raised);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-block-end: var(--space-2);
+}
+.modeTab {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  text-align: center;
+}
+.modeTab:hover {
+  color: var(--text);
+}
+.modeTabActive {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Below 720px the grid collapses; the sign-in card is first in source order so
    it stacks on top on mobile. */
 @media (max-width: 720px) {
@@ -213,3 +790,36 @@
   opacity: 0;
   transform: translateY(4px);
 }
+
+/* Mode Tabs (Sign In / Register segmented toggle) */
+.modeTabs {
+  display: flex;
+  background: var(--surface-raised);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-block-end: var(--space-2);
+}
+.modeTab {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  text-align: center;
+}
+.modeTab:hover {
+  color: var(--text);
+}
+.modeTabActive {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  box-shadow: var(--shadow-sm);
+}
+

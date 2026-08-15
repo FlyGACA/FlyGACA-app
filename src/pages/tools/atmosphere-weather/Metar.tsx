@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { CalcShell } from '@/components/CalcShell';
 import { TextField } from '@/components/calc/TextField';
 import { ResultStat } from '@/components/calc/ResultStat';
+import { Alert } from '@/components/Alert';
 import { OutputGrid } from '@/components/calc/Grids';
 import { useUrlState } from '@/hooks/useUrlState';
 import { parseMetar } from '@/calc/metar';
@@ -33,8 +34,18 @@ export function Metar() {
         placeholder="OERK 121200Z 33015G25KT 9999 FEW040 38/12 Q1009"
       />
       {has && (
-        <OutputGrid>
-          <ResultStat label={t('wx.station')} value={r.station ?? '—'} tone="headline" />
+        <>
+          {r.saudiHazards?.length > 0 && (
+            <div className="mb-4 flex flex-col gap-2">
+              {r.saudiHazards.map((h) => (
+                <Alert key={h} tone="warning">
+                  {t(`metar.hazards.${h}`)}
+                </Alert>
+              ))}
+            </div>
+          )}
+          <OutputGrid>
+            <ResultStat label={t('wx.station')} value={r.station ?? '—'} tone="headline" />
           <ResultStat
             label={t('wx.time')}
             value={r.day != null ? `${pad(r.day)} ${pad(r.hour ?? 0)}:${pad(r.minute ?? 0)}Z` : '—'}
@@ -62,6 +73,7 @@ export function Metar() {
             }
           />
         </OutputGrid>
+        </>
       )}
     </CalcShell>
   );

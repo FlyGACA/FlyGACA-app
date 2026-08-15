@@ -29,18 +29,23 @@ export type ParseResult =
   | { ok: true; value: ProvisionInput }
   | { ok: false; code: ProvisionInputError };
 
+/** Max emails per `provisionSeats` call — a batch cap so one request can't write
+ * an unbounded roster of invites (cost/abuse guardrail alongside the seat limit). */
+export const MAX_PROVISION_EMAILS = 100;
+
 /**
  * Validate the raw callable payload. Pure so the wrapper can map the failure
  * `code` straight onto an `HttpsError("invalid-argument", code)` and the rules
  * are tested without a Firebase runtime. `orgId` must be a non-empty string,
- * `emails` a non-empty array, and `expiresAt` — when present — a string.
+ * `emails` a non-empty array of at most MAX_PROVISION_EMAILS addresses, and
+ * `expiresAt` — when present — a string.
  */
 export function parseProvisionInput(data: unknown): ParseResult {
   const d = (data ?? {}) as { orgId?: unknown; emails?: unknown; expiresAt?: unknown };
   if (typeof d.orgId !== "string" || !d.orgId) {
     return { ok: false, code: "orgId-required" };
   }
-  if (!Array.isArray(d.emails) || d.emails.length === 0) {
+  if (!Array.isArray(d.emails) || d.emails.length === 0 || d.emails.length > MAX_PROVISION_EMAILS) {
     return { ok: false, code: "emails-required" };
   }
   if (d.expiresAt !== undefined && typeof d.expiresAt !== "string") {

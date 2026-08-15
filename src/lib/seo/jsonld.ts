@@ -200,6 +200,29 @@ export function courseLd(a: ArticleInput): JsonLd {
   };
 }
 
+/**
+ * AboutPage — for the /about page. A schema.org `AboutPage` (a WebPage subtype)
+ * whose `mainEntity` is the site's Organization: it tells crawlers the page is
+ * *about* Fly GACA the publisher, strengthening the entity/authorship signal
+ * that AI answer engines weigh when deciding whom to cite. The Organization is
+ * referenced by its stable `@id` (emitted in full by `organizationLd()` on the
+ * same page), so the two nodes merge into one entity.
+ */
+export function aboutPageLd(a: ArticleInput): JsonLd {
+  const url = canonicalUrl(a.path);
+  return {
+    '@context': CONTEXT,
+    '@type': 'AboutPage',
+    name: a.title,
+    ...(a.description ? { description: a.description } : {}),
+    url,
+    inLanguage: a.lang ?? 'en',
+    isPartOf: { '@id': SITE_ID },
+    mainEntity: { '@id': ORG_ID },
+    publisher: orgNode(),
+  };
+}
+
 export interface QA {
   q: string;
   a: string;
@@ -214,6 +237,45 @@ export function faqLd(items: QA[]): JsonLd {
       '@type': 'Question',
       name: q,
       acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+}
+
+export interface DefinedTerm {
+  /** The term or abbreviation being defined. */
+  term: string;
+  /** Its plain-language definition. */
+  def: string;
+}
+
+/**
+ * DefinedTermSet — for the bilingual aviation glossary. Each entry becomes a
+ * schema.org `DefinedTerm` bound back to the set, so a crawler (or AI answer
+ * engine) reads the page as a structured vocabulary of Saudi-aviation terms
+ * rather than loose prose.
+ */
+export function definedTermSetLd(a: {
+  name: string;
+  description?: string;
+  /** Router path of the glossary (canonicalized internally). */
+  path: string;
+  terms: DefinedTerm[];
+  /** BCP-47 language of the current rendering (e.g. 'en' | 'ar'). */
+  lang?: string;
+}): JsonLd {
+  const url = canonicalUrl(a.path);
+  return {
+    '@context': CONTEXT,
+    '@type': 'DefinedTermSet',
+    name: a.name,
+    ...(a.description ? { description: a.description } : {}),
+    url,
+    inLanguage: a.lang ?? 'en',
+    hasDefinedTerm: a.terms.map((tm) => ({
+      '@type': 'DefinedTerm',
+      name: tm.term,
+      description: tm.def,
+      inDefinedTermSet: url,
     })),
   };
 }

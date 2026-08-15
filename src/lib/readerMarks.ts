@@ -4,6 +4,7 @@
  * DOM-touching, so they live in lib (like `scrollLock`), never in `src/calc`
  * (the pure, DOM-free bar).
  */
+import { gacarSectionAnchor } from '@/calc/library/anchor';
 import type { LibNote } from '@/lib/prefs/libraryPrefs';
 
 /**
@@ -113,4 +114,47 @@ export function wrapAnnotation(root: HTMLElement, note: LibNote, markClass: stri
     return true;
   }
   return false;
+}
+
+export interface DecorateHeadingsOptions {
+  /** Class applied to the injected clean-anchor target `<span>`. */
+  anchorTargetClass: string;
+  /** Class applied to the appended copy-link `<button>` (also the idempotency marker). */
+  anchorClass: string;
+  /** aria-label for the copy-link button. */
+  label: string;
+  /** Copy the shareable link for an anchor id (the clean id when derivable, else the heading's own). */
+  onCopy: (id: string) => void;
+}
+
+/**
+ * Decorate every `h2[id]`/`h3[id]` in `root` with (a) a clean, citation-shaped
+ * clause anchor derived from the "§ P.n" in the heading text — injected as an
+ * `aria-hidden` `<span id>` so the often OCR-noisy corpus id isn't the only
+ * deep-link target — and (b) a trailing copy-link button. Idempotent: a heading
+ * already carrying the copy-link button is skipped, and a clean id that already
+ * exists in `root` isn't re-injected, so repeated runs (e.g. content re-render)
+ * are safe. The injected ids are the exact `sec-<part>-<n>` slugs that the
+ * sitemap's clause anchors and shareable citations depend on — see
+ * {@link gacarSectionAnchor}.
+ */
+export function decorateHeadings(root: HTMLElement, opts: DecorateHeadingsOptions): void {
+  root.querySelectorAll<HTMLElement>('h2[id],h3[id]').forEach((h) => {
+    const clean = gacarSectionAnchor(h.textContent ?? '');
+    if (clean && h.id !== clean && !root.querySelector(`[id="${clean}"]`)) {
+      const target = document.createElement('span');
+      target.id = clean;
+      target.className = opts.anchorTargetClass;
+      target.setAttribute('aria-hidden', 'true');
+      h.prepend(target);
+    }
+    if (h.querySelector(`.${opts.anchorClass}`)) return;
+    const a = document.createElement('button');
+    a.type = 'button';
+    a.className = opts.anchorClass;
+    a.textContent = '#';
+    a.setAttribute('aria-label', opts.label);
+    a.addEventListener('click', () => opts.onCopy(clean ?? h.id));
+    h.appendChild(a);
+  });
 }

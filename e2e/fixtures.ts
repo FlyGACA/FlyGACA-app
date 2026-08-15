@@ -5,7 +5,7 @@ import { test as base, expect } from '@playwright/test';
  * runs so the first-run welcome tour stays dismissed and the suite exercises
  * the steady-state app — otherwise the tour's modal scrim intercepts pointer
  * events on a fresh visit to `/`. The tour itself is covered by unit tests
- * (tests/onboarding-tour.test.tsx).
+ * (tests/components/onboarding-tour.test.tsx).
  *
  * The seeded value must match TOUR_VERSION in src/lib/onboardingPrefs.ts; bump
  * both together if the tour is versioned up.

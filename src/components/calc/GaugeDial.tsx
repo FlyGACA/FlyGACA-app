@@ -9,6 +9,8 @@ interface GaugeDialProps {
   min: number;
   max: number;
   unit: string;
+  /** Decimal places for the centre readout; 0 (default) renders a whole number. */
+  decimals?: number;
 }
 
 /** Sweep geometry: −120° (min) to +120° (max), needle pointing up at mid. */
@@ -33,8 +35,9 @@ const tickAngles = Array.from(
  * a ResultStat — the readable value stays in the stat, so the dial is hidden
  * from AT.
  */
-export function GaugeDial({ label, value, min, max, unit }: GaugeDialProps) {
+export function GaugeDial({ label, value, min, max, unit, decimals = 0 }: GaugeDialProps) {
   const angle = value != null ? gaugeAngle(value, min, max) : SWEEP_FROM;
+  const readout = value == null ? '—' : decimals > 0 ? value.toFixed(decimals) : fmtInt(value);
   return (
     <div className={styles.gauge} aria-hidden="true">
       <svg viewBox="0 0 120 120" width={120} height={120} className={styles.svg}>
@@ -56,7 +59,7 @@ export function GaugeDial({ label, value, min, max, unit }: GaugeDialProps) {
         </g>
         <circle cx={60} cy={60} r={5} fill="var(--text)" />
         <text x={60} y={92} textAnchor="middle" className={styles.value}>
-          {value != null ? fmtInt(value) : '—'}
+          {readout}
         </text>
         <text x={60} y={104} textAnchor="middle" className={styles.unit}>
           {unit}

@@ -10,13 +10,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: start;
   max-inline-size: 760px;
-  margin-inline: auto;
 }
 
-/* Instrument-label eyebrow: uppercase kicker flanked by short hairline rules. */
+/* Instrument-label eyebrow: uppercase kicker with a short leading hairline rule
+   (left-aligned, matching PageHero). */
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -27,8 +27,7 @@
   color: var(--accent-bright);
   font-weight: var(--fw-semibold);
 }
-.eyebrow::before,
-.eyebrow::after {
+.eyebrow::before {
   content: '';
   inline-size: 16px;
   block-size: 1px;
@@ -41,6 +40,22 @@
   font-weight: var(--fw-black);
   letter-spacing: var(--tracking-tight);
   line-height: var(--lh-heading);
+  /* HUD-style gradient-clip title (mirrors Hud.module.css `.title` / --grad-title).
+     The global reduce-motion kill-switch in global.css disables the shimmer. */
+  background: var(--grad-title);
+  background-size: 180% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: hero-title-shimmer 12s linear infinite;
+}
+@keyframes hero-title-shimmer {
+  from {
+    background-position: 0% center;
+  }
+  to {
+    background-position: 180% center;
+  }
 }
 .subtitle {
   margin-block-start: var(--space-3);
@@ -125,7 +140,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-2);
   margin-block-start: var(--space-4);
 }
@@ -133,12 +148,15 @@
   font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--moon-mute);
+  /* --text-dim is the page-background caption token (AA ~6:1, theme-aware), not
+     --moon-mute — a dark-band token that only hit 3.59:1 once the hero went flat
+     on the page background (WCAG AA needs 4.5:1). */
+  color: var(--text-dim);
 }
 .suggestList {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-2);
   list-style: none;
   margin: 0;
@@ -180,14 +198,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-4) var(--space-6);
   margin-block-start: var(--space-6);
 }
 .stats {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-3);
   margin: 0;
 }
@@ -231,7 +249,12 @@
   letter-spacing: 0.06em;
   color: var(--moon-soft);
 }
-/* Trailing slot — typically a link (e.g. "Browse charts →"). */
+/* Trailing slot — one or more links (e.g. "Browse charts →", "Glossary →"). */
+.trailing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
 .trailing a {
   font-size: var(--fs-sm);
   font-weight: var(--fw-bold);

@@ -13,6 +13,7 @@ import { Disclaimer } from '@/components/Disclaimer';
 import { ExternalLink } from '@/components/ExternalLink';
 import { Alert } from '@/components/Alert';
 import { EmptyState } from '@/components/EmptyState';
+import { AiracFreshness } from '@/components/AiracFreshness';
 import styles from './Charts.module.css';
 
 /** Public path for a chart image (the index stores the legacy `assets/…` path);
@@ -157,6 +158,7 @@ export function Charts() {
       <header className={styles.head}>
         <h1>{t('charts.title')}</h1>
         <p className={styles.lead}>{t('charts.lead')}</p>
+        <AiracFreshness />
       </header>
 
       {index.loading && <div className={styles.skeleton} aria-hidden="true" />}

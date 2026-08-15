@@ -125,9 +125,9 @@ export function ogImageFor(path: string): string {
 /**
  * Non-canonical production hosts that serve the *same* build under a different
  * brand/domain. Left indexable they split ranking signals and clutter the
- * branded SERP, so we fold them onto the canonical origin. Preview/staging
- * fronts (`*.vercel.app`, `*.web.app`, `*.netlify.app`, `*.pages.dev`),
- * `localhost`, and the native shell are intentionally excluded.
+ * branded SERP, so we fold them onto the canonical origin. The Firebase
+ * `*.web.app` alias, `localhost`, and the native shell are intentionally excluded
+ * (the alias gets a noindex via `isMirrorHost`, not a redirect).
  */
 const DUPLICATE_HOSTS = new Set(['captadel.com', 'www.captadel.com']);
 
@@ -147,15 +147,18 @@ export function canonicalRedirect(loc: {
 }
 
 /**
- * Host suffixes of the *mirror* fronts that serve the same build for redundancy
- * (Firebase `*.web.app`, Vercel `*.vercel.app`, Netlify `*.netlify.app`,
- * Cloudflare `*.pages.dev`) plus their PR previews. They must stay live but must
- * NOT be indexed — otherwise Google treats them as duplicates of flygaca.com and
- * may pick one as canonical. `flygaca.com` and `localhost` (the prerender host)
- * are deliberately not matched, so neither the canonical site nor the baked
- * snapshots ever get a noindex.
+ * Firebase Hosting serves the canonical `flygaca.com` AND its own default domain
+ * `flygaca-app.web.app`. That `.web.app` alias is a duplicate that must NOT be
+ * indexed — otherwise Google may pick it as canonical over flygaca.com — so it
+ * gets a runtime noindex (see `main.tsx`). `flygaca.com` and `localhost` (the
+ * prerender host) are deliberately not matched, so neither the canonical site nor
+ * the baked snapshots ever get one.
+ *
+ * (This was a longer list when the app ran behind Vercel/Netlify/Cloudflare mirror
+ * fronts; those are gone now that Firebase is the single front, leaving only the
+ * `.web.app` Firebase alias.)
  */
-const MIRROR_HOST_SUFFIXES = ['.web.app', '.vercel.app', '.netlify.app', '.pages.dev'];
+const MIRROR_HOST_SUFFIXES = ['.web.app'];
 
 /** True if `hostname` is a non-canonical mirror/preview front that should noindex. */
 export function isMirrorHost(hostname: string): boolean {

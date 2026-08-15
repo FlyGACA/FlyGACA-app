@@ -9,6 +9,7 @@ import {
 } from '@/lib/native/offlineCache';
 import { CORPUS, loadJson, type CorpusIndex } from '@/lib/content';
 import { formatBytes } from '@/calc/library/offlineManifest';
+import { ProgressRing } from '@/components/ProgressRing';
 import styles from './OfflineDownloads.module.css';
 
 /**
@@ -77,9 +78,14 @@ export function OfflineDownloads() {
           onClick={() => void saveCore()}
           disabled={busy}
         >
-          {progress
-            ? t('offline.saving', { done: progress.done, total: progress.total })
-            : t('offline.saveCore')}
+          {progress ? (
+            <>
+              <ProgressRing value={progress.total ? progress.done / progress.total : 0} size={18} />
+              {t('offline.saving', { done: progress.done, total: progress.total })}
+            </>
+          ) : (
+            t('offline.saveCore')
+          )}
         </button>
         {saved.length > 0 && (
           <button

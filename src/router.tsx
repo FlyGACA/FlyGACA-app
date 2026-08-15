@@ -1,5 +1,5 @@
 import { lazy, type ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router';
 import { Layout } from './app/Layout';
 import { FlavorRoot } from './app/flavor/FlavorRoot';
 import { Home } from './pages/Home/Home';
@@ -23,6 +23,7 @@ const Document = lazyNamed(() => import('./pages/library/Document'), 'Document')
 }>;
 const Charts = lazyNamed(() => import('./pages/library/Charts'), 'Charts');
 const LibraryMap = lazyNamed(() => import('./pages/library/LibraryMap'), 'LibraryMap');
+const Glossary = lazyNamed(() => import('./pages/library/Glossary'), 'Glossary');
 const Updates = lazyNamed(() => import('./pages/updates/Updates'), 'Updates');
 const Chat = lazyNamed(() => import('./pages/chat/Chat'), 'Chat');
 
@@ -192,6 +193,7 @@ const Developers = lazyNamed(() => import('./pages/developers/Developers'), 'Dev
 const Hud = lazyNamed(() => import('./pages/hud/Hud'), 'Hud');
 const BusinessAdmin = lazyNamed(() => import('./pages/business/Admin'), 'BusinessAdmin');
 const About = lazyNamed(() => import('./pages/about/About'), 'About');
+const SupportPage = lazyNamed(() => import('./pages/support/SupportPage'), 'SupportPage');
 const DisclaimerPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'DisclaimerPage');
 const TermsPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'TermsPage');
 const PrivacyPage = lazyNamed(() => import('./pages/legal/LegalPage'), 'PrivacyPage');
@@ -214,6 +216,14 @@ const FlavorSettings = lazyNamed(() => import('./app/flavor/FlavorSettings'), 'F
  */
 const basename =
   typeof window !== 'undefined' && isArabicPath(window.location.pathname) ? AR_PREFIX : undefined;
+
+/** Redirect /signup to /account?mode=up, preserving any other search params. */
+function SignupRedirect() {
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  params.set('mode', 'up');
+  return <Navigate to={`/account?${params.toString()}`} replace />;
+}
 
 /**
  * Route table for a standalone prep app: the pack dashboard is home, plus the
@@ -256,7 +266,7 @@ const flavorRoutes = [
 
 /**
  * Route table for the app. Each page lives under src/pages/. As more pages are
- * ported from the legacy site they slot in here (see MIGRATION.md).
+ * ported from the legacy site they slot in here (see docs/MIGRATION.md).
  */
 const mainRoutes = [
   {
@@ -267,6 +277,7 @@ const mainRoutes = [
       { path: 'library', element: <Library /> },
       { path: 'library/charts', element: <Charts /> },
       { path: 'library/map', element: <LibraryMap /> },
+      { path: 'library/glossary', element: <Glossary /> },
       { path: 'library/reference/:slug', element: <Document kind="reference" /> },
       { path: 'library/handbook/:slug', element: <Document kind="handbook" /> },
       { path: 'library/:slug', element: <Document /> },
@@ -342,6 +353,7 @@ const mainRoutes = [
       { path: 'study/packs', element: <Packs /> },
       { path: 'study/packs/:id', element: <PackDetail /> },
       { path: 'study/sheets', element: <StudySheets /> },
+      { path: 'signup', element: <SignupRedirect /> },
       { path: 'account', element: <Account /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'currency', element: <Currency /> },
@@ -356,6 +368,7 @@ const mainRoutes = [
       { path: 'hud', element: <Hud /> },
       { path: 'business/admin', element: <BusinessAdmin /> },
       { path: 'about', element: <About /> },
+      { path: 'support', element: <SupportPage /> },
       { path: 'disclaimer', element: <DisclaimerPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },

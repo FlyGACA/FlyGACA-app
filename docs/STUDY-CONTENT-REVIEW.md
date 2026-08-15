@@ -865,8 +865,8 @@ These **191 questions across 9 new banks** were authored from the in-repo GACAR 
 from the 18-question floor toward the house ~18–24 range. Every citation below **reuses an exact
 citation string already present elsewhere in that bank** in `public/data/quiz.json` (no new
 regulation claims); a handful cite a specific GACAR section (e.g. `§91.61`) that was already an
-existing citation in the same bank for the same right-of-way rule. Regenerated into
-`apple/Apps/{ELPT,AIP,PPL,CPL,IR,ATPL}/Content/quiz.json` via `node scripts/build-ios-content.mjs`.
+existing citation in the same bank for the same right-of-way rule. Regenerated into each app's `Content/quiz.json` via `node scripts/build-ios-content.mjs` (the
+generator writes into `ay2m/FlyGACA`'s `apple/Apps/<App>/`; PPL/CPL/IR/ATPL are since paused).
 Please verify each answer key against the cited source before treating it as authoritative.
 
 ### Radiotelephony & English Proficiency `radio-elpt` (ELPT) — 6 new (18 → 24)

@@ -1,53 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { sendChatStream, sendFeedback, type ChatTurn } from '@/lib/api';
+import { sendChatStream, type ChatTurn } from '@/lib/api';
 import { getIdToken } from '@/lib/services/auth';
 import { getAppCheckToken } from '@/lib/services/firebase';
 import { sessionId } from '@/lib/session';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useFetchJson } from '@/hooks/useFetchJson';
+import { useConversations } from '@/hooks/useConversations';
+import { useChatFeedback } from '@/hooks/useChatFeedback';
 import { useAccount } from '@/lib/services/account';
 import { hasFeature } from '@/lib/services/features';
 import type { GacarIndex } from '@/lib/content';
+import { consume, currentUsage, isExhausted, quotaGate, type Usage } from '@/calc/chat/chatQuota';
 import {
-  consume,
-  currentUsage,
-  isExhausted,
-  remaining,
-  FREE_DAILY_LIMIT,
-  type Usage,
-} from '@/calc/chat/chatQuota';
+  abortCleanup,
+  applyStreamEvent,
+  beginStream,
+  finalizeStream,
+} from '@/calc/chat/chatStream';
 import { partSlug, conversationParts } from '@/calc/chat/chatSources';
-import { followupSuggestions } from '@/calc/chat/chatFollowups';
-import {
-  feedbackKey,
-  getFeedback,
-  recordFeedback,
-  type FeedbackMap,
-  type Rating,
-} from '@/calc/chat/chatFeedback';
+import { followupSuggestions, lastAssistantIndex, showFollowups } from '@/calc/chat/chatFollowups';
+import { feedbackKey, getFeedback } from '@/calc/chat/chatFeedback';
 import { transcriptToMarkdown } from '@/calc/chat/transcript';
-import {
-  conversationTitle,
-  upsertConversation,
-  removeConversation,
-  renameConversation,
-  togglePin,
-  type Conversation,
-} from '@/calc/chat/conversations';
-import {
-  loadConversations,
-  persistConversations,
-  newConversationId as newId,
-} from '@/lib/adelConversations';
 import { Disclaimer } from '@/components/Disclaimer';
-import { UpsellCard } from '@/components/UpsellCard';
-import { canCheckout, startProCheckout, CREDIT_PACK_SIZE } from '@/lib/services/billing';
 import { ConversationMenu } from '@/components/chat/ConversationMenu';
 import { ExportActions } from '@/components/chat/ExportActions';
 import { SourcesDigest } from '@/components/chat/SourcesDigest';
-import { VoiceButton } from '@/components/chat/VoiceButton';
+import { ChatComposer } from '@/components/chat/ChatComposer';
+import { ChatGate } from '@/components/chat/ChatGate';
 import { ChatWelcome } from './ChatWelcome';
 import { ChatMessage } from './ChatMessage';
 import {
@@ -65,40 +46,44 @@ export function Chat() {
   const { t } = useTranslation();
   usePageMeta(t('meta.chat'), t('metaDesc.chat'));
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [conversations, setConversations] = useState<Conversation<Message>[]>(() =>
-    loadConversations<Message>(),
-  );
-  const [activeId, setActiveId] = useState<string>(() => conversations[0]?.id ?? newId());
-  const [messages, setMessages] = useState<Message[]>(() => conversations[0]?.messages ?? []);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const {
+    conversations,
+    activeId,
+    messages,
+    setMessages,
+    newChat,
+    selectConversation,
+    deleteConversation,
+    rename,
+    pin,
+  } = useConversations<Message>(busy);
   const [usage, setUsage] = useState<Usage>(loadUsage);
-  const [feedback, setFeedback] = useState<FeedbackMap>(loadFeedback);
   const [usePro, setUsePro] = useState<boolean>(loadProPref);
   const [atBottom, setAtBottom] = useState(true);
   const logRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const atBottomRef = useRef(true);
   const abortRef = useRef<AbortController | null>(null);
   const sentInitial = useRef(false);
 
+  const { feedback, rate: rateAnswer } = useChatFeedback({
+    messages,
+    load: loadFeedback,
+    persist: persistFeedback,
+  });
+
   const { entitlement, session, chatCredits } = useAccount();
   const isPro = hasFeature(entitlement, 'adel-unlimited');
-  const left = remaining(currentUsage(usage));
-  // Purchased credits cover questions past the daily free allowance, so having a
-  // balance lifts the gate (the server spends a credit when the free quota is out).
-  const gated = !isPro && isExhausted(currentUsage(usage)) && chatCredits <= 0;
-
-  // Buy a one-time question pack (checkout redirects on success; a signed-in chat
-  // user won't hit 'sign-in-required', and offline/unconfigured errors are inert).
-  async function buyCredits(): Promise<void> {
-    try {
-      await startProCheckout('credits');
-    } catch {
-      /* redirected on success; ignore */
-    }
-  }
+  // Anonymous visitors get a smaller daily "taste" before the sign-in nudge; a
+  // signed-in free account gets the full free allowance, and purchased credits
+  // lift the gate past it (the server enforces the same split and spends the
+  // credit — this stays a UI nudge). All derived in one pure step.
+  const { dailyLimit, left, gated } = quotaGate(usage, {
+    signedIn: !!session,
+    isPro,
+    chatCredits,
+  });
 
   const gacar = useFetchJson<GacarIndex>('/data/gacar-index.json');
   const validSlugs = useRef<Set<string>>(new Set());
@@ -110,36 +95,6 @@ export function Chat() {
   function resolveCitation(partNumber: string): string | null {
     const slug = partSlug(validSlugs.current, partNumber);
     return slug ? `/library/${slug}` : null;
-  }
-
-  /** Record (or toggle off) a 👍/👎 on the answer at `idx`, persist, and report it. */
-  function rateAnswer(idx: number, rating: Rating) {
-    const text = messages[idx]?.text;
-    if (!text) return;
-    const key = feedbackKey(text);
-    // Re-clicking the same thumb clears it; only forward genuine ratings.
-    const cleared = getFeedback(feedback, key) === rating;
-    setFeedback((prev) => {
-      const next = recordFeedback(prev, key, rating);
-      persistFeedback(next);
-      return next;
-    });
-    if (cleared) return;
-    const question = messages[idx - 1]?.role === 'user' ? messages[idx - 1].text : undefined;
-    void Promise.all([
-      getIdToken().then((tok) => tok ?? undefined),
-      getAppCheckToken().then((tok) => tok ?? undefined),
-    ])
-      .then(([token, appCheckToken]) =>
-        sendFeedback(
-          { rating, session: sessionId(), question, answer: text },
-          token,
-          appCheckToken,
-        ),
-      )
-      .catch(() => {
-        /* feedback is non-critical; never disrupt the chat */
-      });
   }
 
   /** Persisted toggle for the higher-quality "Pro" model (Pro/School plans only). */
@@ -155,19 +110,12 @@ export function Chat() {
     const q = question.trim();
     if (!q || busy) return;
 
-    // Signing in is required before any question reaches Captain Adel. Guard here —
-    // the single choke point for every entry path (suggestions, "surprise me",
-    // follow-ups, the composer, deep-link auto-send) — so a signed-out tap never
-    // renders a user turn or the "typing" bubble before disclosing the requirement.
-    if (!session) {
-      navigate('/account');
-      return;
-    }
-
-    // Free-tier daily gate (UI nudge only; the server is the source of truth).
+    // No sign-in required — anonymous visitors can ask Captain Adel. The daily gate
+    // below (UI nudge only; the server is the source of truth) holds them to the
+    // anonymous allowance and nudges them to sign in once it's spent.
     if (!isPro) {
       const u = currentUsage(usage);
-      if (isExhausted(u)) return;
+      if (isExhausted(u, dailyLimit)) return;
       const next = consume(u);
       setUsage(next);
       persistUsage(next);
@@ -180,22 +128,11 @@ export function Chat() {
       .filter((m) => !m.error && !m.pending)
       .map((m) => ({ role: m.role, content: m.text }));
 
-    setMessages([
-      ...base,
-      { role: 'user', text: q },
-      { role: 'assistant', text: '', pending: true, streaming: true },
-    ]);
-
-    // Replace the trailing (assistant) message as the stream progresses.
-    const patchLast = (fn: (m: Message) => Message) =>
-      setMessages((prev) => {
-        const copy = prev.slice();
-        copy[copy.length - 1] = fn(copy[copy.length - 1]);
-        return copy;
-      });
+    setMessages(beginStream(base, q));
 
     const controller = new AbortController();
     abortRef.current = controller;
+    const notReady = t('chat.notReady');
 
     try {
       const [token, appCheckToken] = await Promise.all([
@@ -213,54 +150,16 @@ export function Chat() {
         appCheckToken,
         controller.signal,
       )) {
-        if (ev.type === 'token') {
-          patchLast((m) => ({ ...m, text: (m.pending ? '' : m.text) + ev.delta, pending: false }));
-        } else if (ev.type === 'reset') {
-          patchLast((m) => ({ ...m, text: '', pending: false }));
-        } else if (ev.type === 'final') {
-          patchLast((m) => ({
-            ...m,
-            text: ev.answer || m.text,
-            sources: ev.sources,
-            kind: ev.kind,
-            refusalClass: ev.refusalClass,
-            pending: false,
-            streaming: false,
-          }));
-        } else if (ev.type === 'error') {
-          patchLast((m) => ({
-            ...m,
-            text: t('chat.notReady'),
-            error: true,
-            pending: false,
-            streaming: false,
-          }));
-        }
+        setMessages((prev) => applyStreamEvent(prev, ev, notReady));
       }
       // A stream that closed without ever leaving the pending state → not connected.
-      patchLast((m) =>
-        m.pending
-          ? { ...m, text: t('chat.notReady'), error: true, pending: false, streaming: false }
-          : { ...m, streaming: false },
-      );
+      setMessages((prev) => finalizeStream(prev, notReady));
     } catch (e) {
       if ((e as Error)?.name === 'AbortError') {
         // User stopped the stream: keep whatever arrived; drop an empty bubble.
-        setMessages((prev) => {
-          const copy = prev.slice();
-          const last = copy[copy.length - 1];
-          if (last?.role === 'assistant' && !last.text) copy.pop();
-          else if (last) copy[copy.length - 1] = { ...last, pending: false, streaming: false };
-          return copy;
-        });
+        setMessages((prev) => abortCleanup(prev));
       } else {
-        patchLast((m) => ({
-          ...m,
-          text: t('chat.notReady'),
-          error: true,
-          pending: false,
-          streaming: false,
-        }));
+        setMessages((prev) => applyStreamEvent(prev, { type: 'error' }, notReady));
       }
     } finally {
       abortRef.current = null;
@@ -277,53 +176,6 @@ export function Chat() {
 
   function stop() {
     abortRef.current?.abort();
-  }
-
-  /** Start a fresh thread; the current one is already saved in the archive. */
-  function newChat() {
-    if (busy) return;
-    setMessages([]);
-    setActiveId(newId());
-  }
-
-  /** Load a saved conversation into the composer. */
-  function selectConversation(id: string) {
-    if (busy) return;
-    const c = conversations.find((x) => x.id === id);
-    if (!c) return;
-    setActiveId(id);
-    setMessages(c.messages);
-  }
-
-  /** Delete a saved conversation; if it was active, drop into a fresh thread. */
-  function deleteConversation(id: string) {
-    setConversations((prev) => {
-      const next = removeConversation(prev, id);
-      persistConversations(next);
-      return next;
-    });
-    if (id === activeId) {
-      setMessages([]);
-      setActiveId(newId());
-    }
-  }
-
-  /** Give a saved conversation a hand-typed title. */
-  function rename(id: string, title: string) {
-    setConversations((prev) => {
-      const next = renameConversation(prev, id, title);
-      persistConversations(next);
-      return next;
-    });
-  }
-
-  /** Pin/unpin a saved conversation so it floats to the top of History. */
-  function pin(id: string) {
-    setConversations((prev) => {
-      const next = togglePin(prev, id);
-      persistConversations(next);
-      return next;
-    });
   }
 
   function scrollToLatest() {
@@ -349,51 +201,10 @@ export function Chat() {
     }
   }, [messages]);
 
-  // Grow the composer to fit its content (capped), and snap back when cleared.
-  useEffect(() => {
-    const el = inputRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
-  }, [input]);
-
-  // Persist the active thread into the archive once a turn settles (not mid-stream).
-  useEffect(() => {
-    if (busy) return;
-    const keep = messages.filter((m) => !m.pending && !m.error);
-    setConversations((prev) => {
-      const prior = prev.find((c) => c.id === activeId);
-      const next =
-        keep.length === 0
-          ? removeConversation(prev, activeId)
-          : upsertConversation(prev, {
-              id: activeId,
-              // A hand-typed title wins; otherwise auto-title from the first turn.
-              title: prior?.renamed ? prior.title : conversationTitle(keep),
-              messages: keep,
-              updatedAt: Date.now(),
-              ...(prior?.pinned ? { pinned: true } : {}),
-              ...(prior?.renamed ? { renamed: true } : {}),
-            });
-      persistConversations(next);
-      return next;
-    });
-  }, [messages, busy, activeId]);
-
   const last = messages[messages.length - 1];
   // Only the newest reply animates his portrait — one focal loop, never a wall of them.
-  let lastAssistantIndex = -1;
-  for (let k = 0; k < messages.length; k++) {
-    if (messages[k].role === 'assistant') lastAssistantIndex = k;
-  }
-  const showFollowups =
-    !gated &&
-    !busy &&
-    last?.role === 'assistant' &&
-    !last.pending &&
-    !last.error &&
-    !last.streaming &&
-    last.kind !== 'refusal';
+  const lastAssistantIdx = lastAssistantIndex(messages);
+  const followupsVisible = showFollowups(last, { gated, busy });
 
   const digest = conversationParts(messages, validSlugs.current);
   const hasMessages = messages.length > 0;
@@ -446,13 +257,13 @@ export function Chat() {
             setAtBottom(near);
           }}
         >
-          {messages.length === 0 && <ChatWelcome signedIn={!!session} onAsk={(q) => void ask(q)} />}
+          {messages.length === 0 && <ChatWelcome onAsk={(q) => void ask(q)} />}
 
           {messages.map((m, i) => (
             <ChatMessage
               key={i}
               m={m}
-              animate={i === lastAssistantIndex}
+              animate={i === lastAssistantIdx}
               resolveCitation={resolveCitation}
               validSlugs={validSlugs.current}
               rating={m.error ? undefined : getFeedback(feedback, feedbackKey(m.text))}
@@ -461,7 +272,7 @@ export function Chat() {
             />
           ))}
 
-          {showFollowups && (
+          {followupsVisible && (
             <div className={styles.followups}>
               {followupSuggestions(last).map((f) => {
                 const label = t(`chat.followups.${f.id}`, { cite: f.cite, part: f.part });
@@ -494,61 +305,17 @@ export function Chat() {
 
       {hasMessages && <SourcesDigest parts={digest} />}
 
-      {!session ? (
-        <div className={styles.gate}>
-          <p className={styles.gateNote}>{t('chat.signInRequired')}</p>
-          <Link className="btn btn-primary" to="/account">
-            {t('account.goSignIn')}
-          </Link>
-        </div>
-      ) : gated ? (
-        <div className={styles.gate}>
-          <p className={styles.gateNote}>{t('chat.quota.exhausted')}</p>
-          <UpsellCard variant="inline" />
-          {canCheckout() && (
-            <button type="button" className="btn" onClick={() => void buyCredits()}>
-              {t('chat.quota.buyCredits', { n: CREDIT_PACK_SIZE })}
-            </button>
-          )}
-        </div>
+      {gated ? (
+        <ChatGate signedIn={!!session} />
       ) : (
         <>
-          <form
-            className={styles.composer}
-            aria-label={t('chat.composer')}
-            onSubmit={(e) => {
-              e.preventDefault();
-              void ask(input);
-            }}
-          >
-            <textarea
-              ref={inputRef}
-              className={styles.input}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  void ask(input);
-                }
-              }}
-              rows={2}
-              placeholder={t('chat.placeholder')}
-              aria-label={t('chat.placeholder')}
-            />
-            <VoiceButton
-              onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))}
-            />
-            {busy ? (
-              <button className="btn btn-primary" type="button" onClick={stop}>
-                {t('chat.stop')}
-              </button>
-            ) : (
-              <button className="btn btn-primary" type="submit" disabled={!input.trim()}>
-                {t('chat.send')}
-              </button>
-            )}
-          </form>
+          <ChatComposer
+            input={input}
+            busy={busy}
+            onInput={setInput}
+            onSubmit={() => void ask(input)}
+            onStop={stop}
+          />
           {isPro ? (
             <label className={styles.proToggle}>
               <input type="checkbox" checked={usePro} onChange={togglePro} />
@@ -558,9 +325,7 @@ export function Chat() {
           ) : chatCredits > 0 && isExhausted(currentUsage(usage)) ? (
             <p className={styles.quota}>{t('chat.quota.credits', { n: chatCredits })}</p>
           ) : (
-            <p className={styles.quota}>
-              {t('chat.quota.left', { n: left, limit: FREE_DAILY_LIMIT })}
-            </p>
+            <p className={styles.quota}>{t('chat.quota.left', { n: left, limit: dailyLimit })}</p>
           )}
         </>
       )}

@@ -34,3 +34,36 @@ export function percentMac(cg: number, lemac: number, macLength: number): number
   if (!fin(cg) || !fin(lemac) || !fin(macLength) || macLength === 0) return null;
   return ((cg - lemac) / macLength) * 100;
 }
+
+/** AFM/POH loading limits — forward and aft CG arm, and max gross weight.
+ *  Any field may be NaN (blank), in which case that bound is not checked. */
+export interface CgLimits {
+  cgFwd: number;
+  cgAft: number;
+  mtow: number;
+}
+
+export type EnvelopeStatus = 'in' | 'out' | 'unknown';
+
+/**
+ * Whether the loaded (weight, cg) point sits within whichever limits were
+ * given. Missing (NaN) limits are simply not checked; with no valid point or
+ * no usable limit at all, the status is 'unknown' (the tool can't assert a
+ * pass it can't prove — same posture as the currency engine).
+ */
+export function cgEnvelopeStatus(weight: number, cg: number, limits: CgLimits): EnvelopeStatus {
+  if (!fin(weight, cg)) return 'unknown';
+  const { cgFwd, cgAft, mtow } = limits;
+  // A forward+aft pair only bounds a range when properly ordered; an inverted
+  // pair (cgAft <= cgFwd) is bad data, so ignore both bounds rather than report
+  // a false 'out'. This matches the plot, which won't draw an inverted box.
+  const cgPairUsable = !(fin(cgFwd) && fin(cgAft)) || cgAft > cgFwd;
+  const checks: boolean[] = [];
+  if (cgPairUsable) {
+    if (fin(cgFwd)) checks.push(cg >= cgFwd);
+    if (fin(cgAft)) checks.push(cg <= cgAft);
+  }
+  if (fin(mtow)) checks.push(weight <= mtow);
+  if (checks.length === 0) return 'unknown';
+  return checks.every(Boolean) ? 'in' : 'out';
+}
