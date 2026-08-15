@@ -34,7 +34,6 @@ export function FirebaseSignIn() {
     errors,
     notice,
     mainSiteHref,
-    toggleMode,
     forgotPassword,
     loginForm,
     signupForm,
@@ -72,11 +71,6 @@ export function FirebaseSignIn() {
           role="tab"
           aria-selected={mode === 'in'}
           className={`${styles.modeTab} ${mode === 'in' ? styles.modeTabActive : ''}`}
-          onClick={() => {
-            if (mode !== 'in') {
-              toggleMode('in');
-            }
-          }}
         >
           {t('account.signIn')}
         </Link>
@@ -85,11 +79,6 @@ export function FirebaseSignIn() {
           role="tab"
           aria-selected={mode === 'up'}
           className={`${styles.modeTab} ${mode === 'up' ? styles.modeTabActive : ''}`}
-          onClick={() => {
-            if (mode !== 'up') {
-              toggleMode('up');
-            }
-          }}
         >
           {t('account.register')}
         </Link>
@@ -131,9 +120,6 @@ export function FirebaseSignIn() {
         <Link
           to={targetUrl}
           className={styles.linkBtn}
-          onClick={() => {
-            toggleMode();
-          }}
         >
           {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
         </Link>

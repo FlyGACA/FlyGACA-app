@@ -7,7 +7,7 @@
  * (`authError`, `emailShape`, `passwordPolicy`); the auth side effects stay in
  * `@/lib/services/auth`.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
 import {
@@ -59,7 +59,6 @@ export function useSignInForm(): SignInForm {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const mode: 'in' | 'up' = searchParams.get('mode') === 'up' ? 'up' : 'in';
-  const [animating, setAnimating] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
@@ -68,8 +67,12 @@ export function useSignInForm(): SignInForm {
   // site, so we surface a real click-through link on the error alert.
   const [mainSiteHref, setMainSiteHref] = useState<string | null>(null);
 
+  useEffect(() => {
+    setErrors({});
+    setNotice('');
+  }, [mode]);
+
   const toggleMode = (targetMode?: 'in' | 'up') => {
-    setAnimating(true);
     const nextMode = targetMode ?? (mode === 'in' ? 'up' : 'in');
     const nextParams = new URLSearchParams(searchParams);
     if (nextMode === 'up') {
@@ -78,11 +81,6 @@ export function useSignInForm(): SignInForm {
       nextParams.delete('mode');
     }
     setSearchParams(nextParams, { replace: true });
-    setErrors({});
-    setNotice('');
-    loginForm.resetForm();
-    signupForm.resetForm();
-    setTimeout(() => setAnimating(false), 200);
   };
 
   async function run(
@@ -210,7 +208,7 @@ export function useSignInForm(): SignInForm {
 
   return {
     mode,
-    animating,
+    animating: false,
     busy,
     errors,
     notice,
