@@ -23,6 +23,7 @@ const h = vi.hoisted(() => ({
   verifyToken: vi.fn(),
   flowResult: undefined as unknown,
   flowError: false,
+  failTransactions: false,
   stores: {} as Record<string, Record<string, Record<string, unknown> | undefined>>,
 }));
 
@@ -57,12 +58,14 @@ function writeDoc(
 
 const firestore = {
   collection: (name: string) => ({ doc: (id: string) => makeDoc(name, id) }),
-  runTransaction: async (cb: (tx: unknown) => Promise<unknown>) =>
-    cb({
+  runTransaction: async (cb: (tx: unknown) => Promise<unknown>) => {
+    if (h.failTransactions) throw new Error("tx failed");
+    return cb({
       get: (ref: { get: () => Promise<unknown> }) => ref.get(),
       set: (ref: { coll: string; id: string }, val: Record<string, unknown>, opts?: unknown) =>
         writeDoc(ref.coll, ref.id, val, opts as { merge?: boolean } | undefined),
-    }),
+    });
+  },
 };
 
 vi.mock("firebase-admin/app", () => ({ initializeApp: vi.fn(), getApps: () => [{}] }));
@@ -83,7 +86,7 @@ vi.mock("../src/captain-adel.js", () => ({
 }));
 vi.mock("firebase-functions", async (importOriginal) => ({
   ...(await importOriginal<typeof import("firebase-functions")>()),
-  logger: { error: vi.fn(), info: vi.fn() },
+  logger: { error: vi.fn(), info: vi.fn(), warn: vi.fn() },
 }));
 
 let server: Server;
@@ -110,6 +113,7 @@ afterAll(() => {
 beforeEach(() => {
   h.stores = {};
   h.flowError = false;
+  h.failTransactions = false;
   h.flowResult = { answer: "A", sources: [], kind: "grounded", meta: { provider: "flash" } };
   // Default: any bearer token resolves to a uid equal to the token; "bad" rejects.
   h.verifyIdToken.mockImplementation((t: string) =>
@@ -186,6 +190,14 @@ describe("POST /chat — plan gating", () => {
     expect(r.status).toBe(429);
     expect(r.body).toEqual({ error: "quota_exceeded" });
     expect(r.headers.get("retry-after")).toBeTruthy();
+  });
+
+  it("fails closed on quota transaction errors", async () => {
+    h.failTransactions = true;
+    const r = await call("/chat", { method: "POST", headers: auth("u-tx"), json: { message: "hi" } });
+    expect(r.status).toBe(429);
+    expect(r.body).toEqual({ error: "quota_exceeded" });
+    expect(r.headers.get("retry-after")).toBe("60");
   });
 
   it("500s (without leaking) when the RAG flow throws on the buffered path", async () => {

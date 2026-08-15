@@ -38,7 +38,7 @@ vi.mock("../src/captain-adel.js", () => ({
 // but the output is noise here).
 vi.mock("firebase-functions", async (importOriginal) => ({
   ...(await importOriginal<typeof import("firebase-functions")>()),
-  logger: { error: vi.fn(), info: vi.fn() },
+  logger: { error: vi.fn(), info: vi.fn(), warn: vi.fn() },
 }));
 
 /** A minimal Express-like request carrying just the headers the gateway reads. */

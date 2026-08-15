@@ -57,6 +57,21 @@ function parseCookies(cookieHeader: string | undefined): Record<string, string> 
 /** Thrown by `authenticate` when an enforced check fails → mapped to 403. */
 export class AuthError extends Error {}
 
+function appCheckIsEnforced(): boolean {
+  return ENFORCE_APP_CHECK.value();
+}
+
+async function verifyAppCheckTokenOrThrow(req: Request): Promise<void> {
+  if (!appCheckIsEnforced()) return;
+  const appCheckToken = req.header("X-Firebase-AppCheck");
+  if (!appCheckToken) throw new AuthError("missing App Check token");
+  try {
+    await getAppCheck().verifyToken(appCheckToken);
+  } catch {
+    throw new AuthError("invalid App Check token");
+  }
+}
+
 /**
  * Verify the Firebase Session Cookie or ID token (optional → anonymous) and App
  * Check token (enforced in prod). Returns the caller's auth context — `uid` plus
@@ -68,15 +83,7 @@ export class AuthError extends Error {}
  * Exported for unit testing; the route handlers below are the only callers.
  */
 export async function authenticate(req: Request): Promise<AuthContext> {
-  const appCheckToken = req.header("X-Firebase-AppCheck");
-  if (ENFORCE_APP_CHECK.value()) {
-    if (!appCheckToken) throw new AuthError("missing App Check token");
-    try {
-      await getAppCheck().verifyToken(appCheckToken);
-    } catch {
-      throw new AuthError("invalid App Check token");
-    }
-  }
+  await verifyAppCheckTokenOrThrow(req);
 
   // 1. First check HttpOnly Session Cookie (preferred for web clients)
   const cookies = parseCookies(req.headers?.cookie);
@@ -145,6 +152,11 @@ export function parseRequest(body: unknown): ChatRequest | null {
 }
 
 const app = express();
+// App Check rollout guardrail: log when the enforcement state is left implicit.
+if (process.env.ENFORCE_APP_CHECK === undefined) {
+  logger.warn("ENFORCE_APP_CHECK is unset; falling back to default false");
+}
+logger.info("App Check enforcement state", { enforced: appCheckIsEnforced() });
 // Security middleware
 app.use(helmet());
 // req.ip = leftmost X-Forwarded-For. Without this the limiter below keys on the
@@ -203,9 +215,9 @@ async function readEntitlement(uid: string): Promise<Entitlement | null> {
  * Atomically consume one free-tier question for `uid` in a Firestore transaction on
  * `chatUsage/{uid}` — durable across instances, unlike the in-memory burst limiter,
  * so the daily allowance can't be reset by clearing localStorage or spreading load
- * across function instances. On a transaction error it fails open (allowed); the
- * per-uid burst limiter is the hard backstop. `chatUsage` is server-only (deny-all
- * in firestore.rules).
+ * across function instances. On a transaction error it fails closed (not allowed):
+ * this is a cost-sensitive gate and should never grant usage on a backend fault.
+ * `chatUsage` is server-only (deny-all in firestore.rules).
  */
 async function consumeFreeQuota(
   uid: string,
@@ -223,7 +235,7 @@ async function consumeFreeQuota(
     });
   } catch (err) {
     logger.error("chat quota transaction failed", { uid, err });
-    return { allowed: true, retryAfterSec: 0 };
+    return { allowed: false, retryAfterSec: 60 };
   }
 }
 
@@ -507,6 +519,16 @@ app.post(["/v1/ask", "/api/v1/ask"], async (req: Request, res: Response): Promis
 
 // Session Login Endpoint: exchanges a client-validated Firebase ID token for an HttpOnly session cookie
 app.post(["/auth/session-login", "/api/auth/session-login"], async (req: Request, res: Response): Promise<void> => {
+  try {
+    await verifyAppCheckTokenOrThrow(req);
+  } catch (err) {
+    if (err instanceof AuthError) {
+      res.status(403).json({ error: err.message });
+      return;
+    }
+    throw err;
+  }
+
   const { idToken } = req.body;
   if (!idToken || typeof idToken !== "string") {
     res.status(400).json({ error: "idToken is required" });
