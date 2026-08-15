@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useFetchJson } from '@/hooks/useFetchJson';
 import type { QuizBank, QuizData, QuizQuestion } from '@/lib/content';
 import { useStudyProgress, gradeCard } from '@/lib/studyProgress';
-import { dueKeys } from '@/calc/study/srs';
+import { dueKeys, type SrsEntry } from '@/calc/study/srs';
 import { glidePathBins } from '@/calc/study/glidePath';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { GlidePathStrip } from '@/components/study/GlidePathStrip';
@@ -38,16 +38,23 @@ export function Flashcards() {
     { id: 'part61', label: t('study.filterPart61') },
     { id: 'part91', label: t('study.filterPart91') },
     { id: 'part121_135', label: t('study.filterPart121_135') },
-    { id: 'saelpt', label: t('study.filterSaelpt') }
+    { id: 'saelpt', label: t('study.filterSaelpt') },
   ];
 
   const filteredBanks = useMemo(() => {
     if (!data) return [];
     if (category === 'all') return data.banks;
-    if (category === 'part61') return data.banks.filter(b => b.source.includes('Part 61'));
-    if (category === 'part91') return data.banks.filter(b => b.source.includes('Part 91'));
-    if (category === 'part121_135') return data.banks.filter(b => b.source.includes('Part 121') || b.source.includes('Part 135'));
-    if (category === 'saelpt') return data.banks.filter(b => b.id.includes('saelpt') || b.source.includes('Doc 9835') || b.source.includes('Annex 1'));
+    if (category === 'part61') return data.banks.filter((b) => b.source.includes('Part 61'));
+    if (category === 'part91') return data.banks.filter((b) => b.source.includes('Part 91'));
+    if (category === 'part121_135')
+      return data.banks.filter(
+        (b) => b.source.includes('Part 121') || b.source.includes('Part 135'),
+      );
+    if (category === 'saelpt')
+      return data.banks.filter(
+        (b) =>
+          b.id.includes('saelpt') || b.source.includes('Doc 9835') || b.source.includes('Annex 1'),
+      );
     return data.banks;
   }, [data, category]);
 
@@ -73,20 +80,25 @@ export function Flashcards() {
     );
 
   if (deepLinkedBank) {
-    return <Deck banks={[deepLinkedBank]} onBack={() => {
-      setParams({}, { replace: true });
-    }} />;
+    return (
+      <Deck
+        banks={[deepLinkedBank]}
+        onBack={() => {
+          setParams({}, { replace: true });
+        }}
+      />
+    );
   }
 
   return (
     <section className={`container-narrow ${styles.page}`}>
       <HubBackLink to="/learn?tab=practice" label={t('nav.learn')} />
       <h1>{t('study.flashcards')}</h1>
-      
+
       <div className={styles.categoryFilters}>
-        {categories.map(c => (
-          <button 
-            key={c.id} 
+        {categories.map((c) => (
+          <button
+            key={c.id}
             className={`${styles.categoryBtn} ${category === c.id ? styles.categoryBtnActive : ''}`}
             onClick={() => setCategory(c.id)}
           >
@@ -106,13 +118,22 @@ export function Flashcards() {
 
 type Card = QuizQuestion & { key: string; bankId: string };
 
-function Deck({ banks, onBack, hideBack }: { banks: QuizBank[]; onBack: () => void; hideBack?: boolean }) {
+function Deck({
+  banks,
+  onBack,
+  hideBack,
+}: {
+  banks: QuizBank[];
+  onBack: () => void;
+  hideBack?: boolean;
+}) {
   const { t } = useTranslation();
   const { fcSrs } = useStudyProgress();
   const reduce = usePrefersReducedMotion();
 
   const allCards: Card[] = useMemo(
-    () => banks.flatMap((b) => b.questions.map((c, idx) => ({ ...c, key: String(idx), bankId: b.id }))),
+    () =>
+      banks.flatMap((b) => b.questions.map((c, idx) => ({ ...c, key: String(idx), bankId: b.id }))),
     [banks],
   );
 
@@ -132,7 +153,7 @@ function Deck({ banks, onBack, hideBack }: { banks: QuizBank[]; onBack: () => vo
   const [got, setGot] = useState(0);
   const [again, setAgain] = useState<Card[]>([]);
   const [leaving, setLeaving] = useState<'known' | 'again' | null>(null);
-  
+
   const card = queue[i];
   const done = i >= queue.length;
 
@@ -181,7 +202,7 @@ function Deck({ banks, onBack, hideBack }: { banks: QuizBank[]; onBack: () => vo
   }
 
   const mergedSrs = useMemo(() => {
-    const merged: Record<string, any> = {};
+    const merged: Record<string, SrsEntry> = {};
     for (const c of allCards) {
       const srs = fcSrs[c.bankId] ?? {};
       if (srs[c.key]) {

@@ -764,6 +764,22 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
+.reviewCite {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.reviewCiteLabel {
+  font-weight: var(--fw-semibold);
+}
+.citeLink {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.citeLink:hover {
+  color: var(--brand-hover);
+}
 
 /* ── Quiz question header: progress line + flag toggle ── */
 .qHead {

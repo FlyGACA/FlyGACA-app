@@ -115,31 +115,97 @@ export function flightsToCsv(flights: Flight[]): string {
 
 export type FlightDraft = Omit<Flight, 'id'>;
 
-/** Parse one RFC-4180 record (handles quoted cells, escaped quotes, embedded commas). */
-function parseCsvLine(line: string): string[] {
-  const out: string[] = [];
-  let cur = '';
-  let quoted = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (quoted) {
+/**
+ * Parse an RFC 4180 CSV text string into a 2D array of rows and cells.
+ * Supports:
+ * - Multiline records with literal CRLF / LF within double-quoted fields
+ * - Escaped double quotes (`""`)
+ * - Commas within quoted fields
+ * - Mixed line endings (CRLF and LF)
+ * - Trailing blank rows
+ */
+export function parseCsv(text: string): string[][] {
+  if (!text) return [];
+  const rows: string[][] = [];
+  let curRow: string[] = [];
+  let curCell = '';
+  let inQuotes = false;
+  let hasRowContent = false;
+  let i = 0;
+  const len = text.length;
+
+  while (i < len) {
+    const c = text[i];
+    if (inQuotes) {
       if (c === '"') {
-        if (line[i + 1] === '"') {
-          cur += '"';
+        if (i + 1 < len && text[i + 1] === '"') {
+          curCell += '"';
+          hasRowContent = true;
+          i += 2;
+          continue;
+        } else {
+          inQuotes = false;
           i++;
-        } else quoted = false;
-      } else cur += c;
-    } else if (c === '"') {
-      quoted = true;
-    } else if (c === ',') {
-      out.push(cur);
-      cur = '';
+          continue;
+        }
+      } else if (c === '\r') {
+        if (i + 1 < len && text[i + 1] === '\n') {
+          curCell += '\n';
+          hasRowContent = true;
+          i += 2;
+          continue;
+        } else {
+          curCell += '\n';
+          hasRowContent = true;
+          i++;
+          continue;
+        }
+      } else {
+        curCell += c;
+        hasRowContent = true;
+        i++;
+        continue;
+      }
     } else {
-      cur += c;
+      if (c === '"') {
+        inQuotes = true;
+        hasRowContent = true;
+        i++;
+      } else if (c === ',') {
+        curRow.push(curCell);
+        curCell = '';
+        hasRowContent = true;
+        i++;
+      } else if (c === '\r' || c === '\n') {
+        if (c === '\r' && i + 1 < len && text[i + 1] === '\n') {
+          i++;
+        }
+        curRow.push(curCell);
+        curCell = '';
+        rows.push(curRow);
+        curRow = [];
+        hasRowContent = false;
+        i++;
+      } else {
+        curCell += c;
+        hasRowContent = true;
+        i++;
+      }
     }
   }
-  out.push(cur);
-  return out;
+
+  if (curRow.length > 0 || curCell !== '' || hasRowContent) {
+    curRow.push(curCell);
+    rows.push(curRow);
+  }
+
+  return rows;
+}
+
+/** Parse one RFC-4180 record (handles quoted cells, escaped quotes, embedded commas). */
+export function parseCsvLine(line: string): string[] {
+  const rows = parseCsv(line);
+  return rows[0] ?? [];
 }
 
 /**
@@ -149,12 +215,18 @@ function parseCsvLine(line: string): string[] {
  * date and no hours are skipped. Pure — the caller persists via `addFlight`.
  */
 export function csvToFlights(text: string): { flights: FlightDraft[]; skipped: number } {
-  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-  // Drop a trailing empty line; need at least a header + one row.
-  while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
-  if (lines.length < 2) return { flights: [], skipped: 0 };
+  const rows = parseCsv(text);
+  // Drop trailing blank lines; need at least a header + one row.
+  while (
+    rows.length &&
+    rows[rows.length - 1].length <= 1 &&
+    (rows[rows.length - 1][0] ?? '').trim() === ''
+  ) {
+    rows.pop();
+  }
+  if (rows.length < 2) return { flights: [], skipped: 0 };
 
-  const header = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase());
+  const header = rows[0].map((h) => h.trim().toLowerCase());
   const colAt = new Map<keyof Flight, number>();
   for (const field of CSV_FIELDS) {
     const idx = header.indexOf(field.toLowerCase());
@@ -163,9 +235,12 @@ export function csvToFlights(text: string): { flights: FlightDraft[]; skipped: n
 
   const flights: FlightDraft[] = [];
   let skipped = 0;
-  for (let r = 1; r < lines.length; r++) {
-    if (lines[r].trim() === '') continue;
-    const cells = parseCsvLine(lines[r]);
+  for (let r = 1; r < rows.length; r++) {
+    const cells = rows[r];
+    if (cells.every((c) => c.trim() === '')) {
+      skipped++;
+      continue;
+    }
     const get = (k: keyof Flight): string => {
       const at = colAt.get(k);
       return at != null ? (cells[at] ?? '').trim() : '';
