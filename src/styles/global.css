@@ -91,6 +91,30 @@ button {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* --- Custom Scrollbars (dark-first, tactile UI/UX) --- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--brand) 35%, var(--border-bright)) transparent;
+}
+*::-webkit-scrollbar {
+  inline-size: 8px;
+  block-size: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--brand) 35%, var(--border-bright));
+  border-radius: var(--radius-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-hover);
+  background-clip: padding-box;
 }
 
 /* --- Layout primitives --- */

@@ -77,6 +77,12 @@ function pick(ids, map, kind, appId) {
   });
 }
 
+const outFlagIdx = process.argv.indexOf('--out');
+const outArg = outFlagIdx !== -1 ? process.argv[outFlagIdx + 1] : null;
+const baseOutDir = outArg
+  ? (outArg.startsWith('/') ? outArg : join(root, outArg))
+  : join(root, 'apple', 'Apps');
+
 function emit(appId) {
   const app = APPS[appId];
   const pack = PACKS.find((p) => p.id === app.packId);
@@ -88,7 +94,7 @@ function emit(appId) {
   const gsModules = pick(pack.moduleIds, gsById, 'ground-school module', appId);
   const paths = pick(pack.pathIds, pathById, 'path', appId);
 
-  const out = join(root, 'apple', 'Apps', app.dir, 'Content');
+  const out = join(baseOutDir, app.dir, 'Content');
   mkdirSync(out, { recursive: true });
   const write = (name, data) => writeFileSync(join(out, name), `${JSON.stringify(data, null, 1)}\n`);
 
@@ -100,7 +106,7 @@ function emit(appId) {
 
   const nq = banks.reduce((n, b) => n + b.questions.length, 0);
   console.log(
-    `✓ ${app.dir}: ${banks.length} banks / ${nq} questions, ${gsModules.length} gs modules, ${paths.length} paths → apple/Apps/${app.dir}/Content`
+    `✓ ${app.dir}: ${banks.length} banks / ${nq} questions, ${gsModules.length} gs modules, ${paths.length} paths → ${out}`
   );
 }
 
@@ -112,3 +118,4 @@ for (const id of only) {
   else emit(id);
 }
 process.exit(failed ? 1 : 0);
+

@@ -65,19 +65,23 @@ function collectionRef(path: string) {
           ref: docRef(p),
         })),
       }),
-    where: (field: string, op: string, value: unknown) => ({
-      get: () =>
-        Promise.resolve({
-          docs: children(path)
-            .filter(({ data }) => {
-              if (op === "array-contains") {
-                return Array.isArray(data[field]) && (data[field] as unknown[]).includes(value);
-              }
-              return data[field] === value;
-            })
-            .map(({ id, data, path: p }) => ({ id, data: () => data, ref: docRef(p) })),
+    where: (field: string, op: string, value: unknown) => {
+      const matches = children(path).filter(({ data }) => {
+        if (op === "array-contains") {
+          return Array.isArray(data[field]) && (data[field] as unknown[]).includes(value);
+        }
+        return data[field] === value;
+      });
+      return {
+        get: () =>
+          Promise.resolve({
+            docs: matches.map(({ id, data, path: p }) => ({ id, data: () => data, ref: docRef(p) })),
+          }),
+        count: () => ({
+          get: () => Promise.resolve({ data: () => ({ count: matches.length }) }),
         }),
-    }),
+      };
+    },
     count: () => ({
       get: () => Promise.resolve({ data: () => ({ count: children(path).length }) }),
     }),

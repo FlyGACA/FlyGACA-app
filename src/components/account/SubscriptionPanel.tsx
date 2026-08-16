@@ -78,6 +78,11 @@ export function SubscriptionPanel() {
               </div>
             )}
           </dl>
+          <div className={styles.perks}>
+            <span className={styles.perkChip}>✓ {t('account.benefits.pilot')}</span>
+            <span className={styles.perkChip}>✓ {t('account.benefits.student')}</span>
+            <span className={styles.perkChip}>✓ {t('account.benefits.instructor')}</span>
+          </div>
           {isAuthAvailable() &&
             hasMoyasarSub &&
             (autoRenewOff ? (
@@ -96,6 +101,11 @@ export function SubscriptionPanel() {
       ) : (
         <>
           <p className={styles.free}>{t('account.subscription.none')}</p>
+          <div className={styles.perks}>
+            <span className={styles.perkChip}>{t('account.roles.pilot')}</span>
+            <span className={styles.perkChip}>{t('account.roles.student')}</span>
+            <span className={styles.perkChip}>{t('account.roles.instructor')}</span>
+          </div>
           <Link to="/pricing" className={styles.upgrade}>
             {t('common.goPro')}
           </Link>

@@ -129,6 +129,12 @@ export function Account() {
         <ButtonLink to="/dashboard" variant="clayPrimary">
           {t('account.dashboard')}
         </ButtonLink>
+        <ButtonLink to="/logbook" variant="clay">
+          {t('nav.logbook')}
+        </ButtonLink>
+        <ButtonLink to="/tools" variant="clay">
+          {t('nav.tools')}
+        </ButtonLink>
         <ButtonLink to="/settings" variant="clay">
           {t('account.settings')}
         </ButtonLink>

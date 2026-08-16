@@ -34,7 +34,9 @@
 }
 .srcRow:hover {
   border-color: var(--brand-hover);
-  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+  background: color-mix(in srgb, var(--brand) 10%, var(--surface));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand) 15%, transparent);
+  transform: translateY(-1px);
 }
 /* A verbatim citation is a readable, full-width passage on its own row — never a
    shrunk inline chip that wraps the quoted rule one word per line. */

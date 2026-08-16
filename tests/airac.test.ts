@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cycleProgress } from '@/calc/airac';
+import { airacCycle, cycleProgress } from '@/calc/airac';
 
 // AIRAC 2001 was effective 02 Jan 2020 (UTC) — the anchor every cycle counts from.
 describe('cycleProgress', () => {
@@ -21,3 +21,21 @@ describe('cycleProgress', () => {
     expect(p.fraction).toBeCloseTo(27.5 / 28, 5);
   });
 });
+
+describe('airacCycle', () => {
+  it('correctly calculates current and next AIRAC cycles for 2026-08-16', () => {
+    const cycle = airacCycle(new Date('2026-08-16T02:31:27Z'));
+    expect(cycle.id).toBe('2608');
+    expect(cycle.effective.toISOString().slice(0, 10)).toBe('2026-08-06');
+    expect(cycle.nextId).toBe('2609');
+    expect(cycle.next.toISOString().slice(0, 10)).toBe('2026-09-03');
+    expect(cycle.daysToNext).toBe(18);
+  });
+
+  it('handles year boundary AIRAC cycle progression', () => {
+    const cycle = airacCycle(new Date('2026-01-22T00:00:00Z'));
+    expect(cycle.id).toBe('2601');
+    expect(cycle.effective.toISOString().slice(0, 10)).toBe('2026-01-22');
+  });
+});
+

@@ -2,14 +2,15 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  background: color-mix(in srgb, var(--bg) 62%, transparent);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: color-mix(in srgb, var(--bg) 68%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding-block-start: 12vh;
   animation: cmdk-fade var(--dur) var(--ease);
+  transition: opacity var(--dur) var(--ease);
 }
 
 @keyframes cmdk-fade {
@@ -20,21 +21,31 @@
 
 .box {
   inline-size: min(560px, 92vw);
-  /* Translucent chrome over the blurred scrim — same overlay material as the
-     header/dock; the scrim's dim keeps text contrast comfortable. */
   background: var(--surface-overlay);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: var(--hairline-bright);
   border-radius: var(--radius-xl);
-  box-shadow: var(--elev-3), var(--edge-sheen);
+  box-shadow: var(--elev-3), var(--edge-sheen), 0 0 32px color-mix(in srgb, var(--brand) 15%, transparent);
   overflow: hidden;
   animation: cmdk-rise var(--dur) var(--ease);
+  transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 
 @keyframes cmdk-rise {
   from {
-    transform: translateY(-12px) scale(0.98);
+    transform: translateY(-14px) scale(0.97);
+    opacity: 0;
+  }
+}
+
+@starting-style {
+  .scrim {
+    opacity: 0;
+  }
+  .box {
+    transform: translateY(-14px) scale(0.97);
+    opacity: 0;
   }
 }
 
@@ -120,15 +131,18 @@
   align-items: center;
   gap: var(--space-3);
   padding: 0.6rem 0.7rem;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
   text-align: start;
+  transition: var(--transition-interactive);
 }
 
 .itemActive {
-  background: color-mix(in srgb, var(--teal-bright) 12%, transparent);
+  background: color-mix(in srgb, var(--teal-bright) 14%, transparent);
+  border-color: color-mix(in srgb, var(--teal-bright) 24%, transparent);
+  box-shadow: inset 0 0 12px color-mix(in srgb, var(--teal-bright) 10%, transparent);
 }
 
 .code {

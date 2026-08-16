@@ -36,7 +36,7 @@ async function requireCheckoutReady(): Promise<void> {
   if (!isFirebaseConfigured()) throw new Error('billing-unavailable');
 
   const auth = await getFirebaseAuth();
-  if (auth) await auth.authStateReady();
+  if (auth?.authStateReady) await auth.authStateReady();
   if (!auth?.currentUser) throw new Error('sign-in-required');
 }
 

@@ -4,8 +4,8 @@
   "lastChecked": "2026-06-15T11:44:28.766Z",
   "lastUpdated": "2026-06-13T13:25:17.938Z",
   "airac": {
-    "current": "2026-06-11",
-    "next": "2026-07-09",
+    "current": "2026-08-06",
+    "next": "2026-09-03",
     "cycleDays": 28
   },
   "sources": [
@@ -23,7 +23,7 @@
       "url": "https://gaca.gov.sa/web/en/aeronautical-information",
       "status": "unreachable",
       "documents": 0,
-      "effective": "2026-06-11"
+      "effective": "2026-08-06"
     },
     {
       "id": "aerodromes",
@@ -31,7 +31,7 @@
       "url": "https://gaca.gov.sa/web/en/aeronautical-information",
       "status": "unreachable",
       "documents": 0,
-      "effective": "2026-06-11"
+      "effective": "2026-08-06"
     },
     {
       "id": "charts",
@@ -39,7 +39,7 @@
       "url": "https://gaca.gov.sa/web/en/aeronautical-information",
       "status": "unreachable",
       "documents": 0,
-      "effective": "2026-06-11"
+      "effective": "2026-08-06"
     },
     {
       "id": "advisory-circulars",

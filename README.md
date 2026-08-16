@@ -396,9 +396,18 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 ---
 
-## 📖 The whole family, one book
+## 🌐 The Fly GACA Repository Family
 
-New to the Fly GACA ecosystem? [**The Book of Fly GACA**](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) maps all ten repositories — this monorepo, the Captain Adel service, the native iOS family, the six App Store repos and the Office — with the shared principles, the cross-platform data-parity contracts and the glossary in one place.
+Fly GACA is composed of ten focused repositories. [**The Book of Fly GACA**](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) is the central architecture manual mapping all surfaces, data-parity contracts, and technical principles in one place.
+
+| Repository | Role & Description |
+| :--- | :--- |
+| [FlyGACA/FlyGACA-app](https://github.com/FlyGACA/FlyGACA-app) (this repo) | flygaca.com — React 19 + Vite 8 PWA web app, Firebase backend (`me-central1`), regulatory corpus + content pipelines |
+| [FlyGACA/Captain-Adel](https://github.com/FlyGACA/Captain-Adel) | Captain Adel — AI flight instructor service (`captadel.com`), RAG engine behind chat, grounding & evals |
+| [ay2m/FlyGACA](https://github.com/ay2m/FlyGACA) | Native iOS app family — shared `FlyGACAKit` package + ELPT and AIP App Store targets |
+| [FlyGACA/Office](https://github.com/FlyGACA/Office) | Business operating system — strategy, governance, legal, finance, KSA compliance, HR & GTM docs |
+| [FlyGACA/ELPT](https://github.com/FlyGACA/ELPT) · [AIP](https://github.com/FlyGACA/AIP) | App Store metadata repos — store listing copy, localized screenshots, per-app roadmap |
+| [FlyGACA/PPL](https://github.com/FlyGACA/PPL) · [CPL](https://github.com/FlyGACA/CPL) · [IR](https://github.com/FlyGACA/IR) · [ATPL](https://github.com/FlyGACA/ATPL) | App Store metadata repos for paused exam modules |
 
 ---
 
