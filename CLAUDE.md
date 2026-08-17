@@ -306,10 +306,32 @@ That commit also swept up eight `src/` files. Seven had no remaining references,
 macOS. It has been restored. **Lesson for this repo: a case-only filename difference is invisible
 on a Mac**; if you rename or delete a CSS module, build once on Linux (or in CI) before trusting it.
 
-### Known-broken right now
+The same commit also deleted `scripts/link-lint-typescript.mjs`, together with the `typescript-6`
+devDependency alias and the `postinstall` hook that runs it — see below. Also restored.
 
-- **`npm run lint` fails outright**, before linting anything: `package.json` pins
-  `typescript: ^7.0.2` and typescript-eslint refuses TS 7.0 ("does not support TS 7.0"). Nothing in
-  the source causes it, and `typecheck` (plain `tsc -b`) is unaffected — so `verify` cannot pass
-  until TypeScript is pinned back to 6.x or typescript-eslint ships TS 7 support. Until then run
-  the other steps individually rather than assuming the whole chain is red for your change.
+### Two TypeScripts, on purpose
+
+`typescript-eslint@8` **throws on load under TypeScript 7** ("does not support TS 7.0"), before
+ESLint reads a single file — and since `lint` comes early in the `verify` chain, that alone stops
+the whole gate. It supports `>=4.8.4 <6.1.0`; no released version handles TS 7, so upgrading it is
+not an option and downgrading TypeScript would undo the deliberate TS 7 migration.
+
+So the repo runs **two** TypeScripts side by side, exactly as TypeScript's own 7.0 announcement
+prescribes:
+
+- `typescript: ^7.0.2` — what `tsc -b` and the build use.
+- `typescript-6: npm:typescript@6.0.3` — what typescript-eslint gets, via
+  `scripts/link-lint-typescript.mjs`, run from `postinstall`. It symlinks
+  `node_modules/<each typescript-eslint package>/node_modules/typescript` → `typescript-6`.
+
+**npm `overrides` cannot express this** — `typescript` is a *peer* dependency of the
+`@typescript-eslint/*` packages and a direct root devDependency, so npm hoists the root's 7.x into
+the single slot and resolves the peer to it, marking the override invalid instead of nesting a
+second copy. That reasoning lives in the script's header; read it before touching this.
+
+`functions/` carries its own self-contained copy of the same script and alias (a `../scripts/…`
+import would break `firebase deploy --only functions`, which uploads only that directory).
+
+This is a workaround, not a design. **Delete all of it** — script, `postinstall`, and the
+`typescript-6` alias, in both packages — once typescript-eslint ships TS 7 support; `npm run lint`
+passing without it is the signal.
