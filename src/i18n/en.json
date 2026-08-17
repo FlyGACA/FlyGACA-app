@@ -128,22 +128,6 @@
     "breadcrumb": "Breadcrumb",
     "breadcrumbHome": "Home"
   },
-  "command": {
-    "title": "Search & jump",
-    "open": "Search (⌘K)",
-    "searchShort": "Search",
-    "placeholder": "Search pages, tools, guides, GACAR Parts…",
-    "noResults": "No matches. Try a Part number, tool name, or topic.",
-    "partPrefix": "Part",
-    "hintNavigate": "navigate",
-    "hintOpen": "open",
-    "groups": {
-      "page": "Page",
-      "tool": "Tool",
-      "guide": "Guide",
-      "library": "Library"
-    }
-  },
   "notFound": {
     "eyebrow": "404",
     "title": "This page took a wrong turn",
@@ -173,15 +157,7 @@
     "title": "Every Saudi reg. One captain on the answer.",
     "subtitle": "A free library of Saudi civil-aviation regulations, with an AI instructor that cites the exact Part and section.",
     "ctaLibrary": "Open the library",
-    "ctaTools": "Flight tools",
     "ctaChat": "Ask Captain Adel",
-    "stats": {
-      "parts": "GACAR Parts",
-      "handbooks": "Handbooks",
-      "aerodromes": "Aerodromes",
-      "charts": "VFR charts",
-      "reference": "Reference docs"
-    },
     "synced": "synced {{mins}} min ago with GACA",
     "marquee": [
       {
@@ -259,7 +235,6 @@
       "priceValue": "Free"
     },
     "how": {
-      "eyebrow": "How it works",
       "title": "From question to cited answer in seconds",
       "steps": [
         {
@@ -277,7 +252,6 @@
       ]
     },
     "why": {
-      "eyebrow": "Why trust it",
       "title": "Built to be checked, not taken on faith",
       "items": [
         {
@@ -299,11 +273,9 @@
       ]
     },
     "convert": {
-      "eyebrow": "Go further",
       "title": "Unlock the full flight deck",
       "lead": "Unlimited Captain Adel, currency reminders, logbook export and offline access, for serious students and crews.",
       "cta": "See Pro plans",
-      "secondary": "Ask Captain Adel",
       "proTitle": "You're flying Pro",
       "proLead": "Your full toolkit is ready. Jump back into your dashboard.",
       "proCta": "Open my dashboard"
@@ -357,8 +329,7 @@
       "adel": {
         "status": "Online",
         "heading": "Captain Adel",
-        "desc": "Ask anything; he cites the exact Part and section.",
-        "cta": "Ask Captain Adel"
+        "desc": "Ask anything; he cites the exact Part and section."
       },
       "learn": {
         "eyebrow": "Learn",
