@@ -183,19 +183,24 @@ mirrors on every merge to `main`. "Now" is about making that production footprin
 Verified during the repo cleanup and left outside its low-risk scope. None is a bug; recorded so
 the findings are not re-derived.
 
-- **[platform]** **`loadRegulationsLookup` has no callers.** `src/lib/content.ts` exposes it, but
-  nothing calls it. The JSON itself is no longer orphaned — `/library/map` (motions round 2) reads
-  `public/data/regulations-lookup.json` directly via `useFetchJson` for the constellation edges,
-  so the `parse-regulations` pipeline output has a reader again. Remaining decision: point
-  `LibraryMap` at the shared loader/type (or retire the loader), and optionally wire the
-  cross-reference lookup into the library reader too.
-- **[platform]** **~64 dead i18n keys.** Verified unreferenced across all source files. Cleanest
-  cluster is the entire `command.*` namespace (superseded by `cmdk.*`, which is what
-  `CommandPalette.tsx` reads) plus `home.*` leftovers from the bento redesign. **A future sweep must
-  not be automated naively:** ~400+ further keys resolve only through template literals
-  (`guides.items.**`, `wx.code.*`, `notam.abbr.*` via `returnObjects`, `tools.items.*`, the bare
-  `account.${key}` in `LogbookTable.tsx`) and a literal-match pass will call all of them dead.
-  Re-run against current `main` first — the Moyasar work added a live `checkout.*` namespace.
+- **[platform]** ~~**`loadRegulationsLookup` has no callers.** `src/lib/content.ts` exposes it, but
+  nothing calls it.~~ **Done.** The loader was retired; `src/lib/content.ts` no longer exports it.
+  `/library/map` reads `public/data/regulations-lookup.json` via `useFetchJson` typed by the shared
+  `RegulationsLookup` in `src/lib/content.types.ts`, so the `parse-regulations` pipeline output has
+  a reader and a single shared type. Still optional: wire the cross-reference lookup into the
+  library reader too.
+- **[platform]** **~64 dead i18n keys.** Verified unreferenced across all source files. **The
+  cleanest cluster is now removed** (Aug 2026): the entire `command.*` namespace (12 keys,
+  superseded by `cmdk.*`, which is what `CommandPalette.tsx` reads) plus 11 `home.*` leftovers from
+  the bento redesign — `home.ctaTools`, the `home.stats.*` block, the `how`/`why`/`convert`
+  eyebrows, `home.convert.secondary` and `home.dashboard.adel.cta`. Both bundles stayed in parity.
+  `home.trust.parts|tools|guides` were **kept**: they look dead to a literal scan but resolve
+  through `` t(`home.trust.${s.key}`) `` off `TRUST_STATS` in `Home.tsx`. The rest of the tally is
+  still open. **A future sweep must not be automated naively:** ~400+ further keys resolve only
+  through template literals (`guides.items.**`, `wx.code.*`, `notam.abbr.*` via `returnObjects`,
+  `tools.items.*`, the bare `account.${key}` in `LogbookTable.tsx`) and a literal-match pass will
+  call all of them dead. Re-run against current `main` first — the Moyasar work added a live
+  `checkout.*` namespace.
 - **[platform]** ~~**`functions/src/gateway.ts` (578 lines) holds pure logic that belongs in a `*-core`.**
   `parseCookies`, `parseRequest` + the message/history caps, and the security-sensitive
   `isAllowedOrigin` CORS policy have no Firebase deps; `functions/tests/gateway.test.ts` has to mock
