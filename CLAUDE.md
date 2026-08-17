@@ -19,55 +19,69 @@ pure sim logic in `src/calc/hud/`), a **learn/guides** hub (`/learn`, `/guides/:
 tools (`/study/*` — quiz, flashcards, ground school, mock exam, paths, exam-prep **packs**, study
 sheets), an authenticated **account** area (`/account`, `/dashboard`, `/currency`, `/logbook`,
 `/records`, `/settings`), **pricing/schools/checkout** (`/pricing`, `/schools`, `/checkout`,
-`/checkout/return`), a **licensed Captain Adel API** marketing page (`/developers` — see
-`docs/LICENSED-API.md`), a **B2B org-admin** cohort dashboard (`/business/admin`), and `/about` +
-legal pages (incl. `/refund`). Home itself is a **bento dashboard** (`src/components/bento/` —
+`/checkout/return`), a **licensed Captain Adel API** marketing page (`/developers`), a **B2B
+org-admin** cohort dashboard (`/business/admin`), and `/about`, `/support` +
+legal pages (`/disclaimer`, `/terms`, `/privacy`, `/refund`, `/safety`). Home itself is a **bento
+dashboard** (`src/components/bento/` —
 grid, card glow, and a widgets/ family — lazy-loaded off the hero's critical path), and the global
 **command palette** (`src/components/CommandPalette/`) jumps between all of these. `/learn` is the
 canonical hub — `/study` and `/guides` redirect into it (`/study` → `/learn?tab=practice`); don't
 relink them to the old paths.
-Beyond the web app, `apple/` is a native iOS app family (one shared Swift package,
-`apple/FlyGACAKit`, one App Store app per exam-prep pack) built from a **flavor** switch
-(`src/flavors/`, `src/app/flavor/`; `IS_FLAVOR_APP` is defined in `src/flavors/current.ts` and
-consumed by `src/router.tsx`) that swaps in a reduced, single-pack route tree;
-`scripts/build-flavor.mjs` slices content per flavor. See
-`apple/ARCHITECTURE.md`, `docs/RUNBOOK-native.md`, and `docs/STORE-SUITE.md`.
+
+**Arabic is the same route tree mounted under `basename: '/ar'`** (`src/router.tsx` bottom +
+`localeRedirect`/`AR_PREFIX` in `src/lib/seo/seo.ts`, applied in `src/main.tsx` before the router
+mounts). React Router strips the prefix, so `<Link>`s auto-prepend `/ar` and `useLocation()` still
+reports the logical path — never hand-write `/ar/...` into a link.
+
+Beyond the web app there is a **flavor** switch (`src/flavors/`, `src/app/flavor/`; `IS_FLAVOR_APP`
+is defined in `src/flavors/current.ts` and consumed by `src/router.tsx`) that swaps in a reduced,
+single-pack route tree for the per-pack app builds; `scripts/build-flavor.mjs` slices content per
+flavor. **The native Swift/Xcode code is no longer in this repo** — the `apple/` mirror was retired
+(2026-08) and lives only in `ay2m/FlyGACA-ios`. What stays here is the **content source of truth**
+it consumes: `public/data/`, `src/lib/prepCatalog.ts`, and the generators
+`scripts/build-ios-content.mjs` + `scripts/native/gen-app-icons.mjs`, which the iOS repo's
+`scripts/sync-content.sh` shells into. The leftover `ios:build:*` / `ios:generate` /
+`screenshots:*` npm scripts and `scripts/native/xcodebuild-wrapper.sh` have **no `apple/` tree to
+act on here** — treat them as dead in this repo and do the work in `FlyGACA-ios`.
 
 The repo also contains the **backend**: `functions/` holds the Firebase Cloud Functions — the
 Express gateway (`chat`) serving `/api/chat` + `/api/feedback` (auth, App Check, rate limiting, free
-daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authenticated, see
-`docs/LICENSED-API.md`), the Captain Adel RAG flow (Genkit + Gemini, see
-`docs/DESIGN-genkit-rag-backend.md`), **Moyasar** billing (`createCheckoutConfig`, `confirmPayment`,
+daily quota, SSE) plus the licensed `/v1/ask` API surface (tiered, API-key-authenticated —
+`api-key-core.ts` / `api-tier-core.ts`), the Captain Adel RAG flow (Genkit + Gemini —
+`captain-adel.ts`, `captain-adel-prompt.ts`, `corpus.ts`), **Moyasar** billing (`createCheckoutConfig`, `confirmPayment`,
 `cancelAutoRenew`, `moyasarWebhook`, `renewMoyasarSubscriptions`, and `getReferralCode`, all in
 `billing.ts` — writes `users/{uid}.entitlement`), the `claimStaffAccess`, `claimSchoolSeat`, and
 `claimFoundingAccess` (pre-launch grandfather grant) complimentary/seat-grant callables, and the B2B
 org callables (`getMyOrgs`, `getCohortReadiness`, `provisionSeats`). `functions/src/index.ts` is the
 single deploy manifest — only triggers exported there are deployed. It is its own npm package with
-its own CI gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
-it (root `npm run verify` does not cover it). Deploy region is `me-central2` (Dammam, in-Kingdom /
-PDPL; the single source of truth is `functions/src/region.ts`, mirrored client-side by
-`FUNCTIONS_REGION` in `src/lib/services/firebase.ts`). firebase.json's rewrite regions must match —
-`functions/tests/region.test.ts` guards and pins that pairing. The `me-central1` → `me-central2`
-cutover is **switched in code/config** (Firestore already sits in `me-central2`), but the production
-Cloud Functions have **not been redeployed** to `me-central2` yet — they still run in `me-central1`,
-so a Firebase Hosting deploy currently errors ("functions … present but in the wrong region") until
-the next functions deploy lands. (`docs/RUNBOOK-deploy.md` still calls the cutover "planned" and is
-itself stale.)
+its own gate — run `npm run lint && npm test && npm run build` inside `functions/` when you touch
+it (root `npm run verify` does not cover it). Deploy region is **`me-central1`**: the single source
+of truth is `functions/src/region.ts`, mirrored client-side by `FUNCTIONS_REGION` in
+`src/lib/services/firebase.ts` and by every `"region"` field in `firebase.json`'s rewrites —
+`functions/tests/region.test.ts` guards and pins that pairing, and Hosting refuses to finalize a
+version if they disagree. Firestore already sits in `me-central2` (Dammam, in-Kingdom / PDPL); the
+`me-central1` → `me-central2` functions cutover is **still pending** and is a deliberate ordered
+migration, not a one-line edit — deploy to `me-central2` first, flip the config last, then delete
+the stranded `me-central1` functions (procedure in the header comment of `region.ts`).
 
 ## Architecture
 
 - **Build:** Vite + TypeScript (strict). `npm run build` runs
-  `build:sitemap → tsc -b → vite build → prerender-head → check:prerender` → `dist/`, which is both
+  `build:sitemap → tsc -b → vite build → prerender-head → check:prerender → check:jsonld` →
+  `dist/`, which is both
   the static-host payload and the Capacitor `webDir`. `prerender-head.mjs` stamps per-route
   `<head>` meta (titles, descriptions, canonical, OG, JSON-LD) into the shipped HTML for SEO/AI
-  search; `check:prerender` asserts coverage. A fuller static-HTML prerender (`npm run prerender`)
-  runs in the deploy pipeline.
+  search; `check:prerender` asserts coverage and `check:jsonld` validates the stamped structured
+  data. A fuller static-HTML prerender (`npm run prerender`) runs in the deploy path, followed by
+  `check:prerender:coverage`.
 - **Routing:** `src/router.tsx` is the single route table (routes are lazy-loaded per page). Pages
   live one-per-folder under `src/pages/`. The shared chrome (`src/app/Layout|Header|Footer`, plus
   `MobileDock`, `AccountMenu`, and the `src/app/nav.ts` nav registry)
   replaces the legacy `build-chrome.js` stamper — chrome is now a component, never copied.
 - **i18n / RTL:** `src/i18n/index.ts` boots i18next from `en.json` / `ar.json` and mirrors the
-  choice onto `<html lang/dir>` so RTL flips document-wide. `LangToggle` switches languages.
+  choice onto `<html lang/dir>` so RTL flips document-wide. `LangToggle` switches languages, and
+  the language also owns the URL: Arabic documents live under the `/ar` basename (see above), so a
+  language switch is a navigation, not just a state change.
 - **Styling:** `src/styles/tokens.css` is the design-token source of truth (the Falcon palette);
   components use CSS Modules with **logical properties** so RTL mirrors automatically. See
   `FIGMA_DESIGN_SYSTEM.md` for the design system. Motion is tokenized too: `framer-motion` mirrors
@@ -88,7 +102,7 @@ itself stale.)
   `calc/pilot/` (`currency`, `logbook`, `achievements`, `onboarding`, `ics`, plus the shared
   `flightFields` readers for the free-text `Flight` columns), `calc/library/`
   (`anchor`, `corpusNav`, `changeTracking`, `offlineManifest`, `libraryFilter`, `constellation`),
-  `calc/study/` (`srs` — the cross-platform contract the apple/ Swift port mirrors — `shuffle`, and
+  `calc/study/` (`srs` — the cross-platform contract the `FlyGACA-ios` Swift port mirrors — `shuffle`, and
   `glidePath`), `calc/hud/` (the airspace-sim engine: `scenario`, `kinematics`, `projection`,
   `sectors`, `geoKsa`, `callsigns`, `simMetar`, seeded `rng`), and `calc/app/`
   (`authError`, `dashboardLayout`, `emailShape`, `passwordPolicy`, `pricingView`, `toolPresets`).
@@ -157,10 +171,14 @@ itself stale.)
   ownership proof. The app never grants; it only reads `entitlement` to gate UI. Checkout supports
   server-validated promo codes (`promo-core.ts`, `promoCodes/{code}`) applied only to the first
   charge — the client passes the code string, never a price.
-- Docs: `docs/DESIGN-genkit-rag-backend.md`, `docs/BILLING.md`, `docs/APP-CHECK-BACKEND.md`,
-  `docs/LICENSED-API.md` (the `/v1/ask` metered API, `api-tier-core.ts` tiers),
-  `docs/PRICING-REVENUE-STRATEGY.md`, `docs/b2b/` (org-admin dashboard + study-progress-sync
-  design).
+- **Tests:** `functions/tests/` mirrors the source one-file-per-module (`*-core.test.ts` for the
+  pure policy, `*-routes.test.ts` for the Express wrappers), plus `region.test.ts` (the
+  region/`firebase.json` pairing) and the `corpus-*.test.ts` set (citation + lineage integrity of
+  the RAG corpus loader).
+- The `docs/` tree that used to hold the backend design notes (`DESIGN-genkit-rag-backend.md`,
+  `BILLING.md`, `APP-CHECK-BACKEND.md`, `LICENSED-API.md`, `b2b/`) **is no longer in the repo** —
+  see "Repo layout" below. The code is the reference now; `functions/src/index.ts`'s header comment
+  and the `*-core.ts` module headers carry the surviving rationale.
 
 ## Hosting & deploy
 
@@ -170,8 +188,11 @@ Cloud Functions gateway for `/api/*`:
 - **Firebase Hosting** is the **canonical origin**: it fronts the Cloud Functions (`chat`,
   `moyasarWebhook`) and — since the DNS cutover completed 2026-07-31 — serves the `flygaca.com`
   apex and `www` directly (with `flygaca-app.web.app` as the underlying site). `npm run deploy`
-  builds → `prerender` → coverage check → `firebase deploy`, but the **production deploy path is
-  the `deploy.yml` workflow**, which additionally offloads the corpus to the bucket.
+  builds → `prerender` → `check:prerender:coverage` → `firebase deploy --only hosting`; it does
+  **not** deploy `functions/` (use `deploy:functions` / `deploy:all`). The GitHub Actions
+  `deploy.yml` workflow that used to own production deploys — and additionally offloaded the corpus
+  to the bucket — is gone with the rest of `.github/` (see "Repo layout"), so deploys are currently
+  run from a workstation.
 - **Cloudflare Worker** (`worker/index.ts` + `wrangler.toml`) and the **Netlify** / **Vercel**
   mirrors each serve `dist/` and **proxy `/api/*` back to the Firebase origin** as a same-origin
   rewrite — so chat/content keep working and the strict CSP (`connect-src 'self'`) never changes.
@@ -180,11 +201,11 @@ Cloud Functions gateway for `/api/*`:
 - Redirects consolidate the marketing domains onto `flygaca.com` (e.g. `captadel.com` → `flygaca.com`
   in `vercel.json` — that rule only fires for traffic still hitting Vercel).
 
-See `docs/RUNBOOK-deploy.md` for the deploy runbook (including the completed `flygaca.com` DNS
-cutover and the in-progress `me-central1` → `me-central2` functions cutover — config switched, the
-production functions redeploy still pending) and `docs/DATA-HOSTING.md`
-for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
-`supabase/migrations/` (pgvector for RAG embeddings) hold the datastore schemas.
+Hosting/runtime config lives in the repo root, not in prose: `firebase.json` (rewrites + regions),
+`firestore.rules` / `firestore.indexes.json` / `storage.rules` / `database.rules.json`,
+`apphosting.yaml`, `remoteconfig.template.json`, `wrangler.toml`, `netlify.toml`, `vercel.json`.
+`supabase/migrations/` holds the pgvector schema for the RAG embeddings. (`dataconnect/` and the
+`docs/RUNBOOK-deploy.md` / `docs/DATA-HOSTING.md` runbooks are no longer in the repo.)
 
 ## Conventions (enforced)
 
@@ -195,24 +216,24 @@ for how the corpus bucket is served. `dataconnect/` (Firebase Data Connect) and
   not-affiliated / verify-against-GACA text.
 - **Tokens only / logical properties only.** No hard-coded colours; no physical `left`/`right`.
 - **Never commit build output.** `public/sitemap.xml` / `public/robots.txt` are regenerated by
-  `build:sitemap` and git-ignored. Keep branches synced with `main`; see `docs/MERGE-CONFLICTS.md`
-  for prevention + how to resolve lockfile / i18n conflicts.
-- Run `npm run verify` before committing. It chains the frontend gate —
-  `typecheck → lint → format:check → test → build → check:bundle → check:perf` (`check:bundle` fails
-  if the initial gzipped JS exceeds its budget — 189 kB today; route chunks excluded by design.
-  `check:perf` is the companion gate over **every** emitted chunk — a per-chunk gz ceiling plus a
-  total-footprint ceiling — catching a lazy route chunk that balloons, which `check:bundle` ignores). CI
-  (`.github/workflows/ci.yml`) mirrors the same steps individually but swaps `test` for
-  `test:coverage` — a coverage **ratchet** with thresholds in `vitest.config.ts` — plus three more
-  jobs you should be aware of when your change touches them:
-  **functions** (`lint · test:coverage · build` inside `functions/`), **Firestore rules**
-  (`npm run test:rules`, emulator-backed — `firestore.rules` + `tests/rules/`), and **e2e · a11y**
-  (`npm run test:e2e`, Playwright — `e2e/smoke.spec.ts`, `flows.spec.ts`, `a11y.spec.ts`).
-  `.github/workflows/` holds six workflows in all: `ci.yml`, **`deploy.yml`** (the only production
-  deploy — build, budgets, prerender, corpus-bucket offload, `firebase deploy`),
-  `deploy-cloudflare.yml` (mirror, secret-gated), `firebase-hosting-pull-request.yml` (PR
-  previews), `ios.yml` (Swift tests + per-app builds), and **docs-parser** — which lints the
-  regulatory Markdown (`lint:md`), runs `parse:regulations`, and upserts embeddings.
+  `build:sitemap` and git-ignored. Keep branches synced with `main`.
+- **`npm run verify` is the gate, and it is now the *only* gate** — there is no CI in the repo (see
+  "Repo layout"), so nothing catches a skipped run for you. It chains
+  `typecheck → lint → format:check → test → build → check:bundle → check:perf`. `check:bundle` fails
+  if the **initial** gzipped JS exceeds its budget (`BUDGET_KB = 189` in `scripts/check-bundle.mjs`;
+  route chunks are lazy and excluded by design — the constant's header comment logs every re-base
+  and why, so add a line there rather than silently bumping it). `check:perf` is the companion gate
+  over **every** emitted chunk — a per-chunk gz ceiling plus a total-footprint ceiling — catching a
+  lazy route chunk that balloons, which `check:bundle` ignores.
+- Suites `verify` does **not** run, and when to run them yourself:
+  - `functions/`: `cd functions && npm run lint && npm test && npm run build` — its own npm package.
+  - `npm run test:rules` — `firestore.rules` against `tests/rules/`, wrapped in
+    `firebase emulators:exec` (needs the Firestore emulator, hence its own
+    `vitest.rules.config.ts` and exclusion from the default run).
+  - `npm run test:coverage` — the coverage **ratchet**; thresholds live in `vitest.config.ts`.
+  - `npm run test:e2e` — Playwright, `testDir: './e2e'`. **The `e2e/` directory is not in the repo
+    right now**, so this collects nothing; `playwright.config.ts` is retained for when the specs
+    return.
 
 ## Adding a new tool
 
@@ -228,35 +249,50 @@ only structure (route, category, status, keywords).
 ## Content & data pipelines (`scripts/`)
 
 Node ESM scripts under `scripts/` (many wired to npm scripts) maintain the corpus and generated
-assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory corpus; `sync:gaca:apply`
-is the apply-and-normalise variant), `parse:regulations` (compile the cross-ref lookup from
-`content/regulations/*.md`), `build:airports` / `build:chunks` / `embeddings:upsert` (Supabase
-pgvector), `build:sitemap`, `gen:og`, `gen:aip-sheet` (build the AIP study sheet), `gen:captain`
-(Captain Adel imagery), `audit:ai` (the AI-search visibility audit behind `SEO-PLAN.md`),
-`optimize:img`, and `new:guide` (scaffold a guide — see `GUIDE_AUTHORING.md`). Shared script
-helpers live in `scripts/lib/` (flavor slicing, markdown splitting, regulations parsing, sync
-merge) and `scripts/native/` (iOS build/signing helpers). Deploy slices exist as
-`deploy:rules` / `deploy:functions` / `deploy:all` — `npm run deploy` alone does **not** deploy
-`functions/`.
+assets — e.g. `sync:gaca` + `data:normalize` (pull/normalise the regulatory corpus into
+`public/data/`; `sync:gaca:apply` is the apply-and-normalise variant, and `sync-input/` is its
+staging area), `build:airports` / `build:chunks` / `embeddings:upsert` (Supabase pgvector),
+`build:sitemap`, `gen:og`, `gen:aip-sheet` (build the AIP study sheet), `gen:captain`
+(Captain Adel imagery), `audit:ai` + `indexnow` (the AI-search visibility audit and IndexNow ping
+behind `SEO-PLAN.md`), `optimize:img`, `new:guide` (scaffold a guide — see `GUIDE_AUTHORING.md`),
+and `build:apps-content` (`build-ios-content.mjs` — generates the iOS repo's `Content/` folders).
+Shared script helpers live in `scripts/lib/` (flavor slicing, markdown splitting, regulations
+parsing, sync merge). Deploy slices exist as `deploy:rules` / `deploy:functions` / `deploy:all`.
+
+Two script pairs are currently **input-less**, because `content/regulations/*.md` left with the
+`content/` tree: `lint:md` (markdownlint over that glob) and `parse:regulations` (which compiled
+`public/data/regulations-lookup.json` from it). The generated lookup is still committed and still
+read at runtime — regenerating it means restoring the Markdown source first.
 
 ## Where to look
 
 > 📖 **Family context:** [The Book of Fly GACA](https://github.com/ay2m/FlyGACA/blob/main/THE-BOOK-OF-FLY-GACA.md) is the whole-family reference — all ten repos, the shared tenets, and the glossary in one place.
 
-`MIGRATION.md` (rebuild log), `ROADMAP.md` (what's next), `README.md` (getting started),
+Documentation now lives **entirely at the repo root**: `README.md` (getting started),
+`ROADMAP.md` (the single source of truth for open work), `MIGRATION.md` (rebuild log),
 `GUIDE_AUTHORING.md` (learn content), `FIGMA_DESIGN_SYSTEM.md` (design system),
-`SEO-PLAN.md` + the `flygaca-seo` skill (search/AI-search visibility; vendored skills live under
-`.claude/skills/`, pinned by `skills-lock.json`), `docs/ARCHITECTURE-BLUEPRINT.md`
-(platform-wide technical blueprint), root `SECURITY.md`, and `docs/` generally (design, billing,
-`RUNBOOK-deploy.md` / `DATA-HOSTING.md`, `RUNBOOK-firebase.md`, the `RUNBOOK-ios-*.md` set,
-`LICENSED-API.md`, `PRICING-REVENUE-STRATEGY.md`, `RUNBOOK-native.md` /
-`STORE-SUITE.md` (the iOS app family), `APPS-FAMILY-ROADMAP.md`, `STUDY-CONTENT-REVIEW.md`,
-`TESTING-ROADMAP.md`, `corpus-link-shape.md`, `docs/seo/`, `b2b/` designs). The legacy source (the
-original vanilla Fly GACA site) remains the reference for anything still ported from the old site.
+`SEO-PLAN.md` (search / AI-search visibility — the companion `flygaca-seo` skill is provided by the
+Claude Code session, not by the repo), `SCREENSHOTS.md` (the iOS marketing-screenshot workflow —
+its commands run in `FlyGACA-ios`), `CONTRIBUTING.md`, `SECURITY.md`, and `LICENSE`. Sibling repos:
+`ay2m/FlyGACA-ios` (native Swift app family), `ay2m/Captain-Adel` (the standalone AI service),
+`ay2m/Office` (business/governance documents).
 
-`archive/` is parked non-app material — vendored third-party reference collections, the per-tool
-agent-config folders, scripts nothing calls, finished-work docs (completed audits, the legacy-PWA
-cutover runbook), and the investor material. Nothing there is imported, built, or linted; see
-`archive/README.md` before assuming something is missing. `docs/` is live engineering
-documentation, plus two point-in-time subtrees (`docs/seo/archive/`,
-`docs/screenshots/review-2026-07/`).
+### Repo layout — what is *not* here anymore
+
+A single large housekeeping commit (`a6c98e3`, 2026-08-16, on `main`) removed several top-level
+trees. The tracked tree today is `src/`, `tests/`, `public/`, `functions/`, `scripts/`,
+`screenshots/`, `worker/`, `supabase/`, `sync-input/` plus the root config/docs files. Gone, and
+worth knowing before you go looking:
+
+| Removed | Consequence |
+| --- | --- |
+| `.github/` | No CI, no PR previews, no deploy workflow — `npm run verify` is the whole gate. |
+| `docs/` | Every `docs/…` link in `README.md` and older docs is dead, including the screenshot images the README embeds. |
+| `e2e/` | `npm run test:e2e` collects no specs (config retained). |
+| `content/` | `lint:md` and `parse:regulations` have no input (see above). |
+| `apple/` | Retired earlier (2026-08) into `ay2m/FlyGACA-ios`; the `ios:*` npm scripts are dead here. |
+| `archive/`, `dataconnect/`, `.agents/`, `.claude/` | Parked/vendored material; `skills-lock.json` still pins skills whose `.claude/skills/` copies are gone. |
+
+Treat that table as description, not aspiration: don't "fix" a doc by re-adding a tree, and don't
+cite a `docs/` path in new writing. If a workflow genuinely needs one of these back, restoring it is
+a `git revert`-scale decision worth raising first.
