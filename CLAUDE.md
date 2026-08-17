@@ -296,3 +296,17 @@ worth knowing before you go looking:
 Treat that table as description, not aspiration: don't "fix" a doc by re-adding a tree, and don't
 cite a `docs/` path in new writing. If a workflow genuinely needs one of these back, restoring it is
 a `git revert`-scale decision worth raising first.
+
+That commit also swept up eight `src/` files. Seven had no remaining references, but
+`src/pages/hud/hud.module.css` was live — imported by five HUD components, and distinct from
+`Hud.module.css` — so the build broke on any case-sensitive filesystem while still resolving on
+macOS. It has been restored. **Lesson for this repo: a case-only filename difference is invisible
+on a Mac**; if you rename or delete a CSS module, build once on Linux (or in CI) before trusting it.
+
+### Known-broken right now
+
+- **`npm run lint` fails outright**, before linting anything: `package.json` pins
+  `typescript: ^7.0.2` and typescript-eslint refuses TS 7.0 ("does not support TS 7.0"). Nothing in
+  the source causes it, and `typecheck` (plain `tsc -b`) is unaffected — so `verify` cannot pass
+  until TypeScript is pinned back to 6.x or typescript-eslint ships TS 7 support. Until then run
+  the other steps individually rather than assuming the whole chain is red for your change.
