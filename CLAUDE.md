@@ -298,7 +298,8 @@ and a few other trees this incident removed:
 | `e2e/` | `npm run test:e2e` collects no specs (config retained, `ci.yml`'s `e2e` job runs green on zero tests). |
 | `content/` | `lint:md` and `parse:regulations` have no input (see above); `docs-parser.yml` is restored but stays dormant — it's path-filtered on `content/regulations/**`, which doesn't exist. |
 | `apple/` | Retired earlier (2026-08) into `ay2m/FlyGACA-ios`; the `ios:*` npm scripts are dead here — unrelated to this incident. |
-| `archive/`, `dataconnect/`, `.agents/`, `.claude/` | Parked/vendored material; `skills-lock.json` still pins skills whose `.claude/skills/` copies are gone. |
+| `archive/`, `dataconnect/`, `.agents/` | Parked/vendored material. `.agents/` held the `skills` CLI's install tree; the root `skills-lock.json` still pins those eleven `firebase-*` skills and remains orphaned — nothing in the repo reads it. |
+| `.claude/` | **Partially restored** (2026-08-18): `.claude/skills/` now carries the seven vendored cybersecurity skills this repo had before the incident, plus `THIRD_PARTY_NOTICES.md` and a `settings.json` marketplace registration. The deleted `.claude/agents/` subagents and the `.agents/`-symlinked `firebase-*` skills were **not** restored. |
 
 Treat that table as description, not aspiration: don't "fix" a doc by re-adding a tree, and don't
 cite a `docs/` path in new writing. Restoring any of the remaining trees is a real decision (content
