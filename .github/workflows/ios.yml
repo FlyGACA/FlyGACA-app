@@ -1,0 +1,47 @@
+name: iOS Content Validation
+
+# The native iOS apps live in ay2m/FlyGACA, which builds and tests them (swift
+# test, XcodeGen, xcodebuild, TestFlight) in its own `ios.yml`. This repo is the
+# source of truth for their CONTENT — the corpus + src/lib/prepCatalog.ts — so the
+# one thing it must guard is that each app's content still generates cleanly when
+# the corpus or the pack catalog changes. build-ios-content.mjs writes to a scratch
+# dir (.ios-build/) here and exits non-zero on any inconsistency.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  content-validation:
+    name: iOS Content Generation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate ELPT content
+        run: node scripts/build-ios-content.mjs --app elpt
+
+      - name: Validate AIP content
+        run: node scripts/build-ios-content.mjs --app aip
