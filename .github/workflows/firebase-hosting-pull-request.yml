@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: npm ci
-      # Real public web config for flygaca-app (Auth/Firestore) — mirrors deploy.yml
+      # Real public web config for flygaca-sa (Auth/Firestore) — mirrors deploy.yml
       # so previews exercise real Firebase sign-in, not the local-first fallback.
       # Injected from Actions variables, never copied from `.env.example` (which
       # ships placeholders that are truthy enough to boot Firebase and then fail
@@ -45,4 +45,4 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FLYGACA_APP }}
-          projectId: flygaca-app
+          projectId: flygaca-sa

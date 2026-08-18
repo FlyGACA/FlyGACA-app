@@ -79,7 +79,7 @@ jobs:
         run: npm run build
         env:
           VITE_SITE_URL: https://flygaca.com
-          # Real public web config for flygaca-app (Auth/Firestore/Analytics). These
+          # Real public web config for flygaca-sa (Auth/Firestore/Analytics). These
           # are public client identifiers, not secrets, but they are rotatable — so
           # they live in Actions *variables* and are injected here rather than being
           # copied out of `.env.example`, which ships placeholders.
@@ -196,12 +196,12 @@ jobs:
             TARGETS="hosting,firestore:rules"
           fi
           echo "Deploying: ${TARGETS}"
-          npx --yes firebase-tools@15 deploy --only "${TARGETS}" --project flygaca-app --non-interactive
+          npx --yes firebase-tools@15 deploy --only "${TARGETS}" --project flygaca-sa --non-interactive
 
       - name: Deploy functions
         if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
         continue-on-error: true
-        run: npx --yes firebase-tools@15 deploy --only functions --project flygaca-app --non-interactive
+        run: npx --yes firebase-tools@15 deploy --only functions --project flygaca-sa --non-interactive
 
       # Never let a skipped functions deploy be silent — a stale gateway behind a
       # fresh hosting release is invisible from the outside until an /api/* call 404s.
