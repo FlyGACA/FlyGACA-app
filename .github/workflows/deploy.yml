@@ -1,0 +1,245 @@
+name: Deploy (Firebase Hosting + rules)
+
+# Canonical production deploy (see docs/RUNBOOK-deploy.md). Runs after CI-style
+# build on push to main, or on demand via "Run workflow". Authenticates with a
+# Google service account — add the JSON as the FIREBASE_SERVICE_ACCOUNT secret
+# (Project Settings → Service accounts → Generate new private key). The VITE_*
+# web config is public (mirrors .env.example); only the service account is secret.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_rules:
+        description: 'Also deploy firestore.rules'
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-firebase
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: build · deploy hosting${{ github.event_name != 'workflow_dispatch' && ' + rules' || '' }}
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      # Optional Slack deploy alerts (see Office/06-operations-it/slack-best-practices.md §8.1).
+      # No-op until the SLACK_WEBHOOK_URL secret is set in this repo's Actions secrets.
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # `functions/` is its own npm package — the root `npm ci` does not touch it.
+      # firebase.json's functions `predeploy` runs lint + build inside it, so those
+      # deps must exist before the "Deploy functions" step below. Same gate, so an
+      # unconfigured repo pays nothing.
+      - name: Install functions deps
+        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
+        run: npm ci --prefix functions
+
+      # Fail loudly rather than shipping a build that looks fine and is dead.
+      # `.env.example` holds placeholders, so a missing Actions variable used to
+      # bake `your-firebase-web-api-key` into the bundle: `isFirebaseConfigured()`
+      # is a truthiness check, so it stayed TRUE and the app booted Firebase with a
+      # bogus key — every Auth call then failed `auth/api-key-not-valid` and every
+      # billing callable threw `sign-in-required`. Silent, and site-wide.
+      # RECAPTCHA_ENTERPRISE_SITE_KEY is required for the same reason: the client
+      # only initializes App Check when the key is present (firebase.ts), so an
+      # empty one silently disables it — and if App Check enforcement is ON for
+      # Firebase Auth, sign-in is then rejected even with a valid API key. This
+      # used to be hard-coded here, so it could never go missing; now that it comes
+      # from a variable, the guard has to require it.
+      - name: Verify build env
+        env:
+          REQUIRED: >-
+            ${{ vars.FIREBASE_API_KEY }}|${{ vars.FIREBASE_PROJECT_ID }}|${{
+            vars.FIREBASE_APP_ID }}|${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}|${{
+            vars.MOYASAR_PUBLISHABLE_KEY }}
+        run: |
+          case "$REQUIRED" in
+            *"||"*|"|"*|*"|")
+              echo "::error::A required Actions variable is empty — see docs/RUNBOOK-deploy.md."
+              exit 1 ;;
+          esac
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SITE_URL: https://flygaca.com
+          # Real public web config for flygaca-sa (Auth/Firestore/Analytics). These
+          # are public client identifiers, not secrets, but they are rotatable — so
+          # they live in Actions *variables* and are injected here rather than being
+          # copied out of `.env.example`, which ships placeholders.
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
+          # App Check (see docs/APP-CHECK-BACKEND.md). Public — it ships in the page
+          # — so a variable, not a secret; secrets are unreadable from fork and
+          # Dependabot contexts, which is how the mirror workflow shipped an empty one.
+          VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}
+          # Optional: serve the ~130 MB /data corpus off a bucket to keep each
+          # Hosting release small (see the "Offload data corpus" step + docs/
+          # DATA-HOSTING.md). Empty → the app fetches /data same-origin as before.
+          VITE_DATA_BASE_URL: ${{ vars.DATA_BASE_URL }}
+          # Moyasar publishable key (public, restricted to card charges — safe to
+          # ship in the page, but rotatable, so it lives in an Actions variable, not
+          # the repo). Set the MOYASAR_PUBLISHABLE_KEY repo variable (Settings →
+          # Secrets and variables → Actions → Variables) to pk_live_…; this overrides
+          # the .env.example placeholder. Empty → checkout shows "billing-unavailable"
+          # (fails closed). The matching secret key stays server-only in Secret
+          # Manager (MOYASAR_SECRET_KEY). See docs/BILLING.md.
+          VITE_MOYASAR_PUBLISHABLE_KEY: ${{ vars.MOYASAR_PUBLISHABLE_KEY }}
+
+      - name: Bundle budget
+        run: npm run check:bundle
+
+      # Snapshot the high-value routes into dist/<route>/index.html so production
+      # (Firebase, the canonical host) serves prerendered HTML, not just the SPA
+      # shell. The prerender itself stays non-fatal (a Chromium hiccup shouldn't
+      # crash the job mid-flight) — the coverage gate below is the fatal part.
+      - name: Prerender static routes
+        run: |
+          npx playwright install --with-deps chromium
+          npm run prerender
+
+      # Fatal gate (SEO-PLAN 0.2): every sitemap URL must ship with real body
+      # content — head-only or missing snapshots are invisible to the non-JS AI
+      # crawlers that decide citations, so a coverage gap must fail the deploy
+      # loudly instead of shipping silently. (This gate ran in LENIENT mode from
+      # 2026-08-13 while /ar/library/part-77 timed out head-only; that per-page
+      # render timeout was fixed in scripts/prerender.mjs — raised ceilings + a
+      # re-navigation retry — so the gate is strict again. A full body-prerender +
+      # strict coverage run confirmed 710/710.)
+      - name: Verify prerender coverage
+        run: |
+          npm run check:prerender
+          npm run check:prerender:coverage
+
+      # When a data bucket is configured, mirror the heavy /data corpus to it and
+      # drop it from the Hosting release — keeps each release ~12 MB instead of
+      # ~141 MB so it can't exhaust the Firebase Hosting storage quota. Runs
+      # before the Firebase auth/deploy steps use those same credentials. No-op
+      # until DATA_BUCKET (a gs:// target) is set; until then the corpus ships
+      # from Hosting as before. Pair with DATA_BASE_URL in the Build step.
+      - name: Offload data corpus to bucket
+        if: ${{ vars.DATA_BUCKET != '' }}
+        run: |
+          printf '%s' "${FIREBASE_SERVICE_ACCOUNT}" > "${RUNNER_TEMP}/data-sa.json"
+          gcloud auth activate-service-account --key-file "${RUNNER_TEMP}/data-sa.json"
+          echo "Mirroring public/data → ${{ vars.DATA_BUCKET }}/data"
+          gsutil -m rsync -r -d public/data "${{ vars.DATA_BUCKET }}/data"
+          rm -f "${RUNNER_TEMP}/data-sa.json"
+          rm -rf dist/data
+          echo "Stripped dist/data from the Hosting release."
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to Firebase
+        run: |
+          if [ -z "${FIREBASE_SERVICE_ACCOUNT}" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set — add it in repo Settings → Secrets → Actions."
+            exit 1
+          fi
+          printf '%s' "${FIREBASE_SERVICE_ACCOUNT}" > "${RUNNER_TEMP}/firebase-sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${RUNNER_TEMP}/firebase-sa.json" >> "${GITHUB_ENV}"
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      # Publish the gateway BEFORE hosting. `firebase.json` rewrites /api/chat,
+      # /api/feedback and /api/auth/** at the `chat` function, so a hosting release
+      # that lands first points live traffic at endpoints the deployed function may
+      # not carry yet — which is exactly how the session-cookie endpoints sat dead:
+      # the routes existed in gateway.ts from 2026-08-03 and no workflow had ever
+      # deployed functions/.
+      #
+      # A separate invocation (not `--only functions,hosting`) so the ordering is
+      # explicit and a functions failure stops the run before the hosting release
+      # goes live.
+      #
+      # OFF by default, and deliberately so: publishing functions needs the deploy
+      # service account to hold roles/cloudfunctions.admin, roles/iam.serviceAccountUser,
+      # roles/cloudbuild.builds.editor and roles/artifactregistry.writer. Asking the
+      # CLI for a target the SA can't perform fails the WHOLE deploy — that is how
+      # firestore:indexes broke every run (see the Deploy step). Grant the roles
+      # first, then set the DEPLOY_FUNCTIONS repo variable to 'true'
+      # (Settings → Secrets and variables → Actions → Variables).
+      # The CLI major must track the firebase-tools devDependency in package.json.
+      # It drifted: the pin sat at 13 while the repo moved to ^15, and 13 predates
+      # the nodejs24 Functions runtime — so once DEPLOY_FUNCTIONS was switched on,
+      # every deploy died here with "Detected node engine 24 in package.json, which
+      # is not a supported version. Valid versions are 20, 22", taking hosting down
+      # with it (this step runs first). functions/package.json's engines and the CI
+      # functions job both pin Node 24 deliberately; the CLI is what was stale.
+      - name: Deploy hosting & rules
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.deploy_rules }}" != "true" ]; then
+            TARGETS="hosting"
+          else
+            TARGETS="hosting,firestore:rules"
+          fi
+          echo "Deploying: ${TARGETS}"
+          npx --yes firebase-tools@15 deploy --only "${TARGETS}" --project flygaca-sa --non-interactive
+
+      - name: Deploy functions
+        if: ${{ vars.DEPLOY_FUNCTIONS == 'true' }}
+        continue-on-error: true
+        run: npx --yes firebase-tools@15 deploy --only functions --project flygaca-sa --non-interactive
+
+      # Never let a skipped functions deploy be silent — a stale gateway behind a
+      # fresh hosting release is invisible from the outside until an /api/* call 404s.
+      - name: Warn that functions were not deployed
+        if: ${{ vars.DEPLOY_FUNCTIONS != 'true' }}
+        run: |
+          echo "::warning::functions/ was NOT deployed (DEPLOY_FUNCTIONS is not 'true'). If this release changes the gateway or adds an /api/* rewrite, run 'npm run deploy:functions' or those routes will resolve against a stale function. See docs/RUNBOOK-deploy.md."
+
+      # Tell IndexNow-participating engines (Bing, Yandex, Seznam, Naver, …) that
+      # content changed, so they recrawl now instead of on their next scheduled
+      # pass. Dark until the INDEXNOW_KEY secret is set and the matching key file is
+      # hosted at the domain root; the script no-ops (exit 0) without the key and is
+      # fail-open, so it can never break a deploy. Google doesn't use IndexNow — this
+      # complements the sitemap, it doesn't replace it.
+      - name: Ping IndexNow
+        env:
+          SITE_URL: https://flygaca.com
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: node scripts/indexnow.mjs
+
+      - name: Clean up credentials
+        if: always()
+        run: rm -f "${RUNNER_TEMP}/firebase-sa.json"
+
+      # Optional: post the deploy result to Slack. Gated on the SLACK_WEBHOOK_URL
+      # secret (mapped to job env above) so it silently no-ops until configured.
+      # Interpolated GitHub context values pass through env vars (never inlined
+      # into the run script) to avoid expression injection.
+      - name: Notify Slack (deploy result)
+        if: ${{ always() && env.SLACK_WEBHOOK_URL != '' }}
+        env:
+          REPO: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          payload=$(printf '{"text": "*%s* deploy on `%s` → *%s* (<%s|run>)"}' \
+            "$REPO" "$REF_NAME" "$JOB_STATUS" "$RUN_URL")
+          curl -fsS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "$payload"
