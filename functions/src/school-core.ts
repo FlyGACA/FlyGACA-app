@@ -188,3 +188,69 @@ export function cohortRow(
     lastActive: input.summary?.updatedAt ? String(input.summary.updatedAt).slice(0, 10) : "",
   };
 }
+
+export interface SchoolDoc {
+  id?: string;
+  name: string;
+  ownerUids: string[];
+  adminUids: string[];
+  instructorUids: string[];
+  seatLimit: number;
+  allocatedSeats: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface RosterDoc {
+  cadetUid: string;
+  cadetEmail: string;
+  cohortId?: string | null;
+  licenseStatus: "active" | "revoked" | "expired" | "pending";
+  seatAllocated: boolean;
+  grantedBy: string;
+  grantedAt: string;
+  expiresAt?: string | null;
+  revokedAt?: string | null;
+  revokedBy?: string | null;
+  revokeReason?: string | null;
+  pdplConsent: {
+    consent: boolean;
+    consentedAt: string;
+    consentVersion: string;
+  };
+}
+
+export interface SchoolAuditLog {
+  auditId: string;
+  action: "GRANT_LICENCE" | "REVOKE_LICENCE" | "UPDATE_ROSTER" | "RECOMPUTE_ANALYTICS";
+  actorUid: string;
+  targetCadetUid?: string;
+  timestamp: string;
+  details?: Record<string, unknown>;
+}
+
+export function isSchoolStaff(
+  school: { ownerUids?: string[]; adminUids?: string[]; instructorUids?: string[] } | null | undefined,
+  uid: string | null | undefined,
+): boolean {
+  if (!school || !uid) return false;
+  const owners = school.ownerUids ?? [];
+  const admins = school.adminUids ?? [];
+  const instructors = school.instructorUids ?? [];
+  return owners.includes(uid) || admins.includes(uid) || instructors.includes(uid);
+}
+
+export function isSchoolAdmin(
+  school: { ownerUids?: string[]; adminUids?: string[] } | null | undefined,
+  uid: string | null | undefined,
+): boolean {
+  if (!school || !uid) return false;
+  const owners = school.ownerUids ?? [];
+  const admins = school.adminUids ?? [];
+  return owners.includes(uid) || admins.includes(uid);
+}
+
+export function canAllocateSeat(allocatedSeats: number, seatLimit: number): boolean {
+  if (!Number.isFinite(allocatedSeats) || !Number.isFinite(seatLimit)) return false;
+  return allocatedSeats < seatLimit;
+}

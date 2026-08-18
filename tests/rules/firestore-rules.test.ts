@@ -24,7 +24,7 @@ import {
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, deleteDoc, type Firestore } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, type Firestore } from 'firebase/firestore';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RULES = readFileSync(resolve(HERE, '../../firestore.rules'), 'utf8');
@@ -539,3 +539,123 @@ describe('licensed-API keys — fully server-only', () => {
     await assertFails(setDoc(doc(dbFor(ALICE), 'apiUsage/deadbeef'), { count: 999 }));
   });
 });
+
+describe('schools/{schoolId} — multi-tenant isolation & PDPL consent', () => {
+  const SCHOOL_ID = 'saudi-aviation-academy';
+  const OWNER = 'school-owner';
+  const ADMIN = 'school-admin';
+  const INSTRUCTOR = 'school-instructor';
+  const CADET_1 = 'cadet-1';
+  const CADET_2 = 'cadet-2';
+  const OUTSIDER = 'outsider';
+
+  const schoolDoc = {
+    name: 'Saudi Aviation Academy',
+    ownerUids: [OWNER],
+    adminUids: [ADMIN],
+    instructorUids: [INSTRUCTOR],
+    seatLimit: 25,
+    allocatedSeats: 2,
+  };
+
+  const rosterEntryCadet1 = {
+    cadetUid: CADET_1,
+    cadetEmail: 'cadet1@saa.edu.sa',
+    cohortId: 'cohort-2026-a',
+    licenseStatus: 'active',
+    seatAllocated: true,
+    grantedBy: OWNER,
+    grantedAt: '2026-08-01T00:00:00.000Z',
+    pdplConsent: {
+      consent: false,
+      consentedAt: '2026-08-01T00:00:00.000Z',
+      consentVersion: 'v1.0-2026',
+    },
+  };
+
+  beforeEach(async () => {
+    await seed(`schools/${SCHOOL_ID}`, schoolDoc);
+    await seed(`schools/${SCHOOL_ID}/roster/${CADET_1}`, rosterEntryCadet1);
+    await seed(`schools/${SCHOOL_ID}/analytics/summary`, { totalCadets: 2, activeLicenses: 2 });
+    await seed(`schools/${SCHOOL_ID}/auditLogs/audit-1`, { action: 'GRANT_LICENCE', actorUid: OWNER });
+  });
+
+  it('allows school owner, admin, and instructor to read school document', async () => {
+    await assertSucceeds(getDoc(doc(dbFor(OWNER), `schools/${SCHOOL_ID}`)));
+    await assertSucceeds(getDoc(doc(dbFor(ADMIN), `schools/${SCHOOL_ID}`)));
+    await assertSucceeds(getDoc(doc(dbFor(INSTRUCTOR), `schools/${SCHOOL_ID}`)));
+  });
+
+  it('denies outsider and cadets reading school document directly', async () => {
+    await assertFails(getDoc(doc(dbFor(OUTSIDER), `schools/${SCHOOL_ID}`)));
+    await assertFails(getDoc(doc(dbFor(CADET_1), `schools/${SCHOOL_ID}`)));
+  });
+
+  it('denies client writes to school document (Admin SDK only)', async () => {
+    await assertFails(
+      setDoc(doc(dbFor(OWNER), `schools/${SCHOOL_ID}`), { ...schoolDoc, seatLimit: 500 }),
+    );
+  });
+
+  it('allows school staff and cadet to read cadet roster document', async () => {
+    await assertSucceeds(getDoc(doc(dbFor(OWNER), `schools/${SCHOOL_ID}/roster/${CADET_1}`)));
+    await assertSucceeds(getDoc(doc(dbFor(INSTRUCTOR), `schools/${SCHOOL_ID}/roster/${CADET_1}`)));
+    await assertSucceeds(getDoc(doc(dbFor(CADET_1), `schools/${SCHOOL_ID}/roster/${CADET_1}`)));
+  });
+
+  it('denies other cadets and outsiders reading a cadet roster document', async () => {
+    await assertFails(getDoc(doc(dbFor(CADET_2), `schools/${SCHOOL_ID}/roster/${CADET_1}`)));
+    await assertFails(getDoc(doc(dbFor(OUTSIDER), `schools/${SCHOOL_ID}/roster/${CADET_1}`)));
+  });
+
+  it('allows cadet to update ONLY their own pdplConsent subfield', async () => {
+    await assertSucceeds(
+      updateDoc(doc(dbFor(CADET_1), `schools/${SCHOOL_ID}/roster/${CADET_1}`), {
+        pdplConsent: {
+          consent: true,
+          consentedAt: '2026-08-16T12:00:00.000Z',
+          consentVersion: 'v1.0-2026',
+        },
+      }),
+    );
+  });
+
+  it('denies cadet modifying other roster fields (e.g. seatAllocated or licenseStatus)', async () => {
+    await assertFails(
+      updateDoc(doc(dbFor(CADET_1), `schools/${SCHOOL_ID}/roster/${CADET_1}`), {
+        seatAllocated: true,
+        licenseStatus: 'active',
+      }),
+    );
+  });
+
+  it('allows staff to read analytics summary, denies non-staff', async () => {
+    await assertSucceeds(getDoc(doc(dbFor(INSTRUCTOR), `schools/${SCHOOL_ID}/analytics/summary`)));
+    await assertFails(getDoc(doc(dbFor(CADET_1), `schools/${SCHOOL_ID}/analytics/summary`)));
+    await assertFails(getDoc(doc(dbFor(OUTSIDER), `schools/${SCHOOL_ID}/analytics/summary`)));
+  });
+
+  it('allows admin/owner to read audit logs, denies instructors and cadets', async () => {
+    await assertSucceeds(getDoc(doc(dbFor(OWNER), `schools/${SCHOOL_ID}/auditLogs/audit-1`)));
+    await assertSucceeds(getDoc(doc(dbFor(ADMIN), `schools/${SCHOOL_ID}/auditLogs/audit-1`)));
+    await assertFails(getDoc(doc(dbFor(INSTRUCTOR), `schools/${SCHOOL_ID}/auditLogs/audit-1`)));
+    await assertFails(getDoc(doc(dbFor(CADET_1), `schools/${SCHOOL_ID}/auditLogs/audit-1`)));
+  });
+
+  it('maintains strict isolation: instructors and admins CANNOT access cadet private logbook or records', async () => {
+    await seed(`users/${CADET_1}`, { email: 'cadet1@saa.edu.sa' });
+    await seed(`users/${CADET_1}/logbook/flight-1`, { date: '2026-08-10', total: '2.5', remarks: 'cross country' });
+    await seed(`users/${CADET_1}/records/rec-1`, { category: 'rating', title: 'PPL', ref: 'GACA-PPL', remarks: '' });
+
+    // Cadet can read own logbook & records
+    await assertSucceeds(getDoc(doc(dbFor(CADET_1), `users/${CADET_1}/logbook/flight-1`)));
+    await assertSucceeds(getDoc(doc(dbFor(CADET_1), `users/${CADET_1}/records/rec-1`)));
+
+    // Instructor and Admin CANNOT access cadet private logbook or records directly
+    await assertFails(getDoc(doc(dbFor(INSTRUCTOR), `users/${CADET_1}/logbook/flight-1`)));
+    await assertFails(getDoc(doc(dbFor(ADMIN), `users/${CADET_1}/logbook/flight-1`)));
+    await assertFails(getDoc(doc(dbFor(OWNER), `users/${CADET_1}/logbook/flight-1`)));
+    await assertFails(getDoc(doc(dbFor(INSTRUCTOR), `users/${CADET_1}/records/rec-1`)));
+  });
+});
+

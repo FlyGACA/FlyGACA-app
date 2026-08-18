@@ -30,9 +30,14 @@ export {
 // Staff / complimentary full-access grant (see ./staff.ts).
 export { claimStaffAccess } from "./staff.js";
 
-// Self-serve school-seat grant — verified email on an approved domain or the invite
-// roster self-unlocks the `school` entitlement (see ./school.ts).
-export { claimSchoolSeat } from "./school.js";
+// School multi-tenant roster, license management & cohort analytics (see ./school.ts).
+export {
+  claimSchoolSeat,
+  grantSchoolLicence,
+  revokeSchoolLicence,
+  getSchoolAnalyticsSummary,
+  recomputeSchoolAnalytics,
+} from "./school.js";
 
 // Founding grant — a pre-launch account self-unlocks a complimentary, time-limited
 // Pro window when monetization is turned on (see ./founding.ts).

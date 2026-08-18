@@ -15,6 +15,23 @@ service cloud.firestore {
     function isOwner(uid) {
       return signedIn() && request.auth.uid == uid;
     }
+    function isSchoolStaff(schoolId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/schools/$(schoolId))
+        && (
+          (request.auth.uid in get(/databases/$(database)/documents/schools/$(schoolId)).data.ownerUids) ||
+          (request.auth.uid in get(/databases/$(database)/documents/schools/$(schoolId)).data.adminUids) ||
+          (request.auth.uid in get(/databases/$(database)/documents/schools/$(schoolId)).data.instructorUids)
+        );
+    }
+    function isSchoolAdmin(schoolId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/schools/$(schoolId))
+        && (
+          (request.auth.uid in get(/databases/$(database)/documents/schools/$(schoolId)).data.ownerUids) ||
+          (request.auth.uid in get(/databases/$(database)/documents/schools/$(schoolId)).data.adminUids)
+        );
+    }
     // Simple email validation: contains @ and a dot after @, length reasonable.
     function isEmail(email) {
       return email is string
@@ -199,6 +216,41 @@ service cloud.firestore {
       allow read, write: if false;
       match /members/{uid} {
         allow read, write: if false;
+      }
+    }
+
+    // Multi-tenant flight school (B2B) documents & rosters.
+    match /schools/{schoolId} {
+      // School staff (owners, admins, instructors) can read their school doc.
+      allow read: if isSchoolStaff(schoolId);
+      allow write: if false;
+
+      // School roster subcollection.
+      match /roster/{cadetUid} {
+        // Staff can read the roster; cadet can read their own roster document.
+        allow read: if isSchoolStaff(schoolId) || isOwner(cadetUid);
+
+        // Cadets can update ONLY their own pdplConsent subfield in their roster doc.
+        // Seat allocation, licenseStatus, and other admin fields remain locked to Cloud Functions.
+        allow update: if isOwner(cadetUid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['pdplConsent'])
+          && request.resource.data.pdplConsent is map
+          && request.resource.data.pdplConsent.keys().hasOnly(['consent', 'consentedAt', 'consentVersion'])
+          && request.resource.data.pdplConsent.consent is bool;
+
+        allow create, delete: if false;
+      }
+
+      // Pre-aggregated analytics summary.
+      match /analytics/{doc} {
+        allow read: if isSchoolStaff(schoolId);
+        allow write: if false;
+      }
+
+      // Immutable audit logs for school operations.
+      match /auditLogs/{auditId} {
+        allow read: if isSchoolAdmin(schoolId);
+        allow write: if false;
       }
     }
 
