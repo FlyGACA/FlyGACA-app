@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AUTH_REDIRECT_FAILED_CODE,
   AUTH_TIMEOUT_CODE,
   authErrorInfo,
   isAuthDismiss,
   isDomainAuthError,
+  shouldRetryAsRedirect,
 } from '@/calc/app/authError';
 
 describe('authErrorInfo', () => {
@@ -137,5 +139,34 @@ describe('isAuthDismiss', () => {
     expect(isAuthDismiss('auth/wrong-password')).toBe(false);
     expect(isAuthDismiss(undefined)).toBe(false);
     expect(isAuthDismiss('')).toBe(false);
+  });
+});
+
+describe('shouldRetryAsRedirect', () => {
+  it('retries only when the popup could not open at all', () => {
+    expect(shouldRetryAsRedirect('auth/popup-blocked')).toBe(true);
+    expect(shouldRetryAsRedirect('auth/operation-not-supported-in-this-environment')).toBe(true);
+  });
+
+  it('does not retry a popup the user closed — that is a deliberate cancel', () => {
+    expect(shouldRetryAsRedirect('auth/popup-closed-by-user')).toBe(false);
+    expect(shouldRetryAsRedirect('auth/cancelled-popup-request')).toBe(false);
+  });
+
+  it('does not retry a config failure a redirect would hit just the same', () => {
+    expect(shouldRetryAsRedirect('auth/unauthorized-domain')).toBe(false);
+    expect(shouldRetryAsRedirect(undefined)).toBe(false);
+  });
+});
+
+describe('AUTH_REDIRECT_FAILED_CODE', () => {
+  it('maps to its own actionable message, not the generic sign-in failure', () => {
+    const { field, key } = authErrorInfo(AUTH_REDIRECT_FAILED_CODE);
+    expect(field).toBe('general');
+    expect(key).toBe('account.errors.redirectFailed');
+  });
+
+  it('is not a "use the main site" case — the canonical origin fails the same way', () => {
+    expect(isDomainAuthError(AUTH_REDIRECT_FAILED_CODE)).toBe(false);
   });
 });

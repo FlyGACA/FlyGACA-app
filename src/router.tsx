@@ -1,5 +1,5 @@
 import { lazy, type ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router';
 import { Layout } from './app/Layout';
 import { FlavorRoot } from './app/flavor/FlavorRoot';
 import { Home } from './pages/Home/Home';
@@ -214,6 +214,17 @@ const FlavorSettings = lazyNamed(() => import('./app/flavor/FlavorSettings'), 'F
  * logical path, and every `<Link>` automatically prepends `/ar` — keeping all
  * in-app navigation inside the Arabic cluster with no per-link changes.
  */
+/**
+ * `/signup` is the sign-up tab of `/account`, not a page of its own. Forward
+ * every other param (notably `?redirect=`) so a deep link survives the hop.
+ */
+function SignupRedirect() {
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  params.set('mode', 'up');
+  return <Navigate to={`/account?${params.toString()}`} replace />;
+}
+
 const basename =
   typeof window !== 'undefined' && isArabicPath(window.location.pathname) ? AR_PREFIX : undefined;
 
@@ -348,7 +359,7 @@ const mainRoutes = [
       { path: 'account', element: <Account /> },
       // Legacy/expected auth URLs — sign-in and sign-up both live on /account.
       { path: 'signin', element: <Navigate to="/account" replace /> },
-      { path: 'signup', element: <Navigate to="/account" replace /> },
+      { path: 'signup', element: <SignupRedirect /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'currency', element: <Currency /> },
       { path: 'logbook', element: <Logbook /> },

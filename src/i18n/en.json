@@ -2376,6 +2376,7 @@
       "unauthorizedDomain": "This site isn't authorized for sign-in yet. If you're on a preview link, use the main site.",
       "config": "Sign-in is temporarily misconfigured on this site. Please try the main site.",
       "popupBlocked": "The sign-in popup was blocked or closed. Redirecting you to continue…",
+      "redirectFailed": "Google sent you back without completing sign-in. This usually means the browser blocked the sign-in handler — try again, or use email and password instead.",
       "technicalDetail": "(code: {{code}})",
       "useMainSite": "Go to the main site to sign in"
     },
