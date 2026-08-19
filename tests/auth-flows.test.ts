@@ -40,7 +40,9 @@ const h = vi.hoisted(() => {
       updateProfile: vi.fn(() => Promise.resolve()),
       sendPasswordResetEmail: vi.fn(() => Promise.resolve()),
       sendEmailVerification: vi.fn(() => Promise.resolve()),
-      GoogleAuthProvider: class {},
+      GoogleAuthProvider: class {
+        setCustomParameters = vi.fn();
+      },
     },
   };
 });
@@ -65,6 +67,7 @@ beforeEach(() => {
   h.auth.currentUser = null;
   h.authListener = null;
   h.unsubbed = false;
+  sessionStorage.clear();
   vi.clearAllMocks();
 });
 
@@ -142,6 +145,16 @@ describe('sign-in flows', () => {
     expect(out).toBeNull();
   });
 
+  it('signInWithGoogle rethrows a popup the user closed instead of redirecting', async () => {
+    // A deliberate cancel must not turn into a full-page round trip the user
+    // never asked for; the form swallows this code quietly.
+    h.fa.signInWithPopup.mockRejectedValueOnce({ code: 'auth/popup-closed-by-user' });
+    await expect((await load()).signInWithGoogle()).rejects.toMatchObject({
+      code: 'auth/popup-closed-by-user',
+    });
+    expect(h.fa.signInWithRedirect).not.toHaveBeenCalled();
+  });
+
   it('signInWithGoogle rethrows a non-popup error (e.g. unauthorized domain)', async () => {
     h.fa.signInWithPopup.mockRejectedValueOnce({ code: 'auth/unauthorized-domain' });
     await expect((await load()).signInWithGoogle()).rejects.toMatchObject({
@@ -156,6 +169,29 @@ describe('sign-in flows', () => {
     // getRedirectResult is polled once when the listener is attached (fire-and-forget,
     // so wait for the dynamic import + microtasks to settle).
     await vi.waitFor(() => expect(h.fa.getRedirectResult).toHaveBeenCalledWith(h.auth));
+  });
+
+  it('flags a redirect that came back with no credential', async () => {
+    const a = await load();
+    h.fa.signInWithPopup.mockRejectedValueOnce({ code: 'auth/popup-blocked' });
+    await a.signInWithGoogle();
+    expect(h.fa.signInWithRedirect).toHaveBeenCalled();
+
+    // The browser returns to the app: getRedirectResult resolves empty (the
+    // partitioned-storage failure), so the round trip must report itself.
+    h.fa.getRedirectResult.mockResolvedValueOnce(null);
+    await a.onAuthChange(vi.fn());
+    await vi.waitFor(() => expect(a.consumeRedirectFailure()).toBe(true));
+    // Read-and-clear: the error is surfaced exactly once.
+    expect(a.consumeRedirectFailure()).toBe(false);
+  });
+
+  it('does not flag a plain page load with no redirect in flight', async () => {
+    const a = await load();
+    h.fa.getRedirectResult.mockResolvedValueOnce(null);
+    await a.onAuthChange(vi.fn());
+    await vi.waitFor(() => expect(h.fa.getRedirectResult).toHaveBeenCalled());
+    expect(a.consumeRedirectFailure()).toBe(false);
   });
 
   it('signInWithEmail passes credentials through', async () => {

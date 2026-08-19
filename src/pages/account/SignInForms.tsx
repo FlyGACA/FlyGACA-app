@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link, useSearchParams } from 'react-router';
 import { TextField } from '@/components/calc/TextField';
 import { Alert } from '@/components/Alert';
 import { Button } from '@/components/ui/Button';
@@ -11,23 +12,32 @@ import { SignInFormBody } from './SignInFormBody';
 import { SignUpFormBody } from './SignUpFormBody';
 import styles from './AccountPage.module.css';
 
+/**
+ * `/account` with `?mode=` set to the target tab, preserving every other param
+ * (notably `?redirect=`, which survives the whole sign-in round trip).
+ */
+function buildModeUrl(searchParams: URLSearchParams, targetMode: 'in' | 'up'): string {
+  const p = new URLSearchParams(searchParams);
+  if (targetMode === 'up') p.set('mode', 'up');
+  else p.delete('mode');
+  const query = p.toString();
+  return query ? `/account?${query}` : '/account';
+}
+
 export function FirebaseSignIn() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const {
     mode,
-    animating,
     busy,
     errors,
     notice,
     mainSiteHref,
-    toggleMode,
     forgotPassword,
     loginForm,
     signupForm,
     runGoogle,
   } = useSignInForm();
-
-  const containerClass = `${styles.fadeTransition} ${animating ? styles.animating : ''}`;
 
   // The general-error band, shared by the sign-in and sign-up forms. On a
   // domain-authorization failure it also carries the click-through to the
@@ -48,6 +58,25 @@ export function FirebaseSignIn() {
 
   return (
     <>
+      <div role="tablist" aria-label={t('account.signInTitle')} className={styles.modeTabs}>
+        <Link
+          to={buildModeUrl(searchParams, 'in')}
+          role="tab"
+          aria-selected={mode === 'in'}
+          className={`${styles.modeTab} ${mode === 'in' ? styles.modeTabActive : ''}`}
+        >
+          {t('account.signIn')}
+        </Link>
+        <Link
+          to={buildModeUrl(searchParams, 'up')}
+          role="tab"
+          aria-selected={mode === 'up'}
+          className={`${styles.modeTab} ${mode === 'up' ? styles.modeTabActive : ''}`}
+        >
+          {t('account.register')}
+        </Link>
+      </div>
+
       <Button
         type="button"
         variant="clayPrimary"
@@ -60,7 +89,7 @@ export function FirebaseSignIn() {
       </Button>
       <p className={styles.divider}>{t('account.or')}</p>
 
-      <div className={containerClass}>
+      <div className={styles.fadeTransition}>
         {mode === 'in' ? (
           <SignInFormBody form={loginForm} busy={busy} errorAlert={errorAlert} notice={notice} />
         ) : (
@@ -69,9 +98,12 @@ export function FirebaseSignIn() {
       </div>
 
       <div className={styles.signInLinks}>
-        <button type="button" className={styles.linkBtn} onClick={toggleMode}>
+        <Link
+          to={buildModeUrl(searchParams, mode === 'in' ? 'up' : 'in')}
+          className={styles.linkBtn}
+        >
           {mode === 'in' ? t('account.needAccount') : t('account.haveAccount')}
-        </button>
+        </Link>
         {mode === 'in' && (
           <button type="button" className={styles.linkBtn} disabled={busy} onClick={forgotPassword}>
             {t('account.forgotPassword')}

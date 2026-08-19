@@ -15,6 +15,34 @@ export type AuthField = 'email' | 'password' | 'general';
  */
 export const AUTH_TIMEOUT_CODE = 'auth/timeout';
 
+/**
+ * Synthetic code for "we came back from a `signInWithRedirect` with nothing".
+ * The redirect handler lives on the Firebase `authDomain`; when that is a
+ * different origin from the app (the default `*.firebaseapp.com`), browsers that
+ * partition third-party storage — Chrome's Storage Partitioning, Safari ITP —
+ * drop the pending-redirect state, so `getRedirectResult()` resolves to `null`
+ * and the user silently lands back on /account still signed out. Surfacing this
+ * as a real error is the difference between "the button does nothing" and a
+ * message that names the fix (see docs/RUNBOOK-firebase.md).
+ */
+export const AUTH_REDIRECT_FAILED_CODE = 'auth/redirect-no-result';
+
+/**
+ * Popup failures that mean "this environment cannot host a popup at all" — the
+ * only cases worth retrying as a full-page redirect. A popup the *user* closed
+ * is NOT in this set: bouncing them through a redirect they didn't ask for is
+ * how a deliberate cancel turns into an unexplained round trip.
+ */
+const POPUP_FALLBACK_CODES = new Set([
+  'auth/popup-blocked',
+  'auth/operation-not-supported-in-this-environment',
+]);
+
+/** Whether `code` means the popup could not open, so a redirect should be tried. */
+export function shouldRetryAsRedirect(code: string | undefined | null): boolean {
+  return !!code && POPUP_FALLBACK_CODES.has(code);
+}
+
 export interface AuthErrorInfo {
   field: AuthField;
   key: string;
@@ -55,6 +83,10 @@ const MAP: Record<string, AuthErrorInfo> = {
   // check is a connectivity problem, and reusing the key keeps the 4,500-line
   // locale files untouched.
   [AUTH_TIMEOUT_CODE]: { field: 'general', key: 'account.errors.network' },
+  // Came back from the redirect handler with no credential — almost always a
+  // cross-origin `authDomain` plus partitioned third-party storage. The message
+  // is deliberately actionable rather than a generic "try again".
+  [AUTH_REDIRECT_FAILED_CODE]: { field: 'general', key: 'account.errors.redirectFailed' },
   // Deployment/config failures — these have nothing to do with the user's
   // credentials, so they must NOT read as "check your details". They typically
   // surface on an unauthorized origin (e.g. a preview domain not registered in

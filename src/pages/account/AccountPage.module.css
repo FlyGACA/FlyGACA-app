@@ -213,3 +213,38 @@
   opacity: 0;
   transform: translateY(4px);
 }
+
+/* Sign in / Create account segmented tabs. Rendered as router links so both
+   modes are addressable (/account and /account?mode=up, which /signup lands on)
+   and the browser back button steps between them. */
+.modeTabs {
+  display: flex;
+  background: var(--surface-raised);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-block-end: var(--space-2);
+}
+.modeTab {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  text-align: center;
+  text-decoration: none;
+}
+.modeTab:hover {
+  color: var(--text);
+}
+.modeTabActive {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  box-shadow: var(--shadow-sm);
+}
