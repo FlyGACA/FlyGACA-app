@@ -20,7 +20,7 @@ jobs:
       && github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - run: npm ci
       # Real public web config for flygaca-sa (Auth/Firestore) — mirrors deploy.yml
       # so previews exercise real Firebase sign-in, not the local-first fallback.
@@ -41,8 +41,26 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
           VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
           VITE_RECAPTCHA_ENTERPRISE_SITE_KEY: ${{ vars.RECAPTCHA_ENTERPRISE_SITE_KEY }}
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      # Fail legibly when no service-account secret is configured. Without this
+      # the deploy step writes an empty credentials file, firebase-tools logs
+      # "No OAuth tokens found", calls the API unauthenticated, and surfaces a
+      # bare 403 "The caller does not have permission" — which reads like an IAM
+      # problem and sends you to the Google console instead of Actions secrets.
+      # deploy.yml already guards its own secret this way; this workflow did not.
+      - name: Verify Firebase service-account secret is set
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FLYGACA_APP || secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "${SA}" ]; then
+            echo "::error::No Firebase service-account secret found. Set FIREBASE_SERVICE_ACCOUNT_FLYGACA_APP (or FIREBASE_SERVICE_ACCOUNT) in Settings -> Secrets -> Actions. The service account must have firebase.projects.get on project flygaca-sa."
+            exit 1
+          fi
+          echo "Service-account secret present ($(printf '%s' "${SA}" | wc -c) bytes)."
+
+      - uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FLYGACA_APP }}
+          # Prefer the workflow's original secret; fall back to the one deploy.yml
+          # uses, so a preview still works if only one of the two is configured.
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FLYGACA_APP || secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: flygaca-sa
